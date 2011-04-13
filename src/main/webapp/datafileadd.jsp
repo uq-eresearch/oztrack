@@ -10,7 +10,7 @@
     <script type="text/javascript" src="js/jquery/jquery.js"></script>
 </head>
 <body>
-<h1 align="center">OzTrack</h1>
+<h1 align="center">OzTrack </h1>
 <hr/>
 
 
