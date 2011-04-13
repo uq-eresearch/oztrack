@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean id="userDao" class="org.oztrack.data.access.impl.UserDaoImpl">
+        <constructor-arg ref="jpaConnector"/>
+    </bean>
+    <bean id="projectDao" class="org.oztrack.data.access.impl.ProjectDaoImpl">
+      <constructor-arg ref="jpaConnector"/>
+    </bean>
+    <bean id="dataFileDao" class="org.oztrack.data.access.impl.DataFileDaoImpl">
+      <constructor-arg ref="jpaConnector"/>
+    </bean>
+
+</beans>

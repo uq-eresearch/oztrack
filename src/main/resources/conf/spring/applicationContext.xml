@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean id="propertyPlaceholderConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="systemPropertiesMode" value="2"/>
+        <property name="locations">
+            <list>
+                <value>classpath:conf/properties/application.properties</value>
+                <value>classpath:conf/properties/svninfo.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="log4jInitialization"
+          class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetClass"
+                  value="org.springframework.util.Log4jConfigurer"/>
+        <property name="targetMethod" value="initLogging"/>
+        <property name="arguments">
+            <list>
+                <value>classpath:conf/properties/log4j.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <import resource="oztrack.xml"/>
+</beans>

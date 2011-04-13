@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="${application.persistenceUnitName}"/>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <bean id="jpaConnector" class="org.oztrack.data.connector.JpaConnector">
+        <constructor-arg ref="entityManagerFactory"/>
+    </bean>
+
+    <import resource="daos.xml"/>
+
+    <bean id="applicationContext" class="org.oztrack.app.OzTrackConfigurationImpl">
+        <property name="applicationTitle" value="${application.title}"/>
+        <property name="applicationEmail" value="${application.email}"/>
+        <property name="smtpServer" value="${application.emailServer}"/>
+        <property name="version" value="${application.version}.${revision}"/>
+        <property name="uriPrefix" value="${application.uri.prefix}"/>
+        <property name="daoManager" ref="daoManager"/>
+        <property name="authenticationManager" ref="authenticationManager"/>
+    </bean>
+
+    <bean id="ozTrackApplication" class="org.oztrack.app.OzTrackApplication">
+        <property name="applicationContext" ref="applicationContext"/>
+    </bean>
+
+    <bean id="daoManager" class="org.oztrack.data.access.manager.impl.DaoManagerImpl">
+        <property name="userDao" ref="userDao"/>
+        <property name="projectDao" ref="projectDao"/>
+        <property name="dataFileDao" ref="dataFileDao"/>
+    </bean>
+
+    <bean id="authenticationManager" class="org.oztrack.app.AuthenticationManager">
+    </bean>
+    
+</beans>
