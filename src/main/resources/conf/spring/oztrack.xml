@@ -35,6 +35,8 @@
         <property name="userDao" ref="userDao"/>
         <property name="projectDao" ref="projectDao"/>
         <property name="dataFileDao" ref="dataFileDao"/>
+        <property name="rawAcousticDetectionDao" ref="rawAcousticDetectionDao"/>
+        <property name="jpaConnector" ref="jpaConnector"/>
     </bean>
 
     <bean id="authenticationManager" class="org.oztrack.app.AuthenticationManager">

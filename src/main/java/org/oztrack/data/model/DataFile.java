@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Author: peggy
@@ -24,10 +25,15 @@ public class DataFile implements Serializable {
     private String userGivenFileName;
     private String fileDescription;
     private String fileType;
-    
+    private String contentType;
+    private Date uploadDate;
+//    private String uploadUser;
+
+
     @ManyToOne
     private Project project;
 
+    @Transient
     private MultipartFile  file;
     public void setFile(MultipartFile file) {this.file = file;}
     public MultipartFile getFile() {return file;}
@@ -87,4 +93,30 @@ public class DataFile implements Serializable {
     public void setProject(Project project) {
         this.project = project;
     }
+
+        public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public Date getUploadDate() {
+        return uploadDate;
+    }
+
+    public void setUploadDate(Date uploadDate) {
+        this.uploadDate = uploadDate;
+    }
+
+//    public String getUploadUser() {
+//        return uploadUser;
+//    }
+//
+//    public void setUploadUser(String uploadUser) {
+//        this.uploadUser = uploadUser;
+//    }
+
+
 }

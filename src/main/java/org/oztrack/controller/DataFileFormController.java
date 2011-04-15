@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
 import org.apache.poi.ss.usermodel.*;
+import org.oztrack.app.Constants;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.RawAcousticDetectionDao;
@@ -29,7 +30,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class DataFileFormController extends SimpleFormController {
@@ -52,70 +55,47 @@ public class DataFileFormController extends SimpleFormController {
             dataFile.setUserGivenFileName(file.getOriginalFilename());
             dataFile.setContentType(file.getContentType());
             dataFile.setUploadDate(new java.util.Date());
+//            dataFile.setUploadUser(OzTrackApplication.getApplicationContext().getAuthenticationManager().getCurrentUser().getFullName());
         }
-
 
         EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
 
         BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()));
-        String strLine;
+
+        // get headers
+        HashMap <String, Integer> headingsMap = new HashMap<String, Integer>();
+        String strLine = br.readLine();
+        String [] colHeadings =  strLine.split(",");
+
+        for (int i=0; i < colHeadings.length; i++) {
+
+            String heading = colHeadings[i].replaceAll("/","").replaceAll(" ","").toUpperCase();
+
+            if (heading.equals(Constants.DATETIME) ) headingsMap.put(Constants.DATETIME, i);
+            if (heading.equals(Constants.ANIMALID) ) headingsMap.put(Constants.ANIMALID, i) ;
+            if (heading.equals(Constants.SENSOR1)  ) headingsMap.put(Constants.SENSOR1, i) ;
+            if (heading.equals(Constants.UNITS1)   ) headingsMap.put(Constants.UNITS1, i) ;
+            if (heading.equals(Constants.RECEIVERID) ) headingsMap.put(Constants.RECEIVERID, i);
+        }
 
         while ((strLine = br.readLine()) != null) {
 
-            String [] cols = strLine.split(",");
+            colHeadings = strLine.split(",");
             RawAcousticDetection rawAcousticDetection = new RawAcousticDetection();
-            rawAcousticDetection.setDatetime(cols[0]);
-            rawAcousticDetection.setAnimalid(cols[1]);
-            rawAcousticDetection.setSensor1(cols[2]);
-            rawAcousticDetection.setUnits1(cols[3]);
-            rawAcousticDetection.setReceiverid(cols[4]);
+            rawAcousticDetection.setDatetime(colHeadings[headingsMap.get(Constants.DATETIME)]);
+            rawAcousticDetection.setAnimalid(colHeadings[headingsMap.get(Constants.ANIMALID)]);
+            rawAcousticDetection.setSensor1(colHeadings[headingsMap.get(Constants.SENSOR1)]);
+            rawAcousticDetection.setUnits1(colHeadings[headingsMap.get(Constants.UNITS1)]);
+            rawAcousticDetection.setReceiverid(colHeadings[headingsMap.get(Constants.RECEIVERID)]);
             entityManager.persist(rawAcousticDetection);
         }
         transaction.commit();
-
-
-        /* hold off xls for now. problems with reading dates.
-        Workbook workbook = WorkbookFactory.create(file.getInputStream());
-        Sheet sheet = workbook.getSheetAt(0);
-        RawAcousticDetectionDao rawAcousticDetectionDao = OzTrackApplication.getApplicationContext().getDaoManager().getRawAcousticDetectionDao();
-
-        EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
-
-        for (Row row : sheet) {
-            RawAcousticDetection rawAcousticDetection = new RawAcousticDetection();
-            for (Cell cell : row) {
-                switch (cell.getColumnIndex()) {
-                    case 0:
-                        rawAcousticDetection.setDatetime(Double.toString(cell.getNumericCellValue()));
-                        break;
-                    case 1:
-                        rawAcousticDetection.setAnimalid(cell.toString());
-                        break;
-                    case 2:
-                        rawAcousticDetection.setSensor1(cell.toString());
-                        break;
-                    case 3:
-                        rawAcousticDetection.setUnits1(cell.toString());
-                        break;
-                    case 4:
-                        rawAcousticDetection.setReceiverid(cell.toString());
-                        break;
-                    default:
-                        break;
-                }
-            }
-            entityManager.persist(rawAcousticDetection);
-        }
-        transaction.commit();
-        */
-
 
         RawAcousticDetectionDao rawAcousticDetectionDao = OzTrackApplication.getApplicationContext().getDaoManager().getRawAcousticDetectionDao();
         List<RawAcousticDetection> rawAcousticDetectionsList = rawAcousticDetectionDao.getAll();
+        int numberDetections = rawAcousticDetectionDao.getNumberDetections();
 
         // link the datafile to the project in session
         Project project = (Project) request.getSession().getAttribute("project");
@@ -128,6 +108,7 @@ public class DataFileFormController extends SimpleFormController {
         projectDao.save(project);
 
         ModelAndView modelAndView = new ModelAndView(getSuccessView());
+        modelAndView.addObject("numberDetections",numberDetections);
         modelAndView.addObject("dataFile", dataFile);
         modelAndView.addObject("rawAcousticDetectionsList", rawAcousticDetectionsList);
 

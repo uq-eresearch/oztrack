@@ -1,8 +1,11 @@
 package org.oztrack.data.access.manager;
 
+import org.oztrack.data.access.RawAcousticDetectionDao;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.DataFileDao;
+
+import javax.persistence.EntityManager;
 
 
 /**
@@ -14,4 +17,6 @@ public interface DaoManager {
     UserDao getUserDao();
     ProjectDao getProjectDao();
     DataFileDao getDataFileDao();
+    RawAcousticDetectionDao getRawAcousticDetectionDao();
+    EntityManager getEntityManager();
 }

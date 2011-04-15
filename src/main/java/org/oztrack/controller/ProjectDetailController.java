@@ -30,12 +30,9 @@ public class ProjectDetailController implements Controller {
         ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
         Project project = (Project) httpServletRequest.getSession().getAttribute("project");
 
-        if (project == null) {
-            if (!(project_id.isEmpty() || project_id == null)) {
-                project = projectDao.getProjectById(Long.valueOf(project_id));
-                httpServletRequest.getSession().setAttribute("project", project);
-            }
-
+        if (!(project_id.isEmpty() || project_id == null)) {
+            project = projectDao.getProjectById(Long.valueOf(project_id));
+            httpServletRequest.getSession().setAttribute("project", project);
         }
 
         ModelAndView modelAndView = new ModelAndView("projectDetail");
