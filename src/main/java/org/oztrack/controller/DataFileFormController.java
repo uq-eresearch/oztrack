@@ -55,7 +55,7 @@ public class DataFileFormController extends SimpleFormController {
             dataFile.setUserGivenFileName(file.getOriginalFilename());
             dataFile.setContentType(file.getContentType());
             dataFile.setUploadDate(new java.util.Date());
-//            dataFile.setUploadUser(OzTrackApplication.getApplicationContext().getAuthenticationManager().getCurrentUser().getFullName());
+            dataFile.setUploadUser(OzTrackApplication.getApplicationContext().getAuthenticationManager().getCurrentUser().getFullName());
         }
 
         EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
@@ -78,6 +78,19 @@ public class DataFileFormController extends SimpleFormController {
             if (heading.equals(Constants.SENSOR1)  ) headingsMap.put(Constants.SENSOR1, i) ;
             if (heading.equals(Constants.UNITS1)   ) headingsMap.put(Constants.UNITS1, i) ;
             if (heading.equals(Constants.RECEIVERID) ) headingsMap.put(Constants.RECEIVERID, i);
+            /*
+if (heading.equals(Constants.UNITS2                     	)) headingsMap.put(Constants.UNITS2, i);
+if (heading.equals(Constants.SENSOR2				    )) headingsMap.put(Constants.SENSOR2, i);
+if (heading.equals(Constants.TRANSMITTERNAME	)) headingsMap.put(Constants.TRANSMITTERNAME, i);
+if (heading.equals(Constants.TRANSMITTERSN     	)) headingsMap.put(Constants.TRANSMITTERSN, i);
+if (heading.equals(Constants.RECEIVERNAME      	)) headingsMap.put(Constants.RECEIVERNAME, i);
+if (heading.equals(Constants.RECEIVERSN           	)) headingsMap.put(Constants.RECEIVERSN, i);
+if (heading.equals(Constants.STATIONNAME         	)) headingsMap.put(Constants.STATIONNAME, i);
+if (heading.equals(Constants.STATIONLATITUDE   	)) headingsMap.put(Constants.STATIONLATITUDE, i);
+if (heading.equals(Constants.STATIONLONGITUDE	)) headingsMap.put(Constants.STATIONLONGITUDE, i);
+
+
+            */
         }
 
         while ((strLine = br.readLine()) != null) {

@@ -21,13 +21,13 @@ public class DataFile implements Serializable {
     @Column(nullable=false)
     private Long id;
     
-    private String ozTrackZipFileName;
+    private String ozTrackFileName;
     private String userGivenFileName;
     private String fileDescription;
     private String fileType;
     private String contentType;
     private Date uploadDate;
-//    private String uploadUser;
+    private String uploadUser;
 
 
     @ManyToOne
@@ -54,12 +54,12 @@ public class DataFile implements Serializable {
         this.id = id;
     }
     
-    public String getOzTrackZipFileName() {
-        return ozTrackZipFileName;
+    public String getOzTrackFileName() {
+        return ozTrackFileName;
     }
 
-    public void setOzTrackZipFileName(String ozTrackZipFileName) {
-        this.ozTrackZipFileName = ozTrackZipFileName;
+    public void setOzTrackFileName(String ozTrackFileName) {
+        this.ozTrackFileName = ozTrackFileName;
     }
         
     public String getUserGivenFileName() {
@@ -110,13 +110,13 @@ public class DataFile implements Serializable {
         this.uploadDate = uploadDate;
     }
 
-//    public String getUploadUser() {
-//        return uploadUser;
-//    }
-//
-//    public void setUploadUser(String uploadUser) {
-//        this.uploadUser = uploadUser;
-//    }
+    public String getUploadUser() {
+        return uploadUser;
+    }
+
+    public void setUploadUser(String uploadUser) {
+        this.uploadUser = uploadUser;
+    }
 
 
 }

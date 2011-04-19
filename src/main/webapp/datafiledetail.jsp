@@ -37,7 +37,7 @@
 
 <tr>
 <td>Upload Date:</td>
-<td><c:out value="${dataFile.uploadDate}"/></td>
+<td><c:out value="${dataFile.uploadDate}"/> by <c:out value="${dataFile.uploadUser}"/></td>
 </tr>
 
 

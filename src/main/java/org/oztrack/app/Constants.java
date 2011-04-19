@@ -17,5 +17,15 @@ public interface Constants {
     String SENSOR1 = "SENSOR1";
     String UNITS1 = "UNITS1";
     String RECEIVERID = "RECEIVERID";
+    String CODESPACE = "CODESPACE";
+    String UNITS2           ="UNITS2";
+    String SENSOR2			="SENSOR2";
+    String TRANSMITTERNAME	="TRANSMITTERNAME";
+    String TRANSMITTERSN    ="TRANSMITTERSN";
+    String RECEIVERNAME     ="RECEIVERNAME";
+    String RECEIVERSN       ="RECEIVERSN";
+    String STATIONNAME      ="STATIONNAME";
+    String STATIONLATITUDE  ="STATIONLATITUDE";
+    String STATIONLONGITUDE	="STATIONLONGITUDE";
 
 }
