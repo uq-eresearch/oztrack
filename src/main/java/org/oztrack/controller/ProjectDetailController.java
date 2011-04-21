@@ -25,8 +25,24 @@ public class ProjectDetailController implements Controller {
     public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
 
         logger.debug("Parm project_id = " + httpServletRequest.getParameter("project_id"));
+        String errorStr = null;
 
         String project_id = httpServletRequest.getParameter("project_id");
+        ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
+        Project project;
+
+        if (project_id == null) {
+                project =  (Project) httpServletRequest.getSession().getAttribute("project");
+        } else {
+                project =  projectDao.getProjectById(Long.valueOf(project_id));
+                httpServletRequest.getSession().setAttribute("project", project);
+        }
+
+        if (project ==  null) {
+                errorStr = "Couldn't find any project sorry.";
+        }
+
+/*      String project_id = httpServletRequest.getParameter("project_id");
         ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
         Project project = (Project) httpServletRequest.getSession().getAttribute("project");
 
@@ -34,8 +50,9 @@ public class ProjectDetailController implements Controller {
             project = projectDao.getProjectById(Long.valueOf(project_id));
             httpServletRequest.getSession().setAttribute("project", project);
         }
-
+*/
         ModelAndView modelAndView = new ModelAndView("projectDetail");
+        modelAndView.addObject("errorStr", errorStr);
         modelAndView.addObject("project", project);
         return modelAndView;
     }

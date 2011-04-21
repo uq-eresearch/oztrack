@@ -31,19 +31,14 @@
 </tr>
 
 <tr>
-<td>File Type:</td>
-<td><form:input path="fileType"/></td>
-<td><font color="red"><form:errors path="fileType"/></font></td>
-</tr>
-
-<tr>
+<td></td>
 <td colspan="2">
 <input type="file" name="file"/>
 </td>
 </tr>
 
 <tr>
-<td colspan="3" align="center"><input type="submit" value="Add datafile record"/></td>
+<td colspan="3" align="center"><input type="submit" value="Add this file to my project"/></td>
 </tr>
 
 </table>

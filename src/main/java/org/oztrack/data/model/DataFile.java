@@ -1,11 +1,15 @@
 package org.oztrack.data.model;
 
 
+import org.oztrack.data.model.types.DataFileStatus;
+import org.oztrack.data.model.types.DataFileType;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+
+import static javax.persistence.EnumType.STRING;
 
 /**
  * Author: peggy
@@ -24,11 +28,21 @@ public class DataFile implements Serializable {
     private String ozTrackFileName;
     private String userGivenFileName;
     private String fileDescription;
-    private String fileType;
     private String contentType;
     private Date uploadDate;
     private String uploadUser;
+    private Date minDetectionDate;
+    private Date maxDetectionDate;
+    private boolean convertedToAEST;
 
+    @Enumerated(STRING)
+    @Column(name="datafiletype")
+    private DataFileType dataFileType;
+
+
+    @Enumerated(STRING)
+    @Column(name="datafilestatus")
+    private DataFileStatus status;
 
     @ManyToOne
     private Project project;
@@ -78,13 +92,7 @@ public class DataFile implements Serializable {
         this.fileDescription = fileDescription;
     }
     
-    public String getFileType() {
-        return fileType;
-    }
 
-    public void setFileType(String fileType) {
-        this.fileType = fileType;
-    }
     
     public Project getProject() {
         return project;
@@ -116,6 +124,46 @@ public class DataFile implements Serializable {
 
     public void setUploadUser(String uploadUser) {
         this.uploadUser = uploadUser;
+    }
+
+       public Date getMinDetectionDate() {
+        return minDetectionDate;
+    }
+
+    public void setMinDetectionDate(Date minDetectionDate) {
+        this.minDetectionDate = minDetectionDate;
+    }
+
+    public Date getMaxDetectionDate() {
+        return maxDetectionDate;
+    }
+
+    public void setMaxDetectionDate(Date maxDetectionDate) {
+        this.maxDetectionDate = maxDetectionDate;
+    }
+
+    public boolean isConvertedToAEST() {
+        return convertedToAEST;
+    }
+
+    public void setConvertedToAEST(boolean convertedToAEST) {
+        this.convertedToAEST = convertedToAEST;
+    }
+
+    public DataFileStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(DataFileStatus status) {
+        this.status = status;
+    }
+
+    public DataFileType getDataFileType() {
+        return dataFileType;
+    }
+
+    public void setDataFileType(DataFileType dataFileType) {
+        this.dataFileType = dataFileType;
     }
 
 

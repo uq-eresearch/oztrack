@@ -21,16 +21,20 @@
 <p><a href="<c:url value="datafileadd"><c:param name="project_id" value="${project.id}"/></c:url>">Add a Datafile</a>
 </p>
 
+<p><c:out value="${errorStr}"/></p>
+
 <table border="0">
 
     <tr>
         <th>File Name</th>
         <th>Description</th>
     </tr>
+
     <c:forEach items="${project.dataFiles}" var="dataFile">
         <tr>
             <td><c:out value="${dataFile.userGivenFileName}"/></td>
             <td><c:out value="${dataFile.fileDescription}"/></td>
+            <td><c:out value="${dataFile.dataFileStatus}"/></td>
 		</tr>
     </c:forEach>
 </table>

@@ -5,7 +5,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.ProjectDao;
-import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.User;
 import org.oztrack.data.model.ProjectUser;
@@ -55,10 +54,8 @@ public class ProjectFormController extends SimpleFormController {
         project.setProjectUsers(projectProjectUsers);
 
         // save it all - project first
-        UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();
         ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
         projectDao.save(project);
-        userDao.save(currentUser);
 
         ModelAndView modelAndView = new ModelAndView(getSuccessView());
         return modelAndView;

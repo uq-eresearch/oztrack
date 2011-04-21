@@ -27,5 +27,8 @@
         </property>
     </bean>
 
+    <import resource="daos.xml"/>
     <import resource="oztrack.xml"/>
+    <import resource="spring-quartz.xml"/>
+
 </beans>

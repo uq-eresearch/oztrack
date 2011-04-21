@@ -19,6 +19,8 @@ import org.oztrack.data.access.RawAcousticDetectionDao;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.RawAcousticDetection;
+import org.oztrack.data.model.types.DataFileStatus;
+import org.oztrack.data.model.types.DataFileType;
 import org.springframework.validation.BindException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -29,6 +31,7 @@ import javax.persistence.EntityTransaction;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +52,9 @@ public class DataFileFormController extends SimpleFormController {
 
         // read the file
         MultipartFile file = dataFile.getFile();
+
+        File saveFile = new File("D:\\oztrack_related\\files\\test.csv");
+
         if (file == null) {
             // hmm, that's strange, the user did not upload anything
         } else {
@@ -56,9 +62,13 @@ public class DataFileFormController extends SimpleFormController {
             dataFile.setContentType(file.getContentType());
             dataFile.setUploadDate(new java.util.Date());
             dataFile.setUploadUser(OzTrackApplication.getApplicationContext().getAuthenticationManager().getCurrentUser().getFullName());
+            dataFile.setOzTrackFileName(saveFile.getAbsolutePath() + saveFile.getName());
+            dataFile.setStatus(DataFileStatus.NEW);
+            dataFile.setDataFileType(DataFileType.ACOUSTIC);
+            file.transferTo(saveFile);
         }
 
-        EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
+/*        EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
 
@@ -78,7 +88,7 @@ public class DataFileFormController extends SimpleFormController {
             if (heading.equals(Constants.SENSOR1)  ) headingsMap.put(Constants.SENSOR1, i) ;
             if (heading.equals(Constants.UNITS1)   ) headingsMap.put(Constants.UNITS1, i) ;
             if (heading.equals(Constants.RECEIVERID) ) headingsMap.put(Constants.RECEIVERID, i);
-            /*
+
 if (heading.equals(Constants.UNITS2                     	)) headingsMap.put(Constants.UNITS2, i);
 if (heading.equals(Constants.SENSOR2				    )) headingsMap.put(Constants.SENSOR2, i);
 if (heading.equals(Constants.TRANSMITTERNAME	)) headingsMap.put(Constants.TRANSMITTERNAME, i);
@@ -90,7 +100,7 @@ if (heading.equals(Constants.STATIONLATITUDE   	)) headingsMap.put(Constants.STA
 if (heading.equals(Constants.STATIONLONGITUDE	)) headingsMap.put(Constants.STATIONLONGITUDE, i);
 
 
-            */
+
         }
 
         while ((strLine = br.readLine()) != null) {
@@ -109,7 +119,7 @@ if (heading.equals(Constants.STATIONLONGITUDE	)) headingsMap.put(Constants.STATI
         RawAcousticDetectionDao rawAcousticDetectionDao = OzTrackApplication.getApplicationContext().getDaoManager().getRawAcousticDetectionDao();
         List<RawAcousticDetection> rawAcousticDetectionsList = rawAcousticDetectionDao.getAll();
         int numberDetections = rawAcousticDetectionDao.getNumberDetections();
-
+*/
         // link the datafile to the project in session
         Project project = (Project) request.getSession().getAttribute("project");
         dataFile.setProject(project);
@@ -121,9 +131,9 @@ if (heading.equals(Constants.STATIONLONGITUDE	)) headingsMap.put(Constants.STATI
         projectDao.save(project);
 
         ModelAndView modelAndView = new ModelAndView(getSuccessView());
-        modelAndView.addObject("numberDetections",numberDetections);
-        modelAndView.addObject("dataFile", dataFile);
-        modelAndView.addObject("rawAcousticDetectionsList", rawAcousticDetectionsList);
+        //modelAndView.addObject("numberDetections",numberDetections);
+        //modelAndView.addObject("dataFile", dataFile);
+        //modelAndView.addObject("rawAcousticDetectionsList", rawAcousticDetectionsList);
 
         return modelAndView;
     }

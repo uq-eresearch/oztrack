@@ -15,7 +15,7 @@
         <constructor-arg ref="entityManagerFactory"/>
     </bean>
 
-    <import resource="daos.xml"/>
+
 
     <bean id="applicationContext" class="org.oztrack.app.OzTrackConfigurationImpl">
         <property name="applicationTitle" value="${application.title}"/>
