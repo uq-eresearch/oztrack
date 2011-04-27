@@ -12,5 +12,6 @@ import org.oztrack.data.model.DataFile;
 
 public interface DataFileDao extends Dao<DataFile> {
 	DataFile getDataFileById(Long id);
+    DataFile getNextDataFile();
 
 }

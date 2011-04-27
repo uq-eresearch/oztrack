@@ -53,7 +53,6 @@ public class DataFileFormController extends SimpleFormController {
         // read the file
         MultipartFile file = dataFile.getFile();
 
-        File saveFile = new File("D:\\oztrack_related\\files\\test.csv");
 
         if (file == null) {
             // hmm, that's strange, the user did not upload anything
@@ -62,73 +61,34 @@ public class DataFileFormController extends SimpleFormController {
             dataFile.setContentType(file.getContentType());
             dataFile.setUploadDate(new java.util.Date());
             dataFile.setUploadUser(OzTrackApplication.getApplicationContext().getAuthenticationManager().getCurrentUser().getFullName());
-            dataFile.setOzTrackFileName(saveFile.getAbsolutePath() + saveFile.getName());
             dataFile.setStatus(DataFileStatus.NEW);
             dataFile.setDataFileType(DataFileType.ACOUSTIC);
+
+            Project project = (Project) request.getSession().getAttribute("project");
+
+            String filePath = System.getenv("OZTRACK_DATA")
+                             + dataFile.getDataFileType() + "_"
+                             + dataFile.getId().toString() ;
+
+            dataFile.setOzTrackFileName(filePath);
+            logger.info("save file : " + filePath);
+            File saveFile = new File(filePath);
             file.transferTo(saveFile);
-        }
+            // poller will pick this up
 
-/*        EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
+            // link the datafile to the project in session
+            dataFile.setProject(project);
+            List<DataFile> dataFiles = project.getDataFiles();
+            dataFiles.add(dataFile);
+            project.setDataFiles(dataFiles);
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()));
-
-        // get headers
-        HashMap <String, Integer> headingsMap = new HashMap<String, Integer>();
-        String strLine = br.readLine();
-        String [] colHeadings =  strLine.split(",");
-
-        for (int i=0; i < colHeadings.length; i++) {
-
-            String heading = colHeadings[i].replaceAll("/","").replaceAll(" ","").toUpperCase();
-
-            if (heading.equals(Constants.DATETIME) ) headingsMap.put(Constants.DATETIME, i);
-            if (heading.equals(Constants.ANIMALID) ) headingsMap.put(Constants.ANIMALID, i) ;
-            if (heading.equals(Constants.SENSOR1)  ) headingsMap.put(Constants.SENSOR1, i) ;
-            if (heading.equals(Constants.UNITS1)   ) headingsMap.put(Constants.UNITS1, i) ;
-            if (heading.equals(Constants.RECEIVERID) ) headingsMap.put(Constants.RECEIVERID, i);
-
-if (heading.equals(Constants.UNITS2                     	)) headingsMap.put(Constants.UNITS2, i);
-if (heading.equals(Constants.SENSOR2				    )) headingsMap.put(Constants.SENSOR2, i);
-if (heading.equals(Constants.TRANSMITTERNAME	)) headingsMap.put(Constants.TRANSMITTERNAME, i);
-if (heading.equals(Constants.TRANSMITTERSN     	)) headingsMap.put(Constants.TRANSMITTERSN, i);
-if (heading.equals(Constants.RECEIVERNAME      	)) headingsMap.put(Constants.RECEIVERNAME, i);
-if (heading.equals(Constants.RECEIVERSN           	)) headingsMap.put(Constants.RECEIVERSN, i);
-if (heading.equals(Constants.STATIONNAME         	)) headingsMap.put(Constants.STATIONNAME, i);
-if (heading.equals(Constants.STATIONLATITUDE   	)) headingsMap.put(Constants.STATIONLATITUDE, i);
-if (heading.equals(Constants.STATIONLONGITUDE	)) headingsMap.put(Constants.STATIONLONGITUDE, i);
-
-
+            ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
+            projectDao.save(project);
 
         }
 
-        while ((strLine = br.readLine()) != null) {
 
-            colHeadings = strLine.split(",");
-            RawAcousticDetection rawAcousticDetection = new RawAcousticDetection();
-            rawAcousticDetection.setDatetime(colHeadings[headingsMap.get(Constants.DATETIME)]);
-            rawAcousticDetection.setAnimalid(colHeadings[headingsMap.get(Constants.ANIMALID)]);
-            rawAcousticDetection.setSensor1(colHeadings[headingsMap.get(Constants.SENSOR1)]);
-            rawAcousticDetection.setUnits1(colHeadings[headingsMap.get(Constants.UNITS1)]);
-            rawAcousticDetection.setReceiverid(colHeadings[headingsMap.get(Constants.RECEIVERID)]);
-            entityManager.persist(rawAcousticDetection);
-        }
-        transaction.commit();
 
-        RawAcousticDetectionDao rawAcousticDetectionDao = OzTrackApplication.getApplicationContext().getDaoManager().getRawAcousticDetectionDao();
-        List<RawAcousticDetection> rawAcousticDetectionsList = rawAcousticDetectionDao.getAll();
-        int numberDetections = rawAcousticDetectionDao.getNumberDetections();
-*/
-        // link the datafile to the project in session
-        Project project = (Project) request.getSession().getAttribute("project");
-        dataFile.setProject(project);
-        List<DataFile> dataFiles = project.getDataFiles();
-        dataFiles.add(dataFile);
-        project.setDataFiles(dataFiles);
-
-        ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
-        projectDao.save(project);
 
         ModelAndView modelAndView = new ModelAndView(getSuccessView());
         //modelAndView.addObject("numberDetections",numberDetections);
