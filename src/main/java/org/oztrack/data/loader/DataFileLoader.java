@@ -59,7 +59,6 @@ public class DataFileLoader
 
         logger.info("processing raw acoustic file : " + dataFile.getOzTrackFileName());
 
-
         EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
@@ -101,16 +100,20 @@ public class DataFileLoader
         }
         transaction.commit();
 
-        RawAcousticDetectionDao rawAcousticDetectionDao = OzTrackApplication.getApplicationContext().getDaoManager().getRawAcousticDetectionDao();
-        List<RawAcousticDetection> rawAcousticDetectionsList = rawAcousticDetectionDao.getAll();
+        dataFile.setStatus(DataFileStatus.COMPLETE);
 
         }
         catch (FileNotFoundException e) {
+            dataFile.setStatus(DataFileStatus.FAILED);
             logger.error("Couldn't find the file");
         }
         catch (IOException e) {
+            dataFile.setStatus(DataFileStatus.FAILED);
             logger.error("Couldn't read the file");
         }
+
+        DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
+        dataFileDao.update(dataFile);
 
     }
 
@@ -118,6 +121,7 @@ public class DataFileLoader
         logger.info("processing a raw position fix file : " + dataFile.getOzTrackFileName());
 
     }
+
 
 
 }

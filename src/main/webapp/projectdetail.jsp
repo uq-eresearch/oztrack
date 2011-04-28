@@ -33,7 +33,16 @@
     <c:forEach items="${project.dataFiles}" var="dataFile">
         <tr>
             <td><c:out value="${dataFile.userGivenFileName}"/></td>
-            <td><c:out value="${dataFile.fileDescription}"/></td>
+            <td>
+                <c:choose>
+                 <c:when test="${dataFile.status=='NEW'}">
+                    <c:out value="${dataFile.fileDescription}"/>
+                 </c:when>
+                 <c:otherwise>
+                    <a href="<c:url value="datafiledetail"><c:param name="datafile_id" value="${dataFile.id}"/></c:url>"><c:out value="${dataFile.fileDescription}"/></a>
+                 </c:otherwise>
+                </c:choose>
+            </td>
             <td><c:out value="${dataFile.status}"/></td>
 		</tr>
     </c:forEach>

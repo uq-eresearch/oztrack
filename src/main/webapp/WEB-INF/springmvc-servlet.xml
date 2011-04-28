@@ -13,7 +13,8 @@
   <bean name="/users" class="org.oztrack.controller.UserListController"/>
   <bean name="/projects" class="org.oztrack.controller.ProjectListController"/>
   <bean name="/projectdetail" class="org.oztrack.controller.ProjectDetailController"/>
-  
+  <bean name="/datafiledetail" class="org.oztrack.controller.DataFileDetailController"/>
+
   <bean name="/register" class="org.oztrack.controller.RegisterFormController">
 		<property name="sessionForm"><value>false</value></property>
 		<property name="commandName"><value>user</value></property>
