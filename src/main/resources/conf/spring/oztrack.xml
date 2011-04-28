@@ -25,6 +25,7 @@
         <property name="uriPrefix" value="${application.uri.prefix}"/>
         <property name="daoManager" ref="daoManager"/>
         <property name="authenticationManager" ref="authenticationManager"/>
+        <property name="dataDir" value="${application.dataDir}"/>
     </bean>
 
     <bean id="ozTrackApplication" class="org.oztrack.app.OzTrackApplication">

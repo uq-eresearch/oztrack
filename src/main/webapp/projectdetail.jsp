@@ -34,7 +34,7 @@
         <tr>
             <td><c:out value="${dataFile.userGivenFileName}"/></td>
             <td><c:out value="${dataFile.fileDescription}"/></td>
-            <td><c:out value="${dataFile.dataFileStatus}"/></td>
+            <td><c:out value="${dataFile.status}"/></td>
 		</tr>
     </c:forEach>
 </table>

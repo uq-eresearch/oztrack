@@ -14,6 +14,7 @@ import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
 import org.apache.poi.ss.usermodel.*;
 import org.oztrack.app.Constants;
 import org.oztrack.app.OzTrackApplication;
+import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.RawAcousticDetectionDao;
 import org.oztrack.data.model.DataFile;
@@ -57,26 +58,15 @@ public class DataFileFormController extends SimpleFormController {
         if (file == null) {
             // hmm, that's strange, the user did not upload anything
         } else {
+            // set dataFile details
             dataFile.setUserGivenFileName(file.getOriginalFilename());
             dataFile.setContentType(file.getContentType());
             dataFile.setUploadDate(new java.util.Date());
             dataFile.setUploadUser(OzTrackApplication.getApplicationContext().getAuthenticationManager().getCurrentUser().getFullName());
-            dataFile.setStatus(DataFileStatus.NEW);
             dataFile.setDataFileType(DataFileType.ACOUSTIC);
 
+            // persist at project level
             Project project = (Project) request.getSession().getAttribute("project");
-
-            String filePath = System.getenv("OZTRACK_DATA")
-                             + dataFile.getDataFileType() + "_"
-                             + dataFile.getId().toString() ;
-
-            dataFile.setOzTrackFileName(filePath);
-            logger.info("save file : " + filePath);
-            File saveFile = new File(filePath);
-            file.transferTo(saveFile);
-            // poller will pick this up
-
-            // link the datafile to the project in session
             dataFile.setProject(project);
             List<DataFile> dataFiles = project.getDataFiles();
             dataFiles.add(dataFile);
@@ -85,15 +75,39 @@ public class DataFileFormController extends SimpleFormController {
             ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
             projectDao.save(project);
 
+            // saving file to filesystem: check for data directory in app properties
+            String dataDir = OzTrackApplication.getApplicationContext().getDataDir();
+
+            if ((dataDir == null) || (dataDir.isEmpty())) {
+                logger.debug("dataDir property not set");
+                dataDir = System.getProperty("user.home");
+            } else {
+                logger.debug("dataDir: " + dataDir);
+            }
+
+            // save the file to the data dir
+            String filePath = dataDir + File.separator + "oztrack" + File.separator
+                             + project.getId().toString() + File.separator
+                             + dataFile.getDataFileType().toString().toLowerCase() + File.separator
+                             + "oztrack-" + dataFile.getDataFileType().toString().toLowerCase()
+                             + "-" + project.getId().toString()
+                             + "-" + dataFile.getId().toString() + ".csv";
+
+            File saveFile = new File(filePath);
+            saveFile.mkdirs();
+            file.transferTo(saveFile);
+
+            logger.info("saved file : " + saveFile.getAbsolutePath());
+
+            // ready to go now; poller will pick the job up
+            dataFile.setOzTrackFileName(filePath);
+            dataFile.setStatus(DataFileStatus.NEW);
+            DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
+            dataFileDao.update(dataFile);
+
         }
 
-
-
-
         ModelAndView modelAndView = new ModelAndView(getSuccessView());
-        //modelAndView.addObject("numberDetections",numberDetections);
-        //modelAndView.addObject("dataFile", dataFile);
-        //modelAndView.addObject("rawAcousticDetectionsList", rawAcousticDetectionsList);
 
         return modelAndView;
     }

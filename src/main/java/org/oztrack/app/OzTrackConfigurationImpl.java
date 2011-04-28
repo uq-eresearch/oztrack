@@ -15,6 +15,7 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
     private DaoManager daoManager;
     private String smtpServer;
     private AuthenticationManager authenticationManager;
+    private String dataDir;
 
     public void setApplicationTitle(String registryTitle) {
         this.applicationTitle = registryTitle;
@@ -71,5 +72,13 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
     public AuthenticationManager getAuthenticationManager() {
         return authenticationManager;
     }
-    
+    public String getDataDir() {
+        return dataDir;
+    }
+
+    public void setDataDir(String dataDir) {
+        this.dataDir = dataDir;
+    }
+
+
 }

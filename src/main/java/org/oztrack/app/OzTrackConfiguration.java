@@ -21,6 +21,8 @@ public interface OzTrackConfiguration {
     String getSmtpServer();
     
     AuthenticationManager getAuthenticationManager();
+
+    String getDataDir();
     
     
 }
