@@ -67,6 +67,8 @@
       <url-pattern>/datafiledetail</url-pattern>
     </servlet-mapping>
 
+
+
     <welcome-file-list>
         <welcome-file id="welcome-page">index.jsp</welcome-file>
     </welcome-file-list>

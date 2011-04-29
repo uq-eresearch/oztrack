@@ -1,18 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ include file="header.jsp" %>
 
-<html>
-<head>
-    <title>OzTrack</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css"/>
-    <script type="text/javascript" src="js/jquery/jquery.js"></script>
-</head>
-<body>
-<h1 align="center">OzTrack</h1>
-<hr/>
-
+<h1>Add a Project</h1>
 
 <form:form commandName="project" method="POST" name="project">
 
@@ -52,10 +40,4 @@
 
 
 
-
-
-
-<hr/>
-<div class="version-footer" align="center"><c:out value="${appTitle}"/> &copy; 2010 ver. (<c:out value="${version}"/>)</div>
-</body>
-</html>
+<%@ include file="footer.jsp" %>
