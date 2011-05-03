@@ -26,31 +26,40 @@ public class Project implements Serializable {
     private String title;
     private String description;
     private boolean isGlobal;
-    private String organisationName;
-    private String custodianName;
+    private String spatialCoverageDescr;
+    private String temporalCoverageDescr;
     private String contactName;
-    
-    
+    private String contactOrganisation;
+    private String contactEmail;
+    private String contactUrl;
+    private String custodianName;
+    private String custodianOrganisation;
+    private String custodianEmail;
+    private String custodianUrl;
+    private String publicationTitle;
+    private String publicationUrl;
+
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.project", cascade =
     {CascadeType.PERSIST, CascadeType.MERGE})
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
     org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
     private List<ProjectUser> projectUsers = new LinkedList<ProjectUser>();
-    
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade =
     {CascadeType.PERSIST, CascadeType.MERGE})
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
     org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
     private List<DataFile> dataFiles = new LinkedList<DataFile>();
-    
+
     public Project() {
-    	
+
     }
-    
+
     public Project(String title) {
     	this.title = title;
     }
-    
+
     public Long getId() {
         return id;
     }
@@ -58,7 +67,7 @@ public class Project implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    
+
     public String getTitle() {
         return title;
     }
@@ -66,7 +75,7 @@ public class Project implements Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
-        
+
     public String getDescription() {
         return description;
     }
@@ -74,7 +83,7 @@ public class Project implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
     public boolean getIsGlobal() {
         return isGlobal;
     }
@@ -82,15 +91,7 @@ public class Project implements Serializable {
     public void setIsGlobal(boolean isGlobal) {
         this.isGlobal = isGlobal;
     }
-    
-    public String getOrganisationName() {
-        return organisationName;
-    }
 
-    public void setOrganisationName(String organisationName) {
-        this.organisationName = organisationName;
-    }
-    
     public String getCustodianName() {
         return custodianName;
     }
@@ -98,7 +99,7 @@ public class Project implements Serializable {
     public void setCustodianName(String custodianName) {
         this.custodianName = custodianName;
     }
-    
+
     public String getContactName() {
         return contactName;
     }
@@ -106,8 +107,8 @@ public class Project implements Serializable {
     public void setContactName(String contactName) {
         this.contactName = contactName;
     }
-    
-    
+
+
     public List<ProjectUser> getProjectUsers() {
         return this.projectUsers;
     }
@@ -115,7 +116,7 @@ public class Project implements Serializable {
     public void setProjectUsers(List<ProjectUser> projectUsers) {
         this.projectUsers = projectUsers;
     }
-    
+
     public List<DataFile> getDataFiles() {
         return this.dataFiles;
     }
@@ -123,6 +124,96 @@ public class Project implements Serializable {
     public void setDataFiles(List<DataFile> dataFiles) {
         this.dataFiles = dataFiles;
     }
-    
+
+
+    public boolean isGlobal() {
+        return isGlobal;
+    }
+
+    public void setGlobal(boolean global) {
+        isGlobal = global;
+    }
+
+    public String getSpatialCoverageDescr() {
+        return spatialCoverageDescr;
+    }
+
+    public void setSpatialCoverageDescr(String spatialCoverageDescr) {
+        this.spatialCoverageDescr = spatialCoverageDescr;
+    }
+
+    public String getTemporalCoverageDescr() {
+        return temporalCoverageDescr;
+    }
+
+    public void setTemporalCoverageDescr(String temporalCoverageDescr) {
+        this.temporalCoverageDescr = temporalCoverageDescr;
+    }
+
+    public String getContactOrganisation() {
+        return contactOrganisation;
+    }
+
+    public void setContactOrganisation(String contactOrganisation) {
+        this.contactOrganisation = contactOrganisation;
+    }
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
+
+    public String getContactUrl() {
+        return contactUrl;
+    }
+
+    public void setContactUrl(String contactUrl) {
+        this.contactUrl = contactUrl;
+    }
+
+    public String getCustodianOrganisation() {
+        return custodianOrganisation;
+    }
+
+    public void setCustodianOrganisation(String custodianOrganisation) {
+        this.custodianOrganisation = custodianOrganisation;
+    }
+
+    public String getCustodianEmail() {
+        return custodianEmail;
+    }
+
+    public void setCustodianEmail(String custodianEmail) {
+        this.custodianEmail = custodianEmail;
+    }
+
+    public String getCustodianUrl() {
+        return custodianUrl;
+    }
+
+    public void setCustodianUrl(String custodianUrl) {
+        this.custodianUrl = custodianUrl;
+    }
+
+    public String getPublicationTitle() {
+        return publicationTitle;
+    }
+
+    public void setPublicationTitle(String publicationTitle) {
+        this.publicationTitle = publicationTitle;
+    }
+
+    public String getPublicationUrl() {
+        return publicationUrl;
+    }
+
+    public void setPublicationUrl(String publicationUrl) {
+        this.publicationUrl = publicationUrl;
+    }
+
+
     
 }

@@ -1,38 +1,42 @@
 <%@ include file="header.jsp" %>
 
-<h1>Add a Data File</h1>
-<hr/>
-
-
 <form:form commandName="dataFile" method="POST" enctype="multipart/form-data">
 
-<table border="0">
+<fieldset>
+<legend>Add a Data File</legend>
 
-<tr>
-<td>File Name</td>
-<td><form:input path="userGivenFileName"/></td>
-<td><font color="red"><form:errors path="userGivenFileName"/></font></td>
-</tr>
+<div>
+<label for="fileDescription">File Description:</label>
+<form:input path="fileDescription" id="fileDescription"/>
+<form:errors path="fileDescription" cssClass="formErrors"/>
+</div>
 
-<tr>
-<td>Description</td>
-<td><form:input path="fileDescription"/></td>
-<td><font color="red"><form:errors path="fileDescription"/></font></td>
-</tr>
+<div>
+<label for="userGivenFileName">File Name:</label>
+<form:input path="userGivenFileName" id="userGivenFileName"/>
+<form:errors path="userGivenFileName" cssClass="formErrors"/>
+</div>
 
-<tr>
-<td></td>
-<td colspan="2">
-<input type="file" name="file"/>
-</td>
-</tr>
+<div>
+<label for="dataFileType">File Type:</label>
+ <form:radiobutton path="dataFileType" value="ACOUSTIC" cssClass="radiobutton"/>Acoustic VR100<br>
+ <form:radiobutton path="dataFileType" value="SATELLITE" cssClass="radiobutton" />Satellite/Position Fix
+<form:errors path="dataFileType" cssClass="formErrors"/>
+</div>
 
-<tr>
-<td colspan="3" align="center"><input type="submit" value="Add this file to my project"/></td>
-</tr>
+<div>
+<label for="timeConversion">Convert to local time?</label>
+<form:checkbox path="hasLocalTimeConversion" id="hasLocalTimeConversion" cssClass="checkbox"/>
+ &nbsp; Local time is GMT + <form:input path="localTimeConversionHours" cssClass="shortInput"/> hours.
+</div>
 
-</table>
+<div><label for="file">File: </label><input type="file" name="file"/>
+</div>
 
+<br>
+<div align="center"><input type="submit" value="Add this file to my project"/></div>
+
+</fieldset>
 </form:form>
 
 

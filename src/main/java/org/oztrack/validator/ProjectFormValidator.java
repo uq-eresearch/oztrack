@@ -21,7 +21,7 @@ public class ProjectFormValidator implements Validator {
 	      
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "title", "error.empty.field", "Please Enter Title");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "error.empty.field", "Please Enter description");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "organisationName", "error.empty.field", "Please Enter organisation");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "contactOrganisation", "error.empty.field", "Please Enter organisation");
 		
 	}
 	

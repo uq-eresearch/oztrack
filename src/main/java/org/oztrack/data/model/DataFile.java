@@ -33,7 +33,9 @@ public class DataFile implements Serializable {
     private String uploadUser;
     private Date minDetectionDate;
     private Date maxDetectionDate;
-    private boolean convertedToAEST;
+    private boolean hasLocalTimeConversion;
+    private long localTimeConversionHours;
+
 
     @Enumerated(STRING)
     @Column(name="datafiletype")
@@ -142,15 +144,7 @@ public class DataFile implements Serializable {
         this.maxDetectionDate = maxDetectionDate;
     }
 
-    public boolean isConvertedToAEST() {
-        return convertedToAEST;
-    }
-
-    public void setConvertedToAEST(boolean convertedToAEST) {
-        this.convertedToAEST = convertedToAEST;
-    }
-
-    public DataFileStatus getStatus() {
+     public DataFileStatus getStatus() {
         return status;
     }
 
@@ -164,6 +158,22 @@ public class DataFile implements Serializable {
 
     public void setDataFileType(DataFileType dataFileType) {
         this.dataFileType = dataFileType;
+    }
+
+        public boolean getHasLocalTimeConversion() {
+        return hasLocalTimeConversion;
+    }
+
+    public void setHasLocalTimeConversion(boolean hasLocalTimeConversion) {
+        this.hasLocalTimeConversion = hasLocalTimeConversion;
+    }
+
+    public long getLocalTimeConversionHours() {
+        return localTimeConversionHours;
+    }
+
+    public void setLocalTimeConversionHours(long localTimeConversionHours) {
+        this.localTimeConversionHours = localTimeConversionHours;
     }
 
 

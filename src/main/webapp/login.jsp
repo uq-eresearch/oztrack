@@ -1,30 +1,31 @@
 <%@ include file="header.jsp" %>
 
 
-<h1>Login</h1>
 <form:form commandName="user" method="POST" name="login">
 
-<table border="0">
+<fieldset>
+<legend>Login</legend>
 
-<tr>
-<td>Username:</td>
-<td><form:input path="username"/></td>
-<td><font color="red"><form:errors path="username"/></font></td>
-</tr>
 
-<tr>
-<td>Password:</td>
-<td><form:password path="password"/></td>
-<td><font color="red"><form:errors path="password"/></font></td>
-</tr>
+<div>
+<label for="username">Username:</label>
+<form:input path="username" id="username"/>
+<form:errors path="username" cssClass="formErrors"/>
+</div>
 
-<tr>
-<td colspan="3" align="center"><input type="submit" value="Login"/></td>
-</tr>
+<div>
+<label for="password">Password:</label>
+<form:password path="password" id="password"/>
+<form:errors path="password" cssClass="formErrors"/>
+</div>
 
-</table>
+<div align="center">
+<input type="submit" value="Login"/>
+</div>
 
+</fieldset>
 </form:form>
+
 
 
 

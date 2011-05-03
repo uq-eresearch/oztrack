@@ -19,7 +19,7 @@ public class LoginFormValidator implements Validator {
         User loginUser = (User) obj;
         UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();
         User user = userDao.getByUsername(loginUser.getUsername());
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "error.empty.field", "Please Enter User Name");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "error.empty.field", "Please enter User Name");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "error.empty.field", "Please Enter Password");
         if (!errors.hasFieldErrors("username")) {
             if (user == null) {

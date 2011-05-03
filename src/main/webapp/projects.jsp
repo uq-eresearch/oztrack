@@ -6,9 +6,9 @@
 
 <p><a href="<c:url value="projectadd"/>">Add a Project</a></p>
 
-<table border="0">
+<table class="infoTable">
     <tr>
-        <th>Title</th>
+        <th width="40%">Project Title</th>
         <th>Contact Name</th>
         <th>Role</th>
     </tr>

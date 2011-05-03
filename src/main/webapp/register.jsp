@@ -1,48 +1,45 @@
 <%@ include file="header.jsp" %>
 
-<h1>Register</h1>
+
 
 <form:form commandName="user" method="POST" name="user">
 
-<table border="0">
+<fieldset>
+<legend>Register</legend>
 
-<tr>
-<td>Username:</td>
-<td><form:input path="username"/></td>
-<td><font color="red"><form:errors path="username"/></font></td>
-</tr>
+<div>
+<label for="username">Username:</label>
+<form:input path="username" id="username"/>
+<form:errors path="username" cssClass="formErrors"/>
+</div>
 
-<tr>
-<td>First Name:</td>
-<td><form:input path="firstName"/></td>
-<td><font color="red"><form:errors path="firstName"/></font></td>
-</tr>
+<div>
+<label for="firstname">First Name:</label>
+<form:input path="firstName" id="firstname"/>
+<form:errors path="firstName" cssClass="formErrors"/>
+</div>
 
-<tr>
-<td>Last Name:</td>
-<td><form:input path="lastName"/></td>
-<td><font color="red"><form:errors path="lastName"/></font></td>
-</tr>
+<div>
+<label for="lastname">Last Name:</label>
+<form:input path="lastName" id="lastname"/>
+<form:errors path="lastName" cssClass="formErrors"/>
+</div>
 
-<tr>
-<td>Password:</td>
-<td><form:password path="password"/></td>
-<td><font color="red"><form:errors path="password"/></font></td>
-</tr>
+<div>
+<label for="password">Password:</label>
+<form:input path="password" id="password"/>
+<form:errors path="password" cssClass="formErrors"/>
+</div>
 
+<div>
+<label for="email">Email:</label>
+<form:input path="email" id="email"/>
+<form:errors path="email" cssClass="formErrors"/>
+</div>
 
-<tr>
-<td>Email:</td>
-<td><form:input path="email"/></td>
-<td><font color="red"><form:errors path="email"/></font></td>
-</tr>
+<div><input type="submit" value="Register"/></div>
 
-
-<tr>
-<td colspan="3" align="center"><input type="submit" value="Register"/></td>
-</tr>
-
-</table>
+</fieldset>
 
 </form:form>
 

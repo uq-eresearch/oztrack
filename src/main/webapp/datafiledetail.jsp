@@ -2,7 +2,7 @@
 
 <h1><br/>Data File Detail</h1><br/>
 
-<table>
+<table class="infoTable">
 
 <tr>
 <td>File Provided:</td>
