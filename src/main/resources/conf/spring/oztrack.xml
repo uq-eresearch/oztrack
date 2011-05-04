@@ -33,6 +33,7 @@
     </bean>
 
     <bean id="daoManager" class="org.oztrack.data.access.manager.impl.DaoManagerImpl">
+        <property name="animalDao" ref="animalDao"/>
         <property name="userDao" ref="userDao"/>
         <property name="projectDao" ref="projectDao"/>
         <property name="dataFileDao" ref="dataFileDao"/>

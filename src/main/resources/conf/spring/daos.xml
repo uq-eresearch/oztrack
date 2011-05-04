@@ -3,6 +3,9 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
+    <bean id="animalDao" class="org.oztrack.data.access.impl.AnimalDaoImpl">
+        <constructor-arg ref="jpaConnector"/>
+    </bean>
     <bean id="userDao" class="org.oztrack.data.access.impl.UserDaoImpl">
         <constructor-arg ref="jpaConnector"/>
     </bean>

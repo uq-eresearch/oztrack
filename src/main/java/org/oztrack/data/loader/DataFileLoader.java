@@ -6,7 +6,9 @@ import org.oztrack.app.Constants;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.RawAcousticDetectionDao;
+import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.DataFile;
+import org.oztrack.data.model.Project;
 import org.oztrack.data.model.RawAcousticDetection;
 import org.oztrack.data.model.types.DataFileHeader;
 import org.oztrack.data.model.types.DataFileStatus;
@@ -43,14 +45,18 @@ public class DataFileLoader
         if (!(dataFile == null)) {
 
             dataFile.setStatus(DataFileStatus.PROCESSING);
+            dataFileDao.update(dataFile);
+            dataFileDao.refresh(dataFile);
 
             if (dataFile.getDataFileType().equals(DataFileType.ACOUSTIC)) {
                  processRawAcoustic(dataFile);
+                 dataFileDao.update(dataFile);
+                 dataFileDao.refresh(dataFile);
             } else if (dataFile.getDataFileType().equals(DataFileType.POSITION_FIX)) {
                  processRawPositionFix(dataFile);
             }
 
-            dataFileDao.save(dataFile);
+
         }
 
     }
@@ -58,6 +64,8 @@ public class DataFileLoader
     public void processRawAcoustic(DataFile dataFile) {
 
         logger.info("processing raw acoustic file : " + dataFile.getOzTrackFileName());
+
+        int lineNumber = 1;
 
         EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
@@ -69,56 +77,127 @@ public class DataFileLoader
             DataInputStream in = new DataInputStream(fstream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
-            // get headers
-            //HashMap <String, Integer> headingsMap = new HashMap<String, Integer>();
-            HashMap <DataFileHeader, Integer> headerMap = new HashMap<DataFileHeader, Integer>();
+            /* Populate a HashMap containing which columns contains which bits of data
+             eg.  column 1 DATETIME
+                  column 2 ANIMALID    */
+
+            HashMap <Integer, DataFileHeader > headerMap = new HashMap<Integer, DataFileHeader>();
             String strLine = br.readLine();
             String [] colHeadings =  strLine.split(",");
+            String [] dataRow;
 
             // find out which columns contain which data
+            // fix this for unknown column headings
+
             for (int i=0; i < colHeadings.length; i++) {
 
                 String heading = colHeadings[i].replaceAll("/","").replaceAll(" ","").toUpperCase();
+                boolean headingFound = false;
 
-                if (heading.equals(DataFileHeader.DATETIME.toString())) headerMap.put(DataFileHeader.DATETIME, i);
-                if (heading.equals(DataFileHeader.ANIMALID.toString())) headerMap.put(DataFileHeader.ANIMALID, i);
-                if (heading.equals(DataFileHeader.SENSOR1.toString())) headerMap.put(DataFileHeader.SENSOR1, i);
-                if (heading.equals(DataFileHeader.UNITS1.toString())) headerMap.put(DataFileHeader.UNITS1, i);
-                if (heading.equals(DataFileHeader.RECEIVERID.toString())) headerMap.put(DataFileHeader.RECEIVERID, i);
+                for (DataFileHeader dataFileHeader : DataFileHeader.values()) {
+                    if (heading.equals(dataFileHeader.toString())) {
+                        headerMap.put(i, dataFileHeader);
+                        headingFound = true;
+                    }
+                }
+                if (headingFound == false) {
+                   logger.debug("Unknown Heading in file: " + heading);
+                   throw new Exception("Unknown Heading in file: " + heading);
+                }
+
             }
+
+            logger.debug("File opened + header read.");
 
             while ((strLine = br.readLine()) != null) {
 
-            colHeadings = strLine.split(",");
-            RawAcousticDetection rawAcousticDetection = new RawAcousticDetection();
-            rawAcousticDetection.setDatetime(colHeadings[headerMap.get(DataFileHeader.DATETIME)]);
-            rawAcousticDetection.setAnimalid(colHeadings[headerMap.get(DataFileHeader.ANIMALID)]);
-            rawAcousticDetection.setSensor1(colHeadings[headerMap.get(DataFileHeader.SENSOR1)]);
-            rawAcousticDetection.setUnits1(colHeadings[headerMap.get(DataFileHeader.UNITS1)]);
-            rawAcousticDetection.setReceiverid(colHeadings[headerMap.get(DataFileHeader.RECEIVERID)]);
-            entityManager.persist(rawAcousticDetection);
-        }
-        transaction.commit();
+                lineNumber++;
+                dataRow = strLine.split(",");
+                RawAcousticDetection rawAcousticDetection = new RawAcousticDetection();
 
-        dataFile.setStatus(DataFileStatus.COMPLETE);
+                // loop through the dataRow elements
+                for (int i=0; i < dataRow.length; i++) {
+
+                    // if data in this cell
+                    if (!dataRow[i].equals(null) || !dataRow[i].isEmpty()) {
+
+                        // retrieve the header for this column and use it to determine which field to update
+                        DataFileHeader dataFileHeader = headerMap.get(i);
+
+                        switch (dataFileHeader) {
+                            case DATETIME: rawAcousticDetection.setDatetime(dataRow[i]); break;
+                            case ID: rawAcousticDetection.setAnimalid(dataRow[i]);   break;
+                            case SENSOR1: rawAcousticDetection.setSensor1(dataRow[i]); break;
+                            case UNITS1: rawAcousticDetection.setUnits1(dataRow[i]); break;
+                            case RECEIVERID: rawAcousticDetection.setReceiverid(dataRow[i]); break;
+                            case CODESPACE: rawAcousticDetection.setCodespace(dataRow[i]); break;
+                            case UNITS2: rawAcousticDetection.setUnits2(dataRow[i]); break;
+                            case SENSOR2: rawAcousticDetection.setSensor2(dataRow[i]); break;
+                            case TRANSMITTERNAME: rawAcousticDetection.setTransmittername(dataRow[i]); break;
+                            case TRANSMITTERSN: rawAcousticDetection.setTransmittersn(dataRow[i]); break;
+                            case RECEIVERNAME: rawAcousticDetection.setReceivername(dataRow[i]); break;
+                            case RECEIVERSN: rawAcousticDetection.setReceiversn(dataRow[i]); break;
+                            case STATIONNAME: rawAcousticDetection.setStationname(dataRow[i]); break;
+                            case STATIONLATITUDE: rawAcousticDetection.setStationlatitude (dataRow[i]); break;
+                            case STATIONLONGITUDE: rawAcousticDetection.setStationlongitude (dataRow[i]); break;
+                            default: logger.debug("Problem in switch(dataFileHeader)"); break;
+                        }
+                    }
+                }
+                entityManager.persist(rawAcousticDetection);
+                logger.debug(lineNumber + "rows persisted");
+            }
+            transaction.commit();
+
+            // start processing the raw data
+            RawAcousticDetectionDao rawAcousticDetectionDao = OzTrackApplication.getApplicationContext().getDaoManager().getRawAcousticDetectionDao();
+            dataFile.setNumberRawDetections(rawAcousticDetectionDao.getNumberRawDetections());
+
+             //   List <String> animalIdList =  rawAcousticDetectionDao.getAllAnimalIds();
+             //   checkAnimalsExist(animalIdList, dataFile.getProject());
+
+
+             // check receivers
+
+
+             dataFile.setStatus(DataFileStatus.COMPLETE);
+             dataFile.setStatusMessage("File processing successfully completed.");
 
         }
         catch (FileNotFoundException e) {
             dataFile.setStatus(DataFileStatus.FAILED);
-            logger.error("Couldn't find the file");
+            dataFile.setStatusMessage("File not found.");
         }
         catch (IOException e) {
             dataFile.setStatus(DataFileStatus.FAILED);
-            logger.error("Couldn't read the file");
+            dataFile.setStatusMessage("Problem reading file.");
+        }
+        catch (Exception e) {
+            dataFile.setStatus(DataFileStatus.FAILED);
+            dataFile.setStatusMessage("Problem in file at line number: " + lineNumber + "Check all the file headings are correct. Some error occurred: " + e.toString());
         }
 
-        DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
-        dataFileDao.update(dataFile);
+        //DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
+        //dataFileDao.save(dataFile);
+        //dataFileDao.refresh(dataFile);
 
     }
 
     public void processRawPositionFix(DataFile dataFile) {
         logger.info("processing a raw position fix file : " + dataFile.getOzTrackFileName());
+
+    }
+
+    public void checkAnimalsExist(List<String> animalIdList, Project project) {
+
+        /*
+        EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        for (String animalId  : animalIdList) {
+        }
+        */
 
     }
 

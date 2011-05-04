@@ -42,15 +42,6 @@ public class ProjectDetailController implements Controller {
                 errorStr = "Couldn't find any project sorry.";
         }
 
-/*      String project_id = httpServletRequest.getParameter("project_id");
-        ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
-        Project project = (Project) httpServletRequest.getSession().getAttribute("project");
-
-        if (!(project_id.isEmpty() || project_id == null)) {
-            project = projectDao.getProjectById(Long.valueOf(project_id));
-            httpServletRequest.getSession().setAttribute("project", project);
-        }
-*/
         ModelAndView modelAndView = new ModelAndView("projectDetail");
         modelAndView.addObject("errorStr", errorStr);
         modelAndView.addObject("project", project);

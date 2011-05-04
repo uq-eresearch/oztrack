@@ -1,10 +1,7 @@
 package org.oztrack.data.access.manager.impl;
 
 import org.oztrack.data.access.RawAcousticDetectionDao;
-import org.oztrack.data.access.impl.ProjectDaoImpl;
-import org.oztrack.data.access.impl.RawAcousticDetectionDaoImpl;
-import org.oztrack.data.access.impl.UserDaoImpl;
-import org.oztrack.data.access.impl.DataFileDaoImpl;
+import org.oztrack.data.access.impl.*;
 import org.oztrack.data.access.manager.DaoManager;
 import org.oztrack.data.connector.JpaConnector;
 
@@ -17,6 +14,9 @@ import javax.persistence.EntityManager;
  */
 public class DaoManagerImpl implements DaoManager {
 
+
+
+    private AnimalDaoImpl animalDao;
     private UserDaoImpl userDao;
     private ProjectDaoImpl projectDao;
     private DataFileDaoImpl dataFileDao;
@@ -62,6 +62,14 @@ public class DaoManagerImpl implements DaoManager {
 
     public void setJpaConnector(JpaConnector jpaConnector) {
         this.jpaConnector = jpaConnector;
+    }
+
+    public AnimalDaoImpl getAnimalDao() {
+        return animalDao;
+    }
+
+    public void setAnimalDao(AnimalDaoImpl animalDao) {
+        this.animalDao = animalDao;
     }
 
 }

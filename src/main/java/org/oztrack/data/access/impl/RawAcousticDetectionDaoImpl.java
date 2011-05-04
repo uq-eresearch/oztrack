@@ -9,6 +9,7 @@ import org.oztrack.data.model.RawAcousticDetection;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,13 +25,23 @@ public class RawAcousticDetectionDaoImpl extends JpaDao<RawAcousticDetection> im
     }
 
 
-    public int getNumberDetections() {
+    public int getNumberRawDetections() {
         Query query = entityManagerSource.getEntityManager().createQuery("SELECT count(*) FROM RawAcousticDetection");
         try {
             return Integer.parseInt(query.getSingleResult().toString());
         } catch (NoResultException ex) {
             return Integer.parseInt(null);
         }
+    }
+
+    public List <String> getAllAnimalIds() {
+        Query query = entityManagerSource.getEntityManager().createQuery("SELECT distinct animalid from RawAcousticDetection");
+        try {
+            return (List <String>) query.getResultList();
+        } catch (NoResultException ex) {
+            return null;
+        }
+
     }
 
 //    java.util.Date getMinDetectionDate();

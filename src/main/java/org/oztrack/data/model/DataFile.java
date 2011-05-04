@@ -27,24 +27,31 @@ public class DataFile implements Serializable {
     
     private String ozTrackFileName;
     private String userGivenFileName;
+    @Column(columnDefinition = "TEXT")
     private String fileDescription;
     private String contentType;
+
+    @Temporal(TemporalType.TIMESTAMP)
     private Date uploadDate;
     private String uploadUser;
+    @Temporal(TemporalType.TIMESTAMP)
     private Date minDetectionDate;
+    @Temporal(TemporalType.TIMESTAMP)
     private Date maxDetectionDate;
-    private boolean hasLocalTimeConversion;
-    private long localTimeConversionHours;
+    private Boolean hasLocalTimeConversion;
+    private Long localTimeConversionHours;
+    private Integer numberRawDetections;
 
 
     @Enumerated(STRING)
     @Column(name="datafiletype")
     private DataFileType dataFileType;
 
-
     @Enumerated(STRING)
     @Column(name="datafilestatus")
     private DataFileStatus status;
+    @Column(columnDefinition = "TEXT")
+    private String statusMessage;
 
     @ManyToOne
     private Project project;
@@ -160,21 +167,38 @@ public class DataFile implements Serializable {
         this.dataFileType = dataFileType;
     }
 
-        public boolean getHasLocalTimeConversion() {
+        public Boolean getHasLocalTimeConversion() {
         return hasLocalTimeConversion;
     }
 
-    public void setHasLocalTimeConversion(boolean hasLocalTimeConversion) {
+    public void setHasLocalTimeConversion(Boolean hasLocalTimeConversion) {
         this.hasLocalTimeConversion = hasLocalTimeConversion;
     }
 
-    public long getLocalTimeConversionHours() {
+    public Long getLocalTimeConversionHours() {
         return localTimeConversionHours;
     }
 
-    public void setLocalTimeConversionHours(long localTimeConversionHours) {
+    public void setLocalTimeConversionHours(Long localTimeConversionHours) {
         this.localTimeConversionHours = localTimeConversionHours;
     }
+
+    public Integer getNumberRawDetections() {
+        return numberRawDetections;
+    }
+
+    public void setNumberRawDetections(Integer numberRawDetections) {
+        this.numberRawDetections = numberRawDetections;
+    }
+
+    public String getStatusMessage() {
+        return statusMessage;
+    }
+
+    public void setStatusMessage(String statusMessage) {
+        this.statusMessage = statusMessage;
+    }
+
 
 
 }

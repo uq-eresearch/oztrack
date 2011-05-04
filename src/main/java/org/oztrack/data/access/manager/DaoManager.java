@@ -4,6 +4,8 @@ import org.oztrack.data.access.RawAcousticDetectionDao;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.DataFileDao;
+import org.oztrack.data.access.AnimalDao;
+
 
 import javax.persistence.EntityManager;
 
@@ -14,6 +16,7 @@ import javax.persistence.EntityManager;
  * Time: 11:21 AM
  */
 public interface DaoManager {
+    AnimalDao getAnimalDao();
     UserDao getUserDao();
     ProjectDao getProjectDao();
     DataFileDao getDataFileDao();

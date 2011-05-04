@@ -27,7 +27,17 @@
 
 <tr>
 <td>Number Detections:</td>
-<td><c:out value="${numberDetections}"/></td>
+<td><c:out value="${dataFile.numberRawDetections}"/></td>
+</tr>
+
+<tr>
+<td>File Processing Status:</td>
+<td><c:out value="${dataFile.status}"/></td>
+</tr>
+
+<tr>
+<td>File Processing Messages:</td>
+<td><c:out value="${dataFile.statusMessage}"/></td>
 </tr>
 
 </table>

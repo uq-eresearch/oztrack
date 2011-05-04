@@ -10,7 +10,7 @@ package org.oztrack.data.model.types;
 public enum DataFileHeader {
 
     DATETIME,
-    ANIMALID,
+    ID,
     SENSOR1,
     UNITS1,
     RECEIVERID,
