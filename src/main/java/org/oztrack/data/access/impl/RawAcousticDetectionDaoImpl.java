@@ -44,6 +44,15 @@ public class RawAcousticDetectionDaoImpl extends JpaDao<RawAcousticDetection> im
 
     }
 
+    public List<String> getAllReceiverIds() {
+        Query query = entityManagerSource.getEntityManager().createQuery("SELECT distinct receiversn from RawAcousticDetection");
+        try {
+            return (List <String>) query.getResultList();
+        } catch (NoResultException ex) {
+            return null;
+        }
+    }
+
 //    java.util.Date getMinDetectionDate();
 //    java.util.Date getMaxDetectionDate();
 //    int [] getAllAnimalIds();

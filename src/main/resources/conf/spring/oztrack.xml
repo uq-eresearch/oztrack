@@ -38,6 +38,7 @@
         <property name="projectDao" ref="projectDao"/>
         <property name="dataFileDao" ref="dataFileDao"/>
         <property name="rawAcousticDetectionDao" ref="rawAcousticDetectionDao"/>
+        <property name="receiverDeploymentDao" ref="receiverDeploymentDao"/>
         <property name="jpaConnector" ref="jpaConnector"/>
     </bean>
 

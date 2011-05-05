@@ -6,10 +6,8 @@ import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.RawAcousticDetectionDao;
-import org.oztrack.data.model.Animal;
-import org.oztrack.data.model.DataFile;
-import org.oztrack.data.model.Project;
-import org.oztrack.data.model.RawAcousticDetection;
+import org.oztrack.data.access.ReceiverDeploymentDao;
+import org.oztrack.data.model.*;
 import org.oztrack.data.model.types.DataFileHeader;
 import org.oztrack.data.model.types.DataFileStatus;
 import org.oztrack.data.model.types.DataFileType;
@@ -166,9 +164,6 @@ public class DataFileLoader {
                             case UNITS1:
                                 rawAcousticDetection.setUnits1(dataRow[i]);
                                 break;
-                            case RECEIVERID:
-                                rawAcousticDetection.setReceiverid(dataRow[i]);
-                                break;
                             case CODESPACE:
                                 rawAcousticDetection.setCodespace(dataRow[i]);
                                 break;
@@ -237,12 +232,10 @@ public class DataFileLoader {
         boolean animalFound = false;
 
         for (String newAnimalId  : newAnimalIdList) {
-
              for (Animal projectAnimal : projectAnimalList) {
                  if (newAnimalId.equals(projectAnimal.getProjectAnimalId()))
                      animalFound=true;
              }
-
              if (!animalFound) {
                  Animal animal = new Animal();
                  animal.setAnimalName("Unknown");
@@ -251,17 +244,45 @@ public class DataFileLoader {
                  animal.setVerifiedSpeciesName("Unknown");
                  animal.setProjectAnimalId(newAnimalId);
                  animal.setProject(dataFile.getProject());
+                 // TODO:
                  // name = transmitter name
                  // transmitterID = transmitter SN where sensor1 is null
                  // sensorTransmitterID= transmitter SN where sensor1 is not null
                  // transmitter type code = dependent on how sensor works (C=temp; m=depth?)
                 animalDao.save(animal);
              }
-
         }
 
 
     }
 
+    public void checkReceiversExist(DataFile dataFile)  {
+
+        // the Daos
+        RawAcousticDetectionDao rawAcousticDetectionDao = OzTrackApplication.getApplicationContext().getDaoManager().getRawAcousticDetectionDao();
+        ReceiverDeploymentDao receiverDeploymentDao = OzTrackApplication.getApplicationContext().getDaoManager().getReceiverDeploymentDao();
+
+        List<String> newReceiverIdList = rawAcousticDetectionDao.getAllReceiverIds();
+        List<ReceiverDeployment> projectReceiversList = receiverDeploymentDao.getReceiversByProjectId(dataFile.getProject().getId());
+        boolean receiverFound=false;
+
+        for (String newReceiverId : newReceiverIdList) {
+            for (ReceiverDeployment receiverDeployment : projectReceiversList) {
+                if (newReceiverId.equals(receiverDeployment.getOriginalId()))
+                    receiverFound = true;
+            }
+            if (!receiverFound) {
+                ReceiverDeployment receiverDeployment = new ReceiverDeployment();
+                receiverDeployment.setOriginalId(newReceiverId);
+                receiverDeployment.setReceiverName("Unknown");
+                receiverDeployment.setReceiverDescription("Unknown");
+                receiverDeployment.setProject(dataFile.getProject());
+                //TODO:
+                // get more stuff out of the file from here
+                receiverDeploymentDao.save(receiverDeployment);
+            }
+        }
+
+    }
 
 }

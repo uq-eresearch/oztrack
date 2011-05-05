@@ -13,7 +13,6 @@ public enum DataFileHeader {
     ID,
     SENSOR1,
     UNITS1,
-    RECEIVERID,
     CODESPACE,
     UNITS2,
     SENSOR2,

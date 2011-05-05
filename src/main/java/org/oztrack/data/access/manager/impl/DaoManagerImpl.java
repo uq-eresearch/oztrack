@@ -4,6 +4,7 @@ import org.oztrack.data.access.RawAcousticDetectionDao;
 import org.oztrack.data.access.impl.*;
 import org.oztrack.data.access.manager.DaoManager;
 import org.oztrack.data.connector.JpaConnector;
+import org.oztrack.data.model.ReceiverDeployment;
 
 import javax.persistence.EntityManager;
 
@@ -14,13 +15,12 @@ import javax.persistence.EntityManager;
  */
 public class DaoManagerImpl implements DaoManager {
 
-
-
     private AnimalDaoImpl animalDao;
     private UserDaoImpl userDao;
     private ProjectDaoImpl projectDao;
     private DataFileDaoImpl dataFileDao;
     private RawAcousticDetectionDaoImpl rawAcousticDetectionDao;
+    private ReceiverDeploymentDaoImpl receiverDeploymentDao;
     private JpaConnector jpaConnector;
 
     public void setUserDao(UserDaoImpl userDao) {
@@ -71,5 +71,15 @@ public class DaoManagerImpl implements DaoManager {
     public void setAnimalDao(AnimalDaoImpl animalDao) {
         this.animalDao = animalDao;
     }
+
+    public ReceiverDeploymentDaoImpl getReceiverDeploymentDao() {
+        return receiverDeploymentDao;
+    }
+
+    public void setReceiverDeploymentDao(ReceiverDeploymentDaoImpl receiverDeploymentDao) {
+        this.receiverDeploymentDao = receiverDeploymentDao;
+    }
+
+
 
 }

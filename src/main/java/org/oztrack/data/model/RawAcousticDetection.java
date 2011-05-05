@@ -23,7 +23,6 @@ public class RawAcousticDetection {
     private String animalid;
     private String sensor1;
     private String units1;
-    private String receiverid;
     private String codespace;
     private String units2;
     private String sensor2;
@@ -73,14 +72,6 @@ public class RawAcousticDetection {
 
     public void setUnits1(String units1) {
         this.units1 = units1;
-    }
-
-    public String getReceiverid() {
-        return receiverid;
-    }
-
-    public void setReceiverid(String receiverid) {
-        this.receiverid = receiverid;
     }
 
     public String getCodespace() {
