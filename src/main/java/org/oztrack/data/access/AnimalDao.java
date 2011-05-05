@@ -4,6 +4,8 @@ import au.edu.uq.itee.maenad.dataaccess.Dao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: uqpnewm5
@@ -13,6 +15,6 @@ import org.oztrack.data.model.Project;
  */
 public interface AnimalDao extends Dao<Animal> {
 
-    Animal getAnimalByProjectId(String animalProjectId, Long projectId);
+    List<Animal> getAnimalsByProjectId(Long projectId);
 
 }

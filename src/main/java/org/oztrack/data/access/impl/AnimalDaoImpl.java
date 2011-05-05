@@ -6,6 +6,7 @@ import org.oztrack.data.model.Animal;
 import org.oztrack.data.access.AnimalDao;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 /**
@@ -21,12 +22,11 @@ public class AnimalDaoImpl extends JpaDao<Animal> implements AnimalDao, Serializ
         super(entityManagerSource);
     }
 
-    public Animal getAnimalByProjectId(String animalProjectId, Long projectId) {
-        Query query = entityManagerSource.getEntityManager().createQuery("select o from Animal o where o.animalProjectId = :animalProjectId and o.projectId = :projectId");
-        query.setParameter("animalProjectId", animalProjectId);
+    public List<Animal> getAnimalsByProjectId(Long projectId) {
+        Query query = entityManagerSource.getEntityManager().createQuery("select o from Animal o where o.project.id = :projectId");
         query.setParameter("projectId", projectId);
         try {
-            return (Animal) query.getSingleResult();
+            return (List <Animal>) query.getResultList();
         } catch (NoResultException ex) {
             return null;
         }

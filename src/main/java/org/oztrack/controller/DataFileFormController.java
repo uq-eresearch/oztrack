@@ -46,15 +46,15 @@ public class DataFileFormController extends SimpleFormController {
      */
     protected final Log logger = LogFactory.getLog(getClass());
 
-   /*
+
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
 
-        DataFile tempDataFile = new DataFile();
-        tempDataFile.setLocalTimeConversionHours((long)10);
-        return tempDataFile;
+        DataFile dataFile = new DataFile();
+        dataFile.setLocalTimeConversionHours((long)10);
+        return dataFile;
     }
-    */
+
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {

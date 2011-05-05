@@ -31,6 +31,7 @@ public class Animal implements Serializable {
     private Long pingIntervalSeconds;
     @Temporal(TemporalType.TIMESTAMP)
     private Date transmitterDeployDate;
+    @ManyToOne
     private Project project;
 
     public Long getId() {
