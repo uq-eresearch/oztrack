@@ -2,7 +2,7 @@ package org.oztrack.data.access;
 
 import au.edu.uq.itee.maenad.dataaccess.Dao;
 import org.oztrack.data.model.Animal;
-import org.oztrack.data.model.Project;
+
 
 import java.util.List;
 
@@ -16,5 +16,5 @@ import java.util.List;
 public interface AnimalDao extends Dao<Animal> {
 
     List<Animal> getAnimalsByProjectId(Long projectId);
-
+    Animal getAnimal(String animalId, Long projectId);
 }

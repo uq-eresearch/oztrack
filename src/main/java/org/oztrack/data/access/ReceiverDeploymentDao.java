@@ -15,4 +15,5 @@ import java.util.List;
  */
 public interface ReceiverDeploymentDao extends Dao<ReceiverDeployment> {
      List<ReceiverDeployment> getReceiversByProjectId(Long projectId);
+     ReceiverDeployment getReceiverDeployment(String originalId, Long projectId);
 }

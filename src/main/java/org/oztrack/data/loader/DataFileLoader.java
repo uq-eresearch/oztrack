@@ -16,6 +16,10 @@ import org.oztrack.error.FileProcessingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import java.io.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -53,9 +57,9 @@ public class DataFileLoader {
                     dataFile.setNumberRawDetections(nbrRowsProcessed);
 
                     checkAnimalsExist(dataFile);
+                    checkReceiversExist(dataFile);
+                    createDetections(dataFile);
 
-
-                    // check receivers
                     dataFile.setStatus(DataFileStatus.COMPLETE);
                     dataFile.setStatusMessage("File processing successfully completed.");
 
@@ -131,6 +135,8 @@ public class DataFileLoader {
 
         logger.debug("File opened + header read.");
 
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd H:m:s");
         EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
@@ -153,13 +159,25 @@ public class DataFileLoader {
 
                         switch (dataFileHeader) {
                             case DATETIME:
-                                rawAcousticDetection.setDatetime(dataRow[i]);
+                                try {
+                                  rawAcousticDetection.setDatetime(sdf.parse(dataRow[i]));
+                                } catch (ParseException e) {
+                                    transaction.rollback();
+                                    throw new FileProcessingException("Incorrect date format on line "+ lineNumber +". Must be 2007-11-27 12:57:00");
+                                }
                                 break;
                             case ID:
                                 rawAcousticDetection.setAnimalid(dataRow[i]);
                                 break;
                             case SENSOR1:
-                                rawAcousticDetection.setSensor1(dataRow[i]);
+                                if (!dataRow[i].isEmpty()) {
+                                 try {
+                                     rawAcousticDetection.setSensor1(Double.parseDouble(dataRow[i]));
+                                 } catch (NumberFormatException e) {
+                                     transaction.rollback();
+                                     throw new FileProcessingException("Sensor1 value is not a number on line " + lineNumber);
+                                 }
+                                }
                                 break;
                             case UNITS1:
                                 rawAcousticDetection.setUnits1(dataRow[i]);
@@ -171,7 +189,14 @@ public class DataFileLoader {
                                 rawAcousticDetection.setUnits2(dataRow[i]);
                                 break;
                             case SENSOR2:
-                                rawAcousticDetection.setSensor2(dataRow[i]);
+                                if (!dataRow[i].isEmpty()) {
+                                 try {
+                                     rawAcousticDetection.setSensor2(Double.parseDouble(dataRow[i]));
+                                 } catch (NumberFormatException e) {
+                                     transaction.rollback();
+                                     throw new FileProcessingException("Sensor2 value is not a number on line " + lineNumber);
+                                 }
+                                }
                                 break;
                             case TRANSMITTERNAME:
                                 rawAcousticDetection.setTransmittername(dataRow[i]);
@@ -200,6 +225,7 @@ public class DataFileLoader {
                         }
                     }
                 }
+
                 entityManager.persist(rawAcousticDetection);
 
             }
@@ -208,7 +234,7 @@ public class DataFileLoader {
              transaction.rollback();
              throw new FileProcessingException("Problem reading file at line number :" + lineNumber);
         }
-
+        // commit after reading whole file
         transaction.commit();
         logger.debug(lineNumber + "rows persisted");
         return lineNumber;
@@ -278,10 +304,42 @@ public class DataFileLoader {
                 receiverDeployment.setReceiverDescription("Unknown");
                 receiverDeployment.setProject(dataFile.getProject());
                 //TODO:
-                // get more stuff out of the file from here
+                // get more stuff out of the file from here re location
                 receiverDeploymentDao.save(receiverDeployment);
             }
         }
+
+    }
+
+    public void createDetections(DataFile dataFile) {
+
+        RawAcousticDetectionDao rawAcousticDetectionDao = OzTrackApplication.getApplicationContext().getDaoManager().getRawAcousticDetectionDao();
+        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
+        ReceiverDeploymentDao receiverDeploymentDao = OzTrackApplication.getApplicationContext().getDaoManager().getReceiverDeploymentDao();
+        EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
+
+
+        List <RawAcousticDetection> allRawAcousticDetections = rawAcousticDetectionDao.getAll();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        for (RawAcousticDetection rawAcousticDetection : allRawAcousticDetections) {
+
+            AcousticDetection acousticDetection = new AcousticDetection();
+            acousticDetection.setDetectionTime(rawAcousticDetection.getDatetime());
+            acousticDetection.setAnimal(animalDao.getAnimal(rawAcousticDetection.getAnimalid(), dataFile.getProject().getId()));
+            acousticDetection.setReceiverDeployment(receiverDeploymentDao.getReceiverDeployment(rawAcousticDetection.getReceiversn(), dataFile.getProject().getId()));
+            acousticDetection.setDataFile(dataFile);
+            acousticDetection.setSensor1Value(rawAcousticDetection.getSensor1());
+            acousticDetection.setSensor1Units(rawAcousticDetection.getUnits1());
+            acousticDetection.setSensor2Value(rawAcousticDetection.getSensor2());
+            acousticDetection.setSensor2Units(rawAcousticDetection.getUnits2());
+
+            entityManager.persist(acousticDetection);
+
+        }
+
+        transaction.commit();
 
     }
 

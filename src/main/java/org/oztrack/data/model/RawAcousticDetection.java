@@ -1,6 +1,7 @@
 package org.oztrack.data.model;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,13 +20,13 @@ public class RawAcousticDetection {
     @Column(nullable=false)
     private Long id;
 
-    private String datetime;
+    private Date datetime;
     private String animalid;
-    private String sensor1;
+    private Double sensor1;
     private String units1;
     private String codespace;
     private String units2;
-    private String sensor2;
+    private Double sensor2;
     private String transmittername;
     private String transmittersn;
     private String receivername;
@@ -33,6 +34,9 @@ public class RawAcousticDetection {
     private String stationname;
     private String stationlatitude;
     private String stationlongitude;
+
+//    private Long oztrackAnimalId;
+//    private Long oztrackReceiverDeploymentId;
 
     public Long getId() {
         return id;
@@ -42,11 +46,11 @@ public class RawAcousticDetection {
         this.id = id;
     }
 
-    public String getDatetime() {
+    public Date getDatetime() {
         return datetime;
     }
 
-    public void setDatetime(String datetime) {
+    public void setDatetime(Date datetime) {
         this.datetime = datetime;
     }
 
@@ -58,11 +62,11 @@ public class RawAcousticDetection {
         this.animalid = animalid;
     }
 
-    public String getSensor1() {
+    public Double getSensor1() {
         return sensor1;
     }
 
-    public void setSensor1(String sensor1) {
+    public void setSensor1(Double sensor1) {
         this.sensor1 = sensor1;
     }
 
@@ -90,11 +94,11 @@ public class RawAcousticDetection {
         this.units2 = units2;
     }
 
-    public String getSensor2() {
+    public Double getSensor2() {
         return sensor2;
     }
 
-    public void setSensor2(String sensor2) {
+    public void setSensor2(Double sensor2) {
         this.sensor2 = sensor2;
     }
 
@@ -153,8 +157,23 @@ public class RawAcousticDetection {
     public void setStationlongitude(String stationlongitude) {
         this.stationlongitude = stationlongitude;
     }
+/*
+    public Long getOztrackAnimalId() {
+         return oztrackAnimalId;
+     }
 
+     public void setOztrackAnimalId(Long oztrackAnimalId) {
+         this.oztrackAnimalId = oztrackAnimalId;
+     }
 
+     public Long getOztrackReceiverDeploymentId() {
+         return oztrackReceiverDeploymentId;
+     }
+
+     public void setOztrackReceiverDeploymentId(Long oztrackReceiverDeploymentId) {
+         this.oztrackReceiverDeploymentId = oztrackReceiverDeploymentId;
+     }
+*/
 
 
 

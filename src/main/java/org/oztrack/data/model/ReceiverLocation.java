@@ -10,6 +10,7 @@ import java.io.Serializable;
  * Time: 2:00 PM
  * To change this template use File | Settings | File Templates.
  */
+@Entity(name = "ReceiverLocation")
 public class ReceiverLocation implements Serializable {
 
     @Id

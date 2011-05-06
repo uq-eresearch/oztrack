@@ -22,6 +22,7 @@ public class AnimalDaoImpl extends JpaDao<Animal> implements AnimalDao, Serializ
         super(entityManagerSource);
     }
 
+    @Override
     public List<Animal> getAnimalsByProjectId(Long projectId) {
         Query query = entityManagerSource.getEntityManager().createQuery("select o from Animal o where o.project.id = :projectId");
         query.setParameter("projectId", projectId);
@@ -30,5 +31,18 @@ public class AnimalDaoImpl extends JpaDao<Animal> implements AnimalDao, Serializ
         } catch (NoResultException ex) {
             return null;
         }
+    }
+
+    @Override
+    public Animal getAnimal(String animalId, Long projectId) {
+        Query query = entityManagerSource.getEntityManager().createQuery("select o from Animal o where o.project.id=:projectId and o.projectAnimalId=:animalId");
+        query.setParameter("projectId", projectId);
+        query.setParameter("animalId", animalId);
+        try {
+            return (Animal) query.getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
+
     }
 }

@@ -24,12 +24,23 @@ public class ReceiverDeploymentDaoImpl extends JpaDao<ReceiverDeployment> implem
         super(entityManagerSource);
     }
 
-        public List<ReceiverDeployment> getReceiversByProjectId(Long projectId) {
+    public List<ReceiverDeployment> getReceiversByProjectId(Long projectId) {
         Query query = entityManagerSource.getEntityManager().createQuery("select o from ReceiverDeployment o where o.project.id = :projectId");
         query.setParameter("projectId", projectId);
         try {
             return (List <ReceiverDeployment>) query.getResultList();
         } catch (NoResultException ex) {
+            return null;
+        }
+    }
+
+    public ReceiverDeployment getReceiverDeployment(String originalId, Long projectId) {
+        Query query = entityManagerSource.getEntityManager().createQuery("select o from ReceiverDeployment o where o.originalId = :originalId and o.project.id=:projectId");
+        query.setParameter("originalId",originalId);
+        query.setParameter("projectId",projectId);
+        try {
+            return (ReceiverDeployment) query.getSingleResult();
+        } catch (NoResultException e) {
             return null;
         }
     }
