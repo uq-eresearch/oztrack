@@ -1,11 +1,10 @@
 package org.oztrack.data.access.manager.impl;
 
 import org.oztrack.data.access.AcousticDetectionDao;
-import org.oztrack.data.access.RawAcousticDetectionDao;
 import org.oztrack.data.access.impl.*;
+import org.oztrack.data.access.impl.direct.JdbcAccessImpl;
 import org.oztrack.data.access.manager.DaoManager;
 import org.oztrack.data.connector.JpaConnector;
-import org.oztrack.data.model.ReceiverDeployment;
 
 import javax.persistence.EntityManager;
 
@@ -25,6 +24,15 @@ public class DaoManagerImpl implements DaoManager {
     private ReceiverDeploymentDaoImpl receiverDeploymentDao;
     private JpaConnector jpaConnector;
 
+    private JdbcAccessImpl JdbcAccess;
+
+    public JdbcAccessImpl getJdbcAccess() {
+        return JdbcAccess;
+    }
+
+    public void setJdbcAccess(JdbcAccessImpl JdbcAccess) {
+        this.JdbcAccess = JdbcAccess;
+    }
 
    public AcousticDetectionDao getAcousticDetectionDao() {
         return acousticDetectionDao;

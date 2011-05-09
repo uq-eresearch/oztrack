@@ -7,6 +7,8 @@ import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.RawAcousticDetectionDao;
 import org.oztrack.data.access.ReceiverDeploymentDao;
+import org.oztrack.data.access.direct.JdbcAccess;
+import org.oztrack.data.access.impl.direct.JdbcAccessImpl;
 import org.oztrack.data.model.*;
 import org.oztrack.data.model.types.DataFileHeader;
 import org.oztrack.data.model.types.DataFileStatus;
@@ -42,6 +44,9 @@ public class DataFileLoader {
         DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
         DataFile dataFile = dataFileDao.getNextDataFile();
 
+        // avoid hibernate for performance
+        JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
+
         if (dataFile != null) {
 
             dataFile.setStatus(DataFileStatus.PROCESSING);
@@ -54,14 +59,24 @@ public class DataFileLoader {
 
                     // get the file into a raw table
                     int nbrRowsProcessed = processRawAcoustic(dataFile);
+                    int nbrDetectionsCreated = 0;
                     dataFile.setNumberRawDetections(nbrRowsProcessed);
 
+                    // get reference data in order: create animals, receivers
                     checkAnimalsExist(dataFile);
                     checkReceiversExist(dataFile);
-                    createDetections(dataFile);
+
+                    try {
+                        nbrDetectionsCreated = jdbcAccess.loadAcousticDetections(dataFile.getProject().getId(), dataFile.getId());
+                        //jdbcAccess.truncateRawAcousticDetections();
+                    } catch (Exception e) {
+                        throw new FileProcessingException(e.toString());
+                    }
 
                     dataFile.setStatus(DataFileStatus.COMPLETE);
-                    dataFile.setStatusMessage("File processing successfully completed.");
+                    dataFile.setStatusMessage("File processing successfully completed." +
+                                              "\n "  + (nbrRowsProcessed-1) + " rows processed from file." +
+                                              "\n "  + nbrDetectionsCreated + " detections created.");
 
                 } catch (FileProcessingException e) {
                     dataFile.setStatus(DataFileStatus.FAILED);
@@ -276,6 +291,7 @@ public class DataFileLoader {
                  // sensorTransmitterID= transmitter SN where sensor1 is not null
                  // transmitter type code = dependent on how sensor works (C=temp; m=depth?)
                 animalDao.save(animal);
+
              }
         }
 
@@ -311,13 +327,25 @@ public class DataFileLoader {
 
     }
 
-    public void createDetections(DataFile dataFile) {
+/*    public int createDetections(DataFile dataFile) throws FileProcessingException {
 
+        JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
+        int nbrDetections = 0;
+
+        try {
+            nbrDetections = jdbcAccess.loadAcousticDetections(dataFile.getProject().getId(), dataFile.getId());
+        } catch (Exception e) {
+            throw new FileProcessingException(e.toString());
+        }
+
+        return nbrDetections;
+
+
+        /*
         RawAcousticDetectionDao rawAcousticDetectionDao = OzTrackApplication.getApplicationContext().getDaoManager().getRawAcousticDetectionDao();
         AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
         ReceiverDeploymentDao receiverDeploymentDao = OzTrackApplication.getApplicationContext().getDaoManager().getReceiverDeploymentDao();
         EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
-
 
         List <RawAcousticDetection> allRawAcousticDetections = rawAcousticDetectionDao.getAll();
         EntityTransaction transaction = entityManager.getTransaction();
@@ -336,11 +364,13 @@ public class DataFileLoader {
             acousticDetection.setSensor2Units(rawAcousticDetection.getUnits2());
 
             entityManager.persist(acousticDetection);
-
+            entityManager.remove(rawAcousticDetection);
+            //entityManager.flush();
         }
 
         transaction.commit();
+}
+        */
 
-    }
 
 }

@@ -41,9 +41,24 @@
         <property name="rawAcousticDetectionDao" ref="rawAcousticDetectionDao"/>
         <property name="receiverDeploymentDao" ref="receiverDeploymentDao"/>
         <property name="jpaConnector" ref="jpaConnector"/>
+        <property name="jdbcAccess" ref="jdbcAccess"/>
     </bean>
 
     <bean id="authenticationManager" class="org.oztrack.app.AuthenticationManager">
     </bean>
+
+    <!-- the DataSource (parameterized for configuration via a PropertyPlaceHolderConfigurer) -->
+    <bean id="dataSource" destroy-method="close" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url" value="jdbc:postgresql://localhost/oztrack"/>
+        <property name="username" value="oztrack"/>
+        <property name="password" value="ozadmin"/>
+    </bean>
+
+    <bean id="jdbcAccess" class="org.oztrack.data.access.impl.direct.JdbcAccessImpl">
+         <property name="dataSource" ref="dataSource" />
+    </bean>
+
+
     
 </beans>

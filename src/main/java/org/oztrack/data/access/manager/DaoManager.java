@@ -1,7 +1,7 @@
 package org.oztrack.data.access.manager;
 
 import org.oztrack.data.access.*;
-import org.oztrack.data.model.AcousticDetection;
+import org.oztrack.data.access.direct.JdbcAccess;
 
 
 import javax.persistence.EntityManager;
@@ -21,4 +21,6 @@ public interface DaoManager {
     RawAcousticDetectionDao getRawAcousticDetectionDao();
     ReceiverDeploymentDao getReceiverDeploymentDao();
     EntityManager getEntityManager();
+    JdbcAccess getJdbcAccess();
+
 }

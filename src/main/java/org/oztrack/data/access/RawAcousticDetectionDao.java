@@ -16,7 +16,6 @@ public interface RawAcousticDetectionDao extends Dao<RawAcousticDetection> {
 
      List <String> getAllAnimalIds();
      List <String> getAllReceiverIds();
-
 //    java.util.Date getMinDetectionDate();
 //    java.util.Date getMaxDetectionDate();
 //    int [] getAllAnimalIds();

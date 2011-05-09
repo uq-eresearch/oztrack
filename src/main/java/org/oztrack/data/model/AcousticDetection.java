@@ -16,9 +16,11 @@ import java.util.Date;
 @Entity(name="AcousticDetection")
 public class AcousticDetection  implements Serializable {
 
+    // id set in raw acoustic detection
+
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "acousticdetectionid_seq")
+    //@SequenceGenerator(name = "acousticdetectionid_seq", sequenceName = "acousticdetectionid_seq",allocationSize = 1)
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "acousticdetectionid_seq")
-    @SequenceGenerator(name = "acousticdetectionid_seq", sequenceName = "acousticdetectionid_seq",allocationSize = 1)
     @Column(nullable=false)
     private Long id;
 
@@ -35,10 +37,8 @@ public class AcousticDetection  implements Serializable {
     @ManyToOne
     private DataFile dataFile;
 
-    private String sensor1Description;
     private Double sensor1Value;
     private String sensor1Units;
-    private String sensor2Description;
     private Double sensor2Value;
     private String sensor2Units;
 
@@ -83,14 +83,6 @@ public class AcousticDetection  implements Serializable {
         this.dataFile = dataFile;
     }
 
-    public String getSensor1Description() {
-        return sensor1Description;
-    }
-
-    public void setSensor1Description(String sensor1Description) {
-        this.sensor1Description = sensor1Description;
-    }
-
     public Double getSensor1Value() {
         return sensor1Value;
     }
@@ -105,14 +97,6 @@ public class AcousticDetection  implements Serializable {
 
     public void setSensor1Units(String sensor1Units) {
         this.sensor1Units = sensor1Units;
-    }
-
-    public String getSensor2Description() {
-        return sensor2Description;
-    }
-
-    public void setSensor2Description(String sensor2Description) {
-        this.sensor2Description = sensor2Description;
     }
 
     public Double getSensor2Value() {

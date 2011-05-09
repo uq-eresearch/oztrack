@@ -14,9 +14,10 @@ import java.util.Date;
 @Entity
 public class RawAcousticDetection {
 
+    // ultimately passed to the acousticdetection table
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rawacousticdetectionid_seq")
-    @SequenceGenerator(name = "rawacousticdetectionid_seq", sequenceName = "rawacousticdetectionid_seq",allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "acousticdetectionid_seq")
+    @SequenceGenerator(name = "acousticdetectionid_seq", sequenceName = "acousticdetectionid_seq",allocationSize = 1)
     @Column(nullable=false)
     private Long id;
 
