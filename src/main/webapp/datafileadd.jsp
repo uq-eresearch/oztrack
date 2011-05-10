@@ -26,7 +26,7 @@
 
 <div>
 <label for="timeConversion">Convert to local time?</label>
-<form:checkbox path="hasLocalTimeConversion" id="hasLocalTimeConversion" cssClass="checkbox"/>
+<form:checkbox path="localTimeConversionRequired" id="localTimeConversionRequired" cssClass="checkbox"/>
  &nbsp; Local time is GMT + <form:input path="localTimeConversionHours" cssClass="shortInput"/> hours.
 </div>
 

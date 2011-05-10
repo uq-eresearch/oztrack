@@ -38,7 +38,7 @@ public class DataFile implements Serializable {
     private Date minDetectionDate;
     @Temporal(TemporalType.TIMESTAMP)
     private Date maxDetectionDate;
-    private Boolean hasLocalTimeConversion;
+    private Boolean localTimeConversionRequired;
     private Long localTimeConversionHours;
     private Integer numberRawDetections;
 
@@ -167,12 +167,12 @@ public class DataFile implements Serializable {
         this.dataFileType = dataFileType;
     }
 
-        public Boolean getHasLocalTimeConversion() {
-        return hasLocalTimeConversion;
+        public Boolean getLocalTimeConversionRequired() {
+        return localTimeConversionRequired;
     }
 
-    public void setHasLocalTimeConversion(Boolean hasLocalTimeConversion) {
-        this.hasLocalTimeConversion = hasLocalTimeConversion;
+    public void setLocalTimeConversionRequired(Boolean localTimeConversionRequired) {
+        this.localTimeConversionRequired = localTimeConversionRequired;
     }
 
     public Long getLocalTimeConversionHours() {

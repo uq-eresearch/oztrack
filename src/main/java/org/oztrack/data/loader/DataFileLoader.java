@@ -18,6 +18,7 @@ import javax.persistence.EntityTransaction;
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +63,7 @@ public class DataFileLoader {
                     checkAnimalsExist(dataFile);
                     checkReceiversExist(dataFile);
 
+                    // create the detections
                     try {
                         nbrDetectionsCreated = jdbcAccess.loadAcousticDetections(dataFile.getProject().getId(), dataFile.getId());
                         jdbcAccess.truncateRawAcousticDetections();
@@ -70,9 +72,12 @@ public class DataFileLoader {
                     }
 
                     dataFile.setStatus(DataFileStatus.COMPLETE);
-                    dataFile.setStatusMessage("File processing successfully completed at " + new Date().toString() + ". " +
-                                              (nbrRowsProcessed-1) + " rows processed from file. " +
-                                              nbrDetectionsCreated + " detections created.");
+                    dataFile.setStatusMessage( "File processing successfully completed at " + new Date().toString() + ". " +
+                                               (nbrRowsProcessed-1) + " rows processed from file. " +
+                                               nbrDetectionsCreated + " detections created. " +
+                                               (dataFile.getLocalTimeConversionRequired()
+                                                ? dataFile.getLocalTimeConversionHours()+ " hours added to timestamps." : "")
+                                              );
 
                 } catch (FileProcessingException e) {
                     dataFile.setStatus(DataFileStatus.FAILED);
@@ -85,7 +90,6 @@ public class DataFileLoader {
             } else if (dataFile.getDataFileType().equals(DataFileType.POSITION_FIX)) {
                 processRawPositionFix(dataFile);
             }
-
 
         }
 
@@ -148,6 +152,10 @@ public class DataFileLoader {
 
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd H:m:s");
+        Calendar calendar = Calendar.getInstance();
+        boolean localTimeConversionRequired = dataFile.getLocalTimeConversionRequired();
+        long localTimeConversionHours = dataFile.getLocalTimeConversionHours();
+
         EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
@@ -171,7 +179,10 @@ public class DataFileLoader {
                         switch (dataFileHeader) {
                             case DATETIME:
                                 try {
-                                  rawAcousticDetection.setDatetime(sdf.parse(dataRow[i]));
+                                    calendar.setTime(sdf.parse(dataRow[i]));
+                                    if (localTimeConversionRequired)
+                                        calendar.add(Calendar.HOUR,(int)localTimeConversionHours);
+                                    rawAcousticDetection.setDatetime(calendar.getTime());
                                 } catch (ParseException e) {
                                     transaction.rollback();
                                     throw new FileProcessingException("Incorrect date format on line "+ lineNumber +". Must be 2007-11-27 12:57:00");
