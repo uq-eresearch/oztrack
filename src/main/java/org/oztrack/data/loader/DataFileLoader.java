@@ -18,10 +18,7 @@ import javax.persistence.EntityTransaction;
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,6 +40,7 @@ public class DataFileLoader {
 
         // avoid hibernate for performance
         JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
+        int nbrDetectionsCreated = 0;
 
         if (dataFile != null) {
 
@@ -54,10 +52,11 @@ public class DataFileLoader {
 
                 try {
 
+                    // de-duplicate file
+                    removeFileDuplicates(dataFile);
+
                     // get the file into a raw table
-                    int nbrRowsProcessed = processRawAcoustic(dataFile);
-                    int nbrDetectionsCreated;
-                    dataFile.setNumberRawDetections(nbrRowsProcessed);
+                    processRawAcoustic(dataFile);
 
                     // get reference data in order: create animals, receivers
                     checkAnimalsExist(dataFile);
@@ -72,11 +71,11 @@ public class DataFileLoader {
                     }
 
                     dataFile.setStatus(DataFileStatus.COMPLETE);
-                    dataFile.setStatusMessage( "File processing successfully completed at " + new Date().toString() + ". " +
-                                               (nbrRowsProcessed-1) + " rows processed from file. " +
+                    dataFile.setNumberRawDetections(nbrDetectionsCreated);
+                    dataFile.setStatusMessage( "File processing successfully completed on " + new Date().toString() + ". " +
                                                nbrDetectionsCreated + " detections created. " +
                                                (dataFile.getLocalTimeConversionRequired()
-                                                ? dataFile.getLocalTimeConversionHours()+ " hours added to timestamps." : "")
+                                                ? "Local time conversion is " + dataFile.getLocalTimeConversionHours()+ " hours." : "")
                                               );
 
                 } catch (FileProcessingException e) {
@@ -95,15 +94,15 @@ public class DataFileLoader {
 
     }
 
-    public int processRawAcoustic(DataFile dataFile) throws FileProcessingException {
+    public void processRawAcoustic(DataFile dataFile) throws FileProcessingException {
 
         int lineNumber = 0;
-        logger.info("processing raw acoustic file : " + dataFile.getOzTrackFileName());
+        logger.info("processing raw acoustic file : " + dataFile.getOzTrackFileName() + ".dedup");
 
         FileInputStream fileInputStream;
 
         try {
-            fileInputStream = new FileInputStream(dataFile.getOzTrackFileName());
+            fileInputStream = new FileInputStream(dataFile.getOzTrackFileName()+ ".dedup");
         } catch (FileNotFoundException e) {
              throw new FileProcessingException("File not found.");
         }
@@ -258,8 +257,8 @@ public class DataFileLoader {
         }
         // commit after reading whole file
         transaction.commit();
-        logger.debug(lineNumber + "rows persisted");
-        return lineNumber;
+        logger.debug(lineNumber + " rows persisted.");
+
     }
 
     public void processRawPositionFix(DataFile dataFile) {
@@ -339,6 +338,57 @@ public class DataFileLoader {
                 receiverDeploymentDao.save(receiverDeployment);
             }
         }
+
+    }
+
+    public void removeFileDuplicates(DataFile dataFile) throws FileProcessingException {
+
+        File inFile = new File(dataFile.getOzTrackFileName());
+        File outFile = new File(dataFile.getOzTrackFileName() + ".dedup");
+        HashSet<String> hashSet = new HashSet<String>(10000);
+        FileInputStream fileInputStream;
+        String headers;
+        String strLine;
+
+        try {
+             fileInputStream = new FileInputStream(inFile);
+        } catch (FileNotFoundException e) {
+             throw new FileProcessingException("File not found.");
+        }
+
+        DataInputStream in = new DataInputStream(fileInputStream);
+        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        BufferedWriter bw;
+
+        try {
+            bw = new BufferedWriter(new FileWriter(outFile));
+        } catch (IOException e) {
+            throw new FileProcessingException("Couldn't create new file");
+        }
+
+
+        try {
+             headers = br.readLine();
+             bw.write(headers);
+             bw.newLine();
+
+             while ((strLine = br.readLine()) != null) {
+                 if (!hashSet.contains(strLine)) {
+                   hashSet.add(strLine);
+                   bw.write(strLine);
+                   bw.newLine();
+                 }
+             }
+             hashSet.clear();
+             br.close();
+             bw.close();
+
+        } catch (IOException e) {
+             throw new FileProcessingException("Problem creating de-duplicates file.");
+        }
+
+        // write over originalFile
+
 
     }
 
