@@ -38,11 +38,9 @@ public class DataFileLoader {
         DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
         DataFile dataFile = dataFileDao.getNextDataFile();
 
-        // avoid hibernate for performance
-        JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
-        int nbrDetectionsCreated = 0;
 
         if (dataFile != null) {
+
 
             dataFile.setStatus(DataFileStatus.PROCESSING);
             dataFileDao.update(dataFile);
@@ -63,7 +61,10 @@ public class DataFileLoader {
                     checkReceiversExist(dataFile);
 
                     // create the detections
+                    int nbrDetectionsCreated = 0;
                     try {
+                        // avoid hibernate for performance
+                        JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
                         nbrDetectionsCreated = jdbcAccess.loadAcousticDetections(dataFile.getProject().getId(), dataFile.getId());
                         jdbcAccess.truncateRawAcousticDetections();
                     } catch (Exception e) {
