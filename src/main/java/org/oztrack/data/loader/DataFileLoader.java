@@ -8,20 +8,17 @@ import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.RawAcousticDetectionDao;
 import org.oztrack.data.access.ReceiverDeploymentDao;
 import org.oztrack.data.access.direct.JdbcAccess;
-import org.oztrack.data.access.impl.direct.JdbcAccessImpl;
 import org.oztrack.data.model.*;
 import org.oztrack.data.model.types.DataFileHeader;
 import org.oztrack.data.model.types.DataFileStatus;
 import org.oztrack.data.model.types.DataFileType;
 import org.oztrack.error.FileProcessingException;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import java.io.*;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,7 +27,6 @@ import java.util.List;
  * User: uqpnewm5
  * Date: 21/04/11
  * Time: 8:59 AM
- * To change this template use File | Settings | File Templates.
  */
 public class DataFileLoader {
     /**
@@ -59,7 +55,7 @@ public class DataFileLoader {
 
                     // get the file into a raw table
                     int nbrRowsProcessed = processRawAcoustic(dataFile);
-                    int nbrDetectionsCreated = 0;
+                    int nbrDetectionsCreated;
                     dataFile.setNumberRawDetections(nbrRowsProcessed);
 
                     // get reference data in order: create animals, receivers
@@ -68,15 +64,15 @@ public class DataFileLoader {
 
                     try {
                         nbrDetectionsCreated = jdbcAccess.loadAcousticDetections(dataFile.getProject().getId(), dataFile.getId());
-                        //jdbcAccess.truncateRawAcousticDetections();
+                        jdbcAccess.truncateRawAcousticDetections();
                     } catch (Exception e) {
                         throw new FileProcessingException(e.toString());
                     }
 
                     dataFile.setStatus(DataFileStatus.COMPLETE);
-                    dataFile.setStatusMessage("File processing successfully completed." +
-                                              "\n "  + (nbrRowsProcessed-1) + " rows processed from file." +
-                                              "\n "  + nbrDetectionsCreated + " detections created.");
+                    dataFile.setStatusMessage("File processing successfully completed at " + new Date().toString() + ". " +
+                                              (nbrRowsProcessed-1) + " rows processed from file. " +
+                                              nbrDetectionsCreated + " detections created.");
 
                 } catch (FileProcessingException e) {
                     dataFile.setStatus(DataFileStatus.FAILED);
@@ -270,13 +266,18 @@ public class DataFileLoader {
         List<String> newAnimalIdList = rawAcousticDetectionDao.getAllAnimalIds();
         // all the animals for this project
         List<Animal> projectAnimalList = animalDao.getAnimalsByProjectId(dataFile.getProject().getId());
-        boolean animalFound = false;
+        boolean animalFound;
+        String projectAnimalId;
 
         for (String newAnimalId  : newAnimalIdList) {
+             animalFound=false;
              for (Animal projectAnimal : projectAnimalList) {
-                 if (newAnimalId.equals(projectAnimal.getProjectAnimalId()))
+                 projectAnimalId = projectAnimal.getProjectAnimalId();
+                 if (newAnimalId.equals(projectAnimalId))   {
                      animalFound=true;
+                 }
              }
+
              if (!animalFound) {
                  Animal animal = new Animal();
                  animal.setAnimalName("Unknown");
@@ -306,11 +307,14 @@ public class DataFileLoader {
 
         List<String> newReceiverIdList = rawAcousticDetectionDao.getAllReceiverIds();
         List<ReceiverDeployment> projectReceiversList = receiverDeploymentDao.getReceiversByProjectId(dataFile.getProject().getId());
-        boolean receiverFound=false;
+        boolean receiverFound;
+        String originalId;
 
         for (String newReceiverId : newReceiverIdList) {
+            receiverFound=false;
             for (ReceiverDeployment receiverDeployment : projectReceiversList) {
-                if (newReceiverId.equals(receiverDeployment.getOriginalId()))
+                originalId = receiverDeployment.getOriginalId();
+                if (newReceiverId.equals(originalId))
                     receiverFound = true;
             }
             if (!receiverFound) {
@@ -326,51 +330,5 @@ public class DataFileLoader {
         }
 
     }
-
-/*    public int createDetections(DataFile dataFile) throws FileProcessingException {
-
-        JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
-        int nbrDetections = 0;
-
-        try {
-            nbrDetections = jdbcAccess.loadAcousticDetections(dataFile.getProject().getId(), dataFile.getId());
-        } catch (Exception e) {
-            throw new FileProcessingException(e.toString());
-        }
-
-        return nbrDetections;
-
-
-        /*
-        RawAcousticDetectionDao rawAcousticDetectionDao = OzTrackApplication.getApplicationContext().getDaoManager().getRawAcousticDetectionDao();
-        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
-        ReceiverDeploymentDao receiverDeploymentDao = OzTrackApplication.getApplicationContext().getDaoManager().getReceiverDeploymentDao();
-        EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
-
-        List <RawAcousticDetection> allRawAcousticDetections = rawAcousticDetectionDao.getAll();
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
-
-        for (RawAcousticDetection rawAcousticDetection : allRawAcousticDetections) {
-
-            AcousticDetection acousticDetection = new AcousticDetection();
-            acousticDetection.setDetectionTime(rawAcousticDetection.getDatetime());
-            acousticDetection.setAnimal(animalDao.getAnimal(rawAcousticDetection.getAnimalid(), dataFile.getProject().getId()));
-            acousticDetection.setReceiverDeployment(receiverDeploymentDao.getReceiverDeployment(rawAcousticDetection.getReceiversn(), dataFile.getProject().getId()));
-            acousticDetection.setDataFile(dataFile);
-            acousticDetection.setSensor1Value(rawAcousticDetection.getSensor1());
-            acousticDetection.setSensor1Units(rawAcousticDetection.getUnits1());
-            acousticDetection.setSensor2Value(rawAcousticDetection.getSensor2());
-            acousticDetection.setSensor2Units(rawAcousticDetection.getUnits2());
-
-            entityManager.persist(acousticDetection);
-            entityManager.remove(rawAcousticDetection);
-            //entityManager.flush();
-        }
-
-        transaction.commit();
-}
-        */
-
 
 }
