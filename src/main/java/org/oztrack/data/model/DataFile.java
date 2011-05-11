@@ -40,7 +40,7 @@ public class DataFile implements Serializable {
     private Date maxDetectionDate;
     private Boolean localTimeConversionRequired;
     private Long localTimeConversionHours;
-    private Integer numberRawDetections;
+    private Integer numberDetections;
 
 
     @Enumerated(STRING)
@@ -183,12 +183,12 @@ public class DataFile implements Serializable {
         this.localTimeConversionHours = localTimeConversionHours;
     }
 
-    public Integer getNumberRawDetections() {
-        return numberRawDetections;
+    public Integer getNumberDetections() {
+        return numberDetections;
     }
 
-    public void setNumberRawDetections(Integer numberRawDetections) {
-        this.numberRawDetections = numberRawDetections;
+    public void setNumberDetections(Integer numberDetections) {
+        this.numberDetections = numberDetections;
     }
 
     public String getStatusMessage() {

@@ -20,6 +20,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static org.oztrack.util.OzTrackUtil.*;
+
 /**
  * Created by IntelliJ IDEA.
  * User: uqpnewm5
@@ -51,7 +53,7 @@ public class DataFileLoader {
                 try {
 
                     // de-duplicate file
-                    removeFileDuplicates(dataFile);
+                    removeDuplicateLinesFromFile(dataFile.getOzTrackFileName());
 
                     // get the file into a raw table
                     processRawAcoustic(dataFile);
@@ -72,9 +74,8 @@ public class DataFileLoader {
                     }
 
                     dataFile.setStatus(DataFileStatus.COMPLETE);
-                    dataFile.setNumberRawDetections(nbrDetectionsCreated);
+                    dataFile.setNumberDetections(nbrDetectionsCreated);
                     dataFile.setStatusMessage( "File processing successfully completed on " + new Date().toString() + ". " +
-                                               nbrDetectionsCreated + " detections created. " +
                                                (dataFile.getLocalTimeConversionRequired()
                                                 ? "Local time conversion is " + dataFile.getLocalTimeConversionHours()+ " hours." : "")
                                               );
@@ -98,12 +99,12 @@ public class DataFileLoader {
     public void processRawAcoustic(DataFile dataFile) throws FileProcessingException {
 
         int lineNumber = 0;
-        logger.info("processing raw acoustic file : " + dataFile.getOzTrackFileName() + ".dedup");
+        logger.info("processing raw acoustic file : " + dataFile.getOzTrackFileName());
 
         FileInputStream fileInputStream;
 
         try {
-            fileInputStream = new FileInputStream(dataFile.getOzTrackFileName()+ ".dedup");
+            fileInputStream = new FileInputStream(dataFile.getOzTrackFileName());
         } catch (FileNotFoundException e) {
              throw new FileProcessingException("File not found.");
         }
@@ -342,6 +343,7 @@ public class DataFileLoader {
 
     }
 
+    /*
     public void removeFileDuplicates(DataFile dataFile) throws FileProcessingException {
 
         File inFile = new File(dataFile.getOzTrackFileName());
@@ -392,5 +394,6 @@ public class DataFileLoader {
 
 
     }
+    */
 
 }

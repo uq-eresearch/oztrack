@@ -50,9 +50,18 @@ public class DataFileFormController extends SimpleFormController {
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
 
-        DataFile dataFile = new DataFile();
-        dataFile.setLocalTimeConversionHours((long)10);
+        String dataFileId = request.getParameter("datafile_id");
+        DataFile dataFile;
+
+        if (dataFileId != null) {
+            DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
+            dataFile = dataFileDao.getDataFileById(Long.parseLong(dataFileId));
+        } else {
+            dataFile = new DataFile();
+            dataFile.setLocalTimeConversionHours((long)10);
+        }
         return dataFile;
+
     }
 
 

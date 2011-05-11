@@ -27,12 +27,19 @@
 
 <tr>
 <td>Number Detections:</td>
-<td><c:out value="${dataFile.numberRawDetections}"/></td>
+<td><c:out value="${dataFile.numberDetections}"/></td>
 </tr>
 
 <tr>
 <td>File Processing Status:</td>
-<td><c:out value="${dataFile.status}"/></td>
+<td>
+    <c:out value="${dataFile.status}"/>
+    <c:choose>
+         <c:when test="${dataFile.status=='FAILED'}">
+            &nbsp;&nbsp;<a href="<c:url value="datafileadd"><c:param name="datafile_id" value="${dataFile.id}"/></c:url>">Retry</a>
+         </c:when>
+    </c:choose>
+</td>
 </tr>
 
 <tr>
