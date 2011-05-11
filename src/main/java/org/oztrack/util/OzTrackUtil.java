@@ -88,6 +88,7 @@ public class OzTrackUtil {
 
              inFile.renameTo(origFile);
              outFile.renameTo(finalFile);
+             outFile.delete();
 
         } catch (IOException e) {
              throw new FileProcessingException("Problem creating de-duplicates file.");

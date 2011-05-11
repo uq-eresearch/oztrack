@@ -17,6 +17,7 @@ import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.RawAcousticDetectionDao;
+import org.oztrack.data.access.direct.JdbcAccess;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.RawAcousticDetection;
@@ -56,6 +57,7 @@ public class DataFileFormController extends SimpleFormController {
         if (dataFileId != null) {
             DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
             dataFile = dataFileDao.getDataFileById(Long.parseLong(dataFileId));
+
         } else {
             dataFile = new DataFile();
             dataFile.setLocalTimeConversionHours((long)10);

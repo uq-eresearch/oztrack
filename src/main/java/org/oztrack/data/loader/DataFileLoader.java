@@ -39,6 +39,7 @@ public class DataFileLoader {
         // get the next datafile waiting to be processed if there's not one processing at the moment
         DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
         DataFile dataFile = dataFileDao.getNextDataFile();
+        JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
 
 
         if (dataFile != null) {
@@ -66,9 +67,9 @@ public class DataFileLoader {
                     int nbrDetectionsCreated = 0;
                     try {
                         // avoid hibernate for performance
-                        JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
                         nbrDetectionsCreated = jdbcAccess.loadAcousticDetections(dataFile.getProject().getId(), dataFile.getId());
                         jdbcAccess.truncateRawAcousticDetections();
+
                     } catch (Exception e) {
                         throw new FileProcessingException(e.toString());
                     }
@@ -83,6 +84,14 @@ public class DataFileLoader {
                 } catch (FileProcessingException e) {
                     dataFile.setStatus(DataFileStatus.FAILED);
                     dataFile.setStatusMessage(e.toString());
+
+                    // clean up
+                    File file = new File(dataFile.getOzTrackFileName());
+                    File origFile = new File(dataFile.getOzTrackFileName().replace(".csv",".orig"));
+                    file.delete();
+                    origFile.delete();
+
+                    jdbcAccess.truncateRawAcousticDetections();
                 }
 
                 dataFileDao.save(dataFile);
