@@ -14,6 +14,8 @@
   <bean name="/projects" class="org.oztrack.controller.ProjectListController"/>
   <bean name="/projectdetail" class="org.oztrack.controller.ProjectDetailController"/>
   <bean name="/datafiledetail" class="org.oztrack.controller.DataFileDetailController"/>
+  <bean name="/searchacoustic" class="org.oztrack.controller.SearchAcousticController"/>
+
 
   <bean name="/register" class="org.oztrack.controller.RegisterFormController">
 		<property name="sessionForm"><value>false</value></property>

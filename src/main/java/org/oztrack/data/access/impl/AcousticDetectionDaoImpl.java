@@ -24,6 +24,15 @@ public class AcousticDetectionDaoImpl extends JpaDao<AcousticDetection> implemen
     }
 
 
+     public int getTotalCount() {
+        Query query = entityManagerSource.getEntityManager().createQuery("SELECT count(*) FROM AcousticDetection");
+        try {
+            return Integer.parseInt(query.getSingleResult().toString());
+        } catch (NoResultException ex) {
+            return Integer.parseInt(null);
+        }
+    }
+
 
 }
 

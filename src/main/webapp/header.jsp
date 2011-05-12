@@ -24,7 +24,9 @@
        <p><a href="<c:url value="login"/>">Login</a> or <a href="<c:url value="register"/>">Register</a></p>
     </div>
 
-<div id="nav" align="center"><br> Home | Login | Search | Related Links | Contact Us
+<div id="nav" align="center"><br> Home | Login |
+<a href="<c:url value="searchacoustic"/>">Search</a>
+| Related Links | Contact Us
 </div>
 
 <div id="main">

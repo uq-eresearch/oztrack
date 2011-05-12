@@ -139,5 +139,15 @@ form div .checkbox, form div .radiobutton {
     background-color: #DFD;
 }
 
+.dataTable td {
+    font-size: 0.9em;
+}
+
+.dataTableNav {
+    text-align:center;
+    font-size: 0.8em;
+
+}
+
 
 

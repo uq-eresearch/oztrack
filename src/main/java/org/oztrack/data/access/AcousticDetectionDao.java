@@ -14,5 +14,6 @@ import java.util.List;
  */
 public interface AcousticDetectionDao extends Dao<AcousticDetection> {
 
+    int getTotalCount();
 
 }
