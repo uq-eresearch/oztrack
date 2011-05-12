@@ -4,43 +4,94 @@ body {
     padding: 0;
     margin: 0;
     height: 100%;
-    font-family: "Helvetica", "Arial", sans-serif;
-    background-color: #ffffff;
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+    font-size:14px;
+    background-color: #263f00;
     background-repeat: no-repeat;
 }
 
-h1 {font-size:1.2em; color:olive;}
+h1 {
+    font-size:1.5em;
+    font-weight:bold;
+    color:black;
+}
+
 p {font-size:0.8em;}
 
 #container {
 	margin: auto auto;
-	width: 80%;
+	margin-top:20px;
+	width: 990px;
+	background-color:#FBFEE9;
 }
 
 #top_header {
-    background-image: url('../images/test_croc.png');
+    background-image: url('../images/header_logo.gif');
     background-repeat: no-repeat;
-    background-position: right;
-
+    background-position: left;
     width:100%;
-    height: 150px;
+    height: 140px;
+}
+
+#nav {
+    padding-left: 230px;
+    height:3ex;
+    padding-top:1ex;
+    padding-bottom:1ex;
+    background-color: #131f00;
+    color:#ffffff;
+    font-size:1em;
+    font-weight:bold;
+}
+
+#nav a, #nav a:visited {
+    padding-right: 60px;
+    color:#ffffff;
+    text-decoration:none;
+}
+
+#nav a:hover, #nav a:active {
+    color:#f7a700;
+    font-weight:bolder;
+}
+
+#crumbs {
+    background-color:#fbfee9;
+    padding-left:230px;
+}
+
+#crumbs a, #crumbs a:visited {
+    padding-top:.5ex;
+    color:#263f00;
+    font-size:0.7em;
+    text-decoration:none;
+
+}
+
+#crumbs a:hover,#crumbs a:active  {
+    color:#ef9800;
 }
 
 #login {
     position:relative;
-    float: right;
+    float: left;
+    margin-left:15px;
+    width:175px;
+    background-color:#e6e6c0;
 }
 
-#nav {
-    margin: auto auto;
-    font-size:0.8em;
+#login h1 {
+    color:#263f00;
+    font-size:0.9em;
+    font-weight:bold;
 }
 
 
 #main {
-    background-color:#f5f5f5;
-    padding-left: 100px;
+    padding-left:220px;
+    background-color:#fbfee9;
 }
+
 
 #map_canvas {
     margin: auto auto;
@@ -52,9 +103,10 @@ p {font-size:0.8em;}
 #footer {
     bottom: 0;
     font-size: 0.7em;
-    margin: 1em auto;
+    margin: 0.3em auto;
     position: relative;
     float: right;
+    color:#fbfee9;
 }
 
 /*

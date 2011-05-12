@@ -17,18 +17,35 @@
 <body>
 
 <div id="container">
-<div id="top_header"><h1>OzTrack</h1>
-
+<div id="top_header">
+    <img src="images/header_croc.jpg" align="right"/>
 </div>
-<div id="login">
-       <p><a href="<c:url value="login"/>">Login</a> or <a href="<c:url value="register"/>">Register</a></p>
-    </div>
 
-<div id="nav" align="center"><br> Home | Login |
-<a href="<c:url value="searchacoustic"/>">Search</a>
-| Related Links | Contact Us
+
+<div id="nav">
+<a href="<c:url value=""/>">Home</a>
+<a href="<c:url value="searchacoustic"/>">Tracking Portal</a>
+<a href="<c:url value="projects"/>">My Projects</a>
+<a href="<c:url value="about"/>">About</a>
+<a href="<c:url value="contact"/>">Contact</a>
+</div>
+
+
+<div id="crumbs">
+<a href=#>Home </a>
+<a href=#> &rsaquo; My Projects </a>
+<a href=#> &rsaquo; My Animals</a>
+</div>
+
+
+<div id="login">
+
+       <h1>Login</h1>
+       <p><a href="<c:url value="login"/>">Login</a> or <a href="<c:url value="register"/>">Register</a></p>
+
 </div>
 
 <div id="main">
 
-<br><br>
+
+
