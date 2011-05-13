@@ -40,7 +40,16 @@
 
 <div id="login">
 
-       <h1>Login</h1>
+        <h1>Login</h1>
+        <form action="#" method="post" id="loginForm" onsubmit="login(); return false;">
+           <p id="login-error" style="color:#ff0000;"></p>
+           <label for="username">Username</label><input id="username" name="username" value="" title="username" type="text"></input>
+           <br>
+           <label for="password">Password</label><input id="password" name="password" value="" title="password" type="password"></input>
+           <br>
+           <input id="loginSubmit" value="Log in" type="submit" src="images/login.gif"/>
+        </form>
+
        <p><a href="<c:url value="login"/>">Login</a> or <a href="<c:url value="register"/>">Register</a></p>
 
 </div>

@@ -84,6 +84,17 @@ p {font-size:0.8em;}
     color:#263f00;
     font-size:0.9em;
     font-weight:bold;
+    padding-left:15px;
+}
+
+#loginForm  {
+    font-size:0.7em;
+    padding-left:15px;
+    color:#263f00;
+}
+
+#loginForm input {
+    margin-bottom:5px;
 }
 
 
@@ -118,7 +129,6 @@ p {font-size:0.8em;}
 fieldset {
     font-size:0.7em;
     width: 70%;
-    padding: 10px;
 }
 
 legend {
@@ -164,6 +174,8 @@ form div .checkbox, form div .radiobutton {
 #localTimeConversionHours {
     width:20px;
 }
+
+
 
 
 /*
