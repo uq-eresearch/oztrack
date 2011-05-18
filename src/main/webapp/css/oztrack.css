@@ -36,8 +36,8 @@ p {font-size:0.8em;}
 #nav {
     padding-left: 230px;
     height:3ex;
-    padding-top:1ex;
-    padding-bottom:1ex;
+    padding-top:1.2ex;
+    padding-bottom:0.8ex;
     background-color: #131f00;
     color:#ffffff;
     font-size:1em;
@@ -103,15 +103,15 @@ p {font-size:0.8em;}
 #main {
     padding-left:220px;
     background-color:#fbfee9;
-
+    margin-top:40px;
 }
 
 
 #map_canvas {
-    margin: auto auto;
+    margin-left: 10px;
     height: 100%;
-    width:500px;
-    height:450px;
+    width:600px;
+    height:350px;
 }
 
 #footer {
@@ -201,25 +201,29 @@ form div .checkbox, form div .radiobutton {
   tables
 */
 
+table {
+    border-collapse: collapse;
+}
+
+tbody tr:hover {
+    background-color:#e6e6c0;
+}
+
 .infoTable {
     width: 80%;
-    border: 0;
-    font-size: 0.8em;
-    text-align:left;
+    text-align:center;
+    font-size: 0.9em;
 }
 
 .infoTable  th {
-    font-size: 0.9em;
     font-weight: bold;
+    background-color:#f5ce7c;
 }
 
 .infoTable  td {
-    margin-left:5px;
-    margin-right:5px;
-    margin-bottom:10px;
-    margin-top: 10px;
-    padding-top:5px;
-    background-color: #DFD;
+    border-color: green;
+    border-style: solid;
+    border-width: 1px;
 }
 
 .dataTable td {
