@@ -29,6 +29,11 @@
 
     <servlet-mapping>
       <servlet-name>springmvc</servlet-name>
+      <url-pattern>/header</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>springmvc</servlet-name>
       <url-pattern>/users</url-pattern>
     </servlet-mapping>
 

@@ -26,8 +26,7 @@ public class ProjectListController implements Controller {
 	@Override
     public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 		
-		ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
-    	User currentUser = OzTrackApplication.getApplicationContext().getAuthenticationManager().getCurrentUser();
+		User currentUser = (User) httpServletRequest.getSession().getAttribute(Constants.CURRENT_USER);
 
     	// returns ALL projects that this user has access to
     	//List<Project> userProjectList = projectDao.getProjectListByUserId(currentUser.getId());

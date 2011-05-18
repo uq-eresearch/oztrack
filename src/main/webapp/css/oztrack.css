@@ -56,35 +56,34 @@ p {font-size:0.8em;}
 }
 
 #crumbs {
-    background-color:#fbfee9;
+    position:relative;
+    float:left;
     padding-left:230px;
+
 }
 
-#crumbs a, #crumbs a:visited {
+#crumbs, #login {
+     background-color:#fbfee9;
+     font-size:0.7em;
+
+}
+
+#crumbs a, #crumbs a:visited, #login a, #login a:visited {
     padding-top:.5ex;
     color:#263f00;
-    font-size:0.7em;
     text-decoration:none;
 
 }
 
-#crumbs a:hover,#crumbs a:active  {
+#crumbs a:hover,#crumbs a:active, #login a:hover, #login a:active  {
     color:#ef9800;
+
 }
 
 #login {
     position:relative;
-    float: left;
-    margin-left:15px;
-    width:175px;
-    background-color:#e6e6c0;
-}
-
-#login h1 {
-    color:#263f00;
-    font-size:0.9em;
-    font-weight:bold;
-    padding-left:15px;
+    float: right;
+    padding-right: 20px;
 }
 
 #loginForm  {
@@ -97,10 +96,15 @@ p {font-size:0.8em;}
     margin-bottom:5px;
 }
 
+#loginError {
+    color: red;
+}
+
 
 #main {
     padding-left:220px;
     background-color:#fbfee9;
+    height:300px;
 }
 
 
@@ -142,7 +146,6 @@ legend {
 form div {
   clear: left;
   display: block;
-  zoom: 1;
   margin: 5px 0 0 0;
   padding: 1px 3px;
 
@@ -176,7 +179,24 @@ form div .checkbox, form div .radiobutton {
 }
 
 
+.oztrackButton {
+    background-color:#adbc6b;
+    border: solid 1px #839537;
+    width:53px;
+    color:#000000;
+    font-weight:bold;
+    font-size:1.2em;
+    height:20px;
+    font-family:Verdana;
+    margin-top:5px;
+    padding-bottom:3px;
+}
 
+.oztrackButton:hover {
+    color:#ffffff;
+    background-color:#263f00;
+
+}
 
 /*
   tables

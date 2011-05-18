@@ -1,6 +1,6 @@
 
 $(document).ready(function(){
-    //
+
 });
 
 $(document.getElementById('map_canvas')).ready(function() {
@@ -17,3 +17,24 @@ $(document.getElementById('map_canvas')).ready(function() {
         var map = new google.maps.Map(document.getElementById("map_canvas"),
             myOptions);
  }
+
+function login() {
+
+    var user = $('#username').val();
+    var passwd = $('#password').val();
+    var errs = {username: '', password:''};
+    var user = {username : user, password : passwd, errors: errs};
+    $.ajax ({
+        type: 'POST',
+        url:'login',
+        data:user,
+        success: function(data, textStatus, jqXHR) {
+            $('#loginMessage').html(textStatus);
+        },
+        error: function(xhr, textStatus, errorThrown) {
+            $('#loginError').html('Authentication Failed: incorrect username or password');
+        }
+    });
+    return false;
+ }
+

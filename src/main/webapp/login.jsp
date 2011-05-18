@@ -1,6 +1,8 @@
 <%@ include file="header.jsp" %>
 
 
+<div>
+
 <form:form commandName="user" method="POST" name="login">
 
 <fieldset>
@@ -26,8 +28,8 @@
 </fieldset>
 </form:form>
 
-
-
+</div>
 
 
 <%@ include file="footer.jsp" %>
+

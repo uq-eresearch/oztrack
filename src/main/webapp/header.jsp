@@ -11,7 +11,6 @@
     <script type="text/javascript" src="js/jquery/jquery.js"></script>
     <script type="text/javascript" src="js/oztrack.js"></script>
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-
 </head>
 
 <body>
@@ -37,23 +36,38 @@
 <a href=#> &rsaquo; My Animals</a>
 </div>
 
-
 <div id="login">
-
-        <h1>Login</h1>
-        <form action="#" method="post" id="loginForm" onsubmit="login(); return false;">
-           <p id="login-error" style="color:#ff0000;"></p>
-           <label for="username">Username</label><input id="username" name="username" value="" title="username" type="text"></input>
-           <br>
-           <label for="password">Password</label><input id="password" name="password" value="" title="password" type="password"></input>
-           <br>
-           <input id="loginSubmit" value="Log in" type="submit" src="images/login.gif"/>
-        </form>
-
-       <p><a href="<c:url value="login"/>">Login</a> or <a href="<c:url value="register"/>">Register</a></p>
-
+      <c:choose>
+      <c:when test="${userInSession}">
+        Welcome, <c:out value="${currentUser.firstName}"/>
+      </c:when>
+      <c:otherwise>
+        <a href="<c:url value="login"/>">Login</a> or <a href="<c:url value="register"/>">Register</a>
+      </c:otherwise>
+      </c:choose>
+       <c:out value="${currentUser.firstName}"/>
+      <br>
 </div>
 
+
+<!--
+        <h1>Login</h1>
+        <div id="loginForm">
+           <p id="loginError" style="color:#ff0000;"></p>
+           <label for="username">Username</label>
+           <input id="username" name="username" value="" title="username" type="text"></input>
+           <br>
+           <label for="password">Password</label>
+           <input id="password" name="password" value="" title="password" type="password"></input>
+           <br>
+           <input id="loginSubmit" value="Log in" type="button" class="oztrackButton" onClick="login(); return false;"/>
+        </div>
+        <p id="loginMessage"></p>
+-->
+       <!--
+       <p><a href="<c:url value="login"/>">Login</a> or <a href="<c:url value="register"/>">Register</a></p>
+       -->
+<br>
 <div id="main">
 
 
