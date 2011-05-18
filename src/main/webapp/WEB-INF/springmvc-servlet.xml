@@ -10,11 +10,13 @@
       <property name="suffix" value=".jsp"/>
   </bean>
 
+  <bean name="/home" class="org.oztrack.controller.HomeController"/>
   <bean name="/users" class="org.oztrack.controller.UserListController"/>
   <bean name="/projects" class="org.oztrack.controller.ProjectListController"/>
   <bean name="/projectdetail" class="org.oztrack.controller.ProjectDetailController"/>
   <bean name="/datafiledetail" class="org.oztrack.controller.DataFileDetailController"/>
   <bean name="/searchacoustic" class="org.oztrack.controller.SearchAcousticController"/>
+  <bean name="/logout" class="org.oztrack.controller.LogoutController"/>
 
 
   <bean name="/register" class="org.oztrack.controller.RegisterFormController">

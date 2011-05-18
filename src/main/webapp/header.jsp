@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <html>
@@ -24,7 +25,16 @@
 <div id="nav">
 <a href="<c:url value=""/>">Home</a>
 <a href="<c:url value="searchacoustic"/>">Tracking Portal</a>
-<a href="<c:url value="projects"/>">My Projects</a>
+
+<c:choose>
+ <c:when test="${currentUser != null}">
+    <a href="<c:url value="projects"/>">My Projects</a>
+ </c:when>
+<c:otherwise>
+    <a href="<c:url value="login"/>">Login</a>
+</c:otherwise>
+</c:choose>
+
 <a href="<c:url value="about"/>">About</a>
 <a href="<c:url value="contact"/>">Contact</a>
 </div>
@@ -37,37 +47,25 @@
 </div>
 
 <div id="login">
-      <c:choose>
-      <c:when test="${userInSession}">
-        Welcome, <c:out value="${currentUser.firstName}"/>
-      </c:when>
-      <c:otherwise>
-        <a href="<c:url value="login"/>">Login</a> or <a href="<c:url value="register"/>">Register</a>
-      </c:otherwise>
-      </c:choose>
-       <c:out value="${currentUser.firstName}"/>
-      <br>
+<c:set var="thisURL" value="${pageContext.request.requestURL}"/>
+<c:if test="${!fn:contains(thisURL,'login')}">
+    <c:choose>
+    <c:when test="${currentUser != null}">
+      Welcome, <c:out value="${currentUser.firstName}"/>
+      &nbsp;|&nbsp;
+      <a href=#>Profile</a>
+      &nbsp;|&nbsp;
+      <a href="<c:url value="logout"/>">Logout</a>
+    </c:when>
+    <c:otherwise>
+      <a href="<c:url value="login"/>">Login</a> or <a href="<c:url value="register"/>">Register</a>
+    </c:otherwise>
+    </c:choose>
+    <br>
+</c:if>
 </div>
 
 
-<!--
-        <h1>Login</h1>
-        <div id="loginForm">
-           <p id="loginError" style="color:#ff0000;"></p>
-           <label for="username">Username</label>
-           <input id="username" name="username" value="" title="username" type="text"></input>
-           <br>
-           <label for="password">Password</label>
-           <input id="password" name="password" value="" title="password" type="password"></input>
-           <br>
-           <input id="loginSubmit" value="Log in" type="button" class="oztrackButton" onClick="login(); return false;"/>
-        </div>
-        <p id="loginMessage"></p>
--->
-       <!--
-       <p><a href="<c:url value="login"/>">Login</a> or <a href="<c:url value="register"/>">Register</a></p>
-       -->
-<br>
 <div id="main">
 
 

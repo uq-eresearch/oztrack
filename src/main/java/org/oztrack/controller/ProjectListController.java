@@ -28,6 +28,7 @@ public class ProjectListController implements Controller {
 		
 		User currentUser = (User) httpServletRequest.getSession().getAttribute(Constants.CURRENT_USER);
 
+
     	// returns ALL projects that this user has access to
     	//List<Project> userProjectList = projectDao.getProjectListByUserId(currentUser.getId());
         List <ProjectUser> userProjectList = currentUser.getProjectUsers();
