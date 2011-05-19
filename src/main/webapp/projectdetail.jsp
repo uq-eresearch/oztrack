@@ -5,7 +5,7 @@
 
 <table class="infoTable">
 
-<tr><td>Title:</td><td><c:out value="${project.title}"/></td></tr>
+<tr><td>Title:</td><td id="projectTitle"><c:out value="${project.title}"/></td></tr>
 <tr><td>Description:</td><td><c:out value="${project.description}"/></td></tr>
 <tr><td>Contact Details:</td><td><c:out value="${project.contactName}"/> <c:out value="${project.contactUrl}"/></td></tr>
 <tr><td>Custodian Details:</td><td><c:out value="${project.custodianName}"/>,<c:out value="${project.custodianUrl}"/></td></tr>

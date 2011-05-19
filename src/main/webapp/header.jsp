@@ -9,7 +9,7 @@
     <title>Index</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" type="text/css" href="css/oztrack.css"/>
-    <script type="text/javascript" src="js/jquery/jquery.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js">;</script>
     <script type="text/javascript" src="js/oztrack.js"></script>
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 </head>
@@ -41,9 +41,7 @@
 
 
 <div id="crumbs">
-<a href=#>Home </a>
-<a href=#> &rsaquo; My Projects </a>
-<a href=#> &rsaquo; My Animals</a>
+    <a id="homeUrl" href="<c:url value=""/>">Home</a>
 </div>
 
 <div id="login">

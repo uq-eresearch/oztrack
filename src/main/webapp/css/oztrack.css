@@ -213,17 +213,17 @@ tbody tr:hover {
     width: 80%;
     text-align:center;
     font-size: 0.9em;
+
 }
 
 .infoTable  th {
     font-weight: bold;
     background-color:#f5ce7c;
+       padding: 5px 5px;
 }
 
 .infoTable  td {
-    border-color: green;
-    border-style: solid;
-    border-width: 1px;
+       padding: 5px 5px;
 }
 
 .dataTable td {

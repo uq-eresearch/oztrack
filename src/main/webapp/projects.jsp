@@ -2,13 +2,12 @@
 
 
 <h1>Projects</h1>
-<p>Welcome, <c:out value="${currentUser.firstName}"/></p>
 
 <p><a href="<c:url value="projectadd"/>">Add a Project</a></p>
 
 <table class="infoTable">
     <tr>
-        <th width="40%">Project Title</th>
+        <th>Project Title</th>
         <th>Contact Name</th>
         <th>Role</th>
     </tr>
