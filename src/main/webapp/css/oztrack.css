@@ -16,7 +16,30 @@ h1 {
     color:black;
 }
 
-p {font-size:0.8em;}
+h2 {
+    font-size:1.2em;
+    font-weight:bold;
+    color:#ef9800;
+}
+
+p {
+    font-size:1em;
+    color:black;
+
+    }
+
+a {
+    color: black;
+}
+
+a:visited {
+    color:#61702a;
+}
+
+
+/*
+  main divs
+*/
 
 #container {
 	margin: auto auto;
@@ -39,20 +62,7 @@ p {font-size:0.8em;}
     padding-top:1.2ex;
     padding-bottom:0.8ex;
     background-color: #131f00;
-    color:#ffffff;
-    font-size:1em;
-    font-weight:bold;
-}
 
-#nav a, #nav a:visited {
-    padding-right: 60px;
-    color:#ffffff;
-    text-decoration:none;
-}
-
-#nav a:hover, #nav a:active {
-    color:#f7a700;
-    font-weight:bolder;
 }
 
 #crumbs {
@@ -65,7 +75,63 @@ p {font-size:0.8em;}
 #crumbs, #login {
      background-color:#fbfee9;
      font-size:0.7em;
-    padding-top:0.7ex;
+     padding-top:0.7ex;
+}
+
+
+#login {
+    position:relative;
+    float: right;
+    padding-right: 20px;
+
+}
+
+
+#leftMenu  {
+    position:absolute;
+    float:left;
+    width: 175px;
+    height: 300px;
+    margin-left:20px;
+    margin-top:20px;
+    padding-bottom:20px;
+}
+
+#main {
+    margin-left:220px;
+    margin-top:20px;
+    padding-bottom:20px;
+    background-color:#fbfee9;
+
+}
+
+
+
+#footer {
+    bottom: 0;
+    font-size: 0.7em;
+    margin: 0.3em auto;
+    position: relative;
+    float: right;
+    color:#fbfee9;
+}
+
+/*
+  nav elements
+*/
+
+#nav a, #nav a:visited {
+    color:#ffffff;
+    font-size:1em;
+    font-weight:bold;
+    padding-right: 60px;
+    color:#ffffff;
+    text-decoration:none;
+}
+
+#nav a:hover, #nav a:active {
+    color:#f7a700;
+    font-weight:bolder;
 }
 
 #crumbs a, #crumbs a:visited, #login a, #login a:visited {
@@ -79,31 +145,38 @@ p {font-size:0.8em;}
 
 }
 
-#login {
-    position:relative;
-    float: right;
-    padding-right: 20px;
+
+#leftMenu ul {
+    padding: 0px;
+    margin: 0px;
 }
 
-#loginForm  {
-    font-size:0.7em;
-    padding-left:15px;
-    color:#263f00;
+#leftMenu li    {
+
+    list-style-type: none;
+    list-style-image: none;
+    background-repeat: no-repeat;
+    background-position: 0px 5px;
+    padding-left: 14px;
+    padding-top: 0.8em;
+    padding-bottom: 0.8em;
+    border-bottom: dashed 1px black;
 }
 
-#loginForm input {
-    margin-bottom:5px;
+#leftMenu li a {
+    text-decoration:none;
+    font-size: 0.8em;
+    font-weight: bolder;
+    color:black;
 }
 
-#loginError {
-    color: red;
+#leftMenu li a:active, #leftMenu li a:hover  {
+    color:#ef9800;
 }
 
 
-#main {
-    padding-left:220px;
-    background-color:#fbfee9;
-    margin-top:40px;
+#noSessionError {
+    font-style: italic; color:red;
 }
 
 
@@ -114,35 +187,37 @@ p {font-size:0.8em;}
     height:350px;
 }
 
-#footer {
-    bottom: 0;
-    font-size: 0.7em;
-    margin: 0.3em auto;
-    position: relative;
-    float: right;
-    color:#fbfee9;
-}
 
 /*
     forms
 */
 
 
+form {
+    background-color:#e6e6c0;
+    width:70%;
+    padding-left:15px;
+    padding-top:5px;
+    padding-bottom:15px;
+    font-size: 0.8em;
 
-fieldset {
-    font-size:0.7em;
-    width: 70%;
 }
 
-legend {
-	color: olive;
-	font-size: 1.5em;
-	font-weight: bold;
+.formHeader,.formSubheader{
+    color:#ef9800;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.formSubheader {
+    font-size:14px;
+    padding-top:10px;
 }
 
 .formErrors { font-style: italic; color:red; }
 
 form div {
+
   clear: left;
   display: block;
   margin: 5px 0 0 0;
@@ -153,29 +228,37 @@ form div {
 form div label {
   display: block;
   float: left;
-  width: 120px;
+  width: 140px;
   padding-left:5px;
   padding-top:5px;
-  padding-right:5px;
+  padding-right:15px;
   margin: 0 0 5px 0;
-  text-align: right;
+  text-align: left;
+  font-weight:bold;
 }
 
 form div select, form div textarea, form div input {
-  width: 250px;
-  padding: 1px 3px;
+  width: 280px;
+  padding-top: 3px;
+
   margin: 0 0 0 0;
 }
 
 form div .checkbox, form div .radiobutton {
-	width: 20px;
-	padding-left: 5px;
-	float:left;
+        width: 20px;
 }
+
+.checkboxDiv, .formButton {
+    width:280px;
+    margin-left:160px;
+}
+
+
 
 #localTimeConversionHours {
     width:20px;
 }
+
 
 
 .oztrackButton {
@@ -212,7 +295,7 @@ tbody tr:hover {
 .infoTable {
     width: 80%;
     text-align:center;
-    font-size: 0.9em;
+    font-size: 0.8em;
 
 }
 
@@ -226,6 +309,17 @@ tbody tr:hover {
        padding: 5px 5px;
 }
 
+.detailTable {
+    width: 80%
+    text-align:left;
+    font-size: 0.8em;
+}
+
+.detailTable td {
+    padding-right: 30px;
+    padding-top:5px;
+}
+
 .dataTable td {
     font-size: 0.9em;
 }
@@ -235,6 +329,16 @@ tbody tr:hover {
     font-size: 0.8em;
 
 }
+
+
+
+/*
+
+#topHeader, #nav, #crumbs, #login, #leftMenu, #main {
+    border: solid red 1px;
+}
+*/
+
 
 
 

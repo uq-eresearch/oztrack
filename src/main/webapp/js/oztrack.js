@@ -24,11 +24,6 @@ $(document.getElementById('crumbs')).ready(function() {
 
  function crumbs() {
 
-
-    //<a href=#>Home </a>
-    //<a href=#> &rsaquo; My Projects </a>
-    //<a href=#> &rsaquo; My Animals</a>";
-
    //eg url http://localhost:8080/oztrack/register;jsessionid=4q9927jnlfrdosnt4ci95es
    //       ---------baseUrl-------------/thisPath;----------------------------------
 

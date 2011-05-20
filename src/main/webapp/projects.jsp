@@ -3,8 +3,6 @@
 
 <h1>Projects</h1>
 
-<p><a href="<c:url value="projectadd"/>">Add a Project</a></p>
-
 <table class="infoTable">
     <tr>
         <th>Project Title</th>

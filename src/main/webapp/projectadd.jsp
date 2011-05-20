@@ -1,11 +1,8 @@
 <%@ include file="header.jsp" %>
 
-<h1></h1>
-
 <form:form commandName="project" method="POST" name="project">
 
-<fieldset>
-<legend>Add a Project</legend>
+<span class="formHeader">Add a Project</span>
 
 <div>
 <label for="title">*Title:</label>
@@ -31,14 +28,12 @@
 <form:errors path="temporalCoverageDescr" cssClass="formErrors"/>
 </div>
 
-<div>
-<label for="isGlobal">The data in this project is to be publically available via OzTrack.
-</label>
-<form:checkbox path="isGlobal" id="isGlobal"/>
-
+<div class="checkboxDiv">
+<form:checkbox cssClass="checkbox" path="isGlobal" id="isGlobal"/>
+The data in this project is to be publically available via OzTrack.
 </div>
 
-<div><br><b>Data Contact</b></div>
+<div class="formSubheader">Data Contact</div>
 
 <div>
 <label for="contactName">Name:</label>
@@ -65,7 +60,7 @@
 <form:errors path="contactUrl" cssClass="formErrors"/>
 </div>
 
-<div><br><b>Data Custodian</b></div>
+<div class="formSubheader">Data Custodian</div>
 
 <div>
 <label for="custodianname">Custodian Name:</label>
@@ -92,7 +87,7 @@
 </div>
 
 
-<div><br><b>Publications</b></div>
+<div class="formSubheader">Publications</div>
 
 <div>
 <label for="publicationTitle">Publication Title:</label>
@@ -106,7 +101,7 @@
 <form:errors path="publicationUrl" cssClass="formErrors"/>
 </div>
 
-<div align="center"><input type="submit" value="Create OzTrack Project"/></div>
+<div class="formButton"><input type="submit" value="Create OzTrack Project"/></div>
 
 </table>
 

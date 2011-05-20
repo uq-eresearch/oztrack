@@ -1,13 +1,11 @@
 <%@ include file="header.jsp" %>
 
 
-<div>
+<div id="noSessionError"><c:out value="${noSessionError}"/></div>
 
 <form:form commandName="user" method="POST" name="login">
 
-<fieldset>
-<legend>Login</legend>
-
+<span class="formHeader">Login</span>
 
 <div>
 <label for="username">Username:</label>
@@ -21,14 +19,14 @@
 <form:errors path="password" cssClass="formErrors"/>
 </div>
 
-<div align="center">
+<div class="formButton">
 <input type="submit" value="Login"/>
 </div>
 
-</fieldset>
+<div><label></label><a href="<c:url value="register"/>">Register as a new user</a>
+</div>
 </form:form>
 
-</div>
 
 
 <%@ include file="footer.jsp" %>

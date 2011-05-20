@@ -4,8 +4,7 @@
 
 <form:form commandName="user" method="POST" name="user">
 
-<fieldset>
-<legend>Register</legend>
+<span class="formHeader">Register</span>
 
 <div>
 <label for="username">Username:</label>
@@ -37,7 +36,7 @@
 <form:errors path="email" cssClass="formErrors"/>
 </div>
 
-<div><input type="submit" value="Register"/></div>
+<div class="formButton"><input type="submit" value="Register"/></div>
 
 </fieldset>
 

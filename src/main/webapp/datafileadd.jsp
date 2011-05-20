@@ -2,8 +2,7 @@
 
 <form:form commandName="dataFile" method="POST" enctype="multipart/form-data">
 
-<fieldset>
-<legend>Add a Data File</legend>
+<span class="formHeader">Add a Data File</span>
 
 <div>
 <label for="fileDescription">File Description:</label>

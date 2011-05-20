@@ -9,9 +9,11 @@
     <title>Index</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" type="text/css" href="css/oztrack.css"/>
+    <link rel="stylesheet" type="text/css" href="css/formalize.css"/>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js">;</script>
     <script type="text/javascript" src="js/oztrack.js"></script>
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <script type="text/javascript" src="js/jquery/jquery.formalize.min.js"></script>
+    <!--<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>-->
 </head>
 
 <body>
@@ -39,14 +41,15 @@
 <a href="<c:url value="contact"/>">Contact</a>
 </div>
 
-
+<div id="subnav">
+ &nbsp;
 <div id="crumbs">
     <a id="homeUrl" href="<c:url value=""/>">Home</a>
 </div>
 
 <div id="login">
 <c:set var="thisURL" value="${pageContext.request.requestURL}"/>
-<c:if test="${!fn:contains(thisURL,'login')}">
+<c:if test="${!fn:contains(thisURL,'login') && !fn:contains(thisURL,'register')}">
     <c:choose>
     <c:when test="${currentUser != null}">
       Welcome, <c:out value="${currentUser.firstName}"/>
@@ -61,11 +64,21 @@
     </c:choose>
     <br>
 </c:if>
+</div>
 
 </div>
 
+<div id="leftMenu">
+<c:if test="${fn:contains(thisURL,'project') || fn:contains(thisURL,'dataFile') }">
+    <ul>
+    <li><a href="<c:url value="projects"/>">My Projects</a></li>
+    <li><a href="<c:url value="projectadd"/>">Add a Project</a></li>
+
+    <c:if test="${fn:contains(thisURL,'projectDetail')}">
+        <li><a href="<c:url value="datafileadd"/>">Add a Data File</a></li>
+    </c:if>
+    </ul>
+</c:if>
+</div>
 
 <div id="main">
-
-
-
