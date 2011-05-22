@@ -4,6 +4,7 @@
 
 <span class="formHeader">Add a Data File</span>
 
+<p>This file will be added to the project: <b><span id="projectTitle"><c:out value="${projectTitle}"/></span>.</p></b>
 <div>
 <label for="fileDescription">File Description:</label>
 <form:input path="fileDescription" id="fileDescription"/>

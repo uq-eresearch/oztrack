@@ -51,7 +51,12 @@ $(document.getElementById('crumbs')).ready(function() {
             break;
         case "projectdetail":
             var projectTitle = $('#projectTitle').html();
-            breadcrumb = breadcrumb + ' &rsaquo; My Projects &rsaquo; <b>' + projectTitle + '</b>';
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectdetail","projects") + '"> &rsaquo; My Projects</a> &rsaquo; <b>' + projectTitle + '</b>';
+            break;
+        case "datafileadd":
+            var projectTitle = $('#projectTitle').html();
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("datafileadd","projects") + '"> &rsaquo; My Projects</a> &rsaquo; ' + projectTitle
+                                    + ' &rsaquo; <b> Add a Data File </b>';
             break;
         default:
             break;

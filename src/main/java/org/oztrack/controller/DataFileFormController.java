@@ -21,6 +21,7 @@ import org.oztrack.data.access.direct.JdbcAccess;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.RawAcousticDetection;
+import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.DataFileStatus;
 import org.oztrack.data.model.types.DataFileType;
 import org.springframework.validation.BindException;
@@ -68,6 +69,18 @@ public class DataFileFormController extends SimpleFormController {
 
 
     @Override
+    protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
+
+        Project project = (Project) request.getSession().getAttribute("project");
+        String projectTitle = project.getTitle();
+
+        ModelAndView modelAndView = super.showForm(request, response, errors, controlModel);    //To change body of overridden methods use File | Settings | File Templates.
+        modelAndView.addObject("projectTitle",projectTitle);
+        return modelAndView;
+
+    }
+
+    @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
 
         DataFile dataFile = (DataFile) command;
@@ -83,7 +96,10 @@ public class DataFileFormController extends SimpleFormController {
             dataFile.setUserGivenFileName(file.getOriginalFilename());
             dataFile.setContentType(file.getContentType());
             dataFile.setUploadDate(new java.util.Date());
-            dataFile.setUploadUser(OzTrackApplication.getApplicationContext().getAuthenticationManager().getCurrentUser().getFullName());
+
+            //dataFile.setUploadUser(OzTrackApplication.getApplicationContext().getAuthenticationManager().getCurrentUser().getFullName());
+            User currentUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER);
+            dataFile.setUploadUser(currentUser.getFullName() );
             dataFile.setDataFileType(DataFileType.ACOUSTIC);
 
             // persist at project level

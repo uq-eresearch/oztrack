@@ -13,7 +13,7 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js">;</script>
     <script type="text/javascript" src="js/oztrack.js"></script>
     <script type="text/javascript" src="js/jquery/jquery.formalize.min.js"></script>
-    <!--<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>-->
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 </head>
 
 <body>
@@ -69,7 +69,7 @@
 </div>
 
 <div id="leftMenu">
-<c:if test="${fn:contains(thisURL,'project') || fn:contains(thisURL,'dataFile') }">
+<c:if test="${fn:contains(thisURL,'project') || fn:contains(thisURL,'dataFile') || fn:contains(thisURL,'datafile') }">
     <ul>
     <li><a href="<c:url value="projects"/>">My Projects</a></li>
     <li><a href="<c:url value="projectadd"/>">Add a Project</a></li>
