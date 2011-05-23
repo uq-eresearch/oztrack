@@ -4,6 +4,7 @@ import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
 import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.access.AnimalDao;
+import org.oztrack.data.model.Project;
 
 import java.io.Serializable;
 import java.util.List;
@@ -24,7 +25,7 @@ public class AnimalDaoImpl extends JpaDao<Animal> implements AnimalDao, Serializ
 
     @Override
     public List<Animal> getAnimalsByProjectId(Long projectId) {
-        Query query = entityManagerSource.getEntityManager().createQuery("select o from Animal o where o.project.id = :projectId");
+        Query query = entityManagerSource.getEntityManager().createQuery("select o from Animal o where o.project.id = :projectId order by o.projectAnimalId");
         query.setParameter("projectId", projectId);
         try {
             return (List <Animal>) query.getResultList();
@@ -38,6 +39,17 @@ public class AnimalDaoImpl extends JpaDao<Animal> implements AnimalDao, Serializ
         Query query = entityManagerSource.getEntityManager().createQuery("select o from Animal o where o.project.id=:projectId and o.projectAnimalId=:animalId");
         query.setParameter("projectId", projectId);
         query.setParameter("animalId", animalId);
+        try {
+            return (Animal) query.getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
+
+    }
+
+    public Animal getAnimalById(Long id) {
+        Query query = entityManagerSource.getEntityManager().createQuery("SELECT o FROM Animal o WHERE o.id = :id");
+        query.setParameter("id", id);
         try {
             return (Animal) query.getSingleResult();
         } catch (NoResultException ex) {

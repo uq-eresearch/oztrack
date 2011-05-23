@@ -25,24 +25,30 @@
 
 
 <div id="nav">
-<a href="<c:url value=""/>">Home</a>
-<a href="<c:url value="searchacoustic"/>">Tracking Portal</a>
+<ul>
+
+<li><a href="<c:url value=""/>">Home</a></li>
+<li><a href="<c:url value="searchacoustic"/>">Tracking Portal</a></li>
 
 <c:choose>
  <c:when test="${currentUser != null}">
-    <a href="<c:url value="projects"/>">My Projects</a>
+    <li><a href="<c:url value="projects"/>">My Projects</a></li>
+    <!--
+        <ul><li><a href="<c:url value="projectadd"/>">Add a Project</a></li></ul>
+    -->
  </c:when>
 <c:otherwise>
-    <a href="<c:url value="login"/>">Login</a>
+    <li><a href="<c:url value="login"/>">Login</a></li>
 </c:otherwise>
 </c:choose>
 
-<a href="<c:url value="about"/>">About</a>
-<a href="<c:url value="contact"/>">Contact</a>
+<li><a href="<c:url value="about"/>">About</a></li>
+<li><a href="<c:url value="contact"/>">Contact</a></li>
 </div>
+</ul>
 
 <div id="subnav">
- &nbsp;
+
 <div id="crumbs">
     <a id="homeUrl" href="<c:url value=""/>">Home</a>
 </div>
@@ -69,15 +75,22 @@
 </div>
 
 <div id="leftMenu">
-<c:if test="${fn:contains(thisURL,'project') || fn:contains(thisURL,'dataFile') || fn:contains(thisURL,'datafile') }">
+<c:if test="${fn:contains(thisURL,'project') && !fn:contains(thisURL,'projectDetail')&& !fn:contains(thisURL,'projectAnimals')}">
     <ul>
     <li><a href="<c:url value="projects"/>">My Projects</a></li>
     <li><a href="<c:url value="projectadd"/>">Add a Project</a></li>
-
-    <c:if test="${fn:contains(thisURL,'projectDetail')}">
-        <li><a href="<c:url value="datafileadd"/>">Add a Data File</a></li>
-    </c:if>
     </ul>
+</c:if>
+
+<c:if test="${fn:contains(thisURL,'projectDetail') || fn:contains(thisURL,'projectAnimals') || fn:contains(thisURL,'datafileadd')|| fn:contains(thisURL,'dataFileDetail')}">
+    <c:if test="${project.title != null}">
+        <ul>
+          <li><a href="<c:url value="projectdetail"/>"> <c:out value="${project.title}"/></a></li>
+          <li><a href="<c:url value="datafileadd"/>">Add a Data File</a></li>
+          <li><a href="<c:url value="projectanimals"/>">Animals</a></li>
+          <li><a href="<c:url value="projectreceivers"/>">Receivers</a></li>
+        </ul>
+    </c:if>
 </c:if>
 </div>
 

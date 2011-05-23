@@ -1,6 +1,6 @@
 <%@ include file="header.jsp" %>
 
-<h1 id="projectTitle"><c:out value="${project.title}"/></h1>
+<h2 id="projectTitle"><c:out value="${project.title}"/></h2>
 
 
 <table class="detailTable">

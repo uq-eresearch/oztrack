@@ -66,6 +66,21 @@
 
     <servlet-mapping>
       <servlet-name>springmvc</servlet-name>
+      <url-pattern>/projectanimals</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>springmvc</servlet-name>
+      <url-pattern>/animalform</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>springmvc</servlet-name>
+      <url-pattern>/projectreceivers</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>springmvc</servlet-name>
       <url-pattern>/datafileadd</url-pattern>
     </servlet-mapping>
 

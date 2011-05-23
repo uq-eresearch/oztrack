@@ -14,10 +14,11 @@
   <bean name="/users" class="org.oztrack.controller.UserListController"/>
   <bean name="/projects" class="org.oztrack.controller.ProjectListController"/>
   <bean name="/projectdetail" class="org.oztrack.controller.ProjectDetailController"/>
+  <bean name="/projectanimals" class="org.oztrack.controller.ProjectAnimalsController"/>
+  <bean name="/projectreceivers" class="org.oztrack.controller.ProjectReceiversController"/>
   <bean name="/datafiledetail" class="org.oztrack.controller.DataFileDetailController"/>
   <bean name="/searchacoustic" class="org.oztrack.controller.SearchAcousticController"/>
   <bean name="/logout" class="org.oztrack.controller.LogoutController"/>
-
 
   <bean name="/register" class="org.oztrack.controller.RegisterFormController">
 		<property name="sessionForm"><value>false</value></property>
@@ -58,6 +59,16 @@
           <property name="successView"><value>redirect:projectdetail</value></property>
   </bean>
   <bean id="dataFileFormValidator" class="org.oztrack.validator.DataFileFormValidator"/>
+
+    <bean name="/animalform" class="org.oztrack.controller.AnimalFormController">
+            <property name="sessionForm"><value>false</value></property>
+            <property name="commandName"><value>animal</value></property>
+            <property name="commandClass"><value>org.oztrack.data.model.Animal</value></property>
+            <property name="validator"><ref bean="animalFormValidator"/></property>
+            <property name="formView"><value>animalform</value></property>
+            <property name="successView"><value>redirect:projectanimals</value></property>
+    </bean>
+    <bean id="animalFormValidator" class="org.oztrack.validator.AnimalFormValidator"/>
 
   <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
     <!-- one of the properties available; the maximum file size in bytes -->

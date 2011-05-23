@@ -1,7 +1,7 @@
 <%@ include file="header.jsp" %>
 
 
-<h1>Projects</h1>
+<h2>My Projects</h2>
 
 <table class="infoTable">
     <tr>
@@ -19,6 +19,5 @@
 		</tr>
     </c:forEach>
 </table>
-
 
 <%@ include file="footer.jsp" %>

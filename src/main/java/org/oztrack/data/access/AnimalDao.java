@@ -17,4 +17,5 @@ public interface AnimalDao extends Dao<Animal> {
 
     List<Animal> getAnimalsByProjectId(Long projectId);
     Animal getAnimal(String animalId, Long projectId);
+    Animal getAnimalById(Long id);
 }

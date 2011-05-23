@@ -36,7 +36,7 @@
 <br>
 <div align="center"><input type="submit" value="Add this file to my project"/></div>
 
-</fieldset>
+
 </form:form>
 
 
