@@ -96,6 +96,11 @@
 
     <servlet-mapping>
       <servlet-name>springmvc</servlet-name>
+      <url-pattern>/searchform</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>springmvc</servlet-name>
       <url-pattern>/logout</url-pattern>
     </servlet-mapping>
 

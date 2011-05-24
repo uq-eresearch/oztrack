@@ -39,6 +39,10 @@ protected Object formBackingObject(HttpServletRequest request) throws Exception 
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
 
         Animal animal = (Animal) command;
+
+        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
+        animalDao.update(animal);
+
         ModelAndView modelAndView = new ModelAndView(getSuccessView());
         return modelAndView;
     }

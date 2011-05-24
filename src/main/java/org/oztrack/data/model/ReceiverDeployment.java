@@ -9,7 +9,6 @@ import java.util.Date;
  * User: uqpnewm5
  * Date: 5/05/11
  * Time: 1:53 PM
- * To change this template use File | Settings | File Templates.
  */
 @Entity(name = "ReceiverDeployment")
 public class ReceiverDeployment implements Serializable {

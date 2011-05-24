@@ -4,7 +4,7 @@ $(document).ready(function(){
 });
 
 $(document.getElementById('map_canvas')).ready(function() {
-  //  initialize();
+    initialize();
 });
 
 $(document.getElementById('crumbs')).ready(function() {

@@ -28,7 +28,6 @@
 <ul>
 
 <li><a href="<c:url value=""/>">Home</a></li>
-<li><a href="<c:url value="searchacoustic"/>">Tracking Portal</a></li>
 
 <c:choose>
  <c:when test="${currentUser != null}">
@@ -42,6 +41,7 @@
 </c:otherwise>
 </c:choose>
 
+<li><a href="<c:url value="searchform"/>">Analysis Tools</a></li>
 <li><a href="<c:url value="about"/>">About</a></li>
 <li><a href="<c:url value="contact"/>">Contact</a></li>
 </div>

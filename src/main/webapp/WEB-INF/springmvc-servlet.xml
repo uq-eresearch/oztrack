@@ -70,9 +70,19 @@
     </bean>
     <bean id="animalFormValidator" class="org.oztrack.validator.AnimalFormValidator"/>
 
+    <bean name="/searchform" class="org.oztrack.controller.SearchFormController">
+            <property name="sessionForm"><value>false</value></property>
+            <property name="commandName"><value>searchQuery</value></property>
+            <property name="commandClass"><value>org.oztrack.data.model.SearchQuery</value></property>
+            <property name="validator"><ref bean="searchFormValidator"/></property>
+            <property name="formView"><value>searchform</value></property>
+            <property name="successView"><value>searchform</value></property>
+    </bean>
+    <bean id="searchFormValidator" class="org.oztrack.validator.SearchFormValidator"/>
+
   <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
     <!-- one of the properties available; the maximum file size in bytes -->
         <property name="maxUploadSize"><value>100000000</value></property>
-</bean>
+  </bean>
 
 </beans>
