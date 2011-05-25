@@ -1,21 +1,51 @@
 <%@ include file="header.jsp" %>
 
+
+
+<div class="accordianHead"><a href="#">Section1</a></div>
+<div class="accordianBody">Section1Content</div>
+
+<br>
+<br>
+
 <form:form commandName="searchQuery" method="POST" name="searchQuery">
 
 <span class="formHeader">Search</span>
 
-<div>
-<label for="projectAnimalId">Animal Id:</label>
-<form:input path="projectAnimalId" id="projectAnimalId"/>
-<form:errors path="projectAnimalId" cssClass="formErrors"/>
-</div>
+    <div>
+    <label for="projectAnimalId">Animal Id:</label>
+    <form:input path="projectAnimalId" id="projectAnimalId"/>
+    <form:errors path="projectAnimalId" cssClass="formErrors"/>
+    </div>
 
-<div align="center"><input type="submit" value="Search"/></div>
+    <div>
+    <label for="receiverOriginalId">Receiver Id:</label>
+    <form:input path="receiverOriginalId" id="receiverOriginalId"/>
+    <form:errors path="receiverOriginalId" cssClass="formErrors"/>
+    </div>
+
+    <div>
+    <label for="fromDate">Date From:</label>
+    <form:input path="fromDate" id="fromDatepicker"/>
+    <form:errors path="fromDate" cssClass="formErrors"/>
+    </div>
+
+    <div>
+    <label for="toDate">Date To:</label>
+    <form:input path="toDate" id="toDatepicker"/>
+    <form:errors path="toDate" cssClass="formErrors"/>
+    </div>
+
+
+
+    <div align="center"><input type="submit" value="Search"/></div>
+
+
+
 
 </form:form>
 
-
-<p><c:out value="${testString}"/></p>
+<p><c:out value="${sql}"/></p>
 
 <table class="dataTable">
 

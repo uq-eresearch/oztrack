@@ -1,15 +1,17 @@
 
 $(document).ready(function(){
-
+     crumbs();
+     accordian();
+     setupDatepicker();
 });
 
 $(document.getElementById('map_canvas')).ready(function() {
     initialize();
 });
 
-$(document.getElementById('crumbs')).ready(function() {
-    crumbs();
-});
+/*$(document.getElementById('crumbs')).ready(function() {
+    //crumbs();
+});*/
 
  function initialize() {
         var latlng = new google.maps.LatLng(-28.274398,133.775136);
@@ -35,7 +37,6 @@ $(document.getElementById('crumbs')).ready(function() {
 
     var breadcrumb = homeCrumb;
 
-
     switch (thisPath) {
         case "login":
             breadcrumb = breadcrumb + ' &rsaquo; <b>Login</b>';
@@ -58,6 +59,9 @@ $(document.getElementById('crumbs')).ready(function() {
             breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("datafileadd","projects") + '"> &rsaquo; My Projects</a> &rsaquo; ' + projectTitle
                                     + ' &rsaquo; <b> Add a Data File </b>';
             break;
+        case "searchform":
+           breadcrumb = breadcrumb + ' &rsaquo; <b>Analysis Tools</b>';
+            break;
         default:
             break;
     }
@@ -68,6 +72,25 @@ $(document.getElementById('crumbs')).ready(function() {
     $('#crumbs').html(breadcrumb);
 
  }
+
+ function accordian () {
+    $('.accordianHead').click(function() {
+    		$(this).next().toggle('fast');
+    		return false;
+    	}).next().hide();
+
+ }
+
+ function setupDatepicker () {
+     $('#fromDatepicker').datepicker();
+     $('#toDatepicker').datepicker();
+
+    $.datepicker.setDefaults({
+        dateFormat:'dd/mm/yy'
+    });
+
+ }
+
 
 
 

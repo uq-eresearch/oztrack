@@ -6,14 +6,19 @@
 
 <html>
 <head>
-    <title>Index</title>
+    <title>OzTrack</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" type="text/css" href="css/oztrack.css"/>
     <link rel="stylesheet" type="text/css" href="css/formalize.css"/>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js">;</script>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
     <script type="text/javascript" src="js/oztrack.js"></script>
     <script type="text/javascript" src="js/jquery/jquery.formalize.min.js"></script>
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+
+
 </head>
 
 <body>
@@ -27,23 +32,24 @@
 <div id="nav">
 <ul>
 
-<li><a href="<c:url value=""/>">Home</a></li>
+<li><a id="navHome" href="<c:url value=""/>">Home</a></li>
+<li><a id="navSearch" href="<c:url value=""/>">Search/Browse</a></li>
 
 <c:choose>
  <c:when test="${currentUser != null}">
-    <li><a href="<c:url value="projects"/>">My Projects</a></li>
+    <li><a id="navDataUpload" href="<c:url value="projects"/>">Data Upload</a></li>
     <!--
         <ul><li><a href="<c:url value="projectadd"/>">Add a Project</a></li></ul>
     -->
  </c:when>
 <c:otherwise>
-    <li><a href="<c:url value="login"/>">Login</a></li>
+    <li><a id="navLogin" href="<c:url value="login"/>">Login</a></li>
 </c:otherwise>
 </c:choose>
 
-<li><a href="<c:url value="searchform"/>">Analysis Tools</a></li>
-<li><a href="<c:url value="about"/>">About</a></li>
-<li><a href="<c:url value="contact"/>">Contact</a></li>
+<li><a id="navAnalysis" href="<c:url value="searchform"/>">Analysis Tools</a></li>
+<li><a id="navAbout" href="<c:url value="about"/>">About</a></li>
+<li><a id="navContact" href="<c:url value="contact"/>">Contact</a></li>
 </div>
 </ul>
 

@@ -15,19 +15,10 @@ public class SearchQuery {
 
     private Date fromDate;
     private Date toDate;
-
-    public String getProjectAnimalId() {
-        return projectAnimalId;
-    }
-
-    public void setProjectAnimalId(String projectAnimalId) {
-        this.projectAnimalId = projectAnimalId;
-    }
-
     private String projectAnimalId;
-    private List<Animal> animals;
-    private List<ReceiverDeployment> receiverDeployments;
+    private String receiverOriginalId;
     private String sensorType;
+
 
     public Date getFromDate() {
         return fromDate;
@@ -45,22 +36,6 @@ public class SearchQuery {
         this.toDate = toDate;
     }
 
-    public List<Animal> getAnimals() {
-        return animals;
-    }
-
-    public void setAnimals(List<Animal> animals) {
-        this.animals = animals;
-    }
-
-    public List<ReceiverDeployment> getReceiverDeployments() {
-        return receiverDeployments;
-    }
-
-    public void setReceiverDeployments(List<ReceiverDeployment> receiverDeployments) {
-        this.receiverDeployments = receiverDeployments;
-    }
-
     public String getSensorType() {
         return sensorType;
     }
@@ -69,6 +44,21 @@ public class SearchQuery {
         this.sensorType = sensorType;
     }
 
+    public String getProjectAnimalId() {
+        return projectAnimalId;
+    }
+
+    public void setProjectAnimalId(String projectAnimalId) {
+        this.projectAnimalId = projectAnimalId;
+    }
+
+    public String getReceiverOriginalId() {
+        return receiverOriginalId;
+    }
+
+    public void setReceiverOriginalId(String receiverOriginalId) {
+        this.receiverOriginalId = receiverOriginalId;
+    }
 
 
 

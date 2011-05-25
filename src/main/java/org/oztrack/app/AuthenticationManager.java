@@ -7,7 +7,7 @@ import org.oztrack.data.model.User;
 public class AuthenticationManager {
 	
 	private HttpSession session;
-
+    // map key: user, session
 	public AuthenticationManager() {
 	}
 

@@ -57,7 +57,7 @@ a:visited {
 }
 
 #nav {
-    padding-left: 230px;
+    padding-left: 210px;
     background-color: #131f00;
 
 }
@@ -136,14 +136,15 @@ a:visited {
 
 #nav ul li a, #nav ul li a:visited {
     color:#ffffff;
-    font-size:1em;
+    font-size:0.9em;
     font-weight:bold;
-    padding-right: 60px;
+    padding-right: 20px;
+    padding-left: 20px;
     color:#ffffff;
     text-decoration:none;
 }
 
-#nav ul li a:hover, #nav ul li a:active {
+#nav ul li a:hover, #nav ul li a:active, .navActive {
     color:#f7a700;
     font-weight:bolder;
 }
@@ -219,7 +220,7 @@ a:visited {
 
 form {
     background-color:#e6e6c0;
-    width:70%;
+    width:80%;
     padding-left:15px;
     padding-top:5px;
     padding-bottom:15px;
@@ -310,6 +311,20 @@ form div .checkbox, form div .radiobutton {
 
 table {
     border-collapse: collapse;
+    width: 80%;
+    font-size: 0.8em;
+}
+
+th {
+    font-weight: bold;
+    background-color:#f5ce7c;
+    padding: 5px 5px;
+    border: #263f00 solid 1px;
+}
+
+td {
+       padding: 5px 5px;
+       border: #263f00 solid 1px;
 }
 
 tbody tr:hover {
@@ -317,35 +332,26 @@ tbody tr:hover {
 }
 
 .infoTable {
-    width: 80%;
     text-align:center;
-    font-size: 0.8em;
 
-}
-
-.infoTable  th {
-    font-weight: bold;
-    background-color:#f5ce7c;
-       padding: 5px 5px;
-}
-
-.infoTable  td {
-       padding: 5px 5px;
 }
 
 .detailTable {
-    width: 80%
     text-align:left;
-    font-size: 0.8em;
 }
+
+.infoTable  th {
+
+}
+
+.infoTable  td {
+
+}
+
 
 .detailTable td {
     padding-right: 30px;
     padding-top:5px;
-}
-
-.dataTable td {
-    font-size: 0.9em;
 }
 
 .dataTableNav {
@@ -354,7 +360,16 @@ tbody tr:hover {
 
 }
 
+#accordianBody {
+    display:none;
+}
 
+#accordianHead {
+}
+
+.accordianHead .formHeader {
+    font-size: 1em;
+}
 
 /*
 
