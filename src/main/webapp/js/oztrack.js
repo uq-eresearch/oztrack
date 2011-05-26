@@ -1,5 +1,6 @@
 
 $(document).ready(function(){
+     nav();
      crumbs();
      accordian();
      setupDatepicker();
@@ -73,7 +74,17 @@ $(document.getElementById('map_canvas')).ready(function() {
 
  }
 
+ function nav () {
+
+   $('.menuParent').click(function() {
+    		$(this).next().toggle('fast');
+    		return false;
+    	}).next().hide();
+
+ }
+
  function accordian () {
+
     $('.accordianHead').click(function() {
     		$(this).next().toggle('fast');
     		return false;

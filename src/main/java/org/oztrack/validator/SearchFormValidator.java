@@ -20,7 +20,7 @@ public class SearchFormValidator implements Validator {
     }
 
     public void validate(Object obj, Errors errors) {
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "projectAnimalId", "error.empty.field", "Please Enter an animal id");
+        //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "projectAnimalId", "error.empty.field", "Please Enter an animal id");
     }
 
 }

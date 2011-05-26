@@ -38,13 +38,12 @@ public class SearchFormController extends SimpleFormController {
         SearchQuery searchQuery = (SearchQuery) command;
 
         JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
-        String sql = buildQuery(searchQuery);
-
-        List<AcousticDetection> acousticDetections = jdbcAccess.queryAcousticDetections2(sql);
+        //String sql = searchQuery.buildQuery();
+        List<AcousticDetection> acousticDetections = jdbcAccess.queryAcousticDetections2(searchQuery);
 
         ModelAndView modelAndView = showForm(request, response, errors);
         modelAndView.addObject("acousticDetectionsList", acousticDetections);
-        modelAndView.addObject("sql", sql);
+        //modelAndView.addObject("sql", sql);
         return modelAndView;
     }
 
@@ -65,60 +64,6 @@ public class SearchFormController extends SimpleFormController {
 
 
 
-    protected String buildQuery(SearchQuery searchQuery) {
-
-        String dateFormat = "'DD/MM/YYYY'";
-
-        String select = "SELECT ad.id as acousticdetectionid "
-                      + ", ad.detectionTime "
-                      + ", ad.animal_id "
-                      + ", ad.receiverdeployment_id "
-                      + ", ad.datafile_id "
-                      + ", ad.sensor1value "
-                      + ", ad.sensor1units "
-                      + ", a.id as animalid "
-                      + ", a.projectanimalid "
-                      + ", d.uploaddate as datafile_uploaddate"
-                      + ", rd.originalid as receiverdeployment_originalid";
-
-        String from = " FROM acousticdetection ad"
-                    + ", animal a "
-                    + ", datafile d "
-                    + ", receiverdeployment rd ";
-
-        String joinClause = " WHERE ad.animal_id=a.id"
-                     + " AND ad.receiverdeployment_id=rd.id "
-                     + " AND ad.datafile_id = d.id ";
-
-        String where = "";
-
-        if (searchQuery.getProjectAnimalId() != null) {
-            where = where + " AND a.projectanimalid = '"
-                          + searchQuery.getProjectAnimalId() + "'";
-
-        }
-
-/*        if (searchQuery.getToDate().length() == 0) {
-        //if ((searchQuery.getToDate() != null) || !searchQuery.getToDate().isEmpty()){
-            where = where + " AND ad.detectiontime <= to_date('"
-                          + searchQuery.getToDate() + "',"
-                          + dateFormat + ")";
-        }
-
-        if (searchQuery.getFromDate().length() == 0) {
-        //if ((searchQuery.getFromDate() != null) || !searchQuery.getFromDate().isEmpty()) {
-            where = where + " AND ad.detectiontime >= to_date('"
-                          + searchQuery.getFromDate() + "',"
-                          + dateFormat + ")";
-       }
-*/
-
-        String sql = select + from + joinClause + where;
-
-        logger.debug(sql);
-        return sql;
-
-    }
 
 
 

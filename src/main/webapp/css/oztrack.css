@@ -57,7 +57,7 @@ a:visited {
 }
 
 #nav {
-    padding-left: 210px;
+    padding-left: 200px;
     background-color: #131f00;
 
 }
@@ -118,23 +118,19 @@ a:visited {
   nav elements
 */
 
-#nav ul {
+
+#navMenu {
     margin-top:0px;
     margin-bottom:0px;
     padding-top:1.2ex;
     padding-bottom:1.2ex;
-    }
-
-#nav li    {
-
     list-style-type: none;
     list-style-image: none;
-    display:inline;
-
+    display:inline-block;
 
 }
 
-#nav ul li a, #nav ul li a:visited {
+#navMenu a, #navMenu a:visited {
     color:#ffffff;
     font-size:0.9em;
     font-weight:bold;
@@ -144,10 +140,49 @@ a:visited {
     text-decoration:none;
 }
 
-#nav ul li a:hover, #nav ul li a:active, .navActive {
+#navMenu a:hover, #navMenu a:active {
     color:#f7a700;
     font-weight:bolder;
 }
+
+#navMenu li {
+    position:relative;
+    float:left;
+}
+
+#navMenu ul {
+    padding:0px; margin:0px; display:block; display:inline;
+
+}
+
+#navMenu li ul {
+    position:absolute;
+    left:0px;
+    top:0px;
+    margin-top:3ex;
+    width: 180px;
+    line-height:4ex;
+    background-color: #131f00;
+    display:none;
+    z-index:1;
+	    /*--Bottom right rounded corner--*/
+    	-moz-border-radius-bottomright: 5px;
+    	-khtml-border-radius-bottomright: 5px;
+    	-webkit-border-bottom-right-radius: 5px;
+    	/*--Bottom left rounded corner--*/
+    	-moz-border-radius-bottomleft: 5px;
+    	-khtml-border-radius-bottomleft: 5px;
+    	-webkit-border-bottom-left-radius: 5px;
+
+
+}
+
+#navMenu li ul li{
+    display:block;
+    list-style-type: none;
+    list-style-image: none;}
+
+
 
 #crumbs a, #crumbs a:visited, #login a, #login a:visited {
     color:#263f00;
