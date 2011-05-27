@@ -1,13 +1,6 @@
 <%@ include file="header.jsp" %>
 
 
-
-<div class="accordianHead"><a href="#">Section1</a></div>
-<div class="accordianBody">Section1Content</div>
-
-<br>
-<br>
-
 <form:form commandName="searchQuery" method="POST" name="searchQuery">
 
 <span class="formHeader">Search</span>
@@ -36,6 +29,24 @@
     <form:errors path="toDate" cssClass="formErrors"/>
     </div>
 
+    <div>
+    <label for="sortField">Sort by:</label>
+    <form:select path="sortField">
+        <form:option value="Animal"/>
+        <form:option value="Receiver"/>
+        <form:option value="Detection Time"/>
+    </form:select>
+    </div>
+
+    <div>
+
+    <label for="radiobuttonTable">Output Type:</label>
+    <br> <br>
+    <form:radiobutton cssClass="radiobutton" id="radiobuttonDiv0" path="outputType" value="raw"/>Raw Data<br>
+    <form:radiobutton cssClass="radiobutton" id="radiobuttonDiv1" path="outputType" value="events"/>Extract Events<br>
+    <form:radiobutton cssClass="radiobutton" id="radiobuttonDiv2" path="outputType" value="profile"/>Hourly Profile<br>
+    <form:radiobutton cssClass="radiobutton" id="radiobuttonDiv3" path="outputType" value="kml"/>Google Earth KML<br>
+    </div>
 
 
     <div align="center"><input type="submit" value="Search"/></div>
@@ -45,7 +56,7 @@
 
 </form:form>
 
-<p><c:out value="${sql}"/></p>
+<p>(Paginate Functionality | Export to File)</p>
 
 <table class="dataTable">
 

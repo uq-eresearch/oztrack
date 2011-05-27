@@ -5,6 +5,7 @@ import org.hibernate.annotations.Cascade;
 import javax.persistence.*;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,6 +39,11 @@ public class Project implements Serializable {
     private String custodianUrl;
     private String publicationTitle;
     private String publicationUrl;
+    private Date createDate;
+    private Date updateDate;
+    private User createdBy;
+    private User updatedBy;
+
 
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.project", cascade =

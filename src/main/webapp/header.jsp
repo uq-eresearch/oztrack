@@ -32,14 +32,14 @@
 <ul id="navMenu">
 
 <li><a id="navHome" href="<c:url value=""/>">Home</a></li>
-<li><a id="navSearch" href="<c:url value=""/>">Search/Browse</a></li>
+<li><a id="navSearch" href="<c:url value="alloztrackprojects"/>">All Projects</a></li>
 
 <c:choose>
  <c:when test="${currentUser != null}">
     <li><a class="menuParent" href="#">Data Upload</a>
         <ul>
-            <li><a href="<c:url value="projectadd"/>">Add a Project</a></li>
             <li><a href="<c:url value="projects"/>">My Projects</a></li>
+            <li><a href="<c:url value="projectadd"/>">Add a Project</a></li>
         </ul>
     </li>
  </c:when>

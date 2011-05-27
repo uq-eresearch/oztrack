@@ -23,7 +23,7 @@ h2 {
 }
 
 p {
-    font-size:1em;
+    font-size:0.9em;
     color:black;
 
     }
@@ -34,6 +34,10 @@ a {
 
 a:visited {
     color:#61702a;
+}
+
+a:hover {
+ color:#ef9800;
 }
 
 
@@ -298,7 +302,7 @@ form div label {
 }
 
 form div select, form div textarea, form div input {
-  width: 280px;
+
   padding-top: 3px;
 
   margin: 0 0 0 0;
@@ -312,6 +316,7 @@ form div .checkbox, form div .radiobutton {
     width:280px;
     margin-left:160px;
 }
+
 
 
 
@@ -395,17 +400,23 @@ tbody tr:hover {
 
 }
 
-#accordianBody {
-    display:none;
-}
-
-#accordianHead {
-}
-
 .accordianHead .formHeader {
     font-size: 1em;
 }
 
+#alloztrackprojectsTableHeader, #alloztrackprojectsTable {
+    width: 80%;
+}
+
+#alloztrackprojectsTableHeader td, #alloztrackprojectsTable td {
+    border:none;
+}
+
+#alloztrackprojectsTable {
+    margin-left:50px;
+    margin-top:10px;
+    background-color:#e6e6c0;
+}
 /*
 
 #topHeader, #nav, #crumbs, #login, #leftMenu, #main {

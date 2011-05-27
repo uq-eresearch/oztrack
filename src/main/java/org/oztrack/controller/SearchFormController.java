@@ -8,6 +8,7 @@ import org.oztrack.data.model.AcousticDetection;
 import org.oztrack.data.model.SearchQuery;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
@@ -38,7 +39,6 @@ public class SearchFormController extends SimpleFormController {
         SearchQuery searchQuery = (SearchQuery) command;
 
         JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
-        //String sql = searchQuery.buildQuery();
         List<AcousticDetection> acousticDetections = jdbcAccess.queryAcousticDetections2(searchQuery);
 
         ModelAndView modelAndView = showForm(request, response, errors);
@@ -56,11 +56,14 @@ public class SearchFormController extends SimpleFormController {
         super.initBinder(request, binder);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
+
     /*@Override
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
         return super.showForm(request, response, errors);    //To change body of overridden methods use File | Settings | File Templates.
 
     } */
+
+
 
 
 

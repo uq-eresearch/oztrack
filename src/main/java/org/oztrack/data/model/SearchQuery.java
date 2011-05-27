@@ -29,6 +29,10 @@ public class SearchQuery {
     private String projectAnimalId;
     private String receiverOriginalId;
     private String sensorType;
+    private String sortField;
+
+
+    private String outputType;
 
     public SearchQuery() {
         this.fromDate = null;
@@ -80,6 +84,24 @@ public class SearchQuery {
     }
 
 
+    public String getSortField() {
+        return sortField;
+    }
+
+    public void setSortField(String sortField) {
+        this.sortField = sortField;
+    }
+
+    public String getOutputType() {
+        return outputType;
+    }
+
+    public void setOutputType(String outputType) {
+        this.outputType = outputType;
+    }
+
+
+
     public String buildQuery() {
 
         String dateFormat = "dd/MM/yyyy";
@@ -107,6 +129,7 @@ public class SearchQuery {
                      + " AND ad.datafile_id = d.id ";
 
         String where = "";
+        String orderBy = "";
 
         if (this.projectAnimalId.length() != 0) {
             where = where + " AND a.projectanimalid = '"
@@ -128,7 +151,19 @@ public class SearchQuery {
                           + this.receiverOriginalId + "'";
         }
 
-        String sql = select + from + joinClause + where;
+        if (this.sortField.length() != 0) {
+            String fieldName = "";
+            if (this.sortField.equals("Animal")) {
+                   fieldName = "a.projectanimalid";
+            } else if (this.sortField.equals("Receiver")) {
+                   fieldName = "rd.originalid";
+            } else if (this.sortField.equals("Detection Time")) {
+                   fieldName = "ad.detectiontime";
+            }
+            orderBy = orderBy + " ORDER BY " + fieldName;
+        }
+
+        String sql = select + from + joinClause + where + orderBy;
 
         logger.debug(sql);
         return sql;
