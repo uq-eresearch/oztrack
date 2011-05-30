@@ -1,14 +1,18 @@
 package org.oztrack.data.access.impl.direct;
 
 import org.oztrack.data.access.direct.JdbcAccess;
+import org.oztrack.data.model.AcousticDetection;
+import org.oztrack.data.model.SearchQuery;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
  * User: uqpnewm5
  * Date: 9/05/11
  * Time: 12:03 PM
- * To change this template use File | Settings | File Templates.
  */
 public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
 
@@ -63,5 +67,23 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
         getJdbcTemplate().execute("TRUNCATE TABLE rawacousticdetection");
 
     }
+
+    public List<AcousticDetection> queryAcousticDetections(String sql) {
+
+        List<AcousticDetection> acousticDetections = getJdbcTemplate().query(sql, new BeanPropertyRowMapper(AcousticDetection.class) );
+        return acousticDetections;
+
+    }
+
+    public List<AcousticDetection> queryAcousticDetections2(SearchQuery searchQuery) {
+
+        String sql = searchQuery.buildQuery();
+        AcousticDetectionRowMapper acousticDetectionRowMapper = new AcousticDetectionRowMapper();
+        List<AcousticDetection> acousticDetections = getJdbcTemplate().query(sql, acousticDetectionRowMapper);
+
+        return acousticDetections;
+
+    }
+
 
 }
