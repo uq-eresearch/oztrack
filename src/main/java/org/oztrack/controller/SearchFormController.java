@@ -45,6 +45,7 @@ public class SearchFormController extends SimpleFormController {
         modelAndView.addObject("acousticDetectionsList", acousticDetections);
         //modelAndView.addObject("sql", sql);
         return modelAndView;
+
     }
 
     @Override
@@ -56,12 +57,16 @@ public class SearchFormController extends SimpleFormController {
         super.initBinder(request, binder);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
+    @Override
+    protected Object formBackingObject(HttpServletRequest request) throws Exception {
+        return super.formBackingObject(request);    //To change body of overridden methods use File | Settings | File Templates.
+    }
 
     /*@Override
-    protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
-        return super.showForm(request, response, errors);    //To change body of overridden methods use File | Settings | File Templates.
+   protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
+       return super.showForm(request, response, errors);    //To change body of overridden methods use File | Settings | File Templates.
 
-    } */
+   } */
 
 
 

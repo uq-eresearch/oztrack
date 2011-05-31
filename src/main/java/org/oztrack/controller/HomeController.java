@@ -1,5 +1,7 @@
 package org.oztrack.controller;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.Constants;
 import org.oztrack.data.model.User;
 import org.springframework.web.servlet.ModelAndView;
@@ -17,12 +19,28 @@ import org.springframework.web.servlet.mvc.Controller;
  */
 public class HomeController implements Controller {
 
+    /**
+     * Logger for this class and subclasses
+     */
+    protected final Log logger = LogFactory.getLog(getClass());
+
     @Override
     public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         User currentUser = (User) httpServletRequest.getSession().getAttribute(Constants.CURRENT_USER);
 
-        ModelAndView modelAndView = new ModelAndView("Home");
+        String modelAndViewName = "home"; //= httpServletRequest.getRequestURI().replace("/oztrack/","").split(";")[0];
+
+        if (httpServletRequest.getRequestURI().contains("about")) {
+            modelAndViewName = "about";
+        } else if (httpServletRequest.getRequestURI().contains("contact")) {
+            modelAndViewName = "contact";
+        }
+
+        logger.debug("modelAndViewName: " + modelAndViewName);
+        logger.debug("requestUrl: " + httpServletRequest.getRequestURL());
+
+        ModelAndView modelAndView = new ModelAndView(modelAndViewName);
         modelAndView.addObject(Constants.CURRENT_USER, currentUser);
         return modelAndView;
 

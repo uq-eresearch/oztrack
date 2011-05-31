@@ -1,8 +1,10 @@
 <%@ include file="header.jsp" %>
 
+<h1>Update Animal Details</h1>
+
 <form:form commandName="animal" method="POST" name="animal">
 
-<span class="formHeader">Update Animal Details</span>
+
 
 <div>
 <label for="projectAnimalId">Animal Id:</label>
@@ -61,7 +63,7 @@
 -->
 
 <br>
-<div align="center"><input type="submit" value="Update this animal's details"/></div>
+<div align="center"><input type="submit" value="Update"/></div>
 
 </form:form>
 

@@ -22,6 +22,11 @@ h2 {
     color:#ef9800;
 }
 
+td h2 {
+    font-size:1.6em;
+    margin:0px;
+}
+
 p {
     font-size:0.9em;
     color:black;
@@ -31,10 +36,10 @@ p {
 a {
     color: black;
 }
-
+/*
 a:visited {
     color:#61702a;
-}
+} */
 
 a:hover {
  color:#ef9800;
@@ -61,7 +66,7 @@ a:hover {
 }
 
 #nav {
-    padding-left: 200px;
+    padding-left: 170px;
     background-color: #131f00;
 
 }
@@ -93,17 +98,17 @@ a:hover {
     position:absolute;
     float:left;
     width: 175px;
-    height: 300px;
     margin-left:20px;
     margin-top:30px;
     padding-bottom:20px;
 }
 
 #main {
-    margin-left:220px;
+    margin-left:230px;
     margin-top:30px;
     padding-bottom:20px;
     background-color:#fbfee9;
+    height: auto;
 
 }
 
@@ -201,8 +206,10 @@ a:hover {
 
 
 #leftMenu ul {
-    padding: 0px;
+
     margin: 0px;
+    padding:0px;
+
 }
 
 #leftMenu ul li ul {
@@ -321,23 +328,29 @@ form div .checkbox, form div .radiobutton {
 
 
 #localTimeConversionHours {
-    width:20px;
+    width:30px;
 }
 
 
 
-.oztrackButton {
+.oztrackButton, a.oztrackButton input.oztrackButton{
     background-color:#adbc6b;
     border: solid 1px #839537;
-    width:53px;
+    width:100px;
     color:#000000;
+    font-size:12px;
     font-weight:bold;
-    font-size:1.2em;
     height:20px;
-    font-family:Verdana;
+    font-family:Arial,Verdana, sans-serif;
     margin-top:5px;
-    padding-bottom:3px;
+    padding-bottom: 2px;
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-top: 2px;
+    text-decoration:none;
 }
+
+
 
 .oztrackButton:hover {
     color:#ffffff;
@@ -352,7 +365,7 @@ form div .checkbox, form div .radiobutton {
 table {
     border-collapse: collapse;
     width: 80%;
-    font-size: 0.8em;
+
 }
 
 th {
@@ -371,9 +384,9 @@ tbody tr:hover {
     background-color:#e6e6c0;
 }
 
-.infoTable {
+.infoTable, .dataTable {
     text-align:center;
-
+     font-size: 0.8em;
 }
 
 .detailTable {
@@ -404,18 +417,25 @@ tbody tr:hover {
     font-size: 1em;
 }
 
-#alloztrackprojectsTableHeader, #alloztrackprojectsTable {
+.projectListTableHeader, .projectListTable {
     width: 80%;
+    font-size: 0.8em;
 }
 
-#alloztrackprojectsTableHeader td, #alloztrackprojectsTable td {
+.projectListTableHeader td, .projectListTable td {
     border:none;
 }
 
-#alloztrackprojectsTable {
-    margin-left:50px;
+.projectListTable {
     margin-top:10px;
+    margin-bottom:10px;
+    margin-right:10px;
     background-color:#e6e6c0;
+}
+
+.projectListTable td {
+    padding-left:10px;
+
 }
 /*
 

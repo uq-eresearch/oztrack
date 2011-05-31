@@ -51,7 +51,7 @@
 <li ><a class="menuParent" href="#">Analysis Tools</a>
  <ul>
     <li><a href="<c:url value="searchform"/>">Acoustic</a></li>
-    <li><a href="<c:url value="projectadd"/>">Satellite</a></li>
+    <li><a href="<c:url value="searchform"/>">Satellite</a></li>
   </ul>
 </li>
 <li><a id="navAbout" href="<c:url value="about"/>">About</a></li>
@@ -85,23 +85,25 @@
 
 
 <div id="leftMenu">
-<c:if test="${fn:contains(thisURL,'project') && !fn:contains(thisURL,'projectDetail')&& !fn:contains(thisURL,'projectAnimals')}">
+<c:if test="${fn:contains(thisURL,'project') && !fn:contains(thisURL,'projectdetail')&& !fn:contains(thisURL,'projectanimals') && !fn:contains(thisURL,'projectreceivers')&& !fn:contains(thisURL,'alloztrackprojects')}">
     <ul>
     <li><a href="<c:url value="projects"/>">My Projects</a></li>
     <li><a href="<c:url value="projectadd"/>">Add a Project</a></li>
     </ul>
 </c:if>
 
-<c:if test="${fn:contains(thisURL,'projectDetail') || fn:contains(thisURL,'projectAnimals') || fn:contains(thisURL,'datafileadd')|| fn:contains(thisURL,'dataFileDetail')}">
+<c:if test="${fn:contains(thisURL,'projectdetail') || fn:contains(thisURL,'datafiles') || fn:contains(thisURL,'projectanimals') || fn:contains(thisURL,'projectreceivers') || fn:contains(thisURL,'datafileadd')|| fn:contains(thisURL,'datafiledetail')|| fn:contains(thisURL,'animalform')|| fn:contains(thisURL,'receiverform')}">
     <c:if test="${project.title != null}">
         <ul>
-          <li><a href="<c:url value="projectdetail"/>"> <c:out value="${project.title}"/></a></li>
-          <li><a href="<c:url value="datafileadd"/>">Add a Data File</a></li>
+          <li><a href="<c:url value="projectdetail"/>" id="projectTitle"> <c:out value="${project.title}"/></a></li>
+          <li><a href="<c:url value="datafiles"/>">Data Files</a></li>
           <li><a href="<c:url value="projectanimals"/>">Animals</a></li>
           <li><a href="<c:url value="projectreceivers"/>">Receivers</a></li>
         </ul>
+        <br> <br>
     </c:if>
 </c:if>
+
 </div>
 
 <div id="main">

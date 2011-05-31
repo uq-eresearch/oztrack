@@ -39,6 +39,9 @@ $(document.getElementById('map_canvas')).ready(function() {
     var breadcrumb = homeCrumb;
 
     switch (thisPath) {
+        case "alloztrackprojects":
+            breadcrumb = breadcrumb + ' &rsaquo; <b>All Projects</b>';
+            break;
         case "login":
             breadcrumb = breadcrumb + ' &rsaquo; <b>Login</b>';
             break;
@@ -51,14 +54,42 @@ $(document.getElementById('map_canvas')).ready(function() {
         case "projects":
             breadcrumb = breadcrumb + ' &rsaquo; <b>My Projects</b>';
             break;
+        case "projectadd":
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectadd","projects") + '"> &rsaquo; My Projects</a> &rsaquo; <b>Add a Project</b>';
+            break;
         case "projectdetail":
             var projectTitle = $('#projectTitle').html();
             breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectdetail","projects") + '"> &rsaquo; My Projects</a> &rsaquo; <b>' + projectTitle + '</b>';
             break;
-        case "datafileadd":
+        case "datafiles":
             var projectTitle = $('#projectTitle').html();
-            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("datafileadd","projects") + '"> &rsaquo; My Projects</a> &rsaquo; ' + projectTitle
-                                    + ' &rsaquo; <b> Add a Data File </b>';
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("datafiles","projects") + '"> &rsaquo; My Projects</a> &rsaquo; <a href="' + thisUrl.replace("datafiles","projectdetail") + '">' + projectTitle
+                                    + '</a> &rsaquo; <b> Data Files </b>';
+            break;
+        case "datafileadd":
+          var projectTitle = $('#projectTitle').html();
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("datafileadd","projects") + '"> &rsaquo; My Projects</a> &rsaquo; <a href="' + thisUrl.replace("datafileadd","projectdetail") + '">' + projectTitle
+                                    + '</a> &rsaquo; <a href="' + thisUrl.replace("datafileadd","datafiles") + '"> Data Files </a> &rsaquo; <b> Add </b> ';
+            break;
+          case "projectanimals":
+            var projectTitle = $('#projectTitle').html();
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectanimals","projects") + '"> &rsaquo; My Projects</a> &rsaquo; <a href="' + thisUrl.replace("projectanimals","projectdetail") + '">' + projectTitle
+                                    + '</a> &rsaquo; <b> Animals </b>';
+            break;
+        case "projectreceivers":
+            var projectTitle = $('#projectTitle').html();
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectreceivers","projects") + '"> &rsaquo; My Projects</a> &rsaquo; <a href="' + thisUrl.replace("projectreceivers","projectdetail") + '">' + projectTitle
+                                    + '</a> &rsaquo; <b> Receivers </b>';
+            break;
+       case "animalform":
+            var projectTitle = $('#projectTitle').html();
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("animalform","projects") + '"> &rsaquo; My Projects</a> &rsaquo; <a href="' + thisUrl.replace("animalform","projectdetail") + '">' + projectTitle
+                                    + '</a> &rsaquo; <a href="' + thisUrl.replace("animalform","projectanimals") + '"> Animals </a> &rsaquo; <b> Edit </b> ';
+            break;
+       case "receiverform":
+            var projectTitle = $('#projectTitle').html();
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("receiverform","projects") + '"> &rsaquo; My Projects</a> &rsaquo; <a href="' + thisUrl.replace("receiverform","projectdetail") + '">' + projectTitle
+                                    + '</a> &rsaquo; <a href="' + thisUrl.replace("receiverform","projectanimals") + '"> Receivers </a> &rsaquo; <b> Edit </b> ';
             break;
         case "searchform":
            breadcrumb = breadcrumb + ' &rsaquo; <b>Analysis Tools</b>';

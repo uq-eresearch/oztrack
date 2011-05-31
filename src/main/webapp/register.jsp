@@ -1,10 +1,10 @@
 <%@ include file="header.jsp" %>
 
 
+<h1>Register</h1>
 
 <form:form commandName="user" method="POST" name="user">
 
-<span class="formHeader">Register</span>
 
 <div>
 <label for="username">Username:</label>

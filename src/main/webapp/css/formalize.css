@@ -62,25 +62,32 @@ button,
 input[type="reset"],
 input[type="submit"],
 input[type="button"] {
-  -webkit-appearance: none;
+/*  -webkit-appearance: none;
   -moz-border-radius: 11px;
   -webkit-border-radius: 11px;
   -moz-background-clip: padding;
   -webkit-background-clip: padding;
   background-clip: padding-box;
   border-radius: 11px;
-  background: #ddd url(../images/button.png) repeat-x;
+  */
+  background: #adbc6b;
+/*
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fff), color-stop(1, #ddd));
-  background: -moz-linear-gradient(top center, #fff 0%, #ddd 100%);
+  background: -moz-linear-gradient(top center, #fff 0%, #adbc6b 100%);
+*/
   border: 1px solid;
-  border-color: #ddd #bbb #999;
+  border-color: #839537;
   cursor: pointer;
-  color: #333;
-  font: bold 12px/1.2 Arial, sans-serif;
+  color: #000;
   outline: 0;
   overflow: visible;
-  padding: 3px 10px 4px;
-  text-shadow: #fff 0 1px 1px;
+  padding-bottom: 2px;
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-top: 2px;
+    font-family:Arial,Verdana, sans-serif;
+    font-size:12px;
+    font-weight:bold;
   width: auto;
 
   /* IE7 */
@@ -158,9 +165,9 @@ select:focus,
 select:active,
 textarea:focus,
 textarea:active {
-  -moz-box-shadow: #06f 0 0 7px;
-  -webkit-box-shadow: #06f 0 0 7px;
-  box-shadow: #06f 0 0 7px;
+  -moz-box-shadow: #263F00 0 0 7px;
+  -webkit-box-shadow: #263F00 0 0 7px;
+  box-shadow: #263F00 0 0 7px;
 
   /* for Opera */
   z-index: 1;

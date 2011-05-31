@@ -29,7 +29,7 @@ public class AllOztrackProjectsController implements Controller {
          ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
          List<Project> projectList = projectDao.getAll();
 
-         ModelAndView modelAndView = new ModelAndView("allOztrackProjects");
+         ModelAndView modelAndView = new ModelAndView("alloztrackprojects");
          modelAndView.addObject("projectList", projectList);
          return modelAndView;
     }

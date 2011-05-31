@@ -1,6 +1,6 @@
 <%@ include file="header.jsp" %>
 
-<h2>Animals</h2>
+<h1>Animals</h1>
 <p><b>Project Title: </b><span id="projectTitle"><c:out value="${project.title}"/></span></p>
 
 <table class="infoTable">

@@ -42,7 +42,13 @@ public class ProjectDetailController implements Controller {
                 errorStr = "Couldn't find any project sorry.";
         }
 
-        ModelAndView modelAndView = new ModelAndView("projectDetail");
+        String modelAndViewName = "projectdetail"; // = httpServletRequest.getRequestURI().replaceAll("/oztrack*/","").split(";")[0];
+
+        if (httpServletRequest.getRequestURI().contains("datafiles")) {
+            modelAndViewName = "datafiles";
+        }
+
+        ModelAndView modelAndView = new ModelAndView(modelAndViewName);
         modelAndView.addObject("errorStr", errorStr);
         modelAndView.addObject("project", project);
         return modelAndView;

@@ -36,7 +36,7 @@ public class DataFileDetailController implements Controller {
             errorStr = "Couldn't find anything on that file sorry";
         }
 
-        ModelAndView modelAndView = new ModelAndView("dataFileDetail");
+        ModelAndView modelAndView = new ModelAndView("datafiledetail");
         modelAndView.addObject("errorStr", errorStr);
         modelAndView.addObject("dataFile", dataFile);
         return modelAndView;

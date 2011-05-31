@@ -33,7 +33,7 @@ public class ProjectReceiversController implements Controller {
         errors = "No project, sorry.";
     }
 
-    ModelAndView modelAndView = new ModelAndView("projectReceivers");
+    ModelAndView modelAndView = new ModelAndView("projectreceivers");
     modelAndView.addObject("receiverList", receiverList);
     modelAndView.addObject("errors", errors);
     modelAndView.addObject("project", project);

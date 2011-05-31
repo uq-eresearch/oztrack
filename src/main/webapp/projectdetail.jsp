@@ -1,49 +1,20 @@
 <%@ include file="header.jsp" %>
 
-<h2 id="projectTitle"><c:out value="${project.title}"/></h2>
+<h1><c:out value="${project.title}"/></h1>
 
 
-<table class="detailTable">
+<table class="projectListTable">
+<tr><td><b>Description:</b><td><c:out value="${project.description}"/></td></tr>
+<tr><td><b>Contact Details:</b><td><c:out value="${project.contactName}"/><br><c:out value="${project.contactUrl}"/></td></tr>
+<tr><td><b>Custodian Details:</b><td><c:out value="${project.custodianName}"/><br><c:out value="${project.custodianUrl}"/></td></tr>
+<tr><td><b>Spatial Coverage:</b><td><c:out value="${project.spatialCoverageDescr}"/></td></tr>
+<tr><td><b>Temporal Coverage:</b><td><c:out value="${project.temporalCoverageDescr}"/></td></tr>
+<tr><td><b>Publications:</b><td><i><c:out value="${project.publicationTitle}"/></i><br> <c:out value="${project.publicationUrl}"/></td></tr>
+<tr><td><a class="oztrackButton" href="#">Edit</a><br><br></td></tr>
 
-<tr><td>Description:</td><td><c:out value="${project.description}"/></td></tr>
-<tr><td>Contact Details:</td><td><c:out value="${project.contactName}"/> <c:out value="${project.contactUrl}"/></td></tr>
-<tr><td>Custodian Details:</td><td><c:out value="${project.custodianName}"/>,<c:out value="${project.custodianUrl}"/></td></tr>
-<tr><td>Spatial Coverage:</td><td><c:out value="${project.spatialCoverageDescr}"/></td></tr>
-<tr><td>Temporal Coverage:</td><td><c:out value="${project.temporalCoverageDescr}"/></td></tr>
-<tr><td>Publications:</td><td><i><c:out value="${project.publicationTitle}"/></i><br> <c:out value="${project.publicationUrl}"/></td></tr>
 </table>
 
-<h2>Data Files</h2>
 
-<p><a href="<c:url value="datafileadd"><c:param name="project_id" value="${project.id}"/></c:url>">Add a Datafile</a>
-</p>
 
-<p><c:out value="${errorStr}"/></p>
-
-<table class="infoTable">
-
-    <tr>
-        <th>File Name</th>
-        <th>Description</th>
-        <th>File Status</th>
-    </tr>
-
-    <c:forEach items="${project.dataFiles}" var="dataFile">
-        <tr>
-            <td><c:out value="${dataFile.userGivenFileName}"/></td>
-            <td>
-                <c:choose>
-                 <c:when test="${dataFile.status=='NEW'}">
-                    <c:out value="${dataFile.fileDescription}"/>
-                 </c:when>
-                 <c:otherwise>
-                    <a href="<c:url value="datafiledetail"><c:param name="datafile_id" value="${dataFile.id}"/></c:url>"><c:out value="${dataFile.fileDescription}"/></a>
-                 </c:otherwise>
-                </c:choose>
-            </td>
-            <td><c:out value="${dataFile.status}"/></td>
-		</tr>
-    </c:forEach>
-</table>
 
 <%@ include file="footer.jsp" %>

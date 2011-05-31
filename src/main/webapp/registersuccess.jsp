@@ -1,8 +1,5 @@
 <%@ include file="header.jsp" %>
 
-
-
-
 <h3><br/>User Registered Successfully.</h3><br/>
 
 <table>

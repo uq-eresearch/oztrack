@@ -1,6 +1,6 @@
 <%@ include file="header.jsp" %>
 
-<h2>Receivers</h2>
+<h1>Receivers</h1>
 <p><b>Project Title: </b><span id="projectTitle"><c:out value="${project.title}"/></span></p>
 
 <table class="infoTable">
@@ -26,7 +26,10 @@
             <td><c:out value="${receiver.receiverLocation.latitude}"/></td>
             <td><c:out value="${receiver.receiverLocation.longitude}"/></td>
             <td>
-		        <a href="<c:url value="receiveredit"><c:param name="receiver_id" value="${receiver.id}"/></c:url>">
+		        <!--
+		            <a href="<c:url value="receiverform"><c:param name="receiver_id" value="${receiver.id}"/></c:url>">
+                -->
+                <a href="#">
                 Edit
                 </a>
             </td>

@@ -1,8 +1,9 @@
 <%@ include file="header.jsp" %>
 
+<h1>Update Receiver Details</h1>
+
 <form:form commandName="receiverDeployment" method="POST" name="receiverDeployment">
 
-<span class="formHeader">Update Receiver Details</span>
 
 <div>
 <label for="originalId">Receiver Id:</label>

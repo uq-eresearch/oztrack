@@ -1,9 +1,10 @@
 <%@ include file="header.jsp" %>
 
 
+<h1>Search</h1>
+
 <form:form commandName="searchQuery" method="POST" name="searchQuery">
 
-<span class="formHeader">Search</span>
 
     <div>
     <label for="projectAnimalId">Animal Id:</label>
@@ -49,39 +50,41 @@
     </div>
 
 
-    <div align="center"><input type="submit" value="Search"/></div>
-
-
-
+    <div><input type="submit" value="Search"/></div>
 
 </form:form>
 
-<p>(Paginate Functionality | Export to File)</p>
+<c:if test="${acousticDetectionsList != null}">
 
-<table class="dataTable">
+    <br>
+    <p align="center"><a href="#">Paginate Functionality</a> | <a class="oztrackButton" href="#">Export to File</a>
+    </p><br>
 
-<tr>
-    <th>Date/Time</th>
-    <th>Animal</th>
-    <th>Receiver</th>
-    <th>Sensor 1</th>
-    <th>Units 1</th>
-    <th>Sensor 2</th>
-    <th>Units 2</th>
-    <th>DataFile Upload</th>
-</tr>
-<c:forEach items="${acousticDetectionsList}" var="detection">
-<tr>
-    <td><c:out value="${detection.detectionTime}"/></td>
-    <td><c:out value="${detection.animal.projectAnimalId}"/></td>
-    <td><c:out value="${detection.receiverDeployment.originalId}"/></td>
-    <td><c:out value="${detection.sensor1Value}"/></td>
-    <td><c:out value="${detection.sensor1Units}"/></td>
-    <td><c:out value="${detection.sensor2Value}"/></td>
-    <td><c:out value="${detection.sensor2Units}"/></td>
-    <td><c:out value="${detection.dataFile.uploadDate}"/></td>
-</tr>
-</c:forEach>
-</table>
+    <table class="dataTable">
+
+    <tr>
+        <th>Date/Time</th>
+        <th>Animal</th>
+        <th>Receiver</th>
+        <th>Sensor 1</th>
+        <th>Units 1</th>
+        <th>Sensor 2</th>
+        <th>Units 2</th>
+        <th>DataFile Upload</th>
+    </tr>
+    <c:forEach items="${acousticDetectionsList}" var="detection">
+    <tr>
+        <td><c:out value="${detection.detectionTime}"/></td>
+        <td><c:out value="${detection.animal.projectAnimalId}"/></td>
+        <td><c:out value="${detection.receiverDeployment.originalId}"/></td>
+        <td><c:out value="${detection.sensor1Value}"/></td>
+        <td><c:out value="${detection.sensor1Units}"/></td>
+        <td><c:out value="${detection.sensor2Value}"/></td>
+        <td><c:out value="${detection.sensor2Units}"/></td>
+        <td><c:out value="${detection.dataFile.uploadDate}"/></td>
+    </tr>
+    </c:forEach>
+    </table>
+</c:if>
 
 <%@ include file="footer.jsp" %>

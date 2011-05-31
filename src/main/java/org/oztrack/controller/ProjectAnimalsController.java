@@ -31,7 +31,7 @@ public class ProjectAnimalsController implements Controller {
         errors = "No project, sorry.";
     }
 
-    ModelAndView modelAndView = new ModelAndView("projectAnimals");
+    ModelAndView modelAndView = new ModelAndView("projectanimals");
     modelAndView.addObject("animalList", animalList);
     modelAndView.addObject("errors", errors);
     modelAndView.addObject("project", project);

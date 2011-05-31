@@ -4,13 +4,15 @@ import javax.persistence.*;
 import static javax.persistence.EnumType.STRING;
 import org.oztrack.data.model.types.Role;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "project_user")
 @AssociationOverrides({
  @AssociationOverride(name = "pk.appuser", joinColumns = @JoinColumn(name = "user_id")),
  @AssociationOverride(name = "pk.project", joinColumns = @JoinColumn(name = "project_id"))
         })
-public class ProjectUser {
+public class ProjectUser implements Serializable {
 
 	private ProjectUserPk pk = new ProjectUserPk();
 	

@@ -1,8 +1,9 @@
 <%@ include file="header.jsp" %>
 
+<h1>Add a Project</h1>
+
 <form:form commandName="project" method="POST" name="project">
 
-<span class="formHeader">Add a Project</span>
 
 <div>
 <label for="title">*Title:</label>

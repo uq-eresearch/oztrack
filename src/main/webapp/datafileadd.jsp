@@ -1,8 +1,10 @@
 <%@ include file="header.jsp" %>
 
+
+<h1>Add a Data File</h1>
+
 <form:form commandName="dataFile" method="POST" enctype="multipart/form-data">
 
-<span class="formHeader">Add a Data File</span>
 
 <p>This file will be added to the project: <b><span id="projectTitle"><c:out value="${projectTitle}"/></span>.</p></b>
 <div>
@@ -34,7 +36,7 @@
 </div>
 
 <br>
-<div align="center"><input type="submit" value="Add this file to my project"/></div>
+<div align="center"><input type="submit" value="Add File"/></div>
 
 
 </form:form>

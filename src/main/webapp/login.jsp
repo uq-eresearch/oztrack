@@ -1,11 +1,10 @@
 <%@ include file="header.jsp" %>
 
+<h1>Login</h1>
 
 <div id="noSessionError"><c:out value="${noSessionError}"/></div>
 
 <form:form commandName="user" method="POST" name="login">
-
-<span class="formHeader">Login</span>
 
 <div>
 <label for="username">Username:</label>
