@@ -5,15 +5,17 @@
 
 <c:forEach items="${projectList}" var="project">
 
-       <table class="projectListTableHeader">
-       <tr>
-         <td><a href="<c:url value="projectdetail"><c:param name="project_id" value="${project.id}"/></c:url>"><c:out value="${project.title}"/></a></td>
-         <td><c:out value="${project.spatialCoverageDescr}"/></td>
-         <td>Created: 01/05/2011</td>
-        </tr>
-        </table>
+	    <div class="accordianHead">
+	       <table class="projectListTableHeader">
+ 	       <tr>
+ 	         <td><a href="#"><c:out value="${project.title}"/></a></td>
+ 	         <td><c:out value="${project.spatialCoverageDescr}"/></td>
+ 	         <td>Created: 01/05/2011</td>
+ 	        </tr>
+ 	        </table>
+ 	    </div>
 
-<!--
+
     <div class="accordianBody">
 
         <table class="projectListTable">
@@ -33,7 +35,7 @@
 
         </table>
     </div>
--->
+
 </c:forEach>
 
 <!--
