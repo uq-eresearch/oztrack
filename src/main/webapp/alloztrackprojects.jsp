@@ -3,6 +3,15 @@
 <h1>All Projects</h1>
 
 
+<form>
+<div>
+<input id="searchTerm"/>
+<input type="submit" value="Keyword Search"/>
+</div>
+</form>
+
+<br>
+
 <c:forEach items="${projectList}" var="project">
 
 	    <div class="accordianHead">

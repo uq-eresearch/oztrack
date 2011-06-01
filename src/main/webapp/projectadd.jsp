@@ -7,13 +7,13 @@
 
 <div>
 <label for="title">*Title:</label>
-<form:textarea path="title" rows="2" cols="40" id="title"/>
+<form:textarea path="title" rows="1" cols="40" id="title"/>
 <form:errors path="title" cssClass="formErrors"/>
 </div>
 
 <div>
 <label for="description">*Description:</label>
-<form:textarea path="description" rows="4" cols="40" id="description"/>
+<form:textarea path="description" rows="5" cols="40" id="description"/>
 <form:errors path="description" cssClass="formErrors"/>
 </div>
 

@@ -8,7 +8,7 @@
 
 <p><c:out value="${errorStr}"/></p>
 
-<table class="infoTable">
+<table class="dataTable">
 
     <tr>
         <th>File Name</th>

@@ -1,12 +1,14 @@
 
 <br>
+<div class="clearboth">&nbsp;</div>
+</div> <!-- content -->
 
-</div>
+</div> <!-- main -->
 
 <div id="footer">
     OzTrack &copy; 2011
 </div>
 
-</div>
+</div> <!-- container -->
 </body>
 </html>

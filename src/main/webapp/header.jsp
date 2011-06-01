@@ -60,6 +60,7 @@
 </ul>
 
 
+
 <div id="crumbs">
     <a id="homeUrl" href="<c:url value=""/>">Home</a>
 </div>
@@ -83,6 +84,7 @@
 </c:if>
 </div>
 
+ <div id="main">
 
 <div id="leftMenu">
 <c:if test="${fn:contains(thisURL,'project') && !fn:contains(thisURL,'projectdetail')&& !fn:contains(thisURL,'projectanimals') && !fn:contains(thisURL,'projectreceivers')&& !fn:contains(thisURL,'alloztrackprojects')}">
@@ -100,10 +102,17 @@
           <li><a href="<c:url value="projectanimals"/>">Animals</a></li>
           <li><a href="<c:url value="projectreceivers"/>">Receivers</a></li>
         </ul>
-        <br> <br>
+
     </c:if>
 </c:if>
-
+<div id="logos">
+<a href="http://ands.org.au/"/><img src="images/ands-logo.png"/></a>
+<a href="http://itee.uq.edu.au/~eresearch/"/><img src="images/uq_logo.png"/></a>
+</div>
 </div>
 
-<div id="main">
+<div id="content">
+
+
+
+

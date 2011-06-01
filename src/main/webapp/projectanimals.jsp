@@ -3,7 +3,7 @@
 <h1>Animals</h1>
 <p><b>Project Title: </b><span id="projectTitle"><c:out value="${project.title}"/></span></p>
 
-<table class="infoTable">
+<table class="dataTable">
 
     <tr>
         <th>Animal ID</th>

@@ -95,23 +95,34 @@ a:hover {
 
 
 #leftMenu  {
-    position:absolute;
+    position:relative;
     float:left;
     width: 175px;
     margin-left:20px;
-    margin-top:30px;
     padding-bottom:20px;
+
+}
+
+#content {
+    margin-left:230px;
+    width:720px;
+
+
+}
+
+#logos img {
+    padding-top:10px;
+    padding-bottom:20px;
+    border:none;
 }
 
 #main {
-    margin-left:230px;
+
     margin-top:30px;
     padding-bottom:20px;
     background-color:#fbfee9;
-    height: auto;
 
 }
-
 
 
 #footer {
@@ -122,6 +133,14 @@ a:hover {
     float: right;
     color:#fbfee9;
 }
+ .clearboth {
+ 				clear: both;
+ 				width: 0px;
+ 				height: 0px;
+ 				margin: 0px;
+ 			}
+
+
 
 /*
   nav elements
@@ -289,7 +308,6 @@ form {
 
 form div {
 
-  clear: left;
   display: block;
   margin: 5px 0 0 0;
   padding: 1px 3px;
@@ -299,7 +317,7 @@ form div {
 form div label {
   display: block;
   float: left;
-  width: 140px;
+  width: 160px;
   padding-left:5px;
   padding-top:5px;
   padding-right:15px;
@@ -309,9 +327,8 @@ form div label {
 }
 
 form div select, form div textarea, form div input {
-
+  width:250px;
   padding-top: 3px;
-
   margin: 0 0 0 0;
 }
 
@@ -321,7 +338,7 @@ form div .checkbox, form div .radiobutton {
 
 .checkboxDiv, .formButton {
     width:280px;
-    margin-left:160px;
+    margin-left:180px;
 }
 
 
@@ -368,49 +385,33 @@ table {
 
 }
 
-th {
-    font-weight: bold;
-    background-color:#f5ce7c;
-    padding: 5px 5px;
-    border: #263f00 solid 1px;
-}
-
-td {
-       padding: 5px 5px;
-       border: #263f00 solid 1px;
-}
-
 tbody tr:hover {
     background-color:#e6e6c0;
 }
 
-.infoTable, .dataTable {
+.dataTable {
     text-align:center;
-     font-size: 0.8em;
-}
-
-.detailTable {
-    text-align:left;
-}
-
-.infoTable  th {
+    font-size: 0.8em;
 
 }
 
-.infoTable  td {
+.dataTable  th {
+    font-weight: bold;
+    background-color:#f5ce7c;
+    padding: 5px 5px;
+    border: #263f00 solid 1px;
 
 }
 
-
-.detailTable td {
-    padding-right: 30px;
-    padding-top:5px;
+.dataTable  td {
+    padding: 5px 5px;
+    border: #263f00 solid 1px;
 }
+
 
 .dataTableNav {
     text-align:center;
     font-size: 0.8em;
-
 }
 
 .accordianHead .formHeader {
@@ -424,6 +425,7 @@ tbody tr:hover {
 
 .projectListTableHeader td, .projectListTable td {
     border:none;
+    padding: 5px 5px;
 }
 
 .projectListTable {
@@ -437,13 +439,25 @@ tbody tr:hover {
     padding-left:10px;
 
 }
-/*
 
-#topHeader, #nav, #crumbs, #login, #leftMenu, #main {
+#contactsTable {
+    font-size:0.8em;
+}
+
+/*
+#container, #content {
+    border: solid yellow 2px;
+}
+
+#topHeader, #nav, #crumbs, #login, #leftMenu, #main, #footer {
     border: solid red 1px;
 }
 
+#main {
+    border: solid blue 1px;
+}
 */
+
 
 
 
