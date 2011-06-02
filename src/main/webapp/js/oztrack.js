@@ -21,18 +21,59 @@ $(document.getElementById('map_canvas')).ready(function() {
           center: latlng,
           mapTypeId: google.maps.MapTypeId.SATELLITE
         };
-        var map = new google.maps.Map(document.getElementById("map_canvas"),
-            myOptions);
+
+        var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+        map.enableKeyDragZoom();
+
+        var infowindow = new google.maps.InfoWindow({
+                content: "loading...",
+                maxWidth:1
+            });
+
+        // image icon
+        var imageUrl="http://google-maps-icons.googlecode.com/files/amphitheater-tourism.png";
+        var image = new google.maps.MarkerImage(imageUrl,
+                                                new google.maps.Size(32,37),
+                                                new google.maps.Point(0,0),
+                                                new google.maps.Point(0,0),
+                                                new google.maps.Size(16,18));
+
+
+        var projects = [
+        ['Test Project 1',-15.3351,144.1757, 1, '<div class="infowindow"><a href="#">Test Project 1</a><br>Kennedy River</div>' ],
+        ['Test Project 2',-14.3351,145.1757, 2, '<div class="infowindow"><a href="#">Test Project 2</a><br>Wenlock River</div>']
+        ];
+
+        for (var i = 0; i < projects.length; i++) {
+            var site = projects[i];
+            var siteLatLng =  new google.maps.LatLng(site[1], site[2]);
+            var marker = new google.maps.Marker({
+               position: siteLatLng,
+               map:map,
+               title:site[0],
+               zIndex:site[3],
+               html:site[4],
+               icon:image
+            });
+
+            google.maps.event.addListener(marker, "click", function () {
+                infowindow.setContent(this.html);
+                infowindow.open(map, this);
+            })
+
+        }
  }
 
  function crumbs() {
 
-   //eg url http://localhost:8080/oztrack/register;jsessionid=4q9927jnlfrdosnt4ci95es
-   //       ---------baseUrl-------------/thisPath;----------------------------------
+
+   //eg thisUrl http://localhost:8080/oztrack/register;jsessionid=4q9927jnlfrdosnt4ci95es
+   //           ---------baseUrl-------------/thisPath;----------------------------------
 
     var thisUrl = $(location).attr('href');
-    var baseUrl = thisUrl.substring(0,thisUrl.indexOf("/oztrack/")) + '/oztrack/';
-    var thisPath = $(location).attr('pathname').replace("/oztrack/","");
+    var baseUrl = thisUrl.substring(0,thisUrl.lastIndexOf('/'));
+    var thisPath = thisUrl.substring(baseUrl.length,thisUrl.length).replace('/','');
+
     var homeUrl = $('#homeUrl').attr('href');
     var homeCrumb = '<a href="' + homeUrl + '">Home</a>';
 

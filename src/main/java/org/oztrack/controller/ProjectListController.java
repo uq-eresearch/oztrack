@@ -1,5 +1,6 @@
 package org.oztrack.controller;
 
+import org.oztrack.app.AuthenticationManager;
 import org.oztrack.app.Constants;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.ProjectDao;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,7 +28,10 @@ public class ProjectListController implements Controller {
 	@Override
     public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 		
-		User currentUser = (User) httpServletRequest.getSession().getAttribute(Constants.CURRENT_USER);
+//        AuthenticationManager authenticationManager = OzTrackApplication.getApplicationContext().getAuthenticationManager();
+//        HttpSession session = httpServletRequest.getSession();
+//        User currentUser = authenticationManager.getUserFromSession(session);
+        User currentUser = (User) httpServletRequest.getSession().getAttribute(Constants.CURRENT_USER);
 
 
     	// returns ALL projects that this user has access to

@@ -16,7 +16,7 @@
     <script type="text/javascript" src="js/oztrack.js"></script>
     <script type="text/javascript" src="js/jquery/jquery.formalize.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
-
+    <script src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/keydragzoom/src/keydragzoom_packed.js"></script>
 
 </head>
 
@@ -31,7 +31,7 @@
 <div id="nav">
 <ul id="navMenu">
 
-<li><a id="navHome" href="<c:url value=""/>">Home</a></li>
+<li><a id="navHome" href="<c:url value="home"/>">Home</a></li>
 <li><a id="navSearch" href="<c:url value="alloztrackprojects"/>">All Projects</a></li>
 
 <c:choose>

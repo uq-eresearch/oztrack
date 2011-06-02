@@ -304,7 +304,7 @@ form {
     padding-top:10px;
 }
 
-.formErrors { font-style: italic; color:red; }
+
 
 form div {
 
@@ -330,6 +330,12 @@ form div select, form div textarea, form div input {
   width:250px;
   padding-top: 3px;
   margin: 0 0 0 0;
+}
+
+.formErrors {
+    padding-left: 180px;
+    font-style: italic;
+    color:red;
 }
 
 form div .checkbox, form div .radiobutton {
@@ -444,6 +450,11 @@ tbody tr:hover {
     font-size:0.8em;
 }
 
+#registrationTable {
+    width: 50%;
+
+}
+
 /*
 #container, #content {
     border: solid yellow 2px;
@@ -458,6 +469,8 @@ tbody tr:hover {
 }
 */
 
+
+}
 
 
 

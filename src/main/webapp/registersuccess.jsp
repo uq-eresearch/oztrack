@@ -1,12 +1,8 @@
 <%@ include file="header.jsp" %>
 
-<h3><br/>User Registered Successfully.</h3><br/>
+<h2>Registration successful.</h2>
 
-<table>
-
-<tr>
-<td colspan="2" align="center"><font size="5">User Information</font></td>
-</tr>
+<table id="registrationTable">
 
 <tr>
 <td>Username:</td>

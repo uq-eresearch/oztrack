@@ -36,10 +36,12 @@ public class LoginFormController extends SimpleFormController {
         // set user for this session
         UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();
         User currentUser = userDao.getByUsername(user.getUsername());
+
         HttpSession session = request.getSession();
         session.setAttribute(Constants.CURRENT_USER, currentUser);
-        //AuthenticationManager authenticationManager = OzTrackApplication.getApplicationContext().getAuthenticationManager();
-        //authenticationManager.setSession(session);
+
+//        AuthenticationManager authenticationManager = OzTrackApplication.getApplicationContext().getAuthenticationManager();
+//        authenticationManager.setUserSession(session, currentUser);
 
         ModelAndView modelAndView = new ModelAndView(getSuccessView());
         return modelAndView;

@@ -8,7 +8,7 @@
 
 <div>
 <label for="username">Username:</label>
-<form:input path="username" id="username"/>
+<form:input path="username" id="username"/><br>
 <form:errors path="username" cssClass="formErrors"/>
 </div>
 
