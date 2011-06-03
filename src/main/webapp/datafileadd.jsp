@@ -9,14 +9,8 @@
 <p>This file will be added to the project: <b><span id="projectTitle"><c:out value="${projectTitle}"/></span>.</p></b>
 <div>
 <label for="fileDescription">File Description:</label>
-<form:input path="fileDescription" id="fileDescription"/>
+<form:input path="fileDescription" id="fileDescription"/><br>
 <form:errors path="fileDescription" cssClass="formErrors"/>
-</div>
-
-<div>
-<label for="userGivenFileName">File Name:</label>
-<form:input path="userGivenFileName" id="userGivenFileName"/>
-<form:errors path="userGivenFileName" cssClass="formErrors"/>
 </div>
 
 <div>

@@ -17,7 +17,6 @@
     <script type="text/javascript" src="js/jquery/jquery.formalize.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
     <script src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/keydragzoom/src/keydragzoom_packed.js"></script>
-
 </head>
 
 <body>
@@ -56,13 +55,12 @@
 </li>
 <li><a id="navAbout" href="<c:url value="about"/>">About</a></li>
 <li><a id="navContact" href="<c:url value="contact"/>">Contact</a></li>
-</div>
 </ul>
-
+</div>
 
 
 <div id="crumbs">
-    <a id="homeUrl" href="<c:url value=""/>">Home</a>
+    <a id="homeUrl" href="<c:url value="home"/>">Home</a>
 </div>
 
 <div id="login">
@@ -80,7 +78,7 @@
       <a href="<c:url value="login"/>">Login</a> or <a href="<c:url value="register"/>">Register</a>
     </c:otherwise>
     </c:choose>
-    <br>
+
 </c:if>
 </div>
 

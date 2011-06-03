@@ -3,7 +3,7 @@
 <%@ include file="header.jsp" %>
 
 
-    <h1>Welcome </h1>
+    <h1>Welcome to OzTrack Beta!</h1>
 
     <base/>
     <p>

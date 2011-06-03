@@ -4,6 +4,7 @@
 
 <form:form commandName="project" method="POST" name="project">
 
+<div class="formSubheader">Project Metadata</div>
 
 <div>
 <label for="title">*Title:</label>

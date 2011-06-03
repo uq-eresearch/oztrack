@@ -84,9 +84,12 @@ public class DataFileFormController extends SimpleFormController {
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
 
         DataFile dataFile = (DataFile) command;
-
-        // read the file
         MultipartFile file = dataFile.getFile();
+        ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
+
+        String project_id=request.getParameter("project_id");
+        logger.debug("adding file to project_id = " + project_id);
+        Project project = projectDao.getProjectById(Long.parseLong(project_id));
 
 
         if (file == null) {
@@ -103,13 +106,12 @@ public class DataFileFormController extends SimpleFormController {
             dataFile.setDataFileType(DataFileType.ACOUSTIC);
 
             // persist at project level
-            Project project = (Project) request.getSession().getAttribute("project");
+            //Project project = (Project) request.getSession().getAttribute("project");
             dataFile.setProject(project);
             List<DataFile> dataFiles = project.getDataFiles();
             dataFiles.add(dataFile);
             project.setDataFiles(dataFiles);
 
-            ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
             projectDao.save(project);
 
             // saving file to filesystem: check for data directory in app properties

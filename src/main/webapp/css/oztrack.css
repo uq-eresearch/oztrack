@@ -82,6 +82,7 @@ a:hover {
      background-color:#fbfee9;
      font-size:0.7em;
      padding-top:0.7ex;
+     margin-top:0px;
 }
 
 
@@ -121,7 +122,6 @@ a:hover {
     margin-top:30px;
     padding-bottom:20px;
     background-color:#fbfee9;
-
 }
 
 
@@ -134,11 +134,11 @@ a:hover {
     color:#fbfee9;
 }
  .clearboth {
- 				clear: both;
- 				width: 0px;
- 				height: 0px;
- 				margin: 0px;
- 			}
+    clear: both;
+    width: 0px;
+    height: 0px;
+    margin: 0px;
+}
 
 
 
@@ -221,6 +221,11 @@ a:hover {
 #crumbs a:hover,#crumbs a:active, #login a:hover, #login a:active  {
     color:#ef9800;
 
+}
+
+.aCrumb {
+    font-weight:bold;
+    color:#ef9800;
 }
 
 
@@ -456,6 +461,7 @@ tbody tr:hover {
 }
 
 /*
+
 #container, #content {
     border: solid yellow 2px;
 }
@@ -467,10 +473,9 @@ tbody tr:hover {
 #main {
     border: solid blue 1px;
 }
+
+
 */
-
-
-}
 
 
 

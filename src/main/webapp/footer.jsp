@@ -6,7 +6,7 @@
 </div> <!-- main -->
 
 <div id="footer">
-    OzTrack &copy; 2011
+    OzTrack 2011
 </div>
 
 </div> <!-- container -->

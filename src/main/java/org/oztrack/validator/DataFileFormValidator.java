@@ -23,9 +23,9 @@ public class DataFileFormValidator  implements Validator {
 	public void validate(Object obj, Errors errors) {
 
 		//User user = (User) obj;
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "userGivenFileName", "error.empty.field", "Please Enter");
+		//ValidationUtils.rejectIfEmptyOrWhitespace(errors, "userGivenFileName", "error.empty.field", "Please Enter");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "fileDescription", "error.empty.field", "Please Enter");
-        //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "fileType", "error.empty.field", "Please Enter");
+        //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "fileType", "error.empty.field", "You must specify a fil");
 
         /*TODO:
         1.

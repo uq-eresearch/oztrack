@@ -15,7 +15,7 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
     <bean id="simpleTrigger"
         class="org.springframework.scheduling.quartz.SimpleTriggerBean">
         <property name="jobDetail" ref="dataFilePoller" />
-        <property name="repeatInterval" value="300000" />
+        <property name="repeatInterval" value="5000" />
         <property name="startDelay" value="10000" />
     </bean>
 

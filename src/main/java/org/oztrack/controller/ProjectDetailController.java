@@ -8,6 +8,7 @@ import org.oztrack.data.model.DataFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -27,16 +28,18 @@ public class ProjectDetailController implements Controller {
         logger.debug("Parm project_id = " + httpServletRequest.getParameter("project_id"));
         String errorStr = null;
 
-        String project_id = httpServletRequest.getParameter("project_id");
+        Long project_id;
         ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
-        Project project;
 
-        if (project_id == null) {
-                project =  (Project) httpServletRequest.getSession().getAttribute("project");
+        if (httpServletRequest.getParameter("project_id") == null) {
+            Project tempProject =  (Project) httpServletRequest.getSession().getAttribute("project");
+            project_id = tempProject.getId();
         } else {
-                project =  projectDao.getProjectById(Long.valueOf(project_id));
-                httpServletRequest.getSession().setAttribute("project", project);
+            project_id = Long.parseLong(httpServletRequest.getParameter("project_id"));
         }
+
+        Project project = projectDao.getProjectById(project_id);
+        httpServletRequest.getSession().setAttribute("project", project);
 
         if (project ==  null) {
                 errorStr = "Couldn't find any project sorry.";
@@ -47,6 +50,12 @@ public class ProjectDetailController implements Controller {
         if (httpServletRequest.getRequestURI().contains("datafiles")) {
             modelAndViewName = "datafiles";
         }
+
+        //EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
+        //Project projectTest = entityManager.find(Project.class, project.getId());
+        //entityManager.refresh(projectTest);
+        projectDao.refresh(project);
+
 
         ModelAndView modelAndView = new ModelAndView(modelAndViewName);
         modelAndView.addObject("errorStr", errorStr);
