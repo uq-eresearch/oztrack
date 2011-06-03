@@ -11,12 +11,12 @@
 <tr><td><b>Content Type:</b></td><td><c:out value="${dataFile.contentType}"/></td></tr>
 <tr><td><b>Uploaded:</b></td><td><c:out value="${dataFile.uploadDate}"/> by <c:out value="${dataFile.uploadUser}"/></td></tr>
 <tr><td><b>Number Detections:</b></td><td><c:out value="${dataFile.numberDetections}"/></td></tr>
-<tr><td><b>File Processing Status:</b></td>
+<tr><td><b>File Processing Status:</b><c:out value="${dataFile.project.id}"/></td>
     <td>
         <c:out value="${dataFile.status}"/>
         <c:choose>
              <c:when test="${dataFile.status=='FAILED'}">
-                &nbsp;&nbsp;<a href="<c:url value="datafileadd"><c:param name="datafile_id" value="${dataFile.id}"/></c:url>">Retry</a>
+                &nbsp;&nbsp;<a href="<c:url value="datafileadd"><c:param name="datafile_id" value="${dataFile.id}"/><c:param name="project_id" value="${dataFile.project.id}"/></c:url>">Retry</a>
              </c:when>
         </c:choose>
     </td>
