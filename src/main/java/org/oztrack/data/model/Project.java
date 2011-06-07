@@ -1,6 +1,8 @@
 package org.oztrack.data.model;
 
 import org.hibernate.annotations.Cascade;
+import org.oztrack.data.model.types.ProjectType;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 
@@ -8,6 +10,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+
+import static javax.persistence.EnumType.STRING;
 
 /**
  * Author: peggy
@@ -39,12 +43,6 @@ public class Project implements Serializable {
     private String custodianUrl;
     private String publicationTitle;
     private String publicationUrl;
-    private Date createDate;
-    private Date updateDate;
-    private User createdBy;
-    private User updatedBy;
-
-
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.project", cascade =
     {CascadeType.PERSIST, CascadeType.MERGE})
@@ -57,6 +55,20 @@ public class Project implements Serializable {
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
     org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
     private List<DataFile> dataFiles = new LinkedList<DataFile>();
+
+    @Enumerated(STRING)
+    @Column(name="projecttype")
+    private ProjectType projectType;
+
+    private String speciesCommonName;
+    private String speciesScientificName;
+    private String imageFileLocation;
+
+    @Transient
+    private MultipartFile imageFile;
+    public void setImageFile(MultipartFile imageFile) {this.imageFile = imageFile;}
+    public MultipartFile getImageFile() {return imageFile;}
+
 
     public Project() {
 
@@ -221,5 +233,37 @@ public class Project implements Serializable {
     }
 
 
-    
+    public ProjectType getProjectType() {
+        return projectType;
+    }
+
+    public void setProjectType(ProjectType projectType) {
+        this.projectType = projectType;
+    }
+
+
+    public String getSpeciesCommonName() {
+        return speciesCommonName;
+    }
+
+    public void setSpeciesCommonName(String speciesCommonName) {
+        this.speciesCommonName = speciesCommonName;
+    }
+
+    public String getSpeciesScientificName() {
+        return speciesScientificName;
+    }
+
+    public void setSpeciesScientificName(String speciesScientificName) {
+        this.speciesScientificName = speciesScientificName;
+    }
+
+    public String getImageFileLocation() {
+        return imageFileLocation;
+    }
+
+    public void setImageFileLocation(String imageFileLocation) {
+        this.imageFileLocation = imageFileLocation;
+    }
+
 }

@@ -1,7 +1,8 @@
 <%@ include file="header.jsp" %>
 
 
-<h1>Search</h1>
+<h1 id="projectTitle"><c:out value="${project.title}"/></h1>
+<h2>Search Data</h2>
 
 <form:form commandName="searchQuery" method="POST" name="searchQuery">
 

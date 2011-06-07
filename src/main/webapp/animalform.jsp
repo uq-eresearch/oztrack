@@ -1,6 +1,7 @@
 <%@ include file="header.jsp" %>
 
-<h1>Update Animal Details</h1>
+<h1 id="projectTitle"><c:out value="${project.title}"/></h1>
+<h2>Update Animal Details</h2>
 
 <form:form commandName="animal" method="POST" name="animal">
 

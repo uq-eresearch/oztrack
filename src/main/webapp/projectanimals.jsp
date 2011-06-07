@@ -1,7 +1,7 @@
 <%@ include file="header.jsp" %>
 
-<h1>Animals</h1>
-<p><b>Project Title: </b><span id="projectTitle"><c:out value="${project.title}"/></span></p>
+<h1 id="projectTitle"><c:out value="${project.title}"/></h1>
+<h2>Animals</h2>
 
 <table class="dataTable">
 

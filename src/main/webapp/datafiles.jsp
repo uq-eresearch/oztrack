@@ -1,7 +1,8 @@
 <%@ include file="header.jsp" %>
 
 
-<h1>Data Files</h1>
+<h1 id="projectTitle"><c:out value="${project.title}"/></h1>
+<h2>Data Uploads</h2>
 
 <p><a class="oztrackButton" href="<c:url value="datafileadd"><c:param name="project_id" value="${project.id}"/></c:url>">Add a Datafile</a>
 </p>

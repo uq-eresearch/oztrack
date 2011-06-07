@@ -91,28 +91,28 @@ function initialize() {
             breadcrumb = breadcrumb + ' &rsaquo; <span class="aCrumb">Search Acoustic data</span>';
             break;
         case "projects":
-            breadcrumb = breadcrumb + ' &rsaquo; <span class="aCrumb">My Projects</span>';
+            breadcrumb = breadcrumb + ' &rsaquo; <span class="aCrumb">Tracking Projects</span>';
             break;
         case "projectadd":
-            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectadd","projects") + '"> &rsaquo; My Projects</a> &rsaquo; <span class="aCrumb">Add a Project</span>';
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectadd","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <span class="aCrumb">Create New Project</span>';
             break;
         case "projectdetail":
             var projectTitle = $('#projectTitle').html();
-            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectdetail","projects") + '"> &rsaquo; My Projects</a> &rsaquo; <span class="aCrumb">' + projectTitle + '</span>';
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectdetail","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <span class="aCrumb">' + projectTitle + '</span>';
             break;
         case "datafiles":
             var projectTitle = $('#projectTitle').html();
-            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("datafiles","projects") + '"> &rsaquo; My Projects</a> &rsaquo; <a href="' + thisUrl.replace("datafiles","projectdetail") + '">' + projectTitle
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("datafiles","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <a href="' + thisUrl.replace("datafiles","projectdetail") + '">' + projectTitle
                                     + '</a> &rsaquo; <span class="aCrumb"> Data Files </span>';
             break;
         case "datafileadd":
           var projectTitle = $('#projectTitle').html();
-            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("datafileadd","projects") + '"> &rsaquo; My Projects</a> &rsaquo; <a href="' + thisUrl.replace("datafileadd","projectdetail") + '">' + projectTitle
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("datafileadd","projects") + '"> &rsaquo; Tracking Projectss</a> &rsaquo; <a href="' + thisUrl.replace("datafileadd","projectdetail") + '">' + projectTitle
                                     + '</a> &rsaquo; <a href="' + thisUrl.replace("datafileadd","datafiles") + '"> Data Files </a> &rsaquo; <span class="aCrumb"> Add </span> ';
             break;
           case "projectanimals":
             var projectTitle = $('#projectTitle').html();
-            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectanimals","projects") + '"> &rsaquo; My Projects</a> &rsaquo; <a href="' + thisUrl.replace("projectanimals","projectdetail") + '">' + projectTitle
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectanimals","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <a href="' + thisUrl.replace("projectanimals","projectdetail") + '">' + projectTitle
                                     + '</a> &rsaquo; <span class="aCrumb"> Animals </span>';
             break;
         case "projectreceivers":
@@ -122,12 +122,12 @@ function initialize() {
             break;
        case "animalform":
             var projectTitle = $('#projectTitle').html();
-            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("animalform","projects") + '"> &rsaquo; My Projects</a> &rsaquo; <a href="' + thisUrl.replace("animalform","projectdetail") + '">' + projectTitle
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("animalform","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <a href="' + thisUrl.replace("animalform","projectdetail") + '">' + projectTitle
                                     + '</a> &rsaquo; <a href="' + thisUrl.replace("animalform","projectanimals") + '"> Animals </a> &rsaquo; <span class="aCrumb"> Edit </span> ';
             break;
        case "receiverform":
             var projectTitle = $('#projectTitle').html();
-            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("receiverform","projects") + '"> &rsaquo; My Projects</a> &rsaquo; <a href="' + thisUrl.replace("receiverform","projectdetail") + '">' + projectTitle
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("receiverform","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <a href="' + thisUrl.replace("receiverform","projectdetail") + '">' + projectTitle
                                     + '</a> &rsaquo; <a href="' + thisUrl.replace("receiverform","projectanimals") + '"> Receivers </a> &rsaquo; <span class="aCrumb"> Edit </span> ';
             break;
         case "searchform":

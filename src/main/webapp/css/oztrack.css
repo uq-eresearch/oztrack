@@ -162,7 +162,7 @@ a:hover {
     color:#ffffff;
     font-size:0.9em;
     font-weight:bold;
-    padding-right: 20px;
+    padding-right: 30px;
     padding-left: 20px;
     color:#ffffff;
     text-decoration:none;
@@ -192,6 +192,7 @@ a:hover {
     line-height:4ex;
     background-color: #131f00;
     display:none;
+    font-size:0.9em;
     z-index:1;
 	    /*--Bottom right rounded corner--*/
     	-moz-border-radius-bottomright: 5px;
@@ -430,7 +431,7 @@ tbody tr:hover {
 }
 
 .projectListTableHeader, .projectListTable {
-    width: 80%;
+    width: 100%;
     font-size: 0.8em;
 }
 

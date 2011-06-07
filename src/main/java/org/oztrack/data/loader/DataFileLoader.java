@@ -12,6 +12,7 @@ import org.oztrack.data.model.*;
 import org.oztrack.data.model.types.DataFileHeader;
 import org.oztrack.data.model.types.DataFileStatus;
 import org.oztrack.data.model.types.DataFileType;
+import org.oztrack.data.model.types.ProjectType;
 import org.oztrack.error.FileProcessingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -49,7 +50,8 @@ public class DataFileLoader {
             dataFileDao.update(dataFile);
             dataFileDao.refresh(dataFile);
 
-            if (dataFile.getDataFileType().equals(DataFileType.ACOUSTIC)) {
+            //if (dataFile.getDataFileType().equals(DataFileType.ACOUSTIC)) {
+            if (dataFile.getProject().getProjectType().equals(ProjectType.ACOUSTIC)) {
 
                 try {
 

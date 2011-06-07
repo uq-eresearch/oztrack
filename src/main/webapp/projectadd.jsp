@@ -1,8 +1,10 @@
 <%@ include file="header.jsp" %>
 
-<h1>Add a Project</h1>
+<h1>Create a New Project</h1>
 
-<form:form commandName="project" method="POST" name="project">
+<p>As a condition of use of OzTrack, the information collected in this form is registered with the
+Australian National Data Service, ANDS.</p>
+<form:form commandName="project" method="POST" name="project"  enctype="multipart/form-data">
 
 <div class="formSubheader">Project Metadata</div>
 
@@ -19,13 +21,22 @@
 </div>
 
 <div>
-<label for="spatialCoverageDescr">Spatial Coverage:</label>
+<label for="projectType">Project Type:</label>
+
+<form:select path="projectType">
+    <form:option value="ACOUSTIC">Acoustic Telemetry</form:option>
+    <form:option value="POSITION_FIX">Position Fixes</form:option>
+</form:select>
+</div>
+
+<div>
+<label for="spatialCoverageDescr">Location Description:</label>
 <form:input path="spatialCoverageDescr" id="spatialCoverageDescr"/>
 <form:errors path="spatialCoverageDescr" cssClass="formErrors"/>
 </div>
 
 <div>
-<label for="temporalCoverageDescr">Temporal Coverage:</label>
+<label for="temporalCoverageDescr">Temporal Description:</label>
 <form:input path="temporalCoverageDescr" id="temporalCoverageDescr"/>
 <form:errors path="temporalCoverageDescr" cssClass="formErrors"/>
 </div>
@@ -33,6 +44,20 @@
 <div class="checkboxDiv">
 <form:checkbox cssClass="checkbox" path="isGlobal" id="isGlobal"/>
 The data in this project is to be publically available via OzTrack.
+</div>
+
+<div class="formSubheader">Species</div>
+
+<div>
+<label for="speciesCommonName">Common Name:</label>
+<form:input path="speciesCommonName" id="speciesCommonName"/>
+<form:errors path="speciesCommonName" cssClass="formErrors"/>
+</div>
+
+<div>
+<label for="speciesScientificName">Scientific Name:</label>
+<form:input path="speciesScientificName" id="speciesScientificName"/>
+<form:errors path="speciesScientificName" cssClass="formErrors"/>
 </div>
 
 <div class="formSubheader">Data Contact</div>
@@ -88,6 +113,13 @@ The data in this project is to be publically available via OzTrack.
 <form:errors path="custodianUrl" cssClass="formErrors"/>
 </div>
 
+<div class="formSubheader">Image</div>
+
+<div>
+<label for="imageFile">Upload an Image file:</label>
+<input type="file" name="imageFile"/><br><br>
+<form:errors path="imageFile" cssClass="formErrors"/>
+</div>
 
 <div class="formSubheader">Publications</div>
 

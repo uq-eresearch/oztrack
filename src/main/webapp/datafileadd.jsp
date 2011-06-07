@@ -1,23 +1,15 @@
 <%@ include file="header.jsp" %>
 
-
-<h1>Add a Data File</h1>
+<h1 id="projectTitle"><c:out value="${project.title}"/></h1>
+<h2>Add a Data File</h2>
 
 <form:form commandName="dataFile" method="POST" enctype="multipart/form-data">
 
 
-<p>This file will be added to the project: <b><span id="projectTitle"><c:out value="${projectTitle}"/></span>.</p></b>
 <div>
 <label for="fileDescription">File Description:</label>
 <form:input path="fileDescription" id="fileDescription"/><br>
 <form:errors path="fileDescription" cssClass="formErrors"/>
-</div>
-
-<div>
-<label for="dataFileType">File Type:</label>
- <form:radiobutton path="dataFileType" value="ACOUSTIC" cssClass="radiobutton"/>Acoustic VR100<br>
- <form:radiobutton path="dataFileType" value="SATELLITE" cssClass="radiobutton" />Satellite/Position Fix
-<form:errors path="dataFileType" cssClass="formErrors"/>
 </div>
 
 <div>

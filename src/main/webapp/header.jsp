@@ -31,14 +31,30 @@
 <ul id="navMenu">
 
 <li><a id="navHome" href="<c:url value="home"/>">Home</a></li>
-<li><a id="navSearch" href="<c:url value="alloztrackprojects"/>">All Projects</a></li>
 
+<c:choose>
+ <c:when test="${currentUser != null}">
+    <li><a class="menuParent" href="#">Tracking Projects</a>
+        <ul>
+            <li><a href="<c:url value="projects"/>">Project List</a></li>
+            <li><a href="<c:url value="projectadd"/>">Create New Project</a></li>
+        </ul>
+    </li>
+ </c:when>
+<c:otherwise>
+    <li><a id="navTrack" href="<c:url value="login"/>">Tracking Projects</a></li>
+</c:otherwise>
+</c:choose>
+
+<li><a id="navSighting" href="<c:url value="home"/>">Animal Sightings</a></li>
+
+<!--
 <c:choose>
  <c:when test="${currentUser != null}">
     <li><a class="menuParent" href="#">Data Upload</a>
         <ul>
-            <li><a href="<c:url value="projects"/>">My Projects</a></li>
-            <li><a href="<c:url value="projectadd"/>">Add a Project</a></li>
+            <li><a href="<c:url value="projects"/>">Project List</a></li>
+            <li><a href="<c:url value="projectadd"/>">Create New Project</a></li>
         </ul>
     </li>
  </c:when>
@@ -53,6 +69,8 @@
     <li><a href="<c:url value="searchform"/>">Satellite</a></li>
   </ul>
 </li>
+-->
+
 <li><a id="navAbout" href="<c:url value="about"/>">About</a></li>
 <li><a id="navContact" href="<c:url value="contact"/>">Contact</a></li>
 </ul>
@@ -84,25 +102,30 @@
 
  <div id="main">
 
+
 <div id="leftMenu">
+
 <c:if test="${fn:contains(thisURL,'project') && !fn:contains(thisURL,'projectdetail')&& !fn:contains(thisURL,'projectanimals') && !fn:contains(thisURL,'projectreceivers')&& !fn:contains(thisURL,'alloztrackprojects')}">
     <ul>
-    <li><a href="<c:url value="projects"/>">My Projects</a></li>
-    <li><a href="<c:url value="projectadd"/>">Add a Project</a></li>
+    <li><a href="<c:url value="projects"/>">Project List</a></li>
+    <li><a href="<c:url value="projectadd"/>">Create New Project</a></li>
     </ul>
 </c:if>
 
-<c:if test="${fn:contains(thisURL,'projectdetail') || fn:contains(thisURL,'datafiles') || fn:contains(thisURL,'projectanimals') || fn:contains(thisURL,'projectreceivers') || fn:contains(thisURL,'datafileadd')|| fn:contains(thisURL,'datafiledetail')|| fn:contains(thisURL,'animalform')|| fn:contains(thisURL,'receiverform')}">
+<c:if test="${fn:contains(thisURL,'projectdetail') || fn:contains(thisURL,'searchform') || fn:contains(thisURL,'datafiles') || fn:contains(thisURL,'projectanimals') || fn:contains(thisURL,'projectreceivers') || fn:contains(thisURL,'datafileadd')|| fn:contains(thisURL,'datafiledetail')|| fn:contains(thisURL,'animalform')|| fn:contains(thisURL,'receiverform')}">
     <c:if test="${project.title != null}">
         <ul>
-          <li><a href="<c:url value="projectdetail"/>" id="projectTitle"> <c:out value="${project.title}"/></a></li>
-          <li><a href="<c:url value="datafiles"/>">Data Files</a></li>
+          <li><a href="<c:url value="projectdetail"/>">Project Details</a></li>
+          <li><a href="<c:url value="searchform"/>">Analysis Tools</a></li>
+          <li><a href="<c:url value="datafiles"/>">Data Uploads</a></li>
           <li><a href="<c:url value="projectanimals"/>">Animals</a></li>
           <li><a href="<c:url value="projectreceivers"/>">Receivers</a></li>
         </ul>
 
     </c:if>
 </c:if>
+
+
 <div id="logos">
 <a href="http://ands.org.au/"/><img src="images/ands-logo.png"/></a>
 <a href="http://itee.uq.edu.au/~eresearch/"/><img src="images/uq_logo.png"/></a>
@@ -111,6 +134,14 @@
 
 <div id="content">
 
+<!--
+<c:forEach items='${sessionScope}' var='p'>
+<ul>
+<li>Parameter Name: <c:out value='${p.key}'/></li>
+<li>Parameter Value: <c:out value='${p.value}'/></li>
+</ul>
+</c:forEach>
+-->
 
 
 

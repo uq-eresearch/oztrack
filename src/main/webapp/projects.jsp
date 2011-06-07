@@ -1,9 +1,10 @@
 <%@ include file="header.jsp" %>
 
 
-<h1>My Projects</h1>
+<h1>Projects</h1>
+Select a project to work with from the list below.
 
-
+<h2>My Projects</h2>
 <c:forEach items="${userProjectList}" var="project">
 
        <table class="projectListTableHeader">
@@ -13,11 +14,14 @@
                 <c:out value="${project.pk.project.title}"/>
                 </a></td>
          <td><c:out value="${project.pk.project.spatialCoverageDescr}"/></td>
-         <td><b>Created:</b> 01/05/2011</td>
-         <td><b>Role: </b><c:out value="${project.role}"/></td>
+         <td><b>Type:</b><br><c:out value="${project.pk.project.projectType.displayName}"/></td>
+         <td><b>Created:</b><br> 01/05/2011</td>
+         <td><b>Role: </b><br><c:out value="${project.role}"/></td>
         </tr>
         </table>
 
 </c:forEach>
+
+<h2>Globally Available Projects</h2>
 
 <%@ include file="footer.jsp" %>

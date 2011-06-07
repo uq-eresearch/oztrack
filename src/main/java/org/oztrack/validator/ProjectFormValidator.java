@@ -19,10 +19,21 @@ public class ProjectFormValidator implements Validator {
 	
 	public void validate(Object obj, Errors errors) {
 	      
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "title", "error.empty.field", "Please Enter Title");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "error.empty.field", "Please Enter description");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "contactOrganisation", "error.empty.field", "Please Enter organisation");
-		
+		Project project = (Project) obj;
+
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "title", "error.empty.field", "Please enter a short project title.");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "error.empty.field", "Please enter a description for the project.");
+
+        String contentType = project.getImageFile().getContentType();
+        if (!contentType.contains("image")) {
+            errors.rejectValue("imageFile", "bad.content", "This is not an image file (eg. .gif,.jpg,.png).");
+        } else {
+            if (project.getImageFile().getSize() > 1000000) {
+                errors.rejectValue("imageFile", "big.file", "Your image file size is too big (max 1MB).");
+            }
+        }
+
+
 	}
 	
 }	
