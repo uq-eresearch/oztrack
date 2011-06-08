@@ -14,6 +14,7 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js">;</script>
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
     <script type="text/javascript" src="js/oztrack.js"></script>
+    <script type="text/javascript" src="js/oztrackmaps.js"></script>
     <script type="text/javascript" src="js/jquery/jquery.formalize.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
     <script src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/keydragzoom/src/keydragzoom_packed.js"></script>
@@ -46,7 +47,7 @@
 </c:otherwise>
 </c:choose>
 
-<li><a id="navSighting" href="<c:url value="home"/>">Animal Sightings</a></li>
+<li><a id="navSighting" href="<c:url value="sighting"/>">Animal Sightings</a></li>
 
 <!--
 <c:choose>

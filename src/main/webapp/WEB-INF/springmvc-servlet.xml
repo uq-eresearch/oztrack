@@ -85,6 +85,18 @@
     </bean>
     <bean id="searchFormValidator" class="org.oztrack.validator.SearchFormValidator"/>
 
+    <bean name="/sighting" class="org.oztrack.controller.SightingFormController">
+            <property name="sessionForm"><value>false</value></property>
+            <property name="commandName"><value>sighting</value></property>
+            <property name="commandClass"><value>org.oztrack.data.model.Sighting</value></property>
+            <property name="validator"><ref bean="sightingFormValidator"/></property>
+            <property name="formView"><value>sighting</value></property>
+            <property name="successView"><value>sightingsuccess</value></property>
+    </bean>
+    <bean id="sightingFormValidator" class="org.oztrack.validator.SightingFormValidator"/>
+
+
+
   <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
     <!-- one of the properties available; the maximum file size in bytes -->
         <property name="maxUploadSize"><value>100000000</value></property>

@@ -22,5 +22,7 @@ public interface DaoManager {
     ReceiverDeploymentDao getReceiverDeploymentDao();
     EntityManager getEntityManager();
     JdbcAccess getJdbcAccess();
+    SightingDao getSightingDao();
+
 
 }

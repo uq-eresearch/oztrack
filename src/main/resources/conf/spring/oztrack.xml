@@ -42,6 +42,7 @@
         <property name="receiverDeploymentDao" ref="receiverDeploymentDao"/>
         <property name="jpaConnector" ref="jpaConnector"/>
         <property name="jdbcAccess" ref="jdbcAccess"/>
+        <property name="sightingDao" ref="sightingDao"/>
     </bean>
 
     <bean id="authenticationManager" class="org.oztrack.app.AuthenticationManager">

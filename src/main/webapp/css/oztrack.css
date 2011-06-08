@@ -276,6 +276,10 @@ a:hover {
 }
 
 
+/*
+    maps
+*/
+
 #map_canvas {
     margin-left: 10px;
     height: 100%;
@@ -283,6 +287,14 @@ a:hover {
     height:350px;
 }
 
+#sightingMap {
+    width: 280px;
+    height:100%;
+    height: 260px;
+
+    margin-top:0px;
+
+}
 
 /*
     forms
@@ -354,10 +366,12 @@ form div .checkbox, form div .radiobutton {
 }
 
 
-
-
 #localTimeConversionHours {
     width:30px;
+}
+
+#sightingLatitude, #sightingLongitude {
+    width:120px;
 }
 
 
@@ -431,13 +445,18 @@ tbody tr:hover {
 }
 
 .projectListTableHeader, .projectListTable {
-    width: 100%;
+    width: 85%;
     font-size: 0.8em;
 }
 
 .projectListTableHeader td, .projectListTable td {
     border:none;
     padding: 5px 5px;
+
+}
+
+.projectListTableHeader td {
+    width:33%;
 }
 
 .projectListTable {

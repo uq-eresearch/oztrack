@@ -23,8 +23,8 @@ public class DaoManagerImpl implements DaoManager {
     private RawAcousticDetectionDaoImpl rawAcousticDetectionDao;
     private ReceiverDeploymentDaoImpl receiverDeploymentDao;
     private JpaConnector jpaConnector;
-
     private JdbcAccessImpl JdbcAccess;
+    private SightingDaoImpl sightingDao;
 
     public JdbcAccessImpl getJdbcAccess() {
         return JdbcAccess;
@@ -98,6 +98,16 @@ public class DaoManagerImpl implements DaoManager {
     public void setReceiverDeploymentDao(ReceiverDeploymentDaoImpl receiverDeploymentDao) {
         this.receiverDeploymentDao = receiverDeploymentDao;
     }
+
+    public SightingDaoImpl getSightingDao() {
+        return sightingDao;
+    }
+
+    public void setSightingDao(SightingDaoImpl sightingDao) {
+        this.sightingDao = sightingDao;
+    }
+
+
 
 
 

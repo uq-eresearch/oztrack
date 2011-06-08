@@ -3,8 +3,6 @@ package org.oztrack.controller;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.model.Animal;
-import org.oztrack.data.model.DataFile;
-import org.oztrack.data.model.Project;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
