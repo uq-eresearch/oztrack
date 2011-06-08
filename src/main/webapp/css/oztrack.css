@@ -168,10 +168,11 @@ a:hover {
     text-decoration:none;
 }
 
-#navMenu a:hover, #navMenu a:active {
+#navMenu a:hover, #navMenu a:active, {
     color:#f7a700;
     font-weight:bolder;
 }
+
 
 #navMenu li {
     position:relative;

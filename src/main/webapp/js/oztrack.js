@@ -1,7 +1,7 @@
 
 $(document).ready(function(){
-     nav();
-     crumbs();
+     //nav();
+     navigation();
      accordian();
      setupDatepicker();
 
@@ -16,7 +16,12 @@ $(document).ready(function(){
 
 
 
- function crumbs() {
+ function navigation() {
+
+      $('.menuParent').click(function() {
+            $(this).next().toggle('fast');
+            return false;
+        }).next().hide();
 
    //eg thisUrl http://localhost:8080/oztrack/register;jsessionid=4q9927jnlfrdosnt4ci95es
    //           ---------baseUrl-------------/thisPath;----------------------------------
@@ -28,65 +33,91 @@ $(document).ready(function(){
     var homeCrumb = '<a href="' + homeUrl + '">Home</a>';
     var breadcrumb = homeCrumb;
 
-    //alert("thisPath: " + thisPath);
+    //change navMenu all back to white
+    $('#navMenu').find('li a').css('color','#ffffff');
 
     switch (thisPath) {
-        case "alloztrackprojects":
-            breadcrumb = breadcrumb + ' &rsaquo; <span class="aCrumb">All Projects</span>';
+        case "home":
+            breadcrumb = '<span class="aCrumb">Home</span>';
+            $('#navHome').css('color','#f7a700');
             break;
         case "login":
             breadcrumb = breadcrumb + ' &rsaquo; <span class="aCrumb">Login</span>';
+            $('#navHome').css('color','#f7a700');
             break;
         case "register":
             breadcrumb = breadcrumb + ' &rsaquo; <span class="aCrumb">Register</span>';
+            $('#navHome').css('color','#f7a700');
             break;
         case "searchacoustic":
             breadcrumb = breadcrumb + ' &rsaquo; <span class="aCrumb">Search Acoustic data</span>';
             break;
         case "projects":
             breadcrumb = breadcrumb + ' &rsaquo; <span class="aCrumb">Tracking Projects</span>';
+            $('#navTrack').css('color','#f7a700');
             break;
         case "projectadd":
             breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectadd","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <span class="aCrumb">Create New Project</span>';
+            $('#navTrack').css('color','#f7a700');
             break;
         case "projectdetail":
             var projectTitle = $('#projectTitle').html();
             breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectdetail","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <span class="aCrumb">' + projectTitle + '</span>';
+            $('#navTrack').css('color','#f7a700');
             break;
         case "datafiles":
             var projectTitle = $('#projectTitle').html();
             breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("datafiles","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <a href="' + thisUrl.replace("datafiles","projectdetail") + '">' + projectTitle
                                     + '</a> &rsaquo; <span class="aCrumb"> Data Files </span>';
+            $('#navTrack').css('color','#f7a700');
             break;
         case "datafileadd":
           var projectTitle = $('#projectTitle').html();
             breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("datafileadd","projects") + '"> &rsaquo; Tracking Projectss</a> &rsaquo; <a href="' + thisUrl.replace("datafileadd","projectdetail") + '">' + projectTitle
                                     + '</a> &rsaquo; <a href="' + thisUrl.replace("datafileadd","datafiles") + '"> Data Files </a> &rsaquo; <span class="aCrumb"> Add </span> ';
+            $('#navTrack').css('color','#f7a700');
             break;
           case "projectanimals":
             var projectTitle = $('#projectTitle').html();
             breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectanimals","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <a href="' + thisUrl.replace("projectanimals","projectdetail") + '">' + projectTitle
                                     + '</a> &rsaquo; <span class="aCrumb"> Animals </span>';
+            $('#navTrack').css('color','#f7a700');
             break;
         case "projectreceivers":
             var projectTitle = $('#projectTitle').html();
             breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectreceivers","projects") + '"> &rsaquo; My Projects</a> &rsaquo; <a href="' + thisUrl.replace("projectreceivers","projectdetail") + '">' + projectTitle
                                     + '</a> &rsaquo; <span class="aCrumb"> Receivers </span>';
+            $('#navTrack').css('color','#f7a700');
             break;
        case "animalform":
             var projectTitle = $('#projectTitle').html();
             breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("animalform","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <a href="' + thisUrl.replace("animalform","projectdetail") + '">' + projectTitle
                                     + '</a> &rsaquo; <a href="' + thisUrl.replace("animalform","projectanimals") + '"> Animals </a> &rsaquo; <span class="aCrumb"> Edit </span> ';
+            $('#navTrack').css('color','#f7a700');
             break;
        case "receiverform":
             var projectTitle = $('#projectTitle').html();
             breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("receiverform","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <a href="' + thisUrl.replace("receiverform","projectdetail") + '">' + projectTitle
                                     + '</a> &rsaquo; <a href="' + thisUrl.replace("receiverform","projectanimals") + '"> Receivers </a> &rsaquo; <span class="aCrumb"> Edit </span> ';
+            $('#navTrack').css('color','#f7a700');
             break;
         case "searchform":
-           breadcrumb = breadcrumb + ' &rsaquo; <span class="aCrumb">Analysis Tools</span>';
+            var projectTitle = $('#projectTitle').html();
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("searchform","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <a href="' + thisUrl.replace("searchform","projectdetail") + '">' + projectTitle
+                                    + '</a> &rsaquo; <span class="aCrumb">Analysis Tools</span>';
+            $('#navTrack').css('color','#f7a700');
             break;
         case "sighting":
+            breadcrumb = breadcrumb + ' &rsaquo; <span class="aCrumb">Report an Animal Sighting</span>';
+            $('#navSighting').css('color','#f7a700');
+            break;
+        case "about":
+            breadcrumb = breadcrumb + ' &rsaquo; <span class="aCrumb">About</span>';
+            $('#navAbout').css('color','#f7a700');
+            break;
+        case "contact":
+            breadcrumb = breadcrumb + ' &rsaquo; <span class="aCrumb">Contact</span>';
+            $('#navContact').css('color','#f7a700');
             break;
         default:
             break;
@@ -98,6 +129,8 @@ $(document).ready(function(){
 
  }
 
+
+ /*
  function nav () {
 
    $('.menuParent').click(function() {
@@ -106,6 +139,8 @@ $(document).ready(function(){
     	}).next().hide();
 
  }
+ */
+
 
  function accordian () {
 

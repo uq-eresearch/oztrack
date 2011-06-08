@@ -35,7 +35,7 @@
 
 <c:choose>
  <c:when test="${currentUser != null}">
-    <li><a class="menuParent" href="#">Tracking Projects</a>
+    <li><a id="navTrack" class="menuParent" href="#">Tracking Projects</a>
         <ul>
             <li><a href="<c:url value="projects"/>">Project List</a></li>
             <li><a href="<c:url value="projectadd"/>">Create New Project</a></li>
@@ -48,30 +48,6 @@
 </c:choose>
 
 <li><a id="navSighting" href="<c:url value="sighting"/>">Animal Sightings</a></li>
-
-<!--
-<c:choose>
- <c:when test="${currentUser != null}">
-    <li><a class="menuParent" href="#">Data Upload</a>
-        <ul>
-            <li><a href="<c:url value="projects"/>">Project List</a></li>
-            <li><a href="<c:url value="projectadd"/>">Create New Project</a></li>
-        </ul>
-    </li>
- </c:when>
-<c:otherwise>
-    <li><a id="navLogin" href="<c:url value="login"/>">Login</a></li>
-</c:otherwise>
-</c:choose>
-
-<li ><a class="menuParent" href="#">Analysis Tools</a>
- <ul>
-    <li><a href="<c:url value="searchform"/>">Acoustic</a></li>
-    <li><a href="<c:url value="searchform"/>">Satellite</a></li>
-  </ul>
-</li>
--->
-
 <li><a id="navAbout" href="<c:url value="about"/>">About</a></li>
 <li><a id="navContact" href="<c:url value="contact"/>">Contact</a></li>
 </ul>
