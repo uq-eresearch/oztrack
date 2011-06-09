@@ -28,14 +28,20 @@ $(document).ready(function(){
 
     var thisUrl = $(location).attr('href');
     var baseUrl = thisUrl.substring(0,thisUrl.lastIndexOf('/'));
-    var thisPath = thisUrl.substring(baseUrl.length,thisUrl.lastIndexOf(';')).replace('/','');
+    //var thisPath = thisUrl.substring(baseUrl.length,thisUrl.lastIndexOf(';')).replace('/','');
+    var thisPath = thisUrl.substring(baseUrl.length,thisUrl.length).replace('/','');
+
+    if (thisPath.indexOf(";jsessionid=",0) != -1) {
+        thisPath = thisPath.substring(0,thisPath.indexOf(";jsessionid="));
+    }
+
     var homeUrl = $('#homeUrl').attr('href');
     var homeCrumb = '<a href="' + homeUrl + '">Home</a>';
     var breadcrumb = homeCrumb;
 
     //change navMenu all back to white
     $('#navMenu').find('li a').css('color','#ffffff');
-
+    //alert("thisPath: " + thisPath);
     switch (thisPath) {
         case "home":
             breadcrumb = '<span class="aCrumb">Home</span>';

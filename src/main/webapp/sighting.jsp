@@ -33,7 +33,7 @@
 </div>
 
 <div>
-<label/>
+<label>&nbsp;</label>
 <div id="sightingMap" style=""></div>
 </div>
 
