@@ -24,8 +24,11 @@ Australian National Data Service, ANDS.</p>
 <label for="projectType">Project Type:</label>
 
 <form:select path="projectType">
-    <form:option value="ACOUSTIC">Acoustic Telemetry</form:option>
-    <form:option value="POSITION_FIX">Position Fixes</form:option>
+    <form:option value="PASSIVE_ACOUSTIC">Passive Acoustic Telemetry</form:option>
+    <form:option value="ACTIVE_ACOUSTIC">Active Acoustic Telemetry</form:option>
+    <form:option value="GPS">GPS Based Telemetry</form:option>
+    <form:option value="ARGOS">ARGOS Telemetry</form:option>
+    <form:option value="RADIO">Radio Telemetry</form:option>
 </form:select>
 </div>
 

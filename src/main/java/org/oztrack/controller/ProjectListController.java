@@ -4,6 +4,7 @@ import org.oztrack.app.AuthenticationManager;
 import org.oztrack.app.Constants;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.ProjectUser;
 import org.oztrack.data.model.User;
@@ -33,10 +34,12 @@ public class ProjectListController implements Controller {
 //        User currentUser = authenticationManager.getUserFromSession(session);
         User currentUser = (User) httpServletRequest.getSession().getAttribute(Constants.CURRENT_USER);
 
+        UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();
+        User user = userDao.getByUsername(currentUser.getUsername());
 
     	// returns ALL projects that this user has access to
     	//List<Project> userProjectList = projectDao.getProjectListByUserId(currentUser.getId());
-        List <ProjectUser> userProjectList = currentUser.getProjectUsers();
+        List <ProjectUser> userProjectList = user.getProjectUsers();
 
         ModelAndView modelAndView = new ModelAndView("projects");
         modelAndView.addObject("userProjectList", userProjectList);

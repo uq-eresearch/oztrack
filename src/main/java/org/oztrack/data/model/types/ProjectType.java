@@ -9,8 +9,12 @@ package org.oztrack.data.model.types;
 
 public enum ProjectType {
 
-    ACOUSTIC("Acoustic Telemetry")
-    ,POSITION_FIX("Position Fix");
+     PASSIVE_ACOUSTIC("Passive Acoustic Telemetry")
+    ,ACTIVE_ACOUSTIC("Active Acoustic Telemetry")
+    ,GPS("GPS Based Telemetry")
+    ,ARGOS("ARGOS Telemetry")
+    ,RADIO("Radio Telemetry");
+
 
     private final String displayName;
 

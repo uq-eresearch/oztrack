@@ -49,7 +49,7 @@ $(document).ready(function(){
             break;
         case "login":
             breadcrumb = breadcrumb + ' &rsaquo; <span class="aCrumb">Login</span>';
-            $('#navHome').css('color','#f7a700');
+            //$('#navTrack').css('color','#f7a700');
             break;
         case "register":
             breadcrumb = breadcrumb + ' &rsaquo; <span class="aCrumb">Register</span>';
@@ -79,8 +79,8 @@ $(document).ready(function(){
             break;
         case "datafileadd":
           var projectTitle = $('#projectTitle').html();
-            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("datafileadd","projects") + '"> &rsaquo; Tracking Projectss</a> &rsaquo; <a href="' + thisUrl.replace("datafileadd","projectdetail") + '">' + projectTitle
-                                    + '</a> &rsaquo; <a href="' + thisUrl.replace("datafileadd","datafiles") + '"> Data Files </a> &rsaquo; <span class="aCrumb"> Add </span> ';
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("datafileadd","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <a href="' + thisUrl.replace("datafileadd","projectdetail") + '">' + projectTitle
+                                    + '</a> &rsaquo; <a href="' + thisUrl.replace("datafileadd","datafiles") + '"> Data Uploads </a> &rsaquo; <span class="aCrumb"> Add a Data File </span> ';
             $('#navTrack').css('color','#f7a700');
             break;
           case "projectanimals":

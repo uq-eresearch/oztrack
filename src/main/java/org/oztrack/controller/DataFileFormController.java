@@ -55,10 +55,12 @@ public class DataFileFormController extends SimpleFormController {
         String dataFileId = request.getParameter("datafile_id");
         DataFile dataFile;
 
+        /* retrying from FAILED data upload (datafiledetail.jsp*/
         if (dataFileId != null) {
             DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
             dataFile = dataFileDao.getDataFileById(Long.parseLong(dataFileId));
 
+        /* empty form */
         } else {
             dataFile = new DataFile();
             dataFile.setLocalTimeConversionHours((long)10);
@@ -87,6 +89,8 @@ public class DataFileFormController extends SimpleFormController {
         MultipartFile file = dataFile.getFile();
         ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
 
+        /* from datafiles.jsp : Add a Data File button
+        *  or datafiledetail.jsp: if FAILED */
         String project_id=request.getParameter("project_id");
         logger.debug("adding file to project_id = " + project_id);
         Project project = projectDao.getProjectById(Long.parseLong(project_id));

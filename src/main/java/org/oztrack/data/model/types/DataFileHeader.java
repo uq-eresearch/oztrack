@@ -9,18 +9,8 @@ package org.oztrack.data.model.types;
  */
 public enum DataFileHeader {
 
-    DATETIME,
-    ID,
-    SENSOR1,
-    UNITS1,
-    CODESPACE,
-    UNITS2,
-    SENSOR2,
-    TRANSMITTERNAME,
-    TRANSMITTERSN,
-    RECEIVERNAME,
-    RECEIVERSN,
-    STATIONNAME,
-    STATIONLATITUDE,
-    STATIONLONGITUDE
+
+
+
+
 }
