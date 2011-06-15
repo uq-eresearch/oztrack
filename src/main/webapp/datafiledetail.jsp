@@ -11,7 +11,7 @@
 <tr><td><b>Content Type:</b></td><td><c:out value="${dataFile.contentType}"/></td></tr>
 <tr><td><b>Uploaded:</b></td><td><fmt:formatDate value="${dataFile.uploadDate}" type="both" timeStyle="short" dateStyle="long"/> by <c:out value="${dataFile.uploadUser}"/></td></tr>
 <tr><td><b>Number Detections:</b></td><td><c:out value="${dataFile.numberDetections}"/></td></tr>
-<tr><td><b>File Processing Status:</b><c:out value="${dataFile.project.id}"/></td>
+<tr><td><b>File Processing Status:</b></td>
     <td>
         <c:out value="${dataFile.status}"/>
         <c:choose>

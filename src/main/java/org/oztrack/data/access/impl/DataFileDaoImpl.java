@@ -35,7 +35,7 @@ public class DataFileDaoImpl extends JpaDao<DataFile> implements DataFileDao, Se
     public DataFile getNextDataFile() {
         Query query = entityManagerSource.getEntityManager().createQuery("select o from datafile o " +
                 " where o.status='NEW'" +
-                " and o.uploadDate = (select min(d.uploadDate) from datafile d where d.status='NEW') " +
+                " and o.createDate = (select min(d.createDate) from datafile d where d.status='NEW') " +
                 " and not exists (select 1 from datafile e where e.status='PROCESSING')");
         //query.setParameter("id", id);
         try {
@@ -43,5 +43,17 @@ public class DataFileDaoImpl extends JpaDao<DataFile> implements DataFileDao, Se
         } catch (NoResultException ex) {
             return null;
         }
+    }
+
+    @Override
+    public void save(DataFile object) {
+        object.setUpdateDate(new java.util.Date());
+        super.save(object);    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public DataFile update(DataFile object) {
+        object.setUpdateDate(new java.util.Date());
+        return super.update(object);    //To change body of overridden methods use File | Settings | File Templates.
     }
 }

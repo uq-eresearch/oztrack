@@ -102,12 +102,11 @@ public class DataFileFormController extends SimpleFormController {
             // set dataFile details
             dataFile.setUserGivenFileName(file.getOriginalFilename());
             dataFile.setContentType(file.getContentType());
-            dataFile.setUploadDate(new java.util.Date());
+            dataFile.setCreateDate(new java.util.Date());
 
             //dataFile.setUploadUser(OzTrackApplication.getApplicationContext().getAuthenticationManager().getCurrentUser().getFullName());
             User currentUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER);
             dataFile.setUploadUser(currentUser.getFullName() );
-            dataFile.setDataFileType(DataFileType.ACOUSTIC);
 
             // persist at project level
             //Project project = (Project) request.getSession().getAttribute("project");
@@ -131,9 +130,7 @@ public class DataFileFormController extends SimpleFormController {
             // save the file to the data dir
             String filePath = dataDir + File.separator + "oztrack" + File.separator
                              + project.getId().toString() + File.separator
-                             + dataFile.getDataFileType().toString().toLowerCase() + File.separator
-                             + "oztrack-" + dataFile.getDataFileType().toString().toLowerCase()
-                             + "-" + project.getId().toString()
+                             + "oztrack-" + project.getId().toString()
                              + "-" + dataFile.getId().toString() + ".csv";
 
             File saveFile = new File(filePath);

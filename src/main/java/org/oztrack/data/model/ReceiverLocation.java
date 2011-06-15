@@ -11,7 +11,7 @@ import java.io.Serializable;
  * To change this template use File | Settings | File Templates.
  */
 @Entity(name = "ReceiverLocation")
-public class ReceiverLocation implements Serializable {
+public class ReceiverLocation extends OztrackBaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "receiverlocatid_seq")

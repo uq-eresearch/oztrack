@@ -18,6 +18,12 @@
  &nbsp; Local time is GMT + <form:input path="localTimeConversionHours" cssClass="shortInput"/> hours.
 </div>
 
+<div class="checkboxDiv">
+<form:checkbox cssClass="checkbox" path="singleAnimalInFile" id="singleAnimalInFile"/>
+This file contains data for a single tagged animal only.
+</div>
+
+
 <div><label for="file">File: </label><input type="file" name="file"/>
 </div>
 

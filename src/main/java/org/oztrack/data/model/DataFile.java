@@ -17,7 +17,7 @@ import static javax.persistence.EnumType.STRING;
  */
 
 @Entity(name = "datafile")
-public class DataFile implements Serializable {
+public class DataFile extends OztrackBaseEntity implements Serializable {
 	
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "datafileid_seq")
@@ -41,11 +41,8 @@ public class DataFile implements Serializable {
     private Boolean localTimeConversionRequired;
     private Long localTimeConversionHours;
     private Integer numberDetections;
+    private Boolean singleAnimalInFile;
 
-
-    @Enumerated(STRING)
-    @Column(name="datafiletype")
-    private DataFileType dataFileType;
 
     @Enumerated(STRING)
     @Column(name="datafilestatus")
@@ -159,15 +156,7 @@ public class DataFile implements Serializable {
         this.status = status;
     }
 
-    public DataFileType getDataFileType() {
-        return dataFileType;
-    }
-
-    public void setDataFileType(DataFileType dataFileType) {
-        this.dataFileType = dataFileType;
-    }
-
-        public Boolean getLocalTimeConversionRequired() {
+    public Boolean getLocalTimeConversionRequired() {
         return localTimeConversionRequired;
     }
 
@@ -199,6 +188,12 @@ public class DataFile implements Serializable {
         this.statusMessage = statusMessage;
     }
 
+    public Boolean getSingleAnimalInFile() {
+         return singleAnimalInFile;
+     }
 
+     public void setSingleAnimalInFile(Boolean singleAnimalInFile) {
+         this.singleAnimalInFile = singleAnimalInFile;
+     }
 
 }

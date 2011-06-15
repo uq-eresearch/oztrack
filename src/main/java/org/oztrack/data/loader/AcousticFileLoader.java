@@ -34,7 +34,7 @@ import static org.oztrack.util.OzTrackUtil.removeDuplicateLinesFromFile;
  */
 public class AcousticFileLoader {
 
-        /**
+     /**
      * Logger for this class and subclasses
      */
     protected final Log logger = LogFactory.getLog(getClass());

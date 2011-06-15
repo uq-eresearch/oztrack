@@ -3,6 +3,7 @@ package org.oztrack.data.loader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
+import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.model.*;
 import org.oztrack.data.model.types.DataFileStatus;
@@ -35,7 +36,11 @@ public class DataFileLoader {
 
             dataFile.setStatus(DataFileStatus.PROCESSING);
             dataFileDao.update(dataFile);
-            dataFileDao.refresh(dataFile);
+            //dataFileDao.refresh(dataFile);
+
+            if (dataFile.getSingleAnimalInFile()) {
+                createAnimal(dataFile);
+            }
 
             try {
 
@@ -45,8 +50,9 @@ public class DataFileLoader {
                     dataFile = acousticFileLoader.getDataFile();
                 } else if (dataFile.getProject().getProjectType().equals(ProjectType.GPS)
                            || dataFile.getProject().getProjectType().equals(ProjectType.ARGOS)) {
-                    PositionFixFileLoader positionFixFileLoader = new PositionFixFileLoader((dataFile));
+                    PositionFixFileLoader positionFixFileLoader = new PositionFixFileLoader(dataFile);
                     positionFixFileLoader.process();
+                    dataFile = positionFixFileLoader.getDataFile();
                 }
 
                 dataFile.setStatus(DataFileStatus.COMPLETE);
@@ -68,16 +74,25 @@ public class DataFileLoader {
 
             }
 
-            dataFileDao.save(dataFile);
-            dataFileDao.refresh(dataFile);
+            dataFileDao.update(dataFile);//dataFileDao.refresh(dataFile);
+
 
         }
+
 
     }
 
 
-    public void processRawPositionFix(DataFile dataFile) {
-        logger.info("processing a raw position fix file : " + dataFile.getOzTrackFileName());
+    public void createAnimal(DataFile dataFile) {
+
+        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
+        Animal animal = new Animal();
+        animal.setProject(dataFile.getProject());
+        animal.setProjectAnimalId("a");
+        animal.setAnimalName("unknown");
+        animal.setAnimalDescription("created in datafile upload: "
+                                    + dataFile.getUserGivenFileName()
+                                    + "on " + dataFile.getUploadDate());
 
     }
 

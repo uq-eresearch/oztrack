@@ -9,10 +9,10 @@ import java.util.Date;
  * User: uqpnewm5
  * Date: 4/05/11
  * Time: 11:05 AM
- * To change this template use File | Settings | File Templates.
  */
+
 @Entity(name = "Animal")
-public class Animal implements Serializable {
+public class Animal extends OztrackBaseEntity implements Serializable  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "animalid_seq")

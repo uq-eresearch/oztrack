@@ -11,7 +11,7 @@ import java.util.Date;
  * Time: 1:53 PM
  */
 @Entity(name = "ReceiverDeployment")
-public class ReceiverDeployment implements Serializable {
+public class ReceiverDeployment extends OztrackBaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "receiverdeployid_seq")

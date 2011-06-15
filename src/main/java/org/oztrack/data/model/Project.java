@@ -19,7 +19,7 @@ import static javax.persistence.EnumType.STRING;
  */
 
 @Entity(name = "Project")
-public class Project implements Serializable {
+public class Project extends OztrackBaseEntity implements Serializable {
 	
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "projectid_seq")
