@@ -23,7 +23,7 @@
         <tr>
             <td><a href="<c:url value="datafiledetail"><c:param name="datafile_id" value="${dataFile.id}"/></c:url>"><c:out value="${dataFile.userGivenFileName}"/></a></td>
             <td><c:out value="${dataFile.fileDescription}"/></td>
-            <td><fmt:formatDate value="${dataFile.uploadDate}" type="both" timeStyle="short" dateStyle="long"/>
+            <td><fmt:formatDate value="${dataFile.createDate}" type="both" timeStyle="long" dateStyle="long"/>
             <td><c:out value="${dataFile.status}"/></td>
 		</tr>
     </c:forEach>

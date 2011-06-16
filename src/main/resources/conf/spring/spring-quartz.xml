@@ -3,10 +3,10 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.springframework.org/schema/beans
 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <bean id="dataFileLoader" class="org.oztrack.data.loader.DataFileLoader" />
+    <bean id="dataFileRunner" class="org.oztrack.data.loader.DataFileRunner" />
 
     <bean id="dataFilePoller" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-      <property name="targetObject" ref="dataFileLoader" />
+      <property name="targetObject" ref="dataFileRunner" />
       <property name="targetMethod" value="processNext" />
       <property name="concurrent" value="false" />
     </bean>

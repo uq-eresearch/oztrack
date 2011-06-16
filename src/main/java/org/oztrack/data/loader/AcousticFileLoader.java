@@ -1,18 +1,11 @@
 package org.oztrack.data.loader;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
-import org.oztrack.data.access.AnimalDao;
-import org.oztrack.data.access.RawAcousticDetectionDao;
 import org.oztrack.data.access.ReceiverDeploymentDao;
-import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.RawAcousticDetection;
 import org.oztrack.data.model.ReceiverDeployment;
 import org.oztrack.data.model.types.AcousticFileHeader;
-import org.oztrack.data.model.types.DataFileHeader;
-import org.oztrack.data.access.direct.JdbcAccess;
 import org.oztrack.error.FileProcessingException;
 
 import javax.persistence.EntityManager;
@@ -24,59 +17,25 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.oztrack.util.OzTrackUtil.removeDuplicateLinesFromFile;
-
 /**
  * Created by IntelliJ IDEA.
  * User: uqpnewm5
  * Date: 10/06/11
  * Time: 9:08 AM
  */
-public class AcousticFileLoader {
+public class AcousticFileLoader extends DataFileLoader {
 
-     /**
-     * Logger for this class and subclasses
-     */
-    protected final Log logger = LogFactory.getLog(getClass());
-    private DataFile dataFile;
-
-   AcousticFileLoader(DataFile dataFile) {
-        this.dataFile = dataFile;
-    }
-    public DataFile getDataFile() {
-        return dataFile;
-    }
-
-    public void setDataFile(DataFile dataFile) {
-        this.dataFile = dataFile;
+    AcousticFileLoader(DataFile dataFile) {
+       super(dataFile);
     }
 
     public void process() throws FileProcessingException {
-
-        // de-duplicate file
-        removeDuplicateLinesFromFile(this.dataFile.getOzTrackFileName());
-        createRawAcousticDetections();
-        checkAnimalsExist();
-        checkReceiversExist();
-
-        // create the final detections
-        JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
-
-        int nbrDetectionsCreated = 0;
-        try {
-            // avoid hibernate for performance
-            nbrDetectionsCreated = jdbcAccess.loadAcousticDetections(this.dataFile.getProject().getId(), dataFile.getId());
-            this.dataFile.setNumberDetections(nbrDetectionsCreated);
-            jdbcAccess.truncateRawAcousticDetections();
-        } catch (Exception e) {
-            jdbcAccess.truncateRawAcousticDetections();
-            throw new FileProcessingException(e.toString());
-        }
-
-
+        super.process();
     }
 
-    public void createRawAcousticDetections() throws FileProcessingException {
+    @Override
+    public void insertRawObservations() throws FileProcessingException {
+    //public void createRawAcousticDetections() throws FileProcessingException {
 
         int lineNumber = 0;
         logger.info("processing raw acoustic file : " + this.dataFile.getOzTrackFileName());
@@ -242,58 +201,17 @@ public class AcousticFileLoader {
 
     }
 
-    public void checkAnimalsExist()  {
-
-        // the Daos
-        RawAcousticDetectionDao rawAcousticDetectionDao = OzTrackApplication.getApplicationContext().getDaoManager().getRawAcousticDetectionDao();
-        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
-
-        // the new animals
-        List<String> newAnimalIdList = rawAcousticDetectionDao.getAllAnimalIds();
-        // all the animals for this project
-        List<Animal> projectAnimalList = animalDao.getAnimalsByProjectId(this.dataFile.getProject().getId());
-        boolean animalFound;
-        String projectAnimalId;
-
-        for (String newAnimalId  : newAnimalIdList) {
-             animalFound=false;
-             for (Animal projectAnimal : projectAnimalList) {
-                 projectAnimalId = projectAnimal.getProjectAnimalId();
-                 if (newAnimalId.equals(projectAnimalId))   {
-                     animalFound=true;
-                 }
-             }
-
-             if (!animalFound) {
-                 Animal animal = new Animal();
-                 animal.setAnimalName("Unknown");
-                 animal.setAnimalDescription("Unknown");
-                 animal.setSpeciesName("Unknown");
-                 animal.setVerifiedSpeciesName("Unknown");
-                 animal.setProjectAnimalId(newAnimalId);
-                 animal.setProject(dataFile.getProject());
-                 animal.setCreateDate(new java.util.Date());
-                 // TODO:
-                 // name = transmitter name
-                 // transmitterID = transmitter SN where sensor1 is null
-                 // sensorTransmitterID= transmitter SN where sensor1 is not null
-                 // transmitter type code = dependent on how sensor works (C=temp; m=depth?)
-                animalDao.save(animal);
-
-             }
-        }
 
 
-    }
-
-    public void checkReceiversExist()  {
+    @Override
+    public void checkReceivers() throws FileProcessingException {
 
 
         // the Daos
-        RawAcousticDetectionDao rawAcousticDetectionDao = OzTrackApplication.getApplicationContext().getDaoManager().getRawAcousticDetectionDao();
+        //RawAcousticDetectionDao rawAcousticDetectionDao = OzTrackApplication.getApplicationContext().getDaoManager().getRawAcousticDetectionDao();
         ReceiverDeploymentDao receiverDeploymentDao = OzTrackApplication.getApplicationContext().getDaoManager().getReceiverDeploymentDao();
 
-        List<String> newReceiverIdList = rawAcousticDetectionDao.getAllReceiverIds();
+        List<String> newReceiverIdList = this.dataFileDao.getAllReceiverIds();
         List<ReceiverDeployment> projectReceiversList = receiverDeploymentDao.getReceiversByProjectId(dataFile.getProject().getId());
         boolean receiverFound;
         String originalId;

@@ -1,5 +1,7 @@
 package org.oztrack.data.model;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -7,18 +9,14 @@ import java.util.Date;
 /**
  * Created by IntelliJ IDEA.
  * User: uqpnewm5
- * Date: 6/05/11
- * Time: 11:31 AM
+ * Date: 16/06/11
+ * Time: 3:19 PM
  */
+@Entity(name="PositionFix")
+public class PositionFix implements Serializable{
 
-//@Table(name = "AcousticDetection",uniqueConstraints = { @UniqueConstraint(columnNames= {"detectiontime","receiverdeployment","animal"})})
-@Entity(name="AcousticDetection")
-public class AcousticDetection  implements Serializable {
+    // id set in raw position fix
 
-    // id set in raw acoustic detection
-
-    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "acousticdetectionid_seq")
-    //@SequenceGenerator(name = "acousticdetectionid_seq", sequenceName = "acousticdetectionid_seq",allocationSize = 1)
     @Id
     @Column(nullable=false)
     private Long id;
@@ -28,19 +26,18 @@ public class AcousticDetection  implements Serializable {
     private Date detectionTime;
 
     @ManyToOne
-    private ReceiverDeployment receiverDeployment;
-
-    @ManyToOne
     private Animal animal;
 
     @ManyToOne
     private DataFile dataFile;
 
+    private String latitude;
+    private String longitude;
+
     private Double sensor1Value;
     private String sensor1Units;
     private Double sensor2Value;
     private String sensor2Units;
-
 
     public Long getId() {
         return id;
@@ -58,14 +55,6 @@ public class AcousticDetection  implements Serializable {
         this.detectionTime = detectionTime;
     }
 
-    public ReceiverDeployment getReceiverDeployment() {
-        return receiverDeployment;
-    }
-
-    public void setReceiverDeployment(ReceiverDeployment receiverDeployment) {
-        this.receiverDeployment = receiverDeployment;
-    }
-
     public Animal getAnimal() {
         return animal;
     }
@@ -80,6 +69,22 @@ public class AcousticDetection  implements Serializable {
 
     public void setDataFile(DataFile dataFile) {
         this.dataFile = dataFile;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
     }
 
     public Double getSensor1Value() {

@@ -4,10 +4,12 @@ import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
 import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.model.DataFile;
+import org.oztrack.data.model.types.ProjectType;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Author: alabri
@@ -44,6 +46,41 @@ public class DataFileDaoImpl extends JpaDao<DataFile> implements DataFileDao, Se
             return null;
         }
     }
+
+    public List<String> getAllAnimalIds(DataFile dataFile) {
+
+        String entityName = "RawPositionFix";
+
+        switch (dataFile.getProject().getProjectType()) {
+            case PASSIVE_ACOUSTIC:
+                entityName = "RawAcousticDetection";
+                break;
+            case GPS:
+                entityName = "RawPositionFix";
+                break;
+            default:
+                break;
+        }
+
+
+        Query query = entityManagerSource.getEntityManager().createQuery("SELECT distinct animalid from " + entityName);
+        try {
+            return (List <String>) query.getResultList();
+        } catch (NoResultException ex) {
+            return null;
+        }
+
+    }
+
+    public List<String> getAllReceiverIds() {
+        Query query = entityManagerSource.getEntityManager().createQuery("SELECT distinct receiversn from RawAcousticDetection");
+        try {
+            return (List <String>) query.getResultList();
+        } catch (NoResultException ex) {
+            return null;
+        }
+    }
+
 
     @Override
     public void save(DataFile object) {

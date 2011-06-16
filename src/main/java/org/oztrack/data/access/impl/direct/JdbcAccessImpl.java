@@ -2,6 +2,7 @@ package org.oztrack.data.access.impl.direct;
 
 import org.oztrack.data.access.direct.JdbcAccess;
 import org.oztrack.data.model.AcousticDetection;
+import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.SearchQuery;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
@@ -27,6 +28,82 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
         getJdbcTemplate().update(sql, new Object [] {test1, test2});
     }
 
+    public int loadObservations(DataFile dataFile) {
+
+        String sql = "";
+        long dataFileId = dataFile.getId();
+        long projectId = dataFile.getProject().getId();
+
+        switch (dataFile.getProject().getProjectType()) {
+            case PASSIVE_ACOUSTIC:
+                sql =   "INSERT INTO acousticdetection (" +
+                        " id" +
+                        " ,detectiontime" +
+                        " ,sensor1value" +
+                        " ,sensor1units" +
+                        " ,sensor2value" +
+                        " ,sensor2units" +
+                        " ,animal_id" +
+                        " ,datafile_id" +
+                        " ,receiverdeployment_id)" +
+                        " SELECT rad.id" +
+                        " ,rad.datetime" +
+                        " ,rad.sensor1" +
+                        " ,rad.units1" +
+                        " ,rad.sensor2" +
+                        " ,rad.units2" +
+                        " ,ani.id" +
+                        " ,?" +
+                        " ,rdp.id" +
+                        " FROM rawacousticdetection rad" +
+                        " ,animal ani" +
+                        " ,receiverdeployment rdp" +
+                        " WHERE rad.animalid = ani.projectanimalid  "  +
+                        " AND  ani.project_id = ?" +
+                        " AND rad.receiversn=rdp.originalid" +
+                        " AND rdp.project_id = ?"
+                        ;
+                break;
+            case GPS:
+            case ARGOS:
+                sql =   "INSERT INTO positionfix (" +
+                        " id" +
+                        " ,detectiontime" +
+                        " ,sensor1value" +
+                        " ,sensor1units" +
+                        " ,sensor2value" +
+                        " ,sensor2units" +
+                        " ,animal_id" +
+                        " ,datafile_id" +
+                        " ,receiverdeployment_id)" +
+                        " SELECT rad.id" +
+                        " ,rad.datetime" +
+                        " ,rad.sensor1" +
+                        " ,rad.units1" +
+                        " ,rad.sensor2" +
+                        " ,rad.units2" +
+                        " ,ani.id" +
+                        " ,?" +
+                        " ,rdp.id" +
+                        " FROM rawacousticdetection rad" +
+                        " ,animal ani" +
+                        " ,receiverdeployment rdp" +
+                        " WHERE rad.animalid = ani.projectanimalid  "  +
+                        " AND  ani.project_id = ?" +
+                        " AND rad.receiversn=rdp.originalid" +
+                        " AND rdp.project_id = ?"
+                        ;
+                break;
+        }
+
+        return getJdbcTemplate().update(sql, new Object [] { dataFileId, projectId, projectId} );
+
+    }
+
+
+
+
+    /*
     public int loadAcousticDetections(Long projectId, Long dataFileId) {
 
         String sql =
@@ -61,10 +138,23 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
         return getJdbcTemplate().update(sql, new Object [] { dataFileId, projectId, projectId} );
 
     }
+    */
 
-    public void truncateRawAcousticDetections() {
+    public void truncateRawObservations(DataFile dataFile) {
 
-        getJdbcTemplate().execute("TRUNCATE TABLE rawacousticdetection");
+        String tableName = "foo";
+
+        switch (dataFile.getProject().getProjectType()) {
+            case PASSIVE_ACOUSTIC:
+                tableName = "rawacousticdetection";
+                break;
+            case GPS:
+            case ARGOS:
+                tableName = "rawpositionfix";
+                break;
+        }
+
+        getJdbcTemplate().execute("TRUNCATE TABLE " + tableName);
 
     }
 

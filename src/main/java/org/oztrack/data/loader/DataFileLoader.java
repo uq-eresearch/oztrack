@@ -5,14 +5,12 @@ import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
+import org.oztrack.data.access.direct.JdbcAccess;
 import org.oztrack.data.model.*;
-import org.oztrack.data.model.types.DataFileStatus;
-import org.oztrack.data.model.types.ProjectType;
 import org.oztrack.error.FileProcessingException;
-
-import javax.swing.text.Position;
-import java.io.*;
 import java.util.*;
+
+import static org.oztrack.util.OzTrackUtil.removeDuplicateLinesFromFile;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,77 +23,110 @@ public class DataFileLoader {
      * Logger for this class and subclasses
      */
     protected final Log logger = LogFactory.getLog(getClass());
+    protected DataFile dataFile;
+    protected DataFileDao dataFileDao;
 
-    public void processNext() {
+    public DataFileLoader(DataFile dataFile) {
 
-        // get the next datafile waiting to be processed if there's not one processing at the moment
         DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
-        DataFile dataFile = dataFileDao.getNextDataFile();
+        DataFile thisDataFile = dataFileDao.getDataFileById(dataFile.getId());
+        this.dataFileDao=dataFileDao;
+        this.dataFile=thisDataFile;
+    }
 
-        if (dataFile != null) {
+    public void process() throws FileProcessingException {
 
-            dataFile.setStatus(DataFileStatus.PROCESSING);
-            dataFileDao.update(dataFile);
-            //dataFileDao.refresh(dataFile);
-
-            if (dataFile.getSingleAnimalInFile()) {
-                createAnimal(dataFile);
-            }
-
-            try {
-
-                if (dataFile.getProject().getProjectType().equals(ProjectType.PASSIVE_ACOUSTIC)) {
-                    AcousticFileLoader acousticFileLoader = new AcousticFileLoader(dataFile);
-                    acousticFileLoader.process();
-                    dataFile = acousticFileLoader.getDataFile();
-                } else if (dataFile.getProject().getProjectType().equals(ProjectType.GPS)
-                           || dataFile.getProject().getProjectType().equals(ProjectType.ARGOS)) {
-                    PositionFixFileLoader positionFixFileLoader = new PositionFixFileLoader(dataFile);
-                    positionFixFileLoader.process();
-                    dataFile = positionFixFileLoader.getDataFile();
-                }
-
-                dataFile.setStatus(DataFileStatus.COMPLETE);
-                dataFile.setStatusMessage( "File processing successfully completed on " + new Date().toString() + ". " +
-                                           (dataFile.getLocalTimeConversionRequired()
-                                            ? "Local time conversion is " + dataFile.getLocalTimeConversionHours()+ " hours." : "")
-                                          );
-
-            } catch (FileProcessingException e) {
-
-                dataFile.setStatus(DataFileStatus.FAILED);
-                dataFile.setStatusMessage(e.toString());
-
-                // clean up on fail
-                File file = new File(dataFile.getOzTrackFileName());
-                File origFile = new File(dataFile.getOzTrackFileName().replace(".csv",".orig"));
-                file.delete();
-                origFile.delete();
-
-            }
-
-            dataFileDao.update(dataFile);//dataFileDao.refresh(dataFile);
-
-
-        }
-
+        removeDuplicateLinesFromFile(this.dataFile.getOzTrackFileName());
+        insertRawObservations();
+        checkAnimals();
+        checkReceivers();
+        createFinalObservations();
 
     }
 
+    public void insertRawObservations() throws FileProcessingException {};
+    public void checkReceivers() throws FileProcessingException {};
 
-    public void createAnimal(DataFile dataFile) {
+    public DataFile getDataFile() {
+        return dataFile;
+    }
+
+    public void setDataFile(DataFile dataFile) {
+        this.dataFile = dataFile;
+    }
+
+    public void checkAnimals() throws FileProcessingException {
 
         AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
-        Animal animal = new Animal();
-        animal.setProject(dataFile.getProject());
-        animal.setProjectAnimalId("a");
-        animal.setAnimalName("unknown");
-        animal.setAnimalDescription("created in datafile upload: "
-                                    + dataFile.getUserGivenFileName()
-                                    + "on " + dataFile.getUploadDate());
 
+
+        if (dataFile.getSingleAnimalInFile()) {
+            // only one animal in the file being uploaded. Create it.
+            Animal animal = new Animal();
+                    animal.setProject(dataFile.getProject());
+                    animal.setProjectAnimalId("a");
+                    animal.setAnimalName("unknown");
+                    animal.setAnimalDescription("created in datafile upload: "
+                                                + dataFile.getUserGivenFileName()
+                                                + "on " + dataFile.getUploadDate());
+            animalDao.save(animal);
+
+        } else {
+
+            // get a list of the animal IDs in the raw file just loaded
+            List<String> newAnimalIdList = this.dataFileDao.getAllAnimalIds(this.dataFile);
+            // all the animals for this project
+            List<Animal> projectAnimalList = animalDao.getAnimalsByProjectId(this.dataFile.getProject().getId());
+            boolean animalFound;
+            String projectAnimalId;
+
+            for (String newAnimalId  : newAnimalIdList) {
+                 animalFound=false;
+                 for (Animal projectAnimal : projectAnimalList) {
+                     projectAnimalId = projectAnimal.getProjectAnimalId();
+                     if (newAnimalId.equals(projectAnimalId))   {
+                         animalFound=true;
+                     }
+                 }
+
+                 if (!animalFound) {
+                     Animal animal = new Animal();
+                     animal.setAnimalName("Unknown");
+                     animal.setAnimalDescription("Unknown");
+                     animal.setSpeciesName("Unknown");
+                     animal.setVerifiedSpeciesName("Unknown");
+                     animal.setProjectAnimalId(newAnimalId);
+                     animal.setProject(dataFile.getProject());
+                     animal.setCreateDate(new java.util.Date());
+                     // TODO:
+                     // name = transmitter name
+                     // transmitterID = transmitter SN where sensor1 is null
+                     // sensorTransmitterID= transmitter SN where sensor1 is not null
+                     // transmitter type code = dependent on how sensor works (C=temp; m=depth?)
+                    animalDao.save(animal);
+                 }
+            }
+        }
     }
 
+    public void createFinalObservations() throws FileProcessingException {
 
+        JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
+
+        int nbrObservationsCreated = 0;
+        try {
+            // avoid hibernate for performance
+            //nbrDetectionsCreated = jdbcAccess.loadAcousticDetections(this.dataFile.getProject().getId(), dataFile.getId());
+            nbrObservationsCreated = jdbcAccess.loadObservations(dataFile);
+            this.dataFile.setNumberDetections(nbrObservationsCreated);
+            //jdbcAccess.truncateRawAcousticDetections();
+            jdbcAccess.truncateRawObservations(dataFile);
+
+        } catch (Exception e) {
+            jdbcAccess.truncateRawObservations(dataFile);
+            throw new FileProcessingException(e.toString());
+        }
+
+    }
 
 }

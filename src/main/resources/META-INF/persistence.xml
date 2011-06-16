@@ -46,7 +46,7 @@
                       value="jdbc:postgresql://localhost/oztrack"/>
             <property name="hibernate.connection.username" value="oztrack"/>
             <property name="hibernate.connection.password" value="ozadmin"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+            <property name="hibernate.dialect" value="org.hibernatespatial.postgis.PostgisDialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.cache.use_second_level_cache" value="false"/>
             <property name="hibernate.cache.use_query_cache" value="false"/>

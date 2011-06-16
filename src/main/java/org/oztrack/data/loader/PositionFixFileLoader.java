@@ -1,18 +1,10 @@
 package org.oztrack.data.loader;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.Logger;
 import org.oztrack.app.OzTrackApplication;
-import org.oztrack.data.access.AnimalDao;
-import org.oztrack.data.access.RawAcousticDetectionDao;
-import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.RawPositionFix;
 import org.oztrack.data.model.types.PositionFixFileHeader;
 import org.oztrack.error.FileProcessingException;
-import org.oztrack.util.OzTrackUtil;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import java.io.*;
@@ -21,9 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-
-import static org.oztrack.util.OzTrackUtil.removeDuplicateLinesFromFile;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,36 +20,19 @@ import static org.oztrack.util.OzTrackUtil.removeDuplicateLinesFromFile;
  * Date: 10/06/11
  * Time: 10:07 AM
  */
-public class PositionFixFileLoader {
-
-     /**
-     * Logger for this class and subclasses
-     */
-    protected final Log logger = LogFactory.getLog(getClass());
-
-    private DataFile dataFile;
-
-    public DataFile getDataFile() {
-        return dataFile;
-    }
-
-    public void setDataFile(DataFile dataFile) {
-        this.dataFile = dataFile;
-    }
-
+public class PositionFixFileLoader extends DataFileLoader {
 
     PositionFixFileLoader(DataFile dataFile) {
-        this.dataFile = dataFile;
+        super(dataFile);
     }
 
+    @Override
     public void process() throws FileProcessingException {
-
-        removeDuplicateLinesFromFile(this.dataFile.getOzTrackFileName());
-        createRawPositionFixes();
-
+        super.process();
     }
 
-    public void createRawPositionFixes() throws FileProcessingException {
+    @Override
+    public void insertRawObservations() throws FileProcessingException {
 
         int lineNumber = 0;
         logger.info("processing raw position fix file : " + dataFile.getOzTrackFileName());
@@ -323,6 +295,9 @@ public class PositionFixFileLoader {
         return calendar.getTime();
 
     }
+
+    @Override
+    public void createFinalObservations() throws FileProcessingException {};
 
 
 
