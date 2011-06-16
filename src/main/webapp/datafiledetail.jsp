@@ -9,8 +9,8 @@
 <tr><td><b>File Provided:</b></td><td><c:out value="${dataFile.userGivenFileName}"/></td></tr>
 <tr><td><b>Description:</b></td><td><c:out value="${dataFile.fileDescription}"/></td></tr>
 <tr><td><b>Content Type:</b></td><td><c:out value="${dataFile.contentType}"/></td></tr>
-<tr><td><b>Uploaded:</b></td><td><fmt:formatDate value="${dataFile.uploadDate}" type="both" timeStyle="short" dateStyle="long"/> by <c:out value="${dataFile.uploadUser}"/></td></tr>
-<tr><td><b>Number Detections:</b></td><td><c:out value="${dataFile.numberDetections}"/></td></tr>
+<tr><td><b>Uploaded:</b></td><td><fmt:formatDate value="${dataFile.createDate}" type="both" timeStyle="long" dateStyle="long"/> by <c:out value="${dataFile.createUser.fullName}"/></td></tr>
+<tr><td><b>Observation Count:</b></td><td><c:out value="${dataFile.numberDetections}"/></td></tr>
 <tr><td><b>File Processing Status:</b></td>
     <td>
         <c:out value="${dataFile.status}"/>

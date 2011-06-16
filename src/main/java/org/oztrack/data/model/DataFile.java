@@ -33,7 +33,6 @@ public class DataFile extends OztrackBaseEntity implements Serializable {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date uploadDate;
-    private String uploadUser;
     @Temporal(TemporalType.TIMESTAMP)
     private Date minDetectionDate;
     @Temporal(TemporalType.TIMESTAMP)
@@ -124,15 +123,7 @@ public class DataFile extends OztrackBaseEntity implements Serializable {
         this.uploadDate = uploadDate;
     }
 
-    public String getUploadUser() {
-        return uploadUser;
-    }
-
-    public void setUploadUser(String uploadUser) {
-        this.uploadUser = uploadUser;
-    }
-
-       public Date getMinDetectionDate() {
+    public Date getMinDetectionDate() {
         return minDetectionDate;
     }
 

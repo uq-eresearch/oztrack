@@ -15,7 +15,7 @@ Select a project to work with from the list below.
                 </a></td>
          <td><c:out value="${project.pk.project.spatialCoverageDescr}"/></td>
          <td><b>Type:</b><br><c:out value="${project.pk.project.projectType.displayName}"/></td>
-         <td><b>Created:</b><br> 01/05/2011</td>
+         <td><b>Created:</b><br><fmt:formatDate value="${project.pk.project.createDate}" type="both" timeStyle="long" dateStyle="long"/></td>
          <td><b>Role: </b><br><c:out value="${project.role}"/></td>
         </tr>
         </table>

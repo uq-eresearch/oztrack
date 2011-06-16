@@ -103,10 +103,13 @@ public class DataFileFormController extends SimpleFormController {
             dataFile.setUserGivenFileName(file.getOriginalFilename());
             dataFile.setContentType(file.getContentType());
             dataFile.setCreateDate(new java.util.Date());
+            dataFile.setUpdateDate(new java.util.Date());
 
             //dataFile.setUploadUser(OzTrackApplication.getApplicationContext().getAuthenticationManager().getCurrentUser().getFullName());
             User currentUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER);
-            dataFile.setUploadUser(currentUser.getFullName() );
+            //dataFile.setUploadUser(currentUser.getFullName() );
+            dataFile.setCreateUser(currentUser);
+            dataFile.setUpdateUser(currentUser);
 
             // persist at project level
             //Project project = (Project) request.getSession().getAttribute("project");

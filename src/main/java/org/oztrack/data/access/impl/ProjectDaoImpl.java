@@ -32,16 +32,28 @@ public class ProjectDaoImpl extends JpaDao<Project> implements ProjectDao, Seria
         }
     }
 
-/*    public List<Project> getProjectListByUserId(Long id) {
-        Query query = entityManagerSource.getEntityManager().createQuery("SELECT o FROM Project o " +
-                                                                         "WHERE o.id in (select pu.project_id from ProjectUser pu " +
-                                                                         "where pu.user_id = :id)");
-        query.setParameter("id", id);
-        try {
-            return (List<Project>) query.getResultList();
-        } catch (NoResultException ex) {
-            return null;
-        }
+    @Override
+    public void save(Project object) {
+        object.setUpdateDate(new java.util.Date());
+        super.save(object);    //To change body of overridden methods use File | Settings | File Templates.
     }
-*/
+
+    @Override
+    public Project update(Project object) {
+        object.setUpdateDate(new java.util.Date());
+        return super.update(object);    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    /*    public List<Project> getProjectListByUserId(Long id) {
+            Query query = entityManagerSource.getEntityManager().createQuery("SELECT o FROM Project o " +
+                                                                             "WHERE o.id in (select pu.project_id from ProjectUser pu " +
+                                                                             "where pu.user_id = :id)");
+            query.setParameter("id", id);
+            try {
+                return (List<Project>) query.getResultList();
+            } catch (NoResultException ex) {
+                return null;
+            }
+        }
+    */
 }

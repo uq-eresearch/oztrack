@@ -16,7 +16,6 @@ import java.util.List;
  * User: uqpnewm5
  * Date: 5/05/11
  * Time: 2:07 PM
- * To change this template use File | Settings | File Templates.
  */
 public class ReceiverDeploymentDaoImpl extends JpaDao<ReceiverDeployment> implements ReceiverDeploymentDao, Serializable {
 
@@ -45,5 +44,15 @@ public class ReceiverDeploymentDaoImpl extends JpaDao<ReceiverDeployment> implem
         }
     }
 
+    @Override
+    public void save(ReceiverDeployment object) {
+        object.setUpdateDate(new java.util.Date());
+        super.save(object);    //To change body of overridden methods use File | Settings | File Templates.
+    }
 
+    @Override
+    public ReceiverDeployment update(ReceiverDeployment object) {
+        object.setUpdateDate(new java.util.Date());
+        return super.update(object);    //To change body of overridden methods use File | Settings | File Templates.
+    }
 }

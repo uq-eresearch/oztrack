@@ -10,6 +10,7 @@
         <th>Name</th>
         <th>Description</th>
         <th>Species</th>
+        <th>Created Date</th>
         <th>Transmitter Type</th>
         <th>Transmitter ID</th>
         <th>Sensor Transmitter ID</th>
@@ -24,6 +25,7 @@
             <td><c:out value="${animal.animalName}"/></td>
             <td><c:out value="${animal.animalDescription}"/></td>
             <td><c:out value="${animal.speciesName}"/></td>
+            <td><c:out value="${animal.createDate}"/></td>
             <td><c:out value="${animal.transmitterTypeCode}"/></td>
             <td><c:out value="${animal.transmitterId}"/></td>
             <td><c:out value="${animal.sensorTransmitterId}"/></td>

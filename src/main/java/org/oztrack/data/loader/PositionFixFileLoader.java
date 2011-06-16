@@ -156,75 +156,74 @@ public class PositionFixFileLoader {
                     if (dataRow[i] != null || !dataRow[i].isEmpty()) {
 
                         // retrieve the header for this column and use it to determine which field to update
-                        PositionFixFileHeader positionFixFileHeader = headerMap.get(i);
 
-                        switch (positionFixFileHeader) {
-                            case DATE:
-                            case LOCDATE:
-                            case UTCDATE:
-                                try {
-                                    rawPositionFix.setDatetime(dateHandler(dataRow[i]));
-                                } catch (FileProcessingException e) {
-                                    transaction.rollback();
-                                    throw new FileProcessingException("Unable to read date format on line " + lineNumber + ": " + dataRow[i] );
-                                }
-                                break;
-                            case TIME:
-                            case UTCTIME:
-                                try {
-                                    rawPositionFix.setDatetime(timeHandler(rawPositionFix.getDatetime(),dataRow[i]));
-                                } catch (FileProcessingException e) {
-                                    transaction.rollback();
-                                    throw new FileProcessingException("Unable to read time format on line " + lineNumber + ": " + dataRow[i] );
-                                }
-                                break;
-                            case ID:
-                            case ANIMALID:
-                            case PLATFORMID:
-                            case ARGOSID:
-                                rawPositionFix.setAnimalId(dataRow[i]);
-                                break;
-                            case LAT:
-                            case LATITUDE:
-                                rawPositionFix.setLatitude(dataRow[i]);
-                                break;
-                            case LONG:
-                            case LON:
-                            case LONGITUDE:
-                                 rawPositionFix.setLatitude(dataRow[i]);
-                                 break;
-                            case GDOP:
-                            case HDOP:
-                                if (!dataRow[i].isEmpty()) {
-                                 try {
-                                     rawPositionFix.setHDOP(Double.parseDouble(dataRow[i]));
-                                 } catch (NumberFormatException e) {
-                                     transaction.rollback();
-                                     throw new FileProcessingException("HDOP value is not a number on line " + lineNumber);
-                                 }
-                                }
-                            case SENSOR01:
-                                if (!dataRow[i].isEmpty()) {
-                                 try {
-                                     rawPositionFix.setSensor1(Double.parseDouble(dataRow[i]));
-                                 } catch (NumberFormatException e) {
-                                     transaction.rollback();
-                                     throw new FileProcessingException("Sensor1 value is not a number on line " + lineNumber);
-                                 }
-                                }
-                            case SENSOR02:
-                                if (!dataRow[i].isEmpty()) {
-                                 try {
-                                     rawPositionFix.setSensor1(Double.parseDouble(dataRow[i]));
-                                 } catch (NumberFormatException e) {
-                                     transaction.rollback();
-                                     throw new FileProcessingException("Sensor2 value is not a number on line " + lineNumber);
-                                 }
-                                }
-                                break;
-                            default:
-                                logger.debug("Problem in switch(dataFileHeader)");
-                                break;
+
+                        if (headerMap.get(i) != null ) {
+
+                            PositionFixFileHeader positionFixFileHeader = headerMap.get(i);
+                            switch (positionFixFileHeader) {
+                                case DATE:
+                                case LOCDATE:
+                                case UTCDATE:
+                                    try {
+                                        rawPositionFix.setDatetime(dateHandler(dataRow[i]));
+                                    } catch (FileProcessingException e) {
+                                        transaction.rollback();
+                                        throw new FileProcessingException("Unable to read date format on line " + lineNumber + ": " + dataRow[i] );
+                                    }
+                                    break;
+                                case TIME:
+                                case UTCTIME:
+                                    try {
+                                        rawPositionFix.setDatetime(timeHandler(rawPositionFix.getDatetime(),dataRow[i]));
+                                    } catch (FileProcessingException e) {
+                                        transaction.rollback();
+                                        throw new FileProcessingException("Unable to read time format on line " + lineNumber + ": " + dataRow[i] );
+                                    }
+                                    break;
+                                case ID:
+                                case ANIMALID:
+                                case PLATFORMID:
+                                case ARGOSID:
+                                    rawPositionFix.setAnimalId(dataRow[i]);
+                                    break;
+                                case LAT:
+                                case LATITUDE:
+                                    rawPositionFix.setLatitude(dataRow[i]);
+                                    break;
+                                case LONG:
+                                case LON:
+                                case LONGITUDE:
+                                     rawPositionFix.setLongitude(dataRow[i]);
+                                     break;
+                                case GDOP:
+                                case HDOP:
+                                     try {
+                                         rawPositionFix.setHDOP(Double.parseDouble(dataRow[i]));
+                                     } catch (NumberFormatException e) {
+                                         transaction.rollback();
+                                         throw new FileProcessingException("HDOP value is not a number on line " + lineNumber);
+                                     }
+                                    break;
+                                case SENSOR01:
+                                     try {
+                                         rawPositionFix.setSensor1(Double.parseDouble(dataRow[i]));
+                                     } catch (NumberFormatException e) {
+                                         transaction.rollback();
+                                         throw new FileProcessingException("Sensor1 value is not a number on line " + lineNumber);
+                                     }
+                                case SENSOR02:
+                                     try {
+                                         rawPositionFix.setSensor1(Double.parseDouble(dataRow[i]));
+                                     } catch (NumberFormatException e) {
+                                         transaction.rollback();
+                                         throw new FileProcessingException("Sensor2 value is not a number on line " + lineNumber);
+                                     }
+                                    break;
+                                default:
+                                    logger.debug("Problem in switch(dataFileHeader)");
+                                    break;
+                            }
                         }
                     }
                 }
@@ -233,7 +232,7 @@ public class PositionFixFileLoader {
 
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
              transaction.rollback();
              throw new FileProcessingException("Problem reading file at line number :" + lineNumber);
         }
@@ -297,25 +296,26 @@ public class PositionFixFileLoader {
         String [] timeBits = timeString.split(":");
 
         try {
-            if (!timeBits[0].isEmpty()) {
-                 calendar.set(Calendar.HOUR_OF_DAY, Integer.getInteger(timeBits[0]));
-             }
-             if (!timeBits[1].isEmpty()) {
-                 calendar.set(Calendar.MINUTE, Integer.getInteger(timeBits[1]));
-             }
-             if (!timeBits[2].isEmpty()) {
-                  if (timeBits[2].contains(".")) {
-                    String [] seconds = timeBits[2].split("\\.");
-                    if (!seconds[0].isEmpty()) {
-                      calendar.set(Calendar.SECOND, Integer.parseInt(seconds[0]));
-                    }
-                    if (!seconds[1].isEmpty()) {
-                      calendar.set(Calendar.MILLISECOND, Integer.parseInt(seconds[1]));
-                    }
-                  } else {
-                      calendar.set(Calendar.SECOND, Integer.parseInt(timeBits[2]));
-                  }
+         if (!timeBits[0].isEmpty()) {
+             int hours = Integer.parseInt(timeBits[0]);
+             calendar.set(Calendar.HOUR_OF_DAY, hours);
+          }
+          if (!timeBits[1].isEmpty()) {
+              calendar.set(Calendar.MINUTE, Integer.parseInt(timeBits[1]));
+          }
+          if (!timeBits[2].isEmpty()) {
+              if (timeBits[2].contains(".")) {
+                String [] seconds = timeBits[2].split("\\.");
+                if (!seconds[0].isEmpty()) {
+                  calendar.set(Calendar.SECOND, Integer.parseInt(seconds[0]));
+                }
+                if (!seconds[1].isEmpty()) {
+                  calendar.set(Calendar.MILLISECOND, Integer.parseInt(seconds[1]));
+                }
+              } else {
+                  calendar.set(Calendar.SECOND, Integer.parseInt(timeBits[2]));
               }
+          }
         } catch (Exception e) {
             throw new FileProcessingException("Error in time format.");
         }

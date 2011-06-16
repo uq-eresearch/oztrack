@@ -55,7 +55,9 @@ public class ProjectFormController extends SimpleFormController {
             Project project = (Project) command;
             logger.info("created project: " + project.getTitle() + " " + new java.util.Date().toString());
 
-
+            // create/update details
+            project.setCreateDate(new java.util.Date());
+            project.setCreateUser(currentUser);
 
             // set the current user to be an admin for this project
             ProjectUser projectUser = new ProjectUser();

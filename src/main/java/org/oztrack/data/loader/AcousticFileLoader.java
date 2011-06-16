@@ -272,6 +272,7 @@ public class AcousticFileLoader {
                  animal.setVerifiedSpeciesName("Unknown");
                  animal.setProjectAnimalId(newAnimalId);
                  animal.setProject(dataFile.getProject());
+                 animal.setCreateDate(new java.util.Date());
                  // TODO:
                  // name = transmitter name
                  // transmitterID = transmitter SN where sensor1 is null
@@ -310,6 +311,7 @@ public class AcousticFileLoader {
                 receiverDeployment.setReceiverName("Unknown");
                 receiverDeployment.setReceiverDescription("Unknown");
                 receiverDeployment.setProject(this.dataFile.getProject());
+                receiverDeployment.setCreateDate(new java.util.Date());
                 //TODO:
                 // get more stuff out of the file from here re location
                 receiverDeploymentDao.save(receiverDeployment);
