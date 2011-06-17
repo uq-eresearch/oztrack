@@ -1,5 +1,9 @@
 package org.oztrack.data.model;
 
+//import org.postgis.Point;
+import com.vividsolutions.jts.geom.Point;
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -21,7 +25,7 @@ public class RawPositionFix {
     private Long id;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date datetime;
+    private Date detectionTime;
     private String animalId;
     private String latitude;
     private String longitude;
@@ -29,6 +33,10 @@ public class RawPositionFix {
 
     private Double sensor1;
     private Double sensor2;
+
+    @Column(name = "locationgeometry", columnDefinition="GEOMETRY")
+    @Type(type = "org.hibernatespatial.GeometryUserType")
+    private Point locationGeometry;
 
 
     public Long getId() {
@@ -39,12 +47,12 @@ public class RawPositionFix {
         this.id = id;
     }
 
-    public Date getDatetime() {
-        return datetime;
+    public Date getDetectionTime() {
+        return detectionTime;
     }
 
-    public void setDatetime(Date datetime) {
-        this.datetime = datetime;
+    public void setDetectionTime(Date detectionTime) {
+        this.detectionTime = detectionTime;
     }
 
     public String getAnimalId() {
@@ -95,8 +103,13 @@ public class RawPositionFix {
         this.sensor2 = sensor2;
     }
 
+    public Point getLocationGeometry() {
+        return locationGeometry;
+    }
 
-
+    public void setLocationGeometry(Point locationGeometry) {
+        this.locationGeometry = locationGeometry;
+    }
 
 
 }

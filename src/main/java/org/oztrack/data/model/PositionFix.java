@@ -1,6 +1,7 @@
 package org.oztrack.data.model;
 
-import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -31,13 +32,13 @@ public class PositionFix implements Serializable{
     @ManyToOne
     private DataFile dataFile;
 
-    private String latitude;
-    private String longitude;
+    @Column(name = "locationgeometry", columnDefinition="GEOMETRY")
+    @Type(type = "org.hibernatespatial.GeometryUserType")
+    private Point locationGeometry;
 
+    private Double HDOP;
     private Double sensor1Value;
-    private String sensor1Units;
     private Double sensor2Value;
-    private String sensor2Units;
 
     public Long getId() {
         return id;
@@ -71,36 +72,12 @@ public class PositionFix implements Serializable{
         this.dataFile = dataFile;
     }
 
-    public String getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
-
     public Double getSensor1Value() {
         return sensor1Value;
     }
 
     public void setSensor1Value(Double sensor1Value) {
         this.sensor1Value = sensor1Value;
-    }
-
-    public String getSensor1Units() {
-        return sensor1Units;
-    }
-
-    public void setSensor1Units(String sensor1Units) {
-        this.sensor1Units = sensor1Units;
     }
 
     public Double getSensor2Value() {
@@ -111,14 +88,21 @@ public class PositionFix implements Serializable{
         this.sensor2Value = sensor2Value;
     }
 
-    public String getSensor2Units() {
-        return sensor2Units;
+       public Double getHDOP() {
+        return HDOP;
     }
 
-    public void setSensor2Units(String sensor2Units) {
-        this.sensor2Units = sensor2Units;
+    public void setHDOP(Double HDOP) {
+        this.HDOP = HDOP;
     }
 
+    public Point getLocationGeometry() {
+        return locationGeometry;
+    }
+
+    public void setLocationGeometry(Point locationGeometry) {
+        this.locationGeometry = locationGeometry;
+    }
 
 
 

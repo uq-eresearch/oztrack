@@ -1,10 +1,15 @@
 package org.oztrack.data.loader;
 
+import com.vividsolutions.jts.geom.*;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.RawPositionFix;
 import org.oztrack.data.model.types.PositionFixFileHeader;
 import org.oztrack.error.FileProcessingException;
+import com.vividsolutions.jts.algorithm.locate.PointOnGeometryLocator;
+import com.vividsolutions.jts.io.WKTReader;
+
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import java.io.*;
@@ -119,6 +124,9 @@ public class PositionFixFileLoader extends DataFileLoader {
                 lineNumber++;
                 dataRow = strLine.split(",");
                 RawPositionFix rawPositionFix= new RawPositionFix();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy H:m:s");
+                Boolean foundDateFormat = false;
+
                 logger.debug("file linenumber: " + lineNumber);
 
                 // loop through the dataRow elements
@@ -128,8 +136,6 @@ public class PositionFixFileLoader extends DataFileLoader {
                     if (dataRow[i] != null || !dataRow[i].isEmpty()) {
 
                         // retrieve the header for this column and use it to determine which field to update
-
-
                         if (headerMap.get(i) != null ) {
 
                             PositionFixFileHeader positionFixFileHeader = headerMap.get(i);
@@ -137,17 +143,23 @@ public class PositionFixFileLoader extends DataFileLoader {
                                 case DATE:
                                 case LOCDATE:
                                 case UTCDATE:
-                                    try {
-                                        rawPositionFix.setDatetime(dateHandler(dataRow[i]));
-                                    } catch (FileProcessingException e) {
-                                        transaction.rollback();
-                                        throw new FileProcessingException("Unable to read date format on line " + lineNumber + ": " + dataRow[i] );
+                                    if (!foundDateFormat) {
+                                       try {
+                                            simpleDateFormat = findDateFormat(dataRow[i]);
+                                            foundDateFormat = true;
+                                       } catch (FileProcessingException e) {
+                                            transaction.rollback();
+                                            throw new FileProcessingException("Unable to read date format: "  + dataRow[i] );
+                                       }
                                     }
+                                    Calendar calendar = Calendar.getInstance();
+                                    calendar.setTime(simpleDateFormat.parse(dataRow[i]));
+                                    rawPositionFix.setDetectionTime(calendar.getTime());
                                     break;
                                 case TIME:
                                 case UTCTIME:
                                     try {
-                                        rawPositionFix.setDatetime(timeHandler(rawPositionFix.getDatetime(),dataRow[i]));
+                                        rawPositionFix.setDetectionTime(timeHandler(rawPositionFix.getDetectionTime(),dataRow[i]));
                                     } catch (FileProcessingException e) {
                                         transaction.rollback();
                                         throw new FileProcessingException("Unable to read time format on line " + lineNumber + ": " + dataRow[i] );
@@ -200,6 +212,9 @@ public class PositionFixFileLoader extends DataFileLoader {
                     }
                 }
 
+                // have lat/long now: create them
+                Point locationGeometry = findLocationGeometry(rawPositionFix.getLatitude(), rawPositionFix.getLongitude());
+                rawPositionFix.setLocationGeometry(locationGeometry);
                 entityManager.persist(rawPositionFix);
 
             }
@@ -214,13 +229,11 @@ public class PositionFixFileLoader extends DataFileLoader {
 
     }
 
-    public  Date dateHandler(String dateString) throws FileProcessingException {
+    public SimpleDateFormat findDateFormat(String dateString) throws FileProcessingException {
 
-        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd H:m:s.S");
-        logger.debug("dateHandler dateString = " + dateString);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s.S");
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy H:m:s");
-        Calendar calendar = Calendar.getInstance();
+        //Calendar calendar = Calendar.getInstance();
 
         String dateDots = "(0[1-9]|[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[012]|[1-9])\\.(19[0-9][0-9]|20[0-9][0-9])";
         String dateDotsPattern = "dd.MM.yyyy";
@@ -248,15 +261,7 @@ public class PositionFixFileLoader extends DataFileLoader {
                     simpleDateFormat.applyPattern(dateSlashesPattern + time24MsPattern);
         }
 
-        try {
-            calendar.setTime(simpleDateFormat.parse(dateString));
-
-        } catch (ParseException e) {
-
-            throw new FileProcessingException(e.toString());
-        }
-
-        return calendar.getTime();
+        return simpleDateFormat;
 
      }
 
@@ -293,6 +298,18 @@ public class PositionFixFileLoader extends DataFileLoader {
         }
 
         return calendar.getTime();
+
+    }
+
+    public Point findLocationGeometry(String latitude, String longitude) throws FileProcessingException {
+
+        Double dLatitude = Double.parseDouble(latitude);
+        Double dLongitude = Double.parseDouble(latitude);
+
+        GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(1000000));
+        Coordinate coordinate = new Coordinate(dLatitude, dLongitude);
+
+        return geometryFactory.createPoint(coordinate);
 
     }
 

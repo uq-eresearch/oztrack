@@ -10,7 +10,6 @@ import java.util.List;
  * User: uqpnewm5
  * Date: 13/04/11
  * Time: 1:12 PM
- * To change this template use File | Settings | File Templates.
  */
 public interface RawAcousticDetectionDao extends Dao<RawAcousticDetection> {
 
