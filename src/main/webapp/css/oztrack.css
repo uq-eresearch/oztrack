@@ -31,7 +31,18 @@ p {
     font-size:0.9em;
     color:black;
 
-    }
+}
+
+ul {
+    color: orange;
+}
+
+ul li span {
+    color: black;
+    font-size:0.9em;
+
+
+}
 
 a {
     color: black;
@@ -375,8 +386,6 @@ form div .checkbox, form div .radiobutton {
     width:120px;
 }
 
-
-
 .oztrackButton, a.oztrackButton input.oztrackButton{
     background-color:#adbc6b;
     border: solid 1px #839537;
@@ -401,6 +410,64 @@ form div .checkbox, form div .radiobutton {
     background-color:#263f00;
 
 }
+
+/*****************************************************/
+/* hover tooltips */
+/*****************************************************/
+
+div.help {
+    float:right;
+    margin-right:60px;
+
+}
+a.info {
+    position:relative; /*this is the key*/
+    z-index:24;
+    color:#000;
+    text-decoration:none
+    }
+
+a.info:hover{z-index:25;}
+
+a.info span{display: none}
+
+a.info:hover span { /*the span will display just on :hover state*/
+    display:block;
+    position:absolute;
+    top:0em; left:3em; width:18em;
+    border: 1px solid #263f00;
+    background-color:#263f00;
+    color:#fff;
+    font-size: 0.9em;
+    text-align: justify;
+    padding-top:2px;
+    padding-left:4px;
+    padding-right:4px;
+    padding-bottom:2px;
+	}
+
+a.info ul {
+	background-color:#BBD9EE; color:#159;
+	font-size: 1em;
+
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
   tables
@@ -480,6 +547,8 @@ tbody tr:hover {
     width: 50%;
 
 }
+
+
 
 /*
 

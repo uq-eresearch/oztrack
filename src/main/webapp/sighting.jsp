@@ -37,6 +37,15 @@
 <div id="sightingMap" style=""></div>
 </div>
 
+<!--
+<a class=info href="#"><img border="0" src="<%= request.getContextPath() + "/Img/info_icon.jpg"%>">
+<span>
+	<b>Location/Landmarks:</b> The name of the area - for example a town, suburb, beach, or river. Include details of any landmarks to help to identify the precise location eg. a jetty or street name. <br><br>
+	<b>Region/Lat/Long:</b> Moving the icon in the map will update the Region/Latitude/Longitude field in the form. Zoom in to the location for more precise coordinates. You can enter the lat/longs directly into the field if preferred.
+</span>
+
+-->
+
 <h2>Animal</h2>
 
 <div>

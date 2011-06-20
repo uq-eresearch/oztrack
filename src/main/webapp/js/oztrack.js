@@ -68,7 +68,7 @@ $(document).ready(function(){
             break;
         case "projectdetail":
             var projectTitle = $('#projectTitle').html();
-            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectdetail","projects") + '"> &rsaquo; Animal Tracking</a> &rsaquo; <span class="aCrumb">' + projectTitle + '</span>';
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectdetail","projects") + '"> &rsaquo; Animal Tracking</a> &rsaquo; <a href="#">' + projectTitle + '</a> &rsaquo; <span class="aCrumb">Project Details</span>';
             $('#navTrack').css('color','#f7a700');
             break;
         case "datafiles":

@@ -1,7 +1,9 @@
 package org.oztrack.controller;
 
 import org.oztrack.app.OzTrackApplication;
+import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.DataFile;
 
@@ -55,6 +57,7 @@ public class ProjectDetailController implements Controller {
         //Project projectTest = entityManager.find(Project.class, project.getId());
         //entityManager.refresh(projectTest);
         projectDao.refresh(project);
+
 
 
         ModelAndView modelAndView = new ModelAndView(modelAndViewName);

@@ -74,10 +74,9 @@ public class DataFileFormController extends SimpleFormController {
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
 
         Project project = (Project) request.getSession().getAttribute("project");
-        String projectTitle = project.getTitle();
 
         ModelAndView modelAndView = super.showForm(request, response, errors, controlModel);    //To change body of overridden methods use File | Settings | File Templates.
-        modelAndView.addObject("projectTitle",projectTitle);
+        modelAndView.addObject("project",project);
         return modelAndView;
 
     }
