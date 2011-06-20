@@ -63,13 +63,16 @@ public class DataFileLoader {
         if (dataFile.getSingleAnimalInFile()) {
             // only one animal in the file being uploaded. Create it.
             Animal animal = new Animal();
-                    animal.setProject(dataFile.getProject());
-                    animal.setProjectAnimalId("a");
-                    animal.setAnimalName("unknown");
-                    animal.setAnimalDescription("created in datafile upload: "
-                                                + dataFile.getUserGivenFileName()
-                                                + "on " + dataFile.getUploadDate());
+            animal.setProject(dataFile.getProject());
+            animal.setAnimalName("unknown");
+            animal.setAnimalDescription("created in datafile upload: "
+                                        + dataFile.getUserGivenFileName()
+                                        + " on " + dataFile.getCreateDate());
+
+            animal.setCreateDate(new java.util.Date());
             animalDao.save(animal);
+            animal.setProjectAnimalId(animal.getId().toString());
+            animalDao.update(animal);
 
         } else {
 
@@ -118,14 +121,16 @@ public class DataFileLoader {
             // avoid hibernate for performance
             //nbrDetectionsCreated = jdbcAccess.loadAcousticDetections(this.dataFile.getProject().getId(), dataFile.getId());
             nbrObservationsCreated = jdbcAccess.loadObservations(dataFile);
-            this.dataFile.setNumberDetections(nbrObservationsCreated);
-            //jdbcAccess.truncateRawAcousticDetections();
+            dataFile.setNumberDetections(nbrObservationsCreated);
+            dataFileDao.update(dataFile);
             jdbcAccess.truncateRawObservations(dataFile);
 
         } catch (Exception e) {
             jdbcAccess.truncateRawObservations(dataFile);
             throw new FileProcessingException(e.toString());
         }
+
+
 
     }
 

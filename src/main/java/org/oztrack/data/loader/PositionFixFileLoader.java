@@ -191,14 +191,14 @@ public class PositionFixFileLoader extends DataFileLoader {
                                     break;
                                 case SENSOR01:
                                      try {
-                                         rawPositionFix.setSensor1(Double.parseDouble(dataRow[i]));
+                                         rawPositionFix.setSensor1value(Double.parseDouble(dataRow[i]));
                                      } catch (NumberFormatException e) {
                                          transaction.rollback();
                                          throw new FileProcessingException("Sensor1 value is not a number on line " + lineNumber);
                                      }
                                 case SENSOR02:
                                      try {
-                                         rawPositionFix.setSensor1(Double.parseDouble(dataRow[i]));
+                                         rawPositionFix.setSensor1value(Double.parseDouble(dataRow[i]));
                                      } catch (NumberFormatException e) {
                                          transaction.rollback();
                                          throw new FileProcessingException("Sensor2 value is not a number on line " + lineNumber);
@@ -312,9 +312,6 @@ public class PositionFixFileLoader extends DataFileLoader {
         return geometryFactory.createPoint(coordinate);
 
     }
-
-    @Override
-    public void createFinalObservations() throws FileProcessingException {};
 
 
 

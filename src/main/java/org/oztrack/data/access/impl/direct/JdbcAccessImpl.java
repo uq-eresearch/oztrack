@@ -33,6 +33,7 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
         String sql = "";
         long dataFileId = dataFile.getId();
         long projectId = dataFile.getProject().getId();
+        int nbrObservations = 0;
 
         switch (dataFile.getProject().getProjectType()) {
             case PASSIVE_ACOUSTIC:
@@ -63,6 +64,7 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
                         " AND rad.receiversn=rdp.originalid" +
                         " AND rdp.project_id = ?"
                         ;
+                        nbrObservations = getJdbcTemplate().update(sql, new Object [] { dataFileId, projectId, projectId} );
                 break;
             case GPS:
             case ARGOS:
@@ -75,28 +77,33 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
                         " ,sensor2units" +
                         " ,animal_id" +
                         " ,datafile_id" +
-                        " ,receiverdeployment_id)" +
-                        " SELECT rad.id" +
-                        " ,rad.datetime" +
-                        " ,rad.sensor1" +
-                        " ,rad.units1" +
-                        " ,rad.sensor2" +
-                        " ,rad.units2" +
+                        " ,hdop" +
+                        " ,locationgeometry)" +
+                        " SELECT rpf.id" +
+                        " ,rpf.detectiontime" +
+                        " ,rpf.sensor1value" +
+                        " ,rpf.sensor1units" +
+                        " ,rpf.sensor2value" +
+                        " ,rpf.sensor2units" +
                         " ,ani.id" +
                         " ,?" +
-                        " ,rdp.id" +
-                        " FROM rawacousticdetection rad" +
-                        " ,animal ani" +
-                        " ,receiverdeployment rdp" +
-                        " WHERE rad.animalid = ani.projectanimalid  "  +
-                        " AND  ani.project_id = ?" +
-                        " AND rad.receiversn=rdp.originalid" +
-                        " AND rdp.project_id = ?"
-                        ;
+                        " ,rpf.hdop" +
+                        " ,rpf.locationgeometry " +
+                        " FROM rawpositionfix rpf" +
+                        " ,animal ani" ;
+
+                String where = " WHERE rpf.animalid = ani.projectanimalid  "  +
+                        " AND  ani.project_id = ?" ;
+
+                if (dataFile.getSingleAnimalInFile()) {
+                    where = " WHERE ani.id = (select max(a.id) from animal a where a.project_id = ?)";
+                }
+                        logger.debug(sql);
+                        nbrObservations = getJdbcTemplate().update(sql+where, new Object [] { dataFileId, projectId} );
                 break;
         }
 
-        return getJdbcTemplate().update(sql, new Object [] { dataFileId, projectId, projectId} );
+        return nbrObservations;
 
     }
 
@@ -151,6 +158,7 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
             case GPS:
             case ARGOS:
                 tableName = "rawpositionfix";
+
                 break;
         }
 

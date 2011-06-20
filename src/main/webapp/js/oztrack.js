@@ -83,6 +83,12 @@ $(document).ready(function(){
                                     + '</a> &rsaquo; <a href="' + thisUrl.replace("datafileadd","datafiles") + '"> Data Uploads </a> &rsaquo; <span class="aCrumb"> Add a Data File </span> ';
             $('#navTrack').css('color','#f7a700');
             break;
+        case "datafiledetail":
+          var projectTitle = $('#projectTitle').html();
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("datafiledetail","projects") + '"> &rsaquo; Animal Tracking</a> &rsaquo; <a href="' + thisUrl.replace("datafiledetail","projectdetail") + '">' + projectTitle
+                                    + '</a> &rsaquo; <a href="' + thisUrl.replace("datafiledetail","datafiles") + '"> Data Uploads </a> &rsaquo; <span class="aCrumb"> Data File Detail</span> ';
+            $('#navTrack').css('color','#f7a700');
+            break;
           case "projectanimals":
             var projectTitle = $('#projectTitle').html();
             breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectanimals","projects") + '"> &rsaquo; Animal Tracking</a> &rsaquo; <a href="' + thisUrl.replace("projectanimals","projectdetail") + '">' + projectTitle

@@ -31,8 +31,10 @@ public class RawPositionFix {
     private String longitude;
     private Double HDOP;
 
-    private Double sensor1;
-    private Double sensor2;
+    private Double sensor1value;
+    private String sensor1units;
+    private Double sensor2value;
+    private String sensor2units;
 
     @Column(name = "locationgeometry", columnDefinition="GEOMETRY")
     @Type(type = "org.hibernatespatial.GeometryUserType")
@@ -87,21 +89,37 @@ public class RawPositionFix {
         this.HDOP = HDOP;
     }
 
-    public Double getSensor1() {
-        return sensor1;
-    }
+    public Double getSensor1value() {
+         return sensor1value;
+     }
 
-    public void setSensor1(Double sensor1) {
-        this.sensor1 = sensor1;
-    }
+     public void setSensor1value(Double sensor1value) {
+         this.sensor1value = sensor1value;
+     }
 
-    public Double getSensor2() {
-        return sensor2;
-    }
+     public String getSensor1units() {
+         return sensor1units;
+     }
 
-    public void setSensor2(Double sensor2) {
-        this.sensor2 = sensor2;
-    }
+     public void setSensor1units(String sensor1units) {
+         this.sensor1units = sensor1units;
+     }
+
+     public Double getSensor2value() {
+         return sensor2value;
+     }
+
+     public void setSensor2value(Double sensor2value) {
+         this.sensor2value = sensor2value;
+     }
+
+     public String getSensor2units() {
+         return sensor2units;
+     }
+
+     public void setSensor2units(String sensor2units) {
+         this.sensor2units = sensor2units;
+     }
 
     public Point getLocationGeometry() {
         return locationGeometry;

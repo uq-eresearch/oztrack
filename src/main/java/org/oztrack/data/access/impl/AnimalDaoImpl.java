@@ -58,6 +58,8 @@ public class AnimalDaoImpl extends JpaDao<Animal> implements AnimalDao, Serializ
 
     }
 
+
+
     @Override
     public void save(Animal object) {
         object.setUpdateDate(new java.util.Date());
