@@ -36,19 +36,24 @@
 
 <c:choose>
  <c:when test="${currentUser != null}">
-    <li><a id="navTrack" class="menuParent" href="#">Tracking Projects</a>
+    <li><a id="navTrack" class="menuParent" href="#">Animal Tracking</a>
         <ul>
-            <li><a href="<c:url value="projects"/>">Project List</a></li>
             <li><a href="<c:url value="projectadd"/>">Create New Project</a></li>
+            <li><a href="<c:url value="projects"/>">Project List</a></li>
         </ul>
     </li>
  </c:when>
 <c:otherwise>
-    <li><a id="navTrack" href="<c:url value="login"/>">Tracking Projects</a></li>
+    <li><a id="navTrack" href="<c:url value="login"/>">Animal Tracking</a></li>
 </c:otherwise>
 </c:choose>
 
-<li><a id="navSighting" href="<c:url value="sighting"/>">Animal Sightings</a></li>
+<li><a id="navSighting" class="menuParent" href="#">Animal Sightings</a>
+        <ul>
+            <li><a href="<c:url value="sighting"/>">Report a Sighting</a></li>
+            <li><a href="<c:url value="#"/>">Sightings Map</a></li>
+        </ul>
+</li>
 <li><a id="navAbout" href="<c:url value="about"/>">About</a></li>
 <li><a id="navContact" href="<c:url value="contact"/>">Contact</a></li>
 </ul>
@@ -85,19 +90,22 @@
 
 <c:if test="${fn:contains(thisURL,'project') && !fn:contains(thisURL,'projectdetail')&& !fn:contains(thisURL,'projectanimals') && !fn:contains(thisURL,'projectreceivers')&& !fn:contains(thisURL,'alloztrackprojects')}">
     <ul>
-    <li><a href="<c:url value="projects"/>">Project List</a></li>
     <li><a href="<c:url value="projectadd"/>">Create New Project</a></li>
+    <li><a href="<c:url value="projects"/>">Project List</a></li>
     </ul>
 </c:if>
 
 <c:if test="${fn:contains(thisURL,'projectdetail') || fn:contains(thisURL,'searchform') || fn:contains(thisURL,'datafiles') || fn:contains(thisURL,'projectanimals') || fn:contains(thisURL,'projectreceivers') || fn:contains(thisURL,'datafileadd')|| fn:contains(thisURL,'datafiledetail')|| fn:contains(thisURL,'animalform')|| fn:contains(thisURL,'receiverform')}">
     <c:if test="${project.title != null}">
         <ul>
-          <li><a href="<c:url value="projectdetail"/>">Project Details</a></li>
+          <li><a href="<c:url value="projectdetail"/>">Visualisation Tools</a></li>
           <li><a href="<c:url value="searchform"/>">Analysis Tools</a></li>
           <li><a href="<c:url value="datafiles"/>">Data Uploads</a></li>
+          <li><a href="<c:url value="projectdetail"/>">Project Details</a></li>
+          <!--
           <li><a href="<c:url value="projectanimals"/>">Animals</a></li>
           <li><a href="<c:url value="projectreceivers"/>">Receivers</a></li>
+          -->
         </ul>
 
     </c:if>

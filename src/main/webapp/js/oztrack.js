@@ -59,33 +59,33 @@ $(document).ready(function(){
             breadcrumb = breadcrumb + ' &rsaquo; <span class="aCrumb">Search Acoustic data</span>';
             break;
         case "projects":
-            breadcrumb = breadcrumb + ' &rsaquo; <span class="aCrumb">Tracking Projects</span>';
+            breadcrumb = breadcrumb + ' &rsaquo; <a href="#">Animal Tracking</a> &rsaquo; <span class="aCrumb">Project List</span>';
             $('#navTrack').css('color','#f7a700');
             break;
         case "projectadd":
-            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectadd","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <span class="aCrumb">Create New Project</span>';
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectadd","projects") + '"> &rsaquo; Animal Tracking</a> &rsaquo; <span class="aCrumb">Create New Project</span>';
             $('#navTrack').css('color','#f7a700');
             break;
         case "projectdetail":
             var projectTitle = $('#projectTitle').html();
-            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectdetail","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <span class="aCrumb">' + projectTitle + '</span>';
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectdetail","projects") + '"> &rsaquo; Animal Tracking</a> &rsaquo; <span class="aCrumb">' + projectTitle + '</span>';
             $('#navTrack').css('color','#f7a700');
             break;
         case "datafiles":
             var projectTitle = $('#projectTitle').html();
-            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("datafiles","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <a href="' + thisUrl.replace("datafiles","projectdetail") + '">' + projectTitle
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("datafiles","projects") + '"> &rsaquo; Animal Tracking</a> &rsaquo; <a href="' + thisUrl.replace("datafiles","projectdetail") + '">' + projectTitle
                                     + '</a> &rsaquo; <span class="aCrumb"> Data Files </span>';
             $('#navTrack').css('color','#f7a700');
             break;
         case "datafileadd":
           var projectTitle = $('#projectTitle').html();
-            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("datafileadd","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <a href="' + thisUrl.replace("datafileadd","projectdetail") + '">' + projectTitle
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("datafileadd","projects") + '"> &rsaquo; Animal Tracking</a> &rsaquo; <a href="' + thisUrl.replace("datafileadd","projectdetail") + '">' + projectTitle
                                     + '</a> &rsaquo; <a href="' + thisUrl.replace("datafileadd","datafiles") + '"> Data Uploads </a> &rsaquo; <span class="aCrumb"> Add a Data File </span> ';
             $('#navTrack').css('color','#f7a700');
             break;
           case "projectanimals":
             var projectTitle = $('#projectTitle').html();
-            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectanimals","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <a href="' + thisUrl.replace("projectanimals","projectdetail") + '">' + projectTitle
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectanimals","projects") + '"> &rsaquo; Animal Tracking</a> &rsaquo; <a href="' + thisUrl.replace("projectanimals","projectdetail") + '">' + projectTitle
                                     + '</a> &rsaquo; <span class="aCrumb"> Animals </span>';
             $('#navTrack').css('color','#f7a700');
             break;
@@ -97,24 +97,24 @@ $(document).ready(function(){
             break;
        case "animalform":
             var projectTitle = $('#projectTitle').html();
-            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("animalform","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <a href="' + thisUrl.replace("animalform","projectdetail") + '">' + projectTitle
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("animalform","projects") + '"> &rsaquo; Animal Tracking</a> &rsaquo; <a href="' + thisUrl.replace("animalform","projectdetail") + '">' + projectTitle
                                     + '</a> &rsaquo; <a href="' + thisUrl.replace("animalform","projectanimals") + '"> Animals </a> &rsaquo; <span class="aCrumb"> Edit </span> ';
             $('#navTrack').css('color','#f7a700');
             break;
        case "receiverform":
             var projectTitle = $('#projectTitle').html();
-            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("receiverform","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <a href="' + thisUrl.replace("receiverform","projectdetail") + '">' + projectTitle
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("receiverform","projects") + '"> &rsaquo; Animal Tracking</a> &rsaquo; <a href="' + thisUrl.replace("receiverform","projectdetail") + '">' + projectTitle
                                     + '</a> &rsaquo; <a href="' + thisUrl.replace("receiverform","projectanimals") + '"> Receivers </a> &rsaquo; <span class="aCrumb"> Edit </span> ';
             $('#navTrack').css('color','#f7a700');
             break;
         case "searchform":
             var projectTitle = $('#projectTitle').html();
-            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("searchform","projects") + '"> &rsaquo; Tracking Projects</a> &rsaquo; <a href="' + thisUrl.replace("searchform","projectdetail") + '">' + projectTitle
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("searchform","projects") + '"> &rsaquo; Animal Tracking</a> &rsaquo; <a href="' + thisUrl.replace("searchform","projectdetail") + '">' + projectTitle
                                     + '</a> &rsaquo; <span class="aCrumb">Analysis Tools</span>';
             $('#navTrack').css('color','#f7a700');
             break;
         case "sighting":
-            breadcrumb = breadcrumb + ' &rsaquo; <span class="aCrumb">Report an Animal Sighting</span>';
+            breadcrumb = breadcrumb + ' &rsaquo; <a href="#">Animal Sightings</a> &rsaquo; <span class="aCrumb">Report an Animal Sighting</span>';
             $('#navSighting').css('color','#f7a700');
             break;
         case "about":
