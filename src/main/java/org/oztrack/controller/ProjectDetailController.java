@@ -56,7 +56,7 @@ public class ProjectDetailController implements Controller {
         //EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
         //Project projectTest = entityManager.find(Project.class, project.getId());
         //entityManager.refresh(projectTest);
-        projectDao.refresh(project);
+        //projectDao.refresh(project);
 
 
 

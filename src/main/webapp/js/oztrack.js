@@ -39,8 +39,6 @@ $(document).ready(function(){
     var homeCrumb = '<a href="' + homeUrl + '">Home</a>';
     var breadcrumb = homeCrumb;
 
-    //change navMenu all back to white
-    $('#navMenu').find('li a').css('color','#ffffff');
     //alert("thisPath: " + thisPath);
     switch (thisPath) {
         case "home":

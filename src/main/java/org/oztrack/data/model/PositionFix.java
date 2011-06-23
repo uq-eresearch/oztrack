@@ -39,6 +39,10 @@ public class PositionFix implements Serializable{
     private Double HDOP;
     private Double sensor1Value;
     private Double sensor2Value;
+    private String sensor1Units;
+    private String sensor2Units;
+
+
 
     public Long getId() {
         return id;
@@ -102,6 +106,22 @@ public class PositionFix implements Serializable{
 
     public void setLocationGeometry(Point locationGeometry) {
         this.locationGeometry = locationGeometry;
+    }
+
+        public String getSensor1Units() {
+        return sensor1Units;
+    }
+
+    public void setSensor1Units(String sensor1Units) {
+        this.sensor1Units = sensor1Units;
+    }
+
+    public String getSensor2Units() {
+        return sensor2Units;
+    }
+
+    public void setSensor2Units(String sensor2Units) {
+        this.sensor2Units = sensor2Units;
     }
 
 

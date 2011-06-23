@@ -131,9 +131,8 @@ public class DataFileFormController extends SimpleFormController {
 
             // save the file to the data dir
             String filePath = dataDir + File.separator + "oztrack" + File.separator
-                             + project.getId().toString() + File.separator
-                             + "oztrack-" + project.getId().toString()
-                             + "-" + dataFile.getId().toString() + ".csv";
+                             + "project-" + project.getId().toString() + File.separator
+                             + "datafile-" + dataFile.getId().toString() + ".csv";
 
             File saveFile = new File(filePath);
             saveFile.mkdirs();

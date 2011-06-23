@@ -54,6 +54,7 @@
             <li><a href="<c:url value="#"/>">Sightings Map</a></li>
         </ul>
 </li>
+<li><a id="navGallery" href="<c:url value="#"/>">Gallery</a></li>
 <li><a id="navAbout" href="<c:url value="about"/>">About</a></li>
 <li><a id="navContact" href="<c:url value="contact"/>">Contact</a></li>
 </ul>
