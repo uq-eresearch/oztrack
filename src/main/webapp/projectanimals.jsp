@@ -6,7 +6,7 @@
 <table class="dataTable">
 
     <tr>
-        <th>Animal ID</th>
+        <th>ID</th>
         <th>Name</th>
         <th>Description</th>
         <th>Species</th>

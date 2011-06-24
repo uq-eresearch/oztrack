@@ -13,7 +13,9 @@
     and marine species tracking.
     </p>
 
-    <div id="map_canvas"></div>
+    <!--div id="map_canvas"></div-->
+    <div style="width: 500px; height:250px; border: 2px solid black;" id="homeMap"></div>
+
 
 <br>
 <form>

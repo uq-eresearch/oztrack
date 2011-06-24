@@ -13,12 +13,13 @@
     <link rel="stylesheet" type="text/css" href="css/formalize.css"/>
     <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js">;</script>
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-    <script type="text/javascript" src="js/oztrack.js"></script>
-    <script type="text/javascript" src="js/oztrackmaps.js"></script>
     <script type="text/javascript" src="js/jquery/jquery.formalize.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
     <script src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/keydragzoom/src/keydragzoom_packed.js"></script>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <script type="text/javascript" src="js/OpenLayers.js"></script>
+    <script type="text/javascript" src="js/oztrack.js"></script>
+    <script type="text/javascript" src="js/oztrackmaps.js"></script>
 </head>
 
 <body>

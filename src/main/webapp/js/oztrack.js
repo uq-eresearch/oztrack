@@ -12,6 +12,9 @@ $(document).ready(function(){
      if ($('#sightingMap').length) {
         initializeSightingMap();
      }
+     if ($('#homeMap').length) {
+        initializeHomeMap();
+     }
 });
 
 

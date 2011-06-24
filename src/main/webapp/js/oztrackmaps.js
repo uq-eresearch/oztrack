@@ -1,4 +1,14 @@
 
+function initializeHomeMap() {
+    alert("hello");
+    var map = new OpenLayers.Map('homeMap');
+    var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                                        "http://labs.metacarta.com/wms/vmap0",
+                                        {layers: 'basic'} );
+    map.addLayer(wms);
+    map.zoomToMaxExtent();
+}
+
 function initialize() {
 
         var latlng = new google.maps.LatLng(-28.274398,133.775136);
