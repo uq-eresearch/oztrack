@@ -51,6 +51,8 @@ public class ProjectDetailController implements Controller {
 
         if (httpServletRequest.getRequestURI().contains("datafiles")) {
             modelAndViewName = "datafiles";
+        } else if (httpServletRequest.getRequestURI().contains("projectmap")) {
+            modelAndViewName = "projectmap";
         }
 
         //EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();

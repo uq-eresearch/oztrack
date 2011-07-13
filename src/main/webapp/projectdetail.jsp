@@ -2,8 +2,6 @@
 
 <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
 
-<div id="map_canvas"></div>
-
 <table class="projectListTable">
 <tr><td><b>Description:</b></td><td><c:out value="${project.description}"/></td></tr>
 <tr><td><b>Project Data:</b></td>

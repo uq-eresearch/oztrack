@@ -1,13 +1,51 @@
 
 function initializeHomeMap() {
-    alert("hello");
+
     var map = new OpenLayers.Map('homeMap');
-    var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
-                                        "http://labs.metacarta.com/wms/vmap0",
-                                        {layers: 'basic'} );
-    map.addLayer(wms);
-    map.zoomToMaxExtent();
+
+    var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
+    layerSwitcher.div = OpenLayers.Util.getElement('homeMapOptions');
+    layerSwitcher.roundedCorner = false;
+    map.addControl(layerSwitcher);
+
+    var gphy = new OpenLayers.Layer.Google(
+                "Google Physical",
+                {type: G_PHYSICAL_MAP}
+    );
+
+    var gsat = new OpenLayers.Layer.Google(
+                "Google Satellite",
+                {type: G_SATELLITE_MAP}
+    );
+
+    map.addLayers([gsat,gphy]);
+    map.setCenter(new OpenLayers.LonLat(133,-28),4);
 }
+
+function initializeProjectMap() {
+
+    var map = new OpenLayers.Map('projectMap');
+
+    var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
+    layerSwitcher.div = OpenLayers.Util.getElement('projectMapOptions');
+    layerSwitcher.roundedCorner = false;
+    map.addControl(layerSwitcher);
+
+    var gphy = new OpenLayers.Layer.Google(
+                "Google Physical",
+                {type: G_PHYSICAL_MAP}
+    );
+
+    var gsat = new OpenLayers.Layer.Google(
+                "Google Satellite",
+                {type: G_SATELLITE_MAP}
+    );
+
+    map.addLayers([gsat,gphy]);
+    map.setCenter(new OpenLayers.LonLat(133,-28),4);
+}
+
+
 
 function initialize() {
 

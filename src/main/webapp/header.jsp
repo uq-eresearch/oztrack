@@ -7,15 +7,22 @@
 
 <html>
 <head>
-    <title>OzTrack</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" type="text/css" href="css/oztrack.css"/>
     <link rel="stylesheet" type="text/css" href="css/formalize.css"/>
     <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+
+    <title>OzTrack : ${param['title']}</title>
+
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js">;</script>
     <script type="text/javascript" src="js/jquery/jquery.formalize.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
-    <script src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/keydragzoom/src/keydragzoom_packed.js"></script>
+    <script type="text/javascript" src="js/oztrack.js"></script>
+
+    <c:forEach var="js" items="${paramValues.jsIncludes}" >
+        <script src="${js}" type="text/javascript"></script>
+    </c:forEach>
+
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
     <script type="text/javascript" src="js/OpenLayers.js"></script>
     <script type="text/javascript" src="js/oztrack.js"></script>
@@ -90,17 +97,17 @@
 
 <div id="leftMenu">
 
-<c:if test="${fn:contains(thisURL,'project') && !fn:contains(thisURL,'projectdetail')&& !fn:contains(thisURL,'projectanimals') && !fn:contains(thisURL,'projectreceivers')&& !fn:contains(thisURL,'alloztrackprojects')}">
+<c:if test="${fn:contains(thisURL,'project') && !fn:contains(thisURL,'projectdetail')&& !fn:contains(thisURL,'projectanimals') && !fn:contains(thisURL,'projectreceivers')&& !fn:contains(thisURL,'alloztrackprojects')&& !fn:contains(thisURL,'projectmap')}">
     <ul>
     <li><a href="<c:url value="projectadd"/>">Create New Project</a></li>
     <li><a href="<c:url value="projects"/>">Project List</a></li>
     </ul>
 </c:if>
 
-<c:if test="${fn:contains(thisURL,'projectdetail') || fn:contains(thisURL,'searchform') || fn:contains(thisURL,'datafiles') || fn:contains(thisURL,'projectanimals') || fn:contains(thisURL,'projectreceivers') || fn:contains(thisURL,'datafileadd')|| fn:contains(thisURL,'datafiledetail')|| fn:contains(thisURL,'animalform')|| fn:contains(thisURL,'receiverform')}">
+<c:if test="${fn:contains(thisURL,'projectdetail') || fn:contains(thisURL,'projectmap') || fn:contains(thisURL,'searchform') || fn:contains(thisURL,'datafiles') || fn:contains(thisURL,'projectanimals') || fn:contains(thisURL,'projectreceivers') || fn:contains(thisURL,'datafileadd')|| fn:contains(thisURL,'datafiledetail')|| fn:contains(thisURL,'animalform')|| fn:contains(thisURL,'receiverform')}">
     <c:if test="${project.title != null}">
         <ul>
-          <li><a href="<c:url value="projectdetail"/>">Visualisation Tools</a></li>
+          <li><a href="<c:url value="projectmap"/>">Visualisation Tools</a></li>
           <li><a href="<c:url value="searchform"/>">Analysis Tools</a></li>
           <li><a href="<c:url value="datafiles"/>">Data Uploads</a></li>
           <li><a href="<c:url value="projectdetail"/>">Project Details</a></li>
@@ -113,11 +120,20 @@
     </c:if>
 </c:if>
 
+<c:if test="${fn:contains(thisURL,'home')}">
+    <p>
+    OzTrack is a collaboration between the eResearch lab and Eco-Lab
+    at the University of Queensland. It is funded through the ANDS program,
+    with the aim being to capture and share datasets associated with animal
+    and marine species tracking.
+    </p>
+</c:if>
 
 <div id="logos">
-<a href="http://ands.org.au/"/><img src="images/ands-logo.png"/></a>
-<a href="http://itee.uq.edu.au/~eresearch/"/><img src="images/uq_logo.png"/></a>
+<a href="http://ands.org.au/"/><img src="images/ands-logo.png" width="140px" height="67px"/></a>
+<a href="http://itee.uq.edu.au/~eresearch/"/><img src="images/uq_logo.png" width="140px" height="40px"/></a>
 </div>
+
 </div>
 
 <div id="content">

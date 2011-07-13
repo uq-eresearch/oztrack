@@ -5,16 +5,16 @@ $(document).ready(function(){
      accordian();
      setupDatepicker();
 
-
-     if ($('#map_canvas').length) {
-        initialize();
-     }
      if ($('#sightingMap').length) {
         initializeSightingMap();
      }
      if ($('#homeMap').length) {
         initializeHomeMap();
      }
+     if ($('#projectMap').length) {
+        initializeProjectMap();
+     }
+
 });
 
 

@@ -66,6 +66,11 @@
 
     <servlet-mapping>
       <servlet-name>springmvc</servlet-name>
+      <url-pattern>/projectmap</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>springmvc</servlet-name>
       <url-pattern>/datafiles</url-pattern>
     </servlet-mapping>
 

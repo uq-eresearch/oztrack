@@ -17,6 +17,7 @@
   <bean name="/users" class="org.oztrack.controller.UserListController"/>
   <bean name="/projects" class="org.oztrack.controller.ProjectListController"/>
   <bean name="/projectdetail" class="org.oztrack.controller.ProjectDetailController"/>
+  <bean name="/projectmap" class="org.oztrack.controller.ProjectDetailController"/>
   <bean name="/datafiles" class="org.oztrack.controller.ProjectDetailController"/>
   <bean name="/projectanimals" class="org.oztrack.controller.ProjectAnimalsController"/>
   <bean name="/projectreceivers" class="org.oztrack.controller.ProjectReceiversController"/>
