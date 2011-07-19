@@ -3,6 +3,7 @@ package org.oztrack.data.access.impl.direct;
 import org.oztrack.data.access.direct.JdbcAccess;
 import org.oztrack.data.model.AcousticDetection;
 import org.oztrack.data.model.DataFile;
+import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.SearchQuery;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
@@ -71,6 +72,8 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
                 sql =   "INSERT INTO positionfix (" +
                         " id" +
                         " ,detectiontime" +
+                        " ,latitude" +
+                        " ,longitude" +
                         " ,sensor1value" +
                         " ,sensor1units" +
                         " ,sensor2value" +
@@ -81,6 +84,8 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
                         " ,locationgeometry)" +
                         " SELECT rpf.id" +
                         " ,rpf.detectiontime" +
+                        " ,rpf.latitude" +
+                        " ,rpf.longitude" +
                         " ,rpf.sensor1value" +
                         " ,rpf.sensor1units" +
                         " ,rpf.sensor2value" +
@@ -166,22 +171,10 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
 
     }
 
-    public List<AcousticDetection> queryAcousticDetections(String sql) {
 
-        List<AcousticDetection> acousticDetections = getJdbcTemplate().query(sql, new BeanPropertyRowMapper(AcousticDetection.class) );
-        return acousticDetections;
 
-    }
 
-    public List<AcousticDetection> queryAcousticDetections2(SearchQuery searchQuery) {
 
-        String sql = searchQuery.buildQuery();
-        AcousticDetectionRowMapper acousticDetectionRowMapper = new AcousticDetectionRowMapper();
-        List<AcousticDetection> acousticDetections = getJdbcTemplate().query(sql, acousticDetectionRowMapper);
-
-        return acousticDetections;
-
-    }
 
 
 }

@@ -3,10 +3,12 @@ package org.oztrack.data.access.impl;
 import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
 import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
 import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.swing.text.Position;
 import java.io.Serializable;
 import java.util.List;
 
@@ -31,6 +33,18 @@ public class ProjectDaoImpl extends JpaDao<Project> implements ProjectDao, Seria
             return null;
         }
     }
+
+    public List<PositionFix> getAllPositionFixes(Long projectId) {
+
+        Query query = entityManagerSource.getEntityManager().createQuery("SELECT o from PositionFix o, datafile d where o.datafile_id=d.id and d.project_id = :projectId");
+        query.setParameter("projectId", projectId);
+        try {
+            return (List <PositionFix>) query.getResultList();
+        } catch (NoResultException ex) {
+            return null;
+        }
+    }
+
 
     @Override
     public void save(Project object) {

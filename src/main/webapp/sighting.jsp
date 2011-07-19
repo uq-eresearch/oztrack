@@ -1,5 +1,13 @@
 <%@ include file="header.jsp" %>
 
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/keydragzoom/src/keydragzoom_packed.js" /></script>
+<script type="text/javascript" src="js/oztrackmaps.js" /></script>
+
+<!--
+<script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key=${initParam['api-key']}" /></script>
+-->
+
 <h1>Report an Animal Sighting</h1>
 
 

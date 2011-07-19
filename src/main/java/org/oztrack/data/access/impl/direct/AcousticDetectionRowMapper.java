@@ -41,7 +41,6 @@ public class AcousticDetectionRowMapper implements RowMapper {
         acousticDetection.setDataFile(dataFile);
         acousticDetection.setReceiverDeployment(receiverDeployment);
 
-        return acousticDetection;  //To change body of implemented methods use File | Settings | File Templates.
-
+        return acousticDetection;
     }
 }

@@ -5,6 +5,11 @@ $(document).ready(function(){
      accordian();
      setupDatepicker();
 
+     document.title='OzTrack';
+     if ($('#titleText').length) {
+        document.title = 'OzTrack ' + $('#titleText').val();
+     }
+
      if ($('#sightingMap').length) {
         initializeSightingMap();
      }

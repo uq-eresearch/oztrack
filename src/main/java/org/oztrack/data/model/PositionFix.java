@@ -26,6 +26,9 @@ public class PositionFix implements Serializable{
     @Column(nullable=false)
     private Date detectionTime;
 
+    private String latitude;
+    private String longitude;
+
     @ManyToOne
     private Animal animal;
 
@@ -59,6 +62,24 @@ public class PositionFix implements Serializable{
     public void setDetectionTime(Date detectionTime) {
         this.detectionTime = detectionTime;
     }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+
 
     public Animal getAnimal() {
         return animal;

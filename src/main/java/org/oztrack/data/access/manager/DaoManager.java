@@ -2,6 +2,7 @@ package org.oztrack.data.access.manager;
 
 import org.oztrack.data.access.*;
 import org.oztrack.data.access.direct.JdbcAccess;
+import org.oztrack.data.access.direct.JdbcQuery;
 
 
 import javax.persistence.EntityManager;
@@ -22,6 +23,7 @@ public interface DaoManager {
     ReceiverDeploymentDao getReceiverDeploymentDao();
     EntityManager getEntityManager();
     JdbcAccess getJdbcAccess();
+    JdbcQuery getJdbcQuery();
     SightingDao getSightingDao();
 
 

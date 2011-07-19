@@ -302,6 +302,17 @@
             <artifactId>hibernate-spatial-postgis</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.oztrack</groupId>
+            <artifactId>Rserve</artifactId>
+            <version>0.6-5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.oztrack</groupId>
+            <artifactId>REngine</artifactId>
+            <version>0.6-5</version>
+        </dependency>
+
 
         <!--<dependency>-->
         <!--<groupId>com.google.code</groupId>-->
@@ -323,6 +334,11 @@
             <id>eResearch</id>
             <name>maenad-releases</name>
             <url>http://maven.metadata.net/artifactory/repo</url>
+        </repository>
+        <repository>
+            <id>eResearch-ext</id>
+            <name>maenad-ext-releases</name>
+            <url>http://maven.metadata.net/artifactory/libs-releases</url>
         </repository>
         <repository>
             <id>OSGEO GeoTools repo</id>

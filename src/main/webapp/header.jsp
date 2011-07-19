@@ -12,21 +12,19 @@
     <link rel="stylesheet" type="text/css" href="css/formalize.css"/>
     <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
 
-    <title>OzTrack : ${param['title']}</title>
+    <title></title>
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js">;</script>
     <script type="text/javascript" src="js/jquery/jquery.formalize.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
     <script type="text/javascript" src="js/oztrack.js"></script>
 
+<!--
     <c:forEach var="js" items="${paramValues.jsIncludes}" >
         <script src="${js}" type="text/javascript"></script>
     </c:forEach>
+-->
 
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-    <script type="text/javascript" src="js/OpenLayers.js"></script>
-    <script type="text/javascript" src="js/oztrack.js"></script>
-    <script type="text/javascript" src="js/oztrackmaps.js"></script>
 </head>
 
 <body>
@@ -139,7 +137,7 @@
 <div id="content">
 
 <!--
-<c:forEach items='${sessionScope}' var='p'>
+<c:forEach items='${requestScope}' var='p'>
 <ul>
 <li>Parameter Name: <c:out value='${p.key}'/></li>
 <li>Parameter Value: <c:out value='${p.value}'/></li>

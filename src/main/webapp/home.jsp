@@ -1,12 +1,11 @@
 
+<%@ include file="header.jsp" %>
 
-<jsp:include page="header.jsp">
-    <jsp:param name="title" value="Home"/>
-    <jsp:param name="jsIncludes" value="http://maps.google.com/maps?file=api&v=2&key=${initParam['api-key']}" />
-    <jsp:param name="jsIncludes" value="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/keydragzoom/src/keydragzoom_packed.js" />
-    <jsp:param name="jsIncludes" value="js/openlayers/OpenLayers.js" />
-    <jsp:param name="jsIncludes" value="js/oztrackmaps.js" />
-</jsp:include>
+<script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key=${initParam['api-key']}" /></script>
+<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/keydragzoom/src/keydragzoom_packed.js" /></script>
+<script type="text/javascript" src="js/openlayers/OpenLayers.js" /></script>
+<script type="text/javascript" src="js/oztrackmaps.js" /></script>
+
 
 <!--
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
@@ -61,6 +60,6 @@
 </c:forEach>
 
 
-<jsp:include page="footer.jsp" />
+<%@ include file="footer.jsp" %>
 
 

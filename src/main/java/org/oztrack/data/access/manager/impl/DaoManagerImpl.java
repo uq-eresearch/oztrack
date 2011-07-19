@@ -3,6 +3,7 @@ package org.oztrack.data.access.manager.impl;
 import org.oztrack.data.access.AcousticDetectionDao;
 import org.oztrack.data.access.impl.*;
 import org.oztrack.data.access.impl.direct.JdbcAccessImpl;
+import org.oztrack.data.access.impl.direct.JdbcQueryImpl;
 import org.oztrack.data.access.manager.DaoManager;
 import org.oztrack.data.connector.JpaConnector;
 
@@ -24,6 +25,7 @@ public class DaoManagerImpl implements DaoManager {
     private ReceiverDeploymentDaoImpl receiverDeploymentDao;
     private JpaConnector jpaConnector;
     private JdbcAccessImpl JdbcAccess;
+    private JdbcQueryImpl JdbcQuery;
     private SightingDaoImpl sightingDao;
 
     public JdbcAccessImpl getJdbcAccess() {
@@ -106,6 +108,16 @@ public class DaoManagerImpl implements DaoManager {
     public void setSightingDao(SightingDaoImpl sightingDao) {
         this.sightingDao = sightingDao;
     }
+
+    public JdbcQueryImpl getJdbcQuery() {
+        return JdbcQuery;
+    }
+
+    public void setJdbcQuery(JdbcQueryImpl jdbcQuery) {
+        JdbcQuery = jdbcQuery;
+    }
+
+
 
 
 

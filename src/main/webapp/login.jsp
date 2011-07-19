@@ -1,4 +1,5 @@
 <%@ include file="header.jsp" %>
+<input id="titleText" type="hidden" value="Login"/>
 
 <h1>Login</h1>
 

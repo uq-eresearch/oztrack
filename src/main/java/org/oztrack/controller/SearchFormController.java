@@ -3,7 +3,7 @@ package org.oztrack.controller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
-import org.oztrack.data.access.direct.JdbcAccess;
+import org.oztrack.data.access.direct.JdbcQuery;
 import org.oztrack.data.model.AcousticDetection;
 import org.oztrack.data.model.SearchQuery;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -38,8 +38,8 @@ public class SearchFormController extends SimpleFormController {
 
         SearchQuery searchQuery = (SearchQuery) command;
 
-        JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
-        List<AcousticDetection> acousticDetections = jdbcAccess.queryAcousticDetections2(searchQuery);
+        JdbcQuery jdbcQuery = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcQuery();
+        List<AcousticDetection> acousticDetections = jdbcQuery.queryAcousticDetections2(searchQuery);
 
         ModelAndView modelAndView = showForm(request, response, errors);
         modelAndView.addObject("acousticDetectionsList", acousticDetections);
