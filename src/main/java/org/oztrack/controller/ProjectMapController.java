@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class ProjectMapController implements Controller {
@@ -51,74 +52,65 @@ public class ProjectMapController implements Controller {
                 errorStr = "Couldn't find any project sorry.";
         }
 
-        String modelAndViewName = "projectmap"; // = httpServletRequest.getRequestURI().replaceAll("/oztrack*/","").split(";")[0];
-
-        //EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
-        //Project projectTest = entityManager.find(Project.class, project.getId());
-        //entityManager.refresh(projectTest);
-        //projectDao.refresh(project);
-
         RConnection rConnection = new RConnection();
-        REXP rexp = rConnection.eval("R.version.string");
-        String rResult = rexp.asString();
+
+        REXP rExpVersion = rConnection.eval("R.version.string");
+        String rVersion = rExpVersion.asString();
 
         List <PositionFix> positionFixList = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcQuery().queryProjectPositionFixes(project.getId());
+        RList rInputList = new RList();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd H:m:s");
 
-        String [] fieldNames = {"animalid","date","lat","long"};
-        RList rPositionFixList = new RList();
-
-        // build arraylists for each column
-
+        // build arrays for each column
         int [] animalIds = new int[positionFixList.size()];
-        //RList detectionTimes= new RList();
+        String [] detectionTimes= new String[positionFixList.size()];
         double [] latitudes= new double[positionFixList.size()];
         double [] longitudes= new double[positionFixList.size()];
 
-        //for (PositionFix positionFix : positionFixList) {
         for (int i=0; i < positionFixList.size(); i++) {
-
             PositionFix positionFix = positionFixList.get(i);
             animalIds[i] = Integer.parseInt(positionFix.getAnimal().getId().toString());
+            detectionTimes[i] = sdf.format(positionFix.getDetectionTime());
             latitudes[i] = Double.parseDouble(positionFix.getLatitude());
             longitudes[i] = Double.parseDouble(positionFix.getLongitude());
-
-            //animalIds.add(Integer.parseInt(positionFix.getAnimal().getId().toString()));
-            //detectionTimes.add(positionFix.getDetectionTime());
-            //latitudes.add(Double.parseDouble(positionFix.getLatitude()));
-            //longitudes.add(Double.parseDouble(positionFix.getLongitude()));
         }
 
-        REXPInteger a = new REXPInteger(animalIds);
-        REXPDouble lat = new REXPDouble(latitudes);
-        REXPDouble lon = new REXPDouble(longitudes);
-
-        rPositionFixList.put("animalid", a);
-        //rPositionFixList.put("detectionTime", detectionTimes);
-        rPositionFixList.put("latitude", lat);
-        rPositionFixList.put("longitude", lon);
+        // add them to the RList to become the dataframe (add the name+array)
+        rInputList.put("detectionTime", new REXPString(detectionTimes));
+        rInputList.put("animalid", new REXPInteger(animalIds));
+        rInputList.put("latitude", new REXPDouble(latitudes));
+        rInputList.put("longitude", new REXPDouble(longitudes));
 
         logger.debug("RList created");
 
-        REXP output = null;
+        RList rOutputList = new RList();
 
         try {
-            //RDataFrame rDataFrame = new RDataFrame();
-            REXP rDataFrame = REXP.createDataFrame(rPositionFixList);
+            REXP rDataFrame = REXP.createDataFrame(rInputList);
+            rConnection.eval("posfix <- NULL");
             rConnection.assign("posfix", rDataFrame);
-            output = rConnection.eval("posfix");
-
+            rOutputList = rConnection.eval("posfix").asList();
+            rConnection.close();
         } catch (RserveException e) {
-            errorStr = "R problem creating dataframe: " + e.getMessage();
+            errorStr = "R problem : " + e.getMessage();
+        } catch (REXPMismatchException e) {
+            errorStr = "R problem : " + e.toString();
         }
 
+        // read the output into a 2 dim String array
+        int cols = rOutputList.size();
+        int rows = rOutputList.at(0).length();
+        String [][] s = new String[cols][];
 
-        // try to read the output into a java object
+        for (int i=0;i < cols; i++)
+            s[i] = rOutputList.at(i).asStrings();
 
-        ModelAndView modelAndView = new ModelAndView(modelAndViewName);
+        ModelAndView modelAndView = new ModelAndView( "projectmap");
+        modelAndView.addObject("origDetectionTimes", detectionTimes);
         modelAndView.addObject("errorStr", errorStr);
-        modelAndView.addObject("rOutput", output.toDebugString());
+        modelAndView.addObject("rOutput",s );
         modelAndView.addObject("project", project);
-        modelAndView.addObject("rResult", rResult);
+        modelAndView.addObject("rVersion", rVersion);
 
         return modelAndView;
     }

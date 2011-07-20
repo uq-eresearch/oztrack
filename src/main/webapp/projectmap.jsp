@@ -13,6 +13,23 @@
     </div>
 
 
-    <p><c:out value="${rResult}"/></p>
-       <div style="border: 1px solid red;"><c:out value="${rOutput}"/></div>
+   <p><c:out value="${rVersion}"/></p>
+   <p style="color:red;"><c:out value="${errorStr}"/></p>
+
+   <div style="border: 1px solid green;">
+          <c:forEach items="${origDetectionTimes}" var="x">
+            <c:out value="${x}"/> <br>
+          </c:forEach>
+      </div>
+
+   <div style="border: 1px solid red;">
+       <c:forEach items="${rOutput}" var="r">
+        <c:forEach items="${r}" var="x">
+         <c:out value="${x}"/> <br>
+        </c:forEach>
+       </c:forEach>
+   </div>
+
+
+   <c:out value="${rOutput}"/>
 <%@ include file="footer.jsp" %>

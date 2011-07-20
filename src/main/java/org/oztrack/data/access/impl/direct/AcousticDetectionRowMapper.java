@@ -26,14 +26,14 @@ public class AcousticDetectionRowMapper implements RowMapper {
 
         DataFile dataFile = new DataFile();
         dataFile.setId(resultSet.getLong("datafile_id"));
-        dataFile.setUploadDate(resultSet.getDate("datafile_uploaddate"));
+        dataFile.setUploadDate(resultSet.getTimestamp("datafile_uploaddate"));
 
         ReceiverDeployment receiverDeployment = new ReceiverDeployment();
         receiverDeployment.setOriginalId(resultSet.getString("receiverdeployment_originalid"));
 
         AcousticDetection acousticDetection = new AcousticDetection();
         acousticDetection.setId(resultSet.getLong("acousticdetectionid"));
-        acousticDetection.setDetectionTime(resultSet.getDate("detectionTime"));
+        acousticDetection.setDetectionTime(resultSet.getTimestamp("detectionTime"));
         acousticDetection.setSensor1Value(resultSet.getDouble("sensor1value"));
         acousticDetection.setSensor1Units(resultSet.getString("sensor1units"));
 

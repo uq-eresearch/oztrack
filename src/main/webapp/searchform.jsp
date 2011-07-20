@@ -75,7 +75,7 @@
     </tr>
     <c:forEach items="${acousticDetectionsList}" var="detection">
     <tr>
-        <td><c:out value="${detection.detectionTime}"/></td>
+        <td><fmt:formatDate value="${detection.detectionTime}" type="both" pattern="dd-MM-yyyy H:m:s"/></td>
         <td><c:out value="${detection.animal.projectAnimalId}"/></td>
         <td><c:out value="${detection.receiverDeployment.originalId}"/></td>
         <td><c:out value="${detection.sensor1Value}"/></td>

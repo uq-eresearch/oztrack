@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Calendar;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,10 +21,12 @@ public class PositionFixRowMapper implements RowMapper {
     public Object mapRow(ResultSet resultSet, int i) throws SQLException {
 
     PositionFix positionFix = new PositionFix();
+
+
     Animal animal = new Animal();
     animal.setId(resultSet.getLong("animal_id"));
     positionFix.setAnimal(animal);
-    positionFix.setDetectionTime(resultSet.getDate("detectionTime"));
+    positionFix.setDetectionTime(resultSet.getTimestamp("detectionTime"));
     positionFix.setLatitude(resultSet.getString("latitude"));
     positionFix.setLongitude(resultSet.getString("longitude"));
     return positionFix;
