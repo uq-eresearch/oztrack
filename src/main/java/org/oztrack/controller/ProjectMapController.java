@@ -52,65 +52,116 @@ public class ProjectMapController implements Controller {
                 errorStr = "Couldn't find any project sorry.";
         }
 
-        RConnection rConnection = new RConnection();
-
-        REXP rExpVersion = rConnection.eval("R.version.string");
-        String rVersion = rExpVersion.asString();
-
         List <PositionFix> positionFixList = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcQuery().queryProjectPositionFixes(project.getId());
-        RList rInputList = new RList();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd H:m:s");
+        List <Animal> animalList = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao().getAnimalsByProjectId(project.getId());
+        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
+        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd H:m:s");
+        //String [] detectionTimes= new String[positionFixList.size()];
 
         // build arrays for each column
         int [] animalIds = new int[positionFixList.size()];
-        String [] detectionTimes= new String[positionFixList.size()];
         double [] latitudes= new double[positionFixList.size()];
         double [] longitudes= new double[positionFixList.size()];
+        HashSet<Long> hashSet = new HashSet<Long>();
 
+        // data list
         for (int i=0; i < positionFixList.size(); i++) {
             PositionFix positionFix = positionFixList.get(i);
+            //detectionTimes[i] = sdf.format(positionFix.getDetectionTime());
             animalIds[i] = Integer.parseInt(positionFix.getAnimal().getId().toString());
-            detectionTimes[i] = sdf.format(positionFix.getDetectionTime());
             latitudes[i] = Double.parseDouble(positionFix.getLatitude());
             longitudes[i] = Double.parseDouble(positionFix.getLongitude());
+
+            if (!hashSet.contains(positionFix.getAnimal().getId())) {
+                hashSet.add(positionFix.getAnimal().getId());
+            }
+        }
+
+        // animal reference list
+        int j=0;
+        int [] animalIdRef = new int[hashSet.size()];
+        String [] animalNameRef = new String[hashSet.size()];
+        Iterator iterator = hashSet.iterator();
+
+        while (iterator.hasNext()) {
+            Animal animal = animalDao.getAnimalById((Long)iterator.next());
+            animalIdRef[j] = animal.getId().intValue();
+            animalNameRef[j] = animal.getAnimalName();
+            j++;
         }
 
         // add them to the RList to become the dataframe (add the name+array)
-        rInputList.put("detectionTime", new REXPString(detectionTimes));
-        rInputList.put("animalid", new REXPInteger(animalIds));
-        rInputList.put("latitude", new REXPDouble(latitudes));
-        rInputList.put("longitude", new REXPDouble(longitudes));
+        //rInputList.put("detectionTime", new REXPString(detectionTimes));
+        RList rPositionFixList = new RList();
+        RList rAnimalRefList = new RList();
+        rPositionFixList.put("Id", new REXPInteger(animalIds));
+        rPositionFixList.put("X", new REXPDouble(latitudes));
+        rPositionFixList.put("Y", new REXPDouble(longitudes));
+        rAnimalRefList.put("Id", new REXPInteger(animalIdRef));
+        rAnimalRefList.put("Name", new REXPString(animalNameRef));
 
-        logger.debug("RList created");
+        logger.debug("RList for shapeFile created");
 
-        RList rOutputList = new RList();
+        RConnection rConnection = new RConnection();
+        RList rPosFixOutputList = new RList();
+        RList rAnimalOutputList = new RList();
+        String rLog = null;
 
         try {
-            REXP rDataFrame = REXP.createDataFrame(rInputList);
-            rConnection.eval("posfix <- NULL");
-            rConnection.assign("posfix", rDataFrame);
-            rOutputList = rConnection.eval("posfix").asList();
+
+            REXP rExpVersion = rConnection.eval("R.version.string");
+            rLog = rExpVersion.asString();
+
+            rConnection.eval("library(adehabitatHR);library(adehabitatMA);library(maptools);library(shapefiles)");
+            rLog = rLog + " | Libraries Loaded";
+
+            REXP rPosFixDataFrame = REXP.createDataFrame(rPositionFixList);
+            REXP rAnimalRefDataFrame = REXP.createDataFrame(rAnimalRefList);
+            rConnection.eval("positionfix <- NULL");
+            rConnection.eval("animalref <- NULL");
+            rConnection.assign("positionfix", rPosFixDataFrame);
+            rConnection.assign("animalref", rAnimalRefDataFrame);
+            rLog = rLog + " | Data frames assigned";
+
+            rPosFixOutputList = rConnection.eval("positionfix").asList();
+            rAnimalOutputList = rConnection.eval("animalref").asList();
+
+            String evalString = "javaTestShp <- convert.to.shapefile(positionfix,animalref,\"Id\",1)";
+            rLog = rLog + " | Create shapeFile using : " + evalString;
+            rConnection.eval(evalString);
+            rLog = rLog + " | Shapefile created" + evalString;
+            rConnection.eval("write.shapefile(javaTestShp, \"D:/test/R/javaTestShp\", arcgis=T)");
+            rLog = rLog + " | Shapefile written";
+
             rConnection.close();
+
         } catch (RserveException e) {
-            errorStr = "R problem : " + e.getMessage();
+            errorStr = "RserveException : " + e.toString() + "Log: " +rLog;
         } catch (REXPMismatchException e) {
-            errorStr = "R problem : " + e.toString();
+            errorStr = "REXPMismatchException : " + e.toString()  + "Log: " +rLog;
         }
 
-        // read the output into a 2 dim String array
-        int cols = rOutputList.size();
-        int rows = rOutputList.at(0).length();
-        String [][] s = new String[cols][];
+        // debugging: read the output into a 2 dim String array
+        //int rows = rOutputList.at(0).length();
+        Vector posFixNames = rPosFixOutputList.names;
+        Vector animalRefNames = rAnimalOutputList.names;
 
-        for (int i=0;i < cols; i++)
-            s[i] = rOutputList.at(i).asStrings();
+        String [][] s = new String[rPosFixOutputList.size()][];
+        for (int i=0;i < rPosFixOutputList.size() ; i++)
+            s[i] = rPosFixOutputList.at(i).asStrings();
+
+        String [][] a = new String[rAnimalOutputList.size()][];
+        for (int i=0;i < rAnimalOutputList.size(); i++)
+             a[i] = rAnimalOutputList.at(i).asStrings();
+
 
         ModelAndView modelAndView = new ModelAndView( "projectmap");
-        modelAndView.addObject("origDetectionTimes", detectionTimes);
         modelAndView.addObject("errorStr", errorStr);
-        modelAndView.addObject("rOutput",s );
+        modelAndView.addObject("rData",s );
+        modelAndView.addObject("rAnimals",a );
+        modelAndView.addObject("posFixNames",posFixNames );
+        modelAndView.addObject("animalRefNames",animalRefNames );
         modelAndView.addObject("project", project);
-        modelAndView.addObject("rVersion", rVersion);
 
         return modelAndView;
     }

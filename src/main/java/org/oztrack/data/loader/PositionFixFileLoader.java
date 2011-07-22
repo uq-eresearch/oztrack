@@ -304,9 +304,9 @@ public class PositionFixFileLoader extends DataFileLoader {
     public Point findLocationGeometry(String latitude, String longitude) throws FileProcessingException {
 
         Double dLatitude = Double.parseDouble(latitude);
-        Double dLongitude = Double.parseDouble(latitude);
+        Double dLongitude = Double.parseDouble(longitude);
 
-        GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(1000000));
+        GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(1000000),4326);
         Coordinate coordinate = new Coordinate(dLatitude, dLongitude);
 
         return geometryFactory.createPoint(coordinate);

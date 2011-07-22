@@ -46,8 +46,6 @@ public class PositionFix implements Serializable{
     private String sensor1Units;
     private String sensor2Units;
 
-
-
     public Long getId() {
         return id;
     }
