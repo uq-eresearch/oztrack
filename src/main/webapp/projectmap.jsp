@@ -16,17 +16,41 @@
 
    <p style="color:red;"><c:out value="${errorStr}"/></p>
 
+    <h2>Data In</h2>
 
+   <div style="border: 1px solid red;">
+       <c:forEach items="${rDataIn}" var="r">
+        <c:forEach items="${r}" var="x">
+         <c:out value="${x}"/>
+        </c:forEach>
+        <br>
+       </c:forEach>
+   </div>
+
+    <div style="border: 1px solid green;">
+
+      <c:forEach items="${rAnimalsIn}" var="a">
+        <c:forEach items="${a}" var="s">
+         <c:out value="${s}"/>
+        </c:forEach>
+        <br>
+       </c:forEach>
+
+      </div>
+
+
+    <h2>Data Out</h2>
 
    <div style="border: 1px solid red;">
        <c:forEach items="${posFixNames}" var="name">
         <c:out value="${name} "/>
        </c:forEach>
-
-       <c:forEach items="${rData}" var="r">
+        <br>
+       <c:forEach items="${rDataOut}" var="r">
         <c:forEach items="${r}" var="x">
-         <c:out value="${x}"/> <br>
+         <c:out value="${x}"/>
         </c:forEach>
+        <br>
        </c:forEach>
    </div>
 
@@ -35,11 +59,12 @@
        <c:forEach items="${animalRefNames}" var="animal">
           <c:out value="${animal} "/>
        </c:forEach>
-
-       <c:forEach items="${rAnimals}" var="a">
+         <br>
+       <c:forEach items="${rAnimalsOut}" var="a">
         <c:forEach items="${a}" var="s">
-         <c:out value="${s}"/> <br>
+         <c:out value="${s}"/>
         </c:forEach>
+        <br>
        </c:forEach>
 
       </div>
