@@ -125,7 +125,7 @@ public class ProjectMapController implements Controller {
         rAnimalRefList.put("Id", new REXPInteger(animalIdRef));
         rAnimalRefList.put("Name", new REXPString(animalNameRef));
 
-        logger.debug("RList for shapeFile created");
+        logger.debug("RList for shapeFile created containing record count: " + rPositionFixList.size());
 
         RConnection rConnection = new RConnection();
         RList rPosFixOutputList = new RList();
@@ -161,8 +161,8 @@ public class ProjectMapController implements Controller {
 
             REXP rPosFixDataFrame = REXP.createDataFrame(rPositionFixList);
             REXP rAnimalRefDataFrame = REXP.createDataFrame(rAnimalRefList);
-            rConnection.eval("positionfix <- NULL");
-            rConnection.eval("animalref <- NULL");
+            rConnection.assign("positionfix", new REXPNull());
+            rConnection.assign("animalref",new REXPNull());
             rConnection.assign("positionfix", rPosFixDataFrame);
             rConnection.assign("animalref", rAnimalRefDataFrame);
             rLog = rLog + " | Data frames assigned";
@@ -171,9 +171,10 @@ public class ProjectMapController implements Controller {
             rAnimalOutputList = rConnection.eval("animalref").asList();
 
             String rCommand = "javaTestShp <- convert.to.shapefile(positionfix,animalref,\"Id\",1)";
-            rLog = rLog + " | Create shapeFile using : " + rCommand;
+            rLog = rLog + " | Create shapeFile: " + rCommand;
             rConnection.eval(rCommand);
             rLog = rLog + " | Shapefile created" + rCommand;
+
             //rConnection.eval("write.shapefile(javaTestShp, \"D:/test/R/javaTestShp\", arcgis=T)");
             //RFileInputStream rIn = new RFileInputStream();
             rCommand = "write.shapefile(javaTestShp,\"" + shapeFilePath + "\",arcgis=T)";
@@ -223,10 +224,6 @@ public class ProjectMapController implements Controller {
         String [][] animalout = new String[rAnimalOutputList.size()][];
         for (int i=0;i < rAnimalOutputList.size(); i++)
              animalout[i] = rAnimalOutputList.at(i).asStrings();
-
-
-
-
 
         ModelAndView modelAndView = new ModelAndView( "projectmap");
         modelAndView.addObject("errorStr", errorStr);
