@@ -148,15 +148,13 @@ public class ProjectMapController implements Controller {
 
         //File shapeFile = new File()
         String shapeFilePath = spatialDir.getAbsolutePath().replace("\\","/") + "/points";
-        File kmlFile = new File(spatialDirPath + "points.kml");
-        FileOutputStream out = new FileOutputStream(kmlFile);
+        //File kmlFile = new File(spatialDirPath + "points.kml");
+        String spatialWorkingDir = spatialDir.getAbsolutePath().replace("\\","/");
+        //FileOutputStream out = new FileOutputStream(kmlFile);
 
         try {
 
-            REXP rExpVersion = rConnection.eval("R.version.string");
-            rLog = rExpVersion.asString();
-
-            rConnection.eval("library(adehabitatHR);library(adehabitatMA);library(maptools);library(shapefiles)");
+            rConnection.eval("library(adehabitatHR);library(adehabitatMA);library(maptools);library(rgdal);library(shapefiles)");
             rLog = rLog + " | Libraries Loaded";
 
             REXP rPosFixDataFrame = REXP.createDataFrame(rPositionFixList);
@@ -170,18 +168,27 @@ public class ProjectMapController implements Controller {
             rPosFixOutputList = rConnection.eval("positionfix").asList();
             rAnimalOutputList = rConnection.eval("animalref").asList();
 
+            // shapefile
             String rCommand = "javaTestShp <- convert.to.shapefile(positionfix,animalref,\"Id\",1)";
             rLog = rLog + " | Create shapeFile: " + rCommand;
             rConnection.eval(rCommand);
             rLog = rLog + " | Shapefile created" + rCommand;
-
-            //rConnection.eval("write.shapefile(javaTestShp, \"D:/test/R/javaTestShp\", arcgis=T)");
-            //RFileInputStream rIn = new RFileInputStream();
             rCommand = "write.shapefile(javaTestShp,\"" + shapeFilePath + "\",arcgis=T)";
             logger.debug(rCommand);
             rConnection.eval(rCommand);
             rLog = rLog + " | Shapefile written";
             logger.debug(rLog);
+
+            // kml
+            rCommand = "coordinates(positionfix) <- c(\"Y\",\"X\");proj4string(positionfix)=CRS(\"+init=epsg:4326\")";
+            rLog = rLog + "coordinates + projection defined for KML";
+            logger.debug(rCommand);
+            rConnection.eval(rCommand);
+
+            rCommand = "writeOGR(positionfix, dsn=\"D:/oztrack_related/points.kml\", layer= \"positionfix\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))";
+            logger.debug(rCommand);
+            rConnection.eval(rCommand);
+            rLog = rLog + "KML written";
 
             rConnection.close();
 
@@ -193,17 +200,14 @@ public class ProjectMapController implements Controller {
 
 
 
-        FileDataStore fileDataStore = FileDataStoreFinder.getDataStore(new File(spatialDirPath + "points.shp"));
+        // geotools shapefile to kml
+/*        FileDataStore fileDataStore = FileDataStoreFinder.getDataStore(new File(spatialDirPath + "points.shp"));
         SimpleFeatureSource simpleFeatureSource = fileDataStore.getFeatureSource();
-
-        //ShapefileDataStore shapefileDataStore = ShapefileDataStore(shapeFile.toURI().toURL());
-        //SimpleFeatureSource simpleFeatureSource = shapefileDataStore.getFeatureSource();
-
         SimpleFeatureCollection simpleFeatureCollection = simpleFeatureSource.getFeatures();
         Encoder encoder = new Encoder(new KMLConfiguration());
         encoder.setIndenting(true);
         encoder.encode(simpleFeatureCollection, KML.kml, out);
-
+*/
        // debugging: read the output into a 2 dim String array
         //int rows = rOutputList.at(0).length();
         Vector posFixNames = rPosFixOutputList.names;
@@ -234,7 +238,6 @@ public class ProjectMapController implements Controller {
         modelAndView.addObject("posFixNames",posFixNames );
         modelAndView.addObject("animalRefNames",animalRefNames );
         modelAndView.addObject("project", project);
-
         return modelAndView;
     }
 }
