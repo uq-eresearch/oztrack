@@ -129,6 +129,11 @@
       <url-pattern>/sighting</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+      <servlet-name>springmvc</servlet-name>
+      <url-pattern>/mapQuery</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file id="welcome-page">index.jsp</welcome-file>
     </welcome-file-list>

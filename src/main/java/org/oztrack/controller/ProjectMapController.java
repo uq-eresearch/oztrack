@@ -29,15 +29,13 @@ import org.springframework.web.servlet.mvc.Controller;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.plaf.metal.MetalIconFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 //import java.io.*;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
@@ -77,6 +75,7 @@ public class ProjectMapController implements Controller {
                 errorStr = "Couldn't find any project sorry.";
         }
 
+/*
         List<PositionFix> positionFixList = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcQuery().queryProjectPositionFixes(project.getId());
         List <Animal> animalList = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao().getAnimalsByProjectId(project.getId());
         AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
@@ -152,6 +151,7 @@ public class ProjectMapController implements Controller {
         String spatialWorkingDir = spatialDir.getAbsolutePath().replace("\\","/");
         //FileOutputStream out = new FileOutputStream(kmlFile);
 
+
         try {
 
             rConnection.eval("library(adehabitatHR);library(adehabitatMA);library(maptools);library(rgdal);library(shapefiles)");
@@ -198,16 +198,24 @@ public class ProjectMapController implements Controller {
             errorStr = "REXPMismatchException : " + e.toString()  + "Log: " +rLog;
         }
 
+        File kmlFile = new File("D:\\oztrack_related\\points.kml");
+        FileInputStream fileIn = new FileInputStream(kmlFile);
+        byte [] fileContent = new byte[(int) kmlFile.length()];
+        fileIn.read(fileContent);
+        fileIn.close();
+
+        String kml = new String(fileContent, "UTF-8");
+
 
 
         // geotools shapefile to kml
-/*        FileDataStore fileDataStore = FileDataStoreFinder.getDataStore(new File(spatialDirPath + "points.shp"));
+        FileDataStore fileDataStore = FileDataStoreFinder.getDataStore(new File(spatialDirPath + "points.shp"));
         SimpleFeatureSource simpleFeatureSource = fileDataStore.getFeatureSource();
         SimpleFeatureCollection simpleFeatureCollection = simpleFeatureSource.getFeatures();
         Encoder encoder = new Encoder(new KMLConfiguration());
         encoder.setIndenting(true);
         encoder.encode(simpleFeatureCollection, KML.kml, out);
-*/
+
        // debugging: read the output into a 2 dim String array
         //int rows = rOutputList.at(0).length();
         Vector posFixNames = rPosFixOutputList.names;
@@ -238,6 +246,9 @@ public class ProjectMapController implements Controller {
         modelAndView.addObject("posFixNames",posFixNames );
         modelAndView.addObject("animalRefNames",animalRefNames );
         modelAndView.addObject("project", project);
+        modelAndView.addObject("pointsKml",kml);
         return modelAndView;
+    */
+        return new ModelAndView("projectmap");
     }
 }

@@ -4,11 +4,24 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
+  <bean id="handlerMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
+      <property name="alwaysUseFullPath" value="true"/>
+  </bean>
+
+  <bean id="ajaxViewResolver" class="org.oztrack.view.AjaxViewResolver">
+      <property name="ajaxView"><bean class="org.oztrack.view.AjaxView"/></property>
+      <property name="ajaxPrefix" value="ajax_"></property>
+  </bean>
+
   <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
       <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
       <property name="prefix" value="/"/>
       <property name="suffix" value=".jsp"/>
   </bean>
+
+
+
+  <bean name="/mapQuery" class="org.oztrack.controller.ProjectMapAjaxController"/>
 
   <bean name="/home" class="org.oztrack.controller.HomeController"/>
   <bean name="/about" class="org.oztrack.controller.HomeController"/>

@@ -41,8 +41,62 @@ function initializeProjectMap() {
                 {type: G_SATELLITE_MAP}
     );
 
-    map.addLayers([gsat,gphy]);
+    var points = new OpenLayers.Layer.Vector(
+                "Points",
+                {strategies: [new OpenLayers.Strategy.Fixed()],
+                 protocol: new OpenLayers.Protocol.HTTP(
+                    {url: "mapQuery",
+                     format: new OpenLayers.Format.KML(
+                        {extractStyles: true,
+                         extractAttributes: true,
+                         maxDepth: 2
+
+                     })
+
+                  })
+                });
+
+    map.addLayers([gsat,gphy,points]);
     map.setCenter(new OpenLayers.LonLat(133,-28),4);
+
+
+
+/*
+    var request = OpenLayers.Request.POST({
+    url: "mapQuery",
+    data: OpenLayers.Util.getParameterString({projectId: "2"}),
+    headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+    callback: requestHandler
+    });
+ */
+}
+
+function requestHandler(request) {
+    // if the response was XML, try the parsed doc
+    alert(request.responseXML);
+    // otherwise, you've got the response text
+    alert(request.responseText);
+    // and don't forget you've got status codes
+    alert(request.status);
+    // and of course you can get headers
+    alert(request.getAllResponseHeaders());
+    // etc.
+
+    // the server could report an error
+    if(request.status == 500) {
+        // do something to calm the user
+    }
+    // the server could say you sent too much stuff
+    if(request.status == 413) {
+        // tell the user to trim their request a bit
+    }
+    // the browser's parser may have failed
+    if(!request.responseXML) {
+        // get ready for parsing by hand
+    }
+    // etc.
 }
 
 

@@ -344,10 +344,14 @@ a:hover {
     float:left;
 }
 
-#homeMapOptions, #projectMapOptions {
+#homeMapOptions, #projectMapOptions  {
     margin-left: 510px;
 }
 
+#projectMapForm {
+    padding-left: 0px;
+    font-size: 1em;
+}
 
 
 

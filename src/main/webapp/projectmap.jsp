@@ -8,7 +8,16 @@
 
     <div class="mapTool">
         <div id="projectMap"></div>
-        <div id="projectMapOptions"></div>
+        <div id="projectMapOptions">
+        <div>             <form id="projectMapForm">
+            Display Layers:<br>
+             <input type="checkbox" name="mapLayer" value="Points"> Points <br>
+             <input type="checkbox" name="mapLayer" value="Trajectories"> Trajectories<br>
+             <br>
+             <input type="button" value = "View" onClick="updateMapView()"/>
+             </form>
+
+        </div> </div>
         <div class="clearboth">&nbsp;</div>
     </div>
 
@@ -55,7 +64,6 @@
    </div>
 
     <div style="border: 1px solid green;">
-
        <c:forEach items="${animalRefNames}" var="animal">
           <c:out value="${animal} "/>
        </c:forEach>
@@ -66,8 +74,6 @@
         </c:forEach>
         <br>
        </c:forEach>
-
       </div>
 
-   <c:out value="${rOutput}"/>
 <%@ include file="footer.jsp" %>
