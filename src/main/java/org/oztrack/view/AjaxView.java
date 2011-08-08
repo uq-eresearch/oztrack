@@ -30,13 +30,6 @@ public class AjaxView extends AbstractView {
             logger.debug("Resolving ajax request view - " + model);
         }
 
-        String projectId = request.getParameter("projectId");
-        if (projectId != null) {
-            logger.debug("Ajax View for projectId: " + projectId);
-        }
-        else {
-            logger.debug("Ajax View no projectId");
-        }
 
         File kmlFile = new File("D:\\oztrack_related\\points.kml");
         FileInputStream fin = new FileInputStream(kmlFile);

@@ -24,8 +24,9 @@ function initializeHomeMap() {
 
 function initializeProjectMap() {
 
+    var projectId = $('#projectId').val();
+    alert("projectId: " + projectId);
     var map = new OpenLayers.Map('projectMap');
-
     var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
     layerSwitcher.div = OpenLayers.Util.getElement('projectMapOptions');
     layerSwitcher.roundedCorner = false;
@@ -41,11 +42,13 @@ function initializeProjectMap() {
                 {type: G_SATELLITE_MAP}
     );
 
+
     var points = new OpenLayers.Layer.Vector(
                 "Points",
                 {strategies: [new OpenLayers.Strategy.Fixed()],
                  protocol: new OpenLayers.Protocol.HTTP(
                     {url: "mapQuery",
+                     params: {projectId:projectId, queryType:"POINTS"},
                      format: new OpenLayers.Format.KML(
                         {extractStyles: true,
                          extractAttributes: true,

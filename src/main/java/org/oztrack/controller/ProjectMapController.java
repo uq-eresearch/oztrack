@@ -13,15 +13,13 @@ import org.geotools.xml.Encoder;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.ProjectDao;
-import org.oztrack.data.model.Animal;
-import org.oztrack.data.model.PositionFix;
-import org.oztrack.data.model.Project;
-import org.oztrack.data.model.DataFile;
+import org.oztrack.data.model.*;
 
 import org.rosuda.REngine.*;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RFileInputStream;
 import org.rosuda.REngine.Rserve.RserveException;
+import org.springframework.validation.BindException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -33,6 +31,7 @@ import javax.swing.plaf.metal.MetalIconFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.web.servlet.mvc.SimpleFormController;
 
 //import java.io.*;
 import java.io.*;
@@ -47,35 +46,60 @@ import java.util.Vector;
 
 
 
-public class ProjectMapController implements Controller {
+public class ProjectMapController extends SimpleFormController {
 
 	/** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-	@Override
-    public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
-
-        logger.debug("Parm project_id = " + httpServletRequest.getParameter("project_id"));
+    @Override
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        // get the request parameters and establish type of Layer required
+        logger.debug("Parm project_id = " + request.getParameter("project_id"));
         String errorStr = null;
 
         Long project_id;
         ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
 
-        if (httpServletRequest.getParameter("project_id") == null) {
-            Project tempProject =  (Project) httpServletRequest.getSession().getAttribute("project");
+        if (request.getParameter("project_id") == null) {
+            Project tempProject =  (Project) request.getSession().getAttribute("project");
             project_id = tempProject.getId();
         } else {
-            project_id = Long.parseLong(httpServletRequest.getParameter("project_id"));
+            project_id = Long.parseLong(request.getParameter("project_id"));
         }
 
         Project project = projectDao.getProjectById(project_id);
-        httpServletRequest.getSession().setAttribute("project", project);
+        request.getSession().setAttribute("project", project);
 
         if (project ==  null) {
                 errorStr = "Couldn't find any project sorry.";
         }
 
+        ModelAndView modelAndView = new ModelAndView( "projectmap");
+        modelAndView.addObject("errorStr", errorStr);
+        modelAndView.addObject("project", project);
+        return modelAndView;
+    }
+
+
+    @Override
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
+
+        SearchQuery searchQuery = (SearchQuery) command;
+
+
+        // bind the searchQuery object
+        // create the kmlLayers object
+        // send the results back via ajax
+        return new ModelAndView("ajax_mapquery");
+    }
+
+}
 /*
+	@Override
+    public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
+
+
+
         List<PositionFix> positionFixList = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcQuery().queryProjectPositionFixes(project.getId());
         List <Animal> animalList = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao().getAnimalsByProjectId(project.getId());
         AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
@@ -248,7 +272,9 @@ public class ProjectMapController implements Controller {
         modelAndView.addObject("project", project);
         modelAndView.addObject("pointsKml",kml);
         return modelAndView;
-    */
+
         return new ModelAndView("projectmap");
     }
-}
+    */
+
+

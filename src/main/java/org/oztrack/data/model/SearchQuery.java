@@ -2,6 +2,7 @@ package org.oztrack.data.model;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.oztrack.data.model.types.SearchQueryType;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -28,20 +29,26 @@ public class SearchQuery {
     private Date toDate;
     private String projectAnimalId;
     private String receiverOriginalId;
-    private String sensorType;
     private String sortField;
-
-
-    private String outputType;
+    private List<Animal> animalList;
+    private String [] speciesList;
+    private Long projectId;
+    private SearchQueryType searchQueryType;
+    private List<PositionFix> positionFixResultList;
+    private List<AcousticDetection> acousticDetectionResultList;
 
     public SearchQuery() {
         this.fromDate = null;
         this.toDate = null;
         this.projectAnimalId = "";
         this.receiverOriginalId = "";
-        this.sensorType = "";
     }
 
+    /* for simple ajax requests */
+    public SearchQuery(Long projectId, SearchQueryType searchQueryType) {
+        this.projectId = projectId;
+        this.searchQueryType=searchQueryType;
+    }
 
     public Date getFromDate() {
         return fromDate;
@@ -57,14 +64,6 @@ public class SearchQuery {
 
     public void setToDate(Date toDate) {
         this.toDate = toDate;
-    }
-
-    public String getSensorType() {
-        return sensorType;
-    }
-
-    public void setSensorType(String sensorType) {
-        this.sensorType = sensorType;
     }
 
     public String getProjectAnimalId() {
@@ -92,13 +91,56 @@ public class SearchQuery {
         this.sortField = sortField;
     }
 
-    public String getOutputType() {
-        return outputType;
+    public List<Animal> getAnimalList() {
+        return animalList;
     }
 
-    public void setOutputType(String outputType) {
-        this.outputType = outputType;
+    public void setAnimalList(List<Animal> animalList) {
+        this.animalList = animalList;
     }
+
+    public String[] getSpeciesList() {
+        return speciesList;
+    }
+
+    public void setSpeciesList(String[] speciesList) {
+        this.speciesList = speciesList;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+
+    public List<PositionFix> getPositionFixResultList() {
+        return positionFixResultList;
+    }
+
+    public void setPositionFixResultList(List<PositionFix> positionFixResultList) {
+        this.positionFixResultList = positionFixResultList;
+    }
+
+    public List<AcousticDetection> getAcousticDetectionResultList() {
+        return acousticDetectionResultList;
+    }
+
+    public void setAcousticDetectionResultList(List<AcousticDetection> acousticDetectionResultList) {
+        this.acousticDetectionResultList = acousticDetectionResultList;
+    }
+
+    public SearchQueryType getSearchQueryType() {
+        return searchQueryType;
+    }
+
+    public void setSearchQueryType(SearchQueryType searchQueryType) {
+        this.searchQueryType = searchQueryType;
+    }
+
+
+
 
 
 

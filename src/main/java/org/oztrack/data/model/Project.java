@@ -43,6 +43,7 @@ public class Project extends OztrackBaseEntity implements Serializable {
     private String custodianUrl;
     private String publicationTitle;
     private String publicationUrl;
+    private String dataDirectoryPath;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.project", cascade =
     {CascadeType.PERSIST, CascadeType.MERGE})
@@ -264,6 +265,14 @@ public class Project extends OztrackBaseEntity implements Serializable {
 
     public void setImageFileLocation(String imageFileLocation) {
         this.imageFileLocation = imageFileLocation;
+    }
+
+    public String getDataDirectoryPath() {
+        return dataDirectoryPath;
+    }
+
+    public void setDataDirectoryPath(String dataDirectoryPath) {
+        this.dataDirectoryPath = dataDirectoryPath;
     }
 
 }

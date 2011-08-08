@@ -2,6 +2,9 @@ package org.oztrack.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.oztrack.data.model.KmlLayer;
+import org.oztrack.data.model.SearchQuery;
+import org.oztrack.data.model.types.SearchQueryType;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
@@ -24,7 +27,21 @@ public class ProjectMapAjaxController extends SimpleFormController {
 
     @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        return new ModelAndView("ajax_mapquery");
+
+        String projectId = request.getParameter("projectId");
+        if (projectId != null) {
+            logger.debug("AjaxController for projectId: " + projectId);
+        }
+        else {
+            logger.debug("AjaxController no projectId");
+        }
+
+        SearchQueryType searchQueryType = SearchQueryType.valueOf(request.getParameter("queryType"));
+        SearchQuery searchQuery = new SearchQuery(Long.valueOf(projectId),searchQueryType);
+        KmlLayer kmlLayer = new KmlLayer(searchQuery);
+
+
+        return new ModelAndView("ajax_mapquery","kmlLayer", kmlLayer);
     }
 
 

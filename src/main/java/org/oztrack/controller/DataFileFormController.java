@@ -119,19 +119,8 @@ public class DataFileFormController extends SimpleFormController {
 
             projectDao.save(project);
 
-            // saving file to filesystem: check for data directory in app properties
-            String dataDir = OzTrackApplication.getApplicationContext().getDataDir();
-
-            if ((dataDir == null) || (dataDir.isEmpty())) {
-                logger.debug("dataDir property not set");
-                dataDir = System.getProperty("user.home");
-            } else {
-                logger.debug("dataDir: " + dataDir);
-            }
-
             // save the file to the data dir
-            String filePath = dataDir + File.separator + "oztrack" + File.separator
-                             + "project-" + project.getId().toString() + File.separator
+            String filePath = project.getDataDirectoryPath() + File.separator
                              + "datafile-" + dataFile.getId().toString() + ".csv";
 
             File saveFile = new File(filePath);

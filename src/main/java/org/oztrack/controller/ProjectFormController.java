@@ -59,6 +59,20 @@ public class ProjectFormController extends SimpleFormController {
             project.setCreateDate(new java.util.Date());
             project.setCreateUser(currentUser);
 
+            // set data directory
+            String dataDir = OzTrackApplication.getApplicationContext().getDataDir();
+
+            if ((dataDir == null) || (dataDir.isEmpty())) {
+                logger.debug("dataDir property not set");
+                dataDir = System.getProperty("user.home");
+            } else {
+                logger.debug("dataDir: " + dataDir);
+            }
+
+            String projectDirectoryPath = dataDir + File.separator + "oztrack"
+                                        + File.separator + "project-" + project.getId().toString();
+            project.setDataDirectoryPath(projectDirectoryPath);
+
             // set the current user to be an admin for this project
             ProjectUser projectUser = new ProjectUser();
             projectUser.setProject(project);
@@ -82,26 +96,14 @@ public class ProjectFormController extends SimpleFormController {
             // sort out the image file - need the id to sort out the file path
             // get the image and throw it on the filesystem
             MultipartFile file = project.getImageFile();
-
-            String dataDir = OzTrackApplication.getApplicationContext().getDataDir();
-
-            if ((dataDir == null) || (dataDir.isEmpty())) {
-                logger.debug("dataDir property not set");
-                dataDir = System.getProperty("user.home");
-            } else {
-                logger.debug("dataDir: " + dataDir);
-            }
-
-            // save the file to the data dir
-            String filePath = dataDir + File.separator + "oztrack" + File.separator
-                             + project.getId().toString() + File.separator + "img" + File.separator
+            String imgFilePath = project.getDataDirectoryPath() + File.separator + "img" + File.separator
                              + file.getOriginalFilename();
 
-            File saveFile = new File(filePath);
+            File saveFile = new File(imgFilePath);
             saveFile.mkdirs();
             file.transferTo(saveFile);
 
-            project.setImageFileLocation(filePath);
+            project.setImageFileLocation(imgFilePath);
             projectDao.update(project);
 
 

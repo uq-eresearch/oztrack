@@ -8,20 +8,16 @@
 
     <div class="mapTool">
         <div id="projectMap"></div>
-        <div id="projectMapOptions">
-        <div>             <form id="projectMapForm">
-            Display Layers:<br>
-             <input type="checkbox" name="mapLayer" value="Points"> Points <br>
-             <input type="checkbox" name="mapLayer" value="Trajectories"> Trajectories<br>
-             <br>
-             <input type="button" value = "View" onClick="updateMapView()"/>
-             </form>
-
-        </div> </div>
+         <div id="projectMapOptions"></div>
         <div class="clearboth">&nbsp;</div>
     </div>
 
-
+    <div>
+        <form:form commandName="searchQuery" method="POST" name="mapSearchQuery">
+            <input type="hidden" value="${project.id}" id="projectId"/>
+             <div class="formButton"><input type="submit" value="Update Map"/></div>
+        </form:form>
+    </div>
 
    <p style="color:red;"><c:out value="${errorStr}"/></p>
 
