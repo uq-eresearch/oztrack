@@ -3,6 +3,7 @@ package org.oztrack.view;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
+import org.oztrack.data.model.SearchQuery;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.AbstractView;
 
@@ -26,12 +27,19 @@ public class AjaxView extends AbstractView {
     @Override
     protected void renderMergedOutputModel(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
+        SearchQuery searchQuery = new SearchQuery();
+        File kmlFile = null;
+
         if (model != null) {
-            logger.debug("Resolving ajax request view - " + model);
+            logger.debug("Resolving ajax request view ");
+            searchQuery = (SearchQuery) model.get("searchQuery");
+            if (searchQuery.getProject() != null) {
+                kmlFile = searchQuery.generateKMLFile();
+            }
         }
 
+        //new File("D:\\oztrack_related\\points.kml");
 
-        File kmlFile = new File("D:\\oztrack_related\\points.kml");
         FileInputStream fin = new FileInputStream(kmlFile);
         byte kmlContent[] = new byte[(int) kmlFile.length()];
         fin.read(kmlContent);

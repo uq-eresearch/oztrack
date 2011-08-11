@@ -51,7 +51,7 @@ public class Project extends OztrackBaseEntity implements Serializable {
     org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
     private List<ProjectUser> projectUsers = new LinkedList<ProjectUser>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade =
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "project", cascade =
     {CascadeType.PERSIST, CascadeType.MERGE})
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
     org.hibernate.annotations.CascadeType.DELETE_ORPHAN})

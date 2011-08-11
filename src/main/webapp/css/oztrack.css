@@ -353,6 +353,11 @@ a:hover {
     font-size: 1em;
 }
 
+.baseLbl, .dataLbl {
+    font-weight: bold;
+    margin-top:5px;
+}
+
 
 
 /*
@@ -522,7 +527,6 @@ a.info ul {
 
 table {
     border-collapse: collapse;
-    width: 80%;
 
 }
 

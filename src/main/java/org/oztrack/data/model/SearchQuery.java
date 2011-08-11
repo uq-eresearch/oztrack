@@ -2,8 +2,13 @@ package org.oztrack.data.model;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.oztrack.app.OzTrackApplication;
+import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.types.SearchQueryType;
+import org.oztrack.error.RServeInterfaceException;
+import org.oztrack.util.RServeInterface;
 
+import java.io.File;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -32,22 +37,14 @@ public class SearchQuery {
     private String sortField;
     private List<Animal> animalList;
     private String [] speciesList;
-    private Long projectId;
+    private Project project;
     private SearchQueryType searchQueryType;
-    private List<PositionFix> positionFixResultList;
-    private List<AcousticDetection> acousticDetectionResultList;
 
     public SearchQuery() {
         this.fromDate = null;
         this.toDate = null;
         this.projectAnimalId = "";
         this.receiverOriginalId = "";
-    }
-
-    /* for simple ajax requests */
-    public SearchQuery(Long projectId, SearchQueryType searchQueryType) {
-        this.projectId = projectId;
-        this.searchQueryType=searchQueryType;
     }
 
     public Date getFromDate() {
@@ -82,7 +79,6 @@ public class SearchQuery {
         this.receiverOriginalId = receiverOriginalId;
     }
 
-
     public String getSortField() {
         return sortField;
     }
@@ -107,28 +103,12 @@ public class SearchQuery {
         this.speciesList = speciesList;
     }
 
-    public Long getProjectId() {
-        return projectId;
+    public Project getProject() {
+        return project;
     }
 
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
-    }
-
-    public List<PositionFix> getPositionFixResultList() {
-        return positionFixResultList;
-    }
-
-    public void setPositionFixResultList(List<PositionFix> positionFixResultList) {
-        this.positionFixResultList = positionFixResultList;
-    }
-
-    public List<AcousticDetection> getAcousticDetectionResultList() {
-        return acousticDetectionResultList;
-    }
-
-    public void setAcousticDetectionResultList(List<AcousticDetection> acousticDetectionResultList) {
-        this.acousticDetectionResultList = acousticDetectionResultList;
+    public void setProject(Project project) {
+        this.project = project;
     }
 
     public SearchQueryType getSearchQueryType() {
@@ -139,6 +119,23 @@ public class SearchQuery {
         this.searchQueryType = searchQueryType;
     }
 
+    public File generateKMLFile() {
+
+        String kmlFilePath = this.project.getDataDirectoryPath() + File.separator + this.searchQueryType.toString() + ".kml";
+        logger.debug("kml file name: " + kmlFilePath);
+
+        // get the data
+        List<PositionFix> positionFixList = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcQuery().queryProjectPositionFixes(this);
+        RServeInterface rServe = new RServeInterface(positionFixList, this.searchQueryType, kmlFilePath);
+
+        try {
+            rServe.createPositionFixKml();
+        } catch (RServeInterfaceException e) {
+            logger.error("R error " + e.toString());
+        }
+
+        return new File(kmlFilePath);
+    }
 
 
 

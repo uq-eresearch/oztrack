@@ -6,6 +6,9 @@
     <bean id="acousticDetectionDao" class="org.oztrack.data.access.impl.AcousticDetectionDaoImpl">
         <constructor-arg ref="jpaConnector"/>
     </bean>
+    <bean id="positionFixDao" class="org.oztrack.data.access.impl.PositionFixDaoImpl">
+        <constructor-arg ref="jpaConnector"/>
+    </bean>
     <bean id="animalDao" class="org.oztrack.data.access.impl.AnimalDaoImpl">
         <constructor-arg ref="jpaConnector"/>
     </bean>

@@ -22,7 +22,6 @@ public class PositionFixRowMapper implements RowMapper {
 
     PositionFix positionFix = new PositionFix();
 
-
     Animal animal = new Animal();
     animal.setId(resultSet.getLong("animal_id"));
     positionFix.setAnimal(animal);

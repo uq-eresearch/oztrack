@@ -2,7 +2,10 @@ package org.oztrack.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.oztrack.app.OzTrackApplication;
+import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.KmlLayer;
+import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.data.model.types.SearchQueryType;
 import org.springframework.validation.BindException;
@@ -28,20 +31,23 @@ public class ProjectMapAjaxController extends SimpleFormController {
     @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
+        /* parameters from OpenLayers HTTP request */
         String projectId = request.getParameter("projectId");
-        if (projectId != null) {
-            logger.debug("AjaxController for projectId: " + projectId);
+        String queryType = request.getParameter("queryType");
+        SearchQuery searchQuery = new SearchQuery();
+
+        if ((projectId != null) && (queryType != null)) {
+            logger.debug("AjaxController for projectId: " + projectId + " + queryType: " + queryType);
+            ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
+            Project project = projectDao.getProjectById(Long.valueOf(projectId));
+            searchQuery.setProject(project);
+            searchQuery.setSearchQueryType(SearchQueryType.valueOf(queryType));
         }
         else {
-            logger.debug("AjaxController no projectId");
+            logger.debug("AjaxController no projectId or queryType");
         }
 
-        SearchQueryType searchQueryType = SearchQueryType.valueOf(request.getParameter("queryType"));
-        SearchQuery searchQuery = new SearchQuery(Long.valueOf(projectId),searchQueryType);
-        KmlLayer kmlLayer = new KmlLayer(searchQuery);
-
-
-        return new ModelAndView("ajax_mapquery","kmlLayer", kmlLayer);
+        return new ModelAndView("ajax_mapquery","searchQuery", searchQuery);
     }
 
 

@@ -1,6 +1,7 @@
 package org.oztrack.data.access.manager.impl;
 
 import org.oztrack.data.access.AcousticDetectionDao;
+import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.impl.*;
 import org.oztrack.data.access.impl.direct.JdbcAccessImpl;
 import org.oztrack.data.access.impl.direct.JdbcQueryImpl;
@@ -17,6 +18,7 @@ import javax.persistence.EntityManager;
 public class DaoManagerImpl implements DaoManager {
 
     private AcousticDetectionDao acousticDetectionDao;
+    private PositionFixDao positionFixDao;
     private AnimalDaoImpl animalDao;
     private UserDaoImpl userDao;
     private ProjectDaoImpl projectDao;
@@ -117,10 +119,12 @@ public class DaoManagerImpl implements DaoManager {
         JdbcQuery = jdbcQuery;
     }
 
+    public PositionFixDao getPositionFixDao() {
+        return positionFixDao;
+    }
 
-
-
-
-
+    public void setPositionFixDao(PositionFixDao positionFixDao) {
+        this.positionFixDao = positionFixDao;
+    }
 
 }

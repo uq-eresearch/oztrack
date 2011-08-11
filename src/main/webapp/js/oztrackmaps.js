@@ -25,12 +25,15 @@ function initializeHomeMap() {
 function initializeProjectMap() {
 
     var projectId = $('#projectId').val();
-    alert("projectId: " + projectId);
+    //alert("projectId: " + projectId);
     var map = new OpenLayers.Map('projectMap');
     var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
-    layerSwitcher.div = OpenLayers.Util.getElement('projectMapOptions');
-    layerSwitcher.roundedCorner = false;
+    //layerSwitcher.div = OpenLayers.Util.getElement('projectMapOptions');
+    //layerSwitcher.roundedCorner = false;
     map.addControl(layerSwitcher);
+    //map.addControl( new OpenLayers.Control.LoadingPanel());
+   // map.addControl(new OpenLayers.Control.PanZoomBar());
+   // map.addControl(new OpenLayers.Control.MouseToolbar());
 
     var gphy = new OpenLayers.Layer.Google(
                 "Google Physical",

@@ -1,6 +1,7 @@
 package org.oztrack.data.access.direct;
 
 import org.oztrack.data.model.AcousticDetection;
+import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.SearchQuery;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public interface JdbcQuery {
 
-    public List queryProjectPositionFixes(Long projectId);
+    public List<PositionFix> queryProjectPositionFixes(SearchQuery searchQuery);
     public List<AcousticDetection> queryAcousticDetections(String sql);
     public List<AcousticDetection> queryAcousticDetections2(SearchQuery searchQuery);
 

@@ -39,12 +39,24 @@ public class JdbcQueryImpl extends JdbcDaoSupport implements JdbcQuery {
 
     }
 
-    public List<PositionFix> queryProjectPositionFixes(Long projectId) {
+    public List<PositionFix> queryProjectPositionFixes(SearchQuery searchQuery) {
+
+        Long projectId = searchQuery.getProject().getId();
+
+        String sql = "SELECT o.animal_id " +
+                     ",o.detectiontime " +
+                     ",o.latitude " +
+                     ",o.longitude " +
+                     "from PositionFix o " +
+                     ", datafile d " +
+                     "where o.datafile_id=d.id " +
+                     "and d.project_id = :projectId " +
+                     "limit 20";
+
+        SqlParameterSource namedParameters = new MapSqlParameterSource("projectId", Long.valueOf(projectId));
 
         NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(getJdbcTemplate());
         PositionFixRowMapper positionFixRowMapper = new PositionFixRowMapper();
-        String sql = "SELECT o.animal_id, o.detectiontime, o.latitude, o.longitude from PositionFix o, datafile d where o.datafile_id=d.id and d.project_id = :projectId limit 20";
-        SqlParameterSource namedParameters = new MapSqlParameterSource("projectId", Long.valueOf(projectId));
         return namedParameterJdbcTemplate.query(sql, namedParameters, positionFixRowMapper );
     }
 

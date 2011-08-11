@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
  */
 public interface DaoManager {
     AcousticDetectionDao getAcousticDetectionDao();
+    PositionFixDao getPositionFixDao();
     AnimalDao getAnimalDao();
     UserDao getUserDao();
     ProjectDao getProjectDao();
