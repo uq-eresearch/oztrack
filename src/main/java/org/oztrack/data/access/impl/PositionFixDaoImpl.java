@@ -47,15 +47,17 @@ public class PositionFixDaoImpl extends JpaDao<PositionFix> implements PositionF
     // count : indicates whether the query returns a count of rows
     public Query buildQuery(SearchQuery searchQuery, boolean count) {
 
-        String sql = "select " + (count ? "count(o) " : "o ")
+        String select = (count ? "count(o) " : "o ");
+        String orderBy = (count ? "" : " order by o.detectionTime");
+
+        String sql = "select " + select
                    + "from PositionFix o "
-                   + ", datafile d "
-                   + "where o.datafile_id=d.id "
-                   + "and o.project.id = :projectId "
-                   + "order by o.detectionTime";
+                   + "where o.dataFile in"
+                   + "(select d from datafile d where d.project.id = :projectId) "
+                   + orderBy;
 
         Query query = entityManagerSource.getEntityManager().createQuery(sql);
-        query.setParameter("projectId", searchQuery.getProject().getId().toString());
+        query.setParameter("projectId", searchQuery.getProject().getId());
         return query;
     }
 

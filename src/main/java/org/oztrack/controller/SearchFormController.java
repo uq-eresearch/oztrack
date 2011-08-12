@@ -5,12 +5,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.AcousticDetectionDao;
+import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.direct.JdbcQuery;
-import org.oztrack.data.model.AcousticDetection;
-import org.oztrack.data.model.PositionFix;
-import org.oztrack.data.model.Project;
-import org.oztrack.data.model.SearchQuery;
+import org.oztrack.data.model.*;
 import org.oztrack.data.model.types.ProjectType;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.validation.BindException;
@@ -63,11 +61,25 @@ public class SearchFormController extends SimpleFormController {
         super.initBinder(request, binder);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
+  /* screws up the data
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
-        return super.formBackingObject(request);    //To change body of overridden methods use File | Settings | File Templates.
-    }
 
+        // find the project, add a searchQuery command object
+        Project project =  (Project) request.getSession().getAttribute("project");
+        SearchQuery searchQuery = (SearchQuery) request.getSession().getAttribute("searchQuery");
+        if (searchQuery == null) {
+            searchQuery = new SearchQuery();
+            searchQuery.setProject(project);
+        }
+
+        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
+        List<Animal> animalList = animalDao.getAnimalsByProjectId(project.getId());
+        searchQuery.setAnimalList(animalList);
+
+        return searchQuery;//super.formBackingObject(request);    //To change body of overridden methods use File | Settings | File Templates.
+    }
+    */
 
     @Override
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {

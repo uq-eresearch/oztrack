@@ -8,11 +8,28 @@
 
 
     <div>
+
+    <label for="fromDate">Date From:</label>
+    <form:input path="fromDate" id="fromDatepicker" cssClass="shortInputBox"/>
+
+    <label for="toDate" class="shortInputLabel">Date To:</label>
+    <form:input path="toDate" id="toDatepicker" cssClass="shortInputBox"/>
+
+    </div>
+
+    <div>
     <label for="projectAnimalId">Animal Id:</label>
     <form:input path="projectAnimalId" id="projectAnimalId"/>
     <form:errors path="projectAnimalId" cssClass="formErrors"/>
     </div>
-
+    <!--
+    <form:select path="projectAnimalId" multiple="true">
+        <form:option value="">Select Here></form:option>
+        <c:forEach items="${animalList}" var="foo">
+            <form:option value="${foo.projectAnimalId}" label="${foo.projectAnimalId}"></form:option>
+        </c:forEach>
+    </form:select>
+    -->
     <c:if test="${project.projectType == 'PASSIVE_ACOUSTIC'}">
         <div>
         <label for="receiverOriginalId">Receiver Id:</label>
@@ -21,17 +38,6 @@
         </div>
     </c:if>
 
-    <div>
-    <label for="fromDate">Date From:</label>
-    <form:input path="fromDate" id="fromDatepicker"/>
-    <form:errors path="fromDate" cssClass="formErrors"/>
-    </div>
-
-    <div>
-    <label for="toDate">Date To:</label>
-    <form:input path="toDate" id="toDatepicker"/>
-    <form:errors path="toDate" cssClass="formErrors"/>
-    </div>
 
     <div>
     <label for="sortField">Sort by:</label>
@@ -42,14 +48,16 @@
     </form:select>
     </div>
 
-    <div><input type="submit" value="Search"/></div>
+    <div align="center"><input type="submit"  value="Search"/></div>
 
 </form:form>
 
 
 <div class="dataTableNav">
-<c:out value="${offset+1}"/> to <c:out value="${offset+nbrObjectsThisPage}"/> of <c:out value="${totalCount}"/> results.
-<br>
+<div style="float:left;"><b>
+Displaying <c:out value="${offset+1}"/> to <c:out value="${offset+nbrObjectsThisPage}"/> of <c:out value="${totalCount}"/> records.
+</b></div>
+<div style="float:right">
 
 <c:choose>
  <c:when test="${offset > 0}">
@@ -69,17 +77,13 @@
  </c:when>
  <c:otherwise>&gt;&nbsp;&nbsp;&gt;&gt;</c:otherwise>
 </c:choose>
-
 </div>
+</div>
+<br>
 
 <c:if test="${acousticDetectionsList != null}">
 
-    <br>
-    <p align="center"><a href="#">Paginate Functionality</a> | <a class="oztrackButton" href="#">Export to File</a>
-    </p><br>
-
     <table class="dataTable">
-
     <tr>
         <th>Date/Time</th>
         <th>Animal</th>
@@ -93,7 +97,7 @@
     <c:forEach items="${acousticDetectionsList}" var="detection">
     <tr>
         <td><fmt:formatDate value="${detection.detectionTime}" type="both" pattern="dd-MM-yyyy H:m:s"/></td>
-        <td><c:out value="${detection.animal.projectAnimalId}"/></td>
+        <td><c:out value="${detection.animal.projectAnimalId}"/> </td>
         <td><c:out value="${detection.receiverDeployment.originalId}"/></td>
         <td><c:out value="${detection.sensor1Value}"/></td>
         <td><c:out value="${detection.sensor1Units}"/></td>
@@ -107,33 +111,37 @@
 
 <c:if test="${positionFixList != null}">
 
-    <br>
-    <p align="center"><a href="#">Paginate Functionality</a> | <a class="oztrackButton" href="#">Export to File</a>
-    </p><br>
-     <table class="dataTable">
-
+    <table class="dataTable">
     <tr>
         <th>Date/Time</th>
-        <th>Animal</th>
+        <th>Animal Id</th>
+        <th>Animal Name</th>
         <th>Latitude</th>
         <th>Longitude</th>
+      <!--
         <th>Sensor 1</th>
         <th>Units 1</th>
         <th>Sensor 2</th>
         <th>Units 2</th>
+      -->
         <th>DataFile Upload</th>
     </tr>
     <c:forEach items="${positionFixList}" var="detection">
     <tr>
         <td><fmt:formatDate value="${detection.detectionTime}" type="both" pattern="dd-MM-yyyy H:m:s"/></td>
-        <td><c:out value="${detection.animal.id}"/></td>
+        <td><c:out value="${detection.animal.projectAnimalId}"/></td>
+        <td><a href="<c:url value="animalform"><c:param name="animal_id" value="${detection.animal.id}"/></c:url>">
+                <c:out value="${detection.animal.animalName}"/></a></td>
         <td><c:out value="${detection.latitude}"/></td>
         <td><c:out value="${detection.longitude}"/></td>
+        <!--
         <td><c:out value="${detection.sensor1Value}"/></td>
         <td><c:out value="${detection.sensor1Units}"/></td>
         <td><c:out value="${detection.sensor2Value}"/></td>
         <td><c:out value="${detection.sensor2Units}"/></td>
-        <td><c:out value="${detection.dataFile.uploadDate}"/></td>
+        -->
+        <td><a href="<c:url value="datafiledetail"><c:param name="datafile_id" value="${detection.dataFile.id}"/></c:url>">
+            <c:out value="${detection.dataFile.createDate}"/></a></td>
     </tr>
     </c:forEach>
     </table>

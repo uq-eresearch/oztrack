@@ -16,6 +16,6 @@ import java.util.List;
 public interface ProjectDao extends Dao<Project> {
     Project getProjectById(Long id);
 
-    List<PositionFix> getAllPositionFixes(Long projectId);
+    //List<PositionFix> getAllPositionFixes(Long projectId);
     //List<Project> getProjectListByUserId(Long id);
 }

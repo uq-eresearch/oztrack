@@ -34,6 +34,7 @@ public class ProjectDaoImpl extends JpaDao<Project> implements ProjectDao, Seria
         }
     }
 
+/*
     public List<PositionFix> getAllPositionFixes(Long projectId) {
 
         Query query = entityManagerSource.getEntityManager().createQuery("SELECT o from PositionFix o, datafile d where o.datafile_id=d.id and d.project_id = :projectId");
@@ -44,7 +45,7 @@ public class ProjectDaoImpl extends JpaDao<Project> implements ProjectDao, Seria
             return null;
         }
     }
-
+ */
 
     @Override
     public void save(Project object) {

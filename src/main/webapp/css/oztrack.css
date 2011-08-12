@@ -57,6 +57,7 @@ a:hover {
 }
 
 
+
 /*
   main divs
 */
@@ -364,14 +365,29 @@ a:hover {
     forms
 */
 
-
 form {
     background-color:#e6e6c0;
-    width:80%;
+    width:90%;
     padding-left:15px;
     padding-top:5px;
     padding-bottom:15px;
     font-size: 0.8em;
+    /*--Top right rounded corner--*/
+    -moz-border-radius-topright: 10px;
+    -khtml-border-radius-topright: 10px;
+    -webkit-border-top-right-radius: 10px;
+    /*--Top left rounded corner--*/
+    -moz-border-radius-topleft: 10px;
+    -khtml-border-radius-topleft: 10px;
+    -webkit-border-top-left-radius: 10px;
+    /*--Bottom right rounded corner--*/
+    -moz-border-radius-bottomright: 10px;
+    -khtml-border-radius-bottomright: 10px;
+    -webkit-border-bottom-right-radius: 10px;
+    /*--Bottom left rounded corner--*/
+    -moz-border-radius-bottomleft: 10px;
+    -khtml-border-radius-bottomleft: 10px;
+    -webkit-border-bottom-left-radius: 10px;
 
 }
 
@@ -397,14 +413,14 @@ form div {
 }
 
 form div label {
-  display: block;
+   display: block;
   float: left;
   width: 160px;
   padding-left:5px;
   padding-top:5px;
   padding-right:15px;
   margin: 0 0 5px 0;
-  text-align: left;
+  text-align: right;
   font-weight:bold;
 }
 
@@ -412,6 +428,18 @@ form div select, form div textarea, form div input {
   width:250px;
   padding-top: 3px;
   margin: 0 0 0 0;
+}
+
+.shortInputLabel {
+
+ display:inline;
+ float:none;
+}
+
+.shortInputBox {
+  margin-top:5px;
+  width:120px;
+  display:inline;
 }
 
 .formErrors {
@@ -535,9 +563,10 @@ tbody tr:hover {
 }
 
 .dataTable {
+    margin-top:10px;
     text-align:center;
     font-size: 0.7em;
-
+    width:92%;
 }
 
 .dataTable  th {
@@ -555,9 +584,18 @@ tbody tr:hover {
 
 
 .dataTableNav {
-    text-align:center;
+    width:92%;
+    margin-top:10px;
+    margin-bottom:10px;
     font-size: 0.8em;
+
 }
+
+.dataTableNav a {
+    font-weight:bold;
+    text-decoration:none;
+}
+
 
 .accordianHead .formHeader {
     font-size: 1em;
