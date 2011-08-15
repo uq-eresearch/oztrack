@@ -4,6 +4,18 @@
 <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
 <h2>Search Project Data</h2>
 
+animalList
+<c:forEach items="${animalsNotInSearchList}" var="animal1">
+    <c:out value="${animal1.projectAnimalId} - ${animal1.animalName}"/>
+</c:forEach>
+
+
+<br>searchQuery animalList
+<c:forEach items="${searchQuery.animalList}" var="animal2">
+    <c:out value="${animal2.projectAnimalId} - ${animal2.animalName}"/>
+</c:forEach>
+
+
 <form:form commandName="searchQuery" method="POST" name="searchQuery">
 
 
@@ -17,19 +29,34 @@
 
     </div>
 
+
     <div>
-    <label for="projectAnimalId">Animal Id:</label>
-    <form:input path="projectAnimalId" id="projectAnimalId"/>
-    <form:errors path="projectAnimalId" cssClass="formErrors"/>
+    <label>Animal:</label>
+    <table><tr>
+    <td>
+        <select id="animalListAll" multiple="true" class="shortInputBox">
+            <c:forEach items="${animalsNotInSearchList}" var="animal1">
+                <c:set var="label" value="${animal1.projectAnimalId} - ${animal1.animalName}"/>
+                <option value="${animal1.id}" label="${label}"></option>
+            </c:forEach>
+        </select>
+    </td>
+    <td id="addRemoveLinks">
+        <a href="#" id="selectAdd">Add &gt;</a> <br><br>
+        <a href="#" id="selectRemove">&lt; Remove</a>
+    </td>
+    <td>
+        <form:select id="animalListSelect" path="animalList" multiple="true" cssClass="shortInputBox">
+            <c:forEach items="${searchQuery.animalList}" var="animal2">
+                <c:set var="label" value="${animal2.projectAnimalId} - ${animal2.animalName}"/>
+                <option value="${animal2.id}" label="${label}"/>
+            </c:forEach>
+        </form:select>
+    </td></tr></table>
     </div>
-    <!--
-    <form:select path="projectAnimalId" multiple="true">
-        <form:option value="">Select Here></form:option>
-        <c:forEach items="${animalList}" var="foo">
-            <form:option value="${foo.projectAnimalId}" label="${foo.projectAnimalId}"></form:option>
-        </c:forEach>
-    </form:select>
-    -->
+
+
+
     <c:if test="${project.projectType == 'PASSIVE_ACOUSTIC'}">
         <div>
         <label for="receiverOriginalId">Receiver Id:</label>

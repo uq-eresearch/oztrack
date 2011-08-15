@@ -3,7 +3,10 @@ package org.oztrack.data.access.impl;
 import au.edu.uq.itee.maenad.dataaccess.Page;
 import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
 import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.access.PositionFixDao;
+import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.SearchQuery;
 
@@ -20,18 +23,20 @@ import java.util.List;
  */
 public class PositionFixDaoImpl extends JpaDao<PositionFix> implements PositionFixDao, Serializable {
 
+    /**
+     * Logger for this class and subclasses
+     */
+    protected final Log logger = LogFactory.getLog(getClass());
+
     public PositionFixDaoImpl(EntityManagerSource entityManagerSource) {
         super(entityManagerSource);
     }
 
-
-   //Page<AcousticDetection> acousticDetectionsPage = acousticDetectionDao.getPage(offset,nbrObjectsPerPage);
-
     public Page<PositionFix> getPage(SearchQuery searchQuery, int offset, int nbrObjectsPerPage) {
 
        try {
-            //query.setParameter("projectId", projectId);
             Query query = buildQuery(searchQuery, false);
+            logger.debug(query.toString());
             query.setFirstResult(offset);
             query.setMaxResults(nbrObjectsPerPage);
             List<PositionFix> positionFixList = query.getResultList();
@@ -48,16 +53,48 @@ public class PositionFixDaoImpl extends JpaDao<PositionFix> implements PositionF
     public Query buildQuery(SearchQuery searchQuery, boolean count) {
 
         String select = (count ? "count(o) " : "o ");
-        String orderBy = (count ? "" : " order by o.detectionTime");
+        String orderBy = (count ? "" : " order by o.detectionTime ");
 
         String sql = "select " + select
                    + "from PositionFix o "
-                   + "where o.dataFile in"
-                   + "(select d from datafile d where d.project.id = :projectId) "
-                   + orderBy;
+                   + "where o.dataFile in "
+                   + "(select d from datafile d where d.project.id = :projectId) ";
 
+
+        if (searchQuery.getFromDate() != null) {
+            sql = sql + "and o.detectionTime >= :fromDate ";
+        }
+        if (searchQuery.getToDate() != null) {
+            sql = sql + "and o.detectionTime <= :toDate ";
+        }
+        if (searchQuery.getAnimalList() != null) {
+            String animalClause = "and o.animal in (";
+            for (int i=0; i < searchQuery.getAnimalList().size(); i++) {
+                animalClause = animalClause + ":animal" + i + ",";
+            }
+            animalClause = animalClause.substring(0,animalClause.length()-1) + ")";
+            sql = sql + animalClause;
+        }
+
+
+        sql = sql + orderBy;
         Query query = entityManagerSource.getEntityManager().createQuery(sql);
         query.setParameter("projectId", searchQuery.getProject().getId());
+
+
+        if (searchQuery.getFromDate() != null) {
+            query.setParameter("fromDate", searchQuery.getFromDate());
+        }
+        if (searchQuery.getToDate() != null) {
+            query.setParameter("toDate", searchQuery.getToDate());
+        }
+        if (searchQuery.getAnimalList() != null) {
+            for (int i=0; i < searchQuery.getAnimalList().size(); i++) {
+                String paramName = "animal" + i;
+                query.setParameter(paramName, searchQuery.getAnimalList().get(i));
+            }
+        }
+
         return query;
     }
 

@@ -10,6 +10,7 @@ import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.direct.JdbcQuery;
 import org.oztrack.data.model.*;
 import org.oztrack.data.model.types.ProjectType;
+import org.springframework.beans.propertyeditors.CustomCollectionEditor;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -40,13 +42,15 @@ public class SearchFormController extends SimpleFormController {
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
 
+        Project project =  (Project) request.getSession().getAttribute("project");
         SearchQuery searchQuery = (SearchQuery) command;
+        searchQuery.setProject(project);
         request.getSession().setAttribute("searchQuery", searchQuery);
 
-        List<AcousticDetection> acousticDetections = queryAcousticDetections(searchQuery);
+ //       List<AcousticDetection> acousticDetections = queryAcousticDetections(searchQuery);
 
         ModelAndView modelAndView = showForm(request, response, errors);
-        modelAndView.addObject("acousticDetectionsList", acousticDetections);
+ //       modelAndView.addObject("acousticDetectionsList", acousticDetections);
 
         return modelAndView;
 
@@ -54,23 +58,42 @@ public class SearchFormController extends SimpleFormController {
 
     @Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+
+        // handle date format from datepicker
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         CustomDateEditor editor = new CustomDateEditor(sdf, true);
         binder.registerCustomEditor(Date.class,editor);
 
+        /*
+        // bind animalList object
+        binder.registerCustomEditor(List.class,"animalList", new CustomCollectionEditor(List.class) {
+
+            @Override
+            protected Object convertElement(Object element) {
+                String animalId = (String) element;
+                //AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
+                Animal animal = new Animal();
+                animal.setId(Long.valueOf(animalId));
+                return animal;
+            }
+        });
+        */
         super.initBinder(request, binder);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
-  /* screws up the data
+/*
+   //screws up the data
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
 
-        // find the project, add a searchQuery command object
-        Project project =  (Project) request.getSession().getAttribute("project");
+        // add a searchQuery command object
+        Project project = (Project) request.getSession().getAttribute("project");
         SearchQuery searchQuery = (SearchQuery) request.getSession().getAttribute("searchQuery");
+
         if (searchQuery == null) {
             searchQuery = new SearchQuery();
             searchQuery.setProject(project);
+            request.getSession().setAttribute("searchQuery",searchQuery);
         }
 
         AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
@@ -79,7 +102,9 @@ public class SearchFormController extends SimpleFormController {
 
         return searchQuery;//super.formBackingObject(request);    //To change body of overridden methods use File | Settings | File Templates.
     }
+
     */
+
 
     @Override
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
@@ -87,9 +112,15 @@ public class SearchFormController extends SimpleFormController {
         // find the project, add a searchQuery command object
         Project project =  (Project) request.getSession().getAttribute("project");
         SearchQuery searchQuery = (SearchQuery) request.getSession().getAttribute("searchQuery");
+        // get a list of animals for the form to use
+        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
+        List<Animal> animalsNotInSearchList = animalDao.getAnimalsByProjectId(project.getId());
+
         if (searchQuery == null) {
             searchQuery = new SearchQuery();
             searchQuery.setProject(project);
+            request.getSession().setAttribute("searchQuery",searchQuery);
+
         }
         // for pagination
         int offset=0;
@@ -101,9 +132,21 @@ public class SearchFormController extends SimpleFormController {
             offset = Integer.parseInt(request.getParameter("offset"));
         }
 
+        // in the searchQuery, put the animals being searched on
+        // remove the same from the animalList
+        if (searchQuery.getAnimalList() == null) {
+            List<Animal> animalsInSearchList = animalDao.getAnimalsByProjectId(project.getId());
+            searchQuery.setAnimalList(animalsInSearchList);
+        }
+
+        for (Animal animal: searchQuery.getAnimalList()) {
+            animalsNotInSearchList.remove(animal);
+
+        }
+
         ModelAndView modelAndView = new ModelAndView("searchform");
         modelAndView.addObject("searchQuery",searchQuery); // empty searchQuery
-
+        modelAndView.addObject("animalsNotInSearchList", animalsNotInSearchList);
 
         /*
         AcousticDetectionDao acousticDetectionDao = OzTrackApplication.getApplicationContext().getDaoManager().getAcousticDetectionDao();

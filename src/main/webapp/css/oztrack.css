@@ -434,6 +434,13 @@ form div select, form div textarea, form div input {
 
  display:inline;
  float:none;
+ width:30px;
+}
+
+#addRemoveLinks {
+  width:75px;
+  text-align:center;
+  font-weight:bold;
 }
 
 .shortInputBox {

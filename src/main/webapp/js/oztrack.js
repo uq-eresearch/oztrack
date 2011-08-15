@@ -20,6 +20,10 @@ $(document).ready(function(){
         initializeProjectMap();
      }
 
+     if ($('#animalListSelect').length) {
+        setupAnimalListSelect();
+     }
+
 });
 
 
@@ -178,6 +182,30 @@ $(document).ready(function(){
         dateFormat:'dd/mm/yy'
     });
 
+ }
+
+ function setupAnimalListSelect() {
+
+/*
+     $('#selectAdd').click(function() {
+        //selectedOptions = $('#animalListAll option:selected');
+        $('#animalListAll option:selected').each(function(index) {
+            var value1 = $(this).val();
+            var label1 = $(this).text();
+            $('<form:option/>').attr({value:value1}).attr({label:label1}).appendTo('#animalListSelect');
+        });
+        $('#animalListAll option:selected').remove();
+
+        //return !$('#animalListAll option:selected').remove().appendTo('#animalListSelect');
+     });
+*/
+
+     $('#selectAdd').click(function() {
+        return !$('#animalListAll option:selected').remove().appendTo('#animalListSelect');
+     });
+     $('#selectRemove').click(function() {
+        return !$('#animalListSelect option:selected').remove().appendTo('#animalListAll');
+     });
  }
 
 
