@@ -4,11 +4,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.ProjectDao;
-import org.oztrack.data.model.KmlLayer;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
-import org.oztrack.data.model.types.SearchQueryType;
-import org.springframework.validation.BindException;
+import org.oztrack.data.model.types.MapQueryType;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
@@ -41,7 +39,7 @@ public class ProjectMapAjaxController extends SimpleFormController {
             ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
             Project project = projectDao.getProjectById(Long.valueOf(projectId));
             searchQuery.setProject(project);
-            searchQuery.setSearchQueryType(SearchQueryType.valueOf(queryType));
+            searchQuery.setSearchQueryType(MapQueryType.valueOf(queryType));
         }
         else {
             logger.debug("AjaxController no projectId or queryType");

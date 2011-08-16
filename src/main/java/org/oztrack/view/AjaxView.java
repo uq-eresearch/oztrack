@@ -27,19 +27,19 @@ public class AjaxView extends AbstractView {
     @Override
     protected void renderMergedOutputModel(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        SearchQuery searchQuery = new SearchQuery();
+        SearchQuery searchQuery;
         File kmlFile = null;
 
         if (model != null) {
             logger.debug("Resolving ajax request view ");
             searchQuery = (SearchQuery) model.get("searchQuery");
+
             if (searchQuery.getProject() != null) {
                 kmlFile = searchQuery.generateKMLFile();
             }
         }
 
-        //new File("D:\\oztrack_related\\points.kml");
-
+        //write out the kml
         FileInputStream fin = new FileInputStream(kmlFile);
         byte kmlContent[] = new byte[(int) kmlFile.length()];
         fin.read(kmlContent);

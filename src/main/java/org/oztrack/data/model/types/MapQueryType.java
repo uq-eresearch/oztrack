@@ -9,9 +9,10 @@ package org.oztrack.data.model.types;
  */
 
 
-public enum SearchQueryType {
+public enum MapQueryType {
 
-     POINTS("Points")
+     ALL_POINTS("All Points in this Project")
+    ,POINTS("Points")
     ,TRAJECTORIES("Trajectories")
     ,MCP100("Multiple Convex Polygon 100%")
     ,MCP95("Multiple Convex Polygon 95%")
@@ -19,7 +20,7 @@ public enum SearchQueryType {
 
     private final String displayName;
 
-    SearchQueryType(final String display) {
+    MapQueryType(final String display) {
         this.displayName = display;
     }
 

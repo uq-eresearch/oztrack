@@ -51,7 +51,7 @@ function initializeProjectMap() {
                 {strategies: [new OpenLayers.Strategy.Fixed()],
                  protocol: new OpenLayers.Protocol.HTTP(
                     {url: "mapQuery",
-                     params: {projectId:projectId, queryType:"POINTS"},
+                     params: {projectId:projectId, queryType:"ALL_POINTS"},
                      format: new OpenLayers.Format.KML(
                         {extractStyles: true,
                          extractAttributes: true,

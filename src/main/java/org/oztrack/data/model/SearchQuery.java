@@ -3,17 +3,12 @@ package org.oztrack.data.model;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
-import org.oztrack.data.access.ProjectDao;
-import org.oztrack.data.model.types.SearchQueryType;
+import org.oztrack.data.model.types.MapQueryType;
 import org.oztrack.error.RServeInterfaceException;
 import org.oztrack.util.RServeInterface;
 
 import java.io.File;
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,7 +33,7 @@ public class SearchQuery {
     private List<Animal> animalList;
     private String [] speciesList;
     private Project project;
-    private SearchQueryType searchQueryType;
+    private MapQueryType mapQueryType;
 
     public SearchQuery() {
         this.fromDate = null;
@@ -111,27 +106,30 @@ public class SearchQuery {
         this.project = project;
     }
 
-    public SearchQueryType getSearchQueryType() {
-        return searchQueryType;
+    public MapQueryType getSearchQueryType() {
+        return mapQueryType;
     }
 
-    public void setSearchQueryType(SearchQueryType searchQueryType) {
-        this.searchQueryType = searchQueryType;
+    public void setSearchQueryType(MapQueryType mapQueryType) {
+        this.mapQueryType = mapQueryType;
     }
+
+
+
 
     public File generateKMLFile() {
 
-        String kmlFilePath = this.project.getDataDirectoryPath() + File.separator + this.searchQueryType.toString() + ".kml";
+        String kmlFilePath = this.project.getDataDirectoryPath() + File.separator + this.mapQueryType.toString() + ".kml";
         logger.debug("kml file name: " + kmlFilePath);
 
         // get the data
         List<PositionFix> positionFixList = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcQuery().queryProjectPositionFixes(this);
-        RServeInterface rServe = new RServeInterface(positionFixList, this.searchQueryType, kmlFilePath);
+        RServeInterface rServe = new RServeInterface(positionFixList, this.mapQueryType, kmlFilePath);
 
         try {
             rServe.createPositionFixKml();
         } catch (RServeInterfaceException e) {
-            logger.error("R error " + e.toString());
+            logger.error("R error :" + e.toString());
         }
 
         return new File(kmlFilePath);
@@ -140,7 +138,7 @@ public class SearchQuery {
 
 
 
-
+/*
     public String buildQuery() {
 
         String dateFormat = "dd/MM/yyyy";
@@ -208,5 +206,6 @@ public class SearchQuery {
         return sql;
 
     }
+*/
 
 }
