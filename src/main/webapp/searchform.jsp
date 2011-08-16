@@ -4,20 +4,7 @@
 <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
 <h2>Search Project Data</h2>
 
-animalList
-<c:forEach items="${animalsNotInSearchList}" var="animal1">
-    <c:out value="${animal1.projectAnimalId} - ${animal1.animalName}"/>
-</c:forEach>
-
-
-<br>searchQuery animalList
-<c:forEach items="${searchQuery.animalList}" var="animal2">
-    <c:out value="${animal2.projectAnimalId} - ${animal2.animalName}"/>
-</c:forEach>
-
-
 <form:form commandName="searchQuery" method="POST" name="searchQuery">
-
 
     <div>
 
@@ -32,27 +19,10 @@ animalList
 
     <div>
     <label>Animal:</label>
-    <table><tr>
-    <td>
-        <select id="animalListAll" multiple="true" class="shortInputBox">
-            <c:forEach items="${animalsNotInSearchList}" var="animal1">
-                <c:set var="label" value="${animal1.projectAnimalId} - ${animal1.animalName}"/>
-                <option value="${animal1.id}" label="${label}"></option>
-            </c:forEach>
-        </select>
-    </td>
-    <td id="addRemoveLinks">
-        <a href="#" id="selectAdd">Add &gt;</a> <br><br>
-        <a href="#" id="selectRemove">&lt; Remove</a>
-    </td>
-    <td>
-        <form:select id="animalListSelect" path="animalList" multiple="true" cssClass="shortInputBox">
-            <c:forEach items="${searchQuery.animalList}" var="animal2">
-                <c:set var="label" value="${animal2.projectAnimalId} - ${animal2.animalName}"/>
-                <option value="${animal2.id}" label="${label}"/>
-            </c:forEach>
-        </form:select>
-    </td></tr></table>
+
+    <form:select id="animalListSelect" path="animalList" items="${projectAnimalsList}" itemLabel="animalName" itemValue="id" multiple="true" cssClass="shortInputBox"/>
+    <form:errors path="animalList"/>
+
     </div>
 
 
@@ -81,31 +51,31 @@ animalList
 
 
 <div class="dataTableNav">
-<div style="float:left;"><b>
-Displaying <c:out value="${offset+1}"/> to <c:out value="${offset+nbrObjectsThisPage}"/> of <c:out value="${totalCount}"/> records.
-</b></div>
+<div style="float:left;">
+    <b>Displaying <c:out value="${offset+1}"/> to <c:out value="${offset+nbrObjectsThisPage}"/> of <c:out value="${totalCount}"/> records.</b>
+</div>
 <div style="float:right">
-
-<c:choose>
- <c:when test="${offset > 0}">
-    <a href="<c:url value="searchform"><c:param name="offset" value="${0}"/></c:url>">&lt;&lt;</a>
+    <c:choose>
+     <c:when test="${offset > 0}">
+        <a href="<c:url value="searchform"><c:param name="offset" value="${0}"/></c:url>">&lt;&lt;</a>
+        &nbsp;&nbsp;
+        <a href="<c:url value="searchform"><c:param name="offset" value="${offset-nbrObjectsPerPage}"/></c:url>">&lt;</a>
+     </c:when>
+     <c:otherwise>&lt;&lt;&nbsp;&nbsp;&lt;</c:otherwise>
+    </c:choose>
     &nbsp;&nbsp;
-    <a href="<c:url value="searchform"><c:param name="offset" value="${offset-nbrObjectsPerPage}"/></c:url>">&lt;</a>
- </c:when>
- <c:otherwise>&lt;&lt;&nbsp;&nbsp;&lt;</c:otherwise>
-</c:choose>
-&nbsp;&nbsp;
-
-<c:choose>
- <c:when test="${offset < totalCount - (totalCount % nbrObjectsPerPage)}">
-    <a href="<c:url value="searchform"><c:param name="offset" value="${offset+nbrObjectsThisPage}"/></c:url>">&gt;</a>
-    &nbsp;&nbsp;
-    <a href="<c:url value="searchform"><c:param name="offset" value="${totalCount - (totalCount % nbrObjectsPerPage)}"/></c:url>">&gt;&gt;</a>
- </c:when>
- <c:otherwise>&gt;&nbsp;&nbsp;&gt;&gt;</c:otherwise>
-</c:choose>
+    <c:choose>
+     <c:when test="${offset < totalCount - (totalCount % nbrObjectsPerPage)}">
+        <a href="<c:url value="searchform"><c:param name="offset" value="${offset+nbrObjectsThisPage}"/></c:url>">&gt;</a>
+        &nbsp;&nbsp;
+        <a href="<c:url value="searchform"><c:param name="offset" value="${totalCount - (totalCount % nbrObjectsPerPage)}"/></c:url>">&gt;&gt;</a>
+     </c:when>
+     <c:otherwise>&gt;&nbsp;&nbsp;&gt;&gt;</c:otherwise>
+    </c:choose>
+    <a href="<c:url value="export"/>">Export</a>
 </div>
 </div>
+
 <br>
 
 <c:if test="${acousticDetectionsList != null}">

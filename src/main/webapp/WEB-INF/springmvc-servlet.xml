@@ -20,6 +20,7 @@
   </bean>
 
   <bean name="/mapQuery" class="org.oztrack.controller.ProjectMapAjaxController"/>
+  <bean name="/export" class="org.oztrack.controller.SearchQueryExportController"/>
 
   <bean name="/home" class="org.oztrack.controller.HomeController"/>
   <bean name="/about" class="org.oztrack.controller.HomeController"/>

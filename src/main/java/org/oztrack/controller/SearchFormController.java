@@ -64,20 +64,21 @@ public class SearchFormController extends SimpleFormController {
         CustomDateEditor editor = new CustomDateEditor(sdf, true);
         binder.registerCustomEditor(Date.class,editor);
 
-        /*
+
         // bind animalList object
         binder.registerCustomEditor(List.class,"animalList", new CustomCollectionEditor(List.class) {
 
             @Override
             protected Object convertElement(Object element) {
                 String animalId = (String) element;
+                logger.debug("Initbinder: animalId: " + animalId);
                 //AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
                 Animal animal = new Animal();
                 animal.setId(Long.valueOf(animalId));
                 return animal;
             }
         });
-        */
+
         super.initBinder(request, binder);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
@@ -114,7 +115,7 @@ public class SearchFormController extends SimpleFormController {
         SearchQuery searchQuery = (SearchQuery) request.getSession().getAttribute("searchQuery");
         // get a list of animals for the form to use
         AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
-        List<Animal> animalsNotInSearchList = animalDao.getAnimalsByProjectId(project.getId());
+        List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
 
         if (searchQuery == null) {
             searchQuery = new SearchQuery();
@@ -132,6 +133,7 @@ public class SearchFormController extends SimpleFormController {
             offset = Integer.parseInt(request.getParameter("offset"));
         }
 
+        /*
         // in the searchQuery, put the animals being searched on
         // remove the same from the animalList
         if (searchQuery.getAnimalList() == null) {
@@ -142,11 +144,11 @@ public class SearchFormController extends SimpleFormController {
         for (Animal animal: searchQuery.getAnimalList()) {
             animalsNotInSearchList.remove(animal);
 
-        }
+        } */
 
         ModelAndView modelAndView = new ModelAndView("searchform");
         modelAndView.addObject("searchQuery",searchQuery); // empty searchQuery
-        modelAndView.addObject("animalsNotInSearchList", animalsNotInSearchList);
+        modelAndView.addObject("projectAnimalsList", projectAnimalsList);
 
         /*
         AcousticDetectionDao acousticDetectionDao = OzTrackApplication.getApplicationContext().getDaoManager().getAcousticDetectionDao();

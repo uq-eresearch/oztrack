@@ -1,5 +1,7 @@
 package org.oztrack.data.access.impl.direct;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.access.direct.JdbcQuery;
 import org.oztrack.data.model.AcousticDetection;
 import org.oztrack.data.model.PositionFix;
@@ -22,6 +24,11 @@ import java.util.List;
  */
 public class JdbcQueryImpl extends JdbcDaoSupport implements JdbcQuery {
 
+        /**
+     * Logger for this class and subclasses
+     */
+    protected final Log logger = LogFactory.getLog(getClass());
+
     public List<AcousticDetection> queryAcousticDetections(String sql) {
 
         List<AcousticDetection> acousticDetections = getJdbcTemplate().query(sql, new BeanPropertyRowMapper(AcousticDetection.class) );
@@ -42,6 +49,8 @@ public class JdbcQueryImpl extends JdbcDaoSupport implements JdbcQuery {
     public List<PositionFix> queryProjectPositionFixes(SearchQuery searchQuery) {
 
         Long projectId = searchQuery.getProject().getId();
+        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+        mapSqlParameterSource.addValue("projectId", projectId);
 
         String sql = "SELECT o.animal_id " +
                      ",o.detectiontime " +
@@ -50,14 +59,34 @@ public class JdbcQueryImpl extends JdbcDaoSupport implements JdbcQuery {
                      "from PositionFix o " +
                      ", datafile d " +
                      "where o.datafile_id=d.id " +
-                     "and d.project_id = :projectId " +
-                     "limit 20";
+                     "and d.project_id = :projectId " ;
+                     //"limit 20";
 
-        SqlParameterSource namedParameters = new MapSqlParameterSource("projectId", Long.valueOf(projectId));
+        if (searchQuery.getFromDate() != null) {
+            sql = sql + "and o.detectionTime >= :fromDate ";
+            mapSqlParameterSource.addValue("fromDate", searchQuery.getFromDate());
+        }
+        if (searchQuery.getToDate() != null) {
+            sql = sql + "and o.detectionTime <= :toDate ";
+            mapSqlParameterSource.addValue("toDate", searchQuery.getToDate());
+        }
+        if (searchQuery.getAnimalList() != null) {
+            String animalClause = "and o.animal_id in (";
+            for (int i=0; i < searchQuery.getAnimalList().size(); i++) {
+                String thisAnimal = "animalId" + i;
+                animalClause = animalClause + ":" + thisAnimal + ",";
+                mapSqlParameterSource.addValue(thisAnimal,searchQuery.getAnimalList().get(i).getId());
+            }
+            animalClause = animalClause.substring(0,animalClause.length()-1) + ")";
+            sql = sql + animalClause;
+        }
+
+        logger.debug("Position fix jdbc query: " + sql);
+        //SqlParameterSource namedParameters = mapSqlParameterSource;
 
         NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(getJdbcTemplate());
         PositionFixRowMapper positionFixRowMapper = new PositionFixRowMapper();
-        return namedParameterJdbcTemplate.query(sql, namedParameters, positionFixRowMapper );
+        return namedParameterJdbcTemplate.query(sql, mapSqlParameterSource, positionFixRowMapper );
     }
 
 }
