@@ -106,17 +106,17 @@ public class SearchQuery {
         this.project = project;
     }
 
-    public MapQueryType getSearchQueryType() {
+    public MapQueryType getMapQueryType() {
         return mapQueryType;
     }
 
-    public void setSearchQueryType(MapQueryType mapQueryType) {
+    public void setMapQueryType(MapQueryType mapQueryType) {
         this.mapQueryType = mapQueryType;
     }
 
 
 
-
+    /*
     public File generateKMLFile() {
 
         String kmlFilePath = this.project.getDataDirectoryPath() + File.separator + this.mapQueryType.toString() + ".kml";
@@ -134,76 +134,13 @@ public class SearchQuery {
 
         return new File(kmlFilePath);
     }
-
+    */
 
 
 
 /*
     public String buildQuery() {
 
-        String dateFormat = "dd/MM/yyyy";
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-
-        String select = "SELECT ad.id as acousticdetectionid "
-                      + ", ad.detectionTime "
-                      + ", ad.animal_id "
-                      + ", ad.receiverdeployment_id "
-                      + ", ad.datafile_id "
-                      + ", ad.sensor1value "
-                      + ", ad.sensor1units "
-                      + ", a.id as animalid "
-                      + ", a.projectanimalid "
-                      + ", d.uploaddate as datafile_uploaddate"
-                      + ", rd.originalid as receiverdeployment_originalid";
-
-        String from = " FROM acousticdetection ad"
-                    + ", animal a "
-                    + ", datafile d "
-                    + ", receiverdeployment rd ";
-
-        String joinClause = " WHERE ad.animal_id=a.id"
-                     + " AND ad.receiverdeployment_id=rd.id "
-                     + " AND ad.datafile_id = d.id ";
-
-        String where = "";
-        String orderBy = "";
-
-        if (this.projectAnimalId.length() != 0) {
-            where = where + " AND a.projectanimalid = '"
-                          + this.projectAnimalId + "'";
-        }
-
-        if (this.toDate != null) {
-            where = where + " AND ad.detectiontime <= to_date('"
-                          + sdf.format(this.toDate) + "','" + dateFormat + "')";
-        }
-
-        if (this.fromDate != null) {
-            where = where + " AND ad.detectiontime >= to_date('"
-                          + sdf.format(this.fromDate) + "','" + dateFormat + "')";
-        }
-
-        if (this.receiverOriginalId.length() != 0) { //(this.receiverOriginalId.length() != 0)  {
-            where = where + " AND rd.originalid = '"
-                          + this.receiverOriginalId + "'";
-        }
-
-        if (this.sortField.length() != 0) {
-            String fieldName = "";
-            if (this.sortField.equals("Animal")) {
-                   fieldName = "a.projectanimalid";
-            } else if (this.sortField.equals("Receiver")) {
-                   fieldName = "rd.originalid";
-            } else if (this.sortField.equals("Detection Time")) {
-                   fieldName = "ad.detectiontime";
-            }
-            orderBy = orderBy + " ORDER BY " + fieldName;
-        }
-
-        String sql = select + from + joinClause + where + orderBy;
-
-        logger.debug(sql);
-        return sql;
 
     }
 */

@@ -26,7 +26,9 @@ function initializeProjectMap() {
 
     var projectId = $('#projectId').val();
     //alert("projectId: " + projectId);
+
     var map = new OpenLayers.Map('projectMap');
+
     var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
     //layerSwitcher.div = OpenLayers.Util.getElement('projectMapOptions');
     //layerSwitcher.roundedCorner = false;
@@ -46,6 +48,7 @@ function initializeProjectMap() {
     );
 
 
+
     var points = new OpenLayers.Layer.Vector(
                 "Points",
                 {strategies: [new OpenLayers.Strategy.Fixed()],
@@ -56,11 +59,22 @@ function initializeProjectMap() {
                         {extractStyles: true,
                          extractAttributes: true,
                          maxDepth: 2
-
                      })
-
                   })
                 });
+
+
+    /*
+    var points = new OpenLayers.Layer.WMS( "Points",
+                  "http://localhost:9090/geoserver/oztrack/wms?",
+                  { transparent:"true",
+                    layers:'oztrack:positionfix',
+                    format:'image/png'
+                  },
+                  {singleTile:"true"}
+                  );
+    */
+    //alert("points: " + points.getURL());
 
     map.addLayers([gsat,gphy,points]);
     map.setCenter(new OpenLayers.LonLat(133,-28),4);
@@ -78,6 +92,8 @@ function initializeProjectMap() {
     });
  */
 }
+
+
 
 function requestHandler(request) {
     // if the response was XML, try the parsed doc

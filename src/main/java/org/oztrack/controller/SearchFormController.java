@@ -192,25 +192,7 @@ public class SearchFormController extends SimpleFormController {
     }
 
 
-    public List<AcousticDetection> queryAcousticDetections(SearchQuery searchQuery) {
 
-        JdbcQuery jdbcQuery = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcQuery();
-        List<AcousticDetection> acousticDetections = jdbcQuery.queryAcousticDetections2(searchQuery);
-        return acousticDetections;
-    }
-
-    /*
-    public List<PositionFix> getAllPositionFixResults(SearchQuery searchQuery) {
-
-        JdbcQuery jdbcQuery = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcQuery();
-        List<PositionFix> positionFixes = jdbcQuery.queryProjectPositionFixes(searchQuery);
-        return positionFixes;
-    }
-
-    public List<PositionFix> getPagePositionFixResults(SearchQuery searchQuery) {
-
-    }
-    */
 
 
 

@@ -15,6 +15,7 @@ import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.*;
 
+import org.oztrack.data.model.types.MapQueryType;
 import org.rosuda.REngine.*;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RFileInputStream;
@@ -51,46 +52,54 @@ public class ProjectMapController extends SimpleFormController {
 	/** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
+
     @Override
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // get the request parameters and establish type of Layer required
-        logger.debug("Parm project_id = " + request.getParameter("project_id"));
-        String errorStr = null;
+    protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
 
-        Long project_id;
-        ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
+        // if first time through get the project into the session:
+        String errorMessage = "";
+        Project project =  (Project) request.getSession().getAttribute("project");
 
-        if (request.getParameter("project_id") == null) {
-            Project tempProject =  (Project) request.getSession().getAttribute("project");
-            project_id = tempProject.getId();
-        } else {
-            project_id = Long.parseLong(request.getParameter("project_id"));
+        if (project == null) {
+
+            if (request.getParameter("project_id") != null) {
+                ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
+                project = projectDao.getProjectById(Long.valueOf(request.getParameter("project_id")));
+                request.getSession().setAttribute("project",project);
+            } else {
+                errorMessage = "No project available. Are you logged in?";
+            }
         }
 
-        Project project = projectDao.getProjectById(project_id);
-        request.getSession().setAttribute("project", project);
-
-        if (project ==  null) {
-                errorStr = "Couldn't find any project sorry.";
+        SearchQuery searchQuery = (SearchQuery) request.getSession().getAttribute("searchQuery");
+        if (searchQuery == null) {
+            searchQuery = new SearchQuery();
+            searchQuery.setProject(project);
+            request.getSession().setAttribute("searchQuery",searchQuery);
         }
 
-        ModelAndView modelAndView = new ModelAndView( "projectmap");
-        modelAndView.addObject("errorStr", errorStr);
-        modelAndView.addObject("project", project);
+        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
+        List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
+        MapQueryType [] mapQueryTypeList = MapQueryType.values();
+
+        ModelAndView modelAndView = new ModelAndView("projectMap");
+        modelAndView.addObject("errorMessage", errorMessage);
+        modelAndView.addObject("mapQueryTypeList", mapQueryTypeList);
+        modelAndView.addObject("searchQuery",searchQuery); // empty searchQuery
+        modelAndView.addObject("projectAnimalsList", projectAnimalsList);
         return modelAndView;
-    }
 
+    }
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
 
         SearchQuery searchQuery = (SearchQuery) command;
 
-
         // bind the searchQuery object
         // create the kmlLayers object
         // send the results back via ajax
-        return new ModelAndView("ajax_mapquery");
+        return new ModelAndView("ajax_mapquery","searchQuery", searchQuery);
     }
 
 }

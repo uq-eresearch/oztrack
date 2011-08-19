@@ -459,7 +459,7 @@ form div .checkbox, form div .radiobutton {
         width: 20px;
 }
 
-.checkboxDiv, .formButton {
+.checkboxDiv  {
     width:280px;
     margin-left:180px;
 }

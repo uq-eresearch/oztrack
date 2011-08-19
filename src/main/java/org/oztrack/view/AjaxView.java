@@ -2,8 +2,13 @@ package org.oztrack.view;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.geotools.data.FileDataStore;
+import org.geotools.data.FileDataStoreFinder;
+import org.geotools.kml.KMLConfiguration;
+import org.geotools.xml.Parser;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.model.SearchQuery;
+import org.oztrack.util.RServeInterface;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.AbstractView;
 
@@ -11,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -35,7 +41,11 @@ public class AjaxView extends AbstractView {
             searchQuery = (SearchQuery) model.get("searchQuery");
 
             if (searchQuery.getProject() != null) {
-                kmlFile = searchQuery.generateKMLFile();
+                RServeInterface r = new RServeInterface();
+                kmlFile = r.createKml(searchQuery);
+
+                // start: try reading into geotools and serve a WMS layer
+
             }
         }
 

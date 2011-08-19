@@ -6,73 +6,40 @@
 
 <h1><c:out value="${project.title}"/></h1>
 
-    <div class="mapTool">
-        <div id="projectMap"></div>
-         <div id="projectMapOptions"></div>
-        <div class="clearboth">&nbsp;</div>
-    </div>
+<p style="color:red;"><c:out value="${errorMessage}"/></p>
 
-    <div>
-        <form:form commandName="searchQuery" method="POST" name="mapSearchQuery">
-            <input type="hidden" value="${project.id}" id="projectId"/>
-             <div class="formButton"><input type="submit" value="Update Map"/></div>
-        </form:form>
-    </div>
+<div class="mapTool">
+<div id="projectMap"></div>
+<div id="projectMapOptions" style="border:solid 1px red">
 
-   <p style="color:red;"><c:out value="${errorStr}"/></p>
+    <form:form commandName="searchQuery" method="POST" name="mapSearchQuery">
 
-<!--
-    <h2>Data In</h2>
+        <input type="hidden" value="${searchQuery.project.id}" id="projectId"/>
 
-   <div style="border: 1px solid red;">
-       <c:forEach items="${rDataIn}" var="r">
-        <c:forEach items="${r}" var="x">
-         <c:out value="${x}"/>
-        </c:forEach>
-        <br>
-       </c:forEach>
-   </div>
+            <label class="shortInputLabel" for="fromDate">Date From:</label>
+            <form:input path="fromDate" id="fromDatepicker" cssClass="shortInputBox"/>
 
-    <div style="border: 1px solid green;">
+            <label for="toDate" class="shortInputLabel">Date To:</label>
+            <form:input path="toDate" id="toDatepicker" cssClass="shortInputBox"/>
+            <br>
+            <label for="mapQueryType">Query Type:</label>
+            <form:select path="mapQueryType">
+                <c:forEach items="${mapQueryTypeList}" var="mapQueryType">
+                    <c:if test="${!fn:contains(mapQueryType,'ALL_')}">
+                     <form:option value="${mapQueryType}" label="${mapQueryType.displayName}"/>
+                    </c:if>
+                </c:forEach>
+            </form:select>
 
-      <c:forEach items="${rAnimalsIn}" var="a">
-        <c:forEach items="${a}" var="s">
-         <c:out value="${s}"/>
-        </c:forEach>
-        <br>
-       </c:forEach>
+        <div class="formButton"><input type="submit" value="Update Map"/></div>
 
-      </div>
+    </form:form>
 
 
-    <h2>Data Out</h2>
 
-   <div style="border: 1px solid red;">
-       <c:forEach items="${posFixNames}" var="name">
-        <c:out value="${name} "/>
-       </c:forEach>
-        <br>
-       <c:forEach items="${rDataOut}" var="r">
-        <c:forEach items="${r}" var="x">
-         <c:out value="${x}"/>
-        </c:forEach>
-        <br>
-       </c:forEach>
-   </div>
 
-    <div style="border: 1px solid green;">
-       <c:forEach items="${animalRefNames}" var="animal">
-          <c:out value="${animal} "/>
-       </c:forEach>
-         <br>
-       <c:forEach items="${rAnimalsOut}" var="a">
-        <c:forEach items="${a}" var="s">
-         <c:out value="${s}"/>
-        </c:forEach>
-        <br>
-       </c:forEach>
-      </div>
-
--->
+</div>
+<div class="clearboth">&nbsp;</div>
+</div>
 
 <%@ include file="footer.jsp" %>

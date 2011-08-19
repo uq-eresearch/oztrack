@@ -2,13 +2,17 @@ package org.oztrack.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.model.PositionFix;
+import org.oztrack.data.model.Project;
+import org.oztrack.data.model.SearchQuery;
 import org.oztrack.data.model.types.MapQueryType;
 import org.oztrack.error.RServeInterfaceException;
 import org.rosuda.REngine.*;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -24,43 +28,77 @@ public class RServeInterface {
     */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    /* inputs */
+    /* inputs
     private List<PositionFix> positionFixList;
     private MapQueryType mapQueryType;
     private String outFileName;
+    */
 
-    /* internals */
     private RConnection rConnection;
-
-    String rLog;
+    private SearchQuery searchQuery;
+    private String rLog;
 
     public RServeInterface() {
     }
 
+    /*
     public RServeInterface(List<PositionFix> positionFixList, MapQueryType mapQueryType, String outFileName) {
-        this.positionFixList = positionFixList;
+       // this.positionFixList = positionFixList;
         this.mapQueryType = mapQueryType;
         this.outFileName = outFileName;
     }
+    */
 
+    public File createKml(SearchQuery searchQuery) throws RServeInterfaceException {
+
+        this.searchQuery = searchQuery;
+        startRConnection();
+
+        // find project directory path to write the file to
+        Project project = this.searchQuery.getProject();
+        String fileName = project.getDataDirectoryPath() + File.separator + searchQuery.getMapQueryType() + ".kml";
+
+        // project type determines what sort of dataframe to build
+        switch (this.searchQuery.getProject().getProjectType()) {
+            case GPS:
+                createRPositionFixDataFrame();
+                break;
+            default:
+                throw new RServeInterfaceException("Unhandled Project Type: " + project.getProjectType().toString());
+        }
+
+        // mapQueryType tells us what R function to call
+        switch (this.searchQuery.getMapQueryType()) {
+            case ALL_POINTS:
+                writePositionFixKmlFile(fileName);
+                break;
+            default:
+                throw new RServeInterfaceException("Unhandled MapQueryType: " + searchQuery.getMapQueryType());
+        }
+
+        rConnection.close();
+        return new File(fileName);
+
+
+    }
+
+    /*
     public void createPositionFixKml() throws RServeInterfaceException {
 
         startRConnection();
-
-
         createRPositionFixDataFrame();
 
         switch (this.mapQueryType) {
             case ALL_POINTS:
-                writePositionFixKmlFile();
+                //writePositionFixKmlFile();
                 break;
             default:
                 throw new RServeInterfaceException("Unhandled MapQueryType: " + this.mapQueryType);
         }
-
         rConnection.close();
-
     }
+    */
+
 
     protected void startRConnection() throws RServeInterfaceException {
 
@@ -75,7 +113,8 @@ public class RServeInterface {
 
     protected void createRPositionFixDataFrame() throws RServeInterfaceException {
 
-        /* build arrays for each column */
+        List<PositionFix> positionFixList = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcQuery().queryProjectPositionFixes(this.searchQuery);
+
         int [] animalIds = new int[positionFixList.size()];
         double [] latitudes= new double[positionFixList.size()];
         double [] longitudes= new double[positionFixList.size()];
@@ -108,10 +147,10 @@ public class RServeInterface {
         }
     }
 
-    protected void writePositionFixKmlFile() throws RServeInterfaceException {
+    protected void writePositionFixKmlFile(String fileName) throws RServeInterfaceException {
 
         String rCommand;
-        String outFileNameFix = outFileName.replace("\\","/"); /* for R in windows */
+        String outFileNameFix = fileName.replace("\\","/"); /* for R in windows */
 
         try {
 

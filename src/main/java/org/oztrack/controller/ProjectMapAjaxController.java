@@ -39,7 +39,7 @@ public class ProjectMapAjaxController extends SimpleFormController {
             ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
             Project project = projectDao.getProjectById(Long.valueOf(projectId));
             searchQuery.setProject(project);
-            searchQuery.setSearchQueryType(MapQueryType.valueOf(queryType));
+            searchQuery.setMapQueryType(MapQueryType.valueOf(queryType));
         }
         else {
             logger.debug("AjaxController no projectId or queryType");
