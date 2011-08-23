@@ -118,20 +118,22 @@ public class DataFileLoader {
 
         int nbrObservationsCreated = 0;
         try {
-            // avoid hibernate for performance
-            //nbrDetectionsCreated = jdbcAccess.loadAcousticDetections(this.dataFile.getProject().getId(), dataFile.getId());
+
             nbrObservationsCreated = jdbcAccess.loadObservations(dataFile);
             dataFile.setNumberDetections(nbrObservationsCreated);
             dataFileDao.update(dataFile);
+
+            int projectUpdated = jdbcAccess.setProjectBoundingBox(dataFile.getProject());
+            if (projectUpdated != 1) {
+                throw new FileProcessingException("Bounding box calculation problem.");
+            }
             jdbcAccess.truncateRawObservations(dataFile);
 
         } catch (Exception e) {
             jdbcAccess.truncateRawObservations(dataFile);
             throw new FileProcessingException(e.toString());
         }
-
-
-
     }
+
 
 }

@@ -1,9 +1,6 @@
 package org.oztrack.data.access.direct;
 
-import org.oztrack.data.model.AcousticDetection;
-import org.oztrack.data.model.DataFile;
-import org.oztrack.data.model.PositionFix;
-import org.oztrack.data.model.SearchQuery;
+import org.oztrack.data.model.*;
 
 import java.util.List;
 
@@ -22,6 +19,7 @@ public interface JdbcAccess {
     //public int loadAcousticDetections(Long projectId, Long dataFileId);
     //public void truncateRawAcousticDetections();
     public void truncateRawObservations(DataFile dataFile);
+    public int setProjectBoundingBox(Project project);
 
 
 

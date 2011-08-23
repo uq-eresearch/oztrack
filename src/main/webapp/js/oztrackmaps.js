@@ -2,7 +2,6 @@
 function initializeHomeMap() {
 
     var map = new OpenLayers.Map('homeMap');
-
     var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
     layerSwitcher.div = OpenLayers.Util.getElement('homeMapOptions');
     layerSwitcher.roundedCorner = false;
@@ -20,35 +19,43 @@ function initializeHomeMap() {
 
     map.addLayers([gsat,gphy]);
     map.setCenter(new OpenLayers.LonLat(133,-28),4);
+
 }
 
 function initializeProjectMap() {
 
     var projectId = $('#projectId').val();
-    //alert("projectId: " + projectId);
+    var googleProjection = new OpenLayers.Projection('EPSG:900913');
+    var kmlProjection =  new OpenLayers.Projection("EPSG:4326");
 
-    var map = new OpenLayers.Map('projectMap');
 
+    var mapOptions = {
+       maxExtent: new OpenLayers.Bounds(
+            -128 * 156543.0339,
+            -128 * 156543.0339,
+             128 * 156543.0339,
+             128 * 156543.0339),
+       maxResolution: 156543.0339,
+       units: 'm',
+       projection: googleProjection,
+       displayProjection: kmlProjection
+    };
+
+
+    var map = new OpenLayers.Map('projectMap',mapOptions);
     var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
-    //layerSwitcher.div = OpenLayers.Util.getElement('projectMapOptions');
-    //layerSwitcher.roundedCorner = false;
     map.addControl(layerSwitcher);
-    //map.addControl( new OpenLayers.Control.LoadingPanel());
-   // map.addControl(new OpenLayers.Control.PanZoomBar());
-   // map.addControl(new OpenLayers.Control.MouseToolbar());
+    map.addControl(new OpenLayers.Control.MousePosition());
+    map.addControl(new OpenLayers.Control.ZoomBox());
 
     var gphy = new OpenLayers.Layer.Google(
                 "Google Physical",
-                {type: G_PHYSICAL_MAP}
+                {type: google.maps.MapTypeId.TERRAIN}
     );
-
     var gsat = new OpenLayers.Layer.Google(
                 "Google Satellite",
-                {type: G_SATELLITE_MAP}
+                {type: google.maps.MapTypeId.SATELLITE}
     );
-
-
-
     var points = new OpenLayers.Layer.Vector(
                 "Points",
                 {strategies: [new OpenLayers.Strategy.Fixed()],
@@ -58,12 +65,27 @@ function initializeProjectMap() {
                      format: new OpenLayers.Format.KML(
                         {extractStyles: true,
                          extractAttributes: true,
-                         maxDepth: 2
+                         maxDepth: 2,
+                         internalProjection: googleProjection,
+                         externalProjection: kmlProjection
                      })
                   })
                 });
 
+   /*
+    var wkt = new OpenLayers.Format.WKT();
+    wkt.internalProjection = googleProjection;
+    wkt.externalProjection = kmlProjection;
+    var boundingBox = wkt.read($('#projectBoundingBox').val());
+    //var feature = new OpenLayers.Feature.Vector(boundingBox);
+    //var bounds = boundingBox.geometry.getBounds();
+    */
 
+    map.addLayers([gsat,gphy,points]);
+    //map.setCenter(new OpenLayers.LonLat(133,-28),4);
+    map.setCenter(new OpenLayers.LonLat(133,-28).transform(kmlProjection,googleProjection), 4);
+    var test=1;
+}
     /*
     var points = new OpenLayers.Layer.WMS( "Points",
                   "http://localhost:9090/geoserver/oztrack/wms?",
@@ -76,10 +98,7 @@ function initializeProjectMap() {
     */
     //alert("points: " + points.getURL());
 
-    map.addLayers([gsat,gphy,points]);
-    map.setCenter(new OpenLayers.LonLat(133,-28),4);
-
-
+    //map.zoomToExtent(bounds);
 
 /*
     var request = OpenLayers.Request.POST({
@@ -91,9 +110,37 @@ function initializeProjectMap() {
     callback: requestHandler
     });
  */
+
+
+function updateProjectMap() {
+
+    alert("updateProjectMap() called.");
+    map = new OpenLayers.Map("projectMap");
+    alert("got map");
+
+    var dateFrom = $('input[id=fromDatepicker]');
+    var dateTo=$('input[id=toDatepicker]');
+    var queryType =$('select[id=mapQueryTypeSelect]');
+
+    var data= 'projectId=' + $('#projectId').val() +'&dateFrom=' + dateFrom.val() + '&dateTo=' + dateTo.val() + '&queryType=' + queryType.val();
+    alert("data : " + data);
+
+/*
+    var points = new OpenLayers.Layer.Vector(
+            "Points",
+            {strategies: [new OpenLayers.Strategy.Fixed()],
+             protocol: new OpenLayers.Protocol.HTTP(
+                {url: "mapQuery",
+                 params: {projectId:projectId, queryType:"ALL_POINTS"},
+                 format: new OpenLayers.Format.KML(
+                    {extractStyles: true,
+                     extractAttributes: true,
+                     maxDepth: 2
+                 })
+              })
+            });
+*/
 }
-
-
 
 function requestHandler(request) {
     // if the response was XML, try the parsed doc

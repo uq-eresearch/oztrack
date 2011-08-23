@@ -1,6 +1,8 @@
 package org.oztrack.data.model;
 
+import com.vividsolutions.jts.geom.Polygon;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Type;
 import org.oztrack.data.model.types.ProjectType;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -70,9 +72,11 @@ public class Project extends OztrackBaseEntity implements Serializable {
     public void setImageFile(MultipartFile imageFile) {this.imageFile = imageFile;}
     public MultipartFile getImageFile() {return imageFile;}
 
+    @Column(name = "boundingbox", columnDefinition="GEOMETRY")
+    @Type(type = "org.hibernatespatial.GeometryUserType")
+    private Polygon boundingBox;
 
     public Project() {
-
     }
 
     public Project(String title) {
@@ -273,6 +277,14 @@ public class Project extends OztrackBaseEntity implements Serializable {
 
     public void setDataDirectoryPath(String dataDirectoryPath) {
         this.dataDirectoryPath = dataDirectoryPath;
+    }
+
+    public Polygon getBoundingBox() {
+        return boundingBox;
+    }
+
+    public void setBoundingBox(Polygon boundingBox) {
+        this.boundingBox = boundingBox;
     }
 
 }

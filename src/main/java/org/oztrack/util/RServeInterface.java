@@ -118,11 +118,12 @@ public class RServeInterface {
         int [] animalIds = new int[positionFixList.size()];
         double [] latitudes= new double[positionFixList.size()];
         double [] longitudes= new double[positionFixList.size()];
+        String [] detectionTimes= new String[positionFixList.size()];
 
         /* load up the arrays from the database result set*/
         for (int i=0; i < positionFixList.size(); i++) {
             PositionFix positionFix = positionFixList.get(i);
-            //detectionTimes[i] = sdf.format(positionFix.getDetectionTime());
+            detectionTimes[i] = "foo"; //sdf.format(positionFix.getDetectionTime());
             animalIds[i] = Integer.parseInt(positionFix.getAnimal().getId().toString());
             latitudes[i] = Double.parseDouble(positionFix.getLatitude());
             longitudes[i] = Double.parseDouble(positionFix.getLongitude());
@@ -133,6 +134,8 @@ public class RServeInterface {
         rPositionFixList.put("Id", new REXPInteger(animalIds));
         rPositionFixList.put("X", new REXPDouble(latitudes));
         rPositionFixList.put("Y", new REXPDouble(longitudes));
+        rPositionFixList.put("Foo", new REXPString(detectionTimes));
+
 
         /* assign the dataFrame */
         try {
@@ -158,6 +161,8 @@ public class RServeInterface {
             rLog = rLog + "coordinates + projection defined for KML";
             logger.debug(rCommand);
             rConnection.eval(rCommand);
+
+            REXP foo = rConnection.eval("positionFix");
 
             rCommand = "writeOGR(positionFix, dsn=\"" + outFileNameFix + "\", layer= \"positionFix\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))";
             logger.debug(rCommand);

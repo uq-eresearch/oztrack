@@ -1,11 +1,10 @@
 package org.oztrack.data.access.impl.direct;
 
 import org.oztrack.data.access.direct.JdbcAccess;
-import org.oztrack.data.model.AcousticDetection;
-import org.oztrack.data.model.DataFile;
-import org.oztrack.data.model.PositionFix;
-import org.oztrack.data.model.SearchQuery;
+import org.oztrack.data.model.*;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import java.util.List;
@@ -17,17 +16,6 @@ import java.util.List;
  * Time: 12:03 PM
  */
 public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
-
-    public void testJDBCAccess() {
-
-        String test1 = "test1";
-        String test2 = "test2";
-
-        String sql = "INSERT INTO test (test1, test2)" +
-                     "VALUES (?,?)";
-
-        getJdbcTemplate().update(sql, new Object [] {test1, test2});
-    }
 
     public int loadObservations(DataFile dataFile) {
 
@@ -107,50 +95,8 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
                         nbrObservations = getJdbcTemplate().update(sql+where, new Object [] { dataFileId, projectId} );
                 break;
         }
-
         return nbrObservations;
-
     }
-
-
-
-
-    /*
-    public int loadAcousticDetections(Long projectId, Long dataFileId) {
-
-        String sql =
-                "INSERT INTO acousticdetection (" +
-                " id" +
-                " ,detectiontime" +
-                " ,sensor1value" +
-                " ,sensor1units" +
-                " ,sensor2value" +
-                " ,sensor2units" +
-                " ,animal_id" +
-                " ,datafile_id" +
-                " ,receiverdeployment_id)" +
-                " SELECT rad.id" +
-                " ,rad.datetime" +
-                " ,rad.sensor1" +
-                " ,rad.units1" +
-                " ,rad.sensor2" +
-                " ,rad.units2" +
-                " ,ani.id" +
-                " ,?" +
-                " ,rdp.id" +
-                " FROM rawacousticdetection rad" +
-                " ,animal ani" +
-                " ,receiverdeployment rdp" +
-                " WHERE rad.animalid = ani.projectanimalid  "  +
-                " AND  ani.project_id = ?" +
-                " AND rad.receiversn=rdp.originalid" +
-                " AND rdp.project_id = ?"
-                ;
-
-        return getJdbcTemplate().update(sql, new Object [] { dataFileId, projectId, projectId} );
-
-    }
-    */
 
     public void truncateRawObservations(DataFile dataFile) {
 
@@ -166,15 +112,36 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
 
                 break;
         }
-
         getJdbcTemplate().execute("TRUNCATE TABLE " + tableName);
-
     }
 
+    public int setProjectBoundingBox(Project project) {
 
+        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+        mapSqlParameterSource.addValue("projectId", project.getId());
+        String tableName = "";
 
+        switch (project.getProjectType()) {
+            case PASSIVE_ACOUSTIC:
+                tableName = "acousticdetection";
+                break;
+            case GPS:
+            case ARGOS:
+                tableName = "positionfix";
+                break;
+        }
 
+        String sql = "update project "
+                   + " set boundingBox = "
+                     + "(select (ST_Envelope(ST_Collect(locationgeometry))) "
+                     + " from " + tableName + " t "
+                     + ", dataFile d "
+                     + " where t.datafile_id=d.id"
+                     + " and d.project_id = :projectId) "
+                   + " where id = :projectId";
 
+        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(getJdbcTemplate());
+        return namedParameterJdbcTemplate.update(sql,mapSqlParameterSource);
 
-
+    }
 }

@@ -20,6 +20,10 @@ $(document).ready(function(){
         initializeProjectMap();
      }
 
+     $('#projectMapSubmit').click(function () {
+        updateProjectMap();
+     })
+
 });
 
 
