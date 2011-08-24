@@ -5,6 +5,8 @@ import au.edu.uq.itee.maenad.dataaccess.Page;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.SearchQuery;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: uqpnewm5
@@ -14,4 +16,6 @@ import org.oztrack.data.model.SearchQuery;
 public interface PositionFixDao extends Dao<PositionFix> {
 
        Page<PositionFix> getPage(SearchQuery searchQuery, int offset, int nbrObjectsPerPage);
+
+       List<PositionFix> getProjectPositionFixList(SearchQuery searchQuery);
 }

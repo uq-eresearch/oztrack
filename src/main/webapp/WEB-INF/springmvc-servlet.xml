@@ -8,9 +8,8 @@
       <property name="alwaysUseFullPath" value="true"/>
   </bean>
 
-  <bean id="ajaxViewResolver" class="org.oztrack.view.AjaxViewResolver">
-      <property name="ajaxView"><bean class="org.oztrack.view.AjaxView"/></property>
-      <property name="ajaxPrefix" value="ajax_"></property>
+  <bean id="javaViewResolver" class="org.oztrack.view.JavaViewResolver">
+      <property name="viewPrefix" value="java_"></property>
   </bean>
 
   <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -19,7 +18,8 @@
       <property name="suffix" value=".jsp"/>
   </bean>
 
-  <bean name="/mapQuery" class="org.oztrack.controller.ProjectMapAjaxController"/>
+  <bean name="/mapQueryKML" class="org.oztrack.controller.KMLProjectMapController"/>
+  <bean name="/mapQueryWFS" class="org.oztrack.controller.WFSProjectMapController"/>
   <bean name="/export" class="org.oztrack.controller.SearchQueryExportController"/>
 
   <bean name="/home" class="org.oztrack.controller.HomeController"/>

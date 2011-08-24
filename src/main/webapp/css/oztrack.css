@@ -359,6 +359,10 @@ a:hover {
     margin-top:5px;
 }
 
+.olLayerGoogleCopyright, .olLayerGoogleV3 {
+    display:none;
+}
+
 
 
 /*

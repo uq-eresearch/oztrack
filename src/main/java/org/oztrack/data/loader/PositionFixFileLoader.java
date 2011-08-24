@@ -309,7 +309,7 @@ public class PositionFixFileLoader extends DataFileLoader {
         Double dLongitude = Double.parseDouble(longitude);
 
         GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(1000000),4326);
-        Coordinate coordinate = new Coordinate(dLatitude, dLongitude);
+        Coordinate coordinate = new Coordinate(dLongitude, dLatitude);
 
         return geometryFactory.createPoint(coordinate);
 

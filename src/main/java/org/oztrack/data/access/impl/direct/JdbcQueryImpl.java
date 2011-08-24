@@ -117,14 +117,14 @@ public class JdbcQueryImpl extends JdbcDaoSupport implements JdbcQuery {
         MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
         mapSqlParameterSource.addValue("projectId", projectId);
 
-        String sql = "SELECT o.animal_id " +
-                     ",o.detectiontime " +
-                     ",o.latitude " +
-                     ",o.longitude " +
-                     "from PositionFix o " +
-                     ", datafile d " +
-                     "where o.datafile_id=d.id " +
-                     "and d.project_id = :projectId " ;
+        String sql = "SELECT o.animal_id "
+                   +  ",o.detectiontime "
+                   +  ",o.latitude "
+                   +  ",o.longitude "
+                   +  "from PositionFix o "
+                   +  ", datafile d "
+                   +  "where o.datafile_id=d.id "
+                   +  "and d.project_id = :projectId " ;
                      //"limit 20";
 
         if (searchQuery.getFromDate() != null) {

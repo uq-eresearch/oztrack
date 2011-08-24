@@ -25,7 +25,7 @@ import java.util.Map;
  * Date: 3/08/11
  * Time: 2:36 PM
  */
-public class AjaxView extends AbstractView {
+public class KMLMapQueryView extends AbstractView {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());

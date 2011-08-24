@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  * Date: 4/08/11
  * Time: 11:38 AM
  */
-public class ProjectMapAjaxController extends SimpleFormController {
+public class WFSProjectMapController extends SimpleFormController {
 
     /**
     * Logger for this class and subclasses
@@ -35,17 +35,17 @@ public class ProjectMapAjaxController extends SimpleFormController {
         SearchQuery searchQuery = new SearchQuery();
 
         if ((projectId != null) && (queryType != null)) {
-            logger.debug("AjaxController for projectId: " + projectId + " + queryType: " + queryType);
+            logger.debug("for projectId: " + projectId + " + queryType: " + queryType);
             ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
             Project project = projectDao.getProjectById(Long.valueOf(projectId));
             searchQuery.setProject(project);
             searchQuery.setMapQueryType(MapQueryType.valueOf(queryType));
         }
         else {
-            logger.debug("AjaxController no projectId or queryType");
+            logger.debug("no projectId or queryType");
         }
 
-        return new ModelAndView("ajax_mapquery","searchQuery", searchQuery);
+        return new ModelAndView("java_WFSMapQuery","searchQuery", searchQuery);
     }
 
 

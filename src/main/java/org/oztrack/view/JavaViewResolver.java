@@ -13,38 +13,32 @@ import java.util.Locale;
  * Date: 3/08/11
  * Time: 2:33 PM
  */
-public class AjaxViewResolver extends AbstractCachingViewResolver {
+public class JavaViewResolver extends AbstractCachingViewResolver {
 
     /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private String ajaxPrefix;
-    private View ajaxView;
+    private String viewPrefix;
 
     @Override
     protected View loadView(String viewName, Locale locale) throws Exception {
         logger.debug("viewName : " + viewName);
         View view = null;
-        if (viewName.startsWith(this.ajaxPrefix)) {
-            view = ajaxView;
+        if (viewName.startsWith(this.viewPrefix)) {
+            String suffix = viewName.substring(this.viewPrefix.length());
+            String viewClassName = suffix.substring(0,1).toUpperCase() + suffix.substring(1);
+            Class viewClass = Class.forName("org.oztrack.view." + viewClassName + "View");
+            view = (View) viewClass.getConstructor().newInstance();
         }
         return view;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public String getAjaxPrefix() {
-        return ajaxPrefix;
+    public String getViewPrefix() {
+        return viewPrefix;
     }
 
-    public void setAjaxPrefix(String ajaxPrefix) {
-        this.ajaxPrefix = ajaxPrefix;
-    }
-
-    public View getAjaxView() {
-        return ajaxView;
-    }
-
-    public void setAjaxView(View ajaxView) {
-        this.ajaxView = ajaxView;
+    public void setViewPrefix(String viewPrefix) {
+        this.viewPrefix = viewPrefix;
     }
 
 }

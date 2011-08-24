@@ -131,8 +131,16 @@
 
     <servlet-mapping>
       <servlet-name>springmvc</servlet-name>
-      <url-pattern>/mapQuery</url-pattern>
+      <url-pattern>/mapQueryKML</url-pattern>
     </servlet-mapping>
+
+
+
+    <servlet-mapping>
+      <servlet-name>springmvc</servlet-name>
+      <url-pattern>/mapQueryWFS</url-pattern>
+    </servlet-mapping>
+
 
     <servlet-mapping>
       <servlet-name>springmvc</servlet-name>
