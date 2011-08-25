@@ -103,10 +103,11 @@ public class PositionFixDaoImpl extends JpaDao<PositionFix> implements PositionF
         String sql = "select o "
                    + "from PositionFix o "
                    + "where o.dataFile in "
-                   + "(select d from datafile d where d.project.id = :projectId) ";
+                   + "(select d from datafile d where d.project.id = :projectId) "
+                   + "order by o.animal.id, o.detectionTime";
 
         Query query = entityManagerSource.getEntityManager().createQuery(sql);
-        query.setMaxResults(100);
+        //query.setMaxResults(100);
         query.setParameter("projectId", searchQuery.getProject().getId());
         return (List<PositionFix>) query.getResultList();
 

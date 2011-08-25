@@ -10,7 +10,7 @@
 
 <div class="mapTool">
 <div id="projectMap"></div>
-<div id="projectMapOptions" style="border:solid 1px red">
+<div id="projectMapOptions">
 
     <form method="POST">
 

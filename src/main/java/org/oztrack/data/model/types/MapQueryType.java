@@ -12,6 +12,7 @@ package org.oztrack.data.model.types;
 public enum MapQueryType {
 
      ALL_POINTS("All Points in this Project")
+    ,ALL_LINES("All Tracks in this Project (as Lines)")
 //    ,POINTS("Points")
 //    ,TRAJECTORIES("Trajectories")
     ,MCP100("Multiple Convex Polygon 100%")

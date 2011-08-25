@@ -1,15 +1,7 @@
-
 <%@ include file="header.jsp" %>
-
-<script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key=${initParam['api-key']}" /></script>
+<script src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
 <script type="text/javascript" src="js/openlayers/OpenLayers.js" /></script>
 <script type="text/javascript" src="js/oztrackmaps.js" /></script>
-
-
-<!--
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-    <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
--->
 
     <h1>Welcome to OzTrack Beta!</h1>
 

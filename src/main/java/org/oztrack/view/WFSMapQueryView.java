@@ -1,6 +1,8 @@
 package org.oztrack.view;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -10,6 +12,7 @@ import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.JTSFactoryFinder;
+import org.geotools.gml2.GMLConfiguration;
 import org.geotools.kml.KML;
 import org.geotools.kml.KMLConfiguration;
 import org.geotools.referencing.CRS;
@@ -18,6 +21,7 @@ import org.geotools.xml.Encoder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.oztrack.app.OzTrackApplication;
+import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.util.RServeInterface;
@@ -30,9 +34,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -49,50 +53,158 @@ public class WFSMapQueryView extends AbstractView {
     protected void renderMergedOutputModel(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         SearchQuery searchQuery;
-        File kmlFile = null;
+        String namespaceURI = OzTrackApplication.getApplicationContext().getUriPrefix();
 
         if (model != null) {
+
             logger.debug("Resolving ajax request view ");
             searchQuery = (SearchQuery) model.get("searchQuery");
 
             if (searchQuery.getProject() != null) {
 
-                List<PositionFix> positionFixList = OzTrackApplication.getApplicationContext().getDaoManager().getPositionFixDao().getProjectPositionFixList(searchQuery);
+                //List<PositionFix> positionFixList = OzTrackApplication.getApplicationContext().getDaoManager().getPositionFixDao().getProjectPositionFixList(searchQuery);
 
-                if (!positionFixList.isEmpty()) {
-                    String namespaceURI = OzTrackApplication.getApplicationContext().getUriPrefix();
+                //if (!positionFixList.isEmpty()) {
 
                     SimpleFeatureCollection collection = FeatureCollections.newCollection();
-                    GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
 
-                    SimpleFeatureTypeBuilder simpleFeatureTypeBuilder = new SimpleFeatureTypeBuilder();
-                    simpleFeatureTypeBuilder.setName("PositionFix");
-                    simpleFeatureTypeBuilder.setNamespaceURI(namespaceURI);
-                    int srid = positionFixList.get(0).getLocationGeometry().getSRID();
-                    simpleFeatureTypeBuilder.add("location", Point.class, srid);
-                    simpleFeatureTypeBuilder.add("detectionTime", Date.class);
-                    simpleFeatureTypeBuilder.add("animalId",String.class);
-                    simpleFeatureTypeBuilder.add("animalName",String.class);
-                    SimpleFeatureType simpleFeatureType = simpleFeatureTypeBuilder.buildFeatureType();
+                    // Would like to supply GMLConfiguration.NO_FEATURE_BOUNDS to the encoder;
+                    // but not possible with the GML class - would need use Encoder directly
+                    GML encoder = new GML(GML.Version.WFS1_0);
 
-                    for(PositionFix positionFix : positionFixList) {
-                        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(simpleFeatureType);
-                        featureBuilder.add(positionFix.getLocationGeometry());
-                        featureBuilder.set("location", positionFix.getLocationGeometry());
-                        featureBuilder.set("detectionTime",positionFix.getDetectionTime());
-                        featureBuilder.set("animalId",positionFix.getAnimal().getProjectAnimalId());
-                        featureBuilder.set("animalName",positionFix.getAnimal().getAnimalName());
-                        SimpleFeature simpleFeature = featureBuilder.buildFeature(positionFix.getId().toString());
-                        collection.add(simpleFeature);
+                    switch (searchQuery.getMapQueryType()) {
+                        case ALL_POINTS:
+                            collection = this.buildPointsFeatureCollection(searchQuery);
+                            encoder.setNamespace("PositionFix", namespaceURI);
+                            break;
+                        case ALL_LINES:
+                            collection = this.buildLinesFeatureCollection(searchQuery);
+                            encoder.setNamespace("Track", namespaceURI);
+                            break;
+                        default:
+                            break;
                     }
 
                     response.setContentType("text/xml");
-                    GML encoder = new GML(GML.Version.WFS1_0);
-                    encoder.setNamespace("PositionFix", namespaceURI);
-                    encoder.encode(response.getOutputStream(), collection);
-                }
+                    response.setHeader("Content-Encoding", "gzip");
+                    GZIPOutputStream gzipOutputStream = new GZIPOutputStream(response.getOutputStream());
+                    encoder.encode(gzipOutputStream, collection);
+                    gzipOutputStream.close();
+
             }
         }
 
     }
+
+    private SimpleFeatureCollection buildPointsFeatureCollection(SearchQuery searchQuery) {
+
+        List<PositionFix> positionFixList = OzTrackApplication.getApplicationContext().getDaoManager().getPositionFixDao().getProjectPositionFixList(searchQuery);
+        String namespaceURI = OzTrackApplication.getApplicationContext().getUriPrefix();
+
+        SimpleFeatureCollection collection = FeatureCollections.newCollection();
+        GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
+
+        SimpleFeatureTypeBuilder simpleFeatureTypeBuilder = new SimpleFeatureTypeBuilder();
+        simpleFeatureTypeBuilder.setName("PositionFix");
+        simpleFeatureTypeBuilder.setNamespaceURI(namespaceURI);
+        int srid = positionFixList.get(0).getLocationGeometry().getSRID();
+        simpleFeatureTypeBuilder.add("location", Point.class, srid);
+        simpleFeatureTypeBuilder.add("detectionTime", Date.class);
+        simpleFeatureTypeBuilder.add("animalId",String.class);
+        simpleFeatureTypeBuilder.add("animalName",String.class);
+        SimpleFeatureType simpleFeatureType = simpleFeatureTypeBuilder.buildFeatureType();
+
+        for(PositionFix positionFix : positionFixList) {
+            SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(simpleFeatureType);
+            featureBuilder.add(positionFix.getLocationGeometry());
+            featureBuilder.set("location", positionFix.getLocationGeometry());
+            featureBuilder.set("detectionTime",positionFix.getDetectionTime());
+            featureBuilder.set("animalId",positionFix.getAnimal().getProjectAnimalId());
+            featureBuilder.set("animalName",positionFix.getAnimal().getAnimalName());
+            SimpleFeature simpleFeature = featureBuilder.buildFeature(positionFix.getId().toString());
+            collection.add(simpleFeature);
+        }
+
+        return collection;
+
+    }
+
+    private static class AnimalTrack {
+            private Animal animal;
+            private Date fromDate;
+            private Date toDate;
+            private List<Coordinate> coordinates;
+    }
+
+    private SimpleFeatureCollection buildLinesFeatureCollection(SearchQuery searchQuery) {
+
+        List<PositionFix> positionFixList = OzTrackApplication.getApplicationContext().getDaoManager().getPositionFixDao().getProjectPositionFixList(searchQuery);
+
+        String namespaceURI = OzTrackApplication.getApplicationContext().getUriPrefix();
+
+        SimpleFeatureCollection collection = FeatureCollections.newCollection();
+        GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
+
+        SimpleFeatureTypeBuilder simpleFeatureTypeBuilder = new SimpleFeatureTypeBuilder();
+        simpleFeatureTypeBuilder.setName("Track");
+        simpleFeatureTypeBuilder.setNamespaceURI(namespaceURI);
+        int srid = positionFixList.get(0).getLocationGeometry().getSRID();
+
+        simpleFeatureTypeBuilder.add("track", LineString.class, srid);
+        simpleFeatureTypeBuilder.add("fromDate", Date.class);
+        simpleFeatureTypeBuilder.add("toDate", Date.class);
+        simpleFeatureTypeBuilder.add("animalId",String.class);
+        simpleFeatureTypeBuilder.add("animalName",String.class);
+
+        SimpleFeatureType simpleFeatureType = simpleFeatureTypeBuilder.buildFeatureType();
+        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(simpleFeatureType);
+
+        Long projectId = searchQuery.getProject().getId();
+
+
+
+        HashMap<Long, AnimalTrack> tracks = new HashMap<Long, AnimalTrack>();
+
+        for (PositionFix positionFix : positionFixList) {
+
+            AnimalTrack thisTrack = tracks.get(positionFix.getAnimal().getId());
+
+            if (thisTrack == null) {
+
+                thisTrack = new AnimalTrack();
+                thisTrack.animal = positionFix.getAnimal();
+                thisTrack.fromDate = positionFix.getDetectionTime();
+                thisTrack.toDate = positionFix.getDetectionTime();
+                thisTrack.coordinates = new ArrayList<Coordinate>();
+                thisTrack.coordinates.add(positionFix.getLocationGeometry().getCoordinate());
+                tracks.put(positionFix.getAnimal().getId(),thisTrack);
+
+            } else {
+
+                if (positionFix.getDetectionTime().before(thisTrack.fromDate)) {
+                    thisTrack.fromDate = positionFix.getDetectionTime();
+                }
+                if (positionFix.getDetectionTime().after(thisTrack.toDate)) {
+                    thisTrack.toDate = positionFix.getDetectionTime();
+                }
+                thisTrack.coordinates.add(positionFix.getLocationGeometry().getCoordinate());
+
+            }
+        }
+
+        for (AnimalTrack animalTrack: tracks.values()) {
+
+            LineString lineString = geometryFactory.createLineString(animalTrack.coordinates.toArray(new Coordinate[] {}));
+            featureBuilder.set("track",lineString);
+            featureBuilder.set("fromDate",animalTrack.fromDate);
+            featureBuilder.set("toDate",animalTrack.toDate);
+            featureBuilder.set("animalId", animalTrack.animal.getProjectAnimalId());
+            featureBuilder.set("animalName",animalTrack.animal.getAnimalName());
+            SimpleFeature simpleFeature = featureBuilder.buildFeature(animalTrack.animal.getId().toString());
+            collection.add(simpleFeature);
+        }
+        return collection;
+
+    }
+
 }

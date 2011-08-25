@@ -1,7 +1,21 @@
 
 function initializeHomeMap() {
 
-    var map = new OpenLayers.Map('homeMap');
+
+    var googleProjection = new OpenLayers.Projection('EPSG:900913');
+    var kmlProjection =  new OpenLayers.Projection("EPSG:4326");
+    var mapOptions = {
+       maxExtent: new OpenLayers.Bounds(
+            -128 * 156543.0339,
+            -128 * 156543.0339,
+             128 * 156543.0339,
+             128 * 156543.0339),
+       maxResolution: 156543.0339,
+       units: 'm',
+       projection: googleProjection,
+       displayProjection: kmlProjection
+    };
+    var map = new OpenLayers.Map('homeMap',mapOptions);
     var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
     layerSwitcher.div = OpenLayers.Util.getElement('homeMapOptions');
     layerSwitcher.roundedCorner = false;
@@ -18,16 +32,18 @@ function initializeHomeMap() {
     );
 
     map.addLayers([gsat,gphy]);
-    map.setCenter(new OpenLayers.LonLat(133,-28),4);
+    map.setCenter(new OpenLayers.LonLat(133,-28).transform(kmlProjection,googleProjection), 4);
 
 }
+
+var map;
+var linesWFSOverlay;
 
 function initializeProjectMap() {
 
     var projectId = $('#projectId').val();
     var googleProjection = new OpenLayers.Projection('EPSG:900913');
     var kmlProjection =  new OpenLayers.Projection("EPSG:4326");
-
 
     var mapOptions = {
        maxExtent: new OpenLayers.Bounds(
@@ -42,7 +58,7 @@ function initializeProjectMap() {
     };
 
 
-    var map = new OpenLayers.Map('projectMap',mapOptions);
+    map = new OpenLayers.Map('projectMap',mapOptions);
     var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
     map.addControl(layerSwitcher);
     map.addControl(new OpenLayers.Control.MousePosition());
@@ -56,6 +72,7 @@ function initializeProjectMap() {
                 "Google Satellite",
                 {type: google.maps.MapTypeId.SATELLITE}
     );
+
     var kmlOverlay = new OpenLayers.Layer.Vector(
                 "Points",
                 {strategies: [new OpenLayers.Strategy.Fixed()],
@@ -71,18 +88,50 @@ function initializeProjectMap() {
                      })
                   })
                 });
-    var wfsOverlay = new OpenLayers.Layer.Vector("PointsWFS", {
+
+    var pointsWFSOverlay = new OpenLayers.Layer.Vector("PointsWFS", {
         strategies: [new OpenLayers.Strategy.BBOX()],
         projection: new OpenLayers.Projection("EPSG:4326"),
         protocol: new OpenLayers.Protocol.WFS({
-            url:  "mapQueryWFS?projectId=1&queryType=ALL_POINTS",
+            url:  "mapQueryWFS?projectId=" + projectId + "&queryType=ALL_POINTS",
             featureType: "PositionFix",
             featureNS: "http://localhost:8080/"
         })
     });
 
+
+    var style = new OpenLayers.Style();
+    //rule used for all polygons
+    var rule_fsa = new OpenLayers.Rule({
+    symbolizer: {
+    strokeColor: "#ffffff",
+    strokeWidth: 3,
+    label: "${animalName}",
+    labelAlign: "cc",
+    fontColor: "#333333",
+    fontOpacity: 0.9,
+    fontFamily: "Arial",
+    fontSize: 14}
+    });
+    style.addRules([rule_fsa]);
+
+    linesWFSOverlay = new OpenLayers.Layer.Vector("LinesWFS", {
+        strategies: [new OpenLayers.Strategy.BBOX()],
+        styleMap: style,
+        eventListeners: {
+            loadend: function (e){ map.zoomToExtent(linesWFSOverlay.getDataExtent(),false); }
+        },
+        projection: new OpenLayers.Projection("EPSG:4326"),
+        protocol: new OpenLayers.Protocol.WFS({
+            url:  "mapQueryWFS?projectId=" + projectId + "&queryType=ALL_LINES",
+            featureType: "Track",
+            featureNS: "http://localhost:8080/"
+        })
+    });
+
+
     var hoverControl = new OpenLayers.Control.SelectFeature(
-        [wfsOverlay],
+        [pointsWFSOverlay],
         {
             clickout: true,
             eventListeners: {
@@ -96,11 +145,12 @@ function initializeProjectMap() {
     );
 
     map.addLayers([gsat,gphy]);
-    map.addLayer(wfsOverlay);
-    //map.addLayer(kmlOverlay);
+    //map.addLayer(pointsWFSOverlay);
+    map.addLayer(linesWFSOverlay);
     map.addControl(hoverControl);
     hoverControl.activate();
     map.setCenter(new OpenLayers.LonLat(133,-28).transform(kmlProjection,googleProjection), 4);
+    //map.zoomToExtent(linesWFSOverlay.getDataExtent(),true);
     var test=1;
 }
 
