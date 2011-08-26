@@ -1,9 +1,11 @@
 
 $(document).ready(function(){
      //nav();
-     navigation();
+
      accordian();
      setupDatepicker();
+
+     $( "#accordion" ).accordion();
 
      document.title='OzTrack';
      if ($('#titleText').length) {
@@ -23,6 +25,8 @@ $(document).ready(function(){
      $('#projectMapSubmit').click(function () {
         updateProjectMap();
      })
+
+     navigation();
 
 });
 
@@ -127,6 +131,12 @@ $(document).ready(function(){
             var projectTitle = $('#projectTitle').html();
             breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("searchform","projects") + '"> &rsaquo; Animal Tracking</a> &rsaquo; <a href="' + thisUrl.replace("searchform","projectdetail") + '">' + projectTitle
                                     + '</a> &rsaquo; <span class="aCrumb">Analysis Tools</span>';
+            $('#navTrack').css('color','#f7a700');
+            break;
+        case "projectmap":
+            var projectTitle = $('#projectTitle').html();
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectmap","projects") + '"> &rsaquo; Animal Tracking</a> &rsaquo; <a href="'
+                                    + '</a> &rsaquo; <span class="aCrumb">Visualisation Tools</span>';
             $('#navTrack').css('color','#f7a700');
             break;
         case "sighting":

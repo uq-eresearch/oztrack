@@ -347,6 +347,7 @@ a:hover {
 
 #homeMapOptions, #projectMapOptions  {
     margin-left: 510px;
+
 }
 
 #projectMapForm {
@@ -361,6 +362,15 @@ a:hover {
 
 .olLayerGoogleCopyright, .olLayerGoogleV3 {
     display:none;
+}
+
+.olControlNoSelect {
+    color:#ffffff;
+}
+
+#mapToolForm {
+    padding-left:0px;
+    width:100%;
 }
 
 
@@ -608,8 +618,21 @@ tbody tr:hover {
 }
 
 
-.accordianHead .formHeader {
+.formHeader {
     font-size: 1em;
+}
+
+.accordianHead {
+    background-color:#adbc6b;
+    border: solid 1px #839537;
+    color:#000000;
+    font-size:12px;
+    font-weight:bold;
+    font-family:Arial,Verdana, sans-serif;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    text-decoration:none;
+    text-align:center;
 }
 
 .projectListTableHeader, .projectListTable {

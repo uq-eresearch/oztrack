@@ -77,10 +77,15 @@ public class ProjectMapController implements Controller {
 
         MapQueryType [] mapQueryTypeList = MapQueryType.values();
 
+        // get a list of animals for the form to use
+        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
+        List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
+
         ModelAndView modelAndView = new ModelAndView( "projectmap");
         modelAndView.addObject("errorStr", errorMessage);
         modelAndView.addObject("project", project);
         modelAndView.addObject("mapQueryTypeList", mapQueryTypeList);
+        modelAndView.addObject("projectAnimalsList", projectAnimalsList);
 
         return modelAndView;
     }

@@ -60,6 +60,7 @@ function initializeProjectMap() {
 
     map = new OpenLayers.Map('projectMap',mapOptions);
     var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
+    layerSwitcher.div = OpenLayers.Util.getElement('layerSwitcherDiv')
     map.addControl(layerSwitcher);
     map.addControl(new OpenLayers.Control.MousePosition());
     map.addControl(new OpenLayers.Control.ZoomBox());
@@ -100,24 +101,23 @@ function initializeProjectMap() {
     });
 
 
-    var style = new OpenLayers.Style();
-    //rule used for all polygons
-    var rule_fsa = new OpenLayers.Rule({
+    var lineStyle = new OpenLayers.Style();
+    var lineRule = new OpenLayers.Rule({
     symbolizer: {
     strokeColor: "#ffffff",
-    strokeWidth: 3,
+    strokeWidth: 1,
     label: "${animalName}",
-    labelAlign: "cc",
-    fontColor: "#333333",
+    labelAlign: "rt",
+    fontColor: "#ffffff",
     fontOpacity: 0.9,
     fontFamily: "Arial",
-    fontSize: 14}
+    fontSize: 12}
     });
-    style.addRules([rule_fsa]);
+    lineStyle.addRules([lineRule]);
 
     linesWFSOverlay = new OpenLayers.Layer.Vector("LinesWFS", {
         strategies: [new OpenLayers.Strategy.BBOX()],
-        styleMap: style,
+        styleMap: lineStyle,
         eventListeners: {
             loadend: function (e){ map.zoomToExtent(linesWFSOverlay.getDataExtent(),false); }
         },
@@ -130,7 +130,41 @@ function initializeProjectMap() {
     });
 
 
-    var hoverControl = new OpenLayers.Control.SelectFeature(
+    var lineSelectControl = new OpenLayers.Control.SelectFeature(
+        [linesWFSOverlay],
+        {
+            clickout: true,
+            eventListeners: {
+                featurehighlighted: function(e) {
+                    var txt="<b>Selected: </b><br> Animal: " + e.feature.attributes.animalName
+                    + "<br> Date From: " + e.feature.attributes.fromDate
+                    + "<br> Date To: " + e.feature.attributes.toDate;
+                    $('#mapDescription').html(txt);
+                    //alert(e.feature.attributes.animalId );//+ " at " + e.feature.attributes.detectionTime);
+                },
+                featureunhighlighted: function(e) {
+                }
+            }
+        }
+    );
+
+
+    var lineHoverControl = new OpenLayers.Control.SelectFeature(
+        [linesWFSOverlay],
+        {
+            hover:true,
+            highlightOnly: true,
+            renderIntent: "temporary",
+            eventListeners: {
+                featurehighlighted: function(e) {
+
+                }
+            }
+        }
+    );
+
+
+    var pointHoverControl = new OpenLayers.Control.SelectFeature(
         [pointsWFSOverlay],
         {
             clickout: true,
@@ -147,18 +181,26 @@ function initializeProjectMap() {
     map.addLayers([gsat,gphy]);
     //map.addLayer(pointsWFSOverlay);
     map.addLayer(linesWFSOverlay);
-    map.addControl(hoverControl);
-    hoverControl.activate();
+    map.addControl(pointHoverControl);
+    map.addControl(lineSelectControl);
+    pointHoverControl.activate();
+    lineSelectControl.activate();
     map.setCenter(new OpenLayers.LonLat(133,-28).transform(kmlProjection,googleProjection), 4);
-    //map.zoomToExtent(linesWFSOverlay.getDataExtent(),true);
-    var test=1;
+}
+
+function zoomToTrack(animalId) {
+
+    for (var key in linesWFSOverlay.features) {
+         var feature = linesWFSOverlay.features[key];
+         if (feature.attributes && animalId == feature.attributes.animalId) {
+            map.zoomToExtent(feature.geometry.getBounds(),false);
+         }
+    }
 }
 
 function updateProjectMap() {
 
     alert("updateProjectMap() called.");
-    map = new OpenLayers.Map("projectMap");
-    alert("got map");
 
     var dateFrom = $('input[id=fromDatepicker]');
     var dateTo=$('input[id=toDatepicker]');

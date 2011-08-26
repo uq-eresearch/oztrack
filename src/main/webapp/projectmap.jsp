@@ -12,34 +12,49 @@
 <div id="projectMap"></div>
 <div id="projectMapOptions">
 
-    <form method="POST">
+<input type="hidden" value="${project.id}" id="projectId"/>
+<input type="hidden" value="${project.boundingBox}" id="projectBoundingBox"/>
 
-        <input type="hidden" value="${project.id}" id="projectId"/>
-        <input type="hidden" value="${project.boundingBox}" id="projectBoundingBox"/>
+    <div id="mapDescription"></div>
 
-        <label class="shortInputLabel" for="fromDatepicker">Date From:</label>
-        <input id="fromDatepicker" class="shortInputBox"/>
+    <form method="POST" id="mapToolForm">
 
-        <label for="toDatepicker" class="shortInputLabel">Date To:</label>
-        <input id="toDatepicker" class="shortInputBox"/>
+    <div id="accordion">
+        <h3><a href="#">Animals</a></h3>
+        <div>
+             <c:forEach items="${projectAnimalsList}" var="animal">
+                <c:out value="${animal.projectAnimalId}"/> -
+                <a href="#" onclick="zoomToTrack(${animal.projectAnimalId});">
+                <c:out value="${animal.animalName}"/></a>  <br>
+            </c:forEach>
+        </div>
 
-         <br>
-         <label for="mapQueryTypeSelect">Query Type:</label>
-         <select id="mapQueryTypeSelect">
-                <c:forEach items="${mapQueryTypeList}" var="mapQueryType">
-                    <c:if test="${!fn:contains(mapQueryType,'ALL_')}">
-                      <option value="${mapQueryType}"><c:out value="${mapQueryType.displayName}"/></option>
-                    </c:if>
-                </c:forEach>
-         <select>
+        <h3><a href="#">Date Range</a></h3>
+        <div>
+           <label class="shortInputLabel" for="fromDatepicker">Date From:</label>
+            <input id="fromDatepicker" class="shortInputBox"/>
 
-         <div class="formButton"><input type="submit" id="projectMapSubmit" value="Update Map"/></div>
+            <label for="toDatepicker" class="shortInputLabel">Date To:</label>
+            <input id="toDatepicker" class="shortInputBox"/>
+        </div>
 
+        <h3><a href="#">Map Layers</a></h3>
+        <div>
+            <div id="layerSwitcherDiv"></div>
+            <div>
+             <label for="mapQueryTypeSelect">Query Type:</label>
+             <select id="mapQueryTypeSelect">
+                    <c:forEach items="${mapQueryTypeList}" var="mapQueryType">
+                        <c:if test="${!fn:contains(mapQueryType,'ALL_')}">
+                          <option value="${mapQueryType}"><c:out value="${mapQueryType.displayName}"/></option>
+                        </c:if>
+                    </c:forEach>
+             <select>
+             </div>
+        </div>
+    </div>
+    <div class="formButton"><input type="submit" id="projectMapSubmit" value="Refresh"/></div>
     </form>
-
-
-
-
 </div>
 <div class="clearboth">&nbsp;</div>
 </div>
