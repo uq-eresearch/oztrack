@@ -60,8 +60,8 @@ function initializeProjectMap() {
 
     map = new OpenLayers.Map('projectMap',mapOptions);
     var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
-    layerSwitcher.div = OpenLayers.Util.getElement('layerSwitcherDiv');
-    layerSwitcher.roundedCorner = false;
+    //layerSwitcher.div = OpenLayers.Util.getElement('layerSwitcherDiv');
+    //layerSwitcher.roundedCorner = false;
     map.addControl(layerSwitcher);
     map.addControl(new OpenLayers.Control.MousePosition());
     map.addControl(new OpenLayers.Control.ZoomBox());
@@ -226,14 +226,14 @@ function updateProjectMap() {
     var projectId = $('#projectId').val();
     var dateFrom = $('input[id=fromDatepicker]');
     var dateTo=$('input[id=toDatepicker]');
-    var queryType =$('#mapQueryTypeSelect option:selected').val();
-    var queryTypeDescription = $("#mapQueryTypeSelect option:selected").text();
+    var queryType =$('input[id=mapQueryTypeSelect]:checked').val();//$('#mapQueryTypeSelect option:selected').val();
+    //var queryTypeDescription = $("#mapQueryTypeSelect").next();
 
     var data = 'projectId=' + projectId
              +'&dateFrom=' + dateFrom.val()
              + '&dateTo=' + dateTo.val()
              + '&queryType=' + queryType
-             + '&mapQueryTypeDescription=' + queryTypeDescription;
+             + '&mapQueryTypeDescription=' + queryTypeDescription.val();
     alert("data : " + data);
 
 
@@ -254,8 +254,8 @@ function updateProjectMap() {
               })
     });
 
-    map.addLayer(queryOverlay);
-    queryOverlay.refresh();
+    //map.addLayer(queryOverlay);
+    //queryOverlay.refresh();
 
 
 }

@@ -28,8 +28,7 @@
                     border-spacing: 2px;
                 }
                 .legend td {
-                    border: 5px solid black;
-                    border-color: white;
+                    border: 5px solid white;
                  }
                 .legend .legend-colour {
                     width: 12px;
@@ -56,9 +55,28 @@
 
         <h3><a href="#">Map Layers</a></h3>
         <div>
-            <div id="layerSwitcherDiv"></div>
-            <div>
-             <label for="mapQueryTypeSelect">Query Type:</label>
+         <style>
+                .mapQueryType {
+                    border-collapse: collapse;
+                    border-spacing: 2px;
+                }
+                .mapQueryType td {
+                    border: 5px solid white;
+                 }
+                }
+         </style>
+             <label class="shortInputLabel" for="mapQueryTypeSelect">Add A Layer:</label> <br>
+                <table class="mapQueryType">
+                <c:forEach items="${mapQueryTypeList}" var="mapQueryType">
+                    <c:if test="${!fn:contains(mapQueryType,'ALL_')}">
+                        <tr>
+                         <td><input class="shortInputRadioButton" type="radio" id="mapQueryTypeSelect" value="${mapQueryType}"/></td>
+                         <td><c:out value="${mapQueryType.displayName}"/></td>
+                        </tr>
+                    </c:if>
+                </c:forEach>
+                </table>
+             <!--
              <select id="mapQueryTypeSelect">
                     <c:forEach items="${mapQueryTypeList}" var="mapQueryType">
                         <c:if test="${!fn:contains(mapQueryType,'ALL_')}">
@@ -66,7 +84,8 @@
                         </c:if>
                     </c:forEach>
              <select>
-             </div>
+             -->
+
         </div>
     </div>
     <div class="formButton"><input type="submit" id="projectMapSubmit" value="Refresh"/></div>

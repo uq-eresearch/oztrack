@@ -6,6 +6,8 @@ $(document).ready(function(){
      setupDatepicker();
 
      $( "#accordion" ).accordion();
+     $( ".selector" ).accordion( "option", "fillSpace", true );
+     //$( ".selector" ).accordion( "option", "clearStyle", true );
 
      document.title='OzTrack';
      if ($('#titleText').length) {

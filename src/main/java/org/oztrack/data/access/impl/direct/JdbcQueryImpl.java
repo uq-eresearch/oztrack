@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class JdbcQueryImpl extends JdbcDaoSupport implements JdbcQuery {
 
-        /**
+     /**
      * Logger for this class and subclasses
      */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -146,7 +146,7 @@ public class JdbcQueryImpl extends JdbcDaoSupport implements JdbcQuery {
             sql = sql + animalClause;
         }
 
-        String orderBy = " order by o.detectionTime limit 100 ";
+        String orderBy = " order by o.detectionTime ";
         sql = sql + orderBy;
 
         logger.debug("Position fix jdbc query: " + sql);

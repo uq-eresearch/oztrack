@@ -68,15 +68,18 @@ public class RServeInterface {
         }
 
         // mapQueryType tells us what R function to call
-        switch (this.searchQuery.getMapQueryType()) {
+        MapQueryType mapQueryType = this.searchQuery.getMapQueryType();
+        switch (mapQueryType) {
             case ALL_POINTS:
-                writePositionFixKmlFile(fileName);
-                break;
+                 writePositionFixKmlFile(fileName);
+                 break;
             case MCP100:
-                writeMCPKmlFile(fileName);
-                break;
+            case MCP95:
+            case MCP50:
+                 writeMCPKmlFile(fileName,mapQueryType);
+                 break;
             default:
-                throw new RServeInterfaceException("Unhandled MapQueryType: " + searchQuery.getMapQueryType());
+                 throw new RServeInterfaceException("Unhandled MapQueryType: " + searchQuery.getMapQueryType());
         }
 
         rConnection.close();
@@ -178,7 +181,7 @@ public class RServeInterface {
 
     }
 
-    protected void writeMCPKmlFile(String fileName) throws RServeInterfaceException {
+    protected void writeMCPKmlFile(String fileName, MapQueryType mapQueryType) throws RServeInterfaceException {
 
         String rCommand;
         String outFileNameFix = fileName.replace("\\","/"); /* for R in windows */
@@ -188,16 +191,19 @@ public class RServeInterface {
             rCommand = "coordinates(positionFix) <- c(\"Y\",\"X\");proj4string(positionFix)=CRS(\"+init=epsg:4326\")";
             rConnection.eval(rCommand);
             logger.debug(rCommand);
-            rLog = rLog + "coordinates + projection defined for KML";
+            rLog = rLog + "coordinates + projection defined for KML.";
 
-            rCommand = "mcp100 <- mcp(positionFix[,1],percent=100)";
+            String queryType = mapQueryType.toString(); // eg.MCP100
+            String percent = queryType.replace("MCP","");
+
+            rCommand = queryType + " <- mcp(positionFix[,1],percent=" + percent + ")";
             rConnection.eval(rCommand);
-            rLog = rLog + "mcp100 object set";
+            rLog = rLog + queryType + " object set.";
 
-            rCommand = "writeOGR(mcp100, dsn=\"" + outFileNameFix + "\", layer= \"positionFix\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))";
+            rCommand = "writeOGR(" + queryType +", dsn=\"" + outFileNameFix + "\", layer= \"" + queryType + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))";
             rConnection.eval(rCommand);
             logger.debug(rCommand);
-            rLog = rLog + "KML written";
+            rLog = rLog + "KML written.";
 
         } catch (RserveException e) {
             throw new RServeInterfaceException(e.toString() + " Log: " + rLog);
