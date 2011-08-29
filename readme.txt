@@ -23,3 +23,29 @@ Run something like the following commands:
     -- Out own tables should be created on first run by Hibernate
 
 See http://postgis.refractions.net/documentation/manual-1.5/ch02.html#id2565921
+
+Installing R (including Rserve)
+--------------------------------------------------------------------------------
+You can just install R from the EPEL package repository on CentOS:
+
+    yum install R
+
+There are further libraries used in this project that are installed by running
+intall.packages in the R interpreter (run the "R" command from Linux console).
+
+    install.packages(c("Rserve"), dependencies=TRUE)
+
+Note that the following command takes a while (eg over 10 minutes) because it
+downloads, compiles, tests, and installs a large number of dependencies.
+
+    install.packages(c("sp","ade4","adehabitatHR","adehabitatMA","maptools","shapefiles"), dependencies=TRUE)
+
+Running Rserve
+--------------------------------------------------------------------------------
+To run Rserve daemon, execute the following from your Linux console:
+
+    R CMD Rserve
+
+The resulting Rserve process will listen on port 6311.
+
+See http://www.rforge.net/Rserve/faq.html#start
