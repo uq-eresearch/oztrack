@@ -100,26 +100,13 @@ function initializeProjectMap() {
         })
     });
 
-
-    var lineStyle = new OpenLayers.Style();
-    var lineRule = new OpenLayers.Rule({
-    symbolizer: {
-    strokeColor: "#ffffff",
-    strokeWidth: 1,
-    label: "${animalName}",
-    labelAlign: "rt",
-    fontColor: "#ffffff",
-    fontOpacity: 0.9,
-    fontFamily: "Arial",
-    fontSize: 12}
-    });
-    lineStyle.addRules([lineRule]);
-
     linesWFSOverlay = new OpenLayers.Layer.Vector("LinesWFS", {
         strategies: [new OpenLayers.Strategy.BBOX()],
-        styleMap: lineStyle,
         eventListeners: {
-            loadend: function (e){ map.zoomToExtent(linesWFSOverlay.getDataExtent(),false); }
+            loadend: function (e) {
+            	map.zoomToExtent(linesWFSOverlay.getDataExtent(),false);
+            	updateAnimalStyles();
+        	}
         },
         projection: new OpenLayers.Projection("EPSG:4326"),
         protocol: new OpenLayers.Protocol.WFS({
@@ -186,6 +173,41 @@ function initializeProjectMap() {
     pointHoverControl.activate();
     lineSelectControl.activate();
     map.setCenter(new OpenLayers.LonLat(133,-28).transform(kmlProjection,googleProjection), 4);
+}
+
+function updateAnimalStyles() {
+	var colours = [
+        '#0000FF',
+        '#FF2A00',
+        '#FFAA00',
+        '#00FFAA',
+        '#FFFF00',
+        '#71FF00',
+        '#00D5FF',
+        '#FF5500',
+        '#FFD500',
+        '#FF8000',
+        '#006AFF',
+        '#00FF1C'
+    ];
+    for (var key in linesWFSOverlay.features) {
+        var feature = linesWFSOverlay.features[key];
+        if (feature.attributes && feature.attributes.animalId) {
+        	var colour = colours[feature.attributes.animalId % colours.length];
+        	feature.style = {
+	        	strokeColor: colour,
+	        	strokeWidth: 2,
+	        	label: feature.attributes.animalName,
+	        	labelAlign: "rt",
+	        	fontColor: "#ffffff",
+	        	fontOpacity: 0.9,
+	        	fontFamily: "Arial",
+	        	fontSize: 12
+        	}
+        	$('#legend-colour-' + feature.attributes.animalId).attr('style', 'background-color: ' + colour + ';');
+        }
+    }
+    linesWFSOverlay.redraw();
 }
 
 function zoomToTrack(animalId) {

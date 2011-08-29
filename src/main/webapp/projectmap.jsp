@@ -22,11 +22,27 @@
     <div id="accordion">
         <h3><a href="#">Animals</a></h3>
         <div>
-             <c:forEach items="${projectAnimalsList}" var="animal">
-                <c:out value="${animal.projectAnimalId}"/> -
-                <a href="#" onclick="zoomToTrack(${animal.projectAnimalId});">
-                <c:out value="${animal.animalName}"/></a>  <br>
+            <style>
+                .legend {
+                    border-collapse: collapse;
+                    border-spacing: 2px;
+                }
+                .legend td {
+                    border: 5px solid black;
+                    border-color: white;
+                 }
+                .legend .legend-colour {
+                    width: 12px;
+                }
+            </style>
+            <table class="legend">
+            <c:forEach items="${projectAnimalsList}" var="animal">
+                <tr>
+                    <td class="legend-colour" id="legend-colour-${animal.projectAnimalId}">&nbsp;</td>
+                    <td class="legend-value"><a href="#" onclick="zoomToTrack(${animal.projectAnimalId});">${animal.animalName}</a></td>
+                </tr>
             </c:forEach>
+            </table>
         </div>
 
         <h3><a href="#">Date Range</a></h3>
