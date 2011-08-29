@@ -72,6 +72,9 @@ public class RServeInterface {
             case ALL_POINTS:
                 writePositionFixKmlFile(fileName);
                 break;
+            case MCP100:
+                writeMCPKmlFile(fileName);
+                break;
             default:
                 throw new RServeInterfaceException("Unhandled MapQueryType: " + searchQuery.getMapQueryType());
         }
@@ -173,6 +176,32 @@ public class RServeInterface {
             throw new RServeInterfaceException(e.toString() + "Log: " + rLog);
         }
 
+    }
+
+    protected void writeMCPKmlFile(String fileName) throws RServeInterfaceException {
+
+        String rCommand;
+        String outFileNameFix = fileName.replace("\\","/"); /* for R in windows */
+
+        try {
+
+            rCommand = "coordinates(positionFix) <- c(\"Y\",\"X\");proj4string(positionFix)=CRS(\"+init=epsg:4326\")";
+            rConnection.eval(rCommand);
+            logger.debug(rCommand);
+            rLog = rLog + "coordinates + projection defined for KML";
+
+            rCommand = "mcp100 <- mcp(positionFix[,1],percent=100)";
+            rConnection.eval(rCommand);
+            rLog = rLog + "mcp100 object set";
+
+            rCommand = "writeOGR(mcp100, dsn=\"" + outFileNameFix + "\", layer= \"positionFix\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))";
+            rConnection.eval(rCommand);
+            logger.debug(rCommand);
+            rLog = rLog + "KML written";
+
+        } catch (RserveException e) {
+            throw new RServeInterfaceException(e.toString() + " Log: " + rLog);
+        }
     }
 
 

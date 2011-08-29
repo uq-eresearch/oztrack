@@ -355,7 +355,17 @@ a:hover {
     font-size: 1em;
 }
 
+.baseLayersDiv input, .dataLayersDiv input{
+    width:5px;
+}
+
+form .baseLayersDiv, .dataLayersDiv {
+    margin:0px;
+    padding:0px;
+}
+
 .baseLbl, .dataLbl {
+    width:100px;
     font-weight: bold;
     margin-top:5px;
 }

@@ -38,12 +38,12 @@ function initializeHomeMap() {
 
 var map;
 var linesWFSOverlay;
+var googleProjection = new OpenLayers.Projection('EPSG:900913');
+var kmlProjection =  new OpenLayers.Projection("EPSG:4326");
 
 function initializeProjectMap() {
 
     var projectId = $('#projectId').val();
-    var googleProjection = new OpenLayers.Projection('EPSG:900913');
-    var kmlProjection =  new OpenLayers.Projection("EPSG:4326");
 
     var mapOptions = {
        maxExtent: new OpenLayers.Bounds(
@@ -60,7 +60,8 @@ function initializeProjectMap() {
 
     map = new OpenLayers.Map('projectMap',mapOptions);
     var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
-    layerSwitcher.div = OpenLayers.Util.getElement('layerSwitcherDiv')
+    layerSwitcher.div = OpenLayers.Util.getElement('layerSwitcherDiv');
+    layerSwitcher.roundedCorner = false;
     map.addControl(layerSwitcher);
     map.addControl(new OpenLayers.Control.MousePosition());
     map.addControl(new OpenLayers.Control.ZoomBox());
@@ -222,14 +223,41 @@ function zoomToTrack(animalId) {
 
 function updateProjectMap() {
 
-    alert("updateProjectMap() called.");
-
+    var projectId = $('#projectId').val();
     var dateFrom = $('input[id=fromDatepicker]');
     var dateTo=$('input[id=toDatepicker]');
-    var queryType =$('select[id=mapQueryTypeSelect]');
+    var queryType =$('#mapQueryTypeSelect option:selected').val();
+    var queryTypeDescription = $("#mapQueryTypeSelect option:selected").text();
 
-    var data= 'projectId=' + $('#projectId').val() +'&dateFrom=' + dateFrom.val() + '&dateTo=' + dateTo.val() + '&queryType=' + queryType.val();
+    var data = 'projectId=' + projectId
+             +'&dateFrom=' + dateFrom.val()
+             + '&dateTo=' + dateTo.val()
+             + '&queryType=' + queryType
+             + '&mapQueryTypeDescription=' + queryTypeDescription;
     alert("data : " + data);
+
+
+    var queryOverlay = new OpenLayers.Layer.Vector(
+            queryTypeDescription,
+            {strategies: [new OpenLayers.Strategy.Fixed()],
+             protocol: new OpenLayers.Protocol.HTTP(
+                {url: "mapQueryKML",
+                 params: {projectId:projectId, queryType:queryType},
+                 format: new OpenLayers.Format.KML(
+                    {extractStyles: true,
+                     extractAttributes: true,
+                     maxDepth: 2,
+                     internalProjection: googleProjection,
+                     externalProjection: kmlProjection,
+                     kmlns:"http://localhost:8080/"
+                 })
+              })
+    });
+
+    map.addLayer(queryOverlay);
+    queryOverlay.refresh();
+
+
 }
 
 function initializeSightingMap() {

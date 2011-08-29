@@ -43,9 +43,6 @@ public class KMLMapQueryView extends AbstractView {
             if (searchQuery.getProject() != null) {
                 RServeInterface r = new RServeInterface();
                 kmlFile = r.createKml(searchQuery);
-
-                // start: try reading into geotools and serve a WMS layer
-
             }
         }
 

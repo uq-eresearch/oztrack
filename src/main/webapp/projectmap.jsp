@@ -17,7 +17,7 @@
 
     <div id="mapDescription"></div>
 
-    <form method="POST" id="mapToolForm">
+    <form method="POST" id="mapToolForm" onsubmit="updateProjectMap(); return false;">
 
     <div id="accordion">
         <h3><a href="#">Animals</a></h3>
