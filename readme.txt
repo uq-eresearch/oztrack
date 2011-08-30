@@ -38,7 +38,10 @@ intall.packages in the R interpreter (run the "R" command from Linux console).
 Note that the following command takes a while (eg over 10 minutes) because it
 downloads, compiles, tests, and installs a large number of dependencies.
 
-    install.packages(c("sp","ade4","adehabitatHR","adehabitatMA","maptools","shapefiles"), dependencies=TRUE)
+    install.packages(c("sp","ade4","adehabitatHR","adehabitatMA","maptools","shapefiles","rgdal"), dependencies=TRUE)
+
+Note: it may be necessary to add a repos argument (eg repos="http://cran.cnr.berkeley.edu/")
+when executing install.packages, but this caused an error when run on CentOS.
 
 Running Rserve
 --------------------------------------------------------------------------------
