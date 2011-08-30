@@ -43,6 +43,9 @@ downloads, compiles, tests, and installs a large number of dependencies.
 Note: it may be necessary to add a repos argument (eg repos="http://cran.cnr.berkeley.edu/")
 when executing install.packages, but this caused an error when run on CentOS.
 
+Note: you will need the 'gdal' Red Hat package installed in order to install the
+'rgdal' R package (ie run yum install gdal).
+
 Running Rserve
 --------------------------------------------------------------------------------
 To run Rserve daemon, execute the following from your Linux console:

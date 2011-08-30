@@ -63,29 +63,19 @@
                 .mapQueryType td {
                     border: 5px solid white;
                  }
-                }
+
          </style>
-             <label class="shortInputLabel" for="mapQueryTypeSelect">Add A Layer:</label> <br>
+             <label class="shortInputLabel">Add A Layer:</label> <br>
                 <table class="mapQueryType">
                 <c:forEach items="${mapQueryTypeList}" var="mapQueryType">
                     <c:if test="${!fn:contains(mapQueryType,'ALL_')}">
                         <tr>
-                         <td><input class="shortInputRadioButton" type="radio" id="mapQueryTypeSelect" value="${mapQueryType}"/></td>
-                         <td><c:out value="${mapQueryType.displayName}"/></td>
+                         <td><input class="shortInputRadioButton" type="radio" name="mapQueryTypeSelect" value="${mapQueryType}"/></td>
+                         <td id="${mapQueryType}"><c:out value="${mapQueryType.displayName}"/></td>
                         </tr>
                     </c:if>
                 </c:forEach>
                 </table>
-             <!--
-             <select id="mapQueryTypeSelect">
-                    <c:forEach items="${mapQueryTypeList}" var="mapQueryType">
-                        <c:if test="${!fn:contains(mapQueryType,'ALL_')}">
-                          <option value="${mapQueryType}"><c:out value="${mapQueryType.displayName}"/></option>
-                        </c:if>
-                    </c:forEach>
-             <select>
-             -->
-
         </div>
     </div>
     <div class="formButton"><input type="submit" id="projectMapSubmit" value="Refresh"/></div>

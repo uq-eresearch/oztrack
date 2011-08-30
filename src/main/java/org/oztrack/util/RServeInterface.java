@@ -159,7 +159,8 @@ public class RServeInterface {
     protected void writePositionFixKmlFile(String fileName) throws RServeInterfaceException {
 
         String rCommand;
-        String outFileNameFix = fileName.replace("\\","/"); /* for R in windows */
+        String outFileNameFix = fileName;
+        //String outFileNameFix = fileName.replace("\\","/"); /* for R in windows */
 
         try {
 

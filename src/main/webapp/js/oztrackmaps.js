@@ -226,23 +226,25 @@ function updateProjectMap() {
     var projectId = $('#projectId').val();
     var dateFrom = $('input[id=fromDatepicker]');
     var dateTo=$('input[id=toDatepicker]');
-    var queryType =$('input[id=mapQueryTypeSelect]:checked').val();//$('#mapQueryTypeSelect option:selected').val();
-    //var queryTypeDescription = $("#mapQueryTypeSelect").next();
+    var queryType =$('input[name=mapQueryTypeSelect]:checked');
+    var queryTypeDescription =  queryType.parent().next().text();
 
+    /*
     var data = 'projectId=' + projectId
              +'&dateFrom=' + dateFrom.val()
              + '&dateTo=' + dateTo.val()
-             + '&queryType=' + queryType
-             + '&mapQueryTypeDescription=' + queryTypeDescription.val();
-    alert("data : " + data);
+             + '&queryType=' + queryType.val()
+             + '&mapQueryTypeDescription=' + queryTypeDescription;
 
+    alert("data : " + data);
+    */
 
     var queryOverlay = new OpenLayers.Layer.Vector(
             queryTypeDescription,
             {strategies: [new OpenLayers.Strategy.Fixed()],
              protocol: new OpenLayers.Protocol.HTTP(
                 {url: "mapQueryKML",
-                 params: {projectId:projectId, queryType:queryType},
+                 params: {projectId:projectId, queryType:queryType.val()},
                  format: new OpenLayers.Format.KML(
                     {extractStyles: true,
                      extractAttributes: true,
@@ -254,9 +256,7 @@ function updateProjectMap() {
               })
     });
 
-    //map.addLayer(queryOverlay);
-    //queryOverlay.refresh();
-
+    map.addLayer(queryOverlay);
 
 }
 
