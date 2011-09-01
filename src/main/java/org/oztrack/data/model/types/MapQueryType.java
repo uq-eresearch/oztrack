@@ -15,9 +15,12 @@ public enum MapQueryType {
     ,ALL_LINES("All Tracks in this Project (as Lines)")
 //    ,POINTS("Points")
 //    ,TRAJECTORIES("Trajectories")
-    ,MCP100("Multiple Convex Polygon 100%")
-    ,MCP95("Multiple Convex Polygon 95%")
-    ,MCP50("Multiple Convex Polygon 50%");
+    ,MCP100("Minimum Convex Polygon 100%")
+    ,MCP95("Minimum Convex Polygon 95%")
+    ,MCP50("Minimum Convex Polygon 50%")
+    ,CHARHULL100("Home Range Estimation 100% (Delaunay Triangulation)")
+    ,CHARHULL95("Home Range Estimation 95% (Delaunay Triangulation)")
+    ,CHARHULL50("Home Range Estimation 50% (Delaunay Triangulation)");
 
     private final String displayName;
 

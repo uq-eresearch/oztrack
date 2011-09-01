@@ -36,7 +36,7 @@ public class RServeInterface {
 
     private RConnection rConnection;
     private SearchQuery searchQuery;
-    private String rLog;
+    private String rLog = "";
 
     public RServeInterface() {
     }
@@ -78,6 +78,12 @@ public class RServeInterface {
             case MCP50:
                  writeMCPKmlFile(fileName,mapQueryType);
                  break;
+            case CHARHULL100:
+            case CHARHULL95:
+            case CHARHULL50:
+                 writeCharHullKmlFile(fileName, mapQueryType);
+                 break;
+
             default:
                  throw new RServeInterfaceException("Unhandled MapQueryType: " + searchQuery.getMapQueryType());
         }
@@ -110,8 +116,9 @@ public class RServeInterface {
 
         try {
             this.rConnection = new RConnection();
+            rConnection.setSendBufferSize(10485760);
             this.rConnection.eval("library(adehabitatHR);library(adehabitatMA);library(maptools);library(rgdal);library(shapefiles)");
-            rLog = rLog + " | Libraries Loaded ";
+            rLog = rLog + "Libraries Loaded ";
         } catch (RserveException e) {
             throw new RServeInterfaceException(e.toString());
         }
@@ -198,7 +205,7 @@ public class RServeInterface {
             String percent = queryType.replace("MCP","");
 
             rCommand = queryType + " <- mcp(positionFix[,1],percent=" + percent + ")";
-            rConnection.eval(rCommand);
+            rConnection.voidEval(rCommand);
             rLog = rLog + queryType + " object set.";
 
             rCommand = "writeOGR(" + queryType +", dsn=\"" + outFileNameFix + "\", layer= \"" + queryType + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))";
@@ -211,6 +218,39 @@ public class RServeInterface {
         }
     }
 
+    protected void writeCharHullKmlFile(String fileName, MapQueryType mapQueryType) throws RServeInterfaceException {
+
+        String rCommand;
+        String outFileNameFix = fileName.replace("\\","/"); /* for R in windows */
+        REXP rexp;
+
+        try {
+
+            rCommand = "coordinates(positionFix) <- c(\"Y\",\"X\");proj4string(positionFix)=CRS(\"+init=epsg:4326\")";
+            rConnection.eval(rCommand);
+            logger.debug(rCommand);
+            rLog = rLog + "coordinates + projection defined for KML.";
+
+            String queryType = mapQueryType.toString(); // eg.MCP100
+            String percent = queryType.replace("CHARHULL","");
+
+            rCommand = "CharHullHR <- CharHull(positionFix[,1])";
+            rConnection.voidEval(rCommand);
+            rLog = rLog + "CharHullHR object set.";
+
+            rCommand = queryType + " <- getverticeshr(CharHullHR,percent=" + percent + ")";
+            rConnection.voidEval(rCommand);
+            rLog = rLog + queryType + " object set.";
+
+            rCommand = "writeOGR(" + queryType +", dsn=\"" + outFileNameFix + "\", layer= \"" + queryType + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))";
+            rConnection.eval(rCommand);
+            logger.debug(rCommand);
+            rLog = rLog + "KML written.";
+
+        } catch (RserveException e) {
+            throw new RServeInterfaceException(e.toString() + " Log: " + rLog);
+        }
+    }
 
 
 

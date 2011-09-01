@@ -124,7 +124,7 @@ function initializeProjectMap() {
             clickout: true,
             eventListeners: {
                 featurehighlighted: function(e) {
-                    var txt="<b>Selected: </b><br> Animal: " + e.feature.attributes.animalName
+                    var txt="<b>Selected Feature: </b><br> Animal: " + e.feature.attributes.animalName
                     + "<br> Date From: " + e.feature.attributes.fromDate
                     + "<br> Date To: " + e.feature.attributes.toDate;
                     $('#mapDescription').html(txt);
@@ -256,7 +256,26 @@ function updateProjectMap() {
               })
     });
 
+    var querySelectControl = new OpenLayers.Control.SelectFeature(
+        [queryOverlay],
+        {
+            clickout: true,
+            eventListeners: {
+                featurehighlighted: function(e) {
+                    var txt="<b>Selected Feature: </b><br> Animal: " + e.feature.attributes.id
+                    + "<br> Area: " + e.feature.attributes.area;
+                    $('#mapDescription').html(txt);
+                    //alert(e.feature.attributes.animalId );//+ " at " + e.feature.attributes.detectionTime);
+                },
+                featureunhighlighted: function(e) {
+                }
+            }
+        }
+    );
+
     map.addLayer(queryOverlay);
+    map.addControl(querySelectControl);
+    querySelectControl.activate();
 
 }
 

@@ -13,12 +13,11 @@ Run something like the following commands:
     -- Run the PostGIS initialisation scripts: need to run postgis.sql as postgres
     -- because only superuser can create c functions; afterwards, we change owner
     -- on the resulting tables/views and subsequently connect as normal user.
-    sudo -u postgres psql -d oztrack -f /usr/share/postgresql/8.4/contrib/postgis-1.5/postgis.sql
-    sudo -u postgres psql -d oztrack -f /usr/share/postgresql/8.4/contrib/postgis_comments.sql
+    psql -U postgres -d oztrack -f /usr/share/pgsql/contrib/lwpostgis.sql
     sudo -u postgres psql -d oztrack -c "alter table geometry_columns owner to oztrack;"
     sudo -u postgres psql -d oztrack -c "alter table spatial_ref_sys owner to oztrack;"
     sudo -u postgres psql -d oztrack -c "alter view geography_columns owner to oztrack;"
-    psql -U oztrack -d oztrack -f /usr/share/postgresql/8.4/contrib/postgis-1.5/spatial_ref_sys.sql
+    psql -U postgres -d oztrack -f /usr/share/pgsql/contrib/spatial_ref_sys.sql
 
     -- Out own tables should be created on first run by Hibernate
 
