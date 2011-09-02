@@ -1,3 +1,26 @@
+Installing GIS Packages
+--------------------------------------------------------------------------------
+
+These packages are required for both PostGIS and R spatial functionality.
+
+The "traditional" yum repository has very old versions of these packages. To get the later versions,
+enlist this repository to yum by running:
+
+rpm -Uvh http://elgis.argeo.org/repos/5/elgis-release-5-5_0.noarch.rpm
+
+then yum install in this order:
+ geos
+ geos-devel
+ proj
+ proj-devel
+ postgis
+
+The gdal packages are a little too up to date and won't build properly yet when R's rgdal(see below) uses them.
+So use the rpms of the previous version:
+
+ rpm -Uvh http://elgis.argeo.org/repos/5/elgis/x86_64/gdal-1.7.2-5_0.el5.elgis.x86_64.rpm
+ rpm -Uvh http://elgis.argeo.org/repos/5/elgis/x86_64/gdal-devel-1.7.2-5_0.el5.elgis.x86_64.rpm
+
 Setting up the database
 --------------------------------------------------------------------------------
 The following commands are used on a Linux machine; we should also document the
@@ -13,14 +36,14 @@ Run something like the following commands:
     -- Run the PostGIS initialisation scripts: need to run postgis.sql as postgres
     -- because only superuser can create c functions; afterwards, we change owner
     -- on the resulting tables/views and subsequently connect as normal user.
-    psql -U postgres -d oztrack -f /usr/share/pgsql/contrib/lwpostgis.sql
+    psql -U postgres -d oztrack -f /usr/share/pgsql/contrib/postgis.sql
+    psql -U postgres -d oztrack -f /usr/share/pgsql/contrib/spatial_ref_sys.sql
+
     sudo -u postgres psql -d oztrack -c "alter table geometry_columns owner to oztrack;"
     sudo -u postgres psql -d oztrack -c "alter table spatial_ref_sys owner to oztrack;"
     sudo -u postgres psql -d oztrack -c "alter view geography_columns owner to oztrack;"
-    psql -U postgres -d oztrack -f /usr/share/pgsql/contrib/spatial_ref_sys.sql
 
     -- Out own tables should be created on first run by Hibernate
-
 See http://postgis.refractions.net/documentation/manual-1.5/ch02.html#id2565921
 
 Installing R (including Rserve)
@@ -30,7 +53,7 @@ You can just install R from the EPEL package repository on CentOS:
     yum install R
 
 There are further libraries used in this project that are installed by running
-intall.packages in the R interpreter (run the "R" command from Linux console).
+install.packages in the R interpreter (run the "R" command from Linux console, as root with -E switch).
 
     install.packages(c("Rserve"), dependencies=TRUE)
 
