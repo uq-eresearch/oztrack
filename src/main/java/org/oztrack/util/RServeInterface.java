@@ -10,10 +10,18 @@ import org.oztrack.data.model.types.MapQueryType;
 import org.oztrack.error.RServeInterfaceException;
 import org.rosuda.REngine.*;
 import org.rosuda.REngine.Rserve.RConnection;
+import org.rosuda.REngine.Rserve.RFileInputStream;
+import org.rosuda.REngine.Rserve.RFileOutputStream;
 import org.rosuda.REngine.Rserve.RserveException;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
+
+import static org.oztrack.util.StartRserve.checkLocalRserve;
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,6 +43,7 @@ public class RServeInterface {
     */
 
     private RConnection rConnection;
+    private String rWorkingDir;
     private SearchQuery searchQuery;
     private String rLog = "";
 
@@ -54,9 +63,12 @@ public class RServeInterface {
         this.searchQuery = searchQuery;
         startRConnection();
 
-        // find project directory path to write the file to
+        // create a temporary file name
         Project project = this.searchQuery.getProject();
-        String fileName = project.getDataDirectoryPath() + File.separator + searchQuery.getMapQueryType() + ".kml";
+        String filePrefix = "project-" + project.getId() + "-" + searchQuery.getMapQueryType() + "-";
+        Long uniqueId = new Random().nextLong();
+        SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyhhmmssSSS");
+        String fileName = this.rWorkingDir + filePrefix + sdf.format(new Date()) + uniqueId.toString() + ".kml";
 
         // project type determines what sort of dataframe to build
         switch (this.searchQuery.getProject().getProjectType()) {
@@ -89,6 +101,7 @@ public class RServeInterface {
         }
 
         rConnection.close();
+
         return new File(fileName);
 
 
@@ -115,11 +128,26 @@ public class RServeInterface {
     protected void startRConnection() throws RServeInterfaceException {
 
         try {
-            this.rConnection = new RConnection();
-            rConnection.setSendBufferSize(10485760);
-            this.rConnection.eval("library(adehabitatHR);library(adehabitatMA);library(maptools);library(rgdal);library(shapefiles)");
-            rLog = rLog + "Libraries Loaded ";
+            if (checkLocalRserve()) {
+                this.rConnection = new RConnection();
+                this.rConnection.setSendBufferSize(10485760);
+                this.rConnection.eval("library(adehabitatHR);library(adehabitatMA);library(maptools);library(rgdal);library(shapefiles)");
+                rLog = rLog + "Libraries Loaded ";
+
+                // get the working directory: Java and R have different ideas about windows fileNames
+                this.rWorkingDir = rConnection.eval("getwd()").asString() + File.separator;
+                String osname = System.getProperty("os.name");
+                if (osname != null && osname.length() >= 7 && osname.substring(0,7).equals("Windows")) {
+                    this.rWorkingDir = this.rWorkingDir.replace("\\","/");
+                }
+
+            } else {
+                throw new RServeInterfaceException("RServe not started.");
+            }
+
         } catch (RserveException e) {
+            throw new RServeInterfaceException(e.toString());
+        } catch (REXPMismatchException e) {
             throw new RServeInterfaceException(e.toString());
         }
     }
@@ -192,7 +220,6 @@ public class RServeInterface {
     protected void writeMCPKmlFile(String fileName, MapQueryType mapQueryType) throws RServeInterfaceException {
 
         String rCommand;
-        String outFileNameFix = fileName.replace("\\","/"); /* for R in windows */
 
         try {
 
@@ -206,9 +233,9 @@ public class RServeInterface {
 
             rCommand = queryType + " <- mcp(positionFix[,1],percent=" + percent + ")";
             rConnection.voidEval(rCommand);
-            rLog = rLog + queryType + " object set.";
+            rLog = rLog + queryType + " object set. File to write to : " + fileName;
 
-            rCommand = "writeOGR(" + queryType +", dsn=\"" + outFileNameFix + "\", layer= \"" + queryType + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))";
+            rCommand = "writeOGR(" + queryType +", dsn=\"" + fileName + "\", layer= \"" + queryType + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))";
             rConnection.eval(rCommand);
             logger.debug(rCommand);
             rLog = rLog + "KML written.";

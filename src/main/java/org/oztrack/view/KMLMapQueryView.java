@@ -9,6 +9,7 @@ import org.geotools.xml.Parser;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.util.RServeInterface;
+import org.rosuda.REngine.Rserve.RFileInputStream;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.AbstractView;
 
@@ -43,6 +44,7 @@ public class KMLMapQueryView extends AbstractView {
             if (searchQuery.getProject() != null) {
                 RServeInterface r = new RServeInterface();
                 kmlFile = r.createKml(searchQuery);
+
             }
         }
 
@@ -53,6 +55,7 @@ public class KMLMapQueryView extends AbstractView {
 
         response.setContentType("text/xml");
         response.getOutputStream().write(kmlContent);
+        kmlFile.delete();
 
     }
 }
