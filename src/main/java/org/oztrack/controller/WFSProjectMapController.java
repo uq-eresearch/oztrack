@@ -8,10 +8,12 @@ import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.data.model.types.MapQueryType;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
  * Date: 4/08/11
  * Time: 11:38 AM
  */
-public class WFSProjectMapController extends SimpleFormController {
+public class WFSProjectMapController implements Controller {
 
     /**
     * Logger for this class and subclasses
@@ -32,6 +34,8 @@ public class WFSProjectMapController extends SimpleFormController {
         /* parameters from OpenLayers HTTP request */
         String projectId = request.getParameter("projectId");
         String queryType = request.getParameter("queryType");
+        String dateFrom = request.getParameter("dateFrom");
+        String dateTo = request.getParameter("dateTo");
         SearchQuery searchQuery = new SearchQuery();
 
         if ((projectId != null) && (queryType != null)) {
@@ -40,6 +44,13 @@ public class WFSProjectMapController extends SimpleFormController {
             Project project = projectDao.getProjectById(Long.valueOf(projectId));
             searchQuery.setProject(project);
             searchQuery.setMapQueryType(MapQueryType.valueOf(queryType));
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            if (dateFrom !=  null) {
+                searchQuery.setFromDate(sdf.parse(dateFrom));
+            }
+            if (dateTo != null) {
+                searchQuery.setToDate(sdf.parse(dateTo));
+            }
         }
         else {
             logger.debug("no projectId or queryType");

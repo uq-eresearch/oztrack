@@ -8,18 +8,27 @@ enlist this repository to yum by running:
 
 rpm -Uvh http://elgis.argeo.org/repos/5/elgis-release-5-5_0.noarch.rpm
 
-then yum install in this order:
- geos
- geos-devel
- proj
- proj-devel
+then yum install in this order, using the appropriate architecture (with current version at time of writing):
+ geos   (3.2.2)
+ geos-devel(3.2.2)  // will install geos as a dependency
+ proj   (4.7.0)
+ proj-devel (4.7.0) // will install proj as a dependency
  postgis
 
-The gdal packages are a little too up to date and won't build properly yet when R's rgdal(see below) uses them.
-So use the rpms of the previous version:
+The gdal packages are a little too up to date (1.8) and won't build properly yet when R's rgdal(see below) uses them.
+So use the rpms of the previous version (may need to wget the files first):
 
  rpm -Uvh http://elgis.argeo.org/repos/5/elgis/x86_64/gdal-1.7.2-5_0.el5.elgis.x86_64.rpm
  rpm -Uvh http://elgis.argeo.org/repos/5/elgis/x86_64/gdal-devel-1.7.2-5_0.el5.elgis.x86_64.rpm
+
+However, the gdal package has loads of dependencies. One way to deal quickly is to do a yum install on 1.8 first to get the dependencies, then
+yum uninstall, and install via rpm. Yum installing dependencies seems to take care of things.
+
+To test successful installation, on the commmand line you should get a response from:
+geos-config
+gdal-config
+proj
+R will be looking for them later.
 
 Setting up the database
 --------------------------------------------------------------------------------

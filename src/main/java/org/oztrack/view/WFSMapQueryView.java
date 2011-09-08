@@ -1,9 +1,8 @@
 package org.oztrack.view;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.*;
+import net.opengis.wfs.FeatureCollectionType;
+import net.opengis.wfs.WfsFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.GML;
@@ -17,6 +16,7 @@ import org.geotools.kml.KML;
 import org.geotools.kml.KMLConfiguration;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.wfs.v1_1.WFSConfiguration;
 import org.geotools.xml.Encoder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -66,20 +66,42 @@ public class WFSMapQueryView extends AbstractView {
 
                 //if (!positionFixList.isEmpty()) {
 
-                    SimpleFeatureCollection collection = FeatureCollections.newCollection();
+                SimpleFeatureCollection collection = FeatureCollections.newCollection();
 
                     // Would like to supply GMLConfiguration.NO_FEATURE_BOUNDS to the encoder;
                     // but not possible with the GML class - would need use Encoder directly
-                    GML encoder = new GML(GML.Version.WFS1_0);
+                    //**GML encoder = new GML(GML.Version.WFS1_0);
+
+
+                WFSConfiguration wfsConfiguration = new org.geotools.wfs.v1_1.WFSConfiguration();
+                wfsConfiguration.getProperties().add(GMLConfiguration.NO_FEATURE_BOUNDS);
+
+                Encoder e = new Encoder(wfsConfiguration);
+
+                e.setIndenting(true);
+                FeatureCollectionType featureCollectionType = WfsFactory.eINSTANCE
+                        .createFeatureCollectionType();
+
 
                     switch (searchQuery.getMapQueryType()) {
                         case ALL_POINTS:
                             collection = this.buildPointsFeatureCollection(searchQuery);
-                            encoder.setNamespace("PositionFix", namespaceURI);
+                            //**encoder.setNamespace("PositionFix", namespaceURI);
+
+
+                            e.getNamespaces().declarePrefix("PositionFix", namespaceURI);
+                            featureCollectionType.getFeature().add(collection);
+
+
                             break;
                         case ALL_LINES:
+                        case LINES:
                             collection = this.buildLinesFeatureCollection(searchQuery);
-                            encoder.setNamespace("Track", namespaceURI);
+                            //**encoder.setNamespace("Track", namespaceURI);
+
+                            e.getNamespaces().declarePrefix("Track", namespaceURI);
+                            featureCollectionType.getFeature().add(collection);
+
                             break;
                         default:
                             break;
@@ -88,13 +110,16 @@ public class WFSMapQueryView extends AbstractView {
                     response.setContentType("text/xml");
                     response.setHeader("Content-Encoding", "gzip");
                     GZIPOutputStream gzipOutputStream = new GZIPOutputStream(response.getOutputStream());
-                    encoder.encode(gzipOutputStream, collection);
-                    gzipOutputStream.close();
+                    //encoder.encode(gzipOutputStream, collection);
+                    e.encode(featureCollectionType, org.geotools.wfs.WFS.FeatureCollection, gzipOutputStream);
+
+                gzipOutputStream.close();
 
             }
         }
 
     }
+
 
     private SimpleFeatureCollection buildPointsFeatureCollection(SearchQuery searchQuery) {
 
@@ -108,6 +133,7 @@ public class WFSMapQueryView extends AbstractView {
         simpleFeatureTypeBuilder.setName("PositionFix");
         simpleFeatureTypeBuilder.setNamespaceURI(namespaceURI);
         int srid = positionFixList.get(0).getLocationGeometry().getSRID();
+
         simpleFeatureTypeBuilder.add("location", Point.class, srid);
         simpleFeatureTypeBuilder.add("detectionTime", Date.class);
         simpleFeatureTypeBuilder.add("animalId",String.class);
@@ -161,8 +187,6 @@ public class WFSMapQueryView extends AbstractView {
 
         Long projectId = searchQuery.getProject().getId();
 
-
-
         HashMap<Long, AnimalTrack> tracks = new HashMap<Long, AnimalTrack>();
 
         for (PositionFix positionFix : positionFixList) {
@@ -206,5 +230,6 @@ public class WFSMapQueryView extends AbstractView {
         return collection;
 
     }
+
 
 }

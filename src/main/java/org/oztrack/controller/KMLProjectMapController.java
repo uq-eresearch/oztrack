@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,6 +33,8 @@ public class KMLProjectMapController extends SimpleFormController {
         /* parameters from OpenLayers HTTP request */
         String projectId = request.getParameter("projectId");
         String queryType = request.getParameter("queryType");
+        String dateFrom = request.getParameter("dateFrom");
+        String dateTo = request.getParameter("dateTo");
         SearchQuery searchQuery = new SearchQuery();
 
         if ((projectId != null) && (queryType != null)) {
@@ -40,6 +43,13 @@ public class KMLProjectMapController extends SimpleFormController {
             Project project = projectDao.getProjectById(Long.valueOf(projectId));
             searchQuery.setProject(project);
             searchQuery.setMapQueryType(MapQueryType.valueOf(queryType));
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            if (dateFrom !=  null) {
+                searchQuery.setFromDate(sdf.parse(dateFrom));
+            }
+            if (dateTo != null) {
+                searchQuery.setToDate(sdf.parse(dateTo));
+            }
         }
         else {
             logger.debug("no projectId or queryType");

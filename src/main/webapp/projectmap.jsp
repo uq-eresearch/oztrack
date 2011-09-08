@@ -17,9 +17,13 @@
 
     <div id="mapDescription"></div>
 
-    <form method="POST" id="mapToolForm" onsubmit="updateProjectMap(); return false;">
+    <form method="POST" id="mapToolForm" onsubmit="addProjectMapLayer(); return false;">
 
     <div id="accordion">
+
+        <h3><a href="#">Map Layers</a></h3>
+        <div id="customLayerSwitcher"></div>
+
         <h3><a href="#">Animals</a></h3>
         <div>
             <style>
@@ -30,30 +34,48 @@
                 .legend td {
                     border: 5px solid white;
                  }
-                .legend .legend-colour {
-                    width: 12px;
-                }
+
             </style>
             <table class="legend">
             <c:forEach items="${projectAnimalsList}" var="animal">
                 <tr>
-                    <td class="legend-colour" id="legend-colour-${animal.projectAnimalId}">&nbsp;</td>
-                    <td class="legend-value"><a href="#" onclick="zoomToTrack(${animal.projectAnimalId});">${animal.animalName}</a></td>
+                    <td><input type="checkbox" class="shortInputCheckbox" name="animalCheckbox" id="select-animal-${animal.projectAnimalId}" value="${animal.projectAnimalId}"/></td>
+                    <td class="legend-colour" id="legend-colour-${animal.projectAnimalId}"><a href="#" onclick="zoomToTrack(${animal.projectAnimalId});">${animal.animalName}</a></td>
                 </tr>
+
+                <!--
+                need this style:
+                .legend .legend-colour {
+                    width: 12px;
+                }
+                <tr>
+                    <td><input type="checkbox" class="shortInputCheckbox" name="selectAnimal" value="${animal.projectAnimalId}"/></td>
+                    <td class="legend-value"><a href="#" onclick="zoomToTrack(${animal.projectAnimalId});">${animal.animalName}</a></td>
+                    <td class="legend-colour" id="legend-colour-${animal.projectAnimalId}">&nbsp;</td>
+                </tr>
+                -->
+
             </c:forEach>
             </table>
         </div>
 
-        <h3><a href="#">Date Range</a></h3>
+        <h3><a href="#">Filters</a></h3>
         <div>
-           <label class="shortInputLabel" for="fromDatepicker">Date From:</label>
-            <input id="fromDatepicker" class="shortInputBox"/>
+            <b>Date Range:</b>
+            <table>
+             <tr>
+                <td><b>From:</b></td>
+                <td><input id="fromDatepicker" class="shortInputBox"/></td>
+             </tr>
+             <tr>
+                <td><b>To:</b></td>
+                <td><input id="fromDatepicker" class="shortInputBox"/></td>
+             </tr>
+            </table>
 
-            <label for="toDatepicker" class="shortInputLabel">Date To:</label>
-            <input id="toDatepicker" class="shortInputBox"/>
         </div>
 
-        <h3><a href="#">Map Layers</a></h3>
+        <h3><a href="#">Layer Types</a></h3>
         <div>
          <style>
                 .mapQueryType {
@@ -78,7 +100,7 @@
                 </table>
         </div>
     </div>
-    <div class="formButton"><input type="submit" id="projectMapSubmit" value="Refresh"/></div>
+    <div class="formButton"><input type="submit" id="projectMapSubmit" value="Add a New Layer"/></div>
     </form>
 </div>
 <div class="clearboth">&nbsp;</div>

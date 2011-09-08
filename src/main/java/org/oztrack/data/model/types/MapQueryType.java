@@ -14,7 +14,7 @@ public enum MapQueryType {
      ALL_POINTS("All Points in this Project")
     ,ALL_LINES("All Tracks in this Project (as Lines)")
 //    ,POINTS("Points")
-//    ,TRAJECTORIES("Trajectories")
+    ,LINES ("Lines")
     ,MCP100("Minimum Convex Polygon 100%")
     ,MCP95("Minimum Convex Polygon 95%")
     ,MCP50("Minimum Convex Polygon 50%")

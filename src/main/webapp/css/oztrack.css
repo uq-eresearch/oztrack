@@ -351,9 +351,9 @@ a:hover {
 
 }
 
-#projectMapForm {
-    padding-left: 0px;
-    font-size: 1em;
+#accordian form div {
+    margin: 0px;
+    padding: 0px;
 }
 
 #accordion .ui-accordion-content {
@@ -361,14 +361,16 @@ a:hover {
     }
 
 
-.baseLayersDiv input, .dataLayersDiv input{
-    width:5px;
-}
 
 form .baseLayersDiv, .dataLayersDiv {
     margin:0px;
     padding:0px;
 }
+
+form .dataLayersDiv input, form .baseLayersDiv input {
+    width:25px;
+}
+
 
 .baseLbl, .dataLbl {
     width:100px;
@@ -480,7 +482,7 @@ form div select, form div textarea, form div input {
   display:inline;
 }
 
-.shortInputRadioButton {
+.shortInputRadioButton, .shortInputCheckbox {
   width:10px;
   margin-top:5px;
   display:inline;
