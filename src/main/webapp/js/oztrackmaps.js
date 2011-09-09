@@ -40,11 +40,25 @@ var map;
 var linesWFSOverlay;
 var googleProjection = new OpenLayers.Projection('EPSG:900913');
 var kmlProjection =  new OpenLayers.Projection("EPSG:4326");
+var colours = [
+        '#8DD3C7',
+        '#FFFFB3',
+        '#BEBADA',
+        '#FB8072',
+        '#80B1D3',
+        '#FDB462',
+        '#B3DE69',
+        '#FCCDE5',
+        '#D9D9D9',
+        '#BC80BD',
+        '#CCEBC5',
+        '#FFED6F'
+    ];
+
 
 function initializeProjectMap() {
 
     var projectId = $('#projectId').val();
-
     var mapOptions = {
        maxExtent: new OpenLayers.Bounds(
             -128 * 156543.0339,
@@ -56,7 +70,6 @@ function initializeProjectMap() {
        projection: googleProjection,
        displayProjection: kmlProjection
     };
-
 
     map = new OpenLayers.Map('projectMap',mapOptions);
     map.addControl(new OpenLayers.Control.MousePosition());
@@ -75,35 +88,6 @@ function initializeProjectMap() {
                 "Google Satellite",
                 {type: google.maps.MapTypeId.SATELLITE}
     );
-
-    var kmlOverlay = new OpenLayers.Layer.Vector(
-                "Points",
-                {strategies: [new OpenLayers.Strategy.Fixed()],
-                 protocol: new OpenLayers.Protocol.HTTP(
-                    {url: "mapQueryKML",
-                     params: {projectId:projectId, queryType:"ALL_POINTS"},
-                     format: new OpenLayers.Format.KML(
-                        {extractStyles: true,
-                         extractAttributes: true,
-                         maxDepth: 2,
-                         internalProjection: googleProjection,
-                         externalProjection: kmlProjection
-                     })
-                  })
-                });
-
-    var pointsWFSOverlay = new OpenLayers.Layer.Vector(
-        "PointsWFS",
-        {strategies: [new OpenLayers.Strategy.BBOX()],
-         projection: new OpenLayers.Projection("EPSG:4326"),
-         protocol: new OpenLayers.Protocol.WFS.v1_1_0(
-            {url:  "mapQueryWFS?projectId=" + projectId + "&queryType=ALL_POINTS",
-            featureType: "PositionFix",
-            featureNS: "http://localhost:8080/",
-            geometryName: "location"
-            })
-        });
-
 
     linesWFSOverlay = new OpenLayers.Layer.Vector(
         "LinesWFS",
@@ -141,22 +125,19 @@ function initializeProjectMap() {
         }
     );
 
-
-    var lineHoverControl = new OpenLayers.Control.SelectFeature(
-        [linesWFSOverlay],
-        {
-            hover:true,
-            highlightOnly: true,
-            renderIntent: "temporary",
-            eventListeners: {
-                featurehighlighted: function(e) {
-
-                }
-            }
-        }
-    );
-
     /*
+    var pointsWFSOverlay = new OpenLayers.Layer.Vector(
+        "PointsWFS",
+        {strategies: [new OpenLayers.Strategy.BBOX()],
+         projection: new OpenLayers.Projection("EPSG:4326"),
+         protocol: new OpenLayers.Protocol.WFS.v1_1_0(
+            {url:  "mapQueryWFS?projectId=" + projectId + "&queryType=ALL_POINTS",
+            featureType: "PositionFix",
+            featureNS: "http://localhost:8080/",
+            geometryName: "location"
+            })
+        });
+
     var pointHoverControl = new OpenLayers.Control.SelectFeature(
         [pointsWFSOverlay],
         {
@@ -173,51 +154,39 @@ function initializeProjectMap() {
     */
 
     map.addLayers([gsat,gphy]);
-    //map.addLayer(pointsWFSOverlay);
     map.addLayer(linesWFSOverlay);
-    //map.addControl(pointHoverControl);
     map.addControl(lineSelectControl);
-    //pointHoverControl.activate();
     lineSelectControl.activate();
+    //map.addLayer(pointsWFSOverlay);
+    //map.addControl(pointHoverControl);
+    //pointHoverControl.activate();
+
     map.setCenter(new OpenLayers.LonLat(133,-28).transform(kmlProjection,googleProjection), 4);
 }
 
 
 
 function updateAnimalStyles() {
-	var colours = [
-        '#8DD3C7',
-        '#FFFFB3',
-        '#BEBADA',
-        '#FB8072',
-        '#80B1D3',
-        '#FDB462',
-        '#B3DE69',
-        '#FCCDE5',
-        '#D9D9D9',
-        '#BC80BD',
-        '#CCEBC5',
-        '#FFED6F'
-    ];
+
     for (var key in linesWFSOverlay.features) {
-        var feature = linesWFSOverlay.features[key];
-        if (feature.attributes && feature.attributes.animalId) {
-        	var colour = colours[feature.attributes.animalId % colours.length];
-        	feature.style = {
-	        	strokeColor: colour,
-	        	strokeWidth: 2,
-	        	label: feature.attributes.animalName,
-	        	labelAlign: "rt",
-	        	fontColor: "#ffffff",
-	        	fontOpacity: 0.9,
-	        	fontFamily: "Arial",
-	        	fontSize: 12
-        	}
-        	$('#legend-colour-' + feature.attributes.animalId).attr('style', 'background-color: ' + colour + ';');
-        	$('input[id=select-animal-' + feature.attributes.animalId + ']').attr('checked','checked');
-        }
+	        var feature = linesWFSOverlay.features[key];
+	        if (feature.attributes && feature.attributes.animalId) {
+	                var colour = colours[feature.attributes.animalId % colours.length];
+	                feature.style = {
+	                        strokeColor: colour,
+	                        strokeWidth: 2,
+	                        label: feature.attributes.animalName,
+	                        labelAlign: "rt",
+	                        fontColor: "#ffffff",
+	                        fontOpacity: 0.9,
+	                        fontFamily: "Arial",
+	                        fontSize: 12
+	                }
+	                $('#legend-colour-' + feature.attributes.animalId).attr('style', 'background-color: ' + colour + ';');
+	                $('input[id=select-animal-' + feature.attributes.animalId + ']').attr('checked','checked');
+	        }
     }
-    linesWFSOverlay.redraw();
+	linesWFSOverlay.redraw();
 }
 
 
@@ -231,12 +200,41 @@ function zoomToTrack(animalId) {
     }
 }
 
-$('input[name=animalCheckbox]').click(showHideAnimals());
 
-function showHideAnimals() {
-    alert("show hide animal functionality here!");
-    return false;
+function toggleAnimalFeature(animalId, setVisible) {
 
+    var style = {
+            strokeColor: "#ffffff",
+            strokeWidth: 2,
+            label: "",
+            labelAlign: "rt",
+            fontColor: "#ffffff",
+            fontOpacity: 0.9,
+            fontFamily: "Arial",
+            fontSize: 12,
+            fillOpacity:1.0,
+            strokeOpacity:1.0
+    };
+
+    for (var l in map.layers) {
+        var layer = map.layers[l];
+        if (!layer.isBaseLayer) {
+            for (var f in layer.features) {
+                var feature = layer.features[f];
+                if (feature.attributes.animalId == animalId) {
+                    if (setVisible) {
+                       style.strokeColor = colours[feature.attributes.animalId % colours.length];
+                       style.label =  feature.attributes.animalName;
+                       style.strokeOpacity = 1.0;
+                    } else {
+                       style.strokeOpacity = 0.0;
+                    }
+                    feature.style = style;
+                    layer.redraw();
+                }
+            }
+        }
+    }
 }
 
 function addProjectMapLayer() {
@@ -247,14 +245,13 @@ function addProjectMapLayer() {
     var queryType =$('input[name=mapQueryTypeSelect]:checked');
     var queryTypeDescription =  queryType.parent().next().text();
 
-             /*
-             +'&dateFrom=' + dateFrom.val()
-             + '&dateTo=' + dateTo.val()
-             + '&queryType=' + queryType.val()
-             + '&mapQueryTypeDescription=' + queryTypeDescription;
-
+     /*
+     var data = '&dateFrom=' + dateFrom
+     + '&dateTo=' + dateTo.val()
+     + '&queryType=' + queryType.val()
+     + '&mapQueryTypeDescription=' + queryTypeDescription;
     alert("data : " + data);
-               */
+    */
 
     var params = {projectId: projectId
                  ,queryType: queryType.val()};
@@ -264,15 +261,21 @@ function addProjectMapLayer() {
         layerName = layerName + " from " + dateFrom;
         params.dateFrom = dateFrom;
     }
+
     if (dateTo.length == 10) {
-        layerName = layerName + " to " + dateTo ;
+        layerName = layerName + " to " + dateTo;
         params.dateTo = dateTo;
     }
-
 
     if (queryType.val() == "LINES") {
         addWFSLayer(layerName, params);
     } else {
+        addKMLLayer(layerName,params);
+    }
+
+}
+
+function addKMLLayer(layerName, params) {
 
         var queryOverlay = new OpenLayers.Layer.Vector(
                 layerName,
@@ -312,8 +315,8 @@ function addProjectMapLayer() {
         map.addLayer(queryOverlay);
         map.addControl(querySelectControl);
         querySelectControl.activate();
-    }
 }
+
 
 function addWFSLayer(layerName, params) {
 
@@ -355,12 +358,11 @@ function addWFSLayer(layerName, params) {
         );
 
         map.addLayer(linesWFSOverlay);
-        alert("hello!");
-
         map.addControl(lineSelectControl);
         lineSelectControl.activate();
-
 }
+
+
 
 function initializeSightingMap() {
 
@@ -424,18 +426,3 @@ function initializeSightingMap() {
 
  }
 
- // override the activate function to stop it from moving the most recently activated control's
- // layer to the top thus stopping other controls on lower layers from working.
- OpenLayers.Handler.Feature.prototype.activate = function() {
-    var activated = false;
-    if (OpenLayers.Handler.prototype.activate.apply(this, arguments)) {
-        //this.moveLayerToTop();
-        this.map.events.on({
-            "removelayer": this.handleMapEvents,
-            "changelayer": this.handleMapEvents,
-            scope: this
-        });
-        activated = true;
-    }
-    return activated;
-};

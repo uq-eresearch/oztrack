@@ -41,6 +41,11 @@
                 <tr>
                     <td><input type="checkbox" class="shortInputCheckbox" name="animalCheckbox" id="select-animal-${animal.projectAnimalId}" value="${animal.projectAnimalId}"/></td>
                     <td class="legend-colour" id="legend-colour-${animal.projectAnimalId}"><a href="#" onclick="zoomToTrack(${animal.projectAnimalId});">${animal.animalName}</a></td>
+                    <script type="text/javascript">
+                        $('input[id=select-animal-${animal.projectAnimalId}]').change(function() {
+                                toggleAnimalFeature("${animal.projectAnimalId}",this.checked);
+                        });
+                    </script>
                 </tr>
 
                 <!--
@@ -69,10 +74,9 @@
              </tr>
              <tr>
                 <td><b>To:</b></td>
-                <td><input id="fromDatepicker" class="shortInputBox"/></td>
+                <td><input id="toDatepicker" class="shortInputBox"/></td>
              </tr>
             </table>
-
         </div>
 
         <h3><a href="#">Layer Types</a></h3>

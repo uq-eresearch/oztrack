@@ -26,6 +26,13 @@ $(document).ready(function(){
 
      navigation();
 
+     /*
+     $('input[name=animalCheckbox]').change(function() {
+           var animalId = $(this).val();
+           showHideAnimal(animalId);
+       });
+
+      */
 
 });
 
