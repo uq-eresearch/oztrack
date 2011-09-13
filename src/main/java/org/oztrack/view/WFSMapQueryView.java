@@ -160,6 +160,8 @@ public class WFSMapQueryView extends AbstractView {
             private Date fromDate;
             private Date toDate;
             private List<Coordinate> coordinates;
+            private Coordinate startPoint;
+            private Coordinate endPoint;
     }
 
     private SimpleFeatureCollection buildLinesFeatureCollection(SearchQuery searchQuery) {
@@ -181,6 +183,8 @@ public class WFSMapQueryView extends AbstractView {
         simpleFeatureTypeBuilder.add("toDate", Date.class);
         simpleFeatureTypeBuilder.add("animalId",String.class);
         simpleFeatureTypeBuilder.add("animalName",String.class);
+        simpleFeatureTypeBuilder.add("startPoint", Point.class, srid);
+        simpleFeatureTypeBuilder.add("endPoint", Point.class, srid);
 
         SimpleFeatureType simpleFeatureType = simpleFeatureTypeBuilder.buildFeatureType();
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(simpleFeatureType);
@@ -192,7 +196,8 @@ public class WFSMapQueryView extends AbstractView {
         for (PositionFix positionFix : positionFixList) {
 
             AnimalTrack thisTrack = tracks.get(positionFix.getAnimal().getId());
-
+            Coordinate thisCoordinate = positionFix.getLocationGeometry().getCoordinate();
+            
             if (thisTrack == null) {
 
                 thisTrack = new AnimalTrack();
@@ -200,18 +205,22 @@ public class WFSMapQueryView extends AbstractView {
                 thisTrack.fromDate = positionFix.getDetectionTime();
                 thisTrack.toDate = positionFix.getDetectionTime();
                 thisTrack.coordinates = new ArrayList<Coordinate>();
-                thisTrack.coordinates.add(positionFix.getLocationGeometry().getCoordinate());
+                thisTrack.coordinates.add(thisCoordinate);
+                thisTrack.startPoint = thisCoordinate;
+                thisTrack.endPoint = thisCoordinate;
                 tracks.put(positionFix.getAnimal().getId(),thisTrack);
 
             } else {
 
                 if (positionFix.getDetectionTime().before(thisTrack.fromDate)) {
                     thisTrack.fromDate = positionFix.getDetectionTime();
+                    thisTrack.startPoint = thisCoordinate;
                 }
                 if (positionFix.getDetectionTime().after(thisTrack.toDate)) {
                     thisTrack.toDate = positionFix.getDetectionTime();
+                    thisTrack.endPoint = thisCoordinate;
                 }
-                thisTrack.coordinates.add(positionFix.getLocationGeometry().getCoordinate());
+                thisTrack.coordinates.add(thisCoordinate);
 
             }
         }
@@ -224,6 +233,8 @@ public class WFSMapQueryView extends AbstractView {
             featureBuilder.set("toDate",animalTrack.toDate);
             featureBuilder.set("animalId", animalTrack.animal.getProjectAnimalId());
             featureBuilder.set("animalName",animalTrack.animal.getAnimalName());
+            featureBuilder.set("startPoint", geometryFactory.createPoint(animalTrack.startPoint));
+            featureBuilder.set("endPoint", geometryFactory.createPoint(animalTrack.endPoint));
             SimpleFeature simpleFeature = featureBuilder.buildFeature(animalTrack.animal.getId().toString());
             collection.add(simpleFeature);
         }
