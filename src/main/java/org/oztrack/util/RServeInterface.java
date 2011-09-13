@@ -83,21 +83,24 @@ public class RServeInterface {
         MapQueryType mapQueryType = this.searchQuery.getMapQueryType();
         switch (mapQueryType) {
             case ALL_POINTS:
-                 writePositionFixKmlFile(fileName);
-                 break;
+                writePositionFixKmlFile(fileName);
+                break;
             case MCP100:
             case MCP95:
             case MCP50:
-                 writeMCPKmlFile(fileName,mapQueryType);
-                 break;
-            case CHARHULL100:
-            case CHARHULL95:
-            case CHARHULL50:
-                 writeCharHullKmlFile(fileName, mapQueryType);
-                 break;
-
+                writeMCPKmlFile(fileName, mapQueryType);
+                break;
+//            case CHARHULL100:
+//            case CHARHULL95:
+//            case CHARHULL50:
+//                writeCharHullKmlFile(fileName, mapQueryType);
+//                break;
+            case KUD95:
+            case KUD50:
+                writeKernelUDKmlFile(fileName, mapQueryType);
+                break;
             default:
-                 throw new RServeInterfaceException("Unhandled MapQueryType: " + searchQuery.getMapQueryType());
+                throw new RServeInterfaceException("Unhandled MapQueryType: " + searchQuery.getMapQueryType());
         }
 
         rConnection.close();
@@ -131,7 +134,7 @@ public class RServeInterface {
             if (checkLocalRserve()) {
                 this.rConnection = new RConnection();
                 this.rConnection.setSendBufferSize(10485760);
-                this.rConnection.eval("library(adehabitatHR);library(adehabitatMA);library(maptools);library(rgdal);library(shapefiles)");
+                this.rConnection.voidEval("library(adehabitatHR);library(adehabitatMA);library(maptools);library(rgdal);library(shapefiles)");
                 rLog = rLog + "Libraries Loaded ";
 
                 // get the working directory: Java and R have different ideas about windows fileNames
@@ -141,9 +144,9 @@ public class RServeInterface {
                     this.rWorkingDir = this.rWorkingDir.replace("\\","/");
                 }
 
-            } else {
+           } else {
                 throw new RServeInterfaceException("RServe not started.");
-            }
+           }
 
         } catch (RserveException e) {
             throw new RServeInterfaceException(e.toString());
@@ -175,7 +178,7 @@ public class RServeInterface {
         rPositionFixList.put("Id", new REXPInteger(animalIds));
         rPositionFixList.put("X", new REXPDouble(latitudes));
         rPositionFixList.put("Y", new REXPDouble(longitudes));
-        rPositionFixList.put("Foo", new REXPString(detectionTimes));
+        //rPositionFixList.put("Foo", new REXPString(detectionTimes));
 
 
         /* assign the dataFrame */
@@ -279,7 +282,55 @@ public class RServeInterface {
         }
     }
 
+        protected void writeKernelUDKmlFile(String fileName, MapQueryType mapQueryType) throws RServeInterfaceException {
 
+        String rCommand;
+        String outFileNameFix = fileName;//.replace("\\","/"); /* for R in windows */
+        REXP rResult;
+
+        try {
+
+            //rCommand = "coordinates(positionFix) <- c(\"Y\",\"X\");proj4string(positionFix)=CRS(\"+init=epsg:4326\")";
+            rCommand = "positionFix$Name <- positionFix$Id;"
+                     + "coordinates(positionFix) <- ~Y+X;"
+                     + "positionFix.xy <- positionFix[,ncol(positionFix)];"
+                     + "proj4string(positionFix.xy) <- CRS(\"+init=epsg:4326\");"
+                     + "positionFix.proj <- spTransform(positionFix.xy,CRS(\"+init=epsg:20255\"));"
+                     + "KerHR <- kernelUD(positionFix.xy, h = \"href\");"
+                     + "KerHRp <- kernelUD(positionFix.proj, h = \"href\");";
+
+            logger.debug(rCommand);
+            rResult = rConnection.parseAndEval(rCommand);
+            if (rResult.inherits("try-error")) {
+                throw new RServeInterfaceException(" Log: " + rLog + " " + rResult.asString());
+            }
+            rLog = rLog + "coordinates + projection defined for KML. KerHR object set.";
+
+            String queryType = mapQueryType.toString(); // eg.MCP100
+            String percent = queryType.replace("KUD","");
+
+            logger.debug(rCommand);
+            //REXP foo = rConnection.eval("positionFix.xy");
+
+            rCommand = queryType + " <- getverticeshr(KerHR,percent=" + percent + ");"
+                     + queryType + "$area <- getverticeshr(KerHRp,percent=" + percent + ")$area";
+            rResult = rConnection.parseAndEval(rCommand);
+            if (rResult.inherits("try-error")) {
+                throw new RServeInterfaceException(" Log: " + rLog + " " + rResult.asString());
+            }
+            rLog = rLog + queryType + " object set.";
+
+            rCommand = "writeOGR(" + queryType +", dsn=\"" + outFileNameFix + "\", layer= \"" + queryType + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))";
+            rConnection.eval(rCommand);
+            logger.debug(rCommand);
+            rLog = rLog + "KML written.";
+
+        } catch (REngineException e) {
+            throw new RServeInterfaceException(e.toString() + " Log: " + rLog);
+        } catch (REXPMismatchException e) {
+            throw new RServeInterfaceException(e.toString() + " Log: " + rLog);
+        }
+    }
 
 
 
