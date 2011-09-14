@@ -114,9 +114,11 @@ function initializeProjectMap() {
             clickout: true,
             eventListeners: {
                 featurehighlighted: function(e) {
+        			var distance = e.feature.geometry.getGeodesicLength(map.projection);
                     var txt="<b>Selected Feature: </b><br> Animal: " + e.feature.attributes.animalName
                     + "<br> Date From: " + e.feature.attributes.fromDate
-                    + "<br> Date To: " + e.feature.attributes.toDate;
+                    + "<br> Date To: " + e.feature.attributes.toDate
+                    + "<br> Minimum Distance: " + Math.round(distance*1000)/1000 + "m";
                     $('#mapDescription').html(txt);
                     //alert(e.feature.attributes.animalId );//+ " at " + e.feature.attributes.detectionTime);
                 },
