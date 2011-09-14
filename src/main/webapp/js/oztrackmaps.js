@@ -102,10 +102,11 @@ function initializeProjectMap() {
          protocol: new OpenLayers.Protocol.WFS.v1_1_0({
             url:  "mapQueryWFS?projectId=" + projectId + "&queryType=ALL_LINES",
             featureType: "Track",
-            featureNS: "http://localhost:8080/"
+            featureNS: "http://localhost:8080/",
+            geometryName: "startPoint"
             })
         });
-
+	
 
     var lineSelectControl = new OpenLayers.Control.SelectFeature(
         [linesWFSOverlay],
@@ -164,11 +165,27 @@ function initializeProjectMap() {
     map.setCenter(new OpenLayers.LonLat(133,-28).transform(kmlProjection,googleProjection), 4);
 }
 
+/*
+OpenLayers.Handler.Feature.prototype.activate = function() {
+    var activated = false;
+    if (OpenLayers.Handler.prototype.activate.apply(this, arguments)) {
+        //this.moveLayerToTop();
+        this.map.events.on({
+            "removelayer": this.handleMapEvents,
+            "changelayer": this.handleMapEvents,
+            scope: this
+        });
+        activated = true;
+    }
+    return activated;
+};
+*/
 
 
 function updateAnimalStyles() {
 
-    for (var key in linesWFSOverlay.features) {
+    
+	for (var key in linesWFSOverlay.features) {
 	        var feature = linesWFSOverlay.features[key];
 	        if (feature.attributes && feature.attributes.animalId) {
 	                var colour = colours[feature.attributes.animalId % colours.length];
@@ -186,18 +203,45 @@ function updateAnimalStyles() {
 	                $('input[id=select-animal-' + feature.attributes.animalId + ']').attr('checked','checked');
 	        }
     }
-	linesWFSOverlay.redraw();
+    linesWFSOverlay.redraw();
 }
 
 
 function zoomToTrack(animalId) {
 
+    var pointsLayer = new OpenLayers.Layer.Vector(
+    		"Start and End Points",
+    		{projection: new OpenLayers.Projection("EPSG:4326")
+    		});
+    pointsLayer.displayInLayerSwitcher = false;
+
     for (var key in linesWFSOverlay.features) {
          var feature = linesWFSOverlay.features[key];
          if (feature.attributes && animalId == feature.attributes.animalId) {
             map.zoomToExtent(feature.geometry.getBounds(),false);
+         
+            // add points
+            var startPoint = new OpenLayers.Feature.Vector(feature.geometry.components[0]);
+            startPoint.attributes = {animalId : feature.attributes.animalId}
+            startPoint.style = {
+           		 fillColor: "#00CD00",
+           		 pointRadius: 6,
+           		 strokeColor:"#00CD00"
+            }
+            
+            var endPoint = new OpenLayers.Feature.Vector(feature.geometry.components[feature.geometry.components.length-1]);
+            endPoint.attributes = {animalId : feature.attributes.animalId}
+            endPoint.style = {
+              		 fillColor: "#CD0000",
+               		 pointRadius: 6,
+               		 strokeColor:"#CD0000"
+            }
+            pointsLayer.addFeatures([startPoint,endPoint]);
          }
     }
+    map.addLayer(pointsLayer);
+    pointsLayer.redraw();
+    
 }
 
 
@@ -217,7 +261,7 @@ function toggleAnimalFeature(animalId, setVisible) {
     };
 
     for (var l in map.layers) {
-        var layer = map.layers[l];
+    	var layer = map.layers[l];
         if (!layer.isBaseLayer) {
             for (var f in layer.features) {
                 var feature = layer.features[f];
@@ -233,8 +277,10 @@ function toggleAnimalFeature(animalId, setVisible) {
                     layer.redraw();
                 }
             }
+        if (layer.name == "Start and End Points")
+            layer.destroy();
         }
-    }
+     }
 }
 
 function addProjectMapLayer() {
@@ -315,17 +361,18 @@ function addKMLLayer(layerName, params) {
         map.addLayer(queryOverlay);
         map.addControl(querySelectControl);
         querySelectControl.activate();
+        queryOverlay.refresh();
 }
 
 
 function addWFSLayer(layerName, params) {
 
-        linesWFSOverlay = new OpenLayers.Layer.Vector(
+        newWFSOverlay = new OpenLayers.Layer.Vector(
             layerName,
             {strategies: [new OpenLayers.Strategy.BBOX()],
              eventListeners: {
                 loadend: function (e) {
-                	map.zoomToExtent(linesWFSOverlay.getDataExtent(),false);
+                	map.zoomToExtent(newWFSOverlay.getDataExtent(),false);
                 	updateAnimalStyles();
             	}
              },
@@ -339,8 +386,8 @@ function addWFSLayer(layerName, params) {
             });
 
 
-        var lineSelectControl = new OpenLayers.Control.SelectFeature(
-            [linesWFSOverlay],
+        var newSelectControl = new OpenLayers.Control.SelectFeature(
+            [newWFSOverlay],
             {
                 clickout: true,
                 eventListeners: {
@@ -357,9 +404,11 @@ function addWFSLayer(layerName, params) {
             }
         );
 
-        map.addLayer(linesWFSOverlay);
-        map.addControl(lineSelectControl);
-        lineSelectControl.activate();
+        map.addLayer(newWFSOverlay);
+        map.addControl(newSelectControl);
+        newSelectControl.activate();
+        newWFSOverlay.refresh();
+        
 }
 
 
