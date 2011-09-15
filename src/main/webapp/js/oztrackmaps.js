@@ -37,7 +37,8 @@ function initializeHomeMap() {
 }
 
 var map;
-var linesWFSOverlay;
+var linesLayer;
+var pointsLayer;
 var selectControl;
 var googleProjection = new OpenLayers.Projection('EPSG:900913');
 var kmlProjection =  new OpenLayers.Projection("EPSG:4326");
@@ -90,13 +91,14 @@ function initializeProjectMap() {
                 {type: google.maps.MapTypeId.SATELLITE}
     );
 
-    linesWFSOverlay = new OpenLayers.Layer.Vector(
-        "LinesWFS",
+    linesLayer = new OpenLayers.Layer.Vector(
+        "Animal Tracks",
         {strategies: [new OpenLayers.Strategy.BBOX()],
          eventListeners: {
             loadend: function (e) {
-            	map.zoomToExtent(linesWFSOverlay.getDataExtent(),false);
+            	map.zoomToExtent(linesLayer.getDataExtent(),false);
             	updateAnimalStyles();
+            	createPointsLayer();
             	createSelectControl();
         	}
          },
@@ -112,7 +114,7 @@ function initializeProjectMap() {
 
 
     map.addLayers([gsat,gphy]);
-    map.addLayer(linesWFSOverlay);
+    map.addLayer(linesLayer);
     //map.addLayer(pointsWFSOverlay);
     //map.addControl(pointHoverControl);
     //pointHoverControl.activate();
@@ -120,50 +122,10 @@ function initializeProjectMap() {
     map.setCenter(new OpenLayers.LonLat(133,-28).transform(kmlProjection,googleProjection), 4);
 }
 
-function createSelectControl() {
-
-    //get vector layers from layerswitcher 
-	var vectorLayers = new Array();
-	for (var c in map.controls) {
-		var control = map.controls[c];
-		if (control.id.indexOf("LayerSwitcher") != -1) {
-			for (var i=0; i < control.dataLayers.length; i++) {
-				vectorLayers.push(control.dataLayers[i].layer);
-			}
-		}
-	}
-	
-	selectControl = new OpenLayers.Control.SelectFeature(
-			vectorLayers,
-            {
-                clickout: true,
-                eventListeners: {
-                    featurehighlighted: function(e) {
-            			var distance = e.feature.geometry.getGeodesicLength(map.projection);
-                        var txt="<b>Selected Feature: </b><br> Animal: " + e.feature.attributes.animalName
-                        + "<br> Date From: " + e.feature.attributes.fromDate
-                        + "<br> Date To: " + e.feature.attributes.toDate
-                        + "<br> Minimum Distance: " + Math.round(distance*1000)/1000 + "m";
-                        $('#mapDescription').html(txt);
-                        //alert(e.feature.attributes.animalId );//+ " at " + e.feature.attributes.detectionTime);
-                    },
-                    featureunhighlighted: function(e) {
-                    }
-                }
-            }
-        );
-	
-    map.addControl(selectControl);
-    selectControl.activate();
-
-}
-
-
 function updateAnimalStyles() {
-
     
-	for (var key in linesWFSOverlay.features) {
-	        var feature = linesWFSOverlay.features[key];
+	for (var key in linesLayer.features) {
+	        var feature = linesLayer.features[key];
 	        if (feature.attributes && feature.attributes.animalId) {
 	                var colour = colours[feature.attributes.animalId % colours.length];
 	                feature.style = {
@@ -180,46 +142,105 @@ function updateAnimalStyles() {
 	                $('input[id=select-animal-' + feature.attributes.animalId + ']').attr('checked','checked');
 	        }
     }
-    linesWFSOverlay.redraw();
+    linesLayer.redraw();
 }
+
+
+function createPointsLayer() {
+	
+	pointsLayer = new OpenLayers.Layer.Vector(
+        		"Start and End Points",
+        		{projection: new OpenLayers.Projection("EPSG:4326")});
+        //pointsLayer.displayInLayerSwitcher = false;
+		
+		for (var key in linesLayer.features) {
+	         var feature = linesLayer.features[key];
+	         if (feature.attributes) {
+	        	// add features
+		         var startPoint = new OpenLayers.Feature.Vector(feature.geometry.components[0]);
+		            startPoint.attributes = {animalId : feature.attributes.animalId}
+		            startPoint.style = {
+		           		 fillColor: "#00CD00",
+		           		 pointRadius: 2,
+		           		 strokeColor:"#00CD00"
+		            }
+		            
+		            var endPoint = new OpenLayers.Feature.Vector(feature.geometry.components[feature.geometry.components.length-1]);
+		            endPoint.attributes = {animalId : feature.attributes.animalId}
+		            endPoint.style = {
+		              		 fillColor: "#CD0000",
+		               		 pointRadius: 2,
+		               		 strokeColor:"#CD0000"
+		            }
+		            pointsLayer.addFeatures([startPoint,endPoint]);
+		         
+	         }
+	    }
+		map.addLayer(pointsLayer);
+	    pointsLayer.redraw();
+	    //createSelectControl();
+}
+
+
+function createSelectControl() {
+
+	//get vector layers from layerswitcher 
+	var vectorLayers = new Array();
+	for (var c in map.controls) {
+		var control = map.controls[c];
+		if (control.id.indexOf("LayerSwitcher") != -1) {
+			for (var i=0; i < control.dataLayers.length; i++) {
+				vectorLayers.push(control.dataLayers[i].layer);
+			}
+		}
+	}
+	
+	var controlOptions = {
+	        clickout: true,
+	        eventListeners: {
+	            featurehighlighted: function(e) {
+	    			
+					//if (e.feature.)
+					var distance = e.feature.geometry.getGeodesicLength(map.projection);
+	                var txt="<b>Selected Feature: </b><br> Animal: " + e.feature.attributes.animalName
+	                + "<br> Date From: " + e.feature.attributes.fromDate
+	                + "<br> Date To: " + e.feature.attributes.toDate
+	                + "<br> Minimum Distance: " + Math.round(distance*1000)/1000 + "m";
+	                $('#mapDescription').html(txt);
+	                //alert(e.feature.attributes.animalId );//+ " at " + e.feature.attributes.detectionTime);
+	            	},
+	            featureunhighlighted: function(e) {
+	            }
+	        }
+	};
+
+	if (selectControl) {
+		selectControl.initLayer(vectorLayers);
+	} else {
+		selectControl = new OpenLayers.Control.SelectFeature(vectorLayers, controlOptions);
+	    map.addControl(selectControl);
+	    selectControl.activate();
+	}
+}
+
+
+
+
+
 
 
 function zoomToTrack(animalId) {
 
-    var pointsLayer = new OpenLayers.Layer.Vector(
-    		"Start and End Points",
-    		{projection: new OpenLayers.Projection("EPSG:4326")
-    		});
-    pointsLayer.displayInLayerSwitcher = false;
-
-    for (var key in linesWFSOverlay.features) {
-         var feature = linesWFSOverlay.features[key];
-         if (feature.attributes && animalId == feature.attributes.animalId) {
-            map.zoomToExtent(feature.geometry.getBounds(),false);
-         
-            // add points
-            var startPoint = new OpenLayers.Feature.Vector(feature.geometry.components[0]);
-            startPoint.attributes = {animalId : feature.attributes.animalId}
-            startPoint.style = {
-           		 fillColor: "#00CD00",
-           		 pointRadius: 6,
-           		 strokeColor:"#00CD00"
-            }
-            
-            var endPoint = new OpenLayers.Feature.Vector(feature.geometry.components[feature.geometry.components.length-1]);
-            endPoint.attributes = {animalId : feature.attributes.animalId}
-            endPoint.style = {
-              		 fillColor: "#CD0000",
-               		 pointRadius: 6,
-               		 strokeColor:"#CD0000"
-            }
-            pointsLayer.addFeatures([startPoint,endPoint]);
-         }
-    }
-    map.addLayer(pointsLayer);
-    pointsLayer.redraw();
-    createSelectControl();
-    
+	if (!pointsLayer) {
+		createPointsLayer();
+	}	
+	
+	for (var key in linesLayer.features) {
+	         var feature = linesLayer.features[key];
+	         if (feature.attributes && animalId == feature.attributes.animalId) {
+	        	map.zoomToExtent(feature.geometry.getBounds(),false);
+	         }
+	    }
 }
 
 
@@ -255,8 +276,6 @@ function toggleAnimalFeature(animalId, setVisible) {
                     layer.redraw();
                 }
             }
-        if (layer.name == "Start and End Points")
-            layer.destroy();
         }
      }
 }
