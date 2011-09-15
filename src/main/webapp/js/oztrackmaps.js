@@ -38,6 +38,7 @@ function initializeHomeMap() {
 
 var map;
 var linesWFSOverlay;
+var selectControl;
 var googleProjection = new OpenLayers.Projection('EPSG:900913');
 var kmlProjection =  new OpenLayers.Projection("EPSG:4326");
 var colours = [
@@ -96,6 +97,7 @@ function initializeProjectMap() {
             loadend: function (e) {
             	map.zoomToExtent(linesWFSOverlay.getDataExtent(),false);
             	updateAnimalStyles();
+            	createSelectControl();
         	}
          },
          projection: new OpenLayers.Projection("EPSG:4326"),
@@ -108,58 +110,9 @@ function initializeProjectMap() {
         });
 	
 
-    var lineSelectControl = new OpenLayers.Control.SelectFeature(
-        [linesWFSOverlay],
-        {
-            clickout: true,
-            eventListeners: {
-                featurehighlighted: function(e) {
-        			var distance = e.feature.geometry.getGeodesicLength(map.projection);
-                    var txt="<b>Selected Feature: </b><br> Animal: " + e.feature.attributes.animalName
-                    + "<br> Date From: " + e.feature.attributes.fromDate
-                    + "<br> Date To: " + e.feature.attributes.toDate
-                    + "<br> Minimum Distance: " + Math.round(distance*1000)/1000 + "m";
-                    $('#mapDescription').html(txt);
-                    //alert(e.feature.attributes.animalId );//+ " at " + e.feature.attributes.detectionTime);
-                },
-                featureunhighlighted: function(e) {
-                }
-            }
-        }
-    );
-
-    /*
-    var pointsWFSOverlay = new OpenLayers.Layer.Vector(
-        "PointsWFS",
-        {strategies: [new OpenLayers.Strategy.BBOX()],
-         projection: new OpenLayers.Projection("EPSG:4326"),
-         protocol: new OpenLayers.Protocol.WFS.v1_1_0(
-            {url:  "mapQueryWFS?projectId=" + projectId + "&queryType=ALL_POINTS",
-            featureType: "PositionFix",
-            featureNS: "http://localhost:8080/",
-            geometryName: "location"
-            })
-        });
-
-    var pointHoverControl = new OpenLayers.Control.SelectFeature(
-        [pointsWFSOverlay],
-        {
-            clickout: true,
-            eventListeners: {
-                featurehighlighted: function(e) {
-                    alert(e.feature.attributes.animalId + " at " + e.feature.attributes.detectionTime);
-                },
-                featureunhighlighted: function(e) {
-                }
-            }
-        }
-    );
-    */
 
     map.addLayers([gsat,gphy]);
     map.addLayer(linesWFSOverlay);
-    map.addControl(lineSelectControl);
-    lineSelectControl.activate();
     //map.addLayer(pointsWFSOverlay);
     //map.addControl(pointHoverControl);
     //pointHoverControl.activate();
@@ -167,21 +120,43 @@ function initializeProjectMap() {
     map.setCenter(new OpenLayers.LonLat(133,-28).transform(kmlProjection,googleProjection), 4);
 }
 
-/*
-OpenLayers.Handler.Feature.prototype.activate = function() {
-    var activated = false;
-    if (OpenLayers.Handler.prototype.activate.apply(this, arguments)) {
-        //this.moveLayerToTop();
-        this.map.events.on({
-            "removelayer": this.handleMapEvents,
-            "changelayer": this.handleMapEvents,
-            scope: this
-        });
-        activated = true;
-    }
-    return activated;
-};
-*/
+function createSelectControl() {
+
+    //get vector layers from layerswitcher 
+	var vectorLayers = new Array();
+	for (var c in map.controls) {
+		var control = map.controls[c];
+		if (control.id.indexOf("LayerSwitcher") != -1) {
+			for (var i=0; i < control.dataLayers.length; i++) {
+				vectorLayers.push(control.dataLayers[i].layer);
+			}
+		}
+	}
+	
+	selectControl = new OpenLayers.Control.SelectFeature(
+			vectorLayers,
+            {
+                clickout: true,
+                eventListeners: {
+                    featurehighlighted: function(e) {
+            			var distance = e.feature.geometry.getGeodesicLength(map.projection);
+                        var txt="<b>Selected Feature: </b><br> Animal: " + e.feature.attributes.animalName
+                        + "<br> Date From: " + e.feature.attributes.fromDate
+                        + "<br> Date To: " + e.feature.attributes.toDate
+                        + "<br> Minimum Distance: " + Math.round(distance*1000)/1000 + "m";
+                        $('#mapDescription').html(txt);
+                        //alert(e.feature.attributes.animalId );//+ " at " + e.feature.attributes.detectionTime);
+                    },
+                    featureunhighlighted: function(e) {
+                    }
+                }
+            }
+        );
+	
+    map.addControl(selectControl);
+    selectControl.activate();
+
+}
 
 
 function updateAnimalStyles() {
@@ -243,6 +218,7 @@ function zoomToTrack(animalId) {
     }
     map.addLayer(pointsLayer);
     pointsLayer.redraw();
+    createSelectControl();
     
 }
 
