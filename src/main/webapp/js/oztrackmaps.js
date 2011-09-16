@@ -38,7 +38,12 @@ function initializeHomeMap() {
 
 var map;
 var linesLayer;
+var linesLayerStyle;
 var pointsLayer;
+var startPointOnStyle;
+var endPointOnStyle;
+var pointsOffStyle;
+
 var selectControl;
 var googleProjection = new OpenLayers.Projection('EPSG:900913');
 var kmlProjection =  new OpenLayers.Projection("EPSG:4326");
@@ -145,40 +150,59 @@ function updateAnimalStyles() {
     linesLayer.redraw();
 }
 
-
 function createPointsLayer() {
 	
 	pointsLayer = new OpenLayers.Layer.Vector(
         		"Start and End Points",
         		{projection: new OpenLayers.Projection("EPSG:4326")});
-        //pointsLayer.displayInLayerSwitcher = false;
 		
-		for (var key in linesLayer.features) {
-	         var feature = linesLayer.features[key];
-	         if (feature.attributes) {
-	        	// add features
-		         var startPoint = new OpenLayers.Feature.Vector(feature.geometry.components[0]);
-		            startPoint.attributes = {animalId : feature.attributes.animalId}
-		            startPoint.style = {
-		           		 fillColor: "#00CD00",
-		           		 pointRadius: 2,
-		           		 strokeColor:"#00CD00"
-		            }
-		            
-		            var endPoint = new OpenLayers.Feature.Vector(feature.geometry.components[feature.geometry.components.length-1]);
-		            endPoint.attributes = {animalId : feature.attributes.animalId}
-		            endPoint.style = {
-		              		 fillColor: "#CD0000",
-		               		 pointRadius: 2,
-		               		 strokeColor:"#CD0000"
-		            }
-		            pointsLayer.addFeatures([startPoint,endPoint]);
-		         
-	         }
-	    }
-		map.addLayer(pointsLayer);
-	    pointsLayer.redraw();
-	    //createSelectControl();
+	startPointOnStyle = {
+		pointRadius: 2,
+		fillColor: "#00CD00",
+		strokeColor:"#00CD00",	
+		fillOpacity: 0,
+		strokeOpacity: 1,
+		strokeWidth: 1.2,
+	};
+	
+	endPointOnStyle = {
+		pointRadius: 2,
+		fillColor: "#CD0000",
+		strokeColor:"#CD0000",	
+		fillOpacity: 0,
+		strokeOpacity: 1,
+		strokeWidth: 1.2,
+	};
+	
+	pointsOffStyle = {
+		strokeOpacity: 0,
+		fillOpacity: 0
+	};
+	
+		
+	for (var key in linesLayer.features) {
+         var feature = linesLayer.features[key];
+         if (feature.attributes) {
+        	// add features
+	         var startPoint = new OpenLayers.Feature.Vector(feature.geometry.components[0]);
+	            startPoint.attributes = {animalId : feature.attributes.animalId,
+					            		animalName : feature.attributes.animalName, 
+					            		fromDate: feature.attributes.fromDate,
+					            		pointName:	"start"};
+	            startPoint.style = startPointOnStyle;
+            var endPoint = new OpenLayers.Feature.Vector(feature.geometry.components[feature.geometry.components.length-1]);
+	            endPoint.attributes = {animalId : feature.attributes.animalId,
+					            		animalName : feature.attributes.animalName, 
+					            		toDate: feature.attributes.toDate,
+					            		pointName:	"end"};
+	            endPoint.style = endPointOnStyle;
+            pointsLayer.addFeatures([startPoint,endPoint]);
+	         
+         }
+    }
+	map.addLayer(pointsLayer);
+    pointsLayer.redraw();
+
 }
 
 
@@ -246,7 +270,8 @@ function zoomToTrack(animalId) {
 
 function toggleAnimalFeature(animalId, setVisible) {
 
-    var style = {
+    //line
+	var style = {
             strokeColor: "#ffffff",
             strokeWidth: 2,
             label: "",
@@ -262,22 +287,42 @@ function toggleAnimalFeature(animalId, setVisible) {
     for (var l in map.layers) {
     	var layer = map.layers[l];
         if (!layer.isBaseLayer) {
-            for (var f in layer.features) {
-                var feature = layer.features[f];
-                if (feature.attributes.animalId == animalId) {
-                    if (setVisible) {
-                       style.strokeColor = colours[feature.attributes.animalId % colours.length];
-                       style.label =  feature.attributes.animalName;
-                       style.strokeOpacity = 1.0;
-                    } else {
-                       style.strokeOpacity = 0.0;
-                    }
-                    feature.style = style;
-                    layer.redraw();
-                }
-            }
+            if (layer === linesLayer) { //(layer.name == "Animal Tracks") {
+	            for (var f in layer.features) {
+	                var feature = layer.features[f];
+	                if (feature.attributes.animalId == animalId) {
+	                    if (setVisible) {
+	                       	style.strokeColor = colours[feature.attributes.animalId % colours.length];
+	                        style.label = feature.attributes.animalName;
+	                        style.strokeOpacity = 1.0;
+	                    } else {
+	                       style.strokeOpacity = 0.0;
+	                    }
+	                    feature.style = style;
+	                    layer.redraw();
+	                }
+	            }
+            }   
+	         if (layer === pointsLayer){
+	            for (var f in layer.features) {
+	                var feature = layer.features[f];
+	                if (feature.attributes.animalId == animalId) {
+	                    if (setVisible) {
+	                    	if (feature.attributes.fromDate) {
+	                    		feature.style = startPointOnStyle;
+	                    	} else if (feature.attributes.toDate) {
+	                    		feature.style = endPointOnStyle;
+	                    	}
+	                    } else {
+	                    	feature.style = pointsOffStyle;
+	                    }
+	                    layer.redraw();
+	                }
+	            }
+	         }   
         }
      }
+
 }
 
 function addProjectMapLayer() {
