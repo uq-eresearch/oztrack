@@ -45,6 +45,7 @@ public class SearchQueryXLSView extends AbstractExcelView {
         }
     }
 
+
     protected void buildPositionFixSheet(HSSFSheet sheet, SearchQuery searchQuery) {
 
         JdbcQuery jdbcQuery = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcQuery();

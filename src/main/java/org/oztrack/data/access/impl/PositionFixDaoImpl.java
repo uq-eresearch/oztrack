@@ -113,7 +113,7 @@ public class PositionFixDaoImpl extends JpaDao<PositionFix> implements PositionF
         */
 
         Query query = buildQuery(searchQuery, false);
-        return query.getResultList();
+        return (List<PositionFix>) query.getResultList();
 
 
         //query.setMaxResults(100);

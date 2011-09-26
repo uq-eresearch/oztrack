@@ -85,7 +85,7 @@ public class WFSMapQueryView extends AbstractView {
 
                     switch (searchQuery.getMapQueryType()) {
                         case ALL_POINTS:
-                            collection = this.buildPointsFeatureCollection(searchQuery);
+                            //collection = this.buildPointsFeatureCollection(searchQuery);
                             //**encoder.setNamespace("PositionFix", namespaceURI);
 
 
@@ -120,7 +120,7 @@ public class WFSMapQueryView extends AbstractView {
 
     }
 
-
+/*
     private SimpleFeatureCollection buildPointsFeatureCollection(SearchQuery searchQuery) {
 
         List<PositionFix> positionFixList = OzTrackApplication.getApplicationContext().getDaoManager().getPositionFixDao().getProjectPositionFixList(searchQuery);
@@ -154,7 +154,7 @@ public class WFSMapQueryView extends AbstractView {
         return collection;
 
     }
-
+*/
     private static class AnimalTrack {
             private Animal animal;
             private Date fromDate;

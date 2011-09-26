@@ -135,7 +135,7 @@ function updateAnimalStyles() {
 	                var colour = colours[feature.attributes.animalId % colours.length];
 	                feature.style = {
 	                        strokeColor: colour,
-	                        strokeWidth: 2,
+	                        strokeWidth: 1.5,
 	                        label: feature.attributes.animalName,
 	                        labelAlign: "rt",
 	                        fontColor: "#ffffff",

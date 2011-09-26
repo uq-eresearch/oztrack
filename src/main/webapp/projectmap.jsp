@@ -46,6 +46,11 @@
                                 toggleAnimalFeature("${animal.projectAnimalId}",this.checked);
                         });
                     </script>
+                    <td>
+		        		<a href="<c:url value="exportKML"><c:param name="projectId" value="${project.id}"/><c:param name="animalId" value="${animal.id}"/></c:url>">
+                		KML
+                		</a>
+            		</td>
                 </tr>
 
                 <!--
