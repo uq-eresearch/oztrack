@@ -214,13 +214,7 @@ function createSelectControl() {
 	        clickout: true,
 	        eventListeners: {
 	            featurehighlighted: function(e) {
-					var distance = e.feature.geometry.getGeodesicLength(map.projection);
-	                var txt="<b>Selected Feature: </b><br> Animal: " + e.feature.attributes.animalName
-	                + "<br> Date From: " + e.feature.attributes.fromDate
-	                + "<br> Date To: " + e.feature.attributes.toDate
-	                + "<br> Minimum Distance: " + Math.round(distance*1000)/1000 + "m";
-	                $('#mapDescription').html(txt);
-	                //alert(e.feature.attributes.animalId );//+ " at " + e.feature.attributes.detectionTime);
+					writeSelectControlText(e);
 	            	},
 	            featureunhighlighted: function(e) {
 	            }
@@ -234,6 +228,36 @@ function createSelectControl() {
 	    map.addControl(selectControl);
 	    selectControl.activate();
 	}
+}
+
+function writeSelectControlText(e) {
+	
+	if ((e.feature.layer === linesLayer) || (e.feature.layer === pointsLayer)) {
+
+		var txt="<b>Selected Feature: </b><br> Animal: " + e.feature.attributes.animalName
+	    + "<br> Layer name: " + e.feature.layer.name;
+		
+	    if (e.feature.layer === linesLayer) {
+
+	    	txt = txt + "<br> Date From: " + e.feature.attributes.fromDate
+		    		  + "<br> Date To: " + e.feature.attributes.toDate;
+	    	var distance = e.feature.geometry.getGeodesicLength(map.projection);
+	    	txt = txt +  "<br> Minimum Distance: " + Math.round(distance*1000)/1000 + "m";
+	    
+	    } 
+	    if (e.feature.layer === pointsLayer) {
+	    
+	    	if (typeof e.feature.attributes.fromDate != "undefined") {
+	    		txt = txt + "<br> Start Point: " + e.feature.attributes.fromDate;
+	    	}
+	    	if (typeof e.feature.attributes.toDate != "undefined") {
+	    		txt = txt + "<br> End Point: " + e.feature.attributes.toDate;
+	    	}
+	    }
+	}
+    
+	$('#mapDescription').html(txt);
+	
 }
 
 function zoomToTrack(animalId) {
