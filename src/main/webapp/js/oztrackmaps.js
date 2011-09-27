@@ -103,7 +103,7 @@ function initializeProjectMap() {
             loadend: function (e) {
             	map.zoomToExtent(linesLayer.getDataExtent(),false);
             	updateAnimalStyles();
-            	createPointsLayer();
+            	if (!pointsLayer) {createPointsLayer();}
             	createSelectControl();
         	}
          },
@@ -115,15 +115,8 @@ function initializeProjectMap() {
             geometryName: "startPoint"
             })
         });
-	
 
-
-    map.addLayers([gsat,gphy]);
-    map.addLayer(linesLayer);
-    //map.addLayer(pointsWFSOverlay);
-    //map.addControl(pointHoverControl);
-    //pointHoverControl.activate();
-
+    map.addLayers([gsat,gphy,linesLayer]);
     map.setCenter(new OpenLayers.LonLat(133,-28).transform(kmlProjection,googleProjection), 4);
 }
 
@@ -201,8 +194,6 @@ function createPointsLayer() {
          }
     }
 	map.addLayer(pointsLayer);
-    pointsLayer.redraw();
-
 }
 
 
@@ -223,8 +214,6 @@ function createSelectControl() {
 	        clickout: true,
 	        eventListeners: {
 	            featurehighlighted: function(e) {
-	    			
-					//if (e.feature.)
 					var distance = e.feature.geometry.getGeodesicLength(map.projection);
 	                var txt="<b>Selected Feature: </b><br> Animal: " + e.feature.attributes.animalName
 	                + "<br> Date From: " + e.feature.attributes.fromDate
@@ -247,18 +236,8 @@ function createSelectControl() {
 	}
 }
 
-
-
-
-
-
-
 function zoomToTrack(animalId) {
 
-	if (!pointsLayer) {
-		createPointsLayer();
-	}	
-	
 	for (var key in linesLayer.features) {
 	         var feature = linesLayer.features[key];
 	         if (feature.attributes && animalId == feature.attributes.animalId) {
