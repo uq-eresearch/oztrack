@@ -2,8 +2,8 @@
 function initializeHomeMap() {
 
 
-    var googleProjection = new OpenLayers.Projection('EPSG:900913');
-    var kmlProjection =  new OpenLayers.Projection("EPSG:4326");
+    var projection900913 = new OpenLayers.Projection('EPSG:900913');
+    var projection4326 =  new OpenLayers.Projection("EPSG:4326");
     var mapOptions = {
        maxExtent: new OpenLayers.Bounds(
             -128 * 156543.0339,
@@ -12,8 +12,8 @@ function initializeHomeMap() {
              128 * 156543.0339),
        maxResolution: 156543.0339,
        units: 'm',
-       projection: googleProjection,
-       displayProjection: kmlProjection
+       projection: projection900913,
+       displayProjection: projection4326
     };
     var map = new OpenLayers.Map('homeMap',mapOptions);
     var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
@@ -32,21 +32,21 @@ function initializeHomeMap() {
     );
 
     map.addLayers([gsat,gphy]);
-    map.setCenter(new OpenLayers.LonLat(133,-28).transform(kmlProjection,googleProjection), 4);
+    map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326,projection900913), 4);
 
 }
 
 var map;
-var linesLayer;
-var linesLayerStyle;
+var allAnimalTracksLayer;
+var allAnimalTracksLayerStyle;
 var pointsLayer;
 var startPointOnStyle;
 var endPointOnStyle;
 var pointsOffStyle;
 
 var selectControl;
-var googleProjection = new OpenLayers.Projection('EPSG:900913');
-var kmlProjection =  new OpenLayers.Projection("EPSG:4326");
+var projection900913 = new OpenLayers.Projection('EPSG:900913');
+var projection4326 =  new OpenLayers.Projection("EPSG:4326");
 var colours = [
         '#8DD3C7',
         '#FFFFB3',
@@ -74,8 +74,8 @@ function initializeProjectMap() {
              128 * 156543.0339),
        maxResolution: 156543.0339,
        units: 'm',
-       projection: googleProjection,
-       displayProjection: kmlProjection
+       projection: projection900913,
+       displayProjection: projection4326
     };
 
     map = new OpenLayers.Map('projectMap',mapOptions);
@@ -96,18 +96,18 @@ function initializeProjectMap() {
                 {type: google.maps.MapTypeId.SATELLITE}
     );
 
-    linesLayer = new OpenLayers.Layer.Vector(
-        "Animal Tracks",
+    allAnimalTracksLayer = new OpenLayers.Layer.Vector(
+        "All Animal Tracks",
         {strategies: [new OpenLayers.Strategy.BBOX()],
          eventListeners: {
             loadend: function (e) {
-            	map.zoomToExtent(linesLayer.getDataExtent(),false);
+            	map.zoomToExtent(allAnimalTracksLayer.getDataExtent(),false);
             	updateAnimalStyles();
             	if (!pointsLayer) {createPointsLayer();}
             	createSelectControl();
         	}
          },
-         projection: new OpenLayers.Projection("EPSG:4326"),
+         projection: projection4326,
          protocol: new OpenLayers.Protocol.WFS.v1_1_0({
             url:  "mapQueryWFS?projectId=" + projectId + "&queryType=ALL_LINES",
             featureType: "Track",
@@ -116,14 +116,14 @@ function initializeProjectMap() {
             })
         });
 
-    map.addLayers([gsat,gphy,linesLayer]);
-    map.setCenter(new OpenLayers.LonLat(133,-28).transform(kmlProjection,googleProjection), 4);
+    map.addLayers([gsat,gphy,allAnimalTracksLayer]);
+    map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326,projection900913), 4);
 }
 
 function updateAnimalStyles() {
     
-	for (var key in linesLayer.features) {
-	        var feature = linesLayer.features[key];
+	for (var key in allAnimalTracksLayer.features) {
+	        var feature = allAnimalTracksLayer.features[key];
 	        if (feature.attributes && feature.attributes.animalId) {
 	                var colour = colours[feature.attributes.animalId % colours.length];
 	                feature.style = {
@@ -140,10 +140,64 @@ function updateAnimalStyles() {
 	                $('input[id=select-animal-' + feature.attributes.animalId + ']').attr('checked','checked');
 	        }
     }
-    linesLayer.redraw();
+    allAnimalTracksLayer.redraw();
 }
 
 function createPointsLayer() {
+	
+	pointsLayer = new OpenLayers.Layer.Vector(
+        		"Start and End Points",
+        		{projection: projection4326});
+		
+	startPointOnStyle = {
+		pointRadius: 2,
+		fillColor: "#00CD00",
+		strokeColor:"#00CD00",	
+		fillOpacity: 0,
+		strokeOpacity: 1,
+		strokeWidth: 1.2,
+	};
+	
+	endPointOnStyle = {
+		pointRadius: 2,
+		fillColor: "#CD0000",
+		strokeColor:"#CD0000",	
+		fillOpacity: 0,
+		strokeOpacity: 1,
+		strokeWidth: 1.2,
+	};
+	
+	pointsOffStyle = {
+		strokeOpacity: 0,
+		fillOpacity: 0
+	};
+	
+		
+	for (var key in allAnimalTracksLayer.features) {
+         var feature = allAnimalTracksLayer.features[key];
+         if (feature.attributes) {
+        	// add features
+	         var startPoint = new OpenLayers.Feature.Vector(feature.geometry.components[0]);
+	            startPoint.attributes = {animalId : feature.attributes.animalId,
+					            		animalName : feature.attributes.animalName, 
+					            		fromDate: feature.attributes.fromDate,
+					            		pointName:	"start"};
+	            startPoint.style = startPointOnStyle;
+            var endPoint = new OpenLayers.Feature.Vector(feature.geometry.components[feature.geometry.components.length-1]);
+	            endPoint.attributes = {animalId : feature.attributes.animalId,
+					            		animalName : feature.attributes.animalName, 
+					            		toDate: feature.attributes.toDate,
+					            		pointName:	"end"};
+	            endPoint.style = endPointOnStyle;
+            pointsLayer.addFeatures([startPoint,endPoint]);
+	         
+         }
+    }
+	map.addLayer(pointsLayer);
+}
+
+function createPointsLayer(linesLayer) {
+	
 	
 	pointsLayer = new OpenLayers.Layer.Vector(
         		"Start and End Points",
@@ -173,8 +227,8 @@ function createPointsLayer() {
 	};
 	
 		
-	for (var key in linesLayer.features) {
-         var feature = linesLayer.features[key];
+	for (var key in allAnimalTracksLayer.features) {
+         var feature = allAnimalTracksLayer.features[key];
          if (feature.attributes) {
         	// add features
 	         var startPoint = new OpenLayers.Feature.Vector(feature.geometry.components[0]);
@@ -195,7 +249,6 @@ function createPointsLayer() {
     }
 	map.addLayer(pointsLayer);
 }
-
 
 function createSelectControl() {
 
@@ -232,12 +285,12 @@ function createSelectControl() {
 
 function writeSelectControlText(e) {
 	
-	if ((e.feature.layer === linesLayer) || (e.feature.layer === pointsLayer)) {
+	if ((e.feature.layer === allAnimalTracksLayer) || (e.feature.layer === pointsLayer)) {
 
 		var txt="<b>Selected Feature: </b><br> Animal: " + e.feature.attributes.animalName
 	    + "<br> Layer name: " + e.feature.layer.name;
 		
-	    if (e.feature.layer === linesLayer) {
+	    if (e.feature.layer === allAnimalTracksLayer) {
 
 	    	txt = txt + "<br> Date From: " + e.feature.attributes.fromDate
 		    		  + "<br> Date To: " + e.feature.attributes.toDate;
@@ -262,8 +315,8 @@ function writeSelectControlText(e) {
 
 function zoomToTrack(animalId) {
 
-	for (var key in linesLayer.features) {
-	         var feature = linesLayer.features[key];
+	for (var key in allAnimalTracksLayer.features) {
+	         var feature = allAnimalTracksLayer.features[key];
 	         if (feature.attributes && animalId == feature.attributes.animalId) {
 	        	map.zoomToExtent(feature.geometry.getBounds(),false);
 	         }
@@ -290,7 +343,7 @@ function toggleAnimalFeature(animalId, setVisible) {
     for (var l in map.layers) {
     	var layer = map.layers[l];
         if (!layer.isBaseLayer) {
-            if (layer === linesLayer) { //(layer.name == "Animal Tracks") {
+            if (layer === allAnimalTracksLayer) { //(layer.name == "Animal Tracks") {
 	            for (var f in layer.features) {
 	                var feature = layer.features[f];
 	                if (feature.attributes.animalId == animalId) {
@@ -335,35 +388,41 @@ function addProjectMapLayer() {
     var dateTo=$('input[id=toDatepicker]').val();
     var queryType =$('input[name=mapQueryTypeSelect]:checked');
     var queryTypeDescription =  queryType.parent().next().text();
-
-     /*
-     var data = '&dateFrom=' + dateFrom
-     + '&dateTo=' + dateTo.val()
+     
+/*
+    var data = '&dateFrom=' + dateFrom
+     + '&dateTo=' + dateTo
      + '&queryType=' + queryType.val()
      + '&mapQueryTypeDescription=' + queryTypeDescription;
-    alert("data : " + data);
-    */
-
-    var params = {projectId: projectId
-                 ,queryType: queryType.val()};
-    var layerName = queryTypeDescription;
-
-    if (dateFrom.length == 10) {
-        layerName = layerName + " from " + dateFrom;
-        params.dateFrom = dateFrom;
-    }
-
-    if (dateTo.length == 10) {
-        layerName = layerName + " to " + dateTo;
-        params.dateTo = dateTo;
-    }
-
-    if (queryType.val() == "LINES") {
-        addWFSLayer(layerName, params);
+    
+     alert("data : " + data);
+*/
+    if (queryType.val() != null) {
+    
+        var params = {projectId: projectId
+	                 ,queryType: queryType.val()};
+	    var layerName = queryTypeDescription;
+	
+	    if (dateFrom.length == 10) {
+	        layerName = layerName + " from " + dateFrom;
+	        params.dateFrom = dateFrom;
+	    }
+	
+	    if (dateTo.length == 10) {
+	        layerName = layerName + " to " + dateTo;
+	        params.dateTo = dateTo;
+	    }
+	
+	    if (queryType.val() == "LINES") {
+	        addWFSLayer(layerName, params);
+	    } else {
+	        addKMLLayer(layerName,params);
+	    }
+	    
     } else {
-        addKMLLayer(layerName,params);
+	    alert("Please set a Layer Type.");
     }
-
+        
 }
 
 function addKMLLayer(layerName, params) {
@@ -378,8 +437,8 @@ function addKMLLayer(layerName, params) {
                         {extractStyles: true,
                          extractAttributes: true,
                          maxDepth: 2,
-                         internalProjection: googleProjection,
-                         externalProjection: kmlProjection,
+                         internalProjection: projection900913,
+                         externalProjection: projection4326,
                          kmlns:"http://localhost:8080/"
                      })
                   })
@@ -421,7 +480,7 @@ function addWFSLayer(layerName, params) {
                 	updateAnimalStyles();
             	}
              },
-             projection: new OpenLayers.Projection("EPSG:4326"),
+             projection: projection4326,
              protocol: new OpenLayers.Protocol.WFS.v1_1_0({
                 url:  "mapQueryWFS",
                 params:params,
