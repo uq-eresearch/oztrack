@@ -1,14 +1,6 @@
 
 $(document).ready(function(){
-     //nav();
-
-     accordian();
-     setupDatepicker();
-
-     $( "#accordion" ).accordion();
-     $( ".selector" ).accordion( "option", "fillSpace", true );
-     //$( ".selector" ).accordion( "option", "clearStyle", true );
-
+ 
      document.title='OzTrack';
      if ($('#titleText').length) {
         document.title = 'OzTrack ' + $('#titleText').val();
@@ -25,14 +17,11 @@ $(document).ready(function(){
      }
 
      navigation();
-
-     /*
-     $('input[name=animalCheckbox]').change(function() {
-           var animalId = $(this).val();
-           showHideAnimal(animalId);
-       });
-
-      */
+     accordianHead();
+     setupDatepicker();
+     $( "#accordion" ).accordion();
+     $( ".selector" ).accordion( "option", "fillSpace", true );
+     //$( ".selector" ).accordion( "option", "clearStyle", true );
 
 });
 
@@ -167,20 +156,7 @@ $(document).ready(function(){
 
  }
 
-
- /*
- function nav () {
-
-   $('.menuParent').click(function() {
-    		$(this).next().toggle('fast');
-    		return false;
-    	}).next().hide();
-
- }
- */
-
-
- function accordian () {
+ function accordianHead () {
 
     $('.accordianHead').click(function() {
     		$(this).next().toggle('fast');
@@ -190,6 +166,7 @@ $(document).ready(function(){
  }
 
  function setupDatepicker () {
+	 
      $('#fromDatepicker').datepicker();
      $('#toDatepicker').datepicker();
      $('#sightingDatepicker').datepicker();

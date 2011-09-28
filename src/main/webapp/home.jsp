@@ -15,6 +15,7 @@
 
 <br>
 
+<!-- 
 <c:forEach items="${projectList}" var="project">
 
 	    <div class="accordianHead">
@@ -49,7 +50,7 @@
     </div>
 
 </c:forEach>
-
+ -->
 
 <%@ include file="footer.jsp" %>
 

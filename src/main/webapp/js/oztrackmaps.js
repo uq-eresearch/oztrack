@@ -80,6 +80,7 @@ function initializeProjectMap() {
 
     map = new OpenLayers.Map('projectMap',mapOptions);
     map.addControl(new OpenLayers.Control.MousePosition());
+    map.addControl(new OpenLayers.Control.Scale());
     map.addControl(new OpenLayers.Control.ScaleLine());
     map.addControl(new OpenLayers.Control.NavToolbar());
     var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
@@ -138,6 +139,12 @@ function updateAnimalStyles() {
 	                }
 	                $('#legend-colour-' + feature.attributes.animalId).attr('style', 'background-color: ' + colour + ';');
 	                $('input[id=select-animal-' + feature.attributes.animalId + ']').attr('checked','checked');
+	                var txt = "<br> Date From: " + feature.attributes.fromDate
+		    		  		+ "<br> Date To: " + feature.attributes.toDate;
+	    	    	var distance = feature.geometry.getGeodesicLength(map.projection);
+	    	    	txt = txt +  "<br> Minimum Distance: " + Math.round(distance*1000)/1000 + "m";
+ 
+	                $('#animalInfo-'+ feature.attributes.animalId).html(txt);
 	        }
     }
     allAnimalTracksLayer.redraw();
@@ -388,6 +395,7 @@ function addProjectMapLayer() {
     var dateTo=$('input[id=toDatepicker]').val();
     var queryType =$('input[name=mapQueryTypeSelect]:checked');
     var queryTypeDescription =  queryType.parent().next().text();
+    
      
 /*
     var data = '&dateFrom=' + dateFrom

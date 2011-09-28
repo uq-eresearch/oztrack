@@ -392,6 +392,15 @@ form .dataLayersDiv input, form .baseLayersDiv input {
     height:100%;
 }
 
+.smallSquare {
+	display:block;
+	height:15px;
+	width:15px;
+	float:left;
+	margin-right:10px;
+}	
+
+
 
 
 /*
@@ -646,19 +655,6 @@ tbody tr:hover {
 
 .formHeader {
     font-size: 1em;
-}
-
-.accordianHead {
-    background-color:#adbc6b;
-    border: solid 1px #839537;
-    color:#000000;
-    font-size:12px;
-    font-weight:bold;
-    font-family:Arial,Verdana, sans-serif;
-    padding-bottom: 5px;
-    padding-top: 5px;
-    text-decoration:none;
-    text-align:center;
 }
 
 .projectListTableHeader, .projectListTable {
