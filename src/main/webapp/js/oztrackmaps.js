@@ -103,7 +103,7 @@ function initializeProjectMap() {
          eventListeners: {
             loadend: function (e) {
             	map.zoomToExtent(allAnimalTracksLayer.getDataExtent(),false);
-            	updateAnimalStyles();
+            	updateAnimalStyles(this);
             	if (!pointsLayer) {createPointsLayer();}
             	createSelectControl();
         	}
@@ -121,34 +121,46 @@ function initializeProjectMap() {
     map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326,projection900913), 4);
 }
 
-function updateAnimalStyles() {
+function updateAnimalStyles(linesLayer) {
     
-	for (var key in allAnimalTracksLayer.features) {
-	        var feature = allAnimalTracksLayer.features[key];
-	        if (feature.attributes && feature.attributes.animalId) {
-	                var colour = colours[feature.attributes.animalId % colours.length];
-	                feature.style = {
-	                        strokeColor: colour,
-	                        strokeWidth: 1.5,
-	                        label: feature.attributes.animalName,
-	                        labelAlign: "rt",
-	                        fontColor: "#ffffff",
-	                        fontOpacity: 0.9,
-	                        fontFamily: "Arial",
-	                        fontSize: 12
-	                }
-	                $('#legend-colour-' + feature.attributes.animalId).attr('style', 'background-color: ' + colour + ';');
-	                $('input[id=select-animal-' + feature.attributes.animalId + ']').attr('checked','checked');
-	                var txt = "<br> Date From: " + feature.attributes.fromDate
-		    		  		+ "<br> Date To: " + feature.attributes.toDate;
-	    	    	var distance = feature.geometry.getGeodesicLength(map.projection);
-	    	    	txt = txt +  "<br> Minimum Distance: " + Math.round(distance*1000)/1000 + "m";
- 
-	                $('#animalInfo-'+ feature.attributes.animalId).html(txt);
+
+//	var vectorLayers = getVectorLayers();
+
+//    for (var l in vectorLayers) {
+    	
+//    	var layer = vectorLayers[l];
+//    	var layerName = layer.name;
+//	    if (layerName.indexOf("Animal Track") != -1 ) {	
+	        
+	        for (var key in linesLayer.features) {
+		        var feature = linesLayer.features[key];
+		        if (feature.attributes && feature.attributes.animalId) {
+		                var colour = colours[feature.attributes.animalId % colours.length];
+		                feature.style = {
+		                        strokeColor: colour,
+		                        strokeWidth: 1.5,
+		                        label: feature.attributes.animalName,
+		                        labelAlign: "rt",
+		                        fontColor: "#ffffff",
+		                        fontOpacity: 0.9,
+		                        fontFamily: "Arial",
+		                        fontSize: 12
+		                }
+		                $('#legend-colour-' + feature.attributes.animalId).attr('style', 'background-color: ' + colour + ';');
+		                $('input[id=select-animal-' + feature.attributes.animalId + ']').attr('checked','checked');
+		                var txt = "<br><b> Animal Track: </b>"
+		                	 	+ "<br> Date From: " + feature.attributes.fromDate
+			    		  		+ "<br> Date To: " + feature.attributes.toDate;
+		    	    	var distance = feature.geometry.getGeodesicLength(map.projection);
+		    	    	txt = txt +  "<br> Minimum Distance: " + Math.round(distance*1000)/1000 + "m";
+	 
+		                $('#animalInfo-'+ feature.attributes.animalId).append(txt);
+		        }
 	        }
-    }
-    allAnimalTracksLayer.redraw();
-}
+	  //  }
+	linesLayer.redraw();
+    //}
+}    
 
 function createPointsLayer() {
 	
@@ -330,13 +342,27 @@ function zoomToTrack(animalId) {
 	    }
 }
 
+function getVectorLayers() {
+	//get vector layers from layerswitcher 
+	var vectorLayers = new Array();
+	for (var c in map.controls) {
+		var control = map.controls[c];
+		if (control.id.indexOf("LayerSwitcher") != -1) {
+			for (var i=0; i < control.dataLayers.length; i++) {
+				vectorLayers.push(control.dataLayers[i].layer);
+			}
+		}
+	}
+	return vectorLayers;
+}
+
 
 function toggleAnimalFeature(animalId, setVisible) {
 
     //line
-	var style = {
+	var lineStyle = {
             strokeColor: "#ffffff",
-            strokeWidth: 2,
+            strokeWidth: 1.5,
             label: "",
             labelAlign: "rt",
             fontColor: "#ffffff",
@@ -346,27 +372,35 @@ function toggleAnimalFeature(animalId, setVisible) {
             fillOpacity:1.0,
             strokeOpacity:1.0
     };
+	
+	var polygonStyle = {
+		strokeColor: "FF0000",
+		strokeWidth: 2,
+		strokeOpacity: 1.0,
+		fillOpacity: 0.0
+	};
+	
+	var vectorLayers = getVectorLayers();
 
-    for (var l in map.layers) {
-    	var layer = map.layers[l];
-        if (!layer.isBaseLayer) {
-            if (layer === allAnimalTracksLayer) { //(layer.name == "Animal Tracks") {
-	            for (var f in layer.features) {
+    for (var l in vectorLayers) {
+    	var layer = vectorLayers[l];
+    	var layerName = layer.name;
+	        if (layerName.indexOf("Animal Track") != -1 ) {
+        		for (var f in layer.features) {
 	                var feature = layer.features[f];
 	                if (feature.attributes.animalId == animalId) {
 	                    if (setVisible) {
-	                       	style.strokeColor = colours[feature.attributes.animalId % colours.length];
-	                        style.label = feature.attributes.animalName;
-	                        style.strokeOpacity = 1.0;
+	                    	lineStyle.strokeColor = colours[feature.attributes.animalId % colours.length];
+	                    	lineStyle.label = feature.attributes.animalName;
+	                    	lineStyle.strokeOpacity = 1.0;
 	                    } else {
-	                       style.strokeOpacity = 0.0;
+	                    	lineStyle.strokeOpacity = 0.0;
 	                    }
-	                    feature.style = style;
+	                    feature.style = lineStyle;
 	                    layer.redraw();
 	                }
 	            }
-            }   
-	         if (layer === pointsLayer){
+            } else if (layerName.indexOf("Start and End Points") != -1) {   
 	            for (var f in layer.features) {
 	                var feature = layer.features[f];
 	                if (feature.attributes.animalId == animalId) {
@@ -382,8 +416,21 @@ function toggleAnimalFeature(animalId, setVisible) {
 	                    layer.redraw();
 	                }
 	            }
-	         }   
-        }
+	        } else {
+	        	//kml layer
+	        	for (var f in layer.features) {
+	        		var feature = layer.features[f];
+	        		if (feature.attributes.id.value == animalId) {
+	        			if (setVisible) {
+	        				polygonStyle.strokeOpacity = 1.0;
+	        			}else {
+	        				polygonStyle.strokeOpacity = 0.0;
+	        			}
+	        			feature.style = polygonStyle;
+	        			layer.redraw();
+	        		}
+	        	}
+	        }   
      }
 
 }
@@ -438,7 +485,12 @@ function addKMLLayer(layerName, params) {
         var queryOverlay = new OpenLayers.Layer.Vector(
                 layerName,
                 {strategies: [new OpenLayers.Strategy.Fixed()],
-                 protocol: new OpenLayers.Protocol.HTTP(
+                 eventListeners: {
+	                 loadend: function (e) {
+	                	updateAnimalInfoFromKML(layerName, e);
+	            	 }
+                 },
+                	protocol: new OpenLayers.Protocol.HTTP(
                     {url: "mapQueryKML",
                      params: params,
                      format: new OpenLayers.Format.KML(
@@ -451,6 +503,7 @@ function addKMLLayer(layerName, params) {
                      })
                   })
         });
+
 
         var querySelectControl = new OpenLayers.Control.SelectFeature(
             [queryOverlay],
@@ -471,9 +524,22 @@ function addKMLLayer(layerName, params) {
             }
         );
         map.addLayer(queryOverlay);
-        map.addControl(querySelectControl);
-        querySelectControl.activate();
-        queryOverlay.refresh();
+ //       map.addControl(querySelectControl);
+ //       querySelectControl.activate();
+ //       queryOverlay.refresh();
+}
+                
+function updateAnimalInfoFromKML(layerName, e) {
+	
+	var txt = "<br><b>" + layerName + "</b>" ;
+
+	for (var f in e.object.features) {
+		var feature = e.object.features[f];
+		var area = feature.attributes.area.value;
+		var txt = "<br><b>" + layerName + "</b>" 
+				+ "<br> Area: " + 		Math.round(area*1000)/1000;
+		$('#animalInfo-'+ feature.attributes.id.value).append(txt);
+	}	
 }
 
 
@@ -485,7 +551,8 @@ function addWFSLayer(layerName, params) {
              eventListeners: {
                 loadend: function (e) {
                 	map.zoomToExtent(newWFSOverlay.getDataExtent(),false);
-                	updateAnimalStyles();
+                	var whatsThis = this;
+                	updateAnimalStyles(this);
             	}
              },
              projection: projection4326,
@@ -517,9 +584,9 @@ function addWFSLayer(layerName, params) {
         );
 
         map.addLayer(newWFSOverlay);
-        map.addControl(newSelectControl);
-        newSelectControl.activate();
-        newWFSOverlay.refresh();
+//        map.addControl(newSelectControl);
+//        newSelectControl.activate();
+//        newWFSOverlay.refresh();
         
 }
 

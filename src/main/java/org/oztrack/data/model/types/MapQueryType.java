@@ -12,9 +12,9 @@ package org.oztrack.data.model.types;
 public enum MapQueryType {
 
      ALL_POINTS("All Points in this Project")
-    ,ALL_LINES("All Tracks in this Project (as Lines)")
+    ,ALL_LINES("All Animal Tracks")
 //    ,POINTS("Points")
-    ,LINES ("Lines")
+    ,LINES ("Animal Track")
     ,MCP100("Minimum Convex Polygon 100%")
     ,MCP95("Minimum Convex Polygon 95%")
     ,MCP50("Minimum Convex Polygon 50%")
