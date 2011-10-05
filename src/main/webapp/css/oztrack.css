@@ -528,7 +528,7 @@ form div select, form div textarea, form div input {
 
 .shortInputRadioButton, .shortInputCheckbox {
   width:10px;
-  margin-top:5px;
+/*  margin-top:5px; */
   display:inline;
 }
 

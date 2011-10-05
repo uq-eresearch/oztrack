@@ -12,12 +12,12 @@ package org.oztrack.data.model.types;
 public enum MapQueryType {
 
      ALL_POINTS("All Points in this Project")
-    ,ALL_LINES("All Animal Tracks")
+    ,ALL_LINES("All Trajectories")
 //    ,POINTS("Points")
-    ,LINES ("Animal Track")
-    ,MCP100("Minimum Convex Polygon 100%")
-    ,MCP95("Minimum Convex Polygon 95%")
-    ,MCP50("Minimum Convex Polygon 50%")
+    ,LINES ("Trajectory")
+    ,MCP100("Minimum Convex Polygon")
+    ,MCP95("Peeled Convex Hull (95%)")
+    ,MCP50("Peeled Convex Hull (50%)")
  //   ,KUD100("Kernel UD (utilization distribution) 100%")
     ,KUD95("Kernel UD (utilization distribution) 95%")
     ,KUD50("Kernel UD (utilization distribution) 50%");

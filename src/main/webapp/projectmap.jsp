@@ -35,13 +35,13 @@
         		<div>
         			<div class="animalMenu">
                     <input type="checkbox" class="shortInputCheckbox" name="animalCheckbox" id="select-animal-${animal.projectAnimalId}" value="${animal.projectAnimalId}"/>
-                    Show/Hide
+                    Show/Hide All
                     <script type="text/javascript">
                         $('input[id=select-animal-${animal.projectAnimalId}]').change(function() {
-                                toggleAnimalFeature("${animal.projectAnimalId}",this.checked);
+                                toggleAllAnimalFeatures("${animal.projectAnimalId}",this.checked);
                         });
                     </script>
-                    &nbsp;&nbsp;<a href="#" onclick="zoomToTrack(${animal.projectAnimalId});">Zoom</a>&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="zoomToTrack(${animal.projectAnimalId});">Zoom</a>&nbsp;&nbsp;
                     <a href="<c:url value="exportKML"><c:param name="projectId" value="${project.id}"/><c:param name="animalId" value="${animal.id}"/></c:url>">
         			KML</a>
         			</div>

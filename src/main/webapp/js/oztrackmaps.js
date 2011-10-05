@@ -60,7 +60,7 @@ function initializeProjectMap() {
     );
 
     allAnimalTracksLayer = new OpenLayers.Layer.Vector(
-        "All Animal Tracks",
+        "All Trajectories",
         {
         projection: projection4326,
         protocol: new OpenLayers.Protocol.WFS.v1_1_0({
@@ -86,13 +86,18 @@ function initializeProjectMap() {
 
 function updateAnimalStyles(linesLayer) {
     
-    for (var key in linesLayer.features) {
+    var layerName = linesLayer.name;
+    var layerId = linesLayer.id;
+    var featureId = "";
+    
+	for (var key in linesLayer.features) {
         var feature = linesLayer.features[key];
         if (feature.attributes && feature.attributes.animalId) {
                 var colour = colours[feature.attributes.animalId % colours.length];
                 var labelText = "";
                 if (linesLayer === allAnimalTracksLayer) {
                 	labelText = feature.attributes.animalName;
+                	layerName = "Trajectory";
                 }
                 feature.style = {
                         strokeColor: colour,
@@ -104,18 +109,33 @@ function updateAnimalStyles(linesLayer) {
                         fontFamily: "Arial",
                         fontSize: 12
                 }
+                
+                // set the colour and make sure the show/hide all box is checked
                 $('#legend-colour-' + feature.attributes.animalId).attr('style', 'background-color: ' + colour + ';');
                 $('input[id=select-animal-' + feature.attributes.animalId + ']').attr('checked','checked');
-                var txt = "<table><tr><td colspan=2><b>Trajectory: </b></td></tr>"
-                	 	+ "<tr><td>From:</td><td>" + feature.attributes.fromDate + "</td></tr>"
-	    		  		+ "<tr><td>To:</td><td>" + feature.attributes.toDate + "</td></tr>";
+                
+                // add detail for this layer
     	    	var distance = feature.geometry.getGeodesicLength(map.projection);
-    	    	txt = txt +  "<tr><td>Minimum Distance: </td><td>" + Math.round(distance*1000)/1000 + "m</td></tr></table>";
- 	            $('#animalInfo-'+ feature.attributes.animalId).append(txt);
+                var checkboxValue = layerId + "-" + feature.id;
+                var checkboxId = checkboxValue.replace(/\./g,"");
+                var checkboxHtml = "<input type='checkbox' class='shortInputCheckbox' " 
+                				 + "id='select-feature-" + checkboxId + "' value='" + checkboxValue + "'/>"
+                				 + "<b>&nbsp;" + layerName + "</b>";
+                
+                var html = "<table><tr><td>Date From:</td><td>" + feature.attributes.fromDate + "</td></tr>"
+	    		  		+ "<tr><td>Date To:</td><td>" + feature.attributes.toDate + "</td></tr>"
+    	    			+ "<tr><td>Minimum Distance: </td><td>" + Math.round(distance*1000)/1000 + "m</td></tr></table>";
+ 	            $('#animalInfo-'+ feature.attributes.animalId).append(checkboxHtml);
+ 	            $('#animalInfo-'+ feature.attributes.animalId).append(html);
+ 	            $('input[id=select-feature-' + checkboxId + ']').change(function() {
+                    toggleFeature(this.value,this.checked);
+                });
 	        }
         }
     linesLayer.redraw();
-}    
+} 
+
+
 
 function createPointsLayer() {
 	
@@ -195,7 +215,61 @@ function getVectorLayers() {
 }
 
 
-function toggleAnimalFeature(animalId, setVisible) {
+function toggleFeature(featureIdentifier, setVisible) {
+	
+//	alert("feature: " + featureIdentifier + " setVisible: " + setVisible);
+	var splitString = featureIdentifier.split("-");
+	var layerId = splitString[0];
+	var featureId = splitString[1];
+	
+    //line
+	var lineStyle = {
+            strokeColor: "#ffffff",
+            strokeWidth: 1.5,
+            label: "",
+            labelAlign: "rt",
+            fontColor: "#ffffff",
+            fontOpacity: 0.9,
+            fontFamily: "Arial",
+            fontSize: 12,
+            fillOpacity:1.0,
+            strokeOpacity:1.0
+    };
+	
+	var polygonStyle = {
+		strokeColor: "FF0000",
+		strokeWidth: 2,
+		strokeOpacity: 1.0,
+		fillOpacity: 0.0
+	};
+	
+	var layer = map.getLayer(layerId);
+	for (var key in layer.features) {
+        var feature = layer.features[key];
+        if (feature.id == featureId) {
+        	if (layer.name.indexOf("Trajector") != -1 ) {
+	            if (setVisible) {
+		            	lineStyle.strokeColor = colours[feature.attributes.animalId % colours.length];
+		            	lineStyle.label = feature.attributes.animalName;
+		            	lineStyle.strokeOpacity = 1.0;
+	            } else {
+	            	lineStyle.strokeOpacity = 0.0;
+	            }
+	            feature.style = lineStyle;
+        	} else { 	
+        		if (setVisible) {
+    				polygonStyle.strokeOpacity = 1.0;
+    			}else {
+    				polygonStyle.strokeOpacity = 0.0;
+    			}
+    			feature.style = polygonStyle;
+        	}
+        	layer.redraw();
+        }
+	}
+}
+
+function toggleAllAnimalFeatures(animalId, setVisible) {
 
     //line
 	var lineStyle = {
@@ -223,7 +297,7 @@ function toggleAnimalFeature(animalId, setVisible) {
     for (var l in vectorLayers) {
     	var layer = vectorLayers[l];
     	var layerName = layer.name;
-	        if (layerName.indexOf("Animal Track") != -1 ) {
+	        if (layerName.indexOf("Trajector") != -1 ) {
         		for (var f in layer.features) {
 	                var feature = layer.features[f];
 	                if (feature.attributes.animalId == animalId) {
@@ -280,7 +354,6 @@ function addProjectMapLayer() {
     var dateTo=$('input[id=toDatepicker]').val();
     var queryType =$('input[name=mapQueryTypeSelect]:checked');
     var queryTypeDescription =  queryType.parent().next().text();
-    
      
 /*
     var data = '&dateFrom=' + dateFrom
