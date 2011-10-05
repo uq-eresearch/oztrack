@@ -2,18 +2,17 @@
 <script src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
 <script type="text/javascript" src="js/openlayers/OpenLayers.js" /></script>
 <script type="text/javascript" src="js/oztrackmaps.js" /></script>
-
-    <h1>Welcome to OzTrack Beta!</h1>
+<script type="text/javascript"> 
+	mapPage = true;
+</script>	
 
     <div class="mapTool">
+        <div id="homeMapOptions">
+        	 <h1>Welcome to OzTrack Beta!</h1>
+        </div>
         <div id="homeMap"></div>
-        <div id="homeMapOptions"></div>
-        <div class="clearboth">&nbsp;</div>
+        <div class="clearboth">&nbsp;</div>  
     </div>
-
-<br>
-
-<br>
 
 <!-- 
 <c:forEach items="${projectList}" var="project">

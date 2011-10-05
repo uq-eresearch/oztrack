@@ -27,7 +27,4 @@ Select a project to work with from the list below.
 </c:forEach>
 </table>
 
-
-<h2>Globally Available Projects</h2>
-
 <%@ include file="footer.jsp" %>

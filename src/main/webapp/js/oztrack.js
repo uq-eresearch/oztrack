@@ -22,6 +22,14 @@ $(document).ready(function(){
      $( "#accordion" ).accordion();
      $( ".selector" ).accordion( "option", "fillSpace", true );
      //$( ".selector" ).accordion( "option", "clearStyle", true );
+     
+     if (mapPage) {
+    	 $("#logos").addClass('logoBottom');
+    	 $("#logos").removeClass('logoSidebar');
+     } else {
+    	 $("#logos").addClass('logoSidebar');
+    	 $("#logos").removeClass('logoBottom');
+     }
 
 });
 

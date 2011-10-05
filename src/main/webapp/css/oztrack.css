@@ -14,6 +14,7 @@ h1 {
     font-size:1.5em;
     font-weight:bold;
     color:black;
+    margin-top:0px;
 }
 
 h2 {
@@ -69,42 +70,65 @@ a:hover {
 	background-color:#FBFEE9;
 }
 
-#top_header {
+#header_left {
     background-image: url('../images/header_logo.gif');
     background-repeat: no-repeat;
-    background-position: left;
-    width:100%;
+    background-position: center center;
+    width:300px;
     height: 140px;
-}
-
-#nav {
-    padding-left: 170px;
-    background-color: #131f00;
-
-}
-
-#crumbs {
-    position:relative;
     float:left;
-    padding-left:230px;
-
+    
 }
 
-#crumbs, #login {
-     background-color:#fbfee9;
-     font-size:0.7em;
-     padding-top:0.7ex;
-     margin-top:0px;
-}
+#header_right {
+    background-image: url('../images/header_croc.jpg');
+    background-repeat: no-repeat;
+    background-position: left;
+    margin-left:300px;
+    height:140px;
+}	
 
-
-#login {
+#login{
     position:relative;
     float: right;
     padding-right: 20px;
     margin-left:-30px;
+	margin-top:120px;
+	color: #ffffff;
+}
+
+#login a {
+	color: #ffffff;
+}	
+
+#nav {
+    background-color: #131f00;
 
 }
+
+#crumbs, #content  {
+    padding-left:300px;
+}
+
+#navMenu {
+	padding-left:290px;
+}	
+
+#crumbs {
+    position:relative;
+    float:left;
+     background-color:#fbfee9;
+}
+
+#crumbs, #login {
+     font-size:0.7em;
+     padding-top:0.7ex;
+}
+
+#content {
+	min-height:150px;
+}	
+
 
 
 #leftMenu  {
@@ -116,15 +140,11 @@ a:hover {
 
 }
 
-#content {
-    margin-left:230px;
-    width:720px;
 
-
-}
 
 #logos {
-    margin-top:100px;
+/*    margin-top:100px;*/
+
 }
 
 #logos img {
@@ -132,8 +152,20 @@ a:hover {
     padding-top:10px;
     padding-bottom:20px;
     border:none;
+}
+
+.logoBottom {
+	margin-left:310px;
 
 }
+
+.logoSidebar {
+	width:150px;
+	position:absolute;
+	left:200px;
+	top:220px;
+	
+}	
 
 #main {
 
@@ -173,15 +205,13 @@ a:hover {
     list-style-type: none;
     list-style-image: none;
     display:inline-block;
-
 }
 
 #navMenu a, #navMenu a:visited {
     color:#ffffff;
     font-size:0.9em;
     font-weight:bold;
-    padding-right: 30px;
-    padding-left: 20px;
+    padding-right: 35px;
     color:#ffffff;
     text-decoration:none;
 }
@@ -195,6 +225,7 @@ a:hover {
 #navMenu li {
     position:relative;
     float:left;
+    padding-left:10px;
 }
 
 #navMenu ul {
@@ -232,7 +263,7 @@ a:hover {
 
 
 
-#crumbs a, #crumbs a:visited, #login a, #login a:visited {
+#crumbs a, #crumbs a:visited{
     color:#263f00;
     text-decoration:none;
 
@@ -318,8 +349,11 @@ a:hover {
 .mapTool {
    background-color:#e6e6c0;
    font-size: 0.8em;
-   width:100%;
-   padding:10px;
+   width:900px;
+   position:relative;
+   float:left;
+	padding: 8px;   
+	left:-260px;
     /*--Top right rounded corner--*/
     -moz-border-radius-topright: 10px;
     -khtml-border-radius-topright: 10px;
@@ -340,15 +374,15 @@ a:hover {
 }
 
 #homeMap, #projectMap{
-    width: 500px;
+    width: 650px;
     height:500px;
-    float:left;
+    float:right;
 }
 
 #homeMapOptions, #projectMapOptions  {
-    margin-left: 510px;
     height:100%;
-
+    width:240px;
+    float:left;
 }
 
 #accordian form div {

@@ -18,7 +18,9 @@
     <script type="text/javascript" src="js/jquery/jquery.formalize.min.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
     <script type="text/javascript" src="js/oztrack.js"></script>
-
+	<script type="text/javascript"> 
+		var mapPage = false;
+	</script>	
 <!--
     <c:forEach var="js" items="${paramValues.jsIncludes}" >
         <script src="${js}" type="text/javascript"></script>
@@ -31,8 +33,34 @@
 
 <div id="container">
 <div id="top_header">
-    <img src="images/header_croc.jpg" align="right"/>
+<div id="header_left"></div>
+<div id="header_right">
+
+<div id="login">
+<c:set var="thisURL" value="${pageContext.request.requestURL}"/>
+<c:if test="${!fn:contains(thisURL,'login') && !fn:contains(thisURL,'register')}">
+    <c:choose>
+    <c:when test="${currentUser != null}">
+      Welcome, <c:out value="${currentUser.firstName}"/>
+      &nbsp;|&nbsp;
+      <a href=#>Profile</a>
+      &nbsp;|&nbsp;
+      <a href="<c:url value="logout"/>">Logout</a>
+    </c:when>
+    <c:otherwise>
+      <a href="<c:url value="login"/>">Login</a> or <a href="<c:url value="register"/>">Register</a>
+    </c:otherwise>
+    </c:choose>
+
+</c:if>
+</div>   
 </div>
+
+
+</div>
+<!-- <img src="images/header_croc.jpg" align="right"/>
+ --> 
+ 
 
 
 <div id="nav">
@@ -71,28 +99,12 @@
     <a id="homeUrl" href="<c:url value="home"/>">Home</a>
 </div>
 
-<div id="login">
-<c:set var="thisURL" value="${pageContext.request.requestURL}"/>
-<c:if test="${!fn:contains(thisURL,'login') && !fn:contains(thisURL,'register')}">
-    <c:choose>
-    <c:when test="${currentUser != null}">
-      Welcome, <c:out value="${currentUser.firstName}"/>
-      &nbsp;|&nbsp;
-      <a href=#>Profile</a>
-      &nbsp;|&nbsp;
-      <a href="<c:url value="logout"/>">Logout</a>
-    </c:when>
-    <c:otherwise>
-      <a href="<c:url value="login"/>">Login</a> or <a href="<c:url value="register"/>">Register</a>
-    </c:otherwise>
-    </c:choose>
 
-</c:if>
-</div>
+
 
  <div id="main">
 
-
+<!-- 
 <div id="leftMenu">
 
 <c:if test="${fn:contains(thisURL,'project') && !fn:contains(thisURL,'projectdetail')&& !fn:contains(thisURL,'projectanimals') && !fn:contains(thisURL,'projectreceivers')&& !fn:contains(thisURL,'alloztrackprojects')&& !fn:contains(thisURL,'projectmap')}">
@@ -109,10 +121,6 @@
           <li><a href="<c:url value="searchform"/>">Analysis Tools</a></li>
           <li><a href="<c:url value="datafiles"/>">Data Uploads</a></li>
           <li><a href="<c:url value="projectdetail"/>">Project Details</a></li>
-          <!--
-          <li><a href="<c:url value="projectanimals"/>">Animals</a></li>
-          <li><a href="<c:url value="projectreceivers"/>">Receivers</a></li>
-          -->
         </ul>
 
     </c:if>
@@ -133,8 +141,10 @@
 </div>
 
 </div>
+ -->
 
 <div id="content">
+
 
 <!--
 <c:forEach items='${requestScope}' var='p'>

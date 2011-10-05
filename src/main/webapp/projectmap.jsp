@@ -3,15 +3,15 @@
 <script src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
 <script type="text/javascript" src="js/openlayers/OpenLayers.js"></script>
 <script type="text/javascript" src="js/oztrackmaps.js"></script>
+<script type="text/javascript"> 
+	mapPage = true;
+</script>
 
+<div class="mapTool">
+<div id="projectMapOptions">
 <h1><c:out value="${project.title}"/></h1>
 
 <p style="color:red;"><c:out value="${errorMessage}"/></p>
-
-<div class="mapTool">
-<div id="projectMap"></div>
-<div id="projectMapOptions">
-
 <input type="hidden" value="${project.id}" id="projectId"/>
 <input type="hidden" value="${project.boundingBox}" id="projectBoundingBox"/>
 
@@ -24,38 +24,6 @@
         <h3><a href="#">Map Layers</a></h3>
         <div id="customLayerSwitcher"></div>
 
- <!-- 
-        <h3><a href="#">Animals</a></h3>
-        <div>
-            <style>
-                .legend {
-                    border-collapse: collapse;
-                    border-spacing: 2px;
-                }
-                .legend td {
-                    border: 5px solid white;
-                 }
-            </style>
-            <table class="legend">
-            <c:forEach items="${projectAnimalsList}" var="animal">
-                <tr>
-                    <td><input type="checkbox" class="shortInputCheckbox" name="animalCheckbox" id="select-animal-${animal.projectAnimalId}" value="${animal.projectAnimalId}"/></td>
-                    <script type="text/javascript">
-                        $('input[id=select-animal-${animal.projectAnimalId}]').change(function() {
-                                toggleAnimalFeature("${animal.projectAnimalId}",this.checked);
-                        });
-                    </script>
-                    <td id="legend-colour-${animal.projectAnimalId}"><a href="#" onclick="zoomToTrack(${animal.projectAnimalId});">${animal.animalName}</a></td>
-                    <td>
-		        		<a href="<c:url value="exportKML"><c:param name="projectId" value="${project.id}"/><c:param name="animalId" value="${animal.id}"/></c:url>">
-                		KML
-                		</a>
-            		</td>
-                </tr>
-            </c:forEach>
-            </table>
-        </div>
- -->        
         <h3><a href="#">Navigation</a></h3>
 
         <div>
@@ -122,6 +90,7 @@
     <div class="formButton"><input type="submit" id="projectMapSubmit" value="Add a New Layer"/></div>
     </form>
 </div>
+<div id="projectMap"></div>
 <div class="clearboth">&nbsp;</div>
 </div>
 
