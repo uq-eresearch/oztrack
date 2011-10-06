@@ -1,7 +1,23 @@
 
 $(document).ready(function(){
  
-     document.title='OzTrack';
+    if (mapPage) {
+   	 $("#logos").addClass('logoBottom');
+   	 $("#logos").removeClass('logoSidebar');
+    } else {
+   	 $("#logos").addClass('logoSidebar');
+   	 $("#logos").removeClass('logoBottom');
+    }
+    
+    if (projectPage) {
+   	 $("#projectMenu").addClass('projectMenuActive');
+   	 $("#projectMenu").removeClass('projectMenuHidden');
+    } else {
+   	 $("#projectMenu").addClass('projectMenuHidden');
+   	 $("#projectMenu").removeClass('projectMenuActive');
+    } 
+	
+	document.title='OzTrack';
      if ($('#titleText').length) {
         document.title = 'OzTrack ' + $('#titleText').val();
      }
@@ -23,13 +39,10 @@ $(document).ready(function(){
      $( ".selector" ).accordion( "option", "fillSpace", true );
      //$( ".selector" ).accordion( "option", "clearStyle", true );
      
-     if (mapPage) {
-    	 $("#logos").addClass('logoBottom');
-    	 $("#logos").removeClass('logoSidebar');
-     } else {
-    	 $("#logos").addClass('logoSidebar');
-    	 $("#logos").removeClass('logoBottom');
-     }
+
+ 
+     
+     
 
 });
 

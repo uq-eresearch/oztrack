@@ -1,7 +1,9 @@
 <%@ include file="header.jsp" %>
+<script type="text/javascript">projectPage = true;</script>
 
 <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
 
+<h2>Project Details</h2>
 <table class="projectListTable">
 <tr><td><b>Description:</b></td><td><c:out value="${project.description}"/></td></tr>
 <tr><td><b>Project Data:</b></td>

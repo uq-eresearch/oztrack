@@ -1,8 +1,5 @@
 
-<div id="logos">
-<a href="http://ands.org.au/"/><img src="images/ands-logo.png" width="140px" height="67px"/></a>
-<a href="http://itee.uq.edu.au/~eresearch/"/><img src="images/uq_logo.png" width="140px" height="40px"/></a>
-</div>
+
 
 <div class="clearboth">&nbsp;</div>
 </div> <!-- content -->

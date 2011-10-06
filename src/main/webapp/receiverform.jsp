@@ -1,4 +1,5 @@
 <%@ include file="header.jsp" %>
+<script type="text/javascript">projectPage = true;</script>
 
 <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
 <h2>Update Receiver Details</h2>

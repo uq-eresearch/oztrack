@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document><Folder><name>MCP95</name>
+<Schema name="MCP95" id="MCP95">
+	<SimpleField name="Name" type="string"></SimpleField>
+	<SimpleField name="Description" type="string"></SimpleField>
+	<SimpleField name="id" type="string"></SimpleField>
+	<SimpleField name="area" type="float"></SimpleField>
+</Schema>
+  <Placemark>
+  <Style><LineStyle><color>ff0000ff</color></LineStyle>  <PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#MCP95">
+		<SimpleData name="id">6</SimpleData>
+		<SimpleData name="area">40.7493038767606</SimpleData>
+	</SchemaData></ExtendedData>
+      <Polygon><outerBoundaryIs><LinearRing><coordinates>146.090783499999986,-17.560537499999999 146.089928700000002,-17.5638125 146.089677999999992,-17.5642265 146.089041299999991,-17.565136299999999 146.088896900000009,-17.565293400000002 146.087974900000006,-17.5655292 146.087547,-17.565626699999999 146.087481300000007,-17.565631199999999 146.087435900000003,-17.5656302 146.086957500000011,-17.565599599999999 146.086590599999994,-17.565516899999999 146.085864299999997,-17.5651644 146.08523120000001,-17.560594900000002 146.0868045,-17.557603799999999 146.087745000000012,-17.5575011 146.087861800000013,-17.5575139 146.089288299999993,-17.5578337 146.089728900000011,-17.5580855 146.089900099999994,-17.5581976 146.090226999999999,-17.558504599999999 146.090783499999986,-17.560537499999999</coordinates></LinearRing></outerBoundaryIs></Polygon>
+  </Placemark>
+  <Placemark>
+  <Style><LineStyle><color>ff0000ff</color></LineStyle>  <PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#MCP95">
+		<SimpleData name="id">7</SimpleData>
+		<SimpleData name="area">13.6597884029366</SimpleData>
+	</SchemaData></ExtendedData>
+      <Polygon><outerBoundaryIs><LinearRing><coordinates>148.090158000000002,-20.559332999999999 148.090049999999991,-20.559808 148.088525000000004,-20.561375000000002 148.088375000000013,-20.561325 148.088249999999988,-20.561240999999999 148.086758000000003,-20.559415999999999 148.086974999999995,-20.557258 148.087600000000009,-20.556415999999999 148.089866,-20.557141 148.089890999999994,-20.557290999999999 148.090125,-20.559 148.090158000000002,-20.559332999999999</coordinates></LinearRing></outerBoundaryIs></Polygon>
+  </Placemark>
+</Folder></Document></kml>

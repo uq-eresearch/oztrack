@@ -10,8 +10,15 @@
 <div class="mapTool">
 <div id="projectMapOptions">
 <h1><c:out value="${project.title}"/></h1>
-
-
+		      
+<div id="projectMenu" style="font-size:1.2em;">		      
+      <ul>
+        <li><a href="<c:url value="projectdetail"/>">Project Details</a></li>
+        <li><a href="<c:url value="projectmap"/>">Analysis Tools</a></li>
+        <li><a href="<c:url value="searchform"/>">View Raw Data</a></li>
+        <li><a href="<c:url value="datafiles"/>">Data Uploads</a></li>
+      </ul>
+</div>
 
 <p style="color:red;"><c:out value="${errorMessage}"/></p>
 <input type="hidden" value="${project.id}" id="projectId"/>
