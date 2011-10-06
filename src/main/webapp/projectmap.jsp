@@ -11,6 +11,8 @@
 <div id="projectMapOptions">
 <h1><c:out value="${project.title}"/></h1>
 
+
+
 <p style="color:red;"><c:out value="${errorMessage}"/></p>
 <input type="hidden" value="${project.id}" id="projectId"/>
 <input type="hidden" value="${project.boundingBox}" id="projectBoundingBox"/>
@@ -33,8 +35,8 @@
                     <a href="#">${animal.animalName}</a>
             	</div>	
         		<div>
-        			<div class="animalMenu">
-                    <input type="checkbox" class="shortInputCheckbox" name="animalCheckbox" id="select-animal-${animal.projectAnimalId}" value="${animal.projectAnimalId}"/>
+        			<div>
+                    <input type="checkbox" class="shortInputCheckbox" name="animalCheckbox" id="select-animal-${animal.projectAnimalId}" value="${animal.projectAnimalId}">
                     Show/Hide All
                     <script type="text/javascript">
                         $('input[id=select-animal-${animal.projectAnimalId}]').change(function() {
@@ -89,7 +91,10 @@
     </div>
     <div class="formButton"><input type="submit" id="projectMapSubmit" value="Add a New Layer"/></div>
     </form>
+
+
 </div>
+
 <div id="projectMap"></div>
 <div class="clearboth">&nbsp;</div>
 </div>

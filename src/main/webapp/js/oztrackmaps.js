@@ -118,15 +118,19 @@ function updateAnimalStyles(linesLayer) {
     	    	var distance = feature.geometry.getGeodesicLength(map.projection);
                 var checkboxValue = layerId + "-" + feature.id;
                 var checkboxId = checkboxValue.replace(/\./g,"");
-                var checkboxHtml = "<input type='checkbox' class='shortInputCheckbox' " 
-                				 + "id='select-feature-" + checkboxId + "' value='" + checkboxValue + "'/>"
-                				 + "<b>&nbsp;" + layerName + "</b>";
                 
-                var html = "<table><tr><td>Date From:</td><td>" + feature.attributes.fromDate + "</td></tr>"
+                var checkboxHtml = "<input type='checkbox' class='shortInputCheckbox' " 
+                				 + "id='select-feature-" + checkboxId + "' value='" + checkboxValue + "' checked='true'/></input>";
+                
+                var html = "<b>&nbsp;&nbsp;" + layerName + "</b>"
+                		+ "<table><tr><td>Date From:</td><td>" + feature.attributes.fromDate + "</td></tr>"
 	    		  		+ "<tr><td>Date To:</td><td>" + feature.attributes.toDate + "</td></tr>"
-    	    			+ "<tr><td>Minimum Distance: </td><td>" + Math.round(distance*1000)/1000 + "m</td></tr></table>";
- 	            $('#animalInfo-'+ feature.attributes.animalId).append(checkboxHtml);
- 	            $('#animalInfo-'+ feature.attributes.animalId).append(html);
+    	    			+ "<tr><td>Minimum Distance: </td><td>" + Math.round(distance*1000)/1000 + "m</td></tr></table><br>";
+ 	            
+                //var html = "<div class='accordianNested'><a href='#'>" + layerName + "</a></div>"
+                //		 + "<div>Hello</div>";
+                
+                $('#animalInfo-'+ feature.attributes.animalId).append(checkboxHtml + html);
  	            $('input[id=select-feature-' + checkboxId + ']').change(function() {
                     toggleFeature(this.value,this.checked);
                 });
@@ -217,7 +221,6 @@ function getVectorLayers() {
 
 function toggleFeature(featureIdentifier, setVisible) {
 	
-//	alert("feature: " + featureIdentifier + " setVisible: " + setVisible);
 	var splitString = featureIdentifier.split("-");
 	var layerId = splitString[0];
 	var featureId = splitString[1];
@@ -445,10 +448,41 @@ function updateAnimalInfoFromKML(layerName, e) {
 	for (var f in e.object.features) {
 		var feature = e.object.features[f];
 		var area = feature.attributes.area.value;
-		var txt = "<br><b>" + layerName + "</b>" 
-				+ "<br> Area: " + 		Math.round(area*1000)/1000;
-		$('#animalInfo-'+ feature.attributes.id.value).append(txt);
-	}	
+        
+		var checkboxValue = feature.layer.id + "-" + feature.id;
+        var checkboxId = checkboxValue.replace(/\./g,"");
+	    var checkboxHtml = "<input type='checkbox' class='shortInputCheckbox' " 
+			 + "id='select-feature-" + checkboxId + "' value='" + checkboxValue + "' checked='true'/></input>";
+		var html = "&nbsp;&nbsp;<b>" + layerName + "</b>" 
+//				+ "<br> Area: " + 		Math.round(area*1000)/1000 + "<br>";
+   		+ "<table><tr><td> Area: </td><td>" + Math.round(area*1000)/1000 + "</td></tr></table><br>";
+		$('#animalInfo-'+ feature.attributes.id.value).append(checkboxHtml + html);
+	    $('input[id=select-feature-' + checkboxId + ']').change(function() {
+	        toggleFeature(this.value,this.checked);
+	    });
+	}
+	
+	/*
+	
+    var checkboxHtml = "<input type='checkbox' class='shortInputCheckbox' " 
+    				 + "id='select-feature-" + checkboxId + "' value='" + checkboxValue + "' checked='true'/></input>";
+    
+    var html = "<b>&nbsp;&nbsp;" + layerName + "</b>"
+    		+ "<table><tr><td>Date From:</td><td>" + feature.attributes.fromDate + "</td></tr>"
+	  		+ "<tr><td>Date To:</td><td>" + feature.attributes.toDate + "</td></tr>"
+			+ "<tr><td>Minimum Distance: </td><td>" + Math.round(distance*1000)/1000 + "m</td></tr></table>";
+    
+    //var html = "<div class='accordianNested'><a href='#'>" + layerName + "</a></div>"
+    //		 + "<div>Hello</div>";
+    
+    $('#animalInfo-'+ feature.attributes.animalId).append(checkboxHtml + html);
+    $('input[id=select-feature-' + checkboxId + ']').change(function() {
+        toggleFeature(this.value,this.checked);
+    });
+
+	
+	*/
+	
 }
 
 
