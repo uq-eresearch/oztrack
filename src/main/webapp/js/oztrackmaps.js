@@ -347,6 +347,12 @@ function toggleAllAnimalFeatures(animalId, setVisible) {
 	        	}
 	        }   
      }
+    
+     // check/uncheck all boxes in the <div id=animalInfo-"animalId"> 
+    //toggleFeature(featureIdentifier, setVisible);
+    //featureIdentifier = layerid-featureid
+    $("#animalInfo-"+animalId).find(':checkbox').attr("checked",setVisible);
+    
 
 }
 

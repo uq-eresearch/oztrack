@@ -38,8 +38,11 @@
         <div>
             <c:forEach items="${projectAnimalsList}" var="animal">
             	<div class="accordianHead">
-                    <span class="smallSquare" id="legend-colour-${animal.projectAnimalId}"></span>
-                    <a href="#">${animal.animalName}</a>
+                    <table><tr>
+                    <td><span class="smallSquare" id="legend-colour-${animal.projectAnimalId}"></span></td>
+                    <td style="vertical-align:top;"><a href="#">${animal.animalName}</a></td>
+                    
+            		</tr></table>
             	</div>	
         		<div>
         			<div>
