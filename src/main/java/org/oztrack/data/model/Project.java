@@ -75,6 +75,9 @@ public class Project extends OztrackBaseEntity implements Serializable {
     @Column(name = "boundingbox", columnDefinition="GEOMETRY")
     @Type(type = "org.hibernatespatial.GeometryUserType")
     private Polygon boundingBox;
+	private Date firstDetectionDate;
+    private Date lastDetectionDate;
+    private Integer detectionCount; 
 
     public Project() {
     }
@@ -286,5 +289,24 @@ public class Project extends OztrackBaseEntity implements Serializable {
     public void setBoundingBox(Polygon boundingBox) {
         this.boundingBox = boundingBox;
     }
+    
+	public Date getFirstDetectionDate() {
+		return firstDetectionDate;
+	}
+	public void setFirstDetectionDate(Date firstDetectionDate) {
+		this.firstDetectionDate = firstDetectionDate;
+	}
+	public Date getLastDetectionDate() {
+		return lastDetectionDate;
+	}
+	public void setLastDetectionDate(Date lastDetectionDate) {
+		this.lastDetectionDate = lastDetectionDate;
+	}
 
+	public Integer getDetectionCount() {
+		return detectionCount;
+	}
+	public void setDetectionCount(Integer detectionCount) {
+		this.detectionCount = detectionCount;
+	}
 }

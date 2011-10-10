@@ -10,11 +10,12 @@ available for visualisations and analysis for your project.
 
 <form:form commandName="dataFile" method="POST" enctype="multipart/form-data">
 
-<div class="help">
-<a class=info href="#"><img src="images/help.png" border="0">
-<span><b>DataFile Type:</b> Determined by the Project Type (specified on the creation of the project).
-</span></a>
-</div>
+
+	<div class="help">
+	<a class=info href="#"><img src="images/help.png" border="0">
+	<span><b>DataFile Type:</b><br>Determined by the Project Type (specified on the creation of the project).
+	</span></a>
+	</div>
 
 <div>
 <label for="projectType">Datafile Type:</label>
@@ -23,11 +24,12 @@ available for visualisations and analysis for your project.
 
 <br>
 
-<div class="help">
-<a class=info href="#"><img src="images/help.png" border="0">
-<span><b>File Description:</b> A short description to help you identify the contents of the file.<br>
-</span></a>
-</div>
+	<div class="help">
+	<a class=info href="#"><img src="images/help.png" border="0">
+	<span><b>File Description:</b><br>A short description to help you identify the contents of the file.<br>
+	</span></a>
+	</div>
+
 
 <div>
 <label for="fileDescription">File Description:</label>
@@ -38,33 +40,50 @@ available for visualisations and analysis for your project.
 
 <br>
 
-<div class="help">
-<a class=info href="#"><img src="images/help.png" border="0">
-<span><b>Time Conversion:</b> Specify a time conversion value to apply to the timestamps in your file.<br>
-</span></a>
-</div>
-
+	<div class="help">
+	<a class=info href="#"><img src="images/help.png" border="0">
+	<span><b>Time Conversion:</b><br>Specify a time conversion value to apply to the timestamps in your file.<br>
+	</span></a>
+	</div>
+	
 <div>
 <label for="timeConversion">Convert to local time?</label>
 <form:checkbox path="localTimeConversionRequired" id="localTimeConversionRequired" cssClass="checkbox"/>
- &nbsp; Local time is GMT + <form:input path="localTimeConversionHours" cssClass="shortInput"/> hours.
+&nbsp; Local time is GMT + <form:input path="localTimeConversionHours" cssClass="shortInput"/> hours.
 </div>
 
 <br>
+
+	<div class="help">
+	<a class=info href="#"><img src="images/help.png" border="0">
+	<span><b>Important!</b><br>The file loader assumes that there is an Id field in the data which will identify an animal.
+							   If this isn't the case, checking this box will create a new animal in the database and allocate
+							   the data in this file to the new animal.<br>
+	</span></a>
+	</div>
 
 <div class="checkboxDiv">
 <form:checkbox cssClass="checkbox" path="singleAnimalInFile" id="singleAnimalInFile"/>
 This file contains data for a single tagged animal only.
 </div>
 
+
 <br>
 
-<div><label for="file">File: </label><input type="file" name="file"/>
+	<div class="help">
+	<a class=info href="#"><img src="images/help.png" border="0">
+	<span><b>Uploading the File:</b><br>See below for details on the required file format.
+	</span></a>
+	</div>
+<div>
+<label for="file">File: </label><input type="file" name="file"/>
 </div>
 
 <br>
-<div align="center"><input type="submit" value="Add File"/></div>
-
+<div>
+<label></label>
+<div class="formButton"><input type="submit" value="Add File"/></div>
+</div>
 
 </form:form>
 

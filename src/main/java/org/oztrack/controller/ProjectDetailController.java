@@ -55,16 +55,14 @@ public class ProjectDetailController implements Controller {
             modelAndViewName = "projectmap";
         }
 
-        //EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
-        //Project projectTest = entityManager.find(Project.class, project.getId());
-        //entityManager.refresh(projectTest);
-        //projectDao.refresh(project);
-
-
+        // get a list of animals for the form to use
+        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
+        List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
 
         ModelAndView modelAndView = new ModelAndView(modelAndViewName);
         modelAndView.addObject("errorStr", errorStr);
         modelAndView.addObject("project", project);
+        modelAndView.addObject("projectAnimalsList", projectAnimalsList);
         return modelAndView;
     }
 }

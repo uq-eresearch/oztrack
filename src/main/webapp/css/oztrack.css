@@ -595,7 +595,7 @@ form div .checkbox, form div .radiobutton {
 
 div.help {
     float:right;
-    margin-right:60px;
+    margin-right:150px;
 
 }
 a.info {
@@ -612,8 +612,8 @@ a.info span{display: none}
 a.info:hover span { /*the span will display just on :hover state*/
     display:block;
     position:absolute;
-    top:0em; left:3em; width:18em;
-    border: 1px solid #263f00;
+    top:0em; left:3em; width:17em;
+   /* border: 10px solid #e6e6c0; */
     background-color:#263f00;
     color:#fff;
     font-size: 0.9em;
@@ -622,6 +622,25 @@ a.info:hover span { /*the span will display just on :hover state*/
     padding-left:4px;
     padding-right:4px;
     padding-bottom:2px;
+    opacity:0.9;
+    
+        /*--Top right rounded corner--*/
+    -moz-border-radius-topright: 5px;
+    -khtml-border-radius-topright: 5px;
+    -webkit-border-top-right-radius: 5px;
+    /*--Top left rounded corner--*/
+    -moz-border-radius-topleft: 5px;
+    -khtml-border-radius-topleft: 5px;
+    -webkit-border-top-left-radius: 5px;
+    /*--Bottom right rounded corner--*/
+    -moz-border-radius-bottomright: 5px;
+    -khtml-border-radius-bottomright: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    /*--Bottom left rounded corner--*/
+    -moz-border-radius-bottomleft: 5px;
+    -khtml-border-radius-bottomleft: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    
 	}
 
 a.info ul {
@@ -707,8 +726,12 @@ tbody tr:hover {
 .projectListTableHeader td, .projectListTable td {
     border:none;
     padding: 5px 5px;
-
 }
+
+.projectListTable .projectFieldName {
+	font-weight:bold;
+	width:120px;
+}	
 
 .projectListTableHeader td {
     width:33%;

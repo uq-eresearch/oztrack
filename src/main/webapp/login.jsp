@@ -19,8 +19,9 @@
 <form:errors path="password" cssClass="formErrors"/>
 </div>
 
-<div class="formButton">
-<input type="submit" value="Login"/>
+<div>
+<label></label>
+<div class="formButton"><input type="submit" value="Login"/></div>
 </div>
 
 <div><label></label><a href="<c:url value="register"/>">Register as a new user</a>

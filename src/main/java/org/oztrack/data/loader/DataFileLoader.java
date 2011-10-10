@@ -123,9 +123,10 @@ public class DataFileLoader {
             dataFile.setNumberDetections(nbrObservationsCreated);
             dataFileDao.update(dataFile);
 
-            int projectUpdated = jdbcAccess.setProjectBoundingBox(dataFile.getProject());
+            //int projectUpdated = jdbcAccess.setProjectBoundingBox(dataFile.getProject());
+            int projectUpdated = jdbcAccess.updateProjectMetadata(dataFile.getProject());
             if (projectUpdated != 1) {
-                throw new FileProcessingException("Bounding box calculation problem.");
+                throw new FileProcessingException("Problem recalculating project metadata - bounding box or start and end dates.");
             }
             jdbcAccess.truncateRawObservations(dataFile);
 

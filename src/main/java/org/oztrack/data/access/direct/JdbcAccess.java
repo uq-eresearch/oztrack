@@ -19,8 +19,8 @@ public interface JdbcAccess {
     //public int loadAcousticDetections(Long projectId, Long dataFileId);
     //public void truncateRawAcousticDetections();
     public void truncateRawObservations(DataFile dataFile);
-    public int setProjectBoundingBox(Project project);
-
+    //public int setProjectBoundingBox(Project project);
+    public int updateProjectMetadata(Project project);
 
 
 }

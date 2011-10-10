@@ -115,12 +115,12 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
         getJdbcTemplate().execute("TRUNCATE TABLE " + tableName);
     }
 
-    public int setProjectBoundingBox(Project project) {
+    public int updateProjectMetadata(Project project) {
 
         MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
         mapSqlParameterSource.addValue("projectId", project.getId());
         String tableName = "";
-
+        
         switch (project.getProjectType()) {
             case PASSIVE_ACOUSTIC:
                 tableName = "acousticdetection";
@@ -137,11 +137,28 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
                      + " from " + tableName + " t "
                      + ", dataFile d "
                      + " where t.datafile_id=d.id"
-                     + " and d.project_id = :projectId) "
-                   + " where id = :projectId";
+                     + " and d.project_id = :projectId), "
+                     + " startDate = "
+                     + " (select min(t.detectionTime) "
+                     + "  from " + tableName + " t "
+                     + "  ,dataFile d "
+                     + "  where t.datafile_id=d.id"
+                     + "  and d.project_id = :projectId), "
+                     + "endDate = "
+                     + " (select max(t.detectionTime) "
+                     + "  from " + tableName + " t "
+                     + "  ,dataFile d "
+                     + "  where t.datafile_id=d.id"
+                     + "  and d.project_id = :projectId) "
+                     + "detectionCount = "
+                     + " (select count(t.id) "
+                     + "  from " + tableName + " t "
+                     + "  ,dataFile d "
+                     + "  where t.datafile_id=d.id"
+                     + "  and d.project_id = :projectId) "
+                     + "where id = :projectId";
 
         NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(getJdbcTemplate());
         return namedParameterJdbcTemplate.update(sql,mapSqlParameterSource);
-
     }
 }

@@ -8,17 +8,37 @@ Australian National Data Service, ANDS.</p>
 
 <div class="formSubheader">Project Metadata</div>
 
+	<div class="help">
+	<a class=info href="#"><img src="images/help.png" border="0">
+	<span><b>Title:</b> A short title (less than 50 characters if possible) to identify your project in OzTrack.
+	</span></a>
+	</div>
+	
 <div>
 <label for="title">*Title:</label>
 <form:textarea path="title" rows="1" cols="40" id="title"/>
 <form:errors path="title" cssClass="formErrors"/>
 </div>
 
+	<div class="help">
+	<a class=info href="#"><img src="images/help.png" border="0">
+	<span><b>Description:</b><br> Required by ANDS. 
+	</span></a>
+	</div>
+
 <div>
 <label for="description">*Description:</label>
 <form:textarea path="description" rows="5" cols="40" id="description"/>
 <form:errors path="description" cssClass="formErrors"/>
 </div>
+
+	<div class="help">
+	<a class=info href="#"><img src="images/help.png" border="0">
+	<span><b>Project Type:</b><br> What kind of telemetry device was used to track your animal? This 
+								   will determine the format of the datafiles you upload, and the 
+								   types of analysis available to this project's dataset. 
+	</span></a>
+	</div>
 
 <div>
 <label for="projectType">Project Type:</label>
@@ -32,6 +52,12 @@ Australian National Data Service, ANDS.</p>
 </form:select>
 </div>
 
+	<div class="help">
+	<a class=info href="#"><img src="images/help.png" border="0">
+	<span><b>Location Description:</b><br> The general area of the study, eg. country, state, town. 
+	</span></a>
+	</div>
+	
 <div>
 <label for="spatialCoverageDescr">Location Description:</label>
 <form:input path="spatialCoverageDescr" id="spatialCoverageDescr"/>
@@ -138,7 +164,10 @@ The data in this project is to be publically available via OzTrack.
 <form:errors path="publicationUrl" cssClass="formErrors"/>
 </div>
 
+<div>
+<label></label>
 <div class="formButton"><input type="submit" value="Create OzTrack Project"/></div>
+</div>
 
 </table>
 
