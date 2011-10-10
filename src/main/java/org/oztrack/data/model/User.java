@@ -28,6 +28,7 @@ public class User implements Serializable {
     private String email;
     private String firstName;
     private String lastName;
+    private String institution;
     private String password;
         
 
@@ -104,7 +105,15 @@ public class User implements Serializable {
         this.lastName = lastName;
     }
 
-    public String getFullName() {
+    public String getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(String institution) {
+		this.institution = institution;
+	}
+
+	public String getFullName() {
         return firstName + " " + lastName;
     }
 

@@ -46,8 +46,8 @@ function initializeProjectMap() {
     map.addControl(new OpenLayers.Control.ScaleLine());
     map.addControl(new OpenLayers.Control.NavToolbar());
     var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
-    layerSwitcher.div = OpenLayers.Util.getElement('customLayerSwitcher');
-    layerSwitcher.roundedCorner = false;
+   // layerSwitcher.div = OpenLayers.Util.getElement('customLayerSwitcher');
+   // layerSwitcher.roundedCorner = false;
     map.addControl(layerSwitcher);
 
     var gphy = new OpenLayers.Layer.Google(
@@ -621,8 +621,8 @@ function initializeHomeMap() {
     };
     var map = new OpenLayers.Map('homeMap',mapOptions);
     var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
-    layerSwitcher.div = OpenLayers.Util.getElement('homeMapOptions');
-    layerSwitcher.roundedCorner = false;
+   // layerSwitcher.div = OpenLayers.Util.getElement('homeMapOptions');
+    //layerSwitcher.roundedCorner = false;
     map.addControl(layerSwitcher);
 
     var gphy = new OpenLayers.Layer.Google(

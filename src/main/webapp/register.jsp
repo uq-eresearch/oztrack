@@ -25,6 +25,12 @@
 </div>
 
 <div>
+<label for="lastname">Institution:</label>
+<form:input path="institution" id="institution"/>
+<form:errors path="institution" cssClass="formErrors"/>
+</div>
+
+<div>
 <label for="password">Password:</label>
 <form:input path="password" id="password"/>
 <form:errors path="password" cssClass="formErrors"/>
@@ -36,7 +42,10 @@
 <form:errors path="email" cssClass="formErrors"/>
 </div>
 
+<div>
+<label> &nbsp;</label>
 <div class="formButton"><input type="submit" value="Register"/></div>
+</div>
 
 </fieldset>
 

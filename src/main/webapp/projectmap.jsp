@@ -30,10 +30,7 @@
 
     <div id="accordion">
 
-        <h3><a href="#">Map Layers</a></h3>
-        <div id="customLayerSwitcher"></div>
-
-        <h3><a href="#">Navigation</a></h3>
+        <h3><a href="#">Project Animals</a></h3>
 
         <div>
             <c:forEach items="${projectAnimalsList}" var="animal">
