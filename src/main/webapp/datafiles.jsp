@@ -15,7 +15,7 @@
 
     <tr>
         <th>File Name</th>
-        <th>Description</th>
+        <th>Detection Date Range</th>
         <th>Upload Date</th>
         <th>File Status</th>
     </tr>
@@ -23,8 +23,8 @@
     <c:forEach items="${project.dataFiles}" var="dataFile">
         <tr>
             <td><a href="<c:url value="datafiledetail"><c:param name="datafile_id" value="${dataFile.id}"/></c:url>"><c:out value="${dataFile.userGivenFileName}"/></a></td>
-            <td><c:out value="${dataFile.fileDescription}"/></td>
-            <td><fmt:formatDate value="${dataFile.createDate}" type="both" timeStyle="long" dateStyle="long"/>
+            <td><fmt:formatDate pattern="${dateFormatPattern}" value="${dataFile.firstDetectionDate}"/> to <fmt:formatDate pattern="${dateFormatPattern}" value="${dataFile.lastDetectionDate}"/></td>
+            <td><fmt:formatDate pattern="${dateFormatPattern}" value="${dataFile.createDate}"/>
             <td><c:out value="${dataFile.status}"/></td>
 		</tr>
     </c:forEach>

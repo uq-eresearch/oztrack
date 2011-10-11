@@ -36,9 +36,10 @@ $(document).ready(function(){
      accordianHead();
      setupDatepicker();
      $( "#accordion" ).accordion();
-     $( ".selector" ).accordion( "option", "fillSpace", true );
-     //$( ".selector" ).accordion( "option", "clearStyle", true );
-     
+     $( ".selector" ).accordion( "option", "autoHeight", false );
+     $( ".selector" ).accordion( "option", "clearStyle", true );
+//     $( ".selector" ).accordion( "option", "fillSpace", true );
+         
 
  
      
@@ -146,13 +147,13 @@ $(document).ready(function(){
         case "searchform":
             var projectTitle = $('#projectTitle').html();
             breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("searchform","projects") + '"> &rsaquo; Animal Tracking</a> &rsaquo; <a href="' + thisUrl.replace("searchform","projectdetail") + '">' + projectTitle
-                                    + '</a> &rsaquo; <span class="aCrumb">Analysis Tools</span>';
+                                    + '</a> &rsaquo; <span class="aCrumb">View Raw Data</span>';
             $('#navTrack').css('color','#f7a700');
             break;
         case "projectmap":
             var projectTitle = $('#projectTitle').html();
-            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectmap","projects") + '"> &rsaquo; Animal Tracking</a> &rsaquo; <a href="'
-                                    + '</a> &rsaquo; <span class="aCrumb">Visualisation Tools</span>';
+            breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("projectmap","projects") + '"> &rsaquo; Animal Tracking</a> &rsaquo; <a href="' + thisUrl.replace("projectmap","projectdetail") + '">' + projectTitle
+                                    + '</a> &rsaquo; <span class="aCrumb">Analysis Tools</span>';
             $('#navTrack').css('color','#f7a700');
             break;
         case "sighting":

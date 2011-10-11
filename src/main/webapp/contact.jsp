@@ -3,32 +3,47 @@
 
 <h1>Contacts</h1>
 
-<h2>Eco-Lab, UQ</h2>
+<div style="width:80%">
+	<div style="position:relative;float:left;width:49%;">
+		<h2>eResearch Lab, UQ</h2>
+		
+		<p>
+		Jane Hunter<br>
+		j.hunter@uq.edu.au
+		</p>
+		
+		<p>Peggy Newman<br>
+		peggy.newman@uq.edu.au
+		</p>
+	
+	</div>
+	<div style="position:relative;float:right;width:49%;">
+	
+		<h2>Eco-Lab, UQ</h2>
+		
+		<p>
+		Craig Franklin<br>
+		c.franklin@uq.edu.au
+		</p>
+		
+		<p>
+		Hamish Campbell<br>
+		Hamish.Campbell@uq.edu.au
+		</p>
 
-<p>
-Craig Franklin<br>
-Lab Leader<br>
-c.franklin@uq.edu.au
-</p>
+		<p>
+		Ross Dwyer<br>
+		ross.dwyer@uq.edu.au
+		</p>
 
-<p>
-Hamish Campbell<br>
-Senior Research Officer  <br>
-Dr.Hamish.Campbell@gmail.com
-</p>
+		<p>
+		Matthew Watts<br>
+		m.watts@uq.edu.au
+		</p>
 
-<h2>eResearch Lab, UQ</h2>
+	</div>
+</div>
 
-<p>
-Jane Hunter<br>
-Professorial Research Fellow  <br>
-j.hunter@uq.edu.au
-</p>
-
-<p>Peggy Newman<br>
-Software Engineer<br>
-peggy.newman@uq.edu.au
-</p>
 
 
 

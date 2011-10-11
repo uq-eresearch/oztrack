@@ -5,12 +5,11 @@
 
 <h2>Summary</h2>
 <table class="projectListTable">
-<tr><td class="projectFieldName">Datafile Count:</td><td><c:out value="${fn:length(project.dataFiles)}"/></td></tr>
+<tr><td class="projectFieldName">Datafile Count:</td><td><c:out value="${fn:length(dataFileList)}"/></td></tr>
 <tr><td class="projectFieldName">Detection Count:</td><td><c:out value="${project.detectionCount}"/></td></tr>
-<tr><td class="projectFieldName">First Detection Date:</td><td><c:out value="${project.firstDetectionDate}"/></td></tr>
-<tr><td class="projectFieldName">Last Detection Date:</td><td><c:out value="${project.lastDetectionDate}"/></td></tr>
+<tr><td class="projectFieldName">Detection Date Range:</td><td><fmt:formatDate pattern="${dateFormatPattern}" value="${project.firstDetectionDate}"/> to <fmt:formatDate pattern="${dateFormatPattern}" value="${project.lastDetectionDate}"/></td></tr>
 <tr><td class="projectFieldName">Animals:</td><td><c:forEach items="${projectAnimalsList}" var="animal">
-								<c:out value="${animal.animalName}"/><br>
+								<c:out value="${animal.animalName}"/>,
 						  </c:forEach>	
 	</td>
 </tr>
@@ -36,7 +35,5 @@
 <tr><td class="projectFieldName"></td><td><a class="oztrackButton" href="#">Edit</a><br><br></td></tr>
 
 </table>
-
-
 
 <%@ include file="footer.jsp" %>

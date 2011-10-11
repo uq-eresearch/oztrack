@@ -9,17 +9,9 @@
 
 <div class="mapTool">
 <div id="projectMapOptions">
-<h1><c:out value="${project.title}"/></h1>
-		      
-<div id="projectMenu" style="font-size:1.2em;">		      
-      <ul>
-        <li><a href="<c:url value="projectdetail"/>">Project Details</a></li>
-        <li><a href="<c:url value="projectmap"/>">Analysis Tools</a></li>
-        <li><a href="<c:url value="searchform"/>">View Raw Data</a></li>
-        <li><a href="<c:url value="datafiles"/>">Data Uploads</a></li>
-      </ul>
-</div>
 
+<h1 id="projectTitle"><c:out value="${project.title}"/></h1>
+		      
 <p style="color:red;"><c:out value="${errorMessage}"/></p>
 <input type="hidden" value="${project.id}" id="projectId"/>
 <input type="hidden" value="${project.boundingBox}" id="projectBoundingBox"/>
@@ -32,7 +24,7 @@
 
         <h3><a href="#">Project Animals</a></h3>
 
-        <div>
+        <div id="animalPanel">
             <c:forEach items="${projectAnimalsList}" var="animal">
             	<div class="accordianHead">
                     <table><tr>
@@ -62,7 +54,7 @@
         
         <h3><a href="#">Home Range Calculator</a></h3>
         
-	    <div>
+	    <div id="homeRangeCalculatorPanel">
 	        <label class="shortInputLabel">Add A Layer:</label> <br>
 	            <b>Date Range:</b>
 	            <table>
@@ -94,9 +86,20 @@
 	                    </c:if>
 	                </c:forEach>
 	                </table>
+	                <div class="formButton"><input type="submit" id="projectMapSubmit" value="Add a New Layer"/></div>
+	                
 	        </div>
+    
+           <h3><a href="#">Project Menu</a></h3>
+        <div id="projectMenu" style="font-size:1.2em;">		      
+      <ul>
+        <li><a href="<c:url value="projectdetail"/>">Project Details</a></li>
+        <li><a href="<c:url value="projectmap"/>">Analysis Tools</a></li>
+        <li><a href="<c:url value="searchform"/>">View Raw Data</a></li>
+        <li><a href="<c:url value="datafiles"/>">Data Uploads</a></li>
+      </ul>
+		</div>
     </div>
-    <div class="formButton"><input type="submit" id="projectMapSubmit" value="Add a New Layer"/></div>
     </form>
 
 

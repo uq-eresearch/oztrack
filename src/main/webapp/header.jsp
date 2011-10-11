@@ -22,6 +22,9 @@
 		var mapPage = false;
 		var projectPage = false;
 	</script>	
+    <c:set var="dateFormatPattern" value="dd/MM/yyyy"/>
+    <c:set var="dateTimeFormatPattern" value="dd/MM/yyyy H:m:s"/>
+
 <!--
     <c:forEach var="js" items="${paramValues.jsIncludes}" >
         <script src="${js}" type="text/javascript"></script>
