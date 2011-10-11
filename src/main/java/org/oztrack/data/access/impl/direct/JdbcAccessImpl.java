@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,7 +18,9 @@ import java.util.List;
  */
 public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
 
-    public int loadObservations(DataFile dataFile) {
+
+	
+	public int loadObservations(DataFile dataFile) {
 
         String sql = "";
         long dataFileId = dataFile.getId();
@@ -97,60 +100,57 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
         }
         return nbrObservations;
     }
+	
+    public String getTableName(Project project) {
+    	
+    	String tableName = "foo";
+    	
+        switch (project.getProjectType()) {
+        case PASSIVE_ACOUSTIC:
+            tableName = "acousticdetection";
+            break;
+        case GPS:
+        case ARGOS:
+            tableName = "positionfix";
+
+            break;
+    }
+    	return tableName;
+    }
 
     public void truncateRawObservations(DataFile dataFile) {
 
-        String tableName = "foo";
-
-        switch (dataFile.getProject().getProjectType()) {
-            case PASSIVE_ACOUSTIC:
-                tableName = "rawacousticdetection";
-                break;
-            case GPS:
-            case ARGOS:
-                tableName = "rawpositionfix";
-
-                break;
-        }
+        String tableName = "raw" + this.getTableName(dataFile.getProject());
         getJdbcTemplate().execute("TRUNCATE TABLE " + tableName);
     }
+
 
     public int updateProjectMetadata(Project project) {
 
         MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
         mapSqlParameterSource.addValue("projectId", project.getId());
-        String tableName = "";
-        
-        switch (project.getProjectType()) {
-            case PASSIVE_ACOUSTIC:
-                tableName = "acousticdetection";
-                break;
-            case GPS:
-            case ARGOS:
-                tableName = "positionfix";
-                break;
-        }
-
+        String tableName = this.getTableName(project);
+ 
         String sql = "update project "
                    + " set boundingBox = "
                      + "(select (ST_Envelope(ST_Collect(locationgeometry))) "
                      + " from " + tableName + " t "
                      + ", dataFile d "
                      + " where t.datafile_id=d.id"
-                     + " and d.project_id = :projectId), "
-                     + " startDate = "
+                     + " and d.project_id = :projectId) "
+                     + ", firstdetectiondate = "
                      + " (select min(t.detectionTime) "
                      + "  from " + tableName + " t "
                      + "  ,dataFile d "
                      + "  where t.datafile_id=d.id"
-                     + "  and d.project_id = :projectId), "
-                     + "endDate = "
+                     + "  and d.project_id = :projectId) "
+                     + ", lastdetectiondate = "
                      + " (select max(t.detectionTime) "
                      + "  from " + tableName + " t "
                      + "  ,dataFile d "
                      + "  where t.datafile_id=d.id"
                      + "  and d.project_id = :projectId) "
-                     + "detectionCount = "
+                     + ", detectionCount = "
                      + " (select count(t.id) "
                      + "  from " + tableName + " t "
                      + "  ,dataFile d "
@@ -161,4 +161,5 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
         NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(getJdbcTemplate());
         return namedParameterJdbcTemplate.update(sql,mapSqlParameterSource);
     }
+
 }

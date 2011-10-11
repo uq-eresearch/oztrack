@@ -41,11 +41,13 @@ public class DataFileLoader {
         checkAnimals();
         checkReceivers();
         createFinalObservations();
+        updateDataFileMetadata();
 
     }
 
     public void insertRawObservations() throws FileProcessingException {};
     public void checkReceivers() throws FileProcessingException {};
+    public void updateDataFileMetadata() throws FileProcessingException {};
 
     public DataFile getDataFile() {
         return dataFile;
@@ -64,7 +66,6 @@ public class DataFileLoader {
             // only one animal in the file being uploaded. Create it.
             Animal animal = new Animal();
             animal.setProject(dataFile.getProject());
-            animal.setAnimalName("unknown");
             animal.setAnimalDescription("created in datafile upload: "
                                         + dataFile.getUserGivenFileName()
                                         + " on " + dataFile.getCreateDate());
@@ -72,6 +73,7 @@ public class DataFileLoader {
             animal.setCreateDate(new java.util.Date());
             animalDao.save(animal);
             animal.setProjectAnimalId(animal.getId().toString());
+            animal.setAnimalName("Animal_" + animal.getId().toString());
             animalDao.update(animal);
 
         } else {
@@ -94,7 +96,7 @@ public class DataFileLoader {
 
                  if (!animalFound) {
                      Animal animal = new Animal();
-                     animal.setAnimalName("Unknown");
+                     animal.setAnimalName("Animal_" + newAnimalId);
                      animal.setAnimalDescription("Unknown");
                      animal.setSpeciesName("Unknown");
                      animal.setVerifiedSpeciesName("Unknown");
@@ -120,14 +122,15 @@ public class DataFileLoader {
         try {
 
             nbrObservationsCreated = jdbcAccess.loadObservations(dataFile);
-            dataFile.setNumberDetections(nbrObservationsCreated);
+            
+            dataFile.setDetectionCount(nbrObservationsCreated);
             dataFileDao.update(dataFile);
 
-            //int projectUpdated = jdbcAccess.setProjectBoundingBox(dataFile.getProject());
             int projectUpdated = jdbcAccess.updateProjectMetadata(dataFile.getProject());
             if (projectUpdated != 1) {
                 throw new FileProcessingException("Problem recalculating project metadata - bounding box or start and end dates.");
             }
+
             jdbcAccess.truncateRawObservations(dataFile);
 
         } catch (Exception e) {
@@ -135,6 +138,19 @@ public class DataFileLoader {
             throw new FileProcessingException(e.toString());
         }
     }
+    
+/*
+    public void updateMetadata() throws FileProcessingException {
+    	
+        JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
 
+        int projectUpdated = jdbcAccess.updateProjectMetadata(dataFile.getProject());
+        if (projectUpdated != 1) {
+            throw new FileProcessingException("Problem recalculating project metadata - bounding box or start and end dates.");
+        }
+        
 
+    }
+
+*/
 }

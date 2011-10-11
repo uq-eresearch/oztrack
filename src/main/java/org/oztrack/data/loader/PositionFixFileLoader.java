@@ -3,6 +3,8 @@ package org.oztrack.data.loader;
 import com.vividsolutions.jts.geom.*;
 import org.opengis.geometry.aggregate.*;
 import org.oztrack.app.OzTrackApplication;
+import org.oztrack.data.access.PositionFixDao;
+import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.RawPositionFix;
@@ -313,6 +315,16 @@ public class PositionFixFileLoader extends DataFileLoader {
 
         return geometryFactory.createPoint(coordinate);
 
+    }
+    
+    public void updateDataFileMetadata() throws FileProcessingException {
+    	
+    	// update datafile dates 
+        PositionFixDao p = OzTrackApplication.getApplicationContext().getDaoManager().getPositionFixDao();
+        dataFile.setFirstDetectionDate(p.getDataFileFirstDetectionDate(dataFile));
+        dataFile.setLastDetectionDate(p.getDataFileLastDetectionDate(dataFile));
+        dataFileDao.update(dataFile);
+    	
     }
 
 }

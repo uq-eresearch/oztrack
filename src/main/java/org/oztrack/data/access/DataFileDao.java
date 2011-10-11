@@ -2,6 +2,7 @@ package org.oztrack.data.access;
 
 import au.edu.uq.itee.maenad.dataaccess.Dao;
 import org.oztrack.data.model.DataFile;
+import org.oztrack.data.model.Project;
 
 import java.util.List;
 
@@ -17,5 +18,6 @@ public interface DataFileDao extends Dao<DataFile> {
     DataFile getNextDataFile();
     List<String> getAllAnimalIds(DataFile datafile);
     List<String> getAllReceiverIds();
+    List<DataFile> getDataFilesByProject(Project project);
 
 }

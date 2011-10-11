@@ -20,7 +20,7 @@ public interface JdbcAccess {
     //public void truncateRawAcousticDetections();
     public void truncateRawObservations(DataFile dataFile);
     //public int setProjectBoundingBox(Project project);
-    public int updateProjectMetadata(Project project);
+     public int updateProjectMetadata(Project project);
 
 
 }

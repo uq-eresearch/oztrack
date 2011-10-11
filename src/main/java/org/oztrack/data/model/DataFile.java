@@ -33,15 +33,16 @@ public class DataFile extends OztrackBaseEntity implements Serializable {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date uploadDate;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date minDetectionDate;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date maxDetectionDate;
     private Boolean localTimeConversionRequired;
     private Long localTimeConversionHours;
-    private Integer numberDetections;
     private Boolean singleAnimalInFile;
 
+    // metadata for convenience
+    private Integer detectionCount;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date firstDetectionDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastDetectionDate;
 
     @Enumerated(STRING)
     @Column(name="datafilestatus")
@@ -97,8 +98,6 @@ public class DataFile extends OztrackBaseEntity implements Serializable {
         this.fileDescription = fileDescription;
     }
     
-
-    
     public Project getProject() {
         return project;
     }
@@ -123,23 +122,7 @@ public class DataFile extends OztrackBaseEntity implements Serializable {
         this.uploadDate = uploadDate;
     }
 
-    public Date getMinDetectionDate() {
-        return minDetectionDate;
-    }
-
-    public void setMinDetectionDate(Date minDetectionDate) {
-        this.minDetectionDate = minDetectionDate;
-    }
-
-    public Date getMaxDetectionDate() {
-        return maxDetectionDate;
-    }
-
-    public void setMaxDetectionDate(Date maxDetectionDate) {
-        this.maxDetectionDate = maxDetectionDate;
-    }
-
-     public DataFileStatus getStatus() {
+    public DataFileStatus getStatus() {
         return status;
     }
 
@@ -163,14 +146,6 @@ public class DataFile extends OztrackBaseEntity implements Serializable {
         this.localTimeConversionHours = localTimeConversionHours;
     }
 
-    public Integer getNumberDetections() {
-        return numberDetections;
-    }
-
-    public void setNumberDetections(Integer numberDetections) {
-        this.numberDetections = numberDetections;
-    }
-
     public String getStatusMessage() {
         return statusMessage;
     }
@@ -186,5 +161,23 @@ public class DataFile extends OztrackBaseEntity implements Serializable {
      public void setSingleAnimalInFile(Boolean singleAnimalInFile) {
          this.singleAnimalInFile = singleAnimalInFile;
      }
+	public Integer getDetectionCount() {
+		return detectionCount;
+	}
+	public void setDetectionCount(Integer detectionCount) {
+		this.detectionCount = detectionCount;
+	}
+	public Date getFirstDetectionDate() {
+		return firstDetectionDate;
+	}
+	public void setFirstDetectionDate(Date firstDetectionDate) {
+		this.firstDetectionDate = firstDetectionDate;
+	}
+	public Date getLastDetectionDate() {
+		return lastDetectionDate;
+	}
+	public void setLastDetectionDate(Date lastDetectionDate) {
+		this.lastDetectionDate = lastDetectionDate;
+	}
 
 }

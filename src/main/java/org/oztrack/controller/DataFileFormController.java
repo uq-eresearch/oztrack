@@ -89,7 +89,7 @@ public class DataFileFormController extends SimpleFormController {
         ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
 
         /* from datafiles.jsp : Add a Data File button
-        *  or datafiledetail.jsp: if FAILED */
+        *  or datafiledetail.jsp: Retry link if FAILED */
         String project_id=request.getParameter("project_id");
         logger.debug("adding file to project_id = " + project_id);
         Project project = projectDao.getProjectById(Long.parseLong(project_id));

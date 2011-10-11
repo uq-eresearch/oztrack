@@ -1,9 +1,12 @@
 package org.oztrack.controller;
 
+import java.util.Date;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.DataFileDao;
+import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.DataFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -35,10 +38,12 @@ public class DataFileDetailController implements Controller {
         if (dataFile == null) {
             errorStr = "Couldn't find anything on that file sorry";
         }
+        
 
         ModelAndView modelAndView = new ModelAndView("datafiledetail");
         modelAndView.addObject("errorStr", errorStr);
         modelAndView.addObject("dataFile", dataFile);
+
         return modelAndView;
     }
 

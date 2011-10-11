@@ -2,6 +2,8 @@ package org.oztrack.controller;
 
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.AnimalDao;
+import org.oztrack.data.access.DataFileDao;
+import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
@@ -58,11 +60,16 @@ public class ProjectDetailController implements Controller {
         // get a list of animals for the form to use
         AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
-
+        
+        DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
+        List<DataFile> dataFileList = dataFileDao.getDataFilesByProject(project);
+        
         ModelAndView modelAndView = new ModelAndView(modelAndViewName);
         modelAndView.addObject("errorStr", errorStr);
         modelAndView.addObject("project", project);
         modelAndView.addObject("projectAnimalsList", projectAnimalsList);
+        modelAndView.addObject("dataFileList", dataFileList);
+        
         return modelAndView;
     }
 }
