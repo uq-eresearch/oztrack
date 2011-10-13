@@ -41,15 +41,20 @@ function initializeProjectMap() {
     };
 
     map = new OpenLayers.Map('projectMap',mapOptions);
+    // info on the map
     map.addControl(new OpenLayers.Control.MousePosition());
     map.addControl(new OpenLayers.Control.Scale());
     map.addControl(new OpenLayers.Control.ScaleLine());
-    map.addControl(new OpenLayers.Control.NavToolbar());
+    // controls to manipulate
+    var navToolbar = new OpenLayers.Control.NavToolbar();
+    map.addControl(navToolbar);
     var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
+    //map.addControl(new OpenLayers.Control.Measure());
    // layerSwitcher.div = OpenLayers.Util.getElement('customLayerSwitcher');
    // layerSwitcher.roundedCorner = false;
     map.addControl(layerSwitcher);
-
+    map.addControl(new OpenLayers.Control.LoadingPanel());
+    
     var gphy = new OpenLayers.Layer.Google(
                 "Google Physical",
                 {type: google.maps.MapTypeId.TERRAIN}
@@ -58,6 +63,18 @@ function initializeProjectMap() {
                 "Google Satellite",
                 {type: google.maps.MapTypeId.SATELLITE}
     );
+    
+    var panel = new OpenLayers.Control.Panel();
+    //panel.div = OpenLayers.Util.getElement('mapControlPanel');
+    panel.addControls([
+        new OpenLayers.Control.Button({
+            displayClass: "helpButton", trigger: function() {alert('help');}, title: 'Help'
+        }),
+        new OpenLayers.Control.Button({
+        	displayClass: "zoomButton", trigger: function() {zoomToDataExtent();}, title: 'Zoom to Data Extent'
+        })
+    ]);
+    map.addControl(panel);
 
     allAnimalTracksLayer = new OpenLayers.Layer.Vector(
         "All Trajectories",
@@ -72,8 +89,9 @@ function initializeProjectMap() {
          strategies: [new OpenLayers.Strategy.Fixed()],
          eventListeners: {
             loadend: function (e) {
-        		map.zoomToExtent(allAnimalTracksLayer.getDataExtent(),false);
-        		updateAnimalStyles(allAnimalTracksLayer);
+        		//map.zoomToExtent(allAnimalTracksLayer.getDataExtent(),false);
+        	zoomToDataExtent();	
+        	updateAnimalStyles(allAnimalTracksLayer);
             	if (!pointsLayer) {createPointsLayer();}
 //            	createSelectControl();
         	}
@@ -82,6 +100,10 @@ function initializeProjectMap() {
     
     map.addLayers([gsat,gphy,allAnimalTracksLayer]);
     map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326,projection900913), 4);
+}
+
+function zoomToDataExtent() {
+	map.zoomToExtent(allAnimalTracksLayer.getDataExtent(),false);
 }
 
 function updateAnimalStyles(linesLayer) {

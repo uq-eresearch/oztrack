@@ -27,8 +27,7 @@
     </td>
 </tr>
 <tr><td class="projectFieldName">Project Type:</td><td><c:out value="${project.projectType.displayName}"/></td></tr>
-<tr><td class="projectFieldName">Contact Details:</td><td><c:out value="${project.contactName}"/><br><c:out value="${project.contactUrl}"/></td></tr>
-<tr><td class="projectFieldName">Custodian Details:</td><td><c:out value="${project.custodianName}"/><br><c:out value="${project.custodianUrl}"/></td></tr>
+<tr><td class="projectFieldName">Contact:</td><td><c:out value="${project.contactGivenName}"/><c:out value="${project.contactFamilyName}"/><br><c:out value="${project.contactUrl}"/></td></tr>
 <tr><td class="projectFieldName">Spatial Coverage:</td><td><c:out value="${project.spatialCoverageDescr}"/></td></tr>
 <tr><td class="projectFieldName">Temporal Coverage:</td><td><c:out value="${project.temporalCoverageDescr}"/></td></tr>
 <tr><td class="projectFieldName">Publications:</td><td><i><c:out value="${project.publicationTitle}"/></i><br> <c:out value="${project.publicationUrl}"/></td></tr>

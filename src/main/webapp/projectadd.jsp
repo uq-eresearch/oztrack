@@ -64,15 +64,9 @@ Australian National Data Service, ANDS.</p>
 <form:errors path="spatialCoverageDescr" cssClass="formErrors"/>
 </div>
 
-<div>
-<label for="temporalCoverageDescr">Temporal Description:</label>
-<form:input path="temporalCoverageDescr" id="temporalCoverageDescr"/>
-<form:errors path="temporalCoverageDescr" cssClass="formErrors"/>
-</div>
-
 <div class="checkboxDiv">
 <form:checkbox cssClass="checkbox" path="isGlobal" id="isGlobal"/>
-The data in this project is to be publically available via OzTrack.
+The data in this project is to be publicly available via OzTrack.
 </div>
 
 <div class="formSubheader">Species</div>
@@ -92,9 +86,15 @@ The data in this project is to be publically available via OzTrack.
 <div class="formSubheader">Data Contact</div>
 
 <div>
-<label for="contactName">Name:</label>
-<form:input path="contactName" id="contactName"/>
-<form:errors path="contactName" cssClass="formErrors"/>
+<label for="contactGivenName">Given Name:</label>
+<form:input path="contactGivenName" id="contactGivenName"/>
+<form:errors path="contactGivenName" cssClass="formErrors"/>
+</div>
+
+<div>
+<label for="contactFamilyName">Family Name:</label>
+<form:input path="contactFamilyName" id="contactFamilyName"/>
+<form:errors path="contactFamilyName" cssClass="formErrors"/>
 </div>
 
 <div>
@@ -114,32 +114,6 @@ The data in this project is to be publically available via OzTrack.
 <label for="contactUrl">URL:</label>
 <form:input path="contactUrl" id="contactUrl"/>
 <form:errors path="contactUrl" cssClass="formErrors"/>
-</div>
-
-<div class="formSubheader">Data Custodian</div>
-
-<div>
-<label for="custodianname">Custodian Name:</label>
-<form:input path="custodianName" id="custodianname"/>
-<form:errors path="custodianName" cssClass="formErrors"/>
-</div>
-
-<div>
-<label for="custodianOrganisation">Custodian Organisation:</label>
-<form:input path="custodianOrganisation" id="custodianOrganisation"/>
-<form:errors path="custodianOrganisation" cssClass="formErrors"/>
-</div>
-
-<div>
-<label for="custodianEmail">Custodian Email:</label>
-<form:input path="custodianEmail" id="custodianEmail"/>
-<form:errors path="custodianEmail" cssClass="formErrors"/>
-</div>
-
-<div>
-<label for="custodianUrl">Custodian URL:</label>
-<form:input path="custodianUrl" id="custodianUrl"/>
-<form:errors path="custodianUrl" cssClass="formErrors"/>
 </div>
 
 <div class="formSubheader">Image</div>

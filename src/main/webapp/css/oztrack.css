@@ -388,9 +388,11 @@ a:hover {
 
 #homeMapOptions, #projectMapOptions  {
     height:100%;
-    width:240px;
+    width:245px;
     float:left;
 }
+
+
 
 #accordian form div {
     margin: 0px;
@@ -400,12 +402,32 @@ a:hover {
 #accordion .ui-accordion-content {
     padding-left: 5px;
     }
+    
+.accordianHead {
+	position:relative;
+	left:10px;
+}
 
-#animalPanel, #homeRangeCalculatorPanel {
+#accordian h3 a {
+	font-size:0.9em;
+	font-weight:bold;
+}	
+
+#animalPanel, #homeRangeCalculatorPanel, #projectMapHelp {
 	height:350px;
 }
 
+#projectMapHelp p {
 
+	text-align:justify;
+	
+}
+
+.citation {
+	font-weight:bold;
+	text-align:left;
+
+}	
 
 form .baseLayersDiv, .dataLayersDiv {
     margin:0px;
@@ -433,16 +455,18 @@ form .dataLayersDiv input, form .baseLayersDiv input {
 
 #mapToolForm {
     padding-left:0px;
+    padding-top:0px;
     width:100%;
     height:100%;
 }
 
 .smallSquare {
 	display:block;
-	height:15px;
-	width:15px;
+	height:13px;
+	width:13px;
 	float:left;
 	margin-right:10px;
+	margin-left:10px;
 }	
 
 
@@ -749,7 +773,6 @@ tbody tr:hover {
 
 .projectListTable td {
     padding-left:10px;
-
 }
 
 #contactsTable {
@@ -760,6 +783,10 @@ tbody tr:hover {
     width: 50%;
 
 }
+
+
+
+
 
 
 
@@ -783,4 +810,49 @@ tbody tr:hover {
 
 
 
+
+div.olControlPanel {
+    top: 0px;
+    right: 29px;
+    position: absolute;
+    float:right;
+    
+}
+.olControlPanel div {
+    display: block;
+    width:  22px;
+    height: 22px;
+    border: solid 1px #adbc6b;
+    margin-top: 5px;
+    background-color: #e6e6c0
+}
+
+.helpButtonItemInactive {
+    background-image: url("../images/help.png");
+    background-position:center;
+    background-repeat:no-repeat;
+    height:22px;
+    float:right;
+}
+
+.zoomButtonItemInactive {
+    background-image: url("../images/zoomButton.png");
+    background-position:center;
+    background-repeat:no-repeat;
+    height:22px;
+    float:right;
+}	
+
+.olControlLoadingPanel {
+       border: solid 1px #adbc6b;
+       background-image:url(../images/ajax-loader.gif);
+       background-color:#e6e6c0;
+		width:22px;
+		height:22px;
+       background-position:center;
+       background-repeat:no-repeat;
+       margin-top:5px;
+       right:5px;
+       display: none;
+   }
 

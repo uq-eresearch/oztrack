@@ -35,7 +35,8 @@ public class Project extends OztrackBaseEntity implements Serializable {
     private boolean isGlobal;
     private String spatialCoverageDescr;
     private String temporalCoverageDescr;
-    private String contactName;
+    private String contactGivenName;
+    private String contactFamilyName;
     private String contactOrganisation;
     private String contactEmail;
     private String contactUrl;
@@ -126,16 +127,19 @@ public class Project extends OztrackBaseEntity implements Serializable {
         this.custodianName = custodianName;
     }
 
-    public String getContactName() {
-        return contactName;
-    }
-
-    public void setContactName(String contactName) {
-        this.contactName = contactName;
-    }
-
-
-    public List<ProjectUser> getProjectUsers() {
+    public String getContactGivenName() {
+		return contactGivenName;
+	}
+	public void setContactGivenName(String contactGivenName) {
+		this.contactGivenName = contactGivenName;
+	}
+	public String getContactFamilyName() {
+		return contactFamilyName;
+	}
+	public void setContactFamilyName(String contactFamilyName) {
+		this.contactFamilyName = contactFamilyName;
+	}
+	public List<ProjectUser> getProjectUsers() {
         return this.projectUsers;
     }
 

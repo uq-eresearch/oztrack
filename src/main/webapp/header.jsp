@@ -17,6 +17,9 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
     <script type="text/javascript" src="js/jquery/jquery.formalize.min.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/jquery/jquery-ui-1.8.16.custom.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/ui-jquery/jquery-ui-1.8.16.custom.css"/>
+   
     <script type="text/javascript" src="js/oztrack.js"></script>
 	<script type="text/javascript"> 
 		var mapPage = false;
