@@ -4,28 +4,39 @@
 <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
 
 <h2>Summary</h2>
-<table class="projectListTable">
-<tr><td class="projectFieldName">Datafile Count:</td><td><c:out value="${fn:length(dataFileList)}"/></td></tr>
-<tr><td class="projectFieldName">Detection Count:</td><td><c:out value="${project.detectionCount}"/></td></tr>
-<tr><td class="projectFieldName">Detection Date Range:</td><td><fmt:formatDate pattern="${dateFormatPattern}" value="${project.firstDetectionDate}"/> to <fmt:formatDate pattern="${dateFormatPattern}" value="${project.lastDetectionDate}"/></td></tr>
-<tr><td class="projectFieldName">Animals:</td><td><c:forEach items="${projectAnimalsList}" var="animal">
-								<c:out value="${animal.animalName}"/>,
-						  </c:forEach>	
-	</td>
-</tr>
-</table>
-
+<c:choose>
+ 
+ <c:when test="${(empty dataFileList)}">
+	 <p>
+	 There is no data uploaded for this project yet. You might like to <a href="<c:url value='datafileadd'/>">upload a datafile.
+	 </a>
+	 </p>
+ </c:when>
+ <c:otherwise>	 	 	
+	<table class="projectListTable">
+	<tr><td class="projectFieldName">Datafile Count:</td>
+					<td><a href="<c:url value="datafiles"/>"><c:out value="${fn:length(dataFileList)}"/></a></td></tr>
+	<tr><td class="projectFieldName">Detection Count:</td>
+					<td><a href="<c:url value="searchform"/>"><c:out value="${project.detectionCount}"/></a></td></tr>
+	<tr><td class="projectFieldName">Detection Date Range:</td><td><fmt:formatDate pattern="${dateFormatPattern}" value="${project.firstDetectionDate}"/> to <fmt:formatDate pattern="${dateFormatPattern}" value="${project.lastDetectionDate}"/></td></tr>
+	<tr><td class="projectFieldName">Animals:</td><td>
+							<c:forEach items="${projectAnimalsList}" var="animal">
+									<a href="<c:url value="animalform"><c:param name="animal_id" value="${animal.id}"/></c:url>"><c:out value="${animal.animalName}"/></a>,
+							  </c:forEach>
+							  <a href="<c:url value="projectanimals"/>">View All</a>	
+		</td>
+	</tr>
+	
+	<c:if test="${project.projectType == 'PASSIVE_ACOUSTIC'}">
+		<tr><td class="projectFieldName">Receivers:</td><td><a href="<c:url value="projectreceivers"/>">View List</a></td></tr>
+	</c:if>
+	</table>
+  </c:otherwise>
+</c:choose>
+  
 <h2>Project Details</h2>
 <table class="projectListTable">
 <tr><td class="projectFieldName">Description:</td><td><c:out value="${project.description}"/></td></tr>
-<tr><td class="projectFieldName">Project Data:</td>
-    <td><a href="<c:url value="datafiles"/>">Data Files</a><br>
-        <a href="<c:url value="projectanimals"/>">Animals</a><br>
-        <c:if test="${project.projectType == 'PASSIVE_ACOUSTIC'}">
-            <a href="<c:url value="projectreceivers"/>">Receivers</a><br>
-        </c:if>
-    </td>
-</tr>
 <tr><td class="projectFieldName">Project Type:</td><td><c:out value="${project.projectType.displayName}"/></td></tr>
 <tr><td class="projectFieldName">Contact:</td><td><c:out value="${project.contactGivenName}"/><c:out value="${project.contactFamilyName}"/><br><c:out value="${project.contactUrl}"/></td></tr>
 <tr><td class="projectFieldName">Spatial Coverage:</td><td><c:out value="${project.spatialCoverageDescr}"/></td></tr>

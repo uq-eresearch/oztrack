@@ -27,7 +27,9 @@ public class ProjectFormValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "contactFamilyName", "error.empty.field", "Please enter a short project title.");
  
         String contentType = project.getImageFile().getContentType();
-        if  (contentType != null) {
+        
+        if  (project.getImageFile().getSize() != 0) {
+        	
         	if (!contentType.contains("image")) {
         		errors.rejectValue("imageFile", "bad.content", "This is not an image file (eg. .gif,.jpg,.png).");
         	} else {
@@ -36,5 +38,6 @@ public class ProjectFormValidator implements Validator {
         		}
         	}		
         }
+        
 	}
 }	

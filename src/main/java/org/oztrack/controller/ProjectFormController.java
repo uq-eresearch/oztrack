@@ -7,6 +7,7 @@ import org.oztrack.app.Constants;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.User;
@@ -74,11 +75,14 @@ public class ProjectFormController extends SimpleFormController {
             List <ProjectUser> projectProjectUsers = project.getProjectUsers();
             projectProjectUsers.add(projectUser);
             project.setProjectUsers(projectProjectUsers);
-
+            
             // save it all - project first
             ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
             projectDao.save(project);
-
+            UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();
+            User user = userDao.getUserById(currentUser.getId());
+            userDao.save(user);
+            
             // set data directory : need the id to sort the path
             String dataDir = OzTrackApplication.getApplicationContext().getDataDir();
 

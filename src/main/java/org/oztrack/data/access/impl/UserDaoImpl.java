@@ -29,4 +29,16 @@ public class UserDaoImpl extends JpaDao<User> implements UserDao, Serializable {
             return null;
         }
     }
+    
+    @Override
+    public User getUserById(Long id) {
+        Query query = entityManagerSource.getEntityManager().createQuery("SELECT o FROM AppUser o WHERE o.id = :id");
+        query.setParameter("id", id);
+        try {
+            return (User) query.getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
+    }
+    
 }
