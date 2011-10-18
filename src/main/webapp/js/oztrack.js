@@ -40,9 +40,9 @@ $(document).ready(function(){
      $( ".selector" ).accordion( "option", "clearStyle", true );
 //     $( ".selector" ).accordion( "option", "fillSpace", true );
          
-
- 
-     
+ 	$('#pageRefresh').click(function() {
+	      location.reload();
+ 	});
      
 
 });

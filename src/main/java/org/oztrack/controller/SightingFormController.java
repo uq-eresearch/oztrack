@@ -1,6 +1,5 @@
 package org.oztrack.controller;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.SightingDao;
 import org.oztrack.data.model.Sighting;

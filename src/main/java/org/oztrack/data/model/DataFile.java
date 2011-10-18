@@ -179,5 +179,26 @@ public class DataFile extends OztrackBaseEntity implements Serializable {
 	public void setLastDetectionDate(Date lastDetectionDate) {
 		this.lastDetectionDate = lastDetectionDate;
 	}
+	
+	@Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof DataFile)) {
+            return false;
+        }
+        DataFile other = (DataFile) obj;
+        return getId().equals(other.getId());
+    }
+	
+	public int hashCode() {
+        if (id != null) {
+            return id.hashCode();
+        } else {
+            return super.hashCode();
+        }
+    }
 
 }

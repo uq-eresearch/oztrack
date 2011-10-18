@@ -86,56 +86,56 @@ public class DataFileFormController extends SimpleFormController {
 
         DataFile dataFile = (DataFile) command;
         MultipartFile file = dataFile.getFile();
-        ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
+        DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
+
+        //ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
 
         /* from datafiles.jsp : Add a Data File button
         *  or datafiledetail.jsp: Retry link if FAILED */
-        String project_id=request.getParameter("project_id");
-        logger.debug("adding file to project_id = " + project_id);
-        Project project = projectDao.getProjectById(Long.parseLong(project_id));
+        //String project_id=request.getParameter("project_id");
+        //logger.debug("adding file to project_id = " + project_id);
+        //Project project = projectDao.getProjectById(Long.parseLong(project_id));
 
+        Project project =  (Project) request.getSession().getAttribute("project");
+        //Project project = projectDao.getProjectById(sessionProject.getId());
 
-        if (file == null) {
-            // hmm, that's strange, the user did not upload anything
-        } else {
-            // set dataFile details
-            dataFile.setUserGivenFileName(file.getOriginalFilename());
-            dataFile.setContentType(file.getContentType());
-            dataFile.setCreateDate(new java.util.Date());
-            dataFile.setUpdateDate(new java.util.Date());
+        // set dataFile details
+        dataFile.setUserGivenFileName(file.getOriginalFilename());
+        dataFile.setContentType(file.getContentType());
+        dataFile.setCreateDate(new java.util.Date());
+        dataFile.setUpdateDate(new java.util.Date());
 
-            //dataFile.setUploadUser(OzTrackApplication.getApplicationContext().getAuthenticationManager().getCurrentUser().getFullName());
-            User currentUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER);
-            //dataFile.setUploadUser(currentUser.getFullName() );
-            dataFile.setCreateUser(currentUser);
-            dataFile.setUpdateUser(currentUser);
+        //dataFile.setUploadUser(OzTrackApplication.getApplicationContext().getAuthenticationManager().getCurrentUser().getFullName());
+        User currentUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER);
+        //dataFile.setUploadUser(currentUser.getFullName() );
+        dataFile.setCreateUser(currentUser);
+        dataFile.setUpdateUser(currentUser);
 
-            // persist at project level
-            //Project project = (Project) request.getSession().getAttribute("project");
-            dataFile.setProject(project);
-            List<DataFile> dataFiles = project.getDataFiles();
-            dataFiles.add(dataFile);
-            project.setDataFiles(dataFiles);
+        // persist at project level
+        //Project project = (Project) request.getSession().getAttribute("project");
+        dataFile.setProject(project);
+        dataFileDao.save(dataFile);
+        
+//        List<DataFile> dataFiles = project.getDataFiles();
+//        dataFiles.add(dataFile);
+//        project.setDataFiles(dataFiles);
+//        projectDao.save(project);
 
-            projectDao.save(project);
+        // save the file to the data dir
+        String filePath = project.getDataDirectoryPath() + File.separator
+                         + "datafile-" + dataFile.getId().toString() + ".csv";
 
-            // save the file to the data dir
-            String filePath = project.getDataDirectoryPath() + File.separator
-                             + "datafile-" + dataFile.getId().toString() + ".csv";
+        File saveFile = new File(filePath);
+        saveFile.mkdirs();
+        file.transferTo(saveFile);
 
-            File saveFile = new File(filePath);
-            saveFile.mkdirs();
-            file.transferTo(saveFile);
+        logger.info("saved file : " + saveFile.getAbsolutePath());
 
-            logger.info("saved file : " + saveFile.getAbsolutePath());
+        // ready to go now; poller will pick the job up
+        dataFile.setOzTrackFileName(filePath);
+        dataFile.setStatus(DataFileStatus.NEW);
+        dataFileDao.update(dataFile);
 
-            // ready to go now; poller will pick the job up
-            dataFile.setOzTrackFileName(filePath);
-            dataFile.setStatus(DataFileStatus.NEW);
-            DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
-            dataFileDao.update(dataFile);
-
-        }
 
         ModelAndView modelAndView = new ModelAndView(getSuccessView());
 

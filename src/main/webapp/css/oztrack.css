@@ -71,6 +71,7 @@ a:hover {
 }
 
 #header_left {
+	background-color: #ffffff;
     background-image: url('../images/header_logo.gif');
     background-repeat: no-repeat;
     background-position: center center;

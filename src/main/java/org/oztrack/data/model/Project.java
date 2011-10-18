@@ -54,11 +54,11 @@ public class Project extends OztrackBaseEntity implements Serializable {
     org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
     private List<ProjectUser> projectUsers = new LinkedList<ProjectUser>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "project", cascade =
-    {CascadeType.PERSIST, CascadeType.MERGE})
-    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
-    org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
-    private List<DataFile> dataFiles = new LinkedList<DataFile>();
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade =
+//    {CascadeType.PERSIST, CascadeType.MERGE})
+//    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
+//    org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
+//    private List<DataFile> dataFiles = new LinkedList<DataFile>();
 
     @Enumerated(STRING)
     @Column(name="projecttype")
@@ -146,15 +146,6 @@ public class Project extends OztrackBaseEntity implements Serializable {
     public void setProjectUsers(List<ProjectUser> projectUsers) {
         this.projectUsers = projectUsers;
     }
-
-    public List<DataFile> getDataFiles() {
-        return this.dataFiles;
-    }
-
-    public void setDataFiles(List<DataFile> dataFiles) {
-        this.dataFiles = dataFiles;
-    }
-
 
     public boolean isGlobal() {
         return isGlobal;
@@ -313,4 +304,25 @@ public class Project extends OztrackBaseEntity implements Serializable {
 	public void setDetectionCount(Integer detectionCount) {
 		this.detectionCount = detectionCount;
 	}
+	
+	@Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof DataFile)) {
+            return false;
+        }
+        Project other = (Project) obj;
+        return getId().equals(other.getId());
+    }
+	
+	public int hashCode() {
+        if (id != null) {
+            return id.hashCode();
+        } else {
+            return super.hashCode();
+        }
+    }
 }
