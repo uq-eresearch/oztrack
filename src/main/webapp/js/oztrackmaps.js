@@ -138,6 +138,11 @@ function updateAnimalStyles(linesLayer) {
                 
                 // add detail for this layer
     	    	var distance = feature.geometry.getGeodesicLength(map.projection);
+    	    	
+    	    	var distance2 = feature.geometry.getGeodesicLength(new OpenLayers.Projection("EPSG:28355"));
+    	    	var distance3 = feature.geometry.getGeodesicLength(new OpenLayers.Projection("EPSG:4326"));
+    	    	var distance4 = feature.geometry.getGeodesicLength(new OpenLayers.Projection("EPSG:900913"));
+    	    	
                 var checkboxValue = layerId + "-" + feature.id;
                 var checkboxId = checkboxValue.replace(/\./g,"");
                 
@@ -147,7 +152,7 @@ function updateAnimalStyles(linesLayer) {
                 var html = "<b>&nbsp;&nbsp;" + layerName + "</b>"
                 		+ "<table><tr><td>Date From:</td><td>" + feature.attributes.fromDate + "</td></tr>"
 	    		  		+ "<tr><td>Date To:</td><td>" + feature.attributes.toDate + "</td></tr>"
-    	    			+ "<tr><td>Minimum Distance: </td><td>" + Math.round(distance*1000)/1000 + "m</td></tr></table><br>";
+    	    			+ "<tr><td>Minimum Distance: </td><td>" + Math.round(distance*1000)/1000 + "m " + distance2 + " : "+ distance3 +" : "+ distance4 +"</td></tr></table><br>";
  	            
                 //var html = "<div class='accordianNested'><a href='#'>" + layerName + "</a></div>"
                 //		 + "<div>Hello</div>";
@@ -483,7 +488,7 @@ function updateAnimalInfoFromKML(layerName, e) {
 			 + "id='select-feature-" + checkboxId + "' value='" + checkboxValue + "' checked='true'/></input>";
 		var html = "&nbsp;&nbsp;<b>" + layerName + "</b>" 
 //				+ "<br> Area: " + 		Math.round(area*1000)/1000 + "<br>";
-   		+ "<table><tr><td> Area: </td><td>" + Math.round(area*1000)/1000 + "</td></tr></table><br>";
+   		+ "<table><tr><td> Area: </td><td>" + Math.round(area*1000)/1000 + " ha</td></tr></table><br>";
 		$('#animalInfo-'+ feature.attributes.id.value).append(checkboxHtml + html);
 	    $('input[id=select-feature-' + checkboxId + ']').change(function() {
 	        toggleFeature(this.value,this.checked);

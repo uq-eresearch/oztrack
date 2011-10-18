@@ -76,7 +76,9 @@ This file contains data for a single tagged animal only.
 	</span></a>
 	</div>
 <div>
-<label for="file">File: </label><input type="file" name="file"/>
+<label for="file">File: </label>
+<input type="file" name="file"/>
+<form:errors path="file" cssClass="formErrors"/>
 </div>
 
 <br>

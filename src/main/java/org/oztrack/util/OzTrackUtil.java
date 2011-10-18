@@ -55,6 +55,10 @@ public class OzTrackUtil {
         } catch (FileNotFoundException e) {
              throw new FileProcessingException("File not found.");
         }
+        
+        if (inFile.getTotalSpace() == 0) {
+        	throw new FileProcessingException("No data in file");
+        }
 
         DataInputStream in = new DataInputStream(fileInputStream);
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
@@ -65,8 +69,7 @@ public class OzTrackUtil {
         } catch (IOException e) {
             throw new FileProcessingException("Couldn't create new file");
         }
-
-
+        
         try {
              headers = br.readLine();
              bw.write(headers);
@@ -90,8 +93,8 @@ public class OzTrackUtil {
              outFile.renameTo(finalFile);
              outFile.delete();
 
-        } catch (IOException e) {
-             throw new FileProcessingException("Problem creating de-duplicates file.");
+        } catch (Exception e) {
+             throw new FileProcessingException("File Processing problem (dedup.");
         }
 
 

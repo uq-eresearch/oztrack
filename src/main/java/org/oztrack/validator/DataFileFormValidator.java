@@ -22,15 +22,14 @@ public class DataFileFormValidator  implements Validator {
 
 	public void validate(Object obj, Errors errors) {
 
-		//User user = (User) obj;
+		DataFile dataFile = (DataFile) obj;
 		//ValidationUtils.rejectIfEmptyOrWhitespace(errors, "userGivenFileName", "error.empty.field", "Please Enter");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "fileDescription", "error.empty.field", "Please Enter");
-        //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "fileType", "error.empty.field", "You must specify a fil");
+        //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "fileType", "error.empty.field", "You must specify a file");
 
-        /*TODO:
-        1.
-        2.
-        */
+        if  (dataFile.getFile().getSize() == 0) {
+        	errors.rejectValue("file", "no.file", "No file was uploaded. Have another try.");
+        }
 
 	}
 
