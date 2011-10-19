@@ -33,13 +33,13 @@
 		
 		    <c:forEach items="${dataFileList}" var="dataFile">
 		        <tr>
-		            <td><a href="<c:url value="datafiledetail"><c:param name="datafile_id" value="${dataFile.id}"/></c:url>"><c:out value="${dataFile.userGivenFileName}"/></a></td>
+		            <td><c:out value="${dataFile.userGivenFileName}"/></td>
 		            <td><c:if test="${fn:contains(dataFile.status,'COMPLETE')}">
 		            	<fmt:formatDate pattern="${dateFormatPattern}" value="${dataFile.firstDetectionDate}"/> to <fmt:formatDate pattern="${dateFormatPattern}" value="${dataFile.lastDetectionDate}"/>
 		            	</c:if>
 		             </td>	
 		            <td><fmt:formatDate pattern="${dateFormatPattern}" value="${dataFile.createDate}"/>
-		            <td><c:out value="${dataFile.status}"/></td>
+		            <td><a href="<c:url value="datafiledetail"><c:param name="datafile_id" value="${dataFile.id}"/></c:url>"><c:out value="${dataFile.status}"/></a></td>
 				</tr>
 		    </c:forEach>
 		</table>

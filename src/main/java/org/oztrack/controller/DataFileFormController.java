@@ -22,8 +22,11 @@ import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.RawAcousticDetection;
 import org.oztrack.data.model.User;
+import org.oztrack.data.model.types.AcousticFileHeader;
 import org.oztrack.data.model.types.DataFileStatus;
 import org.oztrack.data.model.types.DataFileType;
+import org.oztrack.data.model.types.PositionFixFileHeader;
+import org.oztrack.data.model.types.ProjectType;
 import org.springframework.validation.BindException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -35,7 +38,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,8 +79,27 @@ public class DataFileFormController extends SimpleFormController {
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
 
         Project project = (Project) request.getSession().getAttribute("project");
-
+        
+        ArrayList <String> fileHeaders = new ArrayList <String>();
+        
+        switch (project.getProjectType()) {
+        	case GPS:
+            	for (PositionFixFileHeader h : PositionFixFileHeader.values()) {
+            		fileHeaders.add(h.toString());
+            	}
+            	break;
+        	case PASSIVE_ACOUSTIC:
+            	for (AcousticFileHeader h : AcousticFileHeader.values()) {
+            		fileHeaders.add(h.toString());
+            	}
+            	break;
+            default:
+            	break;
+        }
+        
+        
         ModelAndView modelAndView = super.showForm(request, response, errors, controlModel);    //To change body of overridden methods use File | Settings | File Templates.
+        modelAndView.addObject("fileHeaders", fileHeaders);
         modelAndView.addObject("project",project);
         return modelAndView;
 
@@ -100,6 +124,7 @@ public class DataFileFormController extends SimpleFormController {
         //Project project = projectDao.getProjectById(sessionProject.getId());
 
         // set dataFile details
+        dataFile.setSingleAnimalInFile(false);
         dataFile.setUserGivenFileName(file.getOriginalFilename());
         dataFile.setContentType(file.getContentType());
         dataFile.setCreateDate(new java.util.Date());
@@ -125,20 +150,30 @@ public class DataFileFormController extends SimpleFormController {
         String filePath = project.getDataDirectoryPath() + File.separator
                          + "datafile-" + dataFile.getId().toString() + ".csv";
 
-        File saveFile = new File(filePath);
-        saveFile.mkdirs();
-        file.transferTo(saveFile);
-
-        logger.info("saved file : " + saveFile.getAbsolutePath());
-
+        ModelAndView modelAndView;
+        
+        try {
+	        
+        	File saveFile = new File(filePath);
+	        saveFile.mkdirs();
+	        file.transferTo(saveFile);
+	        
+        } catch (IOException e) {
+        	
+        	// usually we should only arrive here if everything crashed during the file upload and we can't write over a failed file
+        	modelAndView = new ModelAndView("redirect:datafileadd");
+        	modelAndView.addObject("errorMessage", "There was a problem with uploading that file. Please try and create a new one.");
+        	dataFile.setStatus(DataFileStatus.INACTIVE);
+        	dataFile.setStatusMessage("There was a problem with this file upload and it has been discarded. Please try again.");
+        }
+        
         // ready to go now; poller will pick the job up
         dataFile.setOzTrackFileName(filePath);
         dataFile.setStatus(DataFileStatus.NEW);
+        modelAndView = new ModelAndView(getSuccessView());
+
+
         dataFileDao.update(dataFile);
-
-
-        ModelAndView modelAndView = new ModelAndView(getSuccessView());
-
         return modelAndView;
     }
 

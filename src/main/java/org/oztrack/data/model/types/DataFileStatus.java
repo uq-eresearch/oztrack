@@ -11,5 +11,6 @@ public enum DataFileStatus {
     NEW,
     PROCESSING,
     FAILED,
-    COMPLETE
+    COMPLETE,
+    INACTIVE
 }

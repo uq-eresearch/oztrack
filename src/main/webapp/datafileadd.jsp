@@ -52,6 +52,7 @@ available for visualisations and analysis for your project.
 &nbsp; Local time is GMT + <form:input path="localTimeConversionHours" cssClass="shortInput"/> hours.
 </div>
 
+<!--
 <br>
 
 	<div class="help">
@@ -62,11 +63,12 @@ available for visualisations and analysis for your project.
 	</span></a>
 	</div>
 
+ 
 <div class="checkboxDiv">
 <form:checkbox cssClass="checkbox" path="singleAnimalInFile" id="singleAnimalInFile"/>
 This file contains data for a single tagged animal only.
 </div>
-
+ -->
 
 <br>
 
@@ -91,15 +93,32 @@ This file contains data for a single tagged animal only.
 
 <h2>Uploading Files</h2>
 <ul>
-<li><span>All files must be CSV - comma separated only.</span></li>
-<li><span>Date formats that can be read:
-    <ul>
-        <li><span>dd/MM/yyyy H:mi:s.S</span></li>
-        <li><span>dd.MM.yyyy H:mi:s.S</span></li>
-    </ul>
-    </span>
+<li>Format
+	<p>All files must be CSV - comma separated only.</p>
+	<p>OzTrack expects that files will contain particular headers, depending on the type of project specified when the project was created. 
+	Because this project is for <b><c:out value="${project.projectType.displayName}"/></b>, the headers in the file can be any of the 
+	following (spaces and non alphanumeric characters are ignored): <br><br>
+	<c:out value="${fileHeaders}"/>
+	
+		
 </li>
-<li><span>Decimal Lat/Longs only.</span></li>
+<li>Dates
+	<p>Date formats that can be read:</p>
+	    <ul>
+	        <li><span>dd/MM/yyyy H:mi:s.S</span></li>
+	        <li><span>dd.MM.yyyy H:mi:s.S</span></li>
+	    </ul>
+	 <br>
+</li>
+<li>Spatial Coordinates
+	<p>At this stage we accept only decimal Lat/Longs in projection EPSG:4326.</p>
+</li>
+<li>Animals: 
+	<p>If there <b>is</b> an ID or ANIMAL Id field in the file, then OzTrack will assume that this field is the identifier of the animals.
+	However, OzTrack only allows a maximum of 20 animals in a file upload. So if there are more, the file upload will Fail and the user asked to take action.
+	<br>
+	If there is <b>no </b> ID or Animal Id field in the file, OzTrack will assume that the file pertains to a single animal and will create an ID for it. You can add the details for the animal later.
+</p></li>
 </ul>
 
 

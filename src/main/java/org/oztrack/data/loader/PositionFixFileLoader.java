@@ -76,6 +76,7 @@ public class PositionFixFileLoader extends DataFileLoader {
         boolean dateFieldFound = false;
         boolean latFieldFound = false;
         boolean longFieldFound = false;
+        boolean animalIdFieldFound = false;
 
         // determine which columns contain which data
         for (int i = 0; i < colHeadings.length; i++) {
@@ -99,6 +100,16 @@ public class PositionFixFileLoader extends DataFileLoader {
                     if (heading.contains("LON") && !longFieldFound) {
                         longFieldFound=true;
                     }
+                    
+                    if (heading.equals("ANIMALID") && !animalIdFieldFound) {
+                    	animalIdFieldFound=true;
+                    }
+
+                    if (heading.equals("ID") && !animalIdFieldFound) {
+                    	animalIdFieldFound=true;
+                    }
+                    
+                    
                 }
             }
         }
@@ -112,11 +123,13 @@ public class PositionFixFileLoader extends DataFileLoader {
         if (!longFieldFound) {
              throw new FileProcessingException("No LONGITUDE field found in file.");
         }
+        if (!animalIdFieldFound) {
+        	// if there's not an animalId field, assume that this file contains a single animal.
+        	dataFile.setSingleAnimalInFile(true);
+        	dataFileDao.update(dataFile);
+        }
 
         logger.debug("File opened + header read.");
-
-        boolean localTimeConversionRequired = dataFile.getLocalTimeConversionRequired();
-        long localTimeConversionHours = dataFile.getLocalTimeConversionHours();
 
         EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
@@ -274,6 +287,13 @@ public class PositionFixFileLoader extends DataFileLoader {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
 
+//        boolean localTimeConversionRequired = dataFile.getLocalTimeConversionRequired();
+//        long localTimeConversionHours = dataFile.getLocalTimeConversionHours();
+        
+        if (dataFile.getLocalTimeConversionRequired()) {
+        	calendar.add(Calendar.HOUR, dataFile.getLocalTimeConversionHours().intValue());
+        }
+        
         String [] timeBits = timeString.split(":");
 
         try {

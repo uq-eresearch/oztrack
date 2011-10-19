@@ -11,6 +11,8 @@ import org.oztrack.data.model.types.ProjectType;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -49,7 +51,7 @@ public class DataFileDaoImpl extends JpaDao<DataFile> implements DataFileDao, Se
         }
     }
 
-    public List<String> getAllAnimalIds(DataFile dataFile) {
+    public ArrayList<String> getAllAnimalIds(DataFile dataFile) {
 
         String entityName = "RawPositionFix";
 
@@ -65,9 +67,26 @@ public class DataFileDaoImpl extends JpaDao<DataFile> implements DataFileDao, Se
         }
 
 
-        Query query = entityManagerSource.getEntityManager().createQuery("SELECT distinct animalid from " + entityName);
+        Query query = entityManagerSource.getEntityManager().createQuery("SELECT animalId from " + entityName);
         try {
-            return (List <String>) query.getResultList();
+        	
+        	List<String> animalIdList = (List<String>) query.getResultList();
+        	ArrayList<String> finalList = new ArrayList<String>();
+            
+        	// implement distinct here because hibernate won't play nice 
+        	HashSet<String> hashSet = new HashSet<String>(10000);
+        	for (String animalId : animalIdList) {
+        		if (!hashSet.contains(animalId)) {
+        			hashSet.add(animalId);
+        		}
+        	}
+        	
+        	for (String animalId : hashSet) {
+        		finalList.add(animalId);
+        	}
+        	
+        	return finalList;
+        	
         } catch (NoResultException ex) {
             return null;
         }
@@ -84,9 +103,9 @@ public class DataFileDaoImpl extends JpaDao<DataFile> implements DataFileDao, Se
     }
     
     public List<DataFile> getDataFilesByProject(Project project) {
-    	Query query = entityManagerSource.getEntityManager().createQuery("SELECT o from datafile o where o.status = :status and o.project = :project order by o.createDate");
+    	Query query = entityManagerSource.getEntityManager().createQuery("SELECT o from datafile o where o.project = :project order by o.createDate");
     	query.setParameter("project", project);
-    	query.setParameter("status", DataFileStatus.COMPLETE);
+    	//query.setParameter("status", DataFileStatus.COMPLETE);
     	try {
     		return (List <DataFile>) query.getResultList();
     	}catch (NoResultException ex) {

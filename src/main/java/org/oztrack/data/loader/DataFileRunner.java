@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.DataFileDao;
+import org.oztrack.data.access.direct.JdbcAccess;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.types.DataFileStatus;
 import org.oztrack.error.FileProcessingException;
@@ -69,6 +70,9 @@ public class DataFileRunner {
                 File origFile = new File(dataFile.getOzTrackFileName().replace(".csv",".orig"));
                 file.delete();
                 origFile.delete();
+                
+                JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
+                jdbcAccess.truncateRawObservations(dataFile);
             }
 
             dataFileDao.update(dataFile);//dataFileDao.refresh(dataFile);

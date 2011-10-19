@@ -78,8 +78,16 @@ public class DataFileLoader {
 
         } else {
 
-            // get a list of the animal IDs in the raw file just loaded
+        	// get a list of the animal IDs in the raw file just loaded
             List<String> newAnimalIdList = this.dataFileDao.getAllAnimalIds(this.dataFile);
+            
+            if (newAnimalIdList.size() > 20) {
+            	
+            	throw new FileProcessingException("OzTrack only allows 20 animals per file. The Id/Animal Id field in the " +
+            									  "file contains more than 20. An easy fix may be to rename the Id field to something else." +
+            									  " Fix and retry the upload.");
+            }
+            
             // all the animals for this project
             List<Animal> projectAnimalList = animalDao.getAnimalsByProjectId(this.dataFile.getProject().getId());
             boolean animalFound;

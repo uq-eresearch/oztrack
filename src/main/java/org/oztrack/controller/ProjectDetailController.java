@@ -10,6 +10,8 @@ import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.User;
+import org.oztrack.data.model.types.AcousticFileHeader;
+import org.oztrack.data.model.types.PositionFixFileHeader;
 
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -63,6 +65,8 @@ public class ProjectDetailController implements Controller {
 	        
 		        ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
 		        Project project = projectDao.getProjectById(projectId);
+		        projectDao.refresh(project);
+		        
 		        httpServletRequest.getSession().setAttribute("project", project);
 		        String modelAndViewName = "projectdetail";
 		        if (httpServletRequest.getRequestURI().contains("datafiles")) {
@@ -77,7 +81,6 @@ public class ProjectDetailController implements Controller {
 		        List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
 		        DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
 		        List<DataFile> dataFileList = dataFileDao.getDataFilesByProject(project);
-		        
 		        modelAndView = new ModelAndView(modelAndViewName);
 		        modelAndView.addObject("errorStr", errorMessage);
 		        modelAndView.addObject("project", project);
