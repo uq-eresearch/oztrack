@@ -33,17 +33,22 @@ public class ProjectListController implements Controller {
 //        HttpSession session = httpServletRequest.getSession();
 //        User currentUser = authenticationManager.getUserFromSession(session);
         User currentUser = (User) httpServletRequest.getSession().getAttribute(Constants.CURRENT_USER);
-
-        UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();
-        User user = userDao.getByUsername(currentUser.getUsername());
-
-    	// returns ALL projects that this user has access to
-    	//List<Project> userProjectList = projectDao.getProjectListByUserId(currentUser.getId());
-        List <ProjectUser> userProjectList = user.getProjectUsers();
-
-        ModelAndView modelAndView = new ModelAndView("projects");
-        modelAndView.addObject("userProjectList", userProjectList);
-        modelAndView.addObject(Constants.CURRENT_USER, currentUser);
+        ModelAndView modelAndView;
+        
+        if (currentUser == null) {
+        	
+        	modelAndView = new ModelAndView("redirect:login");
+        
+        } else {
+        	
+            UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();
+            User user = userDao.getByUsername(currentUser.getUsername());
+            userDao.refresh(user);
+            modelAndView = new ModelAndView("projects");
+            //modelAndView.addObject("userProjectList", userProjectList);
+            modelAndView.addObject("user", user);
+        	
+        }
         return modelAndView;
     }
 }

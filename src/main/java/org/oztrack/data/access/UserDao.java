@@ -10,5 +10,6 @@ import org.oztrack.data.model.User;
  */
 public interface UserDao extends Dao<User> {
     User getByUsername(String username);
-    User getUserById(Long id); 
+    User getUserById(Long id);
+    
 }

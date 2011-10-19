@@ -63,20 +63,6 @@ public class UserListController implements Controller {
         	projectDao.save(project);
         }
         
-    	DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
-    	DataFile dataFile = dataFileDao.getDataFileById((long) 1);
-    	
-        if (dataFile == null) {
-        	dataFile = new DataFile("test data file");
-        	dataFile.setFileDescription("test file Description");
-            
-        	List<DataFile> dataFiles = project.getDataFiles();
-        	dataFile.setProject(project);
-        	dataFiles.add(dataFile);
-        	project.setDataFiles(dataFiles);
-        	projectDao.save(project);
-        }
-
         List<User> allUsers = userDao.getAll();
         ModelAndView modelAndView = new ModelAndView("users");
         modelAndView.addObject("userList", allUsers);
