@@ -20,7 +20,7 @@
         <th> </th>
     </tr>
 
-    <c:forEach items="${animalList}" var="animal">
+    <c:forEach items="${projectAnimalsList}" var="animal">
         <tr>
             <td><c:out value="${animal.projectAnimalId}"/></td>
             <td><c:out value="${animal.animalName}"/></td>

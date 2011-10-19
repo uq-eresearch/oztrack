@@ -39,7 +39,20 @@ public class ProjectFormController extends SimpleFormController {
      * Logger for this class and subclasses
      */
     protected final Log logger = LogFactory.getLog(getClass());
+    
+    @Override
+    protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
 
+        User currentUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER);
+        
+        if (currentUser == null) {
+        	return new ModelAndView("redirect:login");
+        } else {
+        	return super.showForm(request, response, errors, controlModel);    //To change body of overridden methods use File | Settings | File Templates.
+    	}
+    }
+    
+    
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
 
@@ -48,8 +61,8 @@ public class ProjectFormController extends SimpleFormController {
 
         if (currentUser == null) {
             String noSessionError = "You need to be logged in to create a project.";
-            modelAndView = new ModelAndView("login");
-            modelAndView.addObject("noSessionError", noSessionError);
+            modelAndView = new ModelAndView("redirect:login");
+            modelAndView.addObject("errorMessage", noSessionError);
 
         } else {
 

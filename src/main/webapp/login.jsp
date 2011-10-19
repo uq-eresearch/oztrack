@@ -3,7 +3,7 @@
 
 <h1>Login</h1>
 
-<div id="noSessionError"><c:out value="${noSessionError}"/></div>
+<div class="errorMessage"><c:out value="${errorMessage}"/></div>
 
 <form:form commandName="user" method="POST" name="login">
 

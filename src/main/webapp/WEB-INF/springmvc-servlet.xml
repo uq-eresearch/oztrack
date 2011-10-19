@@ -32,12 +32,11 @@
   <bean name="/projects" class="org.oztrack.controller.ProjectListController"/>
   <bean name="/projectdetail" class="org.oztrack.controller.ProjectDetailController"/>
   <bean name="/datafiles" class="org.oztrack.controller.ProjectDetailController"/>
-  <bean name="/projectanimals" class="org.oztrack.controller.ProjectAnimalsController"/>
+  <bean name="/projectanimals" class="org.oztrack.controller.ProjectDetailController"/>
   <bean name="/projectreceivers" class="org.oztrack.controller.ProjectReceiversController"/>
   <bean name="/datafiledetail" class="org.oztrack.controller.DataFileDetailController"/>
   <bean name="/searchacoustic" class="org.oztrack.controller.SearchAcousticController"/>
   <bean name="/logout" class="org.oztrack.controller.LogoutController"/>
-  <bean name="/alloztrackprojects" class="org.oztrack.controller.AllOztrackProjectsController"/>
 
   <bean name="/projectmap" class="org.oztrack.controller.ProjectMapController"/>
 

@@ -1,11 +1,14 @@
 package org.oztrack.controller;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.AuthenticationManager;
 import org.oztrack.app.Constants;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.UserDao;
+import org.oztrack.data.model.Project;
 import org.oztrack.data.model.User;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
@@ -27,7 +30,8 @@ public class LoginFormController extends SimpleFormController {
      */
     protected final Log logger = LogFactory.getLog(getClass());
 
-    @Override
+    
+	@Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
 
         User user = (User) command;

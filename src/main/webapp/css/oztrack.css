@@ -329,7 +329,7 @@ a:hover {
 }
 
 
-#noSessionError {
+.errorMessage {
     font-style: italic; color:red;
 }
 
