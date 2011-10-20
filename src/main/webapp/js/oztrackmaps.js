@@ -1,6 +1,7 @@
 
 var map;
 var allAnimalTracksLayer;
+var allAnimalTracksLayerStyle;
 var pointsLayer;
 var startPointOnStyle;
 var endPointOnStyle;
@@ -22,6 +23,9 @@ var colours = [
         '#CCEBC5',
         '#FFED6F'
     ];
+
+
+var polygonStyleMap;
 
 
 function initializeProjectMap() {
@@ -70,7 +74,7 @@ function initializeProjectMap() {
             displayClass: "helpButton", trigger: function() {alert('help');}, title: 'Help'
         }),
         new OpenLayers.Control.Button({
-        	displayClass: "zoomButton", trigger: function() {zoomToDataExtent();}, title: 'Zoom to Data Extent'
+        	displayClass: "zoomButton", trigger: function() {map.zoomToExtent(allAnimalTracksLayer.getDataExtent(),false);}, title: 'Zoom to Data Extent'
         })
     ]);
     map.addControl(panel);
@@ -88,8 +92,8 @@ function initializeProjectMap() {
          strategies: [new OpenLayers.Strategy.Fixed()],
          eventListeners: {
             loadend: function (e) {
-        		//map.zoomToExtent(allAnimalTracksLayer.getDataExtent(),false);
-        	zoomToDataExtent();	
+        		map.zoomToExtent(allAnimalTracksLayer.getDataExtent(),false);
+        	//zoomToDataExtent();	
         	updateAnimalStyles(allAnimalTracksLayer);
             	if (!pointsLayer) {createPointsLayer();}
 //            	createSelectControl();
@@ -101,9 +105,11 @@ function initializeProjectMap() {
     map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326,projection900913), 4);
 }
 
+/*
 function zoomToDataExtent() {
 	map.zoomToExtent(allAnimalTracksLayer.getDataExtent(),false);
 }
+*/
 
 function updateAnimalStyles(linesLayer) {
     
@@ -122,7 +128,7 @@ function updateAnimalStyles(linesLayer) {
                 }
                 feature.style = {
                         strokeColor: colour,
-                        strokeWidth: 1.5,
+                        strokeWidth: 1.0,
                         label: labelText,
                         labelAlign: "rt",
                         fontColor: "#ffffff",
@@ -285,15 +291,18 @@ function toggleFeature(featureIdentifier, setVisible) {
 	            	lineStyle.strokeOpacity = 0.0;
 	            }
 	            feature.style = lineStyle;
+	            layer.redraw();
         	} else { 	
         		if (setVisible) {
-    				polygonStyle.strokeOpacity = 1.0;
+        			renderIntent = "default";
     			}else {
-    				polygonStyle.strokeOpacity = 0.0;
+    				renderIntent = "temporary";
     			}
-    			feature.style = polygonStyle;
+    			//feature.style = polygonStyle;
+    			feature.renderIntent = renderIntent;
+    			layer.drawFeature(feature);
         	}
-        	layer.redraw();
+        	
         }
 	}
 }
@@ -359,16 +368,22 @@ function toggleAllAnimalFeatures(animalId, setVisible) {
 	            }
 	        } else {
 	        	//kml layer
+	        	var renderIntent;
 	        	for (var f in layer.features) {
 	        		var feature = layer.features[f];
 	        		if (feature.attributes.id.value == animalId) {
 	        			if (setVisible) {
-	        				polygonStyle.strokeOpacity = 1.0;
+	        				//polygonStyle.strokeOpacity = 1.0;
+	        				renderIntent = "default";
+	        				
 	        			}else {
-	        				polygonStyle.strokeOpacity = 0.0;
+	        				//polygonStyle.strokeOpacity = 0.0;
+	        				renderIntent = "temporary";
 	        			}
-	        			feature.style = polygonStyle;
-	        			layer.redraw();
+	        			//feature.style = polygonStyle;
+	        			//layer.redraw();
+	        			feature.renderIntent = renderIntent;
+	        			layer.drawFeature(feature);
 	        		}
 	        	}
 	        }   
@@ -428,32 +443,42 @@ function addProjectMapLayer() {
 
 function addKMLLayer(layerName, params) {
 
-        var queryOverlay = new OpenLayers.Layer.Vector(
-                layerName,
-                {strategies: [new OpenLayers.Strategy.Fixed()],
-                 eventListeners: {
-	                 loadend: function (e) {
-	                	updateAnimalInfoFromKML(layerName, e);
-	            	 }
-                 },
+	polygonStyleMap = new OpenLayers.StyleMap({
+		"default" : {
+			strokeColor: "#FF0000",
+			strokeWidth: 2,
+			strokeOpacity: 1.0,
+			fillOpacity: 0.0		 
+		},
+		"temporary" : {
+			strokeOpacity: 0.0
+		}
+	});
+
+	
+	
+	var queryOverlay = new OpenLayers.Layer.Vector(
+                layerName,{
+                	strategies: [new OpenLayers.Strategy.Fixed()],
+                	eventListeners: {
+                		loadend: function (e) {updateAnimalInfoFromKML(layerName, e);}
+                	},
                 	protocol: new OpenLayers.Protocol.HTTP(
-                    {url: "mapQueryKML",
-                     params: params,
-                     format: new OpenLayers.Format.KML(
-                        { //extractStyles: true,
-                         extractAttributes: true,
-                         maxDepth: 2,
-                         internalProjection: projection900913,
-                         externalProjection: projection4326,
-                         kmlns:"http://localhost:8080/"
-                     })
-                  })
-        });
+                			{url: "mapQueryKML",
+                			 params: params,
+                			 format: new OpenLayers.Format.KML(
+		                        {//extractStyles: true,
+		                         extractAttributes: true,
+		                         maxDepth: 2,
+		                         internalProjection: projection900913,
+		                         externalProjection: projection4326,
+		                         kmlns:"http://localhost:8080/"
+		                        })
+                			}),
+                	styleMap:polygonStyleMap		
+                });
 
         map.addLayer(queryOverlay);
- //       map.addControl(querySelectControl);
- //       querySelectControl.activate();
- //       queryOverlay.refresh();
 }
                 
 function updateAnimalInfoFromKML(layerName, e) {
@@ -461,7 +486,7 @@ function updateAnimalInfoFromKML(layerName, e) {
 	for (var f in e.object.features) {
 		var feature = e.object.features[f];
 		var area = feature.attributes.area.value;
-        
+
 		var checkboxValue = feature.layer.id + "-" + feature.id;
         var checkboxId = checkboxValue.replace(/\./g,"");
 	    var checkboxHtml = "<input type='checkbox' class='shortInputCheckbox' " 
@@ -473,11 +498,14 @@ function updateAnimalInfoFromKML(layerName, e) {
 	    $('input[id=select-feature-' + checkboxId + ']').change(function() {
 	        toggleFeature(this.value,this.checked);
 	    });
+
 	}
 	
-	/*
+}
+
+/*
 	
-        var checkboxValue = layerId + "-" + feature.id;
+       var checkboxValue = layerId + "-" + feature.id;
         var checkboxId = checkboxValue.replace(/\./g,"");
         
         var checkboxHtml = "<input type='checkbox' class='shortInputCheckbox' " 
@@ -495,11 +523,10 @@ function updateAnimalInfoFromKML(layerName, e) {
         $('input[id=select-feature-' + checkboxId + ']').change(function() {
             toggleFeature(this.value,this.checked);
         });
-
-	
+        
+        
 	*/
 	
-}
 
 
 function addWFSLayer(layerName, params) {
