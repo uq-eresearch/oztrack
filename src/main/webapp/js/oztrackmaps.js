@@ -7,7 +7,7 @@ var startPointOnStyle;
 var endPointOnStyle;
 var pointsOffStyle;
 var selectControl;
-var projection900913 = new OpenLayers.Projection('EPSG:900913');
+var projection900913 = new OpenLayers.Projection("EPSG:900913");
 var projection4326 =  new OpenLayers.Projection("EPSG:4326");
 var colours = [
         '#8DD3C7',
@@ -103,13 +103,56 @@ function initializeProjectMap() {
     
     map.addLayers([gsat,gphy,allAnimalTracksLayer]);
     map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326,projection900913), 4);
+    
+    reportProjectionDescr();
 }
 
-/*
-function zoomToDataExtent() {
-	map.zoomToExtent(allAnimalTracksLayer.getDataExtent(),false);
+var thisProjection;
+
+function reportProjectionDescr() {
+
+	var projectionCode = $('input[id=projectionCode]').val();
+	
+	$('#projectionDescr').html("Searching for " + projectionCode + "...");
+	thisProjection = new Proj4js.Proj(projectionCode, cb);
+
 }
-*/
+
+function cb() {
+//	alert("yup: " + thisProjection.defData);
+	
+	var labelText;
+	var strArray = thisProjection.defData.split("+");
+	var title;
+	
+	for (var s in strArray) {
+		if (strArray[s].indexOf("title") != -1) {
+			labelText = strArray[s].split("=")[1];
+		}
+	}
+	
+	if (labelText == null) {
+		if (thisProjection.ellipseName != null) {
+			labelText = thisProjection.ellipseName;
+		} else {
+			if (thisProjection.defData != null) {
+				labelText = thisProjection.defData;
+			} else {
+				labelText = "Projection exists."
+			}
+		}
+	}
+	
+	$('#projectionDescr').html(labelText);
+	
+} 
+
+
+Proj4js.reportError = function(msg) {
+	
+	$('#projectionDescr').html(msg);
+}
+
 
 function updateAnimalStyles(linesLayer) {
     
@@ -142,11 +185,8 @@ function updateAnimalStyles(linesLayer) {
                 $('input[id=select-animal-' + feature.attributes.animalId + ']').attr('checked','checked');
                 
                 // add detail for this layer
-    	    	var distance = feature.geometry.getGeodesicLength(map.projection);
-    	    	
-    	    	var distance2 = feature.geometry.getGeodesicLength(new OpenLayers.Projection("EPSG:28355"));
-    	    	var distance3 = feature.geometry.getGeodesicLength(new OpenLayers.Projection("EPSG:4326"));
-    	    	var distance4 = feature.geometry.getGeodesicLength(new OpenLayers.Projection("EPSG:900913"));
+                
+    	    	var distance = feature.geometry.getGeodesicLength(map.projection)/1000;
     	    	
                 var checkboxValue = layerId + "-" + feature.id;
                 var checkboxId = checkboxValue.replace(/\./g,"");
@@ -157,7 +197,7 @@ function updateAnimalStyles(linesLayer) {
                 var html = "<b>&nbsp;&nbsp;" + layerName + "</b>"
                 		+ "<table><tr><td>Date From:</td><td>" + feature.attributes.fromDate + "</td></tr>"
 	    		  		+ "<tr><td>Date To:</td><td>" + feature.attributes.toDate + "</td></tr>"
-    	    			+ "<tr><td>Minimum Distance: </td><td>" + Math.round(distance*1000)/1000 + "m " + distance2 + " : "+ distance3 +" : "+ distance4 +"</td></tr></table><br>";
+    	    			+ "<tr><td>Minimum Distance: </td><td>" + Math.round(distance*1000)/1000 + "km </td></tr></table><br>";
  	            
                 //var html = "<div class='accordianNested'><a href='#'>" + layerName + "</a></div>"
                 //		 + "<div>Hello</div>";
@@ -275,7 +315,7 @@ function toggleFeature(featureIdentifier, setVisible) {
 		strokeColor: "FF0000",
 		strokeWidth: 2,
 		strokeOpacity: 1.0,
-		fillOpacity: 0.0
+		fillOpacity: 1.0
 	};
 	
 	var layer = map.getLayer(layerId);
@@ -486,6 +526,10 @@ function updateAnimalInfoFromKML(layerName, e) {
 	for (var f in e.object.features) {
 		var feature = e.object.features[f];
 		var area = feature.attributes.area.value;
+		
+		var colour = colours[feature.attributes.id.value % colours.length];
+		polygonStyleMap.fillColor = colour;
+		feature.layer.redraw(feature);
 
 		var checkboxValue = feature.layer.id + "-" + feature.id;
         var checkboxId = checkboxValue.replace(/\./g,"");

@@ -1,6 +1,7 @@
 <%@ include file="header.jsp" %>
 <!--script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key=${initParam['api-key']}"></script-->
 <script src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
+<script type="text/javascript" src="js/proj4js/proj4js-combined.js"></script>
 <script type="text/javascript" src="js/openlayers/OpenLayers.js"></script>
 <script type="text/javascript" src="js/openlayers/LoadingPanel.js"></script>
 <script type="text/javascript" src="js/oztrackmaps.js"></script>
@@ -83,7 +84,14 @@
 	                    </c:if>
 	                </c:forEach>
 	                </table>
-	                <div class="formButton"><input type="submit" id="projectMapSubmit" value="Calculate"/></div>
+	                <br>
+				<b>Coordinate Reference System:</b><br>
+				<input id="projectionCode" class="shortInputBox" value="EPSG:20355"/>&nbsp;&nbsp;<a href="#" onclick="reportProjectionDescr(); return false;">Find</a><br>
+				<div id="projectionDescr"><br></div>
+	                
+	            <div class="formButton"><input type="submit" id="projectMapSubmit" value="Calculate"/></div>
+
+
 	          </form>      
 	        </div>
     
