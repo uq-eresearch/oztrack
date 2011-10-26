@@ -25,6 +25,8 @@ var colours = [
     ];
 
 
+var polygonOnStyle;
+var polygonOffStyle;
 var polygonStyleMap;
 
 
@@ -119,8 +121,7 @@ function reportProjectionDescr() {
 }
 
 function cb() {
-//	alert("yup: " + thisProjection.defData);
-	
+
 	var labelText;
 	var strArray = thisProjection.defData.split("+");
 	var title;
@@ -136,7 +137,10 @@ function cb() {
 			labelText = thisProjection.ellipseName;
 		} else {
 			if (thisProjection.defData != null) {
-				labelText = thisProjection.defData;
+				for (var i=1; i <strArray.length; i++) {
+					labelText = labelText + trim(strArray[i]) + ",";
+				}
+				//labelText = thisProjection.defData;
 			} else {
 				labelText = "Projection exists."
 			}
@@ -145,7 +149,12 @@ function cb() {
 	
 	$('#projectionDescr').html(labelText);
 	
-} 
+}
+
+function trim(str) {
+	return str.replace(/^\s+|\s+$/g,"");
+
+}
 
 
 Proj4js.reportError = function(msg) {
@@ -300,7 +309,7 @@ function toggleFeature(featureIdentifier, setVisible) {
     //line
 	var lineStyle = {
             strokeColor: "#ffffff",
-            strokeWidth: 1.5,
+            strokeWidth: 1.0,
             label: "",
             labelAlign: "rt",
             fontColor: "#ffffff",
@@ -311,12 +320,7 @@ function toggleFeature(featureIdentifier, setVisible) {
             strokeOpacity:1.0
     };
 	
-	var polygonStyle = {
-		strokeColor: "FF0000",
-		strokeWidth: 2,
-		strokeOpacity: 1.0,
-		fillOpacity: 1.0
-	};
+
 	
 	var layer = map.getLayer(layerId);
 	for (var key in layer.features) {
@@ -334,12 +338,10 @@ function toggleFeature(featureIdentifier, setVisible) {
 	            layer.redraw();
         	} else { 	
         		if (setVisible) {
-        			renderIntent = "default";
+    				feature.renderIntent = "default";
     			}else {
-    				renderIntent = "temporary";
+    				feature.renderIntent = "temporary";
     			}
-    			//feature.style = polygonStyle;
-    			feature.renderIntent = renderIntent;
     			layer.drawFeature(feature);
         	}
         	
@@ -352,7 +354,7 @@ function toggleAllAnimalFeatures(animalId, setVisible) {
     //line
 	var lineStyle = {
             strokeColor: "#ffffff",
-            strokeWidth: 1.5,
+            strokeWidth: 1.0,
             label: "",
             labelAlign: "rt",
             fontColor: "#ffffff",
@@ -363,12 +365,6 @@ function toggleAllAnimalFeatures(animalId, setVisible) {
             strokeOpacity:1.0
     };
 	
-	var polygonStyle = {
-		strokeColor: "FF0000",
-		strokeWidth: 2,
-		strokeOpacity: 1.0,
-		fillOpacity: 0.0
-	};
 	
 	var vectorLayers = getVectorLayers();
 
@@ -408,21 +404,17 @@ function toggleAllAnimalFeatures(animalId, setVisible) {
 	            }
 	        } else {
 	        	//kml layer
-	        	var renderIntent;
 	        	for (var f in layer.features) {
 	        		var feature = layer.features[f];
 	        		if (feature.attributes.id.value == animalId) {
 	        			if (setVisible) {
-	        				//polygonStyle.strokeOpacity = 1.0;
-	        				renderIntent = "default";
-	        				
+	        				feature.renderIntent = "default";
 	        			}else {
-	        				//polygonStyle.strokeOpacity = 0.0;
-	        				renderIntent = "temporary";
+	        				feature.renderIntent = "temporary";
 	        			}
 	        			//feature.style = polygonStyle;
 	        			//layer.redraw();
-	        			feature.renderIntent = renderIntent;
+	        			//feature.renderIntent = renderIntent;
 	        			layer.drawFeature(feature);
 	        		}
 	        	}
@@ -483,19 +475,31 @@ function addProjectMapLayer() {
 
 function addKMLLayer(layerName, params) {
 
-	polygonStyleMap = new OpenLayers.StyleMap({
-		"default" : {
-			strokeColor: "#FF0000",
+    var kmlStyleContext = {
+            getColour: function(feature) {
+                var c = feature.attributes.id.value%colours.length;
+                return colours[c];
+            } };
+            
+	var polygonOnTemplate = {
+			strokeColor: "${getColour}",
 			strokeWidth: 2,
 			strokeOpacity: 1.0,
-			fillOpacity: 0.0		 
-		},
-		"temporary" : {
-			strokeOpacity: 0.0
-		}
-	});
-
+			fillColor: "${getColour}",
+			fillOpacity: 0.5		 
+			};
 	
+	polygonOnStyle = new OpenLayers.Style(polygonOnTemplate, {context:kmlStyleContext});
+	
+	polygonOffStyle = {
+			strokeOpacity: 0.0,
+			fillOpacity: 0.0
+			};
+	
+	polygonStyleMap = new OpenLayers.StyleMap({
+		"default" : polygonOnStyle,
+		"temporary" : polygonOffStyle
+		 });
 	
 	var queryOverlay = new OpenLayers.Layer.Vector(
                 layerName,{
@@ -527,9 +531,8 @@ function updateAnimalInfoFromKML(layerName, e) {
 		var feature = e.object.features[f];
 		var area = feature.attributes.area.value;
 		
-		var colour = colours[feature.attributes.id.value % colours.length];
-		polygonStyleMap.fillColor = colour;
-		feature.layer.redraw(feature);
+		feature.renderIntent = "default";
+		feature.layer.drawFeature(feature);
 
 		var checkboxValue = feature.layer.id + "-" + feature.id;
         var checkboxId = checkboxValue.replace(/\./g,"");
@@ -546,32 +549,6 @@ function updateAnimalInfoFromKML(layerName, e) {
 	}
 	
 }
-
-/*
-	
-       var checkboxValue = layerId + "-" + feature.id;
-        var checkboxId = checkboxValue.replace(/\./g,"");
-        
-        var checkboxHtml = "<input type='checkbox' class='shortInputCheckbox' " 
-        				 + "id='select-feature-" + checkboxId + "' value='" + checkboxValue + "' checked='true'/></input>";
-        
-        var html = "<b>&nbsp;&nbsp;" + layerName + "</b>"
-        		+ "<table><tr><td>Date From:</td><td>" + feature.attributes.fromDate + "</td></tr>"
-		  		+ "<tr><td>Date To:</td><td>" + feature.attributes.toDate + "</td></tr>"
-    			+ "<tr><td>Minimum Distance: </td><td>" + Math.round(distance*1000)/1000 + "m " + distance2 + " : "+ distance3 +" : "+ distance4 +"</td></tr></table><br>";
-        
-        //var html = "<div class='accordianNested'><a href='#'>" + layerName + "</a></div>"
-        //		 + "<div>Hello</div>";
-        
-        $('#animalInfo-'+ feature.attributes.animalId).append(checkboxHtml + html);
-        $('input[id=select-feature-' + checkboxId + ']').change(function() {
-            toggleFeature(this.value,this.checked);
-        });
-        
-        
-	*/
-	
-
 
 function addWFSLayer(layerName, params) {
 
@@ -593,30 +570,7 @@ function addWFSLayer(layerName, params) {
                 })
             });
 
-
-/*
-        var newSelectControl = new OpenLayers.Control.SelectFeature(
-            [newWFSOverlay],
-            {
-                clickout: true,
-                eventListeners: {
-                    featurehighlighted: function(e) {
-                        var txt="<b>Selected Feature: </b><br> Animal: " + e.feature.attributes.animalName
-                        + "<br> Date From: " + e.feature.attributes.fromDate
-                        + "<br> Date To: " + e.feature.attributes.toDate;
-                        $('#mapDescription').html(txt);
-                        //alert(e.feature.attributes.animalId );//+ " at " + e.feature.attributes.detectionTime);
-                    },
-                    featureunhighlighted: function(e) {
-                    }
-                }
-            }
-        );
-*/
         map.addLayer(newWFSOverlay);
-//        map.addControl(newSelectControl);
-//        newSelectControl.activate();
-//        newWFSOverlay.refresh();
         
 }
 
