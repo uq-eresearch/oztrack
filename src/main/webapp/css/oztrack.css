@@ -31,7 +31,7 @@ td h2 {
 p {
     font-size:0.9em;
     color:black;
-	width:90%;
+/*	width:90%;*/
 }
 
 ul {
@@ -402,6 +402,7 @@ a:hover {
 
 #accordion .ui-accordion-content {
     padding-left: 5px;
+    padding-right:5px;
     }
     
 .accordianHead {

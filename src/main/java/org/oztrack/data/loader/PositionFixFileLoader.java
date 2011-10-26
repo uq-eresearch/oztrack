@@ -1,23 +1,16 @@
 package org.oztrack.data.loader;
 
 import com.vividsolutions.jts.geom.*;
-import org.opengis.geometry.aggregate.*;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.PositionFixDao;
-import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.DataFile;
-import org.oztrack.data.model.Project;
 import org.oztrack.data.model.RawPositionFix;
 import org.oztrack.data.model.types.PositionFixFileHeader;
 import org.oztrack.error.FileProcessingException;
-import com.vividsolutions.jts.algorithm.locate.PointOnGeometryLocator;
-import com.vividsolutions.jts.io.WKTReader;
-
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import java.io.*;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -344,6 +337,7 @@ public class PositionFixFileLoader extends DataFileLoader {
         dataFile.setFirstDetectionDate(p.getDataFileFirstDetectionDate(dataFile));
         dataFile.setLastDetectionDate(p.getDataFileLastDetectionDate(dataFile));
         dataFileDao.update(dataFile);
+        
     	
     }
 

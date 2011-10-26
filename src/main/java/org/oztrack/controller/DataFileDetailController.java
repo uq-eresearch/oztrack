@@ -34,6 +34,7 @@ public class DataFileDetailController implements Controller {
 
         DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
         DataFile dataFile = dataFileDao.getDataFileById(Long.parseLong(httpServletRequest.getParameter("datafile_id")));
+        dataFileDao.refresh(dataFile);
 
         if (dataFile == null) {
             errorStr = "Couldn't find anything on that file sorry";

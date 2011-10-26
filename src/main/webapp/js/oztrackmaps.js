@@ -1,7 +1,7 @@
 
 var map;
 var allAnimalTracksLayer;
-var allAnimalTracksLayerStyle;
+//var allAnimalTracksLayerStyle;
 var pointsLayer;
 var startPointOnStyle;
 var endPointOnStyle;
@@ -28,6 +28,14 @@ var colours = [
 var polygonOnStyle;
 var polygonOffStyle;
 var polygonStyleMap;
+var lineOnStyle;
+var lineOffStyle;
+var lineStyleMap;
+
+var startEndPointsOnStyle;
+var startEndPointsOffStyle;
+var startEndPointsStyleMap;
+
 
 
 function initializeProjectMap() {
@@ -80,6 +88,8 @@ function initializeProjectMap() {
         })
     ]);
     map.addControl(panel);
+    
+    initStyles();
 
     allAnimalTracksLayer = new OpenLayers.Layer.Vector(
         "All Trajectories",
@@ -91,14 +101,13 @@ function initializeProjectMap() {
            featureNS: "http://localhost:8080/",
            geometryName: "startPoint"
            }),
-         strategies: [new OpenLayers.Strategy.Fixed()],
+        strategies: [new OpenLayers.Strategy.Fixed()],
+        styleMap:lineStyleMap, 
          eventListeners: {
             loadend: function (e) {
         		map.zoomToExtent(allAnimalTracksLayer.getDataExtent(),false);
-        	//zoomToDataExtent();	
-        	updateAnimalStyles(allAnimalTracksLayer);
+        		updateAnimalInfo(allAnimalTracksLayer);
             	if (!pointsLayer) {createPointsLayer();}
-//            	createSelectControl();
         	}
          }
         });
@@ -109,6 +118,86 @@ function initializeProjectMap() {
     reportProjectionDescr();
 }
 
+function initStyles() {
+	
+    var wfsStyleContext = {
+            getColour: function(feature) {
+                var c = feature.attributes.animalId%colours.length;
+                return colours[c];
+            } };
+    
+	var lineOnTemplate = {
+			strokeColor: "${getColour}",
+			strokeWidth: 1,
+			strokeOpacity: 1.0,
+			};
+
+	lineOnStyle = new OpenLayers.Style(lineOnTemplate, {context: wfsStyleContext});
+	
+	lineOffStyle = {
+			strokeOpacity: 0.0
+	};
+	
+	lineStyleMap = new OpenLayers.StyleMap({
+		"default":lineOnStyle,
+		"temporary":lineOffStyle
+	});
+	
+    var kmlStyleContext = {
+            getColour: function(feature) {
+                var c = feature.attributes.id.value%colours.length;
+                return colours[c];
+            } };
+            
+	var polygonOnTemplate = {
+			strokeColor: "${getColour}",
+			strokeWidth: 2,
+			strokeOpacity: 1.0,
+			fillColor: "${getColour}",
+			fillOpacity: 0.5		 
+			};
+	
+	polygonOnStyle = new OpenLayers.Style(polygonOnTemplate, {context:kmlStyleContext});
+	
+	polygonOffStyle = {
+			strokeOpacity: 0.0,
+			fillOpacity: 0.0
+			};
+	
+	polygonStyleMap = new OpenLayers.StyleMap({
+		"default" : polygonOnStyle,
+		"temporary" : polygonOffStyle
+		 });
+	
+	var startEndPointsStyleContext = {
+			getPointColour: function(feature) {
+				var pointColour = (feature.attributes.pointName == "start") ? "#00CD00" : "#CD0000";
+				return pointColour;
+			}};
+		
+	var startEndPointsOnTemplate = {
+			pointRadius: 2,
+			fillColor: "${getPointColour}",
+			strokeColor:"${getPointColour}",	
+			fillOpacity: 0,
+			strokeOpacity: 1,
+			strokeWidth: 1.2
+			};
+	
+	startEndPointsOnStyle = new OpenLayers.Style(startEndPointsOnTemplate, {context:startEndPointsStyleContext});
+	
+	startEndPointsOffStyle = {
+			strokeOpacity: 0,
+			fillOpacity: 0
+			};
+	
+	startEndPointsStyleMap = new OpenLayers.StyleMap({
+		"default" : startEndPointsOnStyle,
+		"temporary" : startEndPointsOffStyle
+		 });
+
+}
+
 var thisProjection;
 
 function reportProjectionDescr() {
@@ -116,38 +205,41 @@ function reportProjectionDescr() {
 	var projectionCode = $('input[id=projectionCode]').val();
 	
 	$('#projectionDescr').html("Searching for " + projectionCode + "...");
-	thisProjection = new Proj4js.Proj(projectionCode, cb);
+	thisProjection = new Proj4js.Proj(projectionCode, projectionCallback);
 
 }
 
-function cb() {
+function projectionCallback() {
 
-	var labelText;
+	var detailText = "";
 	var strArray = thisProjection.defData.split("+");
 	var title;
 	
 	for (var s in strArray) {
 		if (strArray[s].indexOf("title") != -1) {
-			labelText = strArray[s].split("=")[1];
+			detailText = "Title: " + strArray[s].split("=")[1];
 		}
 	}
 	
-	if (labelText == null) {
+	if (detailText == "") {
 		if (thisProjection.ellipseName != null) {
-			labelText = thisProjection.ellipseName;
+			detailText = "Ellipse Name: " + thisProjection.ellipseName;
 		} else {
 			if (thisProjection.defData != null) {
+				detailText = "Details: ";
 				for (var i=1; i <strArray.length; i++) {
-					labelText = labelText + trim(strArray[i]) + ",";
+					detailText = detailText + trim(strArray[i]) + ", ";
 				}
 				//labelText = thisProjection.defData;
 			} else {
-				labelText = "Projection exists."
+				detailText = "Projection exists."
 			}
 		}
 	}
 	
-	$('#projectionDescr').html(labelText);
+	var headerText = "<b>" + thisProjection.srsCodeInput + "</b>:<br>"
+	
+	$('#projectionDescr').html(headerText+detailText);
 	
 }
 
@@ -159,11 +251,11 @@ function trim(str) {
 
 Proj4js.reportError = function(msg) {
 	
-	$('#projectionDescr').html(msg);
+	$('#projectionDescr').html(msg + "Manually search for a code at <a href='http://spatialreference.org'>spatialreference.org</a>");
 }
 
 
-function updateAnimalStyles(linesLayer) {
+function updateAnimalInfo(linesLayer) {
     
     var layerName = linesLayer.name;
     var layerId = linesLayer.id;
@@ -178,16 +270,7 @@ function updateAnimalStyles(linesLayer) {
                 	labelText = feature.attributes.animalName;
                 	layerName = "Trajectory";
                 }
-                feature.style = {
-                        strokeColor: colour,
-                        strokeWidth: 1.0,
-                        label: labelText,
-                        labelAlign: "rt",
-                        fontColor: "#ffffff",
-                        fontOpacity: 0.9,
-                        fontFamily: "Arial",
-                        fontSize: 12
-                }
+                feature.renderIntent = "default";
                 
                 // set the colour and make sure the show/hide all box is checked
                 $('#legend-colour-' + feature.attributes.animalId).attr('style', 'background-color: ' + colour + ';');
@@ -208,9 +291,6 @@ function updateAnimalStyles(linesLayer) {
 	    		  		+ "<tr><td>Date To:</td><td>" + feature.attributes.toDate + "</td></tr>"
     	    			+ "<tr><td>Minimum Distance: </td><td>" + Math.round(distance*1000)/1000 + "km </td></tr></table><br>";
  	            
-                //var html = "<div class='accordianNested'><a href='#'>" + layerName + "</a></div>"
-                //		 + "<div>Hello</div>";
-                
                 $('#animalInfo-'+ feature.attributes.animalId).append(checkboxHtml + html);
  	            $('input[id=select-feature-' + checkboxId + ']').change(function() {
                     toggleFeature(this.value,this.checked);
@@ -226,48 +306,24 @@ function createPointsLayer() {
 	
 	pointsLayer = new OpenLayers.Layer.Vector(
         		"Start and End Points",
-        		{projection: projection4326});
-		
-	startPointOnStyle = {
-		pointRadius: 2,
-		fillColor: "#00CD00",
-		strokeColor:"#00CD00",	
-		fillOpacity: 0,
-		strokeOpacity: 1,
-		strokeWidth: 1.2
-	};
-	
-	endPointOnStyle = {
-		pointRadius: 2,
-		fillColor: "#CD0000",
-		strokeColor:"#CD0000",	
-		fillOpacity: 0,
-		strokeOpacity: 1,
-		strokeWidth: 1.2
-	};
-	
-	pointsOffStyle = {
-		strokeOpacity: 0,
-		fillOpacity: 0
-	};
-	
+        		{projection: projection4326,
+        		 styleMap: startEndPointsStyleMap	
+        		 });
 		
 	for (var key in allAnimalTracksLayer.features) {
          var feature = allAnimalTracksLayer.features[key];
          if (feature.attributes) {
         	// add features
 	         var startPoint = new OpenLayers.Feature.Vector(feature.geometry.components[0]);
-	            startPoint.attributes = {animalId : feature.attributes.animalId,
+	         	 startPoint.attributes = {animalId : feature.attributes.animalId,
 					            		animalName : feature.attributes.animalName, 
 					            		fromDate: feature.attributes.fromDate,
 					            		pointName:	"start"};
-	            startPoint.style = startPointOnStyle;
-            var endPoint = new OpenLayers.Feature.Vector(feature.geometry.components[feature.geometry.components.length-1]);
+	        var endPoint = new OpenLayers.Feature.Vector(feature.geometry.components[feature.geometry.components.length-1]);
 	            endPoint.attributes = {animalId : feature.attributes.animalId,
 					            		animalName : feature.attributes.animalName, 
 					            		toDate: feature.attributes.toDate,
 					            		pointName:	"end"};
-	            endPoint.style = endPointOnStyle;
             pointsLayer.addFeatures([startPoint,endPoint]);
 	         
          }
@@ -306,127 +362,44 @@ function toggleFeature(featureIdentifier, setVisible) {
 	var layerId = splitString[0];
 	var featureId = splitString[1];
 	
-    //line
-	var lineStyle = {
-            strokeColor: "#ffffff",
-            strokeWidth: 1.0,
-            label: "",
-            labelAlign: "rt",
-            fontColor: "#ffffff",
-            fontOpacity: 0.9,
-            fontFamily: "Arial",
-            fontSize: 12,
-            fillOpacity:1.0,
-            strokeOpacity:1.0
-    };
-	
-
-	
-	var layer = map.getLayer(layerId);
+ 	var layer = map.getLayer(layerId);
 	for (var key in layer.features) {
         var feature = layer.features[key];
         if (feature.id == featureId) {
-        	if (layer.name.indexOf("Trajector") != -1 ) {
-	            if (setVisible) {
-		            	lineStyle.strokeColor = colours[feature.attributes.animalId % colours.length];
-		            	lineStyle.label = feature.attributes.animalName;
-		            	lineStyle.strokeOpacity = 1.0;
-	            } else {
-	            	lineStyle.strokeOpacity = 0.0;
-	            }
-	            feature.style = lineStyle;
-	            layer.redraw();
-        	} else { 	
-        		if (setVisible) {
-    				feature.renderIntent = "default";
-    			}else {
-    				feature.renderIntent = "temporary";
-    			}
-    			layer.drawFeature(feature);
-        	}
-        	
+
+    		if (setVisible) {
+				feature.renderIntent = "default";
+			}else {
+				feature.renderIntent = "temporary";
+			}
+			layer.drawFeature(feature);
         }
 	}
 }
 
 function toggleAllAnimalFeatures(animalId, setVisible) {
 
-    //line
-	var lineStyle = {
-            strokeColor: "#ffffff",
-            strokeWidth: 1.0,
-            label: "",
-            labelAlign: "rt",
-            fontColor: "#ffffff",
-            fontOpacity: 0.9,
-            fontFamily: "Arial",
-            fontSize: 12,
-            fillOpacity:1.0,
-            strokeOpacity:1.0
-    };
-	
-	
 	var vectorLayers = getVectorLayers();
 
     for (var l in vectorLayers) {
     	var layer = vectorLayers[l];
     	var layerName = layer.name;
-	        if (layerName.indexOf("Trajector") != -1 ) {
-        		for (var f in layer.features) {
-	                var feature = layer.features[f];
-	                if (feature.attributes.animalId == animalId) {
-	                    if (setVisible) {
-	                    	lineStyle.strokeColor = colours[feature.attributes.animalId % colours.length];
-	                    	lineStyle.label = feature.attributes.animalName;
-	                    	lineStyle.strokeOpacity = 1.0;
-	                    } else {
-	                    	lineStyle.strokeOpacity = 0.0;
-	                    }
-	                    feature.style = lineStyle;
-	                    layer.redraw();
-	                }
-	            }
-            } else if (layerName.indexOf("Start and End Points") != -1) {   
-	            for (var f in layer.features) {
-	                var feature = layer.features[f];
-	                if (feature.attributes.animalId == animalId) {
-	                    if (setVisible) {
-	                    	if (feature.attributes.fromDate) {
-	                    		feature.style = startPointOnStyle;
-	                    	} else if (feature.attributes.toDate) {
-	                    		feature.style = endPointOnStyle;
-	                    	}
-	                    } else {
-	                    	feature.style = pointsOffStyle;
-	                    }
-	                    layer.redraw();
-	                }
-	            }
-	        } else {
-	        	//kml layer
-	        	for (var f in layer.features) {
-	        		var feature = layer.features[f];
-	        		if (feature.attributes.id.value == animalId) {
-	        			if (setVisible) {
-	        				feature.renderIntent = "default";
-	        			}else {
-	        				feature.renderIntent = "temporary";
-	        			}
-	        			//feature.style = polygonStyle;
-	        			//layer.redraw();
-	        			//feature.renderIntent = renderIntent;
-	        			layer.drawFeature(feature);
-	        		}
-	        	}
-	        }   
+    	for (var f in layer.features) {
+    		var feature = layer.features[f];
+    		var featureAnimalId;
+    		if (layerName.indexOf("Trajector") != -1 || layerName.indexOf("Start and End Points") != -1) {
+    			featureAnimalId = feature.attributes.animalId;
+    		} else {
+    			featureAnimalId = feature.attributes.id.value;
+    		}
+    		
+    		if (featureAnimalId == animalId) {
+    			var featureIdentifier = layer.id + "-" + feature.id;
+    			toggleFeature(featureIdentifier, setVisible);
+    		}
+    	}
      }
-    
-     // check/uncheck all boxes in the <div id=animalInfo-"animalId"> 
-    //toggleFeature(featureIdentifier, setVisible);
-    //featureIdentifier = layerid-featureid
     $("#animalInfo-"+animalId).find(':checkbox').attr("checked",setVisible);
-    
-
 }
 
 function addProjectMapLayer() {
@@ -475,31 +448,7 @@ function addProjectMapLayer() {
 
 function addKMLLayer(layerName, params) {
 
-    var kmlStyleContext = {
-            getColour: function(feature) {
-                var c = feature.attributes.id.value%colours.length;
-                return colours[c];
-            } };
-            
-	var polygonOnTemplate = {
-			strokeColor: "${getColour}",
-			strokeWidth: 2,
-			strokeOpacity: 1.0,
-			fillColor: "${getColour}",
-			fillOpacity: 0.5		 
-			};
-	
-	polygonOnStyle = new OpenLayers.Style(polygonOnTemplate, {context:kmlStyleContext});
-	
-	polygonOffStyle = {
-			strokeOpacity: 0.0,
-			fillOpacity: 0.0
-			};
-	
-	polygonStyleMap = new OpenLayers.StyleMap({
-		"default" : polygonOnStyle,
-		"temporary" : polygonOffStyle
-		 });
+
 	
 	var queryOverlay = new OpenLayers.Layer.Vector(
                 layerName,{
@@ -540,7 +489,7 @@ function updateAnimalInfoFromKML(layerName, e) {
 			 + "id='select-feature-" + checkboxId + "' value='" + checkboxValue + "' checked='true'/></input>";
 		var html = "&nbsp;&nbsp;<b>" + layerName + "</b>" 
 //				+ "<br> Area: " + 		Math.round(area*1000)/1000 + "<br>";
-   		+ "<table><tr><td> Area: </td><td>" + Math.round(area*1000)/1000 + " ha</td></tr></table><br>";
+   		+ "<table><tr><td> Area: </td><td>" + Math.round(area*1000)/1000 + " km<sup>2</sup></td></tr></table><br>";
 		$('#animalInfo-'+ feature.attributes.id.value).append(checkboxHtml + html);
 	    $('input[id=select-feature-' + checkboxId + ']').change(function() {
 	        toggleFeature(this.value,this.checked);
@@ -558,7 +507,7 @@ function addWFSLayer(layerName, params) {
              eventListeners: {
                 loadend: function (e) {
                 	map.zoomToExtent(newWFSOverlay.getDataExtent(),false);
-                	updateAnimalStyles(this);
+                	updateAnimalInfo(this);
             	}
              },
              projection: projection4326,

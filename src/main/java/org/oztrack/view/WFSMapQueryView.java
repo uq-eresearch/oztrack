@@ -1,6 +1,8 @@
 package org.oztrack.view;
 
 import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.operation.distance.DistanceOp;
+
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.WfsFactory;
 import org.apache.commons.logging.Log;
@@ -15,6 +17,7 @@ import org.geotools.gml2.GMLConfiguration;
 import org.geotools.kml.KML;
 import org.geotools.kml.KMLConfiguration;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.GeodeticCalculator;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.wfs.v1_1.WFSConfiguration;
 import org.geotools.xml.Encoder;
@@ -29,6 +32,8 @@ import org.springframework.web.servlet.view.AbstractView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -177,7 +182,7 @@ public class WFSMapQueryView extends AbstractView {
         simpleFeatureTypeBuilder.setName("Track");
         simpleFeatureTypeBuilder.setNamespaceURI(namespaceURI);
         int srid = positionFixList.get(0).getLocationGeometry().getSRID();
-
+        
         simpleFeatureTypeBuilder.add("track", LineString.class, srid);
         simpleFeatureTypeBuilder.add("fromDate", Date.class);
         simpleFeatureTypeBuilder.add("toDate", Date.class);
@@ -188,11 +193,8 @@ public class WFSMapQueryView extends AbstractView {
 
         SimpleFeatureType simpleFeatureType = simpleFeatureTypeBuilder.buildFeatureType();
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(simpleFeatureType);
-
-        Long projectId = searchQuery.getProject().getId();
-
         HashMap<Long, AnimalTrack> tracks = new HashMap<Long, AnimalTrack>();
-
+        
         for (PositionFix positionFix : positionFixList) {
 
             AnimalTrack thisTrack = tracks.get(positionFix.getAnimal().getId());

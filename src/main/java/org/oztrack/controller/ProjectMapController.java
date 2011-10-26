@@ -40,7 +40,7 @@ public class ProjectMapController implements Controller {
             
         	} else {
                 
-            	modelAndView = new ModelAndView("projectmap");
+        		modelAndView = new ModelAndView("projectmap");
             	MapQueryType [] mapQueryTypeList = MapQueryType.values();
                 AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
                 List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(sessionProject.getId());

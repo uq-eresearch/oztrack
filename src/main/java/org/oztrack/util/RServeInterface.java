@@ -222,9 +222,10 @@ public class RServeInterface {
 
             rCommand = queryType + " <- mcp(positionFix.xy,percent=" + percent + ")";
             rConnection.voidEval(rCommand);
-            rLog = rLog + queryType + " object set. File to write to : " + fileName;
+            rLog = rLog + queryType + " object set. " ;
 
-            rCommand = queryType + "$area <- mcp(positionFix.proj,percent=" + percent + ")$area";
+//            rCommand = queryType + "$area <- mcp(positionFix.proj,percent=" + percent + ")$area";
+            rCommand = queryType + "$area <- mcp(positionFix.proj,percent=" + percent + ",unin=c(\"m\"),unout=c(\"km2\"))$area";
             rConnection.voidEval(rCommand);
             rLog = rLog + queryType + "$area object set";
 
@@ -251,7 +252,8 @@ public class RServeInterface {
             rLog = rLog + "KerHR and KerHRp objects set. ";
 
             rCommand = queryType + " <- getverticeshr(KerHR,percent=" + percent + ");"
-                     + queryType + "$area <- getverticeshr(KerHRp,percent=" + percent + ")$area";
+                     //+ queryType + "$area <- getverticeshr(KerHRp,percent=" + percent + ")$area";
+                     + queryType + "$area <- getverticeshr(KerHRp,percent=" + percent + ", unin=c(\"m\"), unout=c(\"km2\"))$area";
             rConnection.voidEval(rCommand);
             rLog = rLog + queryType + " object set. ";
 
