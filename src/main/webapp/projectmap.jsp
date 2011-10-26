@@ -4,7 +4,7 @@
 <script type="text/javascript" src="js/proj4js/proj4js-combined.js"></script>
 <script type="text/javascript" src="js/openlayers/OpenLayers.js"></script>
 <script type="text/javascript" src="js/openlayers/LoadingPanel.js"></script>
-<script type="text/javascript" src="js/oztrackmaps.js"></script>
+<script type="text/javascript" src="js/projectmap.js"></script>
 <script type="text/javascript"> 
 	mapPage = true;
 </script>
