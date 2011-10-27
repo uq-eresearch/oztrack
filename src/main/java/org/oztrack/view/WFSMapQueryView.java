@@ -26,6 +26,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
+import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.util.RServeInterface;
 import org.springframework.web.servlet.view.AbstractView;
@@ -37,6 +38,7 @@ import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.*;
@@ -65,48 +67,35 @@ public class WFSMapQueryView extends AbstractView {
             logger.debug("Resolving ajax request view ");
             searchQuery = (SearchQuery) model.get("searchQuery");
 
-            if (searchQuery.getProject() != null) {
-
-                //List<PositionFix> positionFixList = OzTrackApplication.getApplicationContext().getDaoManager().getPositionFixDao().getProjectPositionFixList(searchQuery);
-
-                //if (!positionFixList.isEmpty()) {
+            if (searchQuery.getMapQueryType() != null) {
 
                 SimpleFeatureCollection collection = FeatureCollections.newCollection();
-
-                    // Would like to supply GMLConfiguration.NO_FEATURE_BOUNDS to the encoder;
-                    // but not possible with the GML class - would need use Encoder directly
-                    //**GML encoder = new GML(GML.Version.WFS1_0);
-
-
                 WFSConfiguration wfsConfiguration = new org.geotools.wfs.v1_1.WFSConfiguration();
                 wfsConfiguration.getProperties().add(GMLConfiguration.NO_FEATURE_BOUNDS);
-
                 Encoder e = new Encoder(wfsConfiguration);
-
                 e.setIndenting(true);
                 FeatureCollectionType featureCollectionType = WfsFactory.eINSTANCE
                         .createFeatureCollectionType();
 
 
                     switch (searchQuery.getMapQueryType()) {
-                        case ALL_POINTS:
-                            //collection = this.buildPointsFeatureCollection(searchQuery);
-                            //**encoder.setNamespace("PositionFix", namespaceURI);
-
-
-                            e.getNamespaces().declarePrefix("PositionFix", namespaceURI);
-                            featureCollectionType.getFeature().add(collection);
-
-
+                    case ALL_PROJECTS:
+                    		collection = this.buildAllProjectsFeatureCollection();
+                    		e.getNamespaces().declarePrefix("Project", namespaceURI);
+                    		featureCollectionType.getFeature().add(collection);
+                    
+                    case ALL_POINTS:
+//                            collection = this.buildPointsFeatureCollection(searchQuery);
+//                            **encoder.setNamespace("PositionFix", namespaceURI);
+//                            e.getNamespaces().declarePrefix("PositionFix", namespaceURI);
+//                            featureCollectionType.getFeature().add(collection);
                             break;
                         case ALL_LINES:
                         case LINES:
                             collection = this.buildLinesFeatureCollection(searchQuery);
                             //**encoder.setNamespace("Track", namespaceURI);
-
                             e.getNamespaces().declarePrefix("Track", namespaceURI);
                             featureCollectionType.getFeature().add(collection);
-
                             break;
                         default:
                             break;
@@ -116,8 +105,11 @@ public class WFSMapQueryView extends AbstractView {
                     response.setHeader("Content-Encoding", "gzip");
                     GZIPOutputStream gzipOutputStream = new GZIPOutputStream(response.getOutputStream());
                     //encoder.encode(gzipOutputStream, collection);
-                    e.encode(featureCollectionType, org.geotools.wfs.WFS.FeatureCollection, gzipOutputStream);
-
+                    try {
+                    	e.encode(featureCollectionType, org.geotools.wfs.WFS.FeatureCollection, gzipOutputStream);
+                    } catch (IOException ex) {
+                    	logger.error(ex.getMessage());
+                    }
                 gzipOutputStream.close();
 
             }
@@ -174,7 +166,6 @@ public class WFSMapQueryView extends AbstractView {
         List<PositionFix> positionFixList = OzTrackApplication.getApplicationContext().getDaoManager().getPositionFixDao().getProjectPositionFixList(searchQuery);
 
         String namespaceURI = OzTrackApplication.getApplicationContext().getUriPrefix();
-
         SimpleFeatureCollection collection = FeatureCollections.newCollection();
         GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
 
@@ -243,6 +234,61 @@ public class WFSMapQueryView extends AbstractView {
         return collection;
 
     }
+    
+    private  SimpleFeatureCollection buildAllProjectsFeatureCollection() {
+    	
+        List<Project> projectList = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao().getAll();
 
+        String namespaceURI = OzTrackApplication.getApplicationContext().getUriPrefix();
+        SimpleFeatureCollection collection = FeatureCollections.newCollection();
 
+        SimpleFeatureTypeBuilder simpleFeatureTypeBuilder = new SimpleFeatureTypeBuilder();
+        simpleFeatureTypeBuilder.setName("Project");
+        simpleFeatureTypeBuilder.setNamespaceURI(namespaceURI);
+        int srid = projectList.get(0).getBoundingBox().getSRID();
+        
+        for (Project project : projectList) {
+        	if (project.getBoundingBox() != null) {
+        		srid = project.getBoundingBox().getSRID();
+        	}
+        }
+        
+        GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
+        
+        simpleFeatureTypeBuilder.add("projectBoundingBox", Polygon.class, srid);
+        simpleFeatureTypeBuilder.add("title", String.class);
+        simpleFeatureTypeBuilder.add("description", String.class);
+ //       simpleFeatureTypeBuilder.add("firstDetectionDate",Date.class);
+ //       simpleFeatureTypeBuilder.add("lastDetectionDate",Date.class);
+ //       simpleFeatureTypeBuilder.add("imageURL", String.class);
+ //       simpleFeatureTypeBuilder.add("spatialCoverageDescr", String.class);
+ //       simpleFeatureTypeBuilder.add("speciesCommonName", String.class);
+
+        SimpleFeatureType simpleFeatureType = simpleFeatureTypeBuilder.buildFeatureType();
+        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(simpleFeatureType);
+        
+        for (Project project : projectList) {
+
+        	if (project.getBoundingBox() != null) {
+        	
+        		featureBuilder.set("projectBoundingBox",project.getBoundingBox());
+        		featureBuilder.set("title", project.getTitle());
+	        	featureBuilder.set("description", project.getDescription());
+//	        	featureBuilder.set("firstDetectionDate", project.getFirstDetectionDate());
+//	        	featureBuilder.set("lastDetectionDate", project.getLastDetectionDate());
+//	        	featureBuilder.set("imageURL", project.getImageFileLocation());
+//	        	featureBuilder.set("spatialCoverageDescr", project.getSpatialCoverageDescr());
+//	        	featureBuilder.set("speciesCommonName", project.getSpeciesCommonName());
+	        	
+	        	 SimpleFeature simpleFeature = featureBuilder.buildFeature(project.getId().toString());
+	             collection.add(simpleFeature);
+    	
+        	} else {
+        		logger.error("no bounding box in project: " + project.getId() + " " + project.getTitle());
+        	}
+        }
+
+        return collection;
+        
+    }   
 }

@@ -4,6 +4,16 @@ var allAnimalTracksLayer;
 var pointsLayer;
 var projection900913 = new OpenLayers.Projection("EPSG:900913");
 var projection4326 =  new OpenLayers.Projection("EPSG:4326");
+var thisProjection;
+var polygonOnStyle;
+var polygonOffStyle;
+var polygonStyleMap;
+var lineOnStyle;
+var lineOffStyle;
+var lineStyleMap;
+var startEndPointsOnStyle;
+var startEndPointsOffStyle;
+var startEndPointsStyleMap;
 var colours = [
         '#8DD3C7',
         '#FFFFB3',
@@ -18,19 +28,6 @@ var colours = [
         '#CCEBC5',
         '#FFED6F'
     ];
-
-
-var polygonOnStyle;
-var polygonOffStyle;
-var polygonStyleMap;
-var lineOnStyle;
-var lineOffStyle;
-var lineStyleMap;
-var startEndPointsOnStyle;
-var startEndPointsOffStyle;
-var startEndPointsStyleMap;
-
-
 
 function initializeProjectMap() {
 
@@ -192,15 +189,14 @@ function initStyles() {
 
 }
 
-var thisProjection;
+
 
 function reportProjectionDescr() {
 
+	// request code from spatial reference site
 	var projectionCode = $('input[id=projectionCode]').val();
-	
 	$('#projectionDescr').html("Searching for " + projectionCode + "...");
 	thisProjection = new Proj4js.Proj(projectionCode, projectionCallback);
-
 }
 
 function projectionCallback() {
@@ -231,7 +227,11 @@ function projectionCallback() {
 		}
 	}
 	
-	var headerText = "<b>" + thisProjection.srsCodeInput + "</b>:<br>"
+	// get the units, must be in m for the calculations to work!
+	
+	
+	var headerText = "<b>" + thisProjection.srsCodeInput + "</b><br>"
+	
 	
 	$('#projectionDescr').html(headerText+detailText);
 	
@@ -239,13 +239,11 @@ function projectionCallback() {
 
 function trim(str) {
 	return str.replace(/^\s+|\s+$/g,"");
-
 }
 
 
 Proj4js.reportError = function(msg) {
-	
-	$('#projectionDescr').html(msg + "Manually search for a code at <a href='http://spatialreference.org'>spatialreference.org</a>");
+    	$('#projectionDescr').html(msg + "Manually search for a code at <a href='http://spatialreference.org'>spatialreference.org</a>");
 }
 
 

@@ -29,8 +29,26 @@ function initializeHomeMap() {
                 "Google Satellite",
                 {type: google.maps.MapTypeId.SATELLITE}
     );
+    
+    allProjectsLayer = new OpenLayers.Layer.Vector(
+            "All Projects",{
+            projection: projection4326,
+            protocol: new OpenLayers.Protocol.WFS.v1_1_0({
+               url:  "mapQueryWFS?queryType=ALL_PROJECTS",
+               featureType: "Project",
+               featureNS: "http://localhost:8080/",
+               geometryName: "hello"
+               }),
+            strategies: [new OpenLayers.Strategy.Fixed()],
+            eventListeners: {
+                loadend: function (e) {
+            		map.zoomToExtent(allProjectsLayer.getDataExtent(),false);
+            	}
+             }
+            });
+        
 
-    map.addLayers([gsat,gphy]);
+    map.addLayers([gsat,gphy, allProjectsLayer]);
     map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326,projection900913), 4);
 
 }

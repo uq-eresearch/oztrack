@@ -86,7 +86,8 @@
 	                </table>
 	                <br>
 				<b>Spatial Reference System:</b><br>
-				<input id="projectionCode" class="shortInputBox" value="EPSG:20355"/>&nbsp;&nbsp;<a href="#" onclick="reportProjectionDescr(); return false;">Find</a><br>
+				<input id="projectionCode" class="shortInputBox" value="EPSG:20355"/>&nbsp;&nbsp;<a href="#" onclick="reportProjectionDescr(); return false;">Find</a>&nbsp;
+				<a href="http://spatialreference.org/ref/epsg" rel="1" class="newWindow">See List</a><br>
 				<div id="projectionDescr" style="color:grey;"><br></div>
 	                
 	            <div class="formButton"><input type="submit" id="projectMapSubmit" value="Calculate"/></div>

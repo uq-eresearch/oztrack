@@ -39,7 +39,8 @@ public class WFSProjectMapController implements Controller {
         SearchQuery searchQuery = new SearchQuery();
 
         if ((projectId != null) && (queryType != null)) {
-            logger.debug("for projectId: " + projectId + " + queryType: " + queryType);
+            
+        	logger.debug("for projectId: " + projectId + " + queryType: " + queryType);
             ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
             Project project = projectDao.getProjectById(Long.valueOf(projectId));
             searchQuery.setProject(project);
@@ -52,8 +53,13 @@ public class WFSProjectMapController implements Controller {
                 searchQuery.setToDate(sdf.parse(dateTo));
             }
         }
-        else {
-            logger.debug("no projectId or queryType");
+        else if ((projectId == null) && (queryType != null)) {
+        	
+        	searchQuery.setMapQueryType(MapQueryType.valueOf(queryType));
+        	
+        } else {
+            
+        	logger.debug("no projectId or queryType");
         }
 
         return new ModelAndView("java_WFSMapQuery","searchQuery", searchQuery);
