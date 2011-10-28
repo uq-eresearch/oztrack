@@ -227,7 +227,7 @@ function projectionCallback() {
 		}
 	}
 	
-	// get the units, must be in m for the calculations to work!
+	// TO DO: get the units, must be in m for the calculations to work!
 	
 	
 	var headerText = "<b>" + thisProjection.srsCodeInput + "</b><br>"

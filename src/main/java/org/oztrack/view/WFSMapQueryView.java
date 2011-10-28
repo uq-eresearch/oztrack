@@ -256,13 +256,14 @@ public class WFSMapQueryView extends AbstractView {
         GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
         
         simpleFeatureTypeBuilder.add("projectBoundingBox", Polygon.class, srid);
-        simpleFeatureTypeBuilder.add("title", String.class);
-        simpleFeatureTypeBuilder.add("description", String.class);
- //       simpleFeatureTypeBuilder.add("firstDetectionDate",Date.class);
- //       simpleFeatureTypeBuilder.add("lastDetectionDate",Date.class);
- //       simpleFeatureTypeBuilder.add("imageURL", String.class);
- //       simpleFeatureTypeBuilder.add("spatialCoverageDescr", String.class);
- //       simpleFeatureTypeBuilder.add("speciesCommonName", String.class);
+        simpleFeatureTypeBuilder.add("projectId", String.class);
+        simpleFeatureTypeBuilder.add("projectTitle", String.class);
+        simpleFeatureTypeBuilder.add("projectDescription", String.class);
+        simpleFeatureTypeBuilder.add("firstDetectionDate",Date.class);
+        simpleFeatureTypeBuilder.add("lastDetectionDate",Date.class);
+        simpleFeatureTypeBuilder.add("imageURL", String.class);
+        simpleFeatureTypeBuilder.add("spatialCoverageDescr", String.class);
+        simpleFeatureTypeBuilder.add("speciesCommonName", String.class);
 
         SimpleFeatureType simpleFeatureType = simpleFeatureTypeBuilder.buildFeatureType();
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(simpleFeatureType);
@@ -272,13 +273,14 @@ public class WFSMapQueryView extends AbstractView {
         	if (project.getBoundingBox() != null) {
         	
         		featureBuilder.set("projectBoundingBox",project.getBoundingBox());
-        		featureBuilder.set("title", project.getTitle());
-	        	featureBuilder.set("description", project.getDescription());
-//	        	featureBuilder.set("firstDetectionDate", project.getFirstDetectionDate());
-//	        	featureBuilder.set("lastDetectionDate", project.getLastDetectionDate());
-//	        	featureBuilder.set("imageURL", project.getImageFileLocation());
-//	        	featureBuilder.set("spatialCoverageDescr", project.getSpatialCoverageDescr());
-//	        	featureBuilder.set("speciesCommonName", project.getSpeciesCommonName());
+        		featureBuilder.set("projectId", project.getId().toString());
+        		featureBuilder.set("projectTitle", project.getTitle());
+	        	featureBuilder.set("projectDescription", project.getDescription());
+	        	featureBuilder.set("firstDetectionDate", project.getFirstDetectionDate());
+	        	featureBuilder.set("lastDetectionDate", project.getLastDetectionDate());
+	        	featureBuilder.set("imageURL", project.getImageFileLocation());
+	        	featureBuilder.set("spatialCoverageDescr", project.getSpatialCoverageDescr());
+	        	featureBuilder.set("speciesCommonName", project.getSpeciesCommonName());
 	        	
 	        	 SimpleFeature simpleFeature = featureBuilder.buildFeature(project.getId().toString());
 	             collection.add(simpleFeature);

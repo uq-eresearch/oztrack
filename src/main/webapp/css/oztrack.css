@@ -35,7 +35,7 @@ p {
 }
 
 ul {
-    color: orange;
+ /*   color: orange;*/
 }
 
 ul li span {
@@ -393,6 +393,12 @@ a:hover {
     float:left;
 }
 
+.homeMapPopup {
+/*
+	background-color:#e6e6c0;
+	opacity:0.9;
+*/
+}
 
 
 #accordian form div {
