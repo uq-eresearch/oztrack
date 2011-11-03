@@ -38,13 +38,20 @@
 					<a style="font-size:0.9em;" href="#">${animal.animalName}</a>
             		</div>
         		
+ <!-- 
         			<div style="margin-left:10px; padding-top:5px;font-size:0.9em;">
         			
                     <a style="float:right" href="#" onclick="zoomToTrack(${animal.projectAnimalId});">Zoom</a><br>
                     <a style="float:right" href="<c:url value="exportKML"><c:param name="projectId" value="${project.id}"/><c:param name="animalId" value="${animal.id}"/></c:url>"> 
-        			KML</a> 
+        			KML</a>
+        			</div> 
+ -->       			
+        			<div id="animalInfo-${animal.projectAnimalId}" class="animalInfo">
+
+        			<a style="float:right; margin-right:10px;" href="#" onclick="zoomToTrack(${animal.projectAnimalId});">Zoom</a>&nbsp;&nbsp;
+                    <a style="float:right; margin-right:10px;" href="<c:url value="exportKML"><c:param name="projectId" value="${project.id}"/><c:param name="animalId" value="${animal.id}"/></c:url>">KML</a> 
         			
-        			<div id="animalInfo-${animal.projectAnimalId}" class="animalInfo"></div>
+        			
         			</div>
         		</div>
             

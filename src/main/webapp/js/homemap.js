@@ -142,15 +142,16 @@ function buildPopup(e) {
 				  + "<li>" + f.attributes.firstDetectionDate + " to " + f.attributes.lastDetectionDate + "</li></ul>"
 				  + "</div>";
 
+	var projectId = f.attributes.projectId;
 	var popup = new OpenLayers.Popup.AnchoredBubble(
-            "projectId", 
+            projectId, 
             f.geometry.getBounds().getCenterLonLat(),
             null,
             popupHtml,
             null,
             true
         );
-	popup.autoSize = true;
+	//popup.autoSize = true;
 	popup.setBackgroundColor("#FBFEE9");
 	popup.setOpacity("0.9");
 	popup.closeOnMove = true;

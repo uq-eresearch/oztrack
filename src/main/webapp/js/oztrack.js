@@ -120,7 +120,7 @@ $(document).ready(function(){
         case "datafiles":
             var projectTitle = $('#projectTitle').html();
             breadcrumb = breadcrumb +  '<a href="' + thisUrl.replace("datafiles","projects") + '"> &rsaquo; Animal Tracking</a> &rsaquo; <a href="' + thisUrl.replace("datafiles","projectdetail") + '">' + projectTitle
-                                    + '</a> &rsaquo; <span class="aCrumb"> Data Files </span>';
+                                    + '</a> &rsaquo; <span class="aCrumb"> Data Uploads </span>';
             $('#navTrack').css('color','#f7a700');
             break;
         case "datafileadd":

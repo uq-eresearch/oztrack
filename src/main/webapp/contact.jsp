@@ -15,6 +15,14 @@
 		<p>Peggy Newman<br>
 		peggy.newman@uq.edu.au
 		</p>
+
+		<h2>Environmental Decisions Hub, UQ</h2>
+		
+		<p>
+		Matthew Watts<br>
+		m.watts@uq.edu.au
+		</p>
+
 	
 	</div>
 	<div style="position:relative;float:right;width:49%;">
@@ -36,10 +44,6 @@
 		ross.dwyer@uq.edu.au
 		</p>
 
-		<p>
-		Matthew Watts<br>
-		m.watts@uq.edu.au
-		</p>
 
 	</div>
 </div>

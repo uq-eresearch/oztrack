@@ -26,7 +26,7 @@
 		var projectPage = false;
 	</script>	
     <c:set var="dateFormatPattern" value="dd/MM/yyyy"/>
-    <c:set var="dateTimeFormatPattern" value="dd/MM/yyyy H:m:s"/>
+    <c:set var="dateTimeFormatPattern" value="dd/MM/yyyy HH:mm:ss"/>
 
 <!--
     <c:forEach var="js" items="${paramValues.jsIncludes}" >
@@ -84,12 +84,14 @@
 		</c:otherwise>
 		</c:choose>
 		
+		<!-- 
 		<li><a id="navSighting" class="menuParent" href="#">Animal Sightings</a>
 		        <ul>
 		            <li><a href="<c:url value="sighting"/>">Report a Sighting</a></li>
 		            <li><a href="<c:url value="#"/>">Sightings Map</a></li>
 		        </ul>
 		</li>
+		 -->
 		<li><a id="navGallery" href="<c:url value="#"/>">Gallery</a></li>
 		<li><a id="navAbout" href="<c:url value="about"/>">About</a></li>
 		<li><a id="navContact" href="<c:url value="contact"/>">Contact</a></li>

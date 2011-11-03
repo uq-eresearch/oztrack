@@ -17,7 +17,7 @@
     
     <p><c:out value="${fn:length(dataFileList)}"/> data file(s) found.</p>
 
-		<p><a class="oztrackButton" href="<c:url value="datafileadd"><c:param name="project_id" value="${project.id}"/></c:url>">Add a Datafile</a>
+		<p><a class="oztrackButton" href="<c:url value='datafileadd'/>" >Add a Datafile</a>
 		<a class="oztrackButton" id="pageRefresh" href="#">Refresh</a></p>
 		
 		<p><c:out value="${errorStr}"/></p>

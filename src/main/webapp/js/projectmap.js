@@ -279,9 +279,9 @@ function updateAnimalInfo(linesLayer) {
                 				 + "id='select-feature-" + checkboxId + "' value='" + checkboxValue + "' checked='true'/></input>";
                 
                 var html = "<b>&nbsp;&nbsp;" + layerName + "</b>"
-                		+ "<table><tr><td>Date From:</td><td>" + feature.attributes.fromDate + "</td></tr>"
-	    		  		+ "<tr><td>Date To:</td><td>" + feature.attributes.toDate + "</td></tr>"
-    	    			+ "<tr><td>Minimum Distance: </td><td>" + Math.round(distance*1000)/1000 + "km </td></tr></table><br>";
+                		+ "<table><tr><td class='label'>Date From:</td><td>" + feature.attributes.fromDate + "</td></tr>"
+	    		  		+ "<tr><td class='label'>Date To:</td><td>" + feature.attributes.toDate + "</td></tr>"
+    	    			+ "<tr><td class='label'>Minimum Distance: </td><td>" + Math.round(distance*1000)/1000 + "km </td></tr></table><br>";
  	            
                 $('#animalInfo-'+ feature.attributes.animalId).append(checkboxHtml + html);
  	            $('input[id=select-feature-' + checkboxId + ']').change(function() {
@@ -289,7 +289,7 @@ function updateAnimalInfo(linesLayer) {
                 });
 	        }
         }
-    linesLayer.redraw();
+   // linesLayer.redraw();
 } 
 
 
@@ -496,10 +496,11 @@ function addWFSLayer(layerName, params) {
         newWFSOverlay = new OpenLayers.Layer.Vector(
             layerName,
             {strategies: [new OpenLayers.Strategy.Fixed()],
+            	styleMap:lineStyleMap,
              eventListeners: {
                 loadend: function (e) {
                 	map.zoomToExtent(newWFSOverlay.getDataExtent(),false);
-                	updateAnimalInfo(this);
+                	updateAnimalInfo(newWFSOverlay);
             	}
              },
              projection: projection4326,

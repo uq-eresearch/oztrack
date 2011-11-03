@@ -94,7 +94,8 @@
     </tr>
     <c:forEach items="${acousticDetectionsList}" var="detection">
     <tr>
-        <td><fmt:formatDate value="${detection.detectionTime}" type="both" pattern="dd-MM-yyyy H:m:s"/></td>
+    
+        <td><fmt:formatDate pattern="${dateFormatPattern}" value="${detection.detectionTime}"/></td>
         <td><c:out value="${detection.animal.projectAnimalId}"/> </td>
         <td><c:out value="${detection.receiverDeployment.originalId}"/></td>
         <td><c:out value="${detection.sensor1Value}"/></td>
@@ -126,7 +127,7 @@
     </tr>
     <c:forEach items="${positionFixList}" var="detection">
     <tr>
-        <td><fmt:formatDate value="${detection.detectionTime}" type="both" pattern="dd-MM-yyyy H:m:s"/></td>
+        <td><fmt:formatDate pattern="${dateTimeFormatPattern}" value="${detection.detectionTime}"/></td>
         <td><c:out value="${detection.animal.projectAnimalId}"/></td>
         <td><a href="<c:url value="animalform"><c:param name="animal_id" value="${detection.animal.id}"/></c:url>">
                 <c:out value="${detection.animal.animalName}"/></a></td>
@@ -139,7 +140,7 @@
         <td><c:out value="${detection.sensor2Units}"/></td>
         -->
         <td><a href="<c:url value="datafiledetail"><c:param name="datafile_id" value="${detection.dataFile.id}"/></c:url>">
-            <c:out value="${detection.dataFile.createDate}"/></a></td>
+           <fmt:formatDate pattern="${dateFormatPattern}" value="${detection.dataFile.createDate}"/></a></td>
     </tr>
     </c:forEach>
     </table>

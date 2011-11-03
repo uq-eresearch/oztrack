@@ -28,6 +28,14 @@ td h2 {
     margin:0px;
 }
 
+#content {
+	margin-right:20px;
+}
+
+#content p {
+	margin-right:20px;
+}
+
 p {
     font-size:0.9em;
     color:black;
@@ -35,14 +43,16 @@ p {
 }
 
 ul {
- /*   color: orange;*/
+    color: orange;
+}
+
+ul li {
+    color: black;
 }
 
 ul li span {
     color: black;
     font-size:0.9em;
-
-
 }
 
 a {
@@ -218,7 +228,7 @@ a:hover {
     color:#ffffff;
     font-size:0.9em;
     font-weight:bold;
-    padding-right: 35px;
+    padding-right: 60px;
     color:#ffffff;
     text-decoration:none;
 }
@@ -380,6 +390,24 @@ a:hover {
     -webkit-border-bottom-left-radius: 10px;
 
 }
+
+.animalInfo {
+	font-size: 0.9em;
+	/*border: solid 1px black;*/
+	margin-left:10px;
+	margin-top:10px;
+	margin-bottom:10px;
+}
+
+.animalInfo table {
+	margin-top:5px;
+}
+
+
+.animalInfo .label {
+	width:7em;
+}
+
 
 #homeMap, #projectMap{
     width: 650px;
@@ -630,7 +658,7 @@ form div .checkbox, form div .radiobutton {
 
 div.help {
     float:right;
-    margin-right:150px;
+    margin-right:120px;
 
 }
 a.info {
