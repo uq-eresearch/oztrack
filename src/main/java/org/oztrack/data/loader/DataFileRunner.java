@@ -71,8 +71,8 @@ public class DataFileRunner {
                 file.delete();
                 origFile.delete();
                 
-                JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
-                jdbcAccess.truncateRawObservations(dataFile);
+ //               JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
+ //               jdbcAccess.truncateRawObservations(dataFile);
             }
 
             dataFileDao.update(dataFile);//dataFileDao.refresh(dataFile);

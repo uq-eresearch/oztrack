@@ -11,6 +11,7 @@ import org.oztrack.error.FileProcessingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import java.io.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -127,6 +128,8 @@ public class PositionFixFileLoader extends DataFileLoader {
         EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy H:m:s");
+        Boolean foundDateFormat = false;
 
         try {
                while ((strLine = br.readLine()) != null) {
@@ -134,8 +137,6 @@ public class PositionFixFileLoader extends DataFileLoader {
                 lineNumber++;
                 dataRow = strLine.split(",");
                 RawPositionFix rawPositionFix= new RawPositionFix();
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy H:m:s");
-                Boolean foundDateFormat = false;
 
                 logger.debug("file linenumber: " + lineNumber);
 
@@ -153,18 +154,23 @@ public class PositionFixFileLoader extends DataFileLoader {
                                 case DATE:
                                 case LOCDATE:
                                 case UTCDATE:
-                                    if (!foundDateFormat) {
                                        try {
-                                            simpleDateFormat = findDateFormat(dataRow[i]);
-                                            foundDateFormat = true;
+                                           //if (!foundDateFormat) {
+                                           if (lineNumber == 2) {
+                                        	   simpleDateFormat = findDateFormat(dataRow[i]);
+                                           // foundDateFormat = true;
+                                           }
+                                           Calendar calendar = Calendar.getInstance();
+                                           try {
+                                        	   calendar.setTime(simpleDateFormat.parse(dataRow[i]));
+                                           } catch (ParseException e) {
+                                        	   throw new FileProcessingException("Date Parsing error. ");
+                                           }
+                                           rawPositionFix.setDetectionTime(calendar.getTime());
                                        } catch (FileProcessingException e) {
                                             transaction.rollback();
-                                            throw new FileProcessingException("Unable to read date format: "  + dataRow[i] );
+                                            throw new FileProcessingException(e.toString() + " at line : "  + lineNumber + " data element: "+ dataRow[i]);
                                        }
-                                    }
-                                    Calendar calendar = Calendar.getInstance();
-                                    calendar.setTime(simpleDateFormat.parse(dataRow[i]));
-                                    rawPositionFix.setDetectionTime(calendar.getTime());
                                     break;
                                 case TIME:
                                 case UTCTIME:
@@ -229,7 +235,7 @@ public class PositionFixFileLoader extends DataFileLoader {
 
             }
 
-        } catch (Exception e) {
+        } catch (IOException e) {
              transaction.rollback();
              throw new FileProcessingException("Problem reading file at line number :" + lineNumber);
         }
@@ -239,38 +245,53 @@ public class PositionFixFileLoader extends DataFileLoader {
 
     }
 
+    // handles fields that are either just a date OR a date and time
     public SimpleDateFormat findDateFormat(String dateString) throws FileProcessingException {
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s.S");
-
         //Calendar calendar = Calendar.getInstance();
 
-        String dateDots = "(0[1-9]|[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[012]|[1-9])\\.(19[0-9][0-9]|20[0-9][0-9])";
+        String DateDotsRegex = "(0[1-9]|[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[012]|[1-9])\\.(19[0-9][0-9]|20[0-9][0-9])";
         String dateDotsPattern = "dd.MM.yyyy";
 
-        String dateSlashes = "(0[1-9]|[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012]|[1-9])/(19[0-9][0-9]|20[0-9][0-9])";
+        String dateSlashesRegex = "(0[1-9]|[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012]|[1-9])/(19[0-9][0-9]|20[0-9][0-9])";
         String dateSlashesPattern = "dd/MM/yyyy";
 
-        String time24 =   ".(0[1-9]|[1-9]|[1][0-9]|2[0-3]).([1-9]|[0-5][1-9]).([1-9]|[0-5][1-9])" ;
+        String backwardsDateDotsRegex = "(19[0-9][0-9]|20[0-9][0-9])\\.(0[1-9]|[1-9]|[12][0-9]|3[01])\\.(0[1-9]|[1-9]|[12][0-9]|3[01])";
+        String backwardsDateDotsPattern = "yyyy.MM.dd";
+        
+        String time24Regex =   ".(0[1-9]|[1-9]|[1][0-9]|2[0-3]).([1-9]|[0-5][1-9]).([1-9]|[0-5][0-9])" ;
         String time24Pattern = " H:m:s";
 
-        String time24Ms = ".(0[1-9]|[1-9]|[1][0-9]|2[0-3]).([1-9]|[0-5][1-9]).([1-9]|[0-5][1-9]).([0-9])+" ;
+        String time24MsRegex = ".(0[1-9]|[1-9]|[1][0-9]|2[0-3]).([1-9]|[0-5][1-9]).([1-9]|[0-5][0-9]).([0-9])+" ;
         String time24MsPattern = " H:m:s.S";
 
-        if (dateString.matches(dateDots)) {
-            simpleDateFormat.applyPattern(dateDotsPattern);
-        } else if (dateString.matches(dateDots + time24)) {
-            simpleDateFormat.applyPattern(dateDotsPattern + time24Pattern);
-        } else if (dateString.matches(dateDots + time24Ms)) {
-                    simpleDateFormat.applyPattern(dateDotsPattern + time24MsPattern);
-        } else if (dateString.matches(dateSlashes)) {
-            simpleDateFormat.applyPattern(dateSlashesPattern);
-        } else if (dateString.matches(dateSlashes + time24)) {
-                    simpleDateFormat.applyPattern(dateSlashesPattern + time24Pattern);
-        } else if (dateString.matches(dateSlashes + time24Ms)) {
-                    simpleDateFormat.applyPattern(dateSlashesPattern + time24MsPattern);
-        }
-
+        if (dateString.matches(DateDotsRegex)) {
+            	simpleDateFormat.applyPattern(dateDotsPattern);
+        } else if (dateString.matches(DateDotsRegex + time24Regex)) {
+            	simpleDateFormat.applyPattern(dateDotsPattern + time24Pattern);
+        } else if (dateString.matches(DateDotsRegex + time24MsRegex)) {
+                simpleDateFormat.applyPattern(dateDotsPattern + time24MsPattern);
+        
+        // date with slashes        
+        } else if (dateString.matches(dateSlashesRegex)) {
+            	simpleDateFormat.applyPattern(dateSlashesPattern);
+        } else if (dateString.matches(dateSlashesRegex + time24Regex)) {
+                simpleDateFormat.applyPattern(dateSlashesPattern + time24Pattern);
+        } else if (dateString.matches(dateSlashesRegex + time24MsRegex)) {
+                simpleDateFormat.applyPattern(dateSlashesPattern + time24MsPattern);
+        
+	    // year first with dots
+        } else if (dateString.matches(backwardsDateDotsRegex)) {
+	    	simpleDateFormat.applyPattern(backwardsDateDotsPattern);
+	    } else if (dateString.matches(backwardsDateDotsRegex + time24Regex)) {
+	        simpleDateFormat.applyPattern(backwardsDateDotsPattern + time24Pattern);
+	    } else if (dateString.matches(backwardsDateDotsRegex + time24MsRegex)) {
+	        simpleDateFormat.applyPattern(backwardsDateDotsPattern + time24MsPattern);
+	    } else {
+	    	throw new FileProcessingException("Could not handle this date format: " + dateString + ". Please see the help screen");
+	    }
+        
         return simpleDateFormat;
 
      }
