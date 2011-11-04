@@ -133,13 +133,13 @@ function buildPopup(e) {
 
 	var f = e.feature;
 	var layer = f.layer;
-	//var eTest = e;
-	
+	var firstDate = f.attributes.firstDetectionDate.split(" ")[0];
+	var lastDate = f.attributes.lastDetectionDate.split(" ")[0];
 	var popupHtml = "<div class='homeMapPopup'>" 
 				  + "<h3>" + f.attributes.projectTitle + "</h3>"
 				  + "<ul><li>" + f.attributes.speciesCommonName + "</li>"
 				  + "<li>" + f.attributes.spatialCoverageDescr + "</li>"
-				  + "<li>" + f.attributes.firstDetectionDate + " to " + f.attributes.lastDetectionDate + "</li></ul>"
+				  + "<li>" + firstDate + " to " + lastDate + "</li></ul>"
 				  + "</div>";
 
 	var projectId = f.attributes.projectId;
