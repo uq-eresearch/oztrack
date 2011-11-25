@@ -84,15 +84,15 @@ public class WFSMapQueryView extends AbstractView {
                     		e.getNamespaces().declarePrefix("Project", namespaceURI);
                     		featureCollectionType.getFeature().add(collection);
                     
-                    case ALL_POINTS:
-//                            collection = this.buildPointsFeatureCollection(searchQuery);
-//                            **encoder.setNamespace("PositionFix", namespaceURI);
-//                            e.getNamespaces().declarePrefix("PositionFix", namespaceURI);
-//                            featureCollectionType.getFeature().add(collection);
+                    case POINTS:
+                            collection = this.buildFeatureCollection(searchQuery,"points");
+                            //**encoder.setNamespace("PositionFix", namespaceURI);
+                            e.getNamespaces().declarePrefix("Track", namespaceURI);
+                            featureCollectionType.getFeature().add(collection);
                             break;
                         case ALL_LINES:
                         case LINES:
-                            collection = this.buildLinesFeatureCollection(searchQuery);
+                            collection = this.buildFeatureCollection(searchQuery,"lines");
                             //**encoder.setNamespace("Track", namespaceURI);
                             e.getNamespaces().declarePrefix("Track", namespaceURI);
                             featureCollectionType.getFeature().add(collection);
@@ -117,41 +117,6 @@ public class WFSMapQueryView extends AbstractView {
 
     }
 
-/*
-    private SimpleFeatureCollection buildPointsFeatureCollection(SearchQuery searchQuery) {
-
-        List<PositionFix> positionFixList = OzTrackApplication.getApplicationContext().getDaoManager().getPositionFixDao().getProjectPositionFixList(searchQuery);
-        String namespaceURI = OzTrackApplication.getApplicationContext().getUriPrefix();
-
-        SimpleFeatureCollection collection = FeatureCollections.newCollection();
-        GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
-
-        SimpleFeatureTypeBuilder simpleFeatureTypeBuilder = new SimpleFeatureTypeBuilder();
-        simpleFeatureTypeBuilder.setName("PositionFix");
-        simpleFeatureTypeBuilder.setNamespaceURI(namespaceURI);
-        int srid = positionFixList.get(0).getLocationGeometry().getSRID();
-
-        simpleFeatureTypeBuilder.add("location", Point.class, srid);
-        simpleFeatureTypeBuilder.add("detectionTime", Date.class);
-        simpleFeatureTypeBuilder.add("animalId",String.class);
-        simpleFeatureTypeBuilder.add("animalName",String.class);
-        SimpleFeatureType simpleFeatureType = simpleFeatureTypeBuilder.buildFeatureType();
-
-        for(PositionFix positionFix : positionFixList) {
-            SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(simpleFeatureType);
-            featureBuilder.add(positionFix.getLocationGeometry());
-            featureBuilder.set("location", positionFix.getLocationGeometry());
-            featureBuilder.set("detectionTime",positionFix.getDetectionTime());
-            featureBuilder.set("animalId",positionFix.getAnimal().getProjectAnimalId());
-            featureBuilder.set("animalName",positionFix.getAnimal().getAnimalName());
-            SimpleFeature simpleFeature = featureBuilder.buildFeature(positionFix.getId().toString());
-            collection.add(simpleFeature);
-        }
-
-        return collection;
-
-    }
-*/
     private static class AnimalTrack {
             private Animal animal;
             private Date fromDate;
@@ -160,8 +125,8 @@ public class WFSMapQueryView extends AbstractView {
             private Coordinate startPoint;
             private Coordinate endPoint;
     }
-
-    private SimpleFeatureCollection buildLinesFeatureCollection(SearchQuery searchQuery) {
+    
+    private SimpleFeatureCollection buildFeatureCollection(SearchQuery searchQuery, String collectionType) {
 
         List<PositionFix> positionFixList = OzTrackApplication.getApplicationContext().getDaoManager().getPositionFixDao().getProjectPositionFixList(searchQuery);
 
@@ -174,7 +139,11 @@ public class WFSMapQueryView extends AbstractView {
         simpleFeatureTypeBuilder.setNamespaceURI(namespaceURI);
         int srid = positionFixList.get(0).getLocationGeometry().getSRID();
         
-        simpleFeatureTypeBuilder.add("track", LineString.class, srid);
+        if (collectionType == "points") {
+            simpleFeatureTypeBuilder.add("track", MultiPoint.class, srid);
+        } else if (collectionType == "lines") {
+            simpleFeatureTypeBuilder.add("track", LineString.class, srid);
+        }
         simpleFeatureTypeBuilder.add("fromDate", Date.class);
         simpleFeatureTypeBuilder.add("toDate", Date.class);
         simpleFeatureTypeBuilder.add("animalId",String.class);
@@ -220,8 +189,16 @@ public class WFSMapQueryView extends AbstractView {
 
         for (AnimalTrack animalTrack: tracks.values()) {
 
-            LineString lineString = geometryFactory.createLineString(animalTrack.coordinates.toArray(new Coordinate[] {}));
-            featureBuilder.set("track",lineString);
+            MultiPoint multiPoint;
+            LineString lineString; 
+            
+        	if (collectionType == "points") {
+            	multiPoint = geometryFactory.createMultiPoint(animalTrack.coordinates.toArray(new Coordinate[] {}));//geometryFactory.createLineString(animalTrack.coordinates.toArray(new Coordinate[] {}));
+                featureBuilder.set("track",multiPoint);
+            } else if (collectionType == "lines") {
+            	lineString = geometryFactory.createLineString(animalTrack.coordinates.toArray(new Coordinate[] {}));
+                featureBuilder.set("track",lineString);
+            }
             featureBuilder.set("fromDate",animalTrack.fromDate);
             featureBuilder.set("toDate",animalTrack.toDate);
             featureBuilder.set("animalId", animalTrack.animal.getProjectAnimalId());
@@ -232,8 +209,9 @@ public class WFSMapQueryView extends AbstractView {
             collection.add(simpleFeature);
         }
         return collection;
-
     }
+
+
     
     private  SimpleFeatureCollection buildAllProjectsFeatureCollection() {
     	

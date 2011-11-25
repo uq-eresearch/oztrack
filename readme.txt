@@ -3,27 +3,18 @@ Installing GIS Packages
 
 These packages are required for both PostGIS and R spatial functionality.
 
-The "traditional" yum repository has very old versions of these packages. To get the later versions,
-enlist this repository to yum by running:
+An Enterprise Linux GIS repository to add to yum:
 
-rpm -Uvh http://elgis.argeo.org/repos/5/elgis-release-5-5_0.noarch.rpm
+rpm -Uvh http://elgis.argeo.org/repos/5/elgis-release-5-5_0.noarch.rpm	
+or
+sudo rpm -Uvh http://elgis.argeo.org/repos/6/elgis-release-6-6_0.noarch.rpm
 
 then yum install in this order, using the appropriate architecture (with current version at time of writing):
- geos   (3.2.2)
- geos-devel(3.2.2)  // will install geos as a dependency
- proj   (4.7.0)
- proj-devel (4.7.0) // will install proj as a dependency
+ geos-devel  // will install geos as a dependency
+ proj-devel  // will install proj as a dependency
  postgis
-
-The gdal packages are a little too up to date (1.8) and won't build properly yet when R's rgdal(see below) uses them.
-So use the rpms of the previous version (may need to wget the files first):
-
- rpm -Uvh http://elgis.argeo.org/repos/5/elgis/x86_64/gdal-1.7.2-5_0.el5.elgis.x86_64.rpm
- rpm -Uvh http://elgis.argeo.org/repos/5/elgis/x86_64/gdal-devel-1.7.2-5_0.el5.elgis.x86_64.rpm
-
-However, the gdal package has loads of dependencies. One way to deal quickly is to do a yum install on 1.8 first to get the dependencies, then
-yum uninstall, and install via rpm. Yum installing dependencies seems to take care of things.
-
+ gdal-devel
+ 
 To test successful installation, on the commmand line you should get a response from:
 geos-config
 gdal-config
@@ -35,11 +26,22 @@ Setting up the database
 The following commands are used on a Linux machine; we should also document the
 process for setting up the database on Windows for developers on that platform.
 
+yum install postgresql.x86_64
+yum install postgresql-server.x86_64
+yum install postgresql-devel.x86_64
+service postgresql initdb
+chkconfig --list (to see list of services)
+chkconfig postgresql on
+service postgresql start
+
+remember to sort out authentication: /var/lib/pgsql/data/pg_hba.conf
+
+
 Run something like the following commands:
 
     -- Create database with PL/pgSQL support
-    sudo -u postgres psql -c "create user oztrack with password 'ozadmin';"
-    sudo -u postgres psql -c "create database oztrack with owner oztrack;"
+    psql -U postgres -c "create user oztrack with password 'ozadmin';"
+    psql -U postgres -c "create database oztrack with owner oztrack;"
     psql -U oztrack -d oztrack -c "create language plpgsql;"
 
     -- Run the PostGIS initialisation scripts: need to run postgis.sql as postgres
@@ -48,9 +50,9 @@ Run something like the following commands:
     psql -U postgres -d oztrack -f /usr/share/pgsql/contrib/postgis.sql
     psql -U postgres -d oztrack -f /usr/share/pgsql/contrib/spatial_ref_sys.sql
 
-    sudo -u postgres psql -d oztrack -c "alter table geometry_columns owner to oztrack;"
-    sudo -u postgres psql -d oztrack -c "alter table spatial_ref_sys owner to oztrack;"
-    sudo -u postgres psql -d oztrack -c "alter view geography_columns owner to oztrack;"
+    psql -U postgres -d oztrack -c "alter table geometry_columns owner to oztrack;"
+	psql -U postgres -d oztrack -c "alter table spatial_ref_sys owner to oztrack;"
+	psql -U postgres -d oztrack -c "alter view geography_columns owner to oztrack;"
 
     -- Out own tables should be created on first run by Hibernate
 See http://postgis.refractions.net/documentation/manual-1.5/ch02.html#id2565921
@@ -69,8 +71,14 @@ install.packages in the R interpreter (run the "R" command from Linux console, a
 Note that the following command takes a while (eg over 10 minutes) because it
 downloads, compiles, tests, and installs a large number of dependencies.
 
-    install.packages(c("sp","ade4","adehabitatHR","adehabitatMA","maptools","shapefiles","rgdal"), dependencies=TRUE)
-
+    install.packages(c("sp"), dependencies=TRUE)
+    install.packages(c("ade4"), dependencies=TRUE)
+    install.packages(c("adehabitatHR"), dependencies=TRUE)
+    install.packages(c("adehabitatMA"), dependencies=TRUE)
+    install.packages(c("maptools"), dependencies=TRUE)
+    install.packages(c("shapefiles"), dependencies=TRUE)
+    install.packages(c("rgdal"), dependencies=TRUE)
+ 
 Note: it may be necessary to add a repos argument (eg repos="http://cran.cnr.berkeley.edu/")
 when executing install.packages, but this caused an error when run on CentOS.
 
@@ -85,4 +93,12 @@ To run Rserve daemon, execute the following from your Linux console:
 
 The resulting Rserve process will listen on port 6311.
 
+
+
 See http://www.rforge.net/Rserve/faq.html#start
+
+File System
+---------------------
+OzTrack will look for the data directory in the property file. If there isn't one it will use the user.home environment variable to plunk
+files down in. Might be prudent to create an oztrack directory in the tomcat home directory, CHOWN it to tomcat and CHMOD it so tomcat can write to it.
+

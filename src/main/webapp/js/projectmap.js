@@ -11,6 +11,9 @@ var polygonStyleMap;
 var lineOnStyle;
 var lineOffStyle;
 var lineStyleMap;
+var pointsOnStyle;
+var pointsOffStyle;
+var pointsStyleMap;
 var startEndPointsOnStyle;
 var startEndPointsOffStyle;
 var startEndPointsStyleMap;
@@ -107,6 +110,31 @@ function initializeProjectMap() {
     map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326,projection900913), 4);
     
     reportProjectionDescr();
+    
+    /*
+    allPointsLayer = new OpenLayers.Layer.Vector(
+            "All Points",
+            {
+            projection: projection4326,
+            protocol: new OpenLayers.Protocol.WFS.v1_1_0({
+               url:  "mapQueryWFS?projectId=" + projectId + "&queryType=ALL_POINTS",
+               featureType: "Track",
+               featureNS: "http://localhost:8080/"
+               }),
+            strategies: [new OpenLayers.Strategy.Fixed()],
+            styleMap: pointsStyleMap, 
+            eventListeners: {
+                loadend: function (e) {
+            		updateAnimalInfo(allPointsLayer);
+            	}
+             }
+            });
+        
+        map.addLayers([allPointsLayer]);
+    */
+    
+    
+    
 }
 
 function initStyles() {
@@ -133,6 +161,29 @@ function initStyles() {
 		"default":lineOnStyle,
 		"temporary":lineOffStyle
 	});
+	
+	var pointsOnTemplate = {
+			fillColor: "${getColour}",
+			strokeColor:"${getColour}",	
+			//fillOpacity: 0.5,
+			strokeOpacity: 0.8,
+			strokeWidth: 0.2,
+			graphicName: "cross",
+			pointRadius:4
+			
+	};
+	
+	pointsOnStyle = new OpenLayers.Style(pointsOnTemplate, {context: wfsStyleContext});
+	pointsOffStyle = {
+			fillOpacity: 0.0,
+			strokeOpacity: 0.0
+	};
+	
+	pointsStyleMap = new OpenLayers.StyleMap({
+		"default": pointsOnStyle,
+		"temporary" : pointsOffStyle
+	});
+	
 	
     var kmlStyleContext = {
             getColour: function(feature) {
@@ -186,7 +237,7 @@ function initStyles() {
 		"default" : startEndPointsOnStyle,
 		"temporary" : startEndPointsOffStyle
 		 });
-
+	
 }
 
 
@@ -247,30 +298,27 @@ Proj4js.reportError = function(msg) {
 }
 
 
-function updateAnimalInfo(linesLayer) {
+function updateAnimalInfo(wfsLayer) {
     
-    var layerName = linesLayer.name;
-    var layerId = linesLayer.id;
+    var layerName = wfsLayer.name;
+    var layerId = wfsLayer.id;
     var featureId = "";
     
-	for (var key in linesLayer.features) {
-        var feature = linesLayer.features[key];
+	for (var key in wfsLayer.features) {
+        var feature = wfsLayer.features[key];
         if (feature.attributes && feature.attributes.animalId) {
-                var colour = colours[feature.attributes.animalId % colours.length];
-                var labelText = "";
-                if (linesLayer === allAnimalTracksLayer) {
-                	labelText = feature.attributes.animalName;
+                if (wfsLayer === allAnimalTracksLayer) {
                 	layerName = "Trajectory";
-                }
+                }	
                 feature.renderIntent = "default";
                 
                 // set the colour and make sure the show/hide all box is checked
+                var colour = colours[feature.attributes.animalId % colours.length];
                 $('#legend-colour-' + feature.attributes.animalId).attr('style', 'background-color: ' + colour + ';');
                 $('input[id=select-animal-' + feature.attributes.animalId + ']').attr('checked','checked');
                 
                 // add detail for this layer
                 
-    	    	var distance = feature.geometry.getGeodesicLength(map.projection)/1000;
     	    	
                 var checkboxValue = layerId + "-" + feature.id;
                 var checkboxId = checkboxValue.replace(/\./g,"");
@@ -278,11 +326,18 @@ function updateAnimalInfo(linesLayer) {
                 var checkboxHtml = "<input type='checkbox' class='shortInputCheckbox' " 
                 				 + "id='select-feature-" + checkboxId + "' value='" + checkboxValue + "' checked='true'/></input>";
                 
-                var html = "<b>&nbsp;&nbsp;" + layerName + "</b>"
-                		+ "<table><tr><td class='label'>Date From:</td><td>" + feature.attributes.fromDate + "</td></tr>"
-	    		  		+ "<tr><td class='label'>Date To:</td><td>" + feature.attributes.toDate + "</td></tr>"
-    	    			+ "<tr><td class='label'>Minimum Distance: </td><td>" + Math.round(distance*1000)/1000 + "km </td></tr></table><br>";
- 	            
+                var tableRowsHtml = "<b>&nbsp;&nbsp;" + layerName + "</b>"
+                		+ "<tr><td class='label'>Date From:</td><td>" + feature.attributes.fromDate + "</td></tr>"
+	    		  		+ "<tr><td class='label'>Date To:</td><td>" + feature.attributes.toDate + "</td></tr>";
+ 
+                var distanceRowHtml = "";
+                if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.LineString") {
+        	    	var distance = feature.geometry.getGeodesicLength(map.projection)/1000;
+        	    	distanceRowHtml = "<tr><td class='label'>Minimum Distance: </td><td>" + Math.round(distance*1000)/1000 + "km </td></tr>";
+                }
+                
+                var html = "<table>" + tableRowsHtml + distanceRowHtml + "</table><br>";
+                
                 $('#animalInfo-'+ feature.attributes.animalId).append(checkboxHtml + html);
  	            $('input[id=select-feature-' + checkboxId + ']').change(function() {
                     toggleFeature(this.value,this.checked);
@@ -379,7 +434,9 @@ function toggleAllAnimalFeatures(animalId, setVisible) {
     	for (var f in layer.features) {
     		var feature = layer.features[f];
     		var featureAnimalId;
-    		if (layerName.indexOf("Trajector") != -1 || layerName.indexOf("Start and End Points") != -1) {
+    		if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.LineString" ||
+    			feature.geometry.CLASS_NAME == "OpenLayers.Geometry.MultiPoint" ||
+    			feature.geometry.CLASS_NAME == "OpenLayers.Geometry.Point" ) {
     			featureAnimalId = feature.attributes.animalId;
     		} else {
     			featureAnimalId = feature.attributes.id.value;
@@ -402,6 +459,7 @@ function addProjectMapLayer() {
     var queryType =$('input[name=mapQueryTypeSelect]:checked');
     var queryTypeDescription =  queryType.parent().next().text();
      
+
 /*
     var data = '&dateFrom=' + dateFrom
      + '&dateTo=' + dateTo
@@ -427,7 +485,9 @@ function addProjectMapLayer() {
 	    }
 	
 	    if (queryType.val() == "LINES") {
-	        addWFSLayer(layerName, params);
+	        addWFSLayer(layerName, params, lineStyleMap);
+	    } else if (queryType.val() == "POINTS") {
+	    	addWFSLayer(layerName, params, pointsStyleMap);
 	    } else {
 	        addKMLLayer(layerName,params);
 	    }
@@ -491,12 +551,12 @@ function updateAnimalInfoFromKML(layerName, e) {
 	
 }
 
-function addWFSLayer(layerName, params) {
+function addWFSLayer(layerName, params, styleMap) {
 
         newWFSOverlay = new OpenLayers.Layer.Vector(
             layerName,
             {strategies: [new OpenLayers.Strategy.Fixed()],
-            	styleMap:lineStyleMap,
+            	styleMap:styleMap,
              eventListeners: {
                 loadend: function (e) {
                 	map.zoomToExtent(newWFSOverlay.getDataExtent(),false);

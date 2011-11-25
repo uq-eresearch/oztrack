@@ -14,7 +14,7 @@ public enum MapQueryType {
      ALL_PROJECTS("All OzTrack Projects")
 	,ALL_POINTS("All Points in this Project")
     ,ALL_LINES("All Trajectories")
-//    ,POINTS("Points")
+    ,POINTS("Points")
     ,LINES ("Trajectory")
     ,MCP100("Minimum Convex Polygon")
     ,MCP95("Peeled Convex Hull (95%)")
