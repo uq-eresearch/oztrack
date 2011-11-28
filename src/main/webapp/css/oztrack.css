@@ -392,9 +392,10 @@ a:hover {
 }
 
 .animalInfo {
+	float:left;
 	font-size: 0.9em;
 	/*border: solid 1px black;*/
-	margin-left:10px;
+	margin-left:8px;
 	margin-top:10px;
 	margin-bottom:10px;
 }
@@ -439,10 +440,7 @@ a:hover {
     padding-right:5px;
     }
     
-.accordianHead {
-	position:relative;
-	left:10px;
-}
+
 
 #accordian h3 a {
 	font-size:0.9em;
@@ -498,11 +496,11 @@ form .dataLayersDiv input, form .baseLayersDiv input {
 
 .smallSquare {
 	display:block;
-	height:13px;
-	width:13px;
+	height:14px;
+	width:14px;
 	float:left;
-	margin-right:10px;
-	margin-left:10px;
+	margin-right:5px;
+	margin-left:5px;
 }	
 
 

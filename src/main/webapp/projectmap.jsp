@@ -21,44 +21,50 @@
         <h3 id="projectTitle"><a href="#"><c:out value="${project.title}"/></a></h3>
 
         <div id="animalPanel">
-            
-            <c:forEach items="${projectAnimalsList}" var="animal">
+             
+             <style type="text/css">
+                #animalHeader {float:left;}
+				.column {font-size:0.9em;}
+				.animalCheckbox {float:left; width:15px;}
+				.animalLabel {float:left; width:120px; margin-bottom:5px;font-weight:bold;margin-right:5px;}
+				.zoom {float:right; width: 40px;}	
+				.animalInfoToggle {float:right; width:5px;}	
+ 			 </style>
+			
+             <c:forEach items="${projectAnimalsList}" var="animal">
+ 		
+				<div id="animalHeader">	            	
+	            	<div class="column animalCheckbox">
+	            		<input style="float:left;" type="checkbox" class="shortInputCheckbox" name="animalCheckbox" id="select-animal-${animal.projectAnimalId}" value="${animal.projectAnimalId}">
+	                    <script type="text/javascript">
+	                        $('input[id=select-animal-${animal.projectAnimalId}]').change(function() {
+	                                toggleAllAnimalFeatures("${animal.projectAnimalId}",this.checked);
+	                        });
+	                    </script>
+	            	</div>
             	
-            	<div>
+            		<div class="column smallSquare" id="legend-colour-${animal.projectAnimalId}"></div>
             		
-            		<input style="float:left;" type="checkbox" class="shortInputCheckbox" name="animalCheckbox" id="select-animal-${animal.projectAnimalId}" value="${animal.projectAnimalId}">
-                    <script type="text/javascript">
-                        $('input[id=select-animal-${animal.projectAnimalId}]').change(function() {
-                                toggleAllAnimalFeatures("${animal.projectAnimalId}",this.checked);
-                        });
-                    </script>
-            		<span class="smallSquare" id="legend-colour-${animal.projectAnimalId}"></span>
-            	
-            		<div class="accordianHead" >
-					<a style="font-size:0.9em;" href="#">${animal.animalName}</a>
+	            	<div class="column animalLabel">
+	            		${animal.animalName}
+	            	</div>
+	            	
+            		<div class="column animalInfoToggle">
+						<a style="font-size:0.9em;" href="#"><span class="ui-icon ui-icon-triangle-1-s"></span></a>
             		</div>
-        		
- <!-- 
-        			<div style="margin-left:10px; padding-top:5px;font-size:0.9em;">
-        			
-                    <a style="float:right" href="#" onclick="zoomToTrack(${animal.projectAnimalId});">Zoom</a><br>
-                    <a style="float:right" href="<c:url value="exportKML"><c:param name="projectId" value="${project.id}"/><c:param name="animalId" value="${animal.id}"/></c:url>"> 
-        			KML</a>
-        			</div> 
- -->       			
-        			<div id="animalInfo-${animal.projectAnimalId}" class="animalInfo">
 
-        			<a style="float:right; margin-right:10px;" href="#" onclick="zoomToTrack(${animal.projectAnimalId});">Zoom</a>&nbsp;&nbsp;
-                    <a style="float:right; margin-right:10px;" href="<c:url value="exportKML"><c:param name="projectId" value="${project.id}"/><c:param name="animalId" value="${animal.id}"/></c:url>">KML</a> 
-        			
-        			
-        			</div>
-        		</div>
-            
+	            	<div class="column zoom">
+	        			<a href="#" onclick="zoomToTrack(${animal.projectAnimalId});">Zoom</a>&nbsp;&nbsp;
+	            	</div>
+            		
+                </div>
+                <div id="animalInfo-${animal.projectAnimalId}" class="animalInfo">
+                     <a style="float:right; margin-right:10px;" href="<c:url value="exportKML"><c:param name="projectId" value="${project.id}"/><c:param name="animalId" value="${animal.id}"/></c:url>">KML</a> 
+				</div>
+                
             </c:forEach>
-        
         </div>
-
+        
         
         <h3><a href="#">Home Range Calculator</a></h3>
         

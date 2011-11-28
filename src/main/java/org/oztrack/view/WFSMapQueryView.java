@@ -83,7 +83,7 @@ public class WFSMapQueryView extends AbstractView {
                     		collection = this.buildAllProjectsFeatureCollection();
                     		e.getNamespaces().declarePrefix("Project", namespaceURI);
                     		featureCollectionType.getFeature().add(collection);
-                    
+                    case ALL_POINTS:
                     case POINTS:
                             collection = this.buildFeatureCollection(searchQuery,"points");
                             //**encoder.setNamespace("PositionFix", namespaceURI);

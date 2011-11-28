@@ -33,7 +33,6 @@ $(document).ready(function(){
      }
 
      navigation();
-     accordianHead();
      setupDatepicker();
      $( "#accordion" ).accordion();
      $( ".selector" ).accordion( "option", "autoHeight", false );
@@ -193,14 +192,16 @@ $(document).ready(function(){
 
  }
 
+ /*
  function accordianHead () {
 
     $('.accordianHead').click(function() {
-    		$(this).next().toggle('fast');
+    		$(this).parent().next().toggle('fast');
     		return false;
-    	}).next().hide();
+    	}).parent().next().hide();
 
  }
+ */
 
  function setupDatepicker () {
 	 

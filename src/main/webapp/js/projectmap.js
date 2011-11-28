@@ -2,6 +2,7 @@
 var map;
 var allAnimalTracksLayer;
 var pointsLayer;
+var allDetectionsLayer;
 var projection900913 = new OpenLayers.Projection("EPSG:900913");
 var projection4326 =  new OpenLayers.Projection("EPSG:4326");
 var thisProjection;
@@ -32,9 +33,21 @@ var colours = [
         '#FFED6F'
     ];
 
+function animalInfoToggle () {
+
+    $('.animalInfoToggle').click(function() {
+    		$(this).parent().next().toggle('fast');
+    		return false;
+    	}).parent().next().hide();
+
+ }
+
+
 function initializeProjectMap() {
 
-    var projectId = $('#projectId').val();
+	animalInfoToggle();
+	
+	var projectId = $('#projectId').val();
     var mapOptions = {
        maxExtent: new OpenLayers.Bounds(
             -128 * 156543.0339,
@@ -78,13 +91,14 @@ function initializeProjectMap() {
             displayClass: "helpButton", trigger: function() {alert('help');}, title: 'Help'
         }),
         new OpenLayers.Control.Button({
-        	displayClass: "zoomButton", trigger: function() {map.zoomToExtent(allAnimalTracksLayer.getDataExtent(),false);}, title: 'Zoom to Data Extent'
+        	displayClass: "zoomButton", trigger: function() {map.zoomToExtent(allDetectionsLayer.getDataExtent(),false);}, title: 'Zoom to Data Extent'
         })
     ]);
     map.addControl(panel);
     
     initStyles();
 
+/*
     allAnimalTracksLayer = new OpenLayers.Layer.Vector(
         "All Trajectories",
         {
@@ -108,12 +122,11 @@ function initializeProjectMap() {
     
     map.addLayers([gsat,gphy,allAnimalTracksLayer]);
     map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326,projection900913), 4);
+    */
     
-    reportProjectionDescr();
     
-    /*
-    allPointsLayer = new OpenLayers.Layer.Vector(
-            "All Points",
+    allDetectionsLayer = new OpenLayers.Layer.Vector(
+            "All Detections",
             {
             projection: projection4326,
             protocol: new OpenLayers.Protocol.WFS.v1_1_0({
@@ -125,16 +138,47 @@ function initializeProjectMap() {
             styleMap: pointsStyleMap, 
             eventListeners: {
                 loadend: function (e) {
-            		updateAnimalInfo(allPointsLayer);
+            		updateAnimalInfo(allDetectionsLayer);
+            		createTrajectoryLayer(allDetectionsLayer);
+            		if (!pointsLayer) {createPointsLayer();}
             	}
              }
             });
         
-        map.addLayers([allPointsLayer]);
-    */
+    map.addLayers([gsat,gphy,allDetectionsLayer]);
+    map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326,projection900913), 4);
     
+    reportProjectionDescr();
     
+}
+
+
+
+function createTrajectoryLayer(detectionsLayer) {
+	
+	var trajectoryLayer = new OpenLayers.Layer.Vector(
+    		"Trajectory",
+    		{projection: projection4326,
+    		 styleMap: lineStyleMap	
+    		 });
     
+    map.addLayer(trajectoryLayer);
+    
+	for (var key in detectionsLayer.features) {
+        var feature = detectionsLayer.features[key];
+        var trajectoryFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString(feature.geometry.components));
+        trajectoryFeature.attributes = {animalId : feature.attributes.animalId,
+        								animalName : feature.attributes.animalName, 
+        								fromDate: feature.attributes.fromDate,
+        								toDate: feature.attributes.toDate};
+
+        trajectoryLayer.addFeatures([trajectoryFeature]);
+        trajectoryLayer.redraw();
+	}  
+	
+	updateAnimalInfo(trajectoryLayer);
+	
+	
 }
 
 function initStyles() {
@@ -297,6 +341,30 @@ Proj4js.reportError = function(msg) {
     	$('#projectionDescr').html(msg + "Manually search for a code at <a href='http://spatialreference.org'>spatialreference.org</a>");
 }
 
+/*
+function setupAnimalInfo(allPointsLayer) {
+
+    var layerName = allPointsLayer.name;
+    var layerId = allPointsLayer.id;
+    var featureId = "";
+
+    for (var key in wfsLayer.features) {
+        var feature = wfsLayer.features[key];
+
+        // set the colour and make sure the show/hide all box is checked
+        var colour = colours[feature.attributes.animalId % colours.length];
+        $('#legend-colour-' + feature.attributes.animalId).attr('style', 'background-color: ' + colour + ';');
+        $('input[id=select-animal-' + feature.attributes.animalId + ']').attr('checked','checked');
+        
+        var checkboxValue = layerId + "-" + feature.id;
+        var checkboxId = checkboxValue.replace(/\./g,"");
+        
+        
+        
+	}    
+}
+
+*/
 
 function updateAnimalInfo(wfsLayer) {
     
@@ -317,7 +385,7 @@ function updateAnimalInfo(wfsLayer) {
                 $('#legend-colour-' + feature.attributes.animalId).attr('style', 'background-color: ' + colour + ';');
                 $('input[id=select-animal-' + feature.attributes.animalId + ']').attr('checked','checked');
                 
-                // add detail for this layer
+                // add detail for this layer 
                 
     	    	
                 var checkboxValue = layerId + "-" + feature.id;
@@ -326,17 +394,21 @@ function updateAnimalInfo(wfsLayer) {
                 var checkboxHtml = "<input type='checkbox' class='shortInputCheckbox' " 
                 				 + "id='select-feature-" + checkboxId + "' value='" + checkboxValue + "' checked='true'/></input>";
                 
-                var tableRowsHtml = "<b>&nbsp;&nbsp;" + layerName + "</b>"
-                		+ "<tr><td class='label'>Date From:</td><td>" + feature.attributes.fromDate + "</td></tr>"
+                var layerNameHtml = "<b>&nbsp;&nbsp;" + layerName + "</b>";
+                var tableRowsHtml ="";
+                
+                if (layerName.indexOf("All Detections") == -1) {
+                		tableRowsHtml =  "<table><tr><td class='label'>Date From:</td><td>" + feature.attributes.fromDate + "</td></tr>"
 	    		  		+ "<tr><td class='label'>Date To:</td><td>" + feature.attributes.toDate + "</td></tr>";
- 
+                }
+                
                 var distanceRowHtml = "";
                 if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.LineString") {
         	    	var distance = feature.geometry.getGeodesicLength(map.projection)/1000;
         	    	distanceRowHtml = "<tr><td class='label'>Minimum Distance: </td><td>" + Math.round(distance*1000)/1000 + "km </td></tr>";
                 }
                 
-                var html = "<table>" + tableRowsHtml + distanceRowHtml + "</table><br>";
+                var html = layerNameHtml + tableRowsHtml + distanceRowHtml + "</table><br>";
                 
                 $('#animalInfo-'+ feature.attributes.animalId).append(checkboxHtml + html);
  	            $('input[id=select-feature-' + checkboxId + ']').change(function() {
@@ -357,8 +429,8 @@ function createPointsLayer() {
         		 styleMap: startEndPointsStyleMap	
         		 });
 		
-	for (var key in allAnimalTracksLayer.features) {
-         var feature = allAnimalTracksLayer.features[key];
+	for (var key in allDetectionsLayer.features) {
+         var feature = allDetectionsLayer.features[key];
          if (feature.attributes) {
         	// add features
 	         var startPoint = new OpenLayers.Feature.Vector(feature.geometry.components[0]);
@@ -380,12 +452,22 @@ function createPointsLayer() {
 
 function zoomToTrack(animalId) {
 
+	for (var key in allDetectionsLayer.features) {
+	     var feature = allDetectionsLayer.features[key];
+	     if (feature.attributes && animalId == feature.attributes.animalId) {
+	       	map.zoomToExtent(feature.geometry.getBounds(),false);
+	     }
+	}
+
+	/*
 	for (var key in allAnimalTracksLayer.features) {
 	     var feature = allAnimalTracksLayer.features[key];
 	     if (feature.attributes && animalId == feature.attributes.animalId) {
 	       	map.zoomToExtent(feature.geometry.getBounds(),false);
 	     }
 	}
+	
+*/	
 }
 
 function getVectorLayers() {
