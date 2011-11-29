@@ -138,7 +138,8 @@ function initializeProjectMap() {
             styleMap: pointsStyleMap, 
             eventListeners: {
                 loadend: function (e) {
-            		updateAnimalInfo(allDetectionsLayer);
+                	map.zoomToExtent(allDetectionsLayer.getDataExtent(),false);
+                	updateAnimalInfo(allDetectionsLayer);
             		createTrajectoryLayer(allDetectionsLayer);
             		if (!pointsLayer) {createPointsLayer();}
             	}
