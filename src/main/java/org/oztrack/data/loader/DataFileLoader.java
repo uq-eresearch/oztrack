@@ -147,7 +147,7 @@ public class DataFileLoader {
         }
     }
     
-/*
+
     public void updateMetadata() throws FileProcessingException {
     	
         JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
@@ -156,9 +156,7 @@ public class DataFileLoader {
         if (projectUpdated != 1) {
             throw new FileProcessingException("Problem recalculating project metadata - bounding box or start and end dates.");
         }
-        
-
     }
 
-*/
+
 }

@@ -6,6 +6,7 @@ import org.oztrack.data.model.types.DataFileType;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -50,7 +51,7 @@ public class DataFile extends OztrackBaseEntity implements Serializable {
     @Column(columnDefinition = "TEXT")
     private String statusMessage;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade={}) //persist project yourself
     private Project project;
 
     @Transient

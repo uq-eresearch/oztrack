@@ -27,10 +27,12 @@ public class DataFileRunner {
         // get the next datafile waiting to be processed if there's not one processing at the moment
         DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
         DataFile dataFile = dataFileDao.getNextDataFile();
-
+        Long dataFileId; 
         if (dataFile != null) {
 
-            try {
+        	dataFileId = dataFile.getId();
+
+        	try {
 
                 dataFile.setStatus(DataFileStatus.PROCESSING);
                 dataFileDao.update(dataFile);
@@ -62,7 +64,8 @@ public class DataFileRunner {
 
             } catch (FileProcessingException e) {
 
-                dataFile.setStatus(DataFileStatus.FAILED);
+                dataFile = dataFileDao.getDataFileById(dataFileId);
+            	dataFile.setStatus(DataFileStatus.FAILED);
                 dataFile.setStatusMessage(e.toString());
 
                 // clean up on fail
@@ -75,8 +78,9 @@ public class DataFileRunner {
  //               jdbcAccess.truncateRawObservations(dataFile);
             }
 
-            dataFileDao.update(dataFile);//dataFileDao.refresh(dataFile);
-
+           dataFileDao.update(dataFile);
+           
+            
         }
     }
 

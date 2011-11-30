@@ -83,8 +83,13 @@ public class PositionFixFileLoader extends DataFileLoader {
 
                     headerMap.put(i,positionFixFileHeader);
 
-                    if (heading.contains("DATE") && !dateFieldFound) {
-                        dateFieldFound=true;
+//                    if (heading.contains("DATE") && !dateFieldFound) {
+                    if (  (heading.equals("ACQUISITIONTIME") 
+                    	|| heading.equals("DATE")	
+                    	|| heading.equals("LOCDATE")	
+                    	|| heading.equals("UTCDATE")	
+                       )&& !dateFieldFound) {
+                    	dateFieldFound=true;
                     }
 
                     if (heading.contains("LAT") && !latFieldFound) {
@@ -129,7 +134,6 @@ public class PositionFixFileLoader extends DataFileLoader {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy H:m:s");
-        Boolean foundDateFormat = false;
 
         try {
                while ((strLine = br.readLine()) != null) {
@@ -151,14 +155,13 @@ public class PositionFixFileLoader extends DataFileLoader {
 
                             PositionFixFileHeader positionFixFileHeader = headerMap.get(i);
                             switch (positionFixFileHeader) {
-                                case DATE:
+                            	case ACQUISITIONTIME:
+                            	case DATE:
                                 case LOCDATE:
                                 case UTCDATE:
                                        try {
-                                           //if (!foundDateFormat) {
                                            if (lineNumber == 2) {
                                         	   simpleDateFormat = findDateFormat(dataRow[i]);
-                                           // foundDateFormat = true;
                                            }
                                            Calendar calendar = Calendar.getInstance();
                                            try {
@@ -169,7 +172,7 @@ public class PositionFixFileLoader extends DataFileLoader {
                                            rawPositionFix.setDetectionTime(calendar.getTime());
                                        } catch (FileProcessingException e) {
                                             transaction.rollback();
-                                            throw new FileProcessingException(e.toString() + " at line : "  + lineNumber + " data element: "+ dataRow[i]);
+                                            throw new FileProcessingException(e.toString() + "Using date: "+ dataRow[i] + " from line : "  + lineNumber);
                                        }
                                     break;
                                 case TIME:
@@ -228,10 +231,21 @@ public class PositionFixFileLoader extends DataFileLoader {
                     }
                 }
 
-                // have lat/long now: create them
-                Point locationGeometry = findLocationGeometry(rawPositionFix.getLatitude(), rawPositionFix.getLongitude());
-                rawPositionFix.setLocationGeometry(locationGeometry);
-                entityManager.persist(rawPositionFix);
+                
+                if ((rawPositionFix.getLatitude() != null) && (rawPositionFix.getLongitude() != null)) {
+	                try {
+		                // have lat/long now: create them
+		                Point locationGeometry = findLocationGeometry(rawPositionFix.getLatitude(),rawPositionFix.getLongitude());
+		                rawPositionFix.setLocationGeometry(locationGeometry);
+	                } catch (Exception e) {
+	                	transaction.rollback();
+	                	throw new FileProcessingException("Problems at line number: " + lineNumber + " parsing these as Latitude/Longitude in WGS84: " + rawPositionFix.getLatitude() + "," + rawPositionFix.getLongitude());
+	                }
+                }
+
+                if ((rawPositionFix.getDetectionTime() != null) && (rawPositionFix.getLocationGeometry() != null)) {
+                    entityManager.persist(rawPositionFix);
+                }
 
             }
 
@@ -260,10 +274,10 @@ public class PositionFixFileLoader extends DataFileLoader {
         String backwardsDateDotsRegex = "(19[0-9][0-9]|20[0-9][0-9])\\.(0[1-9]|[1-9]|[12][0-9]|3[01])\\.(0[1-9]|[1-9]|[12][0-9]|3[01])";
         String backwardsDateDotsPattern = "yyyy.MM.dd";
         
-        String time24Regex =   ".(0[1-9]|[1-9]|[1][0-9]|2[0-3]).([1-9]|[0-5][1-9]).([1-9]|[0-5][0-9])" ;
+        String time24Regex =   ".(0[1-9]|[1-9]|[1][0-9]|2[0-3]).([1-9]|[0-5][0-9]).([1-9]|[0-5][0-9])" ;
         String time24Pattern = " H:m:s";
 
-        String time24MsRegex = ".(0[1-9]|[1-9]|[1][0-9]|2[0-3]).([1-9]|[0-5][1-9]).([1-9]|[0-5][0-9]).([0-9])+" ;
+        String time24MsRegex = ".(0[1-9]|[1-9]|[1][0-9]|2[0-3]).([1-9]|[0-5][0-9]).([1-9]|[0-5][0-9]).([0-9])+" ;
         String time24MsPattern = " H:m:s.S";
 
         if (dateString.matches(DateDotsRegex)) {
@@ -289,7 +303,7 @@ public class PositionFixFileLoader extends DataFileLoader {
 	    } else if (dateString.matches(backwardsDateDotsRegex + time24MsRegex)) {
 	        simpleDateFormat.applyPattern(backwardsDateDotsPattern + time24MsPattern);
 	    } else {
-	    	throw new FileProcessingException("Could not handle this date format: " + dateString + ". Please see the help screen");
+	    	throw new FileProcessingException("Could not handle this date format: " + dateString + ". Please see the help screen.");
 	    }
         
         return simpleDateFormat;
@@ -358,8 +372,6 @@ public class PositionFixFileLoader extends DataFileLoader {
         dataFile.setFirstDetectionDate(p.getDataFileFirstDetectionDate(dataFile));
         dataFile.setLastDetectionDate(p.getDataFileLastDetectionDate(dataFile));
         dataFileDao.update(dataFile);
-        
-    	
     }
 
 }
