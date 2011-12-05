@@ -78,102 +78,103 @@ public class DataFileFormController extends SimpleFormController {
     @Override
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
 
-        Project project = (Project) request.getSession().getAttribute("project");
+        User currentUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER);
         
-        ArrayList <String> fileHeaders = new ArrayList <String>();
+        if (currentUser == null) {
+        	
+        	ModelAndView modelAndView = new ModelAndView("redirect:login");
+        	return modelAndView;
+
+        } else {
+
+	    	Project project = (Project) request.getSession().getAttribute("project");
+	        ArrayList <String> fileHeaders = new ArrayList <String>();
+	        
+	        switch (project.getProjectType()) {
+	        	case GPS:
+	            	for (PositionFixFileHeader h : PositionFixFileHeader.values()) {
+	            		fileHeaders.add(h.toString());
+	            	}
+	            	break;
+	        	case PASSIVE_ACOUSTIC:
+	            	for (AcousticFileHeader h : AcousticFileHeader.values()) {
+	            		fileHeaders.add(h.toString());
+	            	}
+	            	break;
+	            default:
+	            	break;
+	        }
         
-        switch (project.getProjectType()) {
-        	case GPS:
-            	for (PositionFixFileHeader h : PositionFixFileHeader.values()) {
-            		fileHeaders.add(h.toString());
-            	}
-            	break;
-        	case PASSIVE_ACOUSTIC:
-            	for (AcousticFileHeader h : AcousticFileHeader.values()) {
-            		fileHeaders.add(h.toString());
-            	}
-            	break;
-            default:
-            	break;
+	        ModelAndView modelAndView = super.showForm(request, response, errors, controlModel);    //To change body of overridden methods use File | Settings | File Templates.
+	        modelAndView.addObject("fileHeaders", fileHeaders);
+	        modelAndView.addObject("project",project);
+	        return modelAndView;
+
+        
         }
         
-        
-        ModelAndView modelAndView = super.showForm(request, response, errors, controlModel);    //To change body of overridden methods use File | Settings | File Templates.
-        modelAndView.addObject("fileHeaders", fileHeaders);
-        modelAndView.addObject("project",project);
-        return modelAndView;
 
     }
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
 
-        DataFile dataFile = (DataFile) command;
+        /* we are here from datafiles.jsp : Add a Data File button
+        *  or datafiledetail.jsp: Retry link if FAILED */
+
+    	DataFile dataFile = (DataFile) command;
         MultipartFile file = dataFile.getFile();
         DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
-
-        //ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
-
-        /* from datafiles.jsp : Add a Data File button
-        *  or datafiledetail.jsp: Retry link if FAILED */
-        //String project_id=request.getParameter("project_id");
-        //logger.debug("adding file to project_id = " + project_id);
-        //Project project = projectDao.getProjectById(Long.parseLong(project_id));
-
-        Project project =  (Project) request.getSession().getAttribute("project");
-        //Project project = projectDao.getProjectById(sessionProject.getId());
-
-        // set dataFile details
-        dataFile.setSingleAnimalInFile(false);
-        dataFile.setUserGivenFileName(file.getOriginalFilename());
-        dataFile.setContentType(file.getContentType());
-        dataFile.setCreateDate(new java.util.Date());
-        dataFile.setUpdateDate(new java.util.Date());
-
-        //dataFile.setUploadUser(OzTrackApplication.getApplicationContext().getAuthenticationManager().getCurrentUser().getFullName());
-        User currentUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER);
-        //dataFile.setUploadUser(currentUser.getFullName() );
-        dataFile.setCreateUser(currentUser);
-        dataFile.setUpdateUser(currentUser);
-
-        // persist at project level
-        //Project project = (Project) request.getSession().getAttribute("project");
-        dataFile.setProject(project);
-        dataFileDao.save(dataFile);
-        
-//        List<DataFile> dataFiles = project.getDataFiles();
-//        dataFiles.add(dataFile);
-//        project.setDataFiles(dataFiles);
-//        projectDao.save(project);
-
-        // save the file to the data dir
-        String filePath = project.getDataDirectoryPath() + File.separator
-                         + "datafile-" + dataFile.getId().toString() + ".csv";
-
+        String filePath = null;
         ModelAndView modelAndView;
         
-        try {
-	        
-        	File saveFile = new File(filePath);
-	        saveFile.mkdirs();
-	        file.transferTo(saveFile);
-	        
-        } catch (IOException e) {
+        Project project =  (Project) request.getSession().getAttribute("project");
+        User currentUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER);
+
+        if ((project != null) && (currentUser != null)) {
         	
-        	// usually we should only arrive here if everything crashed during the file upload and we can't write over a failed file
-        	modelAndView = new ModelAndView("redirect:datafileadd");
-        	modelAndView.addObject("errorMessage", "There was a problem with uploading that file. Please try and create a new one.");
-        	dataFile.setStatus(DataFileStatus.INACTIVE);
-        	dataFile.setStatusMessage("There was a problem with this file upload and it has been discarded. Please try again.");
+	        dataFile.setSingleAnimalInFile(false);
+	        dataFile.setUserGivenFileName(file.getOriginalFilename());
+	        dataFile.setContentType(file.getContentType());
+	        dataFile.setCreateDate(new java.util.Date());
+	        dataFile.setUpdateDate(new java.util.Date());
+	        dataFile.setCreateUser(currentUser);
+	        dataFile.setUpdateUser(currentUser);
+	        dataFile.setProject(project);
+	        dataFileDao.save(dataFile);
+	
+	        // save the file to the data directory
+	        filePath = project.getDataDirectoryPath() + File.separator
+	                         + "datafile-" + dataFile.getId().toString() + ".csv";
+
+	        try {
+		        
+	        	File saveFile = new File(filePath);
+		        saveFile.mkdirs();
+		        file.transferTo(saveFile);
+		        
+	        } catch (IOException e) {
+	        	
+	        	// usually we should only arrive here if everything crashed during the file upload and we can't write over a failed file
+	        	modelAndView = new ModelAndView("redirect:datafileadd");
+	        	modelAndView.addObject("errorMessage", "There was a problem with uploading that file. Please try and create a new one.");
+	        	dataFile.setStatus(DataFileStatus.INACTIVE);
+	        	dataFile.setStatusMessage("There was a problem with this file upload and it has been discarded. Please try again.");
+	        }
+	        
+	        // ready to go now; poller will pick the job up
+	        dataFile.setOzTrackFileName(filePath);
+	        dataFile.setStatus(DataFileStatus.NEW);
+	        dataFileDao.update(dataFile);
+	        modelAndView = new ModelAndView(getSuccessView());
+
+        } else {
+
+        	modelAndView = new ModelAndView("redirect:login");
         }
         
-        // ready to go now; poller will pick the job up
-        dataFile.setOzTrackFileName(filePath);
-        dataFile.setStatus(DataFileStatus.NEW);
-        modelAndView = new ModelAndView(getSuccessView());
-
-
-        dataFileDao.update(dataFile);
+        
+        
         return modelAndView;
     }
 

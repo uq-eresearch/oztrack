@@ -815,12 +815,24 @@ tbody tr:hover {
 
 #registrationTable {
     width: 50%;
+}
+
+.infoTable {
+    margin: 10px;
+    font-size: 0.9em;
+}
+
+.infoTable  th {
+    font-weight: bold;
+    border: #263f00 solid 1px;
+    padding: 5px;
 
 }
 
-
-
-
+.infoTable  td {
+    border: #263f00 solid 1px;
+    padding: 5px;
+}
 
 
 

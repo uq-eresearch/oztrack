@@ -44,9 +44,14 @@ public class ProjectFormController extends SimpleFormController {
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
 
         User currentUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER);
+        String errorMessage = "";
         
         if (currentUser == null) {
-        	return new ModelAndView("redirect:login");
+        	errorMessage = "You need to be logged in to create a project.";
+        	ModelAndView modelAndView = new ModelAndView("redirect:login");
+        	modelAndView.addObject("errorMessage", errorMessage);
+        	return modelAndView;
+        	//return new ModelAndView("redirect:login");
         } else {
         	return super.showForm(request, response, errors, controlModel);    //To change body of overridden methods use File | Settings | File Templates.
     	}

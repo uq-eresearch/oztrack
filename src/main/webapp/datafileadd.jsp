@@ -94,7 +94,7 @@ This file contains data for a single tagged animal only.
 <h2>Uploading Files</h2>
 <ul>
 <li>Format
-	<p>All files must be CSV - comma separated only.</p>
+	<p><b>All files must be CSV - comma separated only. </b> Excel files will not work. Please convert any .xls or .xlsx file into a CSV before proceeding.</p>
 	<p>OzTrack expects that files will contain particular headers, depending on the type of project specified when the project was created. 
 	Because this project is for <b><c:out value="${project.projectType.displayName}"/></b>, the headers in the file can be any of the 
 	following (spaces and non alphanumeric characters are ignored): <br><br>
@@ -106,9 +106,52 @@ This file contains data for a single tagged animal only.
 	<p>Date formats that can be read:</p>
 	    <ul>
 	        <li><span>dd/MM/yyyy H:mi:s.S</span></li>
+	        <li><span>dd/MM/yyyy H:mi:s</span></li>
+	        <li><span>dd/MM/yyyy</span></li>
 	        <li><span>dd.MM.yyyy H:mi:s.S</span></li>
+	        <li><span>dd.MM.yyyy H:mi:s</span></li>
+	        <li><span>dd.MM.yyyy</span></li>
+	        <li><span>yyyy.MM.dd H:mi:s.S</span></li>
+	        <li><span>yyyy.MM.dd H:mi:s</span></li>
+	        <li><span>yyyy.MM.dd</span></li>
 	    </ul>
-	 <br>
+		
+		<table class="infoTable">
+			<tr><th>Field</th>
+				<th>Description</th>
+				<th>Example</th></tr>
+				
+			<tr><td>dd</td>
+				<td>day in month (number)</td>
+				<td>01, 1, 31, 08</td></tr>
+			
+			<tr><td>MM</td>
+				<td>month (number)</td>
+				<td>01, 1, 12, 6, 06</td></tr>
+
+			<tr><td>yyyy</td>
+				<td>year (4 digit number)</td>
+				<td>1997, 2011</td></tr>
+
+			<tr><td>H</td>
+				<td>hour in day (0-23)</td>
+				<td>00, 23, 16</td></tr>
+
+			<tr><td>mi</td>
+				<td>minute in hour (0-60)</td>
+				<td>00, 01, 1, 58</td></tr>
+			
+			<tr><td>s</td>
+				<td>second in hour (0-60)</td>
+				<td>00, 01, 1, 58</td></tr>
+			
+			<tr><td>S</td>
+				<td>millisecond</td>
+				<td>00, 01234, 1234</td></tr>
+		
+		</table>
+	<p>Note: OzTrack will look for the headings specified above to populate the date and time fields. The date fields above (including AcquisitionTime) can contain either 
+	   a date or a date & time stamp. The time stamp can be in a separate field to the date, but the date field must precede it (left to right). </p>
 </li>
 <li>Spatial Coordinates
 	<p>At this stage we accept only decimal Lat/Longs in projection EPSG:4326.</p>
