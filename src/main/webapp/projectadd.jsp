@@ -1,9 +1,19 @@
 <%@ include file="header.jsp" %>
 
-<h1>Create a New Project</h1>
+<c:choose>
+<c:when test="${param.update}">
+	<h1>Update Project Details</h1>
+</c:when>
+<c:otherwise>
+	<h1>Create a New Project</h1>
+</c:otherwise>
+</c:choose>
 
+<!-- 
 <p>As a condition of use of OzTrack, the information collected in this form is registered with the
 Australian National Data Service, ANDS.</p>
+ -->
+
 <form:form commandName="project" method="POST" name="project"  enctype="multipart/form-data">
 
 <div class="formSubheader">Project Metadata</div>
@@ -45,10 +55,10 @@ Australian National Data Service, ANDS.</p>
 
 <form:select path="projectType">
     <form:option value="GPS">GPS Based Telemetry</form:option>
-    <form:option value="PASSIVE_ACOUSTIC">Passive Acoustic Telemetry</form:option>
+    <!--<form:option value="PASSIVE_ACOUSTIC">Passive Acoustic Telemetry</form:option>
     <form:option value="ACTIVE_ACOUSTIC">Active Acoustic Telemetry</form:option>
     <form:option value="ARGOS">ARGOS Telemetry</form:option>
-    <form:option value="RADIO">Radio Telemetry</form:option>
+    <form:option value="RADIO">Radio Telemetry</form:option> -->
 </form:select>
 </div>
 
@@ -57,16 +67,11 @@ Australian National Data Service, ANDS.</p>
 	<span><b>Location Description:</b><br> The general area of the study, eg. country, state, town. 
 	</span></a>
 	</div>
-	
+
 <div>
 <label for="spatialCoverageDescr">Location Description:</label>
 <form:input path="spatialCoverageDescr" id="spatialCoverageDescr"/>
 <form:errors path="spatialCoverageDescr" cssClass="formErrors"/>
-</div>
-
-<div class="checkboxDiv">
-<form:checkbox cssClass="checkbox" path="isGlobal" id="isGlobal"/>
-The data in this project is to be publicly available via OzTrack.
 </div>
 
 <div class="formSubheader">Species</div>
@@ -84,6 +89,12 @@ The data in this project is to be publicly available via OzTrack.
 </div>
 
 <div class="formSubheader">Data Contact</div>
+
+	<div class="help">
+	<a class=info href="#"><img src="images/help.png" border="0">
+	<span><b>Contact:</b><br> This person is the contact for the data and becomes the Agent specified in the ANDS Collection Registry. 
+	</span></a>
+	</div>
 
 <div>
 <label for="contactGivenName">Given Name:</label>
@@ -138,14 +149,39 @@ The data in this project is to be publicly available via OzTrack.
 <form:errors path="publicationUrl" cssClass="formErrors"/>
 </div>
 
-<div>
-<label></label>
-<div class="formButton"><input type="submit" value="Create OzTrack Project"/></div>
-</div>
+<c:choose>
+<c:when test="${param.update}">
+	<div class="formSubheader">Data Availability</div>
+	
+		<div class="help">
+		<a class=info href="#"><img src="images/help.png" border="0">
+		<span><b>Availability:</b><br> This person is the contact for the data and becomes the Agent specified in the ANDS Collection Registry. 
+		</span></a>
+		</div>
+	
+	<div class="checkboxDiv">
+	<form:checkbox cssClass="checkbox" path="isGlobal" id="isGlobal"/>
+	The data in this project is to be made publicly available via OzTrack.
+	</div>
+	
+	<div>
+	<label></label>
+	<div class="formButton"><input type="submit" value="Update Project"/></div>
+	<div class="formButton"><input type="submit" value="Update Project And Publish Metadata to ANDS"/></div>
+	</div>
+	
+	
+</c:when>
+<c:otherwise>
+	<div>
+	<label></label>
+	<div class="formButton"><input type="submit" value="Create OzTrack Project"/></div>
+	</div>
+</c:otherwise>
+</c:choose>
 
-</table>
 
-</fieldset>
+
 </form:form>
 
 

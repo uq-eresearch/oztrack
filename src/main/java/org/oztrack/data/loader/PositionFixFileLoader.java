@@ -274,34 +274,43 @@ public class PositionFixFileLoader extends DataFileLoader {
         String backwardsDateDotsRegex = "(19[0-9][0-9]|20[0-9][0-9])\\.(0[1-9]|[1-9]|[12][0-9]|3[01])\\.(0[1-9]|[1-9]|[12][0-9]|3[01])";
         String backwardsDateDotsPattern = "yyyy.MM.dd";
         
-        String time24Regex =   ".(0[1-9]|[1-9]|[1][0-9]|2[0-3]).([1-9]|[0-5][0-9]).([1-9]|[0-5][0-9])" ;
-        String time24Pattern = " H:m:s";
+        String timeRegexHM =   ".(0[0-9]|[0-9]|[1][0-9]|2[0-3]).([0-9]|[0-5][0-9])" ;
+        String timePatternHM = " H:m";
 
-        String time24MsRegex = ".(0[1-9]|[1-9]|[1][0-9]|2[0-3]).([1-9]|[0-5][0-9]).([1-9]|[0-5][0-9]).([0-9])+" ;
-        String time24MsPattern = " H:m:s.S";
+        String timeRegexHMS =   ".(0[0-9]|[0-9]|[1][0-9]|2[0-3]).([0-9]|[0-5][0-9]).([0-9]|[0-5][0-9])" ;
+        String timePatternHMS = " H:m:s";
+
+        String timeRegexHMSMs = ".(0[0-9]|[0-9]|[1][0-9]|2[0-3]).([0-9]|[0-5][0-9]).([0-9]|[0-5][0-9]).([0-9])+" ;
+        String timePatternHMSMs = " H:m:s.S";
 
         if (dateString.matches(DateDotsRegex)) {
             	simpleDateFormat.applyPattern(dateDotsPattern);
-        } else if (dateString.matches(DateDotsRegex + time24Regex)) {
-            	simpleDateFormat.applyPattern(dateDotsPattern + time24Pattern);
-        } else if (dateString.matches(DateDotsRegex + time24MsRegex)) {
-                simpleDateFormat.applyPattern(dateDotsPattern + time24MsPattern);
+        } else if (dateString.matches(DateDotsRegex + timeRegexHM)) {
+        		simpleDateFormat.applyPattern(dateDotsPattern + timePatternHM);
+        } else if (dateString.matches(DateDotsRegex + timeRegexHMS)) {
+            	simpleDateFormat.applyPattern(dateDotsPattern + timePatternHMS);
+        } else if (dateString.matches(DateDotsRegex + timeRegexHMSMs)) {
+                simpleDateFormat.applyPattern(dateDotsPattern + timePatternHMSMs);
         
         // date with slashes        
         } else if (dateString.matches(dateSlashesRegex)) {
             	simpleDateFormat.applyPattern(dateSlashesPattern);
-        } else if (dateString.matches(dateSlashesRegex + time24Regex)) {
-                simpleDateFormat.applyPattern(dateSlashesPattern + time24Pattern);
-        } else if (dateString.matches(dateSlashesRegex + time24MsRegex)) {
-                simpleDateFormat.applyPattern(dateSlashesPattern + time24MsPattern);
+        } else if (dateString.matches(dateSlashesRegex + timeRegexHM)) {
+            	simpleDateFormat.applyPattern(dateSlashesPattern + timePatternHM);
+        } else if (dateString.matches(dateSlashesRegex + timeRegexHMS)) {
+                simpleDateFormat.applyPattern(dateSlashesPattern + timePatternHMS);
+        } else if (dateString.matches(dateSlashesRegex + timeRegexHMSMs)) {
+                simpleDateFormat.applyPattern(dateSlashesPattern + timePatternHMSMs);
         
 	    // year first with dots
         } else if (dateString.matches(backwardsDateDotsRegex)) {
 	    	simpleDateFormat.applyPattern(backwardsDateDotsPattern);
-	    } else if (dateString.matches(backwardsDateDotsRegex + time24Regex)) {
-	        simpleDateFormat.applyPattern(backwardsDateDotsPattern + time24Pattern);
-	    } else if (dateString.matches(backwardsDateDotsRegex + time24MsRegex)) {
-	        simpleDateFormat.applyPattern(backwardsDateDotsPattern + time24MsPattern);
+	    } else if (dateString.matches(backwardsDateDotsRegex + timeRegexHM)) {
+	        simpleDateFormat.applyPattern(backwardsDateDotsPattern + timePatternHM);
+	    } else if (dateString.matches(backwardsDateDotsRegex + timeRegexHMS)) {
+	        simpleDateFormat.applyPattern(backwardsDateDotsPattern + timePatternHMS);
+	    } else if (dateString.matches(backwardsDateDotsRegex + timeRegexHMSMs)) {
+	        simpleDateFormat.applyPattern(backwardsDateDotsPattern + timePatternHMSMs);
 	    } else {
 	    	throw new FileProcessingException("Could not handle this date format: " + dateString + ". Please see the help screen.");
 	    }

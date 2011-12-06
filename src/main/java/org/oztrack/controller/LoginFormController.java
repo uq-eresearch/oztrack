@@ -35,7 +35,7 @@ public class LoginFormController extends SimpleFormController {
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
 
         User user = (User) command;
-        logger.debug("Login User " + user.getUsername());
+        logger.info("Login User: " + user.getUsername());
 
         // set user for this session
         UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();

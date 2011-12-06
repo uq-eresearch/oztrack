@@ -4,19 +4,15 @@ import org.oztrack.app.Constants;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
-import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.User;
-import org.oztrack.data.model.types.AcousticFileHeader;
-import org.oztrack.data.model.types.PositionFixFileHeader;
 
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
-import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -69,9 +65,8 @@ public class ProjectDetailController implements Controller {
 		        
 		        httpServletRequest.getSession().setAttribute("project", project);
 		        String modelAndViewName = "projectdetail";
-		        if (httpServletRequest.getRequestURI().contains("datafiles")) {
-		            modelAndViewName = "datafiles";
-		        } else if (httpServletRequest.getRequestURI().contains("projectmap")) {
+		        
+		        if (httpServletRequest.getRequestURI().contains("projectmap")) {
 		            modelAndViewName = "projectmap";
 		        } else if (httpServletRequest.getRequestURI().contains("projectanimals")) {
 		            modelAndViewName = "projectanimals";
@@ -81,6 +76,7 @@ public class ProjectDetailController implements Controller {
 		        List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
 		        DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
 		        List<DataFile> dataFileList = dataFileDao.getDataFilesByProject(project);
+		        
 		        modelAndView = new ModelAndView(modelAndViewName);
 		        modelAndView.addObject("errorStr", errorMessage);
 		        modelAndView.addObject("project", project);
@@ -95,44 +91,5 @@ public class ProjectDetailController implements Controller {
         
         return modelAndView;
 	}
-
- /*       Long project_id;
-
-        if (httpServletRequest.getParameter("project_id") == null) {
-            Project tempProject =  (Project) httpServletRequest.getSession().getAttribute("project");
-            project_id = tempProject.getId();
-        } else {
-            project_id = Long.parseLong(httpServletRequest.getParameter("project_id"));
-        }
-
-        ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
-        Project project = projectDao.getProjectById(project_id);
-        httpServletRequest.getSession().setAttribute("project", project);
-
-        if (project ==  null) {
-                errorMessage = "Couldn't find any project sorry.";
-        }
-
-
-        if (httpServletRequest.getRequestURI().contains("datafiles")) {
-            modelAndViewName = "datafiles";
-        } else if (httpServletRequest.getRequestURI().contains("projectmap")) {
-            modelAndViewName = "projectmap";
-        }
-        // get a list of animals for the form to use
-        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
-        List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
-        
-        DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
-        List<DataFile> dataFileList = dataFileDao.getDataFilesByProject(project);
-        
-        ModelAndView modelAndView = new ModelAndView(modelAndViewName);
-        modelAndView.addObject("errorStr", errorMessage);
-        modelAndView.addObject("project", project);
-        modelAndView.addObject("projectAnimalsList", projectAnimalsList);
-        modelAndView.addObject("dataFileList", dataFileList);
-        
-        return modelAndView;
-    }*/
 
 }

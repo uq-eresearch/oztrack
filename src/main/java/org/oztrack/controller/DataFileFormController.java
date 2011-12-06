@@ -78,38 +78,47 @@ public class DataFileFormController extends SimpleFormController {
     @Override
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
 
-        User currentUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER);
+        ModelAndView modelAndView;
+    	User currentUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER);
         
         if (currentUser == null) {
         	
-        	ModelAndView modelAndView = new ModelAndView("redirect:login");
+        	modelAndView = new ModelAndView("redirect:login");
         	return modelAndView;
 
         } else {
 
 	    	Project project = (Project) request.getSession().getAttribute("project");
-	        ArrayList <String> fileHeaders = new ArrayList <String>();
 	        
-	        switch (project.getProjectType()) {
-	        	case GPS:
-	            	for (PositionFixFileHeader h : PositionFixFileHeader.values()) {
-	            		fileHeaders.add(h.toString());
-	            	}
-	            	break;
-	        	case PASSIVE_ACOUSTIC:
-	            	for (AcousticFileHeader h : AcousticFileHeader.values()) {
-	            		fileHeaders.add(h.toString());
-	            	}
-	            	break;
-	            default:
-	            	break;
-	        }
-        
-	        ModelAndView modelAndView = super.showForm(request, response, errors, controlModel);    //To change body of overridden methods use File | Settings | File Templates.
-	        modelAndView.addObject("fileHeaders", fileHeaders);
-	        modelAndView.addObject("project",project);
-	        return modelAndView;
-
+	    	if (project != null) {
+	    		
+		    	ArrayList <String> fileHeaders = new ArrayList <String>();
+		        
+		        switch (project.getProjectType()) {
+		        	case GPS:
+		            	for (PositionFixFileHeader h : PositionFixFileHeader.values()) {
+		            		fileHeaders.add(h.toString());
+		            	}
+		            	break;
+		        	case PASSIVE_ACOUSTIC:
+		            	for (AcousticFileHeader h : AcousticFileHeader.values()) {
+		            		fileHeaders.add(h.toString());
+		            	}
+		            	break;
+		            default:
+		            	break;
+		        }
+	        
+		        modelAndView = super.showForm(request, response, errors, controlModel);    //To change body of overridden methods use File | Settings | File Templates.
+		        modelAndView.addObject("fileHeaders", fileHeaders);
+		        modelAndView.addObject("project",project);
+		        return modelAndView;
+		        
+	    	} else {
+	    		modelAndView = new ModelAndView("projects");
+	    		return modelAndView;
+	    	}
+	    	
         
         }
         

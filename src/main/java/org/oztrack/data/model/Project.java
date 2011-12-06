@@ -31,21 +31,21 @@ public class Project extends OztrackBaseEntity implements Serializable {
     
     @Column(unique = true)
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String description;
     private boolean isGlobal;
     private String spatialCoverageDescr;
-    private String temporalCoverageDescr;
     private String contactGivenName;
     private String contactFamilyName;
     private String contactOrganisation;
     private String contactEmail;
+    @Column(columnDefinition = "TEXT")
     private String contactUrl;
-    private String custodianName;
-    private String custodianOrganisation;
-    private String custodianEmail;
-    private String custodianUrl;
+    @Column(columnDefinition = "TEXT")
     private String publicationTitle;
+    @Column(columnDefinition = "TEXT")
     private String publicationUrl;
+    @Column(columnDefinition = "TEXT")
     private String dataDirectoryPath;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.project", cascade =
@@ -53,12 +53,6 @@ public class Project extends OztrackBaseEntity implements Serializable {
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
     org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
     private List<ProjectUser> projectUsers = new LinkedList<ProjectUser>();
-
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade =
-//    {CascadeType.PERSIST, CascadeType.MERGE})
-//    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
-//    org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
-//    private List<DataFile> dataFiles = new LinkedList<DataFile>();
 
     @Enumerated(STRING)
     @Column(name="projecttype")
@@ -119,17 +113,10 @@ public class Project extends OztrackBaseEntity implements Serializable {
         this.isGlobal = isGlobal;
     }
 
-    public String getCustodianName() {
-        return custodianName;
-    }
-
-    public void setCustodianName(String custodianName) {
-        this.custodianName = custodianName;
-    }
-
     public String getContactGivenName() {
 		return contactGivenName;
 	}
+    
 	public void setContactGivenName(String contactGivenName) {
 		this.contactGivenName = contactGivenName;
 	}
@@ -163,14 +150,6 @@ public class Project extends OztrackBaseEntity implements Serializable {
         this.spatialCoverageDescr = spatialCoverageDescr;
     }
 
-    public String getTemporalCoverageDescr() {
-        return temporalCoverageDescr;
-    }
-
-    public void setTemporalCoverageDescr(String temporalCoverageDescr) {
-        this.temporalCoverageDescr = temporalCoverageDescr;
-    }
-
     public String getContactOrganisation() {
         return contactOrganisation;
     }
@@ -193,30 +172,6 @@ public class Project extends OztrackBaseEntity implements Serializable {
 
     public void setContactUrl(String contactUrl) {
         this.contactUrl = contactUrl;
-    }
-
-    public String getCustodianOrganisation() {
-        return custodianOrganisation;
-    }
-
-    public void setCustodianOrganisation(String custodianOrganisation) {
-        this.custodianOrganisation = custodianOrganisation;
-    }
-
-    public String getCustodianEmail() {
-        return custodianEmail;
-    }
-
-    public void setCustodianEmail(String custodianEmail) {
-        this.custodianEmail = custodianEmail;
-    }
-
-    public String getCustodianUrl() {
-        return custodianUrl;
-    }
-
-    public void setCustodianUrl(String custodianUrl) {
-        this.custodianUrl = custodianUrl;
     }
 
     public String getPublicationTitle() {

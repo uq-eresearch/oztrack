@@ -3,6 +3,7 @@ package org.oztrack.data.model;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+
 import java.io.Serializable;
 import java.sql.Time;
 import java.util.Date;
@@ -32,10 +33,13 @@ public class Sighting implements Serializable {
 
     private double latitude;
     private double longitude;
+    @Column(columnDefinition = "TEXT")
     private String localityDescription;
     private String speciesCommonName;
     private String speciesScientificName;
+    @Column(columnDefinition = "TEXT")
     private String animalDescription;
+    @Column(columnDefinition = "TEXT")
     private String comments;
     private String contactName;
     private String contactEmail;

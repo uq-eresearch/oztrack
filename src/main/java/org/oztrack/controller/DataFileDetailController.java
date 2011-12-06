@@ -1,13 +1,17 @@
 package org.oztrack.controller;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.oztrack.app.Constants;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.DataFile;
+import org.oztrack.data.model.Project;
+import org.oztrack.data.model.User;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -29,23 +33,38 @@ public class DataFileDetailController implements Controller {
     @Override
     public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
 
-        logger.debug("Parm datafile_id = " + httpServletRequest.getParameter("datafile_id"));
-        String errorStr = null;
-
-        DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
-        DataFile dataFile = dataFileDao.getDataFileById(Long.parseLong(httpServletRequest.getParameter("datafile_id")));
-        dataFileDao.refresh(dataFile);
-
-        if (dataFile == null) {
-            errorStr = "Couldn't find anything on that file sorry";
-        }
+        ModelAndView modelAndView = new ModelAndView("datafiles");
+        String errorMessage = null;
         
+        Project sessionProject = (Project) httpServletRequest.getSession().getAttribute("project");
+        User sessionUser = (User) httpServletRequest.getSession().getAttribute(Constants.CURRENT_USER);
+        DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
+        
+        if (sessionUser == null) {
+        	
+        	modelAndView = new ModelAndView("redirect:login");
+        
+        } else {
 
-        ModelAndView modelAndView = new ModelAndView("datafiledetail");
-        modelAndView.addObject("errorStr", errorStr);
-        modelAndView.addObject("dataFile", dataFile);
-
+        	if (httpServletRequest.getRequestURI().contains("datafiles")) {
+	            
+        		modelAndView = new ModelAndView("datafiles");
+		        List<DataFile> dataFileList = dataFileDao.getDataFilesByProject(sessionProject);
+		        modelAndView.addObject("dataFileList", dataFileList);
+	        
+        	} else if (httpServletRequest.getRequestURI().contains("datafiledetail")) {
+	            
+        		modelAndView = new ModelAndView("datafiledetail");
+	            DataFile dataFile = dataFileDao.getDataFileById(Long.parseLong(httpServletRequest.getParameter("datafile_id")));
+	            dataFileDao.refresh(dataFile);
+	            modelAndView.addObject("dataFile", dataFile);
+	            
+	            if (dataFile == null) {
+	            	errorMessage = "Couldn't find anything on that file sorry";
+	            }
+	        }
+        }	
+        
         return modelAndView;
     }
-
 }

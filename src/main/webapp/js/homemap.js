@@ -133,16 +133,17 @@ function buildPopup(e) {
 
 	var f = e.feature;
 	var layer = f.layer;
-	var firstDate = f.attributes.firstDetectionDate.split(" ")[0];
-	var lastDate = f.attributes.lastDetectionDate.split(" ")[0];
+	var firstDate = f.attributes.firstDetectionDate;//.split(" ")[0];
+	var lastDate = f.attributes.lastDetectionDate;//.split(" ")[0];
+	var projectId = f.attributes.projectId;
 	var popupHtml = "<div class='homeMapPopup'>" 
 				  + "<h3>" + f.attributes.projectTitle + "</h3>"
-				  + "<ul><li>" + f.attributes.speciesCommonName + "</li>"
-				  + "<li>" + f.attributes.spatialCoverageDescr + "</li>"
-				  + "<li>" + firstDate + " to " + lastDate + "</li></ul>"
+				  + "<p><b>Species: </b><br>" + f.attributes.speciesCommonName + "</p>"
+				  + "<p><b>Coverage: </b><br>" + f.attributes.spatialCoverageDescr + "</p>"
+				  + "<p><b>Date Range: </b><br>" + firstDate + " to " + lastDate + "</p>"
+				  + "<p><a href='projectdetailext?project_id=" + projectId + "'>more</a> ...</p>"
 				  + "</div>";
 
-	var projectId = f.attributes.projectId;
 	var popup = new OpenLayers.Popup.AnchoredBubble(
             projectId, 
             f.geometry.getBounds().getCenterLonLat(),
@@ -151,7 +152,7 @@ function buildPopup(e) {
             null,
             true
         );
-	//popup.autoSize = true;
+	popup.autoSize = true;
 	popup.setBackgroundColor("#FBFEE9");
 	popup.setOpacity("0.9");
 	popup.closeOnMove = true;
@@ -159,7 +160,6 @@ function buildPopup(e) {
 	
 	return popup;
 }
-
 
 
 function initStyles() {

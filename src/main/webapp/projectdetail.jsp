@@ -3,7 +3,7 @@
 
 <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
 
-<h2>Summary</h2>
+<h2>Data Summary</h2>
 <c:choose>
  
  <c:when test="${(empty dataFileList)}">
@@ -40,9 +40,8 @@
 <tr><td class="projectFieldName">Project Type:</td><td><c:out value="${project.projectType.displayName}"/></td></tr>
 <tr><td class="projectFieldName">Contact:</td><td><c:out value="${project.contactGivenName}"/><c:out value="${project.contactFamilyName}"/><br><c:out value="${project.contactUrl}"/></td></tr>
 <tr><td class="projectFieldName">Spatial Coverage:</td><td><c:out value="${project.spatialCoverageDescr}"/></td></tr>
-<tr><td class="projectFieldName">Temporal Coverage:</td><td><c:out value="${project.temporalCoverageDescr}"/></td></tr>
 <tr><td class="projectFieldName">Publications:</td><td><i><c:out value="${project.publicationTitle}"/></i><br> <c:out value="${project.publicationUrl}"/></td></tr>
-<tr><td class="projectFieldName"></td><td><a class="oztrackButton" href="#">Edit</a><br><br></td></tr>
+<tr><td class="projectFieldName"></td><td><a class="oztrackButton" href="<c:url value="projectadd"><c:param name="update" value="${true}"/><c:param name="id" value="${project.id}"/></c:url>">Edit</a><br><br></td></tr>
 
 </table>
 

@@ -31,7 +31,8 @@
   <bean name="/users" class="org.oztrack.controller.UserListController"/>
   <bean name="/projects" class="org.oztrack.controller.ProjectListController"/>
   <bean name="/projectdetail" class="org.oztrack.controller.ProjectDetailController"/>
-  <bean name="/datafiles" class="org.oztrack.controller.ProjectDetailController"/>
+  <bean name="/projectdetailext" class="org.oztrack.controller.ProjectDetailExtController"/>
+  <bean name="/datafiles" class="org.oztrack.controller.DataFileDetailController"/>
   <bean name="/projectanimals" class="org.oztrack.controller.ProjectDetailController"/>
   <bean name="/projectreceivers" class="org.oztrack.controller.ProjectReceiversController"/>
   <bean name="/datafiledetail" class="org.oztrack.controller.DataFileDetailController"/>

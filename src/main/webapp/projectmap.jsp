@@ -35,15 +35,15 @@
  		
 				<div id="animalHeader">	            	
 	            	<div class="column animalCheckbox">
-	            		<input style="float:left;" type="checkbox" class="shortInputCheckbox" name="animalCheckbox" id="select-animal-${animal.projectAnimalId}" value="${animal.projectAnimalId}">
+	            		<input style="float:left;" type="checkbox" class="shortInputCheckbox" name="animalCheckbox" id="select-animal-${animal.id}" value="${animal.id}">
 	                    <script type="text/javascript">
-	                        $('input[id=select-animal-${animal.projectAnimalId}]').change(function() {
-	                                toggleAllAnimalFeatures("${animal.projectAnimalId}",this.checked);
+	                        $('input[id=select-animal-${animal.id}]').change(function() {
+	                                toggleAllAnimalFeatures("${animal.id}",this.checked);
 	                        });
 	                    </script>
 	            	</div>
             	
-            		<div class="column smallSquare" id="legend-colour-${animal.projectAnimalId}"></div>
+            		<div class="column smallSquare" id="legend-colour-${animal.id}"></div>
             		
 	            	<div class="column animalLabel">
 	            		${animal.animalName}
@@ -54,11 +54,11 @@
             		</div>
 
 	            	<div class="column zoom">
-	        			<a href="#" onclick="zoomToTrack(${animal.projectAnimalId});">Zoom</a>&nbsp;&nbsp;
+	        			<a href="#" onclick="zoomToTrack(${animal.id});">Zoom</a>&nbsp;&nbsp;
 	            	</div>
             		
                 </div>
-                <div id="animalInfo-${animal.projectAnimalId}" class="animalInfo">
+                <div id="animalInfo-${animal.id}" class="animalInfo">
                      <a style="float:right; margin-right:10px;" href="<c:url value="exportKML"><c:param name="projectId" value="${project.id}"/><c:param name="animalId" value="${animal.id}"/></c:url>">KML</a> 
 				</div>
                 

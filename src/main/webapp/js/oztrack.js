@@ -81,6 +81,11 @@ $(document).ready(function(){
     if (thisPath.indexOf(";jsessionid=",0) != -1) {
         thisPath = thisPath.substring(0,thisPath.indexOf(";jsessionid="));
     }
+    
+    if (thisPath.indexOf("?",0) != -1) {
+        thisPath = thisPath.substring(0,thisPath.indexOf("?"));
+    }
+
 
     var homeUrl = $('#homeUrl').attr('href');
     var homeCrumb = '<a href="' + homeUrl + '">Home</a>';
@@ -91,6 +96,11 @@ $(document).ready(function(){
         case "home":
             breadcrumb = '<span class="aCrumb">Home</span>';
             $('#navHome').css('color','#f7a700');
+            break;
+        case "projectdetailext":
+        	var projectTitle = $('#projectTitle').html();
+            breadcrumb = breadcrumb + ' &rsaquo; <span class="aCrumb">Project Detail: ' + projectTitle + '</span>';
+            $('#navTrack').css('color','#f7a700');
             break;
         case "login":
             breadcrumb = breadcrumb + ' &rsaquo; <span class="aCrumb">Login</span>';

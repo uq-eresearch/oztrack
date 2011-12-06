@@ -41,6 +41,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipOutputStream;
@@ -148,6 +149,7 @@ public class WFSMapQueryView extends AbstractView {
         simpleFeatureTypeBuilder.add("fromDate", Date.class);
         simpleFeatureTypeBuilder.add("toDate", Date.class);
         simpleFeatureTypeBuilder.add("animalId",String.class);
+        simpleFeatureTypeBuilder.add("projectAnimalId",String.class);
         simpleFeatureTypeBuilder.add("animalName",String.class);
         simpleFeatureTypeBuilder.add("startPoint", Point.class, srid);
         simpleFeatureTypeBuilder.add("endPoint", Point.class, srid);
@@ -202,7 +204,8 @@ public class WFSMapQueryView extends AbstractView {
             }
             featureBuilder.set("fromDate",animalTrack.fromDate);
             featureBuilder.set("toDate",animalTrack.toDate);
-            featureBuilder.set("animalId", animalTrack.animal.getProjectAnimalId());
+            featureBuilder.set("animalId", animalTrack.animal.getId());
+            featureBuilder.set("projectAnimalId", animalTrack.animal.getProjectAnimalId());
             featureBuilder.set("animalName",animalTrack.animal.getAnimalName());
             featureBuilder.set("startPoint", geometryFactory.createPoint(animalTrack.startPoint));
             featureBuilder.set("endPoint", geometryFactory.createPoint(animalTrack.endPoint));
@@ -238,8 +241,8 @@ public class WFSMapQueryView extends AbstractView {
         simpleFeatureTypeBuilder.add("projectId", String.class);
         simpleFeatureTypeBuilder.add("projectTitle", String.class);
         simpleFeatureTypeBuilder.add("projectDescription", String.class);
-        simpleFeatureTypeBuilder.add("firstDetectionDate",Date.class);
-        simpleFeatureTypeBuilder.add("lastDetectionDate",Date.class);
+        simpleFeatureTypeBuilder.add("firstDetectionDate",String.class);
+        simpleFeatureTypeBuilder.add("lastDetectionDate",String.class);
        // simpleFeatureTypeBuilder.add("imageURL", String.class);
         simpleFeatureTypeBuilder.add("spatialCoverageDescr", String.class);
         simpleFeatureTypeBuilder.add("speciesCommonName", String.class);
@@ -250,13 +253,15 @@ public class WFSMapQueryView extends AbstractView {
         for (Project project : projectList) {
 
         	if (project.getBoundingBox() != null) {
+        		
+        		SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy");
         	
         		featureBuilder.set("projectBoundingBox",project.getBoundingBox());
         		featureBuilder.set("projectId", project.getId().toString());
         		featureBuilder.set("projectTitle", project.getTitle());
 	        	featureBuilder.set("projectDescription", project.getDescription());
-	        	featureBuilder.set("firstDetectionDate", project.getFirstDetectionDate());
-	        	featureBuilder.set("lastDetectionDate", project.getLastDetectionDate());
+	        	featureBuilder.set("firstDetectionDate", sdf.format(project.getFirstDetectionDate()));
+	        	featureBuilder.set("lastDetectionDate", sdf.format(project.getLastDetectionDate()));
 	        //	featureBuilder.set("imageURL", project.getImageFileLocation());
 	        	featureBuilder.set("spatialCoverageDescr", project.getSpatialCoverageDescr());
 	        	featureBuilder.set("speciesCommonName", project.getSpeciesCommonName());
