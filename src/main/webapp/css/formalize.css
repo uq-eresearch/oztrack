@@ -173,6 +173,12 @@ textarea:active {
   z-index: 1;
 }
 
+button:hover {
+	color:#ffffff;
+    background-color:#263f00;
+	
+}
+
 input[type="file"]:focus,
 input[type="file"]:active,
 input[type="radio"]:focus,

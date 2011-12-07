@@ -73,6 +73,9 @@ public class Project extends OztrackBaseEntity implements Serializable {
 	private Date firstDetectionDate;
     private Date lastDetectionDate;
     private Integer detectionCount; 
+    
+    private String dataSpaceURI;
+    private Date dataSpaceUpdateDate;
 
     public Project() {
     }
@@ -258,6 +261,19 @@ public class Project extends OztrackBaseEntity implements Serializable {
 	}
 	public void setDetectionCount(Integer detectionCount) {
 		this.detectionCount = detectionCount;
+	}
+	
+	public String getDataSpaceURI() {
+		return dataSpaceURI;
+	}
+	public void setDataSpaceURI(String dataSpaceURI) {
+		this.dataSpaceURI = dataSpaceURI;
+	}
+	public Date getDataSpaceUpdateDate() {
+		return dataSpaceUpdateDate;
+	}
+	public void setDataSpaceUpdateDate(Date dataSpaceUpdateDate) {
+		this.dataSpaceUpdateDate = dataSpaceUpdateDate;
 	}
 	
 	@Override

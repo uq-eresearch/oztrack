@@ -2,7 +2,7 @@
 
 <c:choose>
 <c:when test="${param.update}">
-	<h1>Update Project Details</h1>
+	<h1>Update Project Metadata</h1>
 </c:when>
 <c:otherwise>
 	<h1>Create a New Project</h1>
@@ -151,39 +151,58 @@ Australian National Data Service, ANDS.</p>
 
 <c:choose>
 <c:when test="${param.update}">
+
+
 	<div class="formSubheader">Data Availability</div>
-	
+
 		<div class="help">
 		<a class=info href="#"><img src="images/help.png" border="0">
-		<span><b>Availability:</b><br> This person is the contact for the data and becomes the Agent specified in the ANDS Collection Registry. 
+		<span><b>Availability:</b><br> Project data is currently only available to users with Admin access to a project, but can
+	be made available to all users.
+		</span></a>
+		</div>
+
+	<div>
+	<label>Data:</label><form:checkbox cssClass="checkbox" path="isGlobal" id="isGlobal"/>
+	The data in this project is to be made publicly available via OzTrack.
+	</div>
+
+		<div class="help">
+		<a class=info href="#"><img src="images/help.png" border="0">
+		<span><b>Metadata to ANDS:</b><br> 	Project metadata on OzTrack is publicly available, and users are encouraged 
+		to publish their metadata as a collection record in the Australian National Data Service. 
 		</span></a>
 		</div>
 	
-	<div class="checkboxDiv">
-	<form:checkbox cssClass="checkbox" path="isGlobal" id="isGlobal"/>
-	The data in this project is to be made publicly available via OzTrack.
+	<div>
+	<label style="height:6ex;">Metadata:</label>
+		<c:choose>
+		<c:when test ="${empty project.dataSpaceUpdateDate}">
+			Your project metadata has not yet been published to ANDS. <a href="#">Publish to ANDS now</a>.
+		</c:when>
+		<c:otherwise>
+			Your project metadata has been published and was last updated on 
+			<fmt:formatDate pattern="${dateTimeFormatPattern}" value="${project.dataSpaceUpdateDate}"/>.
+			You can <a href="#">update the record</a>.
+		</c:otherwise>
+		</c:choose>
 	</div>
 	
 	<div>
-	<label></label>
-	<div class="formButton"><input type="submit" value="Update Project"/></div>
-	<div class="formButton"><input type="submit" value="Update Project And Publish Metadata to ANDS"/></div>
+	<input type="submit" value="Update Project" cssClass="oztrackButton" />
 	</div>
-	
 	
 </c:when>
 <c:otherwise>
+
 	<div>
 	<label></label>
 	<div class="formButton"><input type="submit" value="Create OzTrack Project"/></div>
 	</div>
+
 </c:otherwise>
 </c:choose>
 
-
-
 </form:form>
-
-
 
 <%@ include file="footer.jsp" %>
