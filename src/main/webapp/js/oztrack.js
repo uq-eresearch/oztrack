@@ -31,6 +31,12 @@ $(document).ready(function(){
      if ($('#projectMap').length) {
         initializeProjectMap();
      }
+     
+     if ($('#coverageMap').length) {
+    	 var bbWKT = $("#bbWKT").text();
+         initializeCoverageMap(bbWKT);
+      }
+
 
      navigation();
      setupDatepicker();

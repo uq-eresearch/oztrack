@@ -189,7 +189,8 @@ Australian National Data Service, ANDS.</p>
 	</div>
 	
 	<div>
-	<input type="submit" value="Update Project" cssClass="oztrackButton" />
+	<label></label>
+	<input type="submit" value="Update Project"  class="oztrackButton" />
 	</div>
 	
 </c:when>
@@ -197,7 +198,7 @@ Australian National Data Service, ANDS.</p>
 
 	<div>
 	<label></label>
-	<div class="formButton"><input type="submit" value="Create OzTrack Project"/></div>
+	<div><input type="submit" value="Create OzTrack Project" class="oztrackButton" /></div>
 	</div>
 
 </c:otherwise>

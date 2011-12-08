@@ -779,7 +779,6 @@ tbody tr:hover {
 }
 
 .projectListTableHeader, .projectListTable {
-    width: 85%;
     font-size: 0.8em;
 }
 
@@ -800,7 +799,6 @@ tbody tr:hover {
 .projectListTable {
     margin-top:10px;
     margin-bottom:10px;
-    margin-right:10px;
 /*    background-color:#e6e6c0;*/
 }
 
@@ -901,3 +899,7 @@ div.olControlPanel {
        display: none;
    }
 
+
+#bbWKT {
+	display:none;
+}

@@ -27,6 +27,7 @@
 	</script>	
     <c:set var="dateFormatPattern" value="dd/MM/yyyy"/>
     <c:set var="dateTimeFormatPattern" value="dd/MM/yyyy HH:mm:ss"/>
+    <c:set var="shortDateFormatPattern" value="MMMM yyyy"/>
 
 <!--
     <c:forEach var="js" items="${paramValues.jsIncludes}" >
