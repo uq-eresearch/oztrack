@@ -230,11 +230,37 @@ $(document).ready(function(){
     });
 
  }
+ 
+ function publishToDataSpace (id, username) {
+	 
+	 var loadingGraphicHtml = "STAND BY ...";
+	 $('#publicationStatus').html(loadingGraphicHtml);
+	 
+	 alert('publishToDataSpace called for user: ' + username + ' project id ' + id);
+	 
+	 var url = "dataspace";
+	 var params =  {project: id
+             	  ,username: username};
 
+	 $.post(url
+		   ,params
+		   ,function (data) { $("#publicationStatus").append("yes"); } 
+	 	   ,"json");
+	 /*	 
+	 var request = $.ajax({
+		 url:url,
+		 type: "POST",
+		 data: params,
+		 dataType: json
+	 });
+	 
+	 request.done(function(data) {
+		  $("#publicationStatus").html(data.dataspaceURL);
+		});
 
-
-
-
-
-
+	request.fail(function(jqXHR, textStatus) {
+		  alert( "Request failed: " + textStatus );
+		});
+*/
+}
 

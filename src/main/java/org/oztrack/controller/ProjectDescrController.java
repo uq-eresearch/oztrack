@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class ProjectDetailExtController implements Controller {
+public class ProjectDescrController implements Controller {
 
 	/** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
@@ -23,17 +23,17 @@ public class ProjectDetailExtController implements Controller {
             ModelAndView modelAndView;
             Long projectId = null;
             
-        	if (httpServletRequest.getParameter("project_id") == null) {
+        	if (httpServletRequest.getParameter("id") == null) {
             	
         		modelAndView = new ModelAndView("home");
         		
             } else { 
             	
-            	projectId = Long.parseLong(httpServletRequest.getParameter("project_id"));
+            	projectId = Long.parseLong(httpServletRequest.getParameter("id"));
 		        ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
 		        Project project = projectDao.getProjectById(projectId);
 		        projectDao.refresh(project);
-		        modelAndView = new ModelAndView("projectdetailext");
+		        modelAndView = new ModelAndView("projectdescr");
 		        modelAndView.addObject("project", project);
             }
         

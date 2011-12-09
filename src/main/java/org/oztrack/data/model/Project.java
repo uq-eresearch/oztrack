@@ -74,8 +74,10 @@ public class Project extends OztrackBaseEntity implements Serializable {
     private Date lastDetectionDate;
     private Integer detectionCount; 
     
+    @Column(columnDefinition = "TEXT")
     private String dataSpaceURI;
     private Date dataSpaceUpdateDate;
+    private String rightsStatement;
 
     public Project() {
     }
@@ -276,6 +278,12 @@ public class Project extends OztrackBaseEntity implements Serializable {
 		this.dataSpaceUpdateDate = dataSpaceUpdateDate;
 	}
 	
+	public String getRightsStatement() {
+		return rightsStatement;
+	}
+	public void setRightsStatement(String rightsStatement) {
+		this.rightsStatement = rightsStatement;
+	}
 	@Override
     public boolean equals(Object obj) {
         if (this == obj)

@@ -66,7 +66,12 @@
 
     <servlet-mapping>
       <servlet-name>springmvc</servlet-name>
-      <url-pattern>/projectdetailext</url-pattern>
+      <url-pattern>/projectdescr</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>springmvc</servlet-name>
+      <url-pattern>/publish</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
@@ -156,6 +161,10 @@
       <url-pattern>/exportKML</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+      <servlet-name>springmvc</servlet-name>
+      <url-pattern>/dataspace</url-pattern>
+    </servlet-mapping>
 
     <welcome-file-list>
         <welcome-file id="welcome-page">index.jsp</welcome-file>

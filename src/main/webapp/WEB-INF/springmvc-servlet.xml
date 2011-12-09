@@ -22,8 +22,8 @@
   <bean name="/mapQueryWFS" class="org.oztrack.controller.WFSProjectMapController"/>
   <bean name="/export" class="org.oztrack.controller.SearchQueryExportController"/>
   <bean name="/exportKML" class="org.oztrack.controller.KMLExportController"/>
+  <bean name="/dataspace" class="org.oztrack.controller.DataSpaceInterfaceController"/>
   
-
   <bean name="/home" class="org.oztrack.controller.HomeController"/>
   <bean name="/about" class="org.oztrack.controller.HomeController"/>
     <bean name="/contact" class="org.oztrack.controller.HomeController"/>
@@ -31,7 +31,8 @@
   <bean name="/users" class="org.oztrack.controller.UserListController"/>
   <bean name="/projects" class="org.oztrack.controller.ProjectListController"/>
   <bean name="/projectdetail" class="org.oztrack.controller.ProjectDetailController"/>
-  <bean name="/projectdetailext" class="org.oztrack.controller.ProjectDetailExtController"/>
+  <bean name="/projectdescr" class="org.oztrack.controller.ProjectDescrController"/>
+  <bean name="/publish" class="org.oztrack.controller.ProjectDetailController"/>
   <bean name="/datafiles" class="org.oztrack.controller.DataFileDetailController"/>
   <bean name="/projectanimals" class="org.oztrack.controller.ProjectDetailController"/>
   <bean name="/projectreceivers" class="org.oztrack.controller.ProjectReceiversController"/>

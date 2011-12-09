@@ -45,7 +45,7 @@
 </div>
 
 <div style="float:left">  
-<h2>Project Details</h2>
+<h2>Project Metadata</h2>
 <table class="projectListTable">
 <tr><td class="projectFieldName">Title:</td><td><c:out value="${project.title}"/></td></tr>
 <tr><td class="projectFieldName">Description:</td><td><c:out value="${project.description}"/></td></tr>
@@ -70,7 +70,40 @@
 <tr><td class="projectFieldName">Contact:</td><td><c:out value="${project.contactGivenName}"/>&nbsp;<c:out value="${project.contactFamilyName}"/><br><c:out value="${project.contactEmail}"/><br><c:out value="${project.contactUrl}"/></td></tr>
 <tr><td class="projectFieldName">Contact Organisation:</td><td><c:out value="${project.contactOrganisation}"/><br><c:out value="${project.contactUrl}"/></td></tr>
 <tr><td class="projectFieldName">Publications:</td><td><i><c:out value="${project.publicationTitle}"/></i><br> <c:out value="${project.publicationUrl}"/></td></tr>
-<tr><td class="projectFieldName"></td><td><a class="oztrackButton" href="<c:url value="projectadd"><c:param name="update" value="${true}"/><c:param name="id" value="${project.id}"/></c:url>">Edit</a><br><br></td></tr>
+<tr><td class="projectFieldName">Rights Statement:</td><td><c:out value="${project.rightsStatement}"/></td></tr>
+<tr><td class="projectFieldName">Access :</td><td>
+	
+	<c:choose><c:when test="${project.isGlobal}">
+		The data in the project is available in OzTrack for the public to use.
+	</c:when>
+	<c:otherwise>
+		The data in this project is only available to users on the OzTrack system whom have been granted access.
+	</c:otherwise>
+	</c:choose>
+	
+</td></tr>
+
+
+<tr><td class="projectFieldName">Metadata Publication Status:</td><td>
+		<c:choose>
+		<c:when test ="${empty project.dataSpaceUpdateDate}">
+			This project metadata has not yet been published externally.
+			<c:set var="publishButtonText" value="Publish Metadata to UQ DataSpace"/> 
+		</c:when>
+		<c:otherwise>
+			This project metadata has been published and was last updated on 
+			<fmt:formatDate pattern="${dateTimeFormatPattern}" value="${project.dataSpaceUpdateDate}"/>.
+			<c:set var="publishButtonText" value="Update UQ DataSpace Collection Registry"/> 
+		</c:otherwise>
+		</c:choose>
+</td></tr>
+
+<tr><td class="projectFieldName"></td><td>
+	<a class="oztrackButton" href="<c:url value="projectadd"><c:param name="update" value="${true}"/><c:param name="id" value="${project.id}"/></c:url>">Edit Project Metadata</a>
+	&nbsp;&nbsp;
+	<a class="oztrackButton" href="<c:url value="publish"><c:param name="project_id" value="${project.id}"/></c:url>"><c:out value="${publishButtonText}"/></a>
+
+	<br><br></td></tr>
 
 </table>
 </div>

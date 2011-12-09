@@ -70,6 +70,8 @@ public class ProjectDetailController implements Controller {
 		            modelAndViewName = "projectmap";
 		        } else if (httpServletRequest.getRequestURI().contains("projectanimals")) {
 		            modelAndViewName = "projectanimals";
+		        } else if (httpServletRequest.getRequestURI().contains("publish")) {
+		            modelAndViewName = "publish";
 		        }
 		        
 		        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();

@@ -169,6 +169,19 @@ Australian National Data Service, ANDS.</p>
 
 		<div class="help">
 		<a class=info href="#"><img src="images/help.png" border="0">
+		<span><b>Access Rights Statement:</b><br>This should reflect any restrictions around the access rights and use of your data.
+		</span></a>
+		</div>
+
+	<div>
+	<label>Access Rights Statement:</label>
+	<form:textarea path="rightsStatement" rows="5" cols="40" id="rightsStatement"/>
+	<form:errors path="rightsStatement" cssClass="formErrors"/>
+	</div>
+
+
+		<div class="help">
+		<a class=info href="#"><img src="images/help.png" border="0">
 		<span><b>Metadata to ANDS:</b><br> 	Project metadata on OzTrack is publicly available, and users are encouraged 
 		to publish their metadata as a collection record in the Australian National Data Service. 
 		</span></a>
@@ -178,12 +191,14 @@ Australian National Data Service, ANDS.</p>
 	<label style="height:6ex;">Metadata:</label>
 		<c:choose>
 		<c:when test ="${empty project.dataSpaceUpdateDate}">
-			Your project metadata has not yet been published to ANDS. <a href="#">Publish to ANDS now</a>.
+			Your project metadata has not yet been published to ANDS. 
+			<a href="<c:url value="publish"><c:param name="project_id" value="${project.id}"/></c:url>">Publish to ANDS now</a>.
 		</c:when>
 		<c:otherwise>
 			Your project metadata has been published and was last updated on 
 			<fmt:formatDate pattern="${dateTimeFormatPattern}" value="${project.dataSpaceUpdateDate}"/>.
 			You can <a href="#">update the record</a>.
+			
 		</c:otherwise>
 		</c:choose>
 	</div>

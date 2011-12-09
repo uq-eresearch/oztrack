@@ -68,7 +68,10 @@ public class ProjectFormController extends SimpleFormController {
     	if (project != null) {
         	return project;
     	} else {
-    		return super.formBackingObject(request);
+    		
+    		Project emptyProject = new Project();
+    		emptyProject.setRightsStatement("The data is the property of the University of Queensland. Permission is required to use this material.");
+    		return emptyProject;
     	}
     }
     

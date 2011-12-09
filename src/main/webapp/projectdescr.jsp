@@ -2,10 +2,12 @@
 <script src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
 <script type="text/javascript" src="js/openlayers/OpenLayers.js"></script>
 <script type="text/javascript" src="js/coveragemap.js"></script>
+<span id="projectTitle" style="display:none"><c:out value="${project.title}"/></span>
+
 
 <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
-
 <h2>Project Details</h2>
+
 
 <table class="projectListTable">
 <tr><td class="projectFieldName">Title:</td><td><c:out value="${project.title}"/></td></tr>
@@ -31,7 +33,18 @@
 <tr><td class="projectFieldName">Contact:</td><td><c:out value="${project.contactGivenName}"/>&nbsp;<c:out value="${project.contactFamilyName}"/><br><c:out value="${project.contactEmail}"/><br><c:out value="${project.contactUrl}"/></td></tr>
 <tr><td class="projectFieldName">Contact Organisation:</td><td><c:out value="${project.contactOrganisation}"/><br><c:out value="${project.contactUrl}"/></td></tr>
 <tr><td class="projectFieldName">Publications:</td><td><i><c:out value="${project.publicationTitle}"/></i><br> <c:out value="${project.publicationUrl}"/></td></tr>
-
+<tr><td class="projectFieldName">Rights Statement:</td><td><c:out value="${project.rightsStatement}"/></td></tr>
+<tr><td class="projectFieldName">Access :</td><td>
+	
+	<c:choose><c:when test="${project.isGlobal}">
+		The data in the project is available in OzTrack for the public to use.
+	</c:when>
+	<c:otherwise>
+		The data in this project is only available to users on the OzTrack system whom have been granted access.
+	</c:otherwise>
+	</c:choose>
+	
+</td></tr>
 </table>
 
 <span id="bbWKT"><c:out value="${project.boundingBox}"/></span>
