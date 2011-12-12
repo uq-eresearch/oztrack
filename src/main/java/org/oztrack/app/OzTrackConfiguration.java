@@ -24,5 +24,8 @@ public interface OzTrackConfiguration {
 
     String getDataDir();
     
+    String getDataSpaceURL();
+    
+    String getServerProxyName();
     
 }

@@ -290,7 +290,7 @@ public class Project extends OztrackBaseEntity implements Serializable {
             return true;
         if (obj == null)
             return false;
-        if (!(obj instanceof DataFile)) {
+        if (!(obj instanceof Project)) {
             return false;
         }
         Project other = (Project) obj;

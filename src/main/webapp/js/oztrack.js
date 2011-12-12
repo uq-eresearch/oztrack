@@ -233,34 +233,31 @@ $(document).ready(function(){
  
  function publishToDataSpace (id, username) {
 	 
-	 var loadingGraphicHtml = "STAND BY ...";
+	 var loadingGraphicHtml = "Sending request ...";
 	 $('#publicationStatus').html(loadingGraphicHtml);
-	 
-	 alert('publishToDataSpace called for user: ' + username + ' project id ' + id);
 	 
 	 var url = "dataspace";
 	 var params =  {project: id
              	  ,username: username};
 
-	 $.post(url
-		   ,params
-		   ,function (data) { $("#publicationStatus").append("yes"); } 
-	 	   ,"json");
-	 /*	 
-	 var request = $.ajax({
+ 	 var request = $.ajax({
 		 url:url,
 		 type: "POST",
-		 data: params,
-		 dataType: json
+		 data: params
 	 });
 	 
 	 request.done(function(data) {
-		  $("#publicationStatus").html(data.dataspaceURL);
-		});
+		 
+		 var successHtml = "The DataSpace URI for this collection is : <b>" + data.dataspaceURI 
+		 + "</b>.<br>It was last updated on <b>" + data.dataspaceUpdateDate + "</b>.";
+		 
+		 $('#publicationStatus').html(successHtml);
+		 alert("done");
+	});
 
-	request.fail(function(jqXHR, textStatus) {
+	request.fail(function(jqXHR, textStatus, data) {
 		  alert( "Request failed: " + textStatus );
 		});
-*/
+
 }
 

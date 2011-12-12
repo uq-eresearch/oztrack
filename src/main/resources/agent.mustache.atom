@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<entry
+    xmlns="http://www.w3.org/2005/Atom"
+    xmlns:rdfa="http://www.w3.org/ns/rdfa#"
+    xmlns:app="http://www.w3.org/2007/app">
+    <!-- *** metadata about the party *** -->
+    <!--     id for the party -->
+    <id>http://dataspace.uq.edu.au/agents/ignore</id>
+
+    <!--     collection type -->
+    <link
+        rel="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+        href="http://xmlns.com/foaf/0.1/Person"
+        title="Person"/>
+
+    <rdfa:meta
+        property="http://xmlns.com/foaf/0.1/givenName"
+        content="{{contactGivenName}}"/>
+    <rdfa:meta
+        property="http://xmlns.com/foaf/0.1/familyName"
+        content="{{contactFamilyName}}"/>
+
+    <!--     agent description -->
+    <content type="text">{{contactGivenName}} {{contactFamilyName}} is from The University of Queensland.</content>
+
+    <!--     email address -->
+    <link
+        rel="http://xmlns.com/foaf/0.1/mbox"
+        href="mailto:{{contactEmail}}" />
+
+    <!-- *** metadata about the description *** -->
+    <!--     description last updated -->
+    <updated></updated>
+    <source>
+        <id>http://oztrack.org</id>
+        <title type="text">OzTrack</title>
+        
+        <author>
+            <name>{{contactGivenName}} {{contactFamilyName}}</name>
+			<email>{{contactEmail}}</email>           
+        </author>
+    </source>
+    <app:control>
+        <app:draft>yes</app:draft>
+    </app:control>
+</entry>

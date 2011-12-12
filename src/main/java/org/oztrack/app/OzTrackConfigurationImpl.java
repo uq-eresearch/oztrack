@@ -16,6 +16,8 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
     private String smtpServer;
     private AuthenticationManager authenticationManager;
     private String dataDir;
+    private String dataSpaceURL;
+    private String serverProxyName;
 
     public void setApplicationTitle(String registryTitle) {
         this.applicationTitle = registryTitle;
@@ -79,6 +81,22 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
     public void setDataDir(String dataDir) {
         this.dataDir = dataDir;
     }
+
+	public String getDataSpaceURL() {
+		return dataSpaceURL;
+	}
+
+	public void setDataSpaceURL(String dataSpaceURL) {
+		this.dataSpaceURL = dataSpaceURL;
+	}
+
+	public String getServerProxyName() {
+		return serverProxyName;
+	}
+
+	public void setServerProxyName(String serverProxyName) {
+		this.serverProxyName = serverProxyName;
+	}
 
 
 }

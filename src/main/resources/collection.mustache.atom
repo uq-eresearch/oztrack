@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<entry
+    xmlns="http://www.w3.org/2005/Atom"
+    xmlns:rdfa="http://www.w3.org/ns/rdfa#"
+    xmlns:app="http://www.w3.org/2007/app">
+    
+    <!-- *** metadata about the collection *** -->
+    <!--     id for the collection in OzTrack -->
+    <id>{{collectionURL}}</id>
+
+    <!--     collection type -->
+  <link 
+  		rel="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+        href="http://purl.org/dc/dcmitype/Collection"
+        title="Collection"/>
+ 
+   <!--     collection title -->
+    <title 
+    	type="text">{{collectionTitle}}</title>
+         
+    <!--     collection description -->
+    <content
+        type="text">{{collectionDescription}}</content>
+
+    <!--     web page describing the collection -->
+    <link
+        rel="{{collectionURL}}"/>
+
+   <!--     species -->
+    <category
+        term="{{speciesCommonName}}"/>
+    <category
+        term="{{speciesScientificName}}"/>
+
+   <!--    collection manager -->
+    <link rel="http://purl.org/dc/terms/publisher" href="mailto:{{contactEmail}}" title="{{contactGivenName}} {{contactFamilyName}}"/>
+        
+    <!--     temporal coverage -->
+    <rdfa:meta
+        property="http://purl.org/dc/terms/temporal"
+        content="{{temporalCoverage}}"
+        datatype="http://purl.org/dc/terms/Period"/>
+
+    <!--     spatial coverage -->
+    <georss:polygon>{{boundingBoxCoordinatesString}}</georss:polygon>
+    <category term="{{spatialCoverage}}"/>
+
+    <!--     rights; WE NEED TO DISCUSS HOW TO PUT IN SENSIBLE RIGHTS STATEMENTS. WE CAN PROBABLY WORK OUT DEFAULTS -->
+    <rights>{{rightsStatement}}</rights>
+    <!--     access rights -->
+    <rdfa:meta
+        property="http://purl.org/dc/terms/accessRights"
+        content="{{accessRights}}"/>
+
+    <!-- *** metadata about the description *** -->
+    <!--     description last updated -->
+    <updated>{{dataSpaceUpdateDate}}</updated>
+    
+    <source>
+        <title type="text">OzTrack</title>
+        <id>http://oztrack.org</id>
+        
+        <! -- description creator -->
+        <author>
+            <name>{{contactGivenName}} {{contactFamilyName}}</name>
+			<email>{{contactEmail}}</email>           
+        </author>
+    </source>
+    <app:control>
+        <app:draft>yes</app:draft>
+    </app:control>
+</entry>

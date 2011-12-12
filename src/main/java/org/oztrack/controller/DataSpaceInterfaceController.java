@@ -47,7 +47,7 @@ public class DataSpaceInterfaceController implements Controller {
         	} else {
         		
         		Project project = projectDao.getProjectById(Long.parseLong(projectId));
-        		logger.info("ajax post to dataspace by user: " + currentUser.getUsername() + " for project: " + project.getTitle());
+        		logger.info("request for dataspace syndication by user: " + currentUser.getUsername() + " for project: " + project.getTitle());
         		return new ModelAndView("java_DataSpaceInterface", "project", project);
         		
         	}
