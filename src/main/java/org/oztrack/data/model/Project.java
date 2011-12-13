@@ -29,25 +29,26 @@ public class Project extends OztrackBaseEntity implements Serializable {
     @Column(nullable=false)
     private Long id;
     
-    @Column(unique = true)
     private String title;
     @Column(columnDefinition = "TEXT")
     private String description;
     private boolean isGlobal;
     private String spatialCoverageDescr;
-    private String contactGivenName;
-    private String contactFamilyName;
-    private String contactOrganisation;
-    private String contactEmail;
-    @Column(columnDefinition = "TEXT")
-    private String contactUrl;
-    @Column(columnDefinition = "TEXT")
+    @ManyToOne
+    private User dataspaceAgent;
+//    private String contactGivenName;
+//    private String contactFamilyName;
+//    private String contactOrganisation;
+//    private String contactEmail;
+//    @Column(columnDefinition = "TEXT")
+//    private String contactUrl;
+//    @Column(columnDefinition = "TEXT")
     private String publicationTitle;
     @Column(columnDefinition = "TEXT")
     private String publicationUrl;
     @Column(columnDefinition = "TEXT")
     private String dataDirectoryPath;
-
+    
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.project", cascade =
     {CascadeType.PERSIST, CascadeType.MERGE})
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
@@ -118,20 +119,45 @@ public class Project extends OztrackBaseEntity implements Serializable {
         this.isGlobal = isGlobal;
     }
 
-    public String getContactGivenName() {
-		return contactGivenName;
-	}
-    
-	public void setContactGivenName(String contactGivenName) {
-		this.contactGivenName = contactGivenName;
-	}
-	public String getContactFamilyName() {
-		return contactFamilyName;
-	}
-	public void setContactFamilyName(String contactFamilyName) {
-		this.contactFamilyName = contactFamilyName;
-	}
-	public List<ProjectUser> getProjectUsers() {
+//    public String getContactGivenName() {
+//		return contactGivenName;
+//	}
+//    
+//	public void setContactGivenName(String contactGivenName) {
+//		this.contactGivenName = contactGivenName;
+//	}
+//	public String getContactFamilyName() {
+//		return contactFamilyName;
+//	}
+//	public void setContactFamilyName(String contactFamilyName) {
+//		this.contactFamilyName = contactFamilyName;
+//	}
+//
+//    public String getContactOrganisation() {
+//        return contactOrganisation;
+//    }
+//
+//    public void setContactOrganisation(String contactOrganisation) {
+//        this.contactOrganisation = contactOrganisation;
+//    }
+//
+//    public String getContactEmail() {
+//        return contactEmail;
+//    }
+//
+//    public void setContactEmail(String contactEmail) {
+//        this.contactEmail = contactEmail;
+//    }
+//
+//    public String getContactUrl() {
+//        return contactUrl;
+//    }
+//
+//    public void setContactUrl(String contactUrl) {
+//        this.contactUrl = contactUrl;
+//    }
+//    
+    public List<ProjectUser> getProjectUsers() {
         return this.projectUsers;
     }
 
@@ -155,31 +181,13 @@ public class Project extends OztrackBaseEntity implements Serializable {
         this.spatialCoverageDescr = spatialCoverageDescr;
     }
 
-    public String getContactOrganisation() {
-        return contactOrganisation;
-    }
-
-    public void setContactOrganisation(String contactOrganisation) {
-        this.contactOrganisation = contactOrganisation;
-    }
-
-    public String getContactEmail() {
-        return contactEmail;
-    }
-
-    public void setContactEmail(String contactEmail) {
-        this.contactEmail = contactEmail;
-    }
-
-    public String getContactUrl() {
-        return contactUrl;
-    }
-
-    public void setContactUrl(String contactUrl) {
-        this.contactUrl = contactUrl;
-    }
-
-    public String getPublicationTitle() {
+    public User getDataspaceAgent() {
+		return dataspaceAgent;
+	}
+	public void setDataspaceAgent(User dataspaceAgent) {
+		this.dataspaceAgent = dataspaceAgent;
+	}
+	public String getPublicationTitle() {
         return publicationTitle;
     }
 

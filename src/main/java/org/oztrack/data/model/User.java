@@ -26,11 +26,13 @@ public class User implements Serializable {
     @Column(unique = true)
     private String username;
     private String email;
+    private String title;
     private String firstName;
     private String lastName;
-    private String institution;
+    private String organisation;
     private String password;
-        
+    private String dataSpaceAgentURI;
+    private String dataSpaceAgentDescription;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade =
     {CascadeType.PERSIST, CascadeType.MERGE})
@@ -89,7 +91,15 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public String getFirstName() {
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getFirstName() {
         return firstName;
     }
 
@@ -105,12 +115,12 @@ public class User implements Serializable {
         this.lastName = lastName;
     }
 
-    public String getInstitution() {
-		return institution;
+    public String getOrganisation() {
+		return organisation;
 	}
 
-	public void setInstitution(String institution) {
-		this.institution = institution;
+	public void setOrganisation(String organisation) {
+		this.organisation = organisation;
 	}
 
 	public String getFullName() {
@@ -133,6 +143,22 @@ public class User implements Serializable {
     public void setProjectUsers(List<ProjectUser> projectUsers) {
         this.projectUsers = projectUsers;
     }
+
+	public String getDataSpaceAgentURI() {
+		return dataSpaceAgentURI;
+	}
+
+	public void setDataSpaceAgentURI(String dataSpaceAgentURI) {
+		this.dataSpaceAgentURI = dataSpaceAgentURI;
+	}
+
+	public String getDataSpaceAgentDescription() {
+		return dataSpaceAgentDescription;
+	}
+
+	public void setDataSpaceAgentDescription(String dataSpaceAgentDescription) {
+		this.dataSpaceAgentDescription = dataSpaceAgentDescription;
+	}
 
     /*
     public Set<Project> getProjects() {

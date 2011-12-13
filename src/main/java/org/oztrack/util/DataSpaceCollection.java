@@ -36,6 +36,7 @@ public class DataSpaceCollection {
 	private String contactGivenName;
     private String contactFamilyName;
 	private String contactEmail;
+	private String contactDescription;
 	private String speciesCommonName;
 	private String speciesScientificName;
 	private String temporalCoverage;
@@ -100,15 +101,19 @@ public class DataSpaceCollection {
 	}
 
 	public String getContactGivenName() {
-		return project.getContactGivenName();
+		return project.getDataspaceAgent().getFirstName();
 	}
 
 	public String getContactFamilyName() {
-		return project.getContactFamilyName();
+		return project.getDataspaceAgent().getLastName();
 	}
 
 	public String getContactEmail() {
-		return project.getContactEmail();
+		return project.getDataspaceAgent().getEmail();
+	}
+
+	public String getContactDescription() {
+		return project.getDataspaceAgent().getDataSpaceAgentDescription();
 	}
 
 	public String getSpeciesCommonName() {

@@ -1,6 +1,7 @@
 package org.oztrack.data.model;
 
 import javax.persistence.*;
+
 import static javax.persistence.EnumType.STRING;
 import org.oztrack.data.model.types.Role;
 
@@ -29,7 +30,8 @@ public class ProjectUser implements Serializable {
         this.pk = pk;
     }
 
-    @Transient
+
+	@Transient
     public User getUser() {
         return getPk().getUser();
     }

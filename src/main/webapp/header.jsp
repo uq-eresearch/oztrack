@@ -51,7 +51,7 @@
 			    <c:when test="${currentUser != null}">
 			      Welcome, <c:out value="${currentUser.firstName}"/>
 			      &nbsp;|&nbsp;
-			      <a href=#>Profile</a>
+			      <a href="<c:url value="register"><c:param name="user" value="${currentUser.username}"/><c:param name="update" value="${true}"/></c:url>">Profile</a>
 			      &nbsp;|&nbsp;
 			      <a href="<c:url value="logout"/>">Logout</a>
 			    </c:when>

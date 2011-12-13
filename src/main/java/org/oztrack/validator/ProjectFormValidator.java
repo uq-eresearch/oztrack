@@ -23,10 +23,7 @@ public class ProjectFormValidator implements Validator {
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "title", "error.empty.field", "Please enter a short project title.");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "error.empty.field", "Please enter a description for the project.");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "contactGivenName", "error.empty.field", "Please enter a short project title.");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "contactFamilyName", "error.empty.field", "Please enter a short project title.");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "contactEmail", "error.empty.field", "Please enter an email address.");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "contactOrganisation", "error.empty.field", "The Contact Organisation field is required.");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "spatialCoverageDescr", "error.empty.field", "Please give a location description.");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "rightsStatement", "error.empty.field", "The Rights Statement cannot be left empty.");
  
         String contentType = project.getImageFile().getContentType();

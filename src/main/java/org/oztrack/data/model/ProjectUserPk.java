@@ -9,7 +9,7 @@ public class ProjectUserPk implements Serializable {
     private User user;
     private Project project;
 
-    @ManyToOne
+ 	@ManyToOne
     public User getUser() {
         return user;
     }
@@ -36,7 +36,7 @@ public class ProjectUserPk implements Serializable {
         if (user != null ? !user.equals(that.user) : that.user != null) return false;
         if (project != null ? !project.equals(that.project) : that.project!= null)
             return false;
-
+        
         return true;
     }
 

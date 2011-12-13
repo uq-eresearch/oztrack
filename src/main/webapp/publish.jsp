@@ -57,8 +57,13 @@
 
 <tr><td class="projectFieldName">Collection Manager:</td>
 	
-    <td><c:out value="${project.contactGivenName}"/>&nbsp;<c:out value="${project.contactFamilyName}"/>
-    <br><c:out value="${project.contactEmail}"/><br><c:out value="${project.contactUrl}"/></td></tr>
+    <td><c:out value="${project.dataspaceAgent.fullName}"/>
+    <br><c:out value="${project.dataspaceAgent.email}"/><br></td></tr>
+
+<tr><td class="projectFieldName">Collection Manager Description:</td>
+	
+    <td><c:out value="${project.dataspaceAgent.dataSpaceAgentDescription}"/>
+	<br></td></tr>
 
 <tr><td class="projectFieldName">Temporal Coverage:</td><td>
 

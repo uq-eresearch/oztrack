@@ -23,11 +23,11 @@ public class LoginFormValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "error.empty.field", "Please Enter Password");
         if (!errors.hasFieldErrors("username")) {
             if (user == null) {
-                errors.rejectValue("username", "unknown.user", "Unknown User");
+                errors.rejectValue("username", "unknown.user", "Invalid username/password");
             } else {
                 if (!errors.hasFieldErrors("password")) {
                     if (!(BCrypt.checkpw(loginUser.getPassword(), user.getPassword()))) {
-                        errors.rejectValue("password", "wrong.password", "Wrong Password");
+                        errors.rejectValue("password", "wrong.password", "Invalid username/password");
                     }
                 }
             }

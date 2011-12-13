@@ -21,7 +21,7 @@
         content="{{contactFamilyName}}"/>
 
     <!--     agent description -->
-    <content type="text">{{contactGivenName}} {{contactFamilyName}} is from The University of Queensland.</content>
+    <content type="text">{{contactDescription}}</content>
 
     <!--     email address -->
     <link

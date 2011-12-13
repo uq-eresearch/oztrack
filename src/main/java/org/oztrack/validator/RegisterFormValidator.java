@@ -1,5 +1,8 @@
 package org.oztrack.validator;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.UserDao;
 import org.springframework.validation.Errors;
@@ -26,7 +29,8 @@ public class RegisterFormValidator implements Validator {
         User user = userDao.getByUsername(loginUser.getUsername());
 
         if (!errors.hasFieldErrors("username")) {
-            if (user != null) {
+            
+        	if ((user != null) && (user != loginUser)) {
                 errors.rejectValue("username", "unavailable.user", "This username is unavailable. Please try another.");
             }
             else {
@@ -36,13 +40,15 @@ public class RegisterFormValidator implements Validator {
                 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "error.empty.field", "Please Enter email");
             }
         }
-
-
-        /*TODO: 
-        1. check username not already in use
-        2. re-enter password & check field 
-        */
-
+        
+        if (!errors.hasFieldErrors("email")) {
+        	try {
+        		InternetAddress emailAddr = new InternetAddress(loginUser.getEmail());
+        		emailAddr.validate();
+        	} catch (AddressException ex) {
+        		errors.rejectValue("email", "invalid.email", "Email error: " + ex.getMessage());
+        	}
+        }
         
 	}
 	

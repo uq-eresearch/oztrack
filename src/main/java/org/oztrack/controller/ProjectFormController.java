@@ -58,7 +58,7 @@ public class ProjectFormController extends SimpleFormController {
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
     	
         String projectId = request.getParameter("id");
-        Project project = new Project();
+        Project project = null;
 
             if (projectId != null) {
                 ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
@@ -67,6 +67,7 @@ public class ProjectFormController extends SimpleFormController {
 
     	if (project != null) {
         	return project;
+    	
     	} else {
     		
     		Project emptyProject = new Project();
@@ -116,28 +117,30 @@ public class ProjectFormController extends SimpleFormController {
     	// create/update details
         project.setCreateDate(new java.util.Date());
         project.setCreateUser(currentUser);
-
+        project.setDataspaceAgent(currentUser);
+        
         // set the current user to be an admin for this project
-        ProjectUser projectUser = new ProjectUser();
-        projectUser.setProject(project);
-        projectUser.setUser(currentUser);
-        projectUser.setRole(Role.ADMIN);
-
+        ProjectUser adminProjectUser = new ProjectUser();
+        adminProjectUser.setProject(project);
+        adminProjectUser.setUser(currentUser);
+        adminProjectUser.setRole(Role.ADMIN);
+        
         // add this project to the user's list of projects
         List <ProjectUser> userProjectUsers = currentUser.getProjectUsers();
-        userProjectUsers.add(projectUser);
+        userProjectUsers.add(adminProjectUser);
         currentUser.setProjectUsers(userProjectUsers);
 
         // add this user to the project's list of users
         List <ProjectUser> projectProjectUsers = project.getProjectUsers();
-        projectProjectUsers.add(projectUser);
+        projectProjectUsers.add(adminProjectUser);
         project.setProjectUsers(projectProjectUsers);
         
         // save it all - project first
         projectDao.save(project);
+        
         UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();
         User user = userDao.getUserById(currentUser.getId());
-        userDao.save(user);
+        userDao.update(user);
 
         project.setDataDirectoryPath(getProjectDirectoryPath(project));
 	    project.setImageFileLocation(saveProjectImage(project));

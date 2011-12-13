@@ -7,5 +7,5 @@ package org.oztrack.data.model.types;
  */
 public enum Role {
     ADMIN,
-    USER
+    READ
 }

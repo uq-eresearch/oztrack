@@ -67,8 +67,9 @@
 
 </td></tr>
 
-<tr><td class="projectFieldName">Contact:</td><td><c:out value="${project.contactGivenName}"/>&nbsp;<c:out value="${project.contactFamilyName}"/><br><c:out value="${project.contactEmail}"/><br><c:out value="${project.contactUrl}"/></td></tr>
-<tr><td class="projectFieldName">Contact Organisation:</td><td><c:out value="${project.contactOrganisation}"/><br><c:out value="${project.contactUrl}"/></td></tr>
+<tr><td class="projectFieldName">Contact:</td><td><c:out value="${project.dataspaceAgent.firstName}"/>&nbsp;<c:out value="${project.dataspaceAgent.lastName}"/><br><c:out value="${project.dataspaceAgent.email}"/></td></tr>
+<tr><td class="projectFieldName">Contact Organisation:</td><td><c:out value="${project.dataspaceAgent.organisation}"/></td></tr>
+
 <tr><td class="projectFieldName">Publications:</td><td><i><c:out value="${project.publicationTitle}"/></i><br> <c:out value="${project.publicationUrl}"/></td></tr>
 <tr><td class="projectFieldName">Rights Statement:</td><td><c:out value="${project.rightsStatement}"/></td></tr>
 <tr><td class="projectFieldName">Access :</td><td>

@@ -9,13 +9,57 @@
 </c:otherwise>
 </c:choose>
 
-<!-- 
-<p>As a condition of use of OzTrack, the information collected in this form is registered with the
-Australian National Data Service, ANDS.</p>
- -->
+
+<p>The information collected here will be syndicated to the University of Queensland's data collection registry, DataSpace, 
+subsequently to the Australian National Data Service, ANDS. A link will be made available to complete the syndication after 
+data has been uploaded to OzTrack, and you have the opportunity to edit this information before syndication.</p>
 
 <form:form commandName="project" method="POST" name="project"  enctype="multipart/form-data">
 
+<div class="formSubheader">Data Contact</div>
+
+	<div class="help">
+	<a class=info href="#"><img src="images/help.png" border="0">
+	<span><b>Contact:</b><br> This person is the contact for the data and becomes the Agent specified in the ANDS Collection Registry. 
+	</span></a>
+	</div>
+
+<c:set var="dataspaceAgent" value="${currentUser}"/>
+
+<c:if test="${param.update}">
+	<c:set var="dataspaceAgent" value="${project.dataspaceAgent}"/>
+</c:if>	
+
+<div>
+<label>Name:</label>
+<div><c:out value="${dataspaceAgent.fullName}"/>&nbsp;</div>
+</div>
+
+<div>
+<label>Organisation:</label>
+<div><c:out value="${dataspaceAgent.organisation}"/>&nbsp;</div>
+</div>
+
+<div>
+<label>Description:</label>
+<div style="width:450px"><c:out value="${dataspaceAgent.dataSpaceAgentDescription}"/>&nbsp;</div>
+</div>
+
+<div>
+<label>Email:</label>
+<div><c:out value="${dataspaceAgent.email}"/>&nbsp;</div>
+</div>
+
+<!-- 
+<c:if test="${param.update}">
+<div>
+<label>&nbsp;</label>
+<div><a href="#">Change the user prescribed as the contact for this project ... </a></div>
+</div>
+</c:if>
+ -->
+
+ 
 <div class="formSubheader">Project Metadata</div>
 
 	<div class="help">
@@ -88,44 +132,7 @@ Australian National Data Service, ANDS.</p>
 <form:errors path="speciesScientificName" cssClass="formErrors"/>
 </div>
 
-<div class="formSubheader">Data Contact</div>
 
-	<div class="help">
-	<a class=info href="#"><img src="images/help.png" border="0">
-	<span><b>Contact:</b><br> This person is the contact for the data and becomes the Agent specified in the ANDS Collection Registry. 
-	</span></a>
-	</div>
-
-<div>
-<label for="contactGivenName">Given Name:</label>
-<form:input path="contactGivenName" id="contactGivenName"/>
-<form:errors path="contactGivenName" cssClass="formErrors"/>
-</div>
-
-<div>
-<label for="contactFamilyName">Family Name:</label>
-<form:input path="contactFamilyName" id="contactFamilyName"/>
-<form:errors path="contactFamilyName" cssClass="formErrors"/>
-</div>
-
-<div>
-<label for="contactOrganisation">Organisation:</label>
-<form:input path="contactOrganisation" id="contactOrganisation"/>
-<form:errors path="contactOrganisation" cssClass="formErrors"/>
-</div>
-
-
-<div>
-<label for="contactEmail">Email:</label>
-<form:input path="contactEmail" id="contactEmail"/>
-<form:errors path="contactEmail" cssClass="formErrors"/>
-</div>
-
-<div>
-<label for="contactUrl">URL:</label>
-<form:input path="contactUrl" id="contactUrl"/>
-<form:errors path="contactUrl" cssClass="formErrors"/>
-</div>
 
 <div class="formSubheader">Image</div>
 
@@ -149,36 +156,35 @@ Australian National Data Service, ANDS.</p>
 <form:errors path="publicationUrl" cssClass="formErrors"/>
 </div>
 
+
+<div class="formSubheader">Data Availability</div>
+
+	<div class="help">
+	<a class=info href="#"><img src="images/help.png" border="0">
+	<span><b>Availability:</b><br> Project data is currently only available to users with Admin access to a project, but can
+be made available to all users.
+	</span></a>
+	</div>
+
+<div>
+<label>Data:</label><form:checkbox cssClass="checkbox" path="isGlobal" id="isGlobal"/>
+The data in this project is to be made publicly available via OzTrack.
+</div>
+
+	<div class="help">
+	<a class=info href="#"><img src="images/help.png" border="0">
+	<span><b>Access Rights Statement:</b><br>This should reflect any restrictions around the access rights and use of your data.
+	</span></a>
+	</div>
+
+<div>
+<label>Access Rights Statement:</label>
+<form:textarea path="rightsStatement" rows="3" cols="40" />
+<form:errors path="rightsStatement" cssClass="formErrors"/>
+</div>
+
 <c:choose>
 <c:when test="${param.update}">
-
-
-	<div class="formSubheader">Data Availability</div>
-
-		<div class="help">
-		<a class=info href="#"><img src="images/help.png" border="0">
-		<span><b>Availability:</b><br> Project data is currently only available to users with Admin access to a project, but can
-	be made available to all users.
-		</span></a>
-		</div>
-
-	<div>
-	<label>Data:</label><form:checkbox cssClass="checkbox" path="isGlobal" id="isGlobal"/>
-	The data in this project is to be made publicly available via OzTrack.
-	</div>
-
-		<div class="help">
-		<a class=info href="#"><img src="images/help.png" border="0">
-		<span><b>Access Rights Statement:</b><br>This should reflect any restrictions around the access rights and use of your data.
-		</span></a>
-		</div>
-
-	<div>
-	<label>Access Rights Statement:</label>
-	<form:textarea path="rightsStatement" rows="5" cols="40" id="rightsStatement"/>
-	<form:errors path="rightsStatement" cssClass="formErrors"/>
-	</div>
-
 
 		<div class="help">
 		<a class=info href="#"><img src="images/help.png" border="0">
