@@ -72,19 +72,20 @@ public class DataSpaceInterface {
 		
 		project = projectDao.update(project);
 		
-		// testing : do the agent
-		statusCode = executeDeleteMethod("agents/" + agentURI, project);
-		
-		if ((statusCode != HttpStatus.SC_OK) && (statusCode != HttpStatus.SC_ACCEPTED) && (statusCode != HttpStatus.SC_NO_CONTENT)) {
-			logger.info("deleting dataSpace agent failed");
-			throw new DataSpaceInterfaceException("deleting dataSpace agent failed.");
-		} else {
-			dataSpaceAgent.setDataSpaceAgentURI(null);
-			dataSpaceAgent.setDataSpaceAgentUpdateDate(new Date());
+		if (deleteAgent) {
+
+			statusCode = executeDeleteMethod("agents/" + agentURI, project);
+			
+			if ((statusCode != HttpStatus.SC_OK) && (statusCode != HttpStatus.SC_ACCEPTED) && (statusCode != HttpStatus.SC_NO_CONTENT)) {
+				logger.info("deleting dataSpace agent failed");
+				throw new DataSpaceInterfaceException("deleting dataSpace agent failed.");
+			} else {
+				dataSpaceAgent.setDataSpaceAgentURI(null);
+				dataSpaceAgent.setDataSpaceAgentUpdateDate(new Date());
+			}
+			
+		   	userDao.update(dataSpaceAgent);
 		}
-		
-	   	userDao.update(dataSpaceAgent);
-		
 	}
 	
 	public void updateDataSpace(Project project) throws DataSpaceInterfaceException {

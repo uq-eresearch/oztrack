@@ -253,18 +253,19 @@ $(document).ready(function(){
 		 if (action == "publish") {
 			 successHtml = "<b>Collection Manager record: </b>"
 				 			 + "<br/>Published to " + data.dataSpaceAgentURL 
-				 			 + "<br/>Last updated on " + data.dataSpaceAgentUpdateDate + ".<br/><br/>";
+				 			 + "<br/>Last updated on " + data.dataSpaceAgentUpdateDate + ".<br/><br/>"
 							 + "<b>Collection record: </b>"
 				 			 + "<br/>Published to " + data.dataSpaceCollectionURL
 				 			 + "<br/>Last updated on " + data.dataSpaceUpdateDate + ".";
 		 
 		 } else if (action == "delete") {
 			 successHtml = "<b>Collection Manager record: </b>"
-	 			 		 + "<br/>Unpublished on " + data.dataSpaceAgentUpdateDate + ".";
+	 			 		 + "<br/>Unpublished on " + data.dataSpaceAgentUpdateDate + ".<br/><br/>"
+	 			 		 + "<b>Collection record: </b>"
+	 			 		 + "<br/>Unpublished on " + data.dataSpaceUpdateDate + ".";
+
 		 }
-		 
 		 $('#publicationStatus').html(successHtml);
-		 alert("done");
 	});
 
 	request.fail(function(jqXHR, textStatus, data) {

@@ -135,13 +135,13 @@
 <tr><td class="projectFieldName"></td><td>
 	<c:if test="${!empty project.firstDetectionDate}">
 		<a class="oztrackButton" href="#" onclick='publishToDataSpace(<c:out value="${project.id}"/>,"<c:out value="${currentUser.username}"/>","publish"); return false;'><c:out value="${publishButtonText}"/></a>
+		
+	</c:if>&nbsp;&nbsp;
+	<c:if test="${!empty project.dataSpaceURI}">
+		<a class="oztrackButton" href="#" onclick='publishToDataSpace(<c:out value="${project.id}"/>,"<c:out value="${currentUser.username}"/>","delete"); return false;'>Delete from UQ DataSpace</a>
 		&nbsp;&nbsp;
 	</c:if>
-	<c:if test="${!empty project.dataSpaceAgent.dataSpaceAgentURI}">
-		agent only!! <a class="oztrackButton" href="#" onclick='publishToDataSpace(<c:out value="${project.id}"/>,"<c:out value="${currentUser.username}"/>","delete"); return false;'>Delete from UQ DataSpace</a>
-		&nbsp;&nbsp;
-	</c:if>
-	
+	<br/><br/>
 	<a class="oztrackButton" href="<c:url value="projectadd"><c:param name="update" value="${true}"/><c:param name="id" value="${project.id}"/></c:url>">Edit</a>
 	&nbsp;&nbsp;
 	<a class="oztrackButton" href="<c:url value="projectdetail"/>">Cancel</a>
