@@ -46,8 +46,8 @@ public class UserListController implements Controller {
         
         if (project == null) {
         	project = new Project("Project1 Title");
-        	project.setContactGivenName("Fred");
-        	project.setContactFamilyName("Smith");
+//        	project.setContactGivenName("Fred");
+//        	project.setContactFamilyName("Smith");
         	ProjectUser pu = new ProjectUser();
         	pu.setProject(project);
         	pu.setUser(user);
@@ -57,7 +57,7 @@ public class UserListController implements Controller {
         	projectUsers.add(pu);
         	project.setProjectUsers(projectUsers);
     
-          	logger.debug("project " + project.getTitle() + " " + project.getContactFamilyName());
+//          	logger.debug("project " + project.getTitle() + " " + project.getContactFamilyName());
          	logger.debug("project users" + project.getProjectUsers());
             
         	projectDao.save(project);

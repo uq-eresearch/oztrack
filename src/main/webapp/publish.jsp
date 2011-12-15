@@ -57,12 +57,12 @@
 
 <tr><td class="projectFieldName">Collection Manager:</td>
 	
-    <td><c:out value="${project.dataspaceAgent.fullName}"/>
-    <br><c:out value="${project.dataspaceAgent.email}"/><br></td></tr>
+    <td><c:out value="${project.dataSpaceAgent.fullName}"/>
+    <br><c:out value="${project.dataSpaceAgent.email}"/><br></td></tr>
 
 <tr><td class="projectFieldName">Collection Manager Description:</td>
 	
-    <td><c:out value="${project.dataspaceAgent.dataSpaceAgentDescription}"/>
+    <td><c:out value="${project.dataSpaceAgent.dataSpaceAgentDescription}"/>
 	<br></td></tr>
 
 <tr><td class="projectFieldName">Temporal Coverage:</td><td>
@@ -102,26 +102,46 @@
 	
 </td></tr>
 
+<tr><td class="projectFieldName">DataSpace Metadata Publication Status:</td><td id="publicationStatus">
 
-<tr><td class="projectFieldName">Metadata Publication Status:</td><td id="publicationStatus">
 		<c:choose>
-		<c:when test ="${empty project.dataSpaceUpdateDate}">
-			Your project metadata has not yet been published externally.
+		<c:when test ="${empty project.dataSpaceAgent.dataSpaceAgentURI}">
+			<b>Collection Manager record: </b><br/>
+			 Not published.
+		</c:when>
+		<c:otherwise>
+			<b>Collection Manager record: </b><br/>
+			Published to <c:out value="${dataSpaceURL}"/>agents/<c:out value = "${project.dataSpaceAgent.dataSpaceAgentURI}"/> <br/>
+			Last updated on	<fmt:formatDate pattern="${dateTimeFormatPattern}" value="${project.dataSpaceAgent.dataSpaceAgentUpdateDate}"/>.
+		</c:otherwise>
+		</c:choose>
+		<br/><br/>
+		<c:choose>
+		<c:when test ="${empty project.dataSpaceURI}">
+			<b>Collection record: </b><br/>
+			Not published.
 			<c:set var="publishButtonText" value="Publish Metadata to UQ DataSpace"/> 
 		</c:when>
 		<c:otherwise>
-			Your project metadata has been published and was last updated on 
-			<fmt:formatDate pattern="${dateTimeFormatPattern}" value="${project.dataSpaceUpdateDate}"/>.
+			<b>Collection record: </b><br/>
+			Published to <c:out value="${dataSpaceURL}"/>collections/<c:out value = "${project.dataSpaceURI}"/> <br/> 
+			Last updated on <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${project.dataSpaceUpdateDate}"/>.
 			<c:set var="publishButtonText" value="Update UQ DataSpace Collection Registry"/> 
 		</c:otherwise>
 		</c:choose>
+		<br/>
 </td></tr>
 
 <tr><td class="projectFieldName"></td><td>
 	<c:if test="${!empty project.firstDetectionDate}">
-		<a class="oztrackButton" href="#" onclick='publishToDataSpace(<c:out value="${project.id}"/>,"<c:out value="${currentUser.username}"/>"); return false;'><c:out value="${publishButtonText}"/></a>
+		<a class="oztrackButton" href="#" onclick='publishToDataSpace(<c:out value="${project.id}"/>,"<c:out value="${currentUser.username}"/>","publish"); return false;'><c:out value="${publishButtonText}"/></a>
 		&nbsp;&nbsp;
 	</c:if>
+	<c:if test="${!empty project.dataSpaceAgent.dataSpaceAgentURI}">
+		agent only!! <a class="oztrackButton" href="#" onclick='publishToDataSpace(<c:out value="${project.id}"/>,"<c:out value="${currentUser.username}"/>","delete"); return false;'>Delete from UQ DataSpace</a>
+		&nbsp;&nbsp;
+	</c:if>
+	
 	<a class="oztrackButton" href="<c:url value="projectadd"><c:param name="update" value="${true}"/><c:param name="id" value="${project.id}"/></c:url>">Edit</a>
 	&nbsp;&nbsp;
 	<a class="oztrackButton" href="<c:url value="projectdetail"/>">Cancel</a>

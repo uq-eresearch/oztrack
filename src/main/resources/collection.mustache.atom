@@ -2,6 +2,7 @@
 <entry
     xmlns="http://www.w3.org/2005/Atom"
     xmlns:rdfa="http://www.w3.org/ns/rdfa#"
+    xmlns:georss="http://www.georss.org/georss"
     xmlns:app="http://www.w3.org/2007/app">
     
     <!-- *** metadata about the collection *** -->
@@ -9,10 +10,10 @@
     <id>{{collectionURL}}</id>
 
     <!--     collection type -->
-  <link 
+    <link 
   		rel="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
-        href="http://purl.org/dc/dcmitype/Collection"
-        title="Collection"/>
+		href="http://purl.org/dc/dcmitype/Dataset"
+        title="Dataset"/>
  
    <!--     collection title -->
     <title 
@@ -24,7 +25,8 @@
 
     <!--     web page describing the collection -->
     <link
-        rel="{{collectionURL}}"/>
+        rel="http://xmlns.com/foaf/0.1/page"
+        href="{{collectionURL}}"/>
 
    <!--     species -->
     <category
@@ -33,7 +35,7 @@
         term="{{speciesScientificName}}"/>
 
    <!--    collection manager -->
-    <link rel="http://purl.org/dc/terms/publisher" href="mailto:{{contactEmail}}" title="{{contactGivenName}} {{contactFamilyName}}"/>
+    <link rel="http://purl.org/dc/terms/publisher" href="{{contactDataSpaceURL}}" title="{{contactGivenName}} {{contactFamilyName}}"/>
         
     <!--     temporal coverage -->
     <rdfa:meta
@@ -58,9 +60,9 @@
     
     <source>
         <title type="text">OzTrack</title>
-        <id>http://oztrack.org</id>
+        <id>http://oztrack.org/</id>
         
-        <! -- description creator -->
+        <!-- description creator -->
         <author>
             <name>{{contactGivenName}} {{contactFamilyName}}</name>
 			<email>{{contactEmail}}</email>           

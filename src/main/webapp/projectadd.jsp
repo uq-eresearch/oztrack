@@ -24,30 +24,30 @@ data has been uploaded to OzTrack, and you have the opportunity to edit this inf
 	</span></a>
 	</div>
 
-<c:set var="dataspaceAgent" value="${currentUser}"/>
+<c:set var="dataSpaceAgent" value="${currentUser}"/>
 
 <c:if test="${param.update}">
-	<c:set var="dataspaceAgent" value="${project.dataspaceAgent}"/>
+	<c:set var="dataSpaceAgent" value="${project.dataSpaceAgent}"/>
 </c:if>	
 
 <div>
 <label>Name:</label>
-<div><c:out value="${dataspaceAgent.fullName}"/>&nbsp;</div>
+<div><c:out value="${dataSpaceAgent.fullName}"/>&nbsp;</div>
 </div>
 
 <div>
 <label>Organisation:</label>
-<div><c:out value="${dataspaceAgent.organisation}"/>&nbsp;</div>
+<div><c:out value="${dataSpaceAgent.organisation}"/>&nbsp;</div>
 </div>
 
 <div>
 <label>Description:</label>
-<div style="width:450px"><c:out value="${dataspaceAgent.dataSpaceAgentDescription}"/>&nbsp;</div>
+<div style="width:450px"><c:out value="${dataSpaceAgent.dataSpaceAgentDescription}"/>&nbsp;</div>
 </div>
 
 <div>
 <label>Email:</label>
-<div><c:out value="${dataspaceAgent.email}"/>&nbsp;</div>
+<div><c:out value="${dataSpaceAgent.email}"/>&nbsp;</div>
 </div>
 
 <!-- 

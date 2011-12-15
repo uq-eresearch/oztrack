@@ -790,6 +790,7 @@ tbody tr:hover {
 .projectListTable .projectFieldName {
 	font-weight:bold;
 	width:120px;
+	vertical-align:top;
 }	
 
 .projectListTableHeader td {

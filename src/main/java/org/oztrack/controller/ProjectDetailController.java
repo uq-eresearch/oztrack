@@ -78,12 +78,14 @@ public class ProjectDetailController implements Controller {
 		        List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
 		        DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
 		        List<DataFile> dataFileList = dataFileDao.getDataFilesByProject(project);
+		        String dataSpaceURL = OzTrackApplication.getApplicationContext().getDataSpaceURL();
 		        
 		        modelAndView = new ModelAndView(modelAndViewName);
 		        modelAndView.addObject("errorStr", errorMessage);
 		        modelAndView.addObject("project", project);
 		        modelAndView.addObject("projectAnimalsList", projectAnimalsList);
 		        modelAndView.addObject("dataFileList", dataFileList);
+		        modelAndView.addObject("dataSpaceURL",dataSpaceURL);
 	        
 	        } else {
 	        	modelAndView = new ModelAndView("redirect:projects");

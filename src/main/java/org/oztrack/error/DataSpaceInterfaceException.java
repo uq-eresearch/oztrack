@@ -1,17 +1,16 @@
 package org.oztrack.error;
-
 /**
  * Created by IntelliJ IDEA.
  * User: uqpnewm5
- * Date: 5/05/11
- * Time: 10:09 AM
+ * Date: 9/08/11
+ * Time: 10:52 AM
  * sorry
  */
-public class FileProcessingException extends Exception {
+public class DataSpaceInterfaceException extends Exception {
 
-    private String message;
+   private String message;
 
-    public FileProcessingException(String message) {
+    public DataSpaceInterfaceException(String message) {
         this.message = message;
     }
 
@@ -20,3 +19,6 @@ public class FileProcessingException extends Exception {
         return this.message;
     }
 }
+
+
+

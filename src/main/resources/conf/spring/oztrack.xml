@@ -26,6 +26,10 @@
         <property name="daoManager" ref="daoManager"/>
         <property name="authenticationManager" ref="authenticationManager"/>
         <property name="dataDir" value="${application.dataDir}"/>
+        <property name="dataSpaceURL" value="${dataSpaceURL}"/>
+        <property name="dataSpaceUsername" value="${dataSpaceUsername}"/>
+        <property name="dataSpacePassword" value="${dataSpacePassword}"/>
+        <property name="serverProxyName" value="${serverProxyName}"/>
     </bean>
 
     <bean id="ozTrackApplication" class="org.oztrack.app.OzTrackApplication">

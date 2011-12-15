@@ -30,8 +30,8 @@
 <div id="coverageMap" style="width:240px;height:200px;"></div>
 </td></tr>
 
-<tr><td class="projectFieldName">Contact:</td><td><c:out value="${project.dataspaceAgent.fullName}"/><br><c:out value="${project.dataspaceAgent.email}"/><br></td></tr>
-<tr><td class="projectFieldName">Contact Organisation:</td><td><c:out value="${project.dataspaceAgent.organisation}"/></td></tr>
+<tr><td class="projectFieldName">Contact:</td><td><c:out value="${project.dataSpaceAgent.fullName}"/><br><c:out value="${project.dataSpaceAgent.email}"/><br></td></tr>
+<tr><td class="projectFieldName">Contact Organisation:</td><td><c:out value="${project.dataSpaceAgent.organisation}"/></td></tr>
 <tr><td class="projectFieldName">Publications:</td><td><i><c:out value="${project.publicationTitle}"/></i><br> <c:out value="${project.publicationUrl}"/></td></tr>
 <tr><td class="projectFieldName">Rights Statement:</td><td><c:out value="${project.rightsStatement}"/></td></tr>
 <tr><td class="projectFieldName">Access :</td><td>

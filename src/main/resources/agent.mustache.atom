@@ -7,6 +7,10 @@
     <!--     id for the party -->
     <id>http://dataspace.uq.edu.au/agents/ignore</id>
 
+    <!--     names -->
+    <title
+        type="text">{{contactGivenName}} {{contactFamilyName}}</title>
+        
     <!--     collection type -->
     <link
         rel="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
@@ -30,15 +34,15 @@
 
     <!-- *** metadata about the description *** -->
     <!--     description last updated -->
-    <updated></updated>
+    <updated>{{dataSpaceAgentUpdateDate}}</updated>
     <source>
-        <id>http://oztrack.org</id>
+        <id>http://oztrack.org/</id>
         <title type="text">OzTrack</title>
-        
         <author>
             <name>{{contactGivenName}} {{contactFamilyName}}</name>
 			<email>{{contactEmail}}</email>           
         </author>
+        <updated>{{dataSpaceAgentUpdateDate}}</updated>
     </source>
     <app:control>
         <app:draft>yes</app:draft>

@@ -35,7 +35,7 @@ public class Project extends OztrackBaseEntity implements Serializable {
     private boolean isGlobal;
     private String spatialCoverageDescr;
     @ManyToOne
-    private User dataspaceAgent;
+    private User dataSpaceAgent;
 //    private String contactGivenName;
 //    private String contactFamilyName;
 //    private String contactOrganisation;
@@ -181,11 +181,11 @@ public class Project extends OztrackBaseEntity implements Serializable {
         this.spatialCoverageDescr = spatialCoverageDescr;
     }
 
-    public User getDataspaceAgent() {
-		return dataspaceAgent;
+    public User getDataSpaceAgent() {
+		return dataSpaceAgent;
 	}
-	public void setDataspaceAgent(User dataspaceAgent) {
-		this.dataspaceAgent = dataspaceAgent;
+	public void setDataSpaceAgent(User dataSpaceAgent) {
+		this.dataSpaceAgent = dataSpaceAgent;
 	}
 	public String getPublicationTitle() {
         return publicationTitle;

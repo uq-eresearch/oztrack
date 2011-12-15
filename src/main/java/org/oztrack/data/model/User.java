@@ -33,6 +33,7 @@ public class User implements Serializable {
     private String password;
     private String dataSpaceAgentURI;
     private String dataSpaceAgentDescription;
+    private Date dataSpaceAgentUpdateDate;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade =
     {CascadeType.PERSIST, CascadeType.MERGE})
@@ -158,6 +159,14 @@ public class User implements Serializable {
 
 	public void setDataSpaceAgentDescription(String dataSpaceAgentDescription) {
 		this.dataSpaceAgentDescription = dataSpaceAgentDescription;
+	}
+
+	public Date getDataSpaceAgentUpdateDate() {
+		return dataSpaceAgentUpdateDate;
+	}
+
+	public void setDataSpaceAgentUpdateDate(Date dataSpaceAgentUpdateDate) {
+		this.dataSpaceAgentUpdateDate = dataSpaceAgentUpdateDate;
 	}
 
     /*

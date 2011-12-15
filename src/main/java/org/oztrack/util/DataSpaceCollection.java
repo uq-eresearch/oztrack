@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.model.Project;
 import org.springframework.core.io.ClassPathResource;
 
@@ -29,7 +31,8 @@ public class DataSpaceCollection {
     private static Template atomCollectionTemplate;
 
 	private Project project;
-
+	private String dataSpaceURL;
+	
 	private String collectionTitle;
     private String collectionDescription;
     private String collectionURL;
@@ -45,11 +48,14 @@ public class DataSpaceCollection {
 	private String rightsStatement;
 	private String accessRights;
 	private String dataSpaceUpdateDate;
+	private String dataSpaceAgentUpdateDate;
+	private String contactDataSpaceURI;
 	
     
     public DataSpaceCollection(Project project) {
     	this.project = project;
     	buildAtomTemplates();
+    	this.dataSpaceURL = OzTrackApplication.getApplicationContext().getDataSpaceURL();
     }
     
     public static synchronized void buildAtomTemplates() {
@@ -87,7 +93,15 @@ public class DataSpaceCollection {
     public String collectionToAtom() {
 		return atomCollectionTemplate.execute(this);
 	}
-    
+
+	public static Template getAtomAgentTemplate() {
+		return atomAgentTemplate;
+	}
+
+	public static Template getAtomCollectionTemplate() {
+		return atomCollectionTemplate;
+	}
+
     public String getCollectionTitle() {
 		return project.getTitle();
 	}
@@ -101,19 +115,19 @@ public class DataSpaceCollection {
 	}
 
 	public String getContactGivenName() {
-		return project.getDataspaceAgent().getFirstName();
+		return project.getDataSpaceAgent().getFirstName();
 	}
 
 	public String getContactFamilyName() {
-		return project.getDataspaceAgent().getLastName();
+		return project.getDataSpaceAgent().getLastName();
 	}
 
 	public String getContactEmail() {
-		return project.getDataspaceAgent().getEmail();
+		return project.getDataSpaceAgent().getEmail();
 	}
 
 	public String getContactDescription() {
-		return project.getDataspaceAgent().getDataSpaceAgentDescription();
+		return project.getDataSpaceAgent().getDataSpaceAgentDescription();
 	}
 
 	public String getSpeciesCommonName() {
@@ -157,13 +171,21 @@ public class DataSpaceCollection {
 	}
 	
 	public String getDataSpaceUpdateDate() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 		return sdf.format(project.getDataSpaceUpdateDate());
+	}
+					
+	public String getDataSpaceAgentUpdateDate() {
+		Date d = project.getDataSpaceAgent().getDataSpaceAgentUpdateDate();
+		if (d == null) d = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		return sdf.format(d);
+	}
+
+	public String getContactDataSpaceURL() {
+		return this.dataSpaceURL + "agents/" + project.getDataSpaceAgent().getDataSpaceAgentURI();
 	}
 
 
-
- 
-    
 	
 }

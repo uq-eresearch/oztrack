@@ -231,14 +231,15 @@ $(document).ready(function(){
 
  }
  
- function publishToDataSpace (id, username) {
+ function publishToDataSpace (id, username, action) {
 	 
 	 var loadingGraphicHtml = "Sending request ...";
 	 $('#publicationStatus').html(loadingGraphicHtml);
 	 
 	 var url = "dataspace";
 	 var params =  {project: id
-             	  ,username: username};
+             	  ,username: username
+             	  ,action: action};
 
  	 var request = $.ajax({
 		 url:url,
@@ -248,8 +249,19 @@ $(document).ready(function(){
 	 
 	 request.done(function(data) {
 		 
-		 var successHtml = "The DataSpace URI for this collection is : <b>" + data.dataspaceURI 
-		 + "</b>.<br>It was last updated on <b>" + data.dataspaceUpdateDate + "</b>.";
+		 var successHtml = "";
+		 if (action == "publish") {
+			 successHtml = "<b>Collection Manager record: </b>"
+				 			 + "<br/>Published to " + data.dataSpaceAgentURL 
+				 			 + "<br/>Last updated on " + data.dataSpaceAgentUpdateDate + ".<br/><br/>";
+							 + "<b>Collection record: </b>"
+				 			 + "<br/>Published to " + data.dataSpaceCollectionURL
+				 			 + "<br/>Last updated on " + data.dataSpaceUpdateDate + ".";
+		 
+		 } else if (action == "delete") {
+			 successHtml = "<b>Collection Manager record: </b>"
+	 			 		 + "<br/>Unpublished on " + data.dataSpaceAgentUpdateDate + ".";
+		 }
 		 
 		 $('#publicationStatus').html(successHtml);
 		 alert("done");

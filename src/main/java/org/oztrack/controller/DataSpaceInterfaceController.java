@@ -1,5 +1,8 @@
 package org.oztrack.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,6 +32,8 @@ public class DataSpaceInterfaceController implements Controller {
         // parameters from ajax post
         String projectId = request.getParameter("project");
         String username = request.getParameter("username");
+        String action = request.getParameter("action");
+        
         //User currentUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER);
         UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();
         User currentUser = userDao.getByUsername(username);
@@ -47,8 +52,13 @@ public class DataSpaceInterfaceController implements Controller {
         	} else {
         		
         		Project project = projectDao.getProjectById(Long.parseLong(projectId));
+        		Map <String, Object> projectActionMap = new HashMap<String, Object>();
+        		projectActionMap.put("project", project);
+        		projectActionMap.put("action", action);
+        		
+        		
         		logger.info("request for dataspace syndication by user: " + currentUser.getUsername() + " for project: " + project.getTitle());
-        		return new ModelAndView("java_DataSpaceInterface", "project", project);
+        		return new ModelAndView("java_DataSpaceInterface", "projectActionMap", projectActionMap);
         		
         	}
         }
