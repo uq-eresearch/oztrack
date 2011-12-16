@@ -72,7 +72,7 @@
 
 <tr><td class="projectFieldName">Publications:</td><td><i><c:out value="${project.publicationTitle}"/></i><br> <c:out value="${project.publicationUrl}"/></td></tr>
 <tr><td class="projectFieldName">Rights Statement:</td><td><c:out value="${project.rightsStatement}"/></td></tr>
-<tr><td class="projectFieldName">Access :</td><td>
+<tr><td class="projectFieldName">Access Rights :</td><td>
 	
 	<c:choose><c:when test="${project.isGlobal}">
 		The data in the project is available in OzTrack for the public to use.

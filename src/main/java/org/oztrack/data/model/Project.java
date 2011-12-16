@@ -42,7 +42,7 @@ public class Project extends OztrackBaseEntity implements Serializable {
 //    private String contactEmail;
 //    @Column(columnDefinition = "TEXT")
 //    private String contactUrl;
-//    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String publicationTitle;
     @Column(columnDefinition = "TEXT")
     private String publicationUrl;

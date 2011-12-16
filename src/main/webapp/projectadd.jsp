@@ -167,18 +167,18 @@ be made available to all users.
 	</div>
 
 <div>
-<label>Data:</label><form:checkbox cssClass="checkbox" path="isGlobal" id="isGlobal"/>
+<label>Access Rights:</label><form:checkbox cssClass="checkbox" path="isGlobal" id="isGlobal"/>
 The data in this project is to be made publicly available via OzTrack.
 </div>
 
 	<div class="help">
 	<a class=info href="#"><img src="images/help.png" border="0">
-	<span><b>Access Rights Statement:</b><br>This should reflect any restrictions around the access rights and use of your data.
+	<span><b>Rights Statement:</b><br>This should reflect any restrictions around the access rights and use of your data.
 	</span></a>
 	</div>
 
 <div>
-<label>Access Rights Statement:</label>
+<label>Rights Statement:</label>
 <form:textarea path="rightsStatement" rows="3" cols="40" />
 <form:errors path="rightsStatement" cssClass="formErrors"/>
 </div>
