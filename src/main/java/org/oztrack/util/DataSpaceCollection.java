@@ -171,8 +171,10 @@ public class DataSpaceCollection {
 	}
 	
 	public String getDataSpaceUpdateDate() {
+		Date d = project.getDataSpaceUpdateDate();
+		if (d == null) d = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-		return sdf.format(project.getDataSpaceUpdateDate());
+		return sdf.format(d);
 	}
 					
 	public String getDataSpaceAgentUpdateDate() {
