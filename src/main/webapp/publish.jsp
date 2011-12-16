@@ -7,7 +7,7 @@
 <c:when test="${empty project.firstDetectionDate}">
 
 	<p>No data has been uploaded for this project yet, so <b>no metadata record will be syndicated </b>to the <a href="http://dataspace.uq.edu.au">UQ DataSpace</a> 
-	Collections Registry & subsequently on to the <a href="http://ands.org.au">Australian National Data Service</a>.</p>
+	Collections Registry and subsequently on to the <a href="http://ands.org.au">Australian National Data Service</a>.</p>
 
 </c:when>
 <c:otherwise>
@@ -16,14 +16,14 @@
 	<c:when test ="${empty project.dataSpaceUpdateDate}">
 	
 		<p>When you click 'Publish', your project metadata shown below is syndicated across to the <a href="http://dataspace.uq.edu.au">UQ DataSpace</a> 
-		Collections Registry & subsequently on to the <a href="http://ands.org.au">Australian National Data Service</a>.</p>
+		Collections Registry and subsequently on to the <a href="http://ands.org.au">Australian National Data Service</a>.</p>
 		<p>Click 'Publish DataSpace Collection' to submit the data shown below.</p>
 	
 	</c:when>
 	<c:otherwise>
 
 		<p>When you click 'Update', the collection entry for this project in the the <a href="http://dataspace.uq.edu.au">UQ DataSpace</a> 
-		Collections Registry & subsequently at the <a href="http://ands.org.au">Australian National Data Service</a> will be 
+		Collections Registry and subsequently at the <a href="http://ands.org.au">Australian National Data Service</a> will be 
 		updated with the data below.</p>
 	
 	</c:otherwise>
@@ -42,9 +42,9 @@
 
 	<td><c:out value="${project.description}"/>
 	&nbsp;
-	This collection consists of <c:out value="${fn:length(dataFileList)}"/> datafile(s) 
+	<!-- This collection consists of <c:out value="${fn:length(dataFileList)}"/> datafile(s) 
 	containing <c:out value="${project.detectionCount}"/> detections describing the movements of 
-	<c:out value="${fn:length(projectAnimalsList)}"/> animals.
+	<c:out value="${fn:length(projectAnimalsList)}"/> animals. -->
 	</td></tr>
 
 <tr><td class="projectFieldName">Collection URL:</td>

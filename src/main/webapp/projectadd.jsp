@@ -42,7 +42,7 @@ data has been uploaded to OzTrack, and you have the opportunity to edit this inf
 
 <div>
 <label>Description:</label>
-<div style="width:450px"><c:out value="${dataSpaceAgent.dataSpaceAgentDescription}"/>&nbsp;</div>
+<div><c:out value="${dataSpaceAgent.dataSpaceAgentDescription}"/>&nbsp;</div>
 </div>
 
 <div>

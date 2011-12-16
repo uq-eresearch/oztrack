@@ -117,7 +117,7 @@ public class ProjectFormController extends SimpleFormController {
     	// create/update details
         project.setCreateDate(new java.util.Date());
         project.setCreateUser(currentUser);
-        project.setDataspaceAgent(currentUser);
+        project.setDataSpaceAgent(currentUser);
         
         // set the current user to be an admin for this project
         ProjectUser adminProjectUser = new ProjectUser();

@@ -33,7 +33,7 @@ public class ProjectDaoImpl extends JpaDao<Project> implements ProjectDao, Seria
             return null;
         }
     }
-
+    
 /*
     public List<PositionFix> getAllPositionFixes(Long projectId) {
 

@@ -34,6 +34,8 @@ public class AnimalDaoImpl extends JpaDao<Animal> implements AnimalDao, Serializ
         }
     }
 
+
+
     @Override
     public Animal getAnimal(String animalId, Long projectId) {
         Query query = entityManagerSource.getEntityManager().createQuery("select o from Animal o where o.project.id=:projectId and o.projectAnimalId=:animalId");
