@@ -106,8 +106,6 @@ public class DataSpaceInterface {
 	    logger.info(collectionAtom);
 	    logger.info("**********************************************");
 		
-//		HttpState authenticatedState = login();
-		
 		boolean doAgentPost = false;
 		boolean doAgentPut = false;
 		boolean doCollectionPost = false;

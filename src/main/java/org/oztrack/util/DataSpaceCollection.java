@@ -14,6 +14,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import com.samskivert.mustache.Mustache;
 import com.samskivert.mustache.Template;
+import com.vividsolutions.jts.geom.Coordinate;
 
 
 public class DataSpaceCollection { 
@@ -144,12 +145,16 @@ public class DataSpaceCollection {
 	}
 
 	public String getBoundingBoxCoordinatesString() {
-		String bb = project.getBoundingBox().toString();
-		bb = bb.replace("POLYGON", "");
-		bb = bb.replace("(", "");
-		bb = bb.replace(")","");
-		bb = bb.replace(",","");
+
+		Coordinate c[] = project.getBoundingBox().getCoordinates();
+		String bb = "";
+		for (int i = 0; i < c.length; i++) {
+			bb = bb + " " + Double.toString(c[i].y) + " " + Double.toString(c[i].x);
+			
+		}
+		
 		return bb;
+		
 	}
 	
 	public String getSpatialCoverage() {
