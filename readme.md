@@ -34,8 +34,7 @@ chkconfig --list (to see list of services)
 chkconfig postgresql on
 service postgresql start
 
-remember to sort out authentication: /var/lib/pgsql/data/pg_hba.conf
-
+Remember to sort out authentication: /var/lib/pgsql/data/pg_hba.conf
 
 Run something like the following commands:
 
@@ -54,7 +53,7 @@ Run something like the following commands:
 	psql -U postgres -d oztrack -c "alter table spatial_ref_sys owner to oztrack;"
 	psql -U postgres -d oztrack -c "alter view geography_columns owner to oztrack;"
 
-    -- Out own tables should be created on first run by Hibernate
+    -- Our own tables should be created on first run by Hibernate
 See http://postgis.refractions.net/documentation/manual-1.5/ch02.html#id2565921
 
 Installing R (including Rserve)
@@ -94,11 +93,13 @@ To run Rserve daemon, execute the following from your Linux console:
 The resulting Rserve process will listen on port 6311.
 
 
-
 See http://www.rforge.net/Rserve/faq.html#start
 
-File System
----------------------
-OzTrack will look for the data directory in the property file. If there isn't one it will use the user.home environment variable to plunk
-files down in. Might be prudent to create an oztrack directory in the tomcat home directory, CHOWN it to tomcat and CHMOD it so tomcat can write to it.
+Setting up Properties
+--------------------------------------------------------------------------------
+The application.properties file contains some important values that need to be set for OzTrack to run correctly.
+
+dataDir: If this isn't set, OzTrack will use the user.home environment variable (possibly of the server user environment) to store files. Ensure that such a directory is available and can be written to.
+dataSpaceURL: This is the URL that project collection records will be written to. A username and password must be provided in this file for the functionality to work.
+
 
