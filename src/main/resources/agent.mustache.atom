@@ -45,6 +45,6 @@
         <updated>{{dataSpaceAgentUpdateDate}}</updated>
     </source>
     <app:control>
-        <app:draft>yes</app:draft>
+        <app:draft>no</app:draft>
     </app:control>
 </entry>
