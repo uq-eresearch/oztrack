@@ -1,3 +1,6 @@
+This software is copyright The University of Queensland.
+This software is distributed under the GNU GENERAL PUBLIC LICENSE Version 2. See the COPYING file for detail.
+
 Installing GIS Packages
 --------------------------------------------------------------------------------
 
