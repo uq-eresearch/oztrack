@@ -1,10 +1,16 @@
+# OzTrack
+
+OzTrack is a free-to-use web-based platform for the analysis and visualisation of animal tracking data.
+It was developed for the Australian animal tracking community but can be used to determine, measure and
+plot home-ranges for animals anywhere in the world.
+
 This software is copyright The University of Queensland.
 
 This software is distributed under the GNU GENERAL PUBLIC LICENSE Version 2. See the COPYING file for detail.
 
-# Installing on Ubuntu Linux
+## Installing on Ubuntu Linux
 
-## Setting up the database
+### Setting up the database
 
 Install PostgreSQL and PostGIS:
 
@@ -20,14 +26,14 @@ Setup the OzTrack database, including PostGIS:
     sudo -u postgres psql -d oztrack -c "alter table spatial_ref_sys owner to oztrack;"
     sudo -u postgres psql -d oztrack -c "alter view geography_columns owner to oztrack;"
 
-## Installing GIS Packages
+### Installing GIS Packages
 
 Install the `gdal-config` and `geos-config` utilities, required by the `rgdal` and `rgeos` R packages,
 and `libproj-dev`, also required by `rgdal`:
 
     sudo apt-get install libgeos-dev libgdal1-dev libproj-dev
 
-## Installing R (including Rserve)
+### Installing R (including Rserve)
 
 Install R:
 
@@ -51,9 +57,9 @@ Install the R packages used by OzTrack, including Rserve:
         dependencies=TRUE
     )
 
-# Installing on Red Hat Linux
+## Installing on Red Hat Linux
 
-## Setting up the database
+### Setting up the database
 
 To install PostgreSQL, use the following commands:
 
@@ -90,7 +96,7 @@ Run something like the following commands:
 
 See http://postgis.refractions.net/documentation/manual-1.5/ch02.html#id2565921
 
-## Installing GIS Packages
+### Installing GIS Packages
 
 These packages are required for both PostGIS and R spatial functionality.
 
@@ -112,7 +118,7 @@ To test successful installation, on the commmand line you should get a response 
     gdal-config
     proj
 
-## Installing R (including Rserve)
+### Installing R (including Rserve)
 
 You can just install R from the EPEL package repository on CentOS:
 
@@ -139,9 +145,9 @@ when executing `install.packages`, but this caused an error when run on CentOS.
 You will need the `gdal` Red Hat package installed in order to install the
 `rgdal` R package (ie run `yum install gdal`).
 
-# General notes
+## General notes
 
-## Running Rserve
+### Running Rserve
 
 To run the Rserve daemon, execute the following from your Linux console:
 
@@ -151,7 +157,7 @@ The resulting Rserve process will listen on port 6311.
 
 See http://www.rforge.net/Rserve/faq.html#start
 
-## Setting up Properties
+### Setting up Properties
 
 The `application.properties` file contains some important values that need to be
 set for OzTrack to run correctly.
