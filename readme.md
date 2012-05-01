@@ -29,14 +29,12 @@ To test successful installation, on the commmand line you should get a response 
 Setting up the database
 --------------------------------------------------------------------------------
 
-The following commands are used on a Linux machine; there is currently no
-documentation for setting up the database on a Windows platform.
+To install PostgreSQL, use the following commands:
 
     yum install postgresql.x86_64
     yum install postgresql-server.x86_64
     yum install postgresql-devel.x86_64
     service postgresql initdb
-    chkconfig --list (to see list of services)
     chkconfig postgresql on
     service postgresql start
 
@@ -46,14 +44,14 @@ Remember to sort out authentication:
 
 Run something like the following commands:
 
-    -- Create database with PL/pgSQL support
+    # Create database with PL/pgSQL support
     psql -U postgres -c "create user oztrack with password 'ozadmin';"
     psql -U postgres -c "create database oztrack with owner oztrack;"
     psql -U oztrack -d oztrack -c "create language plpgsql;"
 
-    -- Run the PostGIS initialisation scripts: need to run postgis.sql as postgres
-    -- because only superuser can create c functions; afterwards, we change owner
-    -- on the resulting tables/views and subsequently connect as normal user.
+    # Run the PostGIS initialisation scripts: need to run postgis.sql as postgres
+    # because only superuser can create c functions; afterwards, we change owner
+    # on the resulting tables/views and subsequently connect as normal user.
     psql -U postgres -d oztrack -f /usr/share/pgsql/contrib/postgis.sql
     psql -U postgres -d oztrack -f /usr/share/pgsql/contrib/spatial_ref_sys.sql
 
@@ -61,7 +59,7 @@ Run something like the following commands:
     psql -U postgres -d oztrack -c "alter table spatial_ref_sys owner to oztrack;"
     psql -U postgres -d oztrack -c "alter view geography_columns owner to oztrack;"
 
-    -- Our own tables should be created on first run by Hibernate
+    # Our own tables should be created on first run by Hibernate
 
 See http://postgis.refractions.net/documentation/manual-1.5/ch02.html#id2565921
 
