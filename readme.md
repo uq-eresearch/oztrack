@@ -2,38 +2,65 @@ This software is copyright The University of Queensland.
 
 This software is distributed under the GNU GENERAL PUBLIC LICENSE Version 2. See the COPYING file for detail.
 
-Installing GIS Packages
---------------------------------------------------------------------------------
+# Installing on Ubuntu Linux
 
-These packages are required for both PostGIS and R spatial functionality.
+## Setting up the database
 
-First, add the Enterprise Linux GIS (ELGIS) yum repository. The URL used in the
-following command depends on the version of Red Hat that you're running: see
-instructions on http://elgis.argeo.org/.
+Install PostgreSQL and PostGIS:
 
-    rpm -Uvh http://elgis.argeo.org/repos/6/elgis-release-6-6_0.noarch.rpm
+    sudo apt-get install postgresql-9.1 postgresql-9.1-postgis
 
-Install the following packages (note they should be installed in this order):
+Setup the OzTrack database, including PostGIS:
 
-    yum install geos-devel # will install geos as a dependency
-    yum install proj-devel # will install proj as a dependency
-    yum install postgis
-    yum install gdal-devel
- 
-To test successful installation, on the commmand line you should get a response from:
+    sudo -u postgres psql -c "create user oztrack with password 'ozadmin';"
+    sudo -u postgres psql -c "create database oztrack with owner oztrack;"
+    sudo -u postgres psql -d oztrack -f /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql
+    sudo -u postgres psql -d oztrack -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql
+    sudo -u postgres psql -d oztrack -c "alter table geometry_columns owner to oztrack;"
+    sudo -u postgres psql -d oztrack -c "alter table spatial_ref_sys owner to oztrack;"
+    sudo -u postgres psql -d oztrack -c "alter view geography_columns owner to oztrack;"
 
-    geos-config
-    gdal-config
-    proj
+## Installing GIS Packages
 
-Setting up the database
---------------------------------------------------------------------------------
+Install the `gdal-config` and `geos-config` utilities, required by the `rgdal` and `rgeos` R packages,
+and `libproj-dev`, also required by `rgdal`:
+
+    sudo apt-get install libgeos-dev libgdal1-dev libproj-dev
+
+## Installing R (including Rserve)
+
+Install R:
+
+    sudo apt-get install r-base
+
+Install the R packages used by OzTrack, including Rserve:
+
+    sudo R
+
+    install.packages(
+        c(
+            "Rserve",
+            "sp",
+            "ade4",
+            "adehabitatHR",
+            "adehabitatMA",
+            "maptools",
+            "shapefiles",
+            "rgdal"
+        ),
+        dependencies=TRUE
+    )
+
+# Installing on Red Hat Linux
+
+## Setting up the database
 
 To install PostgreSQL, use the following commands:
 
     yum install postgresql.x86_64
     yum install postgresql-server.x86_64
     yum install postgresql-devel.x86_64
+    yum install postgis
     service postgresql initdb
     chkconfig postgresql on
     service postgresql start
@@ -63,8 +90,30 @@ Run something like the following commands:
 
 See http://postgis.refractions.net/documentation/manual-1.5/ch02.html#id2565921
 
-Installing R (including Rserve)
---------------------------------------------------------------------------------
+## Installing GIS Packages
+
+These packages are required for both PostGIS and R spatial functionality.
+
+First, add the Enterprise Linux GIS (ELGIS) yum repository. The URL used in the
+following command depends on the version of Red Hat that you're running: see
+instructions on http://elgis.argeo.org/.
+
+    rpm -Uvh http://elgis.argeo.org/repos/6/elgis-release-6-6_0.noarch.rpm
+
+Install the following packages (note they should be installed in this order):
+
+    yum install geos-devel # will install geos as a dependency
+    yum install proj-devel # will install proj as a dependency
+    yum install gdal-devel
+ 
+To test successful installation, on the commmand line you should get a response from:
+
+    geos-config
+    gdal-config
+    proj
+
+## Installing R (including Rserve)
+
 You can just install R from the EPEL package repository on CentOS:
 
     yum install R
@@ -90,9 +139,11 @@ when executing `install.packages`, but this caused an error when run on CentOS.
 You will need the `gdal` Red Hat package installed in order to install the
 `rgdal` R package (ie run `yum install gdal`).
 
-Running Rserve
---------------------------------------------------------------------------------
-To run Rserve daemon, execute the following from your Linux console:
+# General notes
+
+## Running Rserve
+
+To run the Rserve daemon, execute the following from your Linux console:
 
     R CMD Rserve
 
@@ -100,8 +151,8 @@ The resulting Rserve process will listen on port 6311.
 
 See http://www.rforge.net/Rserve/faq.html#start
 
-Setting up Properties
---------------------------------------------------------------------------------
+## Setting up Properties
+
 The `application.properties` file contains some important values that need to be
 set for OzTrack to run correctly.
 
@@ -111,3 +162,23 @@ set for OzTrack to run correctly.
 * `dataSpaceURL`: This is the URL that project collection records will be written
   to. A username and password must be provided in this file for the functionality
   to work.
+
+To create the data directory for OzTrack with appropriate ownership:
+
+    sudo mkdir /var/local/oztrack
+    sudo chown $USER: /var/local/oztrack # or chown tomcat, etc
+
+To set the `dataDir` property in `application.properties`:
+
+    --- src/main/resources/conf/properties/application.properties.1 2012-05-01 19:19:40.154649903 +1000
+    +++ src/main/resources/conf/properties/application.properties   2012-05-01 19:19:49.954698504 +1000
+    @@ -4,7 +4,7 @@
+     application.title=OzTrack
+     application.email=placeholder@test
+     application.rights=All Rights reserved
+    -application.dataDir=
+    +application.dataDir=/var/local/oztrack
+     dataSpaceURL=http://dataspace-uat.metadata.net/
+     dataSpaceUsername=
+     dataSpacePassword=alternatively,
+
