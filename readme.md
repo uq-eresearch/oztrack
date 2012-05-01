@@ -1,4 +1,5 @@
 This software is copyright The University of Queensland.
+
 This software is distributed under the GNU GENERAL PUBLIC LICENSE Version 2. See the COPYING file for detail.
 
 Installing GIS Packages
@@ -6,38 +7,42 @@ Installing GIS Packages
 
 These packages are required for both PostGIS and R spatial functionality.
 
-An Enterprise Linux GIS repository to add to yum:
+First, add the Enterprise Linux GIS (ELGIS) yum repository. The URL used in the
+following command depends on the version of Red Hat that you're running: see
+instructions on http://elgis.argeo.org/.
 
-rpm -Uvh http://elgis.argeo.org/repos/5/elgis-release-5-5_0.noarch.rpm	
-or
-sudo rpm -Uvh http://elgis.argeo.org/repos/6/elgis-release-6-6_0.noarch.rpm
+    rpm -Uvh http://elgis.argeo.org/repos/6/elgis-release-6-6_0.noarch.rpm
 
-then yum install in this order, using the appropriate architecture (with current version at time of writing):
- geos-devel  // will install geos as a dependency
- proj-devel  // will install proj as a dependency
- postgis
- gdal-devel
+Install the following packages (note they should be installed in this order):
+
+    yum install geos-devel # will install geos as a dependency
+    yum install proj-devel # will install proj as a dependency
+    yum install postgis
+    yum install gdal-devel
  
 To test successful installation, on the commmand line you should get a response from:
-geos-config
-gdal-config
-proj
-R will be looking for them later.
+
+    geos-config
+    gdal-config
+    proj
 
 Setting up the database
 --------------------------------------------------------------------------------
-The following commands are used on a Linux machine; we should also document the
-process for setting up the database on Windows for developers on that platform.
 
-yum install postgresql.x86_64
-yum install postgresql-server.x86_64
-yum install postgresql-devel.x86_64
-service postgresql initdb
-chkconfig --list (to see list of services)
-chkconfig postgresql on
-service postgresql start
+The following commands are used on a Linux machine; there is currently no
+documentation for setting up the database on a Windows platform.
 
-Remember to sort out authentication: /var/lib/pgsql/data/pg_hba.conf
+    yum install postgresql.x86_64
+    yum install postgresql-server.x86_64
+    yum install postgresql-devel.x86_64
+    service postgresql initdb
+    chkconfig --list (to see list of services)
+    chkconfig postgresql on
+    service postgresql start
+
+Remember to sort out authentication:
+
+    $EDITOR /var/lib/pgsql/data/pg_hba.conf
 
 Run something like the following commands:
 
@@ -53,10 +58,11 @@ Run something like the following commands:
     psql -U postgres -d oztrack -f /usr/share/pgsql/contrib/spatial_ref_sys.sql
 
     psql -U postgres -d oztrack -c "alter table geometry_columns owner to oztrack;"
-	psql -U postgres -d oztrack -c "alter table spatial_ref_sys owner to oztrack;"
-	psql -U postgres -d oztrack -c "alter view geography_columns owner to oztrack;"
+    psql -U postgres -d oztrack -c "alter table spatial_ref_sys owner to oztrack;"
+    psql -U postgres -d oztrack -c "alter view geography_columns owner to oztrack;"
 
     -- Our own tables should be created on first run by Hibernate
+
 See http://postgis.refractions.net/documentation/manual-1.5/ch02.html#id2565921
 
 Installing R (including Rserve)
@@ -66,7 +72,7 @@ You can just install R from the EPEL package repository on CentOS:
     yum install R
 
 There are further libraries used in this project that are installed by running
-install.packages in the R interpreter (run the "R" command from Linux console, as root with -E switch).
+`install.packages` in the R interpreter (run the `R` command from Linux console, as root with `-E` switch).
 
     install.packages(c("Rserve"), dependencies=TRUE)
 
@@ -81,11 +87,10 @@ downloads, compiles, tests, and installs a large number of dependencies.
     install.packages(c("shapefiles"), dependencies=TRUE)
     install.packages(c("rgdal"), dependencies=TRUE)
  
-Note: it may be necessary to add a repos argument (eg repos="http://cran.cnr.berkeley.edu/")
-when executing install.packages, but this caused an error when run on CentOS.
-
-Note: you will need the 'gdal' Red Hat package installed in order to install the
-'rgdal' R package (ie run yum install gdal).
+Note that it may be necessary to add a repos argument (eg `repos="http://cran.cnr.berkeley.edu/"`)
+when executing `install.packages`, but this caused an error when run on CentOS.
+You will need the `gdal` Red Hat package installed in order to install the
+`rgdal` R package (ie run `yum install gdal`).
 
 Running Rserve
 --------------------------------------------------------------------------------
@@ -95,14 +100,16 @@ To run Rserve daemon, execute the following from your Linux console:
 
 The resulting Rserve process will listen on port 6311.
 
-
 See http://www.rforge.net/Rserve/faq.html#start
 
 Setting up Properties
 --------------------------------------------------------------------------------
-The application.properties file contains some important values that need to be set for OzTrack to run correctly.
+The `application.properties` file contains some important values that need to be
+set for OzTrack to run correctly.
 
-dataDir: If this isn't set, OzTrack will use the user.home environment variable (possibly of the server user environment) to store files. Ensure that such a directory is available and can be written to.
-dataSpaceURL: This is the URL that project collection records will be written to. A username and password must be provided in this file for the functionality to work.
-
-
+* `dataDir`: If this isn't set, OzTrack will use the user.home environment variable
+  (possibly of the server user environment) to store files. Ensure that such a
+  directory is available and can be written to.
+* `dataSpaceURL`: This is the URL that project collection records will be written
+  to. A username and password must be provided in this file for the functionality
+  to work.
