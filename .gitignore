@@ -1,5 +1,6 @@
 .classpath
 .project
 .settings/
+local/
 src/main/resources/conf/properties/application.properties
 target/
