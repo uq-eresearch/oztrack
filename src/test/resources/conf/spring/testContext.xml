@@ -3,15 +3,16 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <bean id="placeholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="ignoreResourceNotFound" value="true"/>
         <property name="systemPropertiesMode" value="2"/>
         <property name="locations">
             <list>
                 <value>classpath:conf/properties/test.properties</value>
-                <value>classpath:conf/properties/svninfo.properties</value>
             </list>
         </property>
     </bean>
+    <import resource="daos.xml"/>
     <import resource="oztrack.xml"/>
+
 </beans>
