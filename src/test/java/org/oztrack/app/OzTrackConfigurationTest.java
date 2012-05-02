@@ -48,31 +48,13 @@ public class OzTrackConfigurationTest {
                 }
             }
         }
-        try {
-            resourceAsStream = OzTrackConfigurationImpl.class.getResourceAsStream("/conf/properties/svninfo.properties");
-            if (resourceAsStream == null) {
-                throw new Exception("Configuration file not found, please ensure there is a 'revision.properties' on the classpath");
-            }
-            properties.load(resourceAsStream);
-        } catch (IOException ex) {
-            throw new Exception("Failed to load configuration properties", ex);
-        } finally {
-            if (resourceAsStream != null) {
-                try {
-                    resourceAsStream.close();
-                } catch (IOException ex) {
-                    // so what?
-                }
-            }
-        }
     }
 
     @Test
     public void testGetVersion() throws Exception {
         String expectedVersionNumber = registryConfigurationImpl.getVersion();
         String actualVersion = getProperty(properties, "application.version", "null");
-        String actualRevision = getProperty(properties, "revision", "null");
-        assertEquals("Version Number", expectedVersionNumber, actualVersion + "." + actualRevision);
+        assertEquals("Version Number", expectedVersionNumber, actualVersion);
     }
 
     private static String getProperty(Properties properties, String propertyName, String defaultValue) {

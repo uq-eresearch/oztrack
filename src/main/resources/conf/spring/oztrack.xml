@@ -21,7 +21,7 @@
         <property name="applicationTitle" value="${application.title}"/>
         <property name="applicationEmail" value="${application.email}"/>
         <property name="smtpServer" value="${application.emailServer}"/>
-        <property name="version" value="${application.version}.${revision}"/>
+        <property name="version" value="${application.version}"/>
         <property name="uriPrefix" value="${application.uri.prefix}"/>
         <property name="daoManager" ref="daoManager"/>
         <property name="authenticationManager" ref="authenticationManager"/>

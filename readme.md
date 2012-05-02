@@ -1,72 +1,131 @@
+# OzTrack
+
+OzTrack is a free-to-use web-based platform for the analysis and visualisation of animal tracking data.
+It was developed for the Australian animal tracking community but can be used to determine, measure and
+plot home-ranges for animals anywhere in the world.
+
 This software is copyright The University of Queensland.
+
 This software is distributed under the GNU GENERAL PUBLIC LICENSE Version 2. See the COPYING file for detail.
 
-Installing GIS Packages
---------------------------------------------------------------------------------
+## Installing on Ubuntu Linux
 
-These packages are required for both PostGIS and R spatial functionality.
+### Setting up the database
 
-An Enterprise Linux GIS repository to add to yum:
+Install PostgreSQL and PostGIS:
 
-rpm -Uvh http://elgis.argeo.org/repos/5/elgis-release-5-5_0.noarch.rpm	
-or
-sudo rpm -Uvh http://elgis.argeo.org/repos/6/elgis-release-6-6_0.noarch.rpm
+    sudo apt-get install postgresql-9.1 postgresql-9.1-postgis
 
-then yum install in this order, using the appropriate architecture (with current version at time of writing):
- geos-devel  // will install geos as a dependency
- proj-devel  // will install proj as a dependency
- postgis
- gdal-devel
- 
-To test successful installation, on the commmand line you should get a response from:
-geos-config
-gdal-config
-proj
-R will be looking for them later.
+Setup the OzTrack database, including PostGIS:
 
-Setting up the database
---------------------------------------------------------------------------------
-The following commands are used on a Linux machine; we should also document the
-process for setting up the database on Windows for developers on that platform.
+    sudo -u postgres psql -c "create user oztrack with password 'ozadmin';"
+    sudo -u postgres psql -c "create database oztrack with owner oztrack;"
+    sudo -u postgres psql -d oztrack -f /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql
+    sudo -u postgres psql -d oztrack -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql
+    sudo -u postgres psql -d oztrack -c "alter table geometry_columns owner to oztrack;"
+    sudo -u postgres psql -d oztrack -c "alter table spatial_ref_sys owner to oztrack;"
+    sudo -u postgres psql -d oztrack -c "alter view geography_columns owner to oztrack;"
 
-yum install postgresql.x86_64
-yum install postgresql-server.x86_64
-yum install postgresql-devel.x86_64
-service postgresql initdb
-chkconfig --list (to see list of services)
-chkconfig postgresql on
-service postgresql start
+### Installing GIS Packages
 
-Remember to sort out authentication: /var/lib/pgsql/data/pg_hba.conf
+Install the `gdal-config` and `geos-config` utilities, required by the `rgdal` and `rgeos` R packages,
+and `libproj-dev`, also required by `rgdal`:
+
+    sudo apt-get install libgeos-dev libgdal1-dev libproj-dev
+
+### Installing R (including Rserve)
+
+Install R:
+
+    sudo apt-get install r-base
+
+Install the R packages used by OzTrack, including Rserve:
+
+    sudo R
+
+    install.packages(
+        c(
+            "Rserve",
+            "sp",
+            "ade4",
+            "adehabitatHR",
+            "adehabitatMA",
+            "maptools",
+            "shapefiles",
+            "rgdal"
+        ),
+        dependencies=TRUE
+    )
+
+## Installing on Red Hat Linux
+
+### Setting up the database
+
+To install PostgreSQL, use the following commands:
+
+    yum install postgresql.x86_64
+    yum install postgresql-server.x86_64
+    yum install postgresql-devel.x86_64
+    yum install postgis
+    service postgresql initdb
+    chkconfig postgresql on
+    service postgresql start
+
+Remember to sort out authentication:
+
+    $EDITOR /var/lib/pgsql/data/pg_hba.conf
 
 Run something like the following commands:
 
-    -- Create database with PL/pgSQL support
+    # Create database with PL/pgSQL support
     psql -U postgres -c "create user oztrack with password 'ozadmin';"
     psql -U postgres -c "create database oztrack with owner oztrack;"
     psql -U oztrack -d oztrack -c "create language plpgsql;"
 
-    -- Run the PostGIS initialisation scripts: need to run postgis.sql as postgres
-    -- because only superuser can create c functions; afterwards, we change owner
-    -- on the resulting tables/views and subsequently connect as normal user.
+    # Run the PostGIS initialisation scripts: need to run postgis.sql as postgres
+    # because only superuser can create c functions; afterwards, we change owner
+    # on the resulting tables/views and subsequently connect as normal user.
     psql -U postgres -d oztrack -f /usr/share/pgsql/contrib/postgis.sql
     psql -U postgres -d oztrack -f /usr/share/pgsql/contrib/spatial_ref_sys.sql
 
     psql -U postgres -d oztrack -c "alter table geometry_columns owner to oztrack;"
-	psql -U postgres -d oztrack -c "alter table spatial_ref_sys owner to oztrack;"
-	psql -U postgres -d oztrack -c "alter view geography_columns owner to oztrack;"
+    psql -U postgres -d oztrack -c "alter table spatial_ref_sys owner to oztrack;"
+    psql -U postgres -d oztrack -c "alter view geography_columns owner to oztrack;"
 
-    -- Our own tables should be created on first run by Hibernate
+    # Our own tables should be created on first run by Hibernate
+
 See http://postgis.refractions.net/documentation/manual-1.5/ch02.html#id2565921
 
-Installing R (including Rserve)
---------------------------------------------------------------------------------
+### Installing GIS Packages
+
+These packages are required for both PostGIS and R spatial functionality.
+
+First, add the Enterprise Linux GIS (ELGIS) yum repository. The URL used in the
+following command depends on the version of Red Hat that you're running: see
+instructions on http://elgis.argeo.org/.
+
+    rpm -Uvh http://elgis.argeo.org/repos/6/elgis-release-6-6_0.noarch.rpm
+
+Install the following packages (note they should be installed in this order):
+
+    yum install geos-devel # will install geos as a dependency
+    yum install proj-devel # will install proj as a dependency
+    yum install gdal-devel
+ 
+To test successful installation, on the commmand line you should get a response from:
+
+    geos-config
+    gdal-config
+    proj
+
+### Installing R (including Rserve)
+
 You can just install R from the EPEL package repository on CentOS:
 
     yum install R
 
 There are further libraries used in this project that are installed by running
-install.packages in the R interpreter (run the "R" command from Linux console, as root with -E switch).
+`install.packages` in the R interpreter (run the `R` command from Linux console, as root with `-E` switch).
 
     install.packages(c("Rserve"), dependencies=TRUE)
 
@@ -81,28 +140,51 @@ downloads, compiles, tests, and installs a large number of dependencies.
     install.packages(c("shapefiles"), dependencies=TRUE)
     install.packages(c("rgdal"), dependencies=TRUE)
  
-Note: it may be necessary to add a repos argument (eg repos="http://cran.cnr.berkeley.edu/")
-when executing install.packages, but this caused an error when run on CentOS.
+Note that it may be necessary to add a repos argument (eg `repos="http://cran.cnr.berkeley.edu/"`)
+when executing `install.packages`, but this caused an error when run on CentOS.
+You will need the `gdal` Red Hat package installed in order to install the
+`rgdal` R package (ie run `yum install gdal`).
 
-Note: you will need the 'gdal' Red Hat package installed in order to install the
-'rgdal' R package (ie run yum install gdal).
+## General notes
 
-Running Rserve
---------------------------------------------------------------------------------
-To run Rserve daemon, execute the following from your Linux console:
+### Running Rserve
+
+To run the Rserve daemon, execute the following from your Linux console:
 
     R CMD Rserve
 
 The resulting Rserve process will listen on port 6311.
 
-
 See http://www.rforge.net/Rserve/faq.html#start
 
-Setting up Properties
---------------------------------------------------------------------------------
-The application.properties file contains some important values that need to be set for OzTrack to run correctly.
+### Setting up Properties
 
-dataDir: If this isn't set, OzTrack will use the user.home environment variable (possibly of the server user environment) to store files. Ensure that such a directory is available and can be written to.
-dataSpaceURL: This is the URL that project collection records will be written to. A username and password must be provided in this file for the functionality to work.
+The `application.properties` file contains some important values that need to be
+set for OzTrack to run correctly.
 
+* `dataDir`: If this isn't set, OzTrack will use the user.home environment variable
+  (possibly of the server user environment) to store files. Ensure that such a
+  directory is available and can be written to.
+* `dataSpaceURL`: This is the URL that project collection records will be written
+  to. A username and password must be provided in this file for the functionality
+  to work.
+
+To create the data directory for OzTrack with appropriate ownership:
+
+    sudo mkdir /var/local/oztrack
+    sudo chown $USER: /var/local/oztrack # or chown tomcat, etc
+
+To set the `dataDir` property in `application.properties`:
+
+    --- src/main/resources/conf/properties/application.properties.1 2012-05-01 19:19:40.154649903 +1000
+    +++ src/main/resources/conf/properties/application.properties   2012-05-01 19:19:49.954698504 +1000
+    @@ -4,7 +4,7 @@
+     application.title=OzTrack
+     application.email=placeholder@test
+     application.rights=All Rights reserved
+    -application.dataDir=
+    +application.dataDir=/var/local/oztrack
+     dataSpaceURL=http://dataspace-uat.metadata.net/
+     dataSpaceUsername=
+     dataSpacePassword=alternatively,
 
