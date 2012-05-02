@@ -27,8 +27,8 @@
 				.column {font-size:0.9em;}
 				.animalCheckbox {float:left; width:15px;}
 				.animalLabel {float:left; width:120px; margin-bottom:5px;font-weight:bold;margin-right:5px;}
-				.zoom {float:right; width: 40px;}	
-				.animalInfoToggle {float:right; width:5px;}	
+				.zoom {float: right;}	
+				.animalInfoToggle {float:right;}	
  			 </style>
 			
              <c:forEach items="${projectAnimalsList}" var="animal">
@@ -54,7 +54,7 @@
             		</div>
 
 	            	<div class="column zoom">
-	        			<a href="#" onclick="zoomToTrack(${animal.id});">Zoom</a>&nbsp;&nbsp;
+	        			<a href="#" onclick="zoomToTrack(${animal.id});">Zoom</a>
 	            	</div>
             		
                 </div>

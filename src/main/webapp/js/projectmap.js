@@ -193,7 +193,7 @@ function initStyles() {
 	var lineOnTemplate = {
 			strokeColor: "${getColour}",
 			strokeWidth: 1,
-			strokeOpacity: 1.0,
+			strokeOpacity: 1.0
 			};
 
 	lineOnStyle = new OpenLayers.Style(lineOnTemplate, {context: wfsStyleContext});

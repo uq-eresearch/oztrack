@@ -2,11 +2,7 @@
 $(document).ready(function(){
  
     if (mapPage) {
-   	 $("#logos").addClass('logoBottom');
-   	 $("#logos").removeClass('logoSidebar');
-    } else {
-   	 $("#logos").addClass('logoSidebar');
-   	 $("#logos").removeClass('logoBottom');
+        $("#leftMenu").hide();
     }
     
     if (projectPage) {

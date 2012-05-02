@@ -138,7 +138,7 @@ a:hover {
 }
 
 #crumbs, #content  {
-    padding-left: 300px;
+    margin-left: 300px;
 }
 
 #content {
@@ -165,6 +165,7 @@ a:hover {
 
 
 #logos {
+    width:150px;
     margin: 10px 0;
     text-align: center;
 }
@@ -173,19 +174,6 @@ a:hover {
     margin: 12px 0;
     border:none;
 }
-
-.logoBottom {
-	position: relative;
-    top: 200px;
-}
-
-.logoSidebar {
-	width:150px;
-
-	/*left:-200px;
-	top:-200px;
-	*/
-}	
 
 #main {
     margin-top: 10px;
@@ -449,6 +437,10 @@ a:hover {
 
 #animalPanel, #homeRangeCalculatorPanel, #projectMapHelp {
 	height:350px;
+}
+
+#animalHeader {
+    width: 230px;
 }
 
 #projectMapHelp p {
