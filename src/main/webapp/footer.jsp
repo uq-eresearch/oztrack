@@ -7,7 +7,7 @@
 </div> <!-- main -->
 
 <div id="footer">
-    OzTrack 2011
+    &copy; 2011 The University of Queensland
 </div>
 
 </div> <!-- container -->

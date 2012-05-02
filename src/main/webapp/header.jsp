@@ -100,7 +100,6 @@
 
 
 <div id="crumbs">
-    <a id="homeUrl" href="<c:url value="home"/>">Home</a>
 </div>
 
 <div id="main">

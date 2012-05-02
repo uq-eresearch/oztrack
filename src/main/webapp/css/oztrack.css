@@ -100,12 +100,14 @@ a:hover {
 }	
 
 #login{
-    position:relative;
+    position: relative;
     float: right;
-    padding-right: 20px;
-    margin-left:-30px;
-	margin-top:120px;
-	color: #ffffff;
+    top: 115px;
+    height: 15px;
+    padding: 0.5em 0.9em;
+    color: #ffffff;
+    background-color: #666;
+    font-weight: bold;
 }
 
 #login a {
@@ -117,28 +119,31 @@ a:hover {
 
 }
 
-#crumbs, #content  {
-    padding-left:300px;
-}
-
 #navMenu {
 	padding-left:290px;
 }	
 
 #crumbs {
-    position:relative;
-    float:left;
-     background-color:#fbfee9;
+    background-color:#fbfee9;
 }
 
-#crumbs, #login {
-     font-size:0.7em;
-     padding-top:0.7ex;
+#crumbs {
+    font-size: 0.8em;
+    padding-top: 0.8em;
+    padding-bottom: 0.8em;
+}
+
+#login {
+    font-size: 0.8em;
+}
+
+#crumbs, #content  {
+    padding-left: 300px;
 }
 
 #content {
-	min-height:300px;
-}	
+    min-height: 300px;
+}
 
 #leftMenu {
     position:relative;
@@ -183,10 +188,9 @@ a:hover {
 }	
 
 #main {
-
-    margin-top:30px;
-    padding-bottom:20px;
-    background-color:#fbfee9;
+    margin-top: 10px;
+    padding-bottom: 20px;
+    background-color: #fbfee9;
 }
 
 
@@ -290,7 +294,6 @@ a:hover {
 }
 
 .aCrumb {
-    font-weight:bold;
     color:#ef9800;
 }
 
