@@ -214,20 +214,27 @@ a:hover {
     display:inline-block;
 }
 
-#navMenu a, #navMenu a:visited {
-    color:#ffffff;
+#navMenu a,
+#navMenu a:link,
+#navMenu a:visited,
+#navMenu a:hover,
+#navMenu a:active {
     font-size:0.9em;
     font-weight:bold;
     padding-right: 40px;
-    color:#ffffff;
     text-decoration:none;
 }
 
-#navMenu a:hover, #navMenu a:active {
-    color:#f7a700;
-    font-weight:bolder;
+#navMenu a,
+#navMenu a:link,
+#navMenu a:visited {
+    color:#ffffff;
 }
 
+#navMenu a:hover,
+#navMenu a:active {
+    color:#f7a700;
+}
 
 #navMenu li {
     position:relative;
