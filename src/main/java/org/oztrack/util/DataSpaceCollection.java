@@ -16,16 +16,8 @@ import com.samskivert.mustache.Mustache;
 import com.samskivert.mustache.Template;
 import com.vividsolutions.jts.geom.Coordinate;
 
-
+@SuppressWarnings("unused")
 public class DataSpaceCollection { 
-	
-    /**
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
-    * Logger for this class and subclasses
-    */
     protected final Log logger = LogFactory.getLog(getClass());
     
     private static Template atomAgentTemplate;
@@ -34,23 +26,23 @@ public class DataSpaceCollection {
 	private Project project;
 	private String dataSpaceURL;
 	
-	private String collectionTitle;
+    private String collectionTitle;
     private String collectionDescription;
     private String collectionURL;
-	private String contactGivenName;
+    private String contactGivenName;
     private String contactFamilyName;
-	private String contactEmail;
-	private String contactDescription;
-	private String speciesCommonName;
-	private String speciesScientificName;
-	private String temporalCoverage;
-	private String spatialCoverage;
-	private String boundingBoxCoordinatesString;
-	private String rightsStatement;
-	private String accessRights;
-	private String dataSpaceUpdateDate;
-	private String dataSpaceAgentUpdateDate;
-	private String contactDataSpaceURI;
+    private String contactEmail;
+    private String contactDescription;
+    private String speciesCommonName;
+    private String speciesScientificName;
+    private String temporalCoverage;
+    private String spatialCoverage;
+    private String boundingBoxCoordinatesString;
+    private String rightsStatement;
+    private String accessRights;
+    private String dataSpaceUpdateDate;
+    private String dataSpaceAgentUpdateDate;
+    private String contactDataSpaceURI;
 	
     
     public DataSpaceCollection(Project project) {

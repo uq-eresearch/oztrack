@@ -317,6 +317,7 @@ public class RServeInterface {
             logger.debug(rCommand);
             rConnection.eval(rCommand);
 
+            @SuppressWarnings("unused")
             REXP foo = rConnection.eval("positionFix");
 
             rCommand = "writeOGR(positionFix, dsn=\"" + outFileNameFix + "\", layer= \"positionFix\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))";

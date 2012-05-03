@@ -37,7 +37,12 @@ public class ProjectFormController extends SimpleFormController {
     protected final Log logger = LogFactory.getLog(getClass());
     
     @Override
-    protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
+    protected ModelAndView showForm(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        BindException errors,
+        @SuppressWarnings("rawtypes") Map controlModel
+    ) throws Exception {
 
         User currentUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER);
         

@@ -80,8 +80,10 @@ public class StartRserve {
 							      });
 			logger.debug("waiting for Rserve to start ... ("+p+")");
 			// we need to fetch the output - some platforms will die if you don't ...
-			StreamHog errorHog = new StreamHog(p.getErrorStream(), false);
-			StreamHog outputHog = new StreamHog(p.getInputStream(), false);
+			@SuppressWarnings("unused")
+            StreamHog errorHog = new StreamHog(p.getErrorStream(), false);
+			@SuppressWarnings("unused")
+            StreamHog outputHog = new StreamHog(p.getInputStream(), false);
 			if (!isWindows) /* on Windows the process will never return, so we cannot wait */
 				p.waitFor();
 			logger.debug("call terminated, let us try to connect ...");

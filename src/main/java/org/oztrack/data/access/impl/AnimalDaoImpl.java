@@ -29,7 +29,9 @@ public class AnimalDaoImpl extends JpaDao<Animal> implements AnimalDao, Serializ
         Query query = entityManagerSource.getEntityManager().createQuery("select o from Animal o where o.project.id = :projectId order by o.projectAnimalId");
         query.setParameter("projectId", projectId);
         try {
-            return (List <Animal>) query.getResultList();
+            @SuppressWarnings("unchecked")
+            List <Animal> resultList = (List <Animal>) query.getResultList();
+            return resultList;
         } catch (NoResultException ex) {
             return null;
         }

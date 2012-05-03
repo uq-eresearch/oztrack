@@ -24,9 +24,13 @@ public class DataSpaceInterfaceView extends AbstractView{
     protected final Log logger = LogFactory.getLog(getClass());
     
     @Override
-	protected void renderMergedOutputModel(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-		HashMap<String, Object> projectActionMap = (HashMap<String, Object>) model.get("projectActionMap");
+	protected void renderMergedOutputModel(
+	    @SuppressWarnings("rawtypes") Map model,
+	    HttpServletRequest request,
+	    HttpServletResponse response
+    ) throws Exception {
+		@SuppressWarnings("unchecked")
+        HashMap<String, Object> projectActionMap = (HashMap<String, Object>) model.get("projectActionMap");
 	    
 		Project tempProject = (Project) projectActionMap.get("project");
 		String action = (String) projectActionMap.get("action");

@@ -28,7 +28,9 @@ public class ReceiverDeploymentDaoImpl extends JpaDao<ReceiverDeployment> implem
         Query query = entityManagerSource.getEntityManager().createQuery("select o from ReceiverDeployment o where o.project.id = :projectId");
         query.setParameter("projectId", projectId);
         try {
-            return (List <ReceiverDeployment>) query.getResultList();
+            @SuppressWarnings("unchecked")
+            List <ReceiverDeployment> resultList = query.getResultList();
+            return resultList;
         } catch (NoResultException ex) {
             return null;
         }

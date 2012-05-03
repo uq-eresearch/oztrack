@@ -25,9 +25,11 @@ public class KMLExportView extends AbstractView{
 
 	
 	@Override
-	protected void renderMergedOutputModel(Map model,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	protected void renderMergedOutputModel(
+	    @SuppressWarnings("rawtypes") Map model,
+		HttpServletRequest request,
+		HttpServletResponse response
+	) throws Exception {
 		// TODO Auto-generated method stub
         
 		SearchQuery searchQuery;

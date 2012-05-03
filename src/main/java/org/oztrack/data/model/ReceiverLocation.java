@@ -17,6 +17,7 @@ import javax.persistence.SequenceGenerator;
  * To change this template use File | Settings | File Templates.
  */
 @Entity(name = "ReceiverLocation")
+@SuppressWarnings("unused")
 public class ReceiverLocation extends OztrackBaseEntity implements Serializable {
 
     @Id

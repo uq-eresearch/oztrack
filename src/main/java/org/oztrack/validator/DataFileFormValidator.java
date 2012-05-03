@@ -16,7 +16,7 @@ import org.springframework.validation.Validator;
 public class DataFileFormValidator  implements Validator {
 
 	@Override
-    public boolean supports(Class clazz) {
+    public boolean supports(@SuppressWarnings("rawtypes") Class clazz) {
         return DataFile.class.isAssignableFrom(clazz);
     }
 

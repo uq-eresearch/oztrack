@@ -13,7 +13,7 @@ import org.springframework.validation.Validator;
 public class SearchFormValidator implements Validator {
 
     @Override
-    public boolean supports(Class clazz) {
+    public boolean supports(@SuppressWarnings("rawtypes") Class clazz) {
         return SearchQuery.class.isAssignableFrom(clazz);
     }
 

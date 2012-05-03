@@ -29,7 +29,7 @@ public class SearchQueryExportController implements Controller {
     @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<String, Object>();
         SearchQuery searchQuery = (SearchQuery) request.getSession().getAttribute("searchQuery");
         model.put(SearchQueryXLSView.SEARCH_QUERY_KEY, searchQuery);
         return new ModelAndView(new SearchQueryXLSView(), model);

@@ -12,7 +12,7 @@ import au.edu.uq.itee.maenad.util.BCrypt;
 public class LoginFormValidator implements Validator {
 
     @Override
-    public boolean supports(Class clazz) {
+    public boolean supports(@SuppressWarnings("rawtypes") Class clazz) {
         return User.class.isAssignableFrom(clazz);
     }
 

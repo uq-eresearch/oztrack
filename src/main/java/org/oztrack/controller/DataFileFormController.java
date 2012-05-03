@@ -63,7 +63,12 @@ public class DataFileFormController extends SimpleFormController {
 
 
     @Override
-    protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors, Map controlModel) throws Exception {
+    protected ModelAndView showForm(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        BindException errors,
+        @SuppressWarnings("rawtypes") Map controlModel
+    ) throws Exception {
 
         ModelAndView modelAndView;
     	User currentUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER);

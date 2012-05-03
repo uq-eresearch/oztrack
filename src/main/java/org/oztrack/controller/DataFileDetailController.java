@@ -32,7 +32,6 @@ public class DataFileDetailController implements Controller {
     public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView("datafiles");
-        String errorMessage = null;
         
         Project sessionProject = (Project) httpServletRequest.getSession().getAttribute("project");
         User sessionUser = (User) httpServletRequest.getSession().getAttribute(Constants.CURRENT_USER);
@@ -57,9 +56,6 @@ public class DataFileDetailController implements Controller {
 	            dataFileDao.refresh(dataFile);
 	            modelAndView.addObject("dataFile", dataFile);
 	            
-	            if (dataFile == null) {
-	            	errorMessage = "Couldn't find anything on that file sorry";
-	            }
 	        }
         }	
         

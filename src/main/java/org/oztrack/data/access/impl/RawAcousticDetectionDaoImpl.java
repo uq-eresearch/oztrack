@@ -38,7 +38,9 @@ public class RawAcousticDetectionDaoImpl extends JpaDao<RawAcousticDetection> im
     public List <String> getAllAnimalIds() {
         Query query = entityManagerSource.getEntityManager().createQuery("SELECT distinct animalid from RawAcousticDetection");
         try {
-            return (List <String>) query.getResultList();
+            @SuppressWarnings("unchecked")
+            List <String> resultList = query.getResultList();
+            return resultList;
         } catch (NoResultException ex) {
             return null;
         }
@@ -48,7 +50,9 @@ public class RawAcousticDetectionDaoImpl extends JpaDao<RawAcousticDetection> im
     public List<String> getAllReceiverIds() {
         Query query = entityManagerSource.getEntityManager().createQuery("SELECT distinct receiversn from RawAcousticDetection");
         try {
-            return (List <String>) query.getResultList();
+            @SuppressWarnings("unchecked")
+            List <String> resultList = query.getResultList();
+            return resultList;
         } catch (NoResultException ex) {
             return null;
         }

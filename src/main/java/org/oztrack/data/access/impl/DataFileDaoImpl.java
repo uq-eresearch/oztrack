@@ -70,7 +70,8 @@ public class DataFileDaoImpl extends JpaDao<DataFile> implements DataFileDao, Se
         Query query = entityManagerSource.getEntityManager().createQuery("SELECT animalId from " + entityName);
         try {
         	
-        	List<String> animalIdList = (List<String>) query.getResultList();
+        	@SuppressWarnings("unchecked")
+            List<String> animalIdList = query.getResultList();
         	ArrayList<String> finalList = new ArrayList<String>();
             
         	// implement distinct here because hibernate won't play nice 
@@ -96,7 +97,9 @@ public class DataFileDaoImpl extends JpaDao<DataFile> implements DataFileDao, Se
     public List<String> getAllReceiverIds() {
         Query query = entityManagerSource.getEntityManager().createQuery("SELECT distinct receiversn from RawAcousticDetection");
         try {
-            return (List <String>) query.getResultList();
+            @SuppressWarnings("unchecked")
+            List <String> resultList = (List <String>) query.getResultList();
+            return resultList;
         } catch (NoResultException ex) {
             return null;
         }
@@ -107,7 +110,9 @@ public class DataFileDaoImpl extends JpaDao<DataFile> implements DataFileDao, Se
     	query.setParameter("project", project);
     	//query.setParameter("status", DataFileStatus.COMPLETE);
     	try {
-    		return (List <DataFile>) query.getResultList();
+    		@SuppressWarnings("unchecked")
+            List <DataFile> resultList = (List <DataFile>) query.getResultList();
+            return resultList;
     	}catch (NoResultException ex) {
     		return null;
     	}

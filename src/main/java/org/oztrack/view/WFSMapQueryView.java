@@ -7,16 +7,19 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.namespace.QName;
 
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.WfsFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.emf.common.util.EList;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -53,7 +56,11 @@ public class WFSMapQueryView extends AbstractView {
     protected final Log logger = LogFactory.getLog(getClass());
 
     @Override
-    protected void renderMergedOutputModel(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    protected void renderMergedOutputModel(
+        @SuppressWarnings("rawtypes") Map model,
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) throws Exception {
 
         SearchQuery searchQuery;
         String namespaceURI = OzTrackApplication.getApplicationContext().getUriPrefix();
@@ -67,32 +74,36 @@ public class WFSMapQueryView extends AbstractView {
 
                 SimpleFeatureCollection collection = FeatureCollections.newCollection();
                 WFSConfiguration wfsConfiguration = new org.geotools.wfs.v1_1.WFSConfiguration();
-                wfsConfiguration.getProperties().add(GMLConfiguration.NO_FEATURE_BOUNDS);
+                @SuppressWarnings("unchecked")
+                Set<QName> wfsConfigurationProperties = wfsConfiguration.getProperties();
+                wfsConfigurationProperties.add(GMLConfiguration.NO_FEATURE_BOUNDS);
                 Encoder e = new Encoder(wfsConfiguration);
                 e.setIndenting(true);
                 FeatureCollectionType featureCollectionType = WfsFactory.eINSTANCE
                         .createFeatureCollectionType();
 
 
+                    @SuppressWarnings("unchecked")
+                    EList<SimpleFeatureCollection> feature = featureCollectionType.getFeature();
                     switch (searchQuery.getMapQueryType()) {
                     case ALL_PROJECTS:
                     		collection = this.buildAllProjectsFeatureCollection();
                     		e.getNamespaces().declarePrefix("Project", namespaceURI);
-                    		featureCollectionType.getFeature().add(collection);
+                    		feature.add(collection);
                     		break;
                     case ALL_POINTS:
                     case POINTS:
                             collection = this.buildFeatureCollection(searchQuery,"points");
                             //**encoder.setNamespace("PositionFix", namespaceURI);
                             e.getNamespaces().declarePrefix("Track", namespaceURI);
-                            featureCollectionType.getFeature().add(collection);
+                            feature.add(collection);
                             break;
                         case ALL_LINES:
                         case LINES:
                             collection = this.buildFeatureCollection(searchQuery,"lines");
                             //**encoder.setNamespace("Track", namespaceURI);
                             e.getNamespaces().declarePrefix("Track", namespaceURI);
-                            featureCollectionType.getFeature().add(collection);
+                            feature.add(collection);
                             break;
                         default:
                             break;
@@ -229,8 +240,6 @@ public class WFSMapQueryView extends AbstractView {
         		srid = project.getBoundingBox().getSRID();
         	}
         }
-        
-        GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
         
         simpleFeatureTypeBuilder.add("projectBoundingBox", Polygon.class, srid);
         simpleFeatureTypeBuilder.add("projectId", String.class);

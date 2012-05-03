@@ -27,8 +27,12 @@ public class SearchQueryXLSView extends AbstractExcelView {
     public static final String SEARCH_QUERY_KEY = "searchQuery";
 
     @Override
-    protected void buildExcelDocument(Map model, HSSFWorkbook workbook, HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+    protected void buildExcelDocument(
+        @SuppressWarnings("rawtypes") Map model,
+        HSSFWorkbook workbook,
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) throws Exception {
         SearchQuery searchQuery = (SearchQuery) model.get(SEARCH_QUERY_KEY);
         ProjectType projectType = searchQuery.getProject().getProjectType();
         HSSFSheet sheet = workbook.createSheet("OzTrack " + projectType.getDisplayName());

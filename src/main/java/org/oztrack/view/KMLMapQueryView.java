@@ -25,7 +25,11 @@ public class KMLMapQueryView extends AbstractView {
     protected final Log logger = LogFactory.getLog(getClass());
 
     @Override
-    protected void renderMergedOutputModel(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    protected void renderMergedOutputModel(
+        @SuppressWarnings("rawtypes") Map model,
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) throws Exception {
 
         SearchQuery searchQuery;
         File kmlFile = null;

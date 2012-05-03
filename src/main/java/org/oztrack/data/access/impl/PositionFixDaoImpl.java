@@ -43,6 +43,7 @@ public class PositionFixDaoImpl extends JpaDao<PositionFix> implements PositionF
             logger.debug(query.toString());
             query.setFirstResult(offset);
             query.setMaxResults(nbrObjectsPerPage);
+            @SuppressWarnings("unchecked")
             List<PositionFix> positionFixList = query.getResultList();
             Query countQuery = buildQuery(searchQuery, true);
             int count = Integer.parseInt(countQuery.getSingleResult().toString());
@@ -103,11 +104,10 @@ public class PositionFixDaoImpl extends JpaDao<PositionFix> implements PositionF
     }
 
     public List<PositionFix> getProjectPositionFixList(SearchQuery searchQuery) {
-
         Query query = buildQuery(searchQuery, false);
-        return (List<PositionFix>) query.getResultList();
-        //query.setMaxResults(100);
-
+        @SuppressWarnings("unchecked")
+        List<PositionFix> resultList = (List<PositionFix>) query.getResultList();
+        return resultList;
     }
 
     /*

@@ -27,7 +27,7 @@ public class JavaViewResolver extends AbstractCachingViewResolver {
         if (viewName.startsWith(this.viewPrefix)) {
             String suffix = viewName.substring(this.viewPrefix.length());
             String viewClassName = suffix.substring(0,1).toUpperCase() + suffix.substring(1);
-            Class viewClass = Class.forName("org.oztrack.view." + viewClassName + "View");
+            Class<?> viewClass = Class.forName("org.oztrack.view." + viewClassName + "View");
             view = (View) viewClass.getConstructor().newInstance();
         }
         return view;  //To change body of implemented methods use File | Settings | File Templates.
