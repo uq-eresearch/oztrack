@@ -1,22 +1,21 @@
 package org.oztrack.controller;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
-import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.UserDao;
-import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.ProjectUser;
 import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.Role;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * Author: alabri

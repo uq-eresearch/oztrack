@@ -1,5 +1,13 @@
 package org.oztrack.util;
 
+import static org.oztrack.util.StartRserve.checkLocalRserve;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
@@ -8,20 +16,15 @@ import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.data.model.types.MapQueryType;
 import org.oztrack.error.RServeInterfaceException;
-import org.rosuda.REngine.*;
+import org.rosuda.REngine.REXP;
+import org.rosuda.REngine.REXPDouble;
+import org.rosuda.REngine.REXPInteger;
+import org.rosuda.REngine.REXPMismatchException;
+import org.rosuda.REngine.REXPNull;
+import org.rosuda.REngine.REngineException;
+import org.rosuda.REngine.RList;
 import org.rosuda.REngine.Rserve.RConnection;
-import org.rosuda.REngine.Rserve.RFileInputStream;
-import org.rosuda.REngine.Rserve.RFileOutputStream;
 import org.rosuda.REngine.Rserve.RserveException;
-
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-
-import static org.oztrack.util.StartRserve.checkLocalRserve;
 
 /**
  * Created by IntelliJ IDEA.

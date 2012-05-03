@@ -1,17 +1,21 @@
 package org.oztrack.controller;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.Constants;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.AnimalDao;
-import org.oztrack.data.model.*;
+import org.oztrack.data.model.Animal;
+import org.oztrack.data.model.Project;
+import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.MapQueryType;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import java.util.List;
 
 public class ProjectMapController implements Controller {
 

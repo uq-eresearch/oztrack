@@ -8,42 +8,29 @@ package org.oztrack.controller;
  * To change this template use File | Settings | File Templates.
  */
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
-import org.apache.poi.ss.usermodel.*;
 import org.oztrack.app.Constants;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.DataFileDao;
-import org.oztrack.data.access.ProjectDao;
-import org.oztrack.data.access.RawAcousticDetectionDao;
-import org.oztrack.data.access.direct.JdbcAccess;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
-import org.oztrack.data.model.RawAcousticDetection;
 import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.AcousticFileHeader;
 import org.oztrack.data.model.types.DataFileStatus;
-import org.oztrack.data.model.types.DataFileType;
 import org.oztrack.data.model.types.PositionFixFileHeader;
-import org.oztrack.data.model.types.ProjectType;
 import org.springframework.validation.BindException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 public class DataFileFormController extends SimpleFormController {

@@ -1,9 +1,7 @@
 package org.oztrack.validator;
 
-import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.SearchQuery;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 /**

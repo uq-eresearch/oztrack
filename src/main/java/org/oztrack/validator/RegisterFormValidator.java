@@ -5,11 +5,10 @@ import javax.mail.internet.InternetAddress;
 
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.UserDao;
+import org.oztrack.data.model.User;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
-
-import org.oztrack.data.model.User;
 
 public class RegisterFormValidator implements Validator {
 

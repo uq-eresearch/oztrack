@@ -1,33 +1,27 @@
 package org.oztrack.controller;
 
 
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.Constants;
 import org.oztrack.app.OzTrackApplication;
-import org.oztrack.data.access.AnimalDao;
-import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.UserDao;
-import org.oztrack.data.model.Animal;
-import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
-import org.oztrack.data.model.User;
 import org.oztrack.data.model.ProjectUser;
-import org.oztrack.data.model.types.ProjectType;
+import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.Role;
 import org.springframework.validation.BindException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 
 /**

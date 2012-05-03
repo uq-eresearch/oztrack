@@ -1,15 +1,16 @@
 package org.oztrack.data.access.impl;
 
-import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
-import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
-import org.oztrack.data.access.ReceiverDeploymentDao;
-import org.oztrack.data.model.Animal;
-import org.oztrack.data.model.ReceiverDeployment;
+import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import java.io.Serializable;
-import java.util.List;
+
+import org.oztrack.data.access.ReceiverDeploymentDao;
+import org.oztrack.data.model.ReceiverDeployment;
+
+import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
+import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
 
 /**
  * Created by IntelliJ IDEA.

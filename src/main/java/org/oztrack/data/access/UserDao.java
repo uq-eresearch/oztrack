@@ -1,7 +1,8 @@
 package org.oztrack.data.access;
 
-import au.edu.uq.itee.maenad.dataaccess.Dao;
 import org.oztrack.data.model.User;
+
+import au.edu.uq.itee.maenad.dataaccess.Dao;
 
 /**
  * Author: alabri

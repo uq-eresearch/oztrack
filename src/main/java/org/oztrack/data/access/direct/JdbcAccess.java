@@ -1,8 +1,7 @@
 package org.oztrack.data.access.direct;
 
-import org.oztrack.data.model.*;
-
-import java.util.List;
+import org.oztrack.data.model.DataFile;
+import org.oztrack.data.model.Project;
 
 /**
  * Created by IntelliJ IDEA.

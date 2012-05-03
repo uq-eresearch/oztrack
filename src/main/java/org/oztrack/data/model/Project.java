@@ -1,19 +1,31 @@
 package org.oztrack.data.model;
 
-import com.vividsolutions.jts.geom.Polygon;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.Type;
-import org.oztrack.data.model.types.ProjectType;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.persistence.*;
+import static javax.persistence.EnumType.STRING;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import static javax.persistence.EnumType.STRING;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Type;
+import org.oztrack.data.model.types.ProjectType;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.vividsolutions.jts.geom.Polygon;
 
 /**
  * Author: peggy

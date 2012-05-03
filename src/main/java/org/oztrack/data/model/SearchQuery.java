@@ -1,15 +1,11 @@
 package org.oztrack.data.model;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.oztrack.app.OzTrackApplication;
-import org.oztrack.data.model.types.MapQueryType;
-import org.oztrack.error.RServeInterfaceException;
-import org.oztrack.util.RServeInterface;
-
-import java.io.File;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.oztrack.data.model.types.MapQueryType;
 
 /**
  * Created by IntelliJ IDEA.

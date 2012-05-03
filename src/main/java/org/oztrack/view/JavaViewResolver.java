@@ -1,11 +1,11 @@
 package org.oztrack.view;
 
+import java.util.Locale;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.AbstractCachingViewResolver;
-
-import java.util.Locale;
 
 /**
  * Created by IntelliJ IDEA.

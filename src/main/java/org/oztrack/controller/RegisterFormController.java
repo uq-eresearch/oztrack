@@ -1,22 +1,19 @@
 package org.oztrack.controller;
 
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
-import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.UserDao;
-import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.User;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import au.edu.uq.itee.maenad.util.BCrypt;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /**

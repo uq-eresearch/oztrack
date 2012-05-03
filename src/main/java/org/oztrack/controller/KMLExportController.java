@@ -1,5 +1,10 @@
 package org.oztrack.controller;
 
+import java.util.ArrayList;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
@@ -8,16 +13,8 @@ import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
-import org.oztrack.data.model.types.MapQueryType;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.mvc.SimpleFormController;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,22 +1,20 @@
 package org.oztrack.controller;
 
-import java.util.Date;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.Constants;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.DataFileDao;
-import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.User;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by IntelliJ IDEA.

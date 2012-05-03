@@ -1,16 +1,18 @@
 package org.oztrack.data.loader;
 
+import static org.oztrack.util.OzTrackUtil.removeDuplicateLinesFromFile;
+
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.direct.JdbcAccess;
-import org.oztrack.data.model.*;
+import org.oztrack.data.model.Animal;
+import org.oztrack.data.model.DataFile;
 import org.oztrack.error.FileProcessingException;
-import java.util.*;
-
-import static org.oztrack.util.OzTrackUtil.removeDuplicateLinesFromFile;
 
 /**
  * Created by IntelliJ IDEA.

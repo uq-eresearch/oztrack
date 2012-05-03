@@ -1,17 +1,16 @@
 package org.oztrack.controller;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.oztrack.app.OzTrackApplication;
-import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.ReceiverDeploymentDao;
-import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.ReceiverDeployment;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.

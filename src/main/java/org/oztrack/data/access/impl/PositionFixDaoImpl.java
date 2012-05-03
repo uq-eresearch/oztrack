@@ -1,26 +1,23 @@
 package org.oztrack.data.access.impl;
 
-import au.edu.uq.itee.maenad.dataaccess.Page;
-import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
-import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.type.CustomType;
-import org.hibernate.type.Type;
 import org.oztrack.data.access.PositionFixDao;
-import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
 
-import com.vividsolutions.jts.geom.Polygon;
-
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
+import au.edu.uq.itee.maenad.dataaccess.Page;
+import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
+import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,14 +1,11 @@
 package org.oztrack.data.access.impl.direct;
 
 import org.oztrack.data.access.direct.JdbcAccess;
-import org.oztrack.data.model.*;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.oztrack.data.model.DataFile;
+import org.oztrack.data.model.Project;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.

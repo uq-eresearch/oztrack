@@ -1,9 +1,8 @@
 package org.oztrack.app;
 
-import org.oztrack.data.model.User;
-
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
+
+import org.oztrack.data.model.User;
 
 public class AuthenticationManager {
 

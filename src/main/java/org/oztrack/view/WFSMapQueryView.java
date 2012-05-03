@@ -1,24 +1,28 @@
 package org.oztrack.view;
 
-import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.operation.distance.DistanceOp;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.GZIPOutputStream;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.WfsFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.geotools.GML;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.geotools.gml2.GMLConfiguration;
-import org.geotools.kml.KML;
-import org.geotools.kml.KMLConfiguration;
-import org.geotools.referencing.CRS;
-import org.geotools.referencing.GeodeticCalculator;
-import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.wfs.v1_1.WFSConfiguration;
 import org.geotools.xml.Encoder;
 import org.opengis.feature.simple.SimpleFeature;
@@ -28,23 +32,14 @@ import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
-import org.oztrack.util.RServeInterface;
 import org.springframework.web.servlet.view.AbstractView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.awt.geom.Point2D;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.zip.GZIPOutputStream;
-import java.util.zip.ZipOutputStream;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 /**
  * Created by IntelliJ IDEA.

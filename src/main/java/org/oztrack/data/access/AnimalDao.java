@@ -1,10 +1,10 @@
 package org.oztrack.data.access;
 
-import au.edu.uq.itee.maenad.dataaccess.Dao;
+import java.util.List;
+
 import org.oztrack.data.model.Animal;
 
-
-import java.util.List;
+import au.edu.uq.itee.maenad.dataaccess.Dao;
 
 /**
  * Created by IntelliJ IDEA.

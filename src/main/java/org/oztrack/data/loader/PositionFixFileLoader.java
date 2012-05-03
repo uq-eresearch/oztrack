@@ -1,6 +1,20 @@
 package org.oztrack.data.loader;
 
-import com.vividsolutions.jts.geom.*;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.DataFile;
@@ -8,14 +22,10 @@ import org.oztrack.data.model.RawPositionFix;
 import org.oztrack.data.model.types.PositionFixFileHeader;
 import org.oztrack.error.FileProcessingException;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import java.io.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.PrecisionModel;
 
 /**
  * Created by IntelliJ IDEA.

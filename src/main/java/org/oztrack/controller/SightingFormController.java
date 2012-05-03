@@ -1,5 +1,12 @@
 package org.oztrack.controller;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.SightingDao;
 import org.oztrack.data.model.Sighting;
@@ -9,12 +16,6 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.

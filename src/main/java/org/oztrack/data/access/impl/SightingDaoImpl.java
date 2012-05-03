@@ -1,13 +1,12 @@
 package org.oztrack.data.access.impl;
 
-import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
-import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
-import org.oztrack.data.access.ReceiverDeploymentDao;
+import java.io.Serializable;
+
 import org.oztrack.data.access.SightingDao;
-import org.oztrack.data.model.ReceiverDeployment;
 import org.oztrack.data.model.Sighting;
 
-import java.io.Serializable;
+import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
+import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
 
 /**
  * Created by IntelliJ IDEA.

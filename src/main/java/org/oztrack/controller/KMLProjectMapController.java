@@ -1,5 +1,10 @@
 package org.oztrack.controller;
 
+import java.text.SimpleDateFormat;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
@@ -9,10 +14,6 @@ import org.oztrack.data.model.SearchQuery;
 import org.oztrack.data.model.types.MapQueryType;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.text.SimpleDateFormat;
 
 /**
  * Created by IntelliJ IDEA.

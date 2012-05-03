@@ -1,16 +1,26 @@
 package org.oztrack.data.model;
 
 
-import org.oztrack.data.model.types.DataFileStatus;
-import org.oztrack.data.model.types.DataFileType;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.persistence.*;
+import static javax.persistence.EnumType.STRING;
 
 import java.io.Serializable;
 import java.util.Date;
 
-import static javax.persistence.EnumType.STRING;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import org.oztrack.data.model.types.DataFileStatus;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Author: peggy

@@ -1,5 +1,11 @@
 package org.oztrack.view;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -9,12 +15,6 @@ import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.data.model.types.ProjectType;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,12 +1,11 @@
 package org.oztrack.data.access.impl.direct;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.springframework.jdbc.core.RowMapper;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Calendar;
 
 /**
  * Created by IntelliJ IDEA.

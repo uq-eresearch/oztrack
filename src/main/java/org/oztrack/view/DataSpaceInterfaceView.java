@@ -1,33 +1,18 @@
 package org.oztrack.view;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpState;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Project;
 import org.oztrack.error.DataSpaceInterfaceException;
-import org.oztrack.util.DataSpaceCollection;
 import org.oztrack.util.DataSpaceInterface;
 import org.springframework.web.servlet.view.AbstractView;
 

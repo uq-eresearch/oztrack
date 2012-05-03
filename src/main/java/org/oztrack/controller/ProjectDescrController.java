@@ -1,16 +1,15 @@
 package org.oztrack.controller;
 
-import org.oztrack.app.OzTrackApplication;
-import org.oztrack.data.access.ProjectDao;
-import org.oztrack.data.model.Project;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.oztrack.app.OzTrackApplication;
+import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.model.Project;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
 public class ProjectDescrController implements Controller {
 

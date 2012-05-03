@@ -1,16 +1,15 @@
 package org.oztrack.data.access.impl;
 
-import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
-import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
-import org.oztrack.data.access.ProjectDao;
-import org.oztrack.data.model.PositionFix;
-import org.oztrack.data.model.Project;
+import java.io.Serializable;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import javax.swing.text.Position;
-import java.io.Serializable;
-import java.util.List;
+
+import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.model.Project;
+
+import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
+import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
 
 /**
  * Author: alabri

@@ -1,11 +1,13 @@
 package org.oztrack.data.connector;
 
-import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
-import org.restlet.service.ConnectorService;
+import java.io.Serializable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import java.io.Serializable;
+
+import org.restlet.service.ConnectorService;
+
+import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
 
 /**
  * Author: alabri

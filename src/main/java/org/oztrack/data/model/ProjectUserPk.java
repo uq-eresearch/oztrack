@@ -1,7 +1,9 @@
 package org.oztrack.data.model;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.persistence.Embeddable;
+import javax.persistence.ManyToOne;
 
 @Embeddable
 public class ProjectUserPk implements Serializable {

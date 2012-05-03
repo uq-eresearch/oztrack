@@ -1,12 +1,18 @@
 package org.oztrack.data.model;
 
-import com.vividsolutions.jts.geom.Point;
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Calendar;
-import java.util.Date;
+import com.vividsolutions.jts.geom.Point;
 
 /**
  * Created by IntelliJ IDEA.

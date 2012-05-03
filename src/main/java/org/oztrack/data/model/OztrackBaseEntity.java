@@ -1,10 +1,11 @@
 package org.oztrack.data.model;
 
+import java.util.Date;
+
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.

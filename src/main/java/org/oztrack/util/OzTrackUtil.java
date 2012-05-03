@@ -1,9 +1,17 @@
 package org.oztrack.util;
 
-import org.oztrack.app.OzTrackApplication;
-import org.apache.log4j.Logger;
-import org.oztrack.data.model.DataFile;
-import org.oztrack.error.FileProcessingException;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Properties;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -11,10 +19,10 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Properties;
+
+import org.apache.log4j.Logger;
+import org.oztrack.app.OzTrackApplication;
+import org.oztrack.error.FileProcessingException;
 
 /**
  * Author: alabri

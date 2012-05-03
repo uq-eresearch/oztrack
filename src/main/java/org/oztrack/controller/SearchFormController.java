@@ -1,30 +1,29 @@
 package org.oztrack.controller;
 
-import au.edu.uq.itee.maenad.dataaccess.Page;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
-import org.oztrack.data.access.AcousticDetectionDao;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.PositionFixDao;
-import org.oztrack.data.access.direct.JdbcQuery;
-import org.oztrack.data.model.*;
-import org.oztrack.data.model.types.ProjectType;
+import org.oztrack.data.model.Animal;
+import org.oztrack.data.model.PositionFix;
+import org.oztrack.data.model.Project;
+import org.oztrack.data.model.SearchQuery;
 import org.springframework.beans.propertyeditors.CustomCollectionEditor;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.validation.BindException;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import au.edu.uq.itee.maenad.dataaccess.Page;
 
 /**
  * Created by IntelliJ IDEA.

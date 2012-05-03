@@ -1,17 +1,15 @@
 package org.oztrack.data.access;
 
-import au.edu.uq.itee.maenad.dataaccess.Dao;
-import au.edu.uq.itee.maenad.dataaccess.Page;
+import java.util.Date;
+import java.util.List;
 
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
 
-import com.vividsolutions.jts.geom.Polygon;
-
-import java.util.Date;
-import java.util.List;
+import au.edu.uq.itee.maenad.dataaccess.Dao;
+import au.edu.uq.itee.maenad.dataaccess.Page;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,5 +1,20 @@
 package org.oztrack.data.loader;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.ReceiverDeploymentDao;
 import org.oztrack.data.model.DataFile;
@@ -7,15 +22,6 @@ import org.oztrack.data.model.RawAcousticDetection;
 import org.oztrack.data.model.ReceiverDeployment;
 import org.oztrack.data.model.types.AcousticFileHeader;
 import org.oztrack.error.FileProcessingException;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import java.io.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.

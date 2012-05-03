@@ -1,15 +1,16 @@
 package org.oztrack.data.access.impl;
 
-import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
-import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
-import org.oztrack.data.model.Animal;
-import org.oztrack.data.access.AnimalDao;
-import org.oztrack.data.model.Project;
-
 import java.io.Serializable;
 import java.util.List;
+
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+
+import org.oztrack.data.access.AnimalDao;
+import org.oztrack.data.model.Animal;
+
+import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
+import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
 /**
  * Created by IntelliJ IDEA.
  * User: uqpnewm5

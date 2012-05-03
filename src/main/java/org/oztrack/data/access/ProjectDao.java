@@ -1,10 +1,8 @@
 package org.oztrack.data.access;
 
-import au.edu.uq.itee.maenad.dataaccess.Dao;
-import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 
-import java.util.List;
+import au.edu.uq.itee.maenad.dataaccess.Dao;
 
 /**
  * author: uqpnewm5

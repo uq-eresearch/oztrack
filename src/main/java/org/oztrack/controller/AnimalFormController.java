@@ -1,14 +1,14 @@
 package org.oztrack.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.model.Animal;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by IntelliJ IDEA.

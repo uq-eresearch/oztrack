@@ -1,14 +1,15 @@
 package org.oztrack.data.access.impl;
 
-import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
-import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
-import org.oztrack.data.access.AcousticDetectionDao;
-import org.oztrack.data.model.AcousticDetection;
+import java.io.Serializable;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import java.io.Serializable;
-import java.util.List;
+
+import org.oztrack.data.access.AcousticDetectionDao;
+import org.oztrack.data.model.AcousticDetection;
+
+import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
+import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,9 +1,8 @@
 package org.oztrack.data.access;
 
-import au.edu.uq.itee.maenad.dataaccess.Dao;
 import org.oztrack.data.model.AcousticDetection;
 
-import java.util.List;
+import au.edu.uq.itee.maenad.dataaccess.Dao;
 
 /**
  * Created by IntelliJ IDEA.

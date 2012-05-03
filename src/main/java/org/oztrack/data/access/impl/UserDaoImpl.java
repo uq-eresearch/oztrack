@@ -1,13 +1,15 @@
 package org.oztrack.data.access.impl;
 
-import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
-import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
-import org.oztrack.data.access.UserDao;
-import org.oztrack.data.model.User;
+import java.io.Serializable;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import java.io.Serializable;
+
+import org.oztrack.data.access.UserDao;
+import org.oztrack.data.model.User;
+
+import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
+import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
 
 /**
  * Author: alabri

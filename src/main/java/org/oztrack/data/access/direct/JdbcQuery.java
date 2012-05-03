@@ -1,10 +1,10 @@
 package org.oztrack.data.access.direct;
 
+import java.util.List;
+
 import org.oztrack.data.model.AcousticDetection;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.SearchQuery;
-
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,11 +1,18 @@
 package org.oztrack.data.access.manager;
 
-import org.oztrack.data.access.*;
+import javax.persistence.EntityManager;
+
+import org.oztrack.data.access.AcousticDetectionDao;
+import org.oztrack.data.access.AnimalDao;
+import org.oztrack.data.access.DataFileDao;
+import org.oztrack.data.access.PositionFixDao;
+import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.access.RawAcousticDetectionDao;
+import org.oztrack.data.access.ReceiverDeploymentDao;
+import org.oztrack.data.access.SightingDao;
+import org.oztrack.data.access.UserDao;
 import org.oztrack.data.access.direct.JdbcAccess;
 import org.oztrack.data.access.direct.JdbcQuery;
-
-
-import javax.persistence.EntityManager;
 
 
 /**

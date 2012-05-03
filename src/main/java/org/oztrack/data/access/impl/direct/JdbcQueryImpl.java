@@ -1,5 +1,8 @@
 package org.oztrack.data.access.impl.direct;
 
+import java.text.SimpleDateFormat;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.access.direct.JdbcQuery;
@@ -7,15 +10,9 @@ import org.oztrack.data.model.AcousticDetection;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.SearchQuery;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
-
-import javax.persistence.Query;
-import java.text.SimpleDateFormat;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.

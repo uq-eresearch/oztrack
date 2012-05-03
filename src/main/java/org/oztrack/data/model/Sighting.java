@@ -1,12 +1,19 @@
 package org.oztrack.data.model;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.persistence.*;
-
 import java.io.Serializable;
-import java.sql.Time;
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,22 +1,18 @@
 package org.oztrack.controller;
 
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.oztrack.app.AuthenticationManager;
 import org.oztrack.app.Constants;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.UserDao;
-import org.oztrack.data.model.Project;
 import org.oztrack.data.model.User;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 
 /**

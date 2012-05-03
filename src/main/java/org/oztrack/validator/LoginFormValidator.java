@@ -1,12 +1,13 @@
 package org.oztrack.validator;
 
-import au.edu.uq.itee.maenad.util.BCrypt;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
+
+import au.edu.uq.itee.maenad.util.BCrypt;
 
 public class LoginFormValidator implements Validator {
 

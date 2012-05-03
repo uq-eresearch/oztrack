@@ -1,12 +1,20 @@
 package org.oztrack.data.model;
 
 //import org.postgis.Point;
-import com.vividsolutions.jts.geom.Point;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
-import java.util.Calendar;
-import java.util.Date;
+import com.vividsolutions.jts.geom.Point;
 
 /**
  * Created by IntelliJ IDEA.

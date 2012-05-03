@@ -1,16 +1,15 @@
 package org.oztrack.data.loader;
 
+import java.io.File;
+import java.util.Date;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.DataFileDao;
-import org.oztrack.data.access.direct.JdbcAccess;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.types.DataFileStatus;
 import org.oztrack.error.FileProcessingException;
-
-import java.io.File;
-import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
