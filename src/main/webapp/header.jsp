@@ -124,9 +124,9 @@
 		</c:choose>
 	</div>
 	<div id="logos">
-		<a href="http://nectar.org.au/"/><img src="images/nectar-logo.png" width="140px" height="32px"/></a>
-		<a href="http://ands.org.au/"/><img src="images/ands-logo.png" width="90px" height="40px" style="margin-top: -8px;"/></a>
-		<a href="http://itee.uq.edu.au/~eresearch/"/><img src="images/uq_logo.png" width="140px" height="40px"/></a>
+		<a href="http://nectar.org.au/"><img src="images/nectar-logo.png" width="140px" height="32px"/></a>
+		<a href="http://ands.org.au/"><img src="images/ands-logo.png" width="90px" height="40px" style="margin-top: -8px;"/></a>
+		<a href="http://itee.uq.edu.au/~eresearch/"><img src="images/uq_logo.png" width="140px" height="40px"/></a>
 	</div>
 </div>
 
