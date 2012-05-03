@@ -19,25 +19,28 @@ import org.springframework.web.servlet.mvc.Controller;
  * Time: 1:57 PM
  */
 public class ProjectReceiversController implements Controller {
-
+    
     @Override
     public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
-
-    Project project =  (Project) httpServletRequest.getSession().getAttribute("project");
-    String errors = "";
-    ReceiverDeploymentDao receiverDeploymentDao = OzTrackApplication.getApplicationContext().getDaoManager().getReceiverDeploymentDao();
-    List<ReceiverDeployment> receiverList = receiverDeploymentDao.getReceiversByProjectId(project.getId());
-
-    if (project == null) {
-        errors = "No project, sorry.";
+        
+        Project project =  (Project) httpServletRequest.getSession().getAttribute("project");
+        List<ReceiverDeployment> receiverList = null;
+        String errors = "";
+        
+        if (project == null) {
+            errors = "No project, sorry.";
+        }
+        else {
+            ReceiverDeploymentDao receiverDeploymentDao = OzTrackApplication.getApplicationContext().getDaoManager().getReceiverDeploymentDao();
+            receiverList = receiverDeploymentDao.getReceiversByProjectId(project.getId());
+        }
+    
+        ModelAndView modelAndView = new ModelAndView("projectreceivers");
+        modelAndView.addObject("receiverList", receiverList);
+        modelAndView.addObject("errors", errors);
+        modelAndView.addObject("project", project);
+        return modelAndView;
+        
     }
-
-    ModelAndView modelAndView = new ModelAndView("projectreceivers");
-    modelAndView.addObject("receiverList", receiverList);
-    modelAndView.addObject("errors", errors);
-    modelAndView.addObject("project", project);
-    return modelAndView;
-
-    }
-
+    
 }
