@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.oztrack</groupId>
     <artifactId>oztrack</artifactId>
     <packaging>war</packaging>
     <version>2.0-SNAPSHOT</version>
     <name>OzTrack</name>
-    <url>http://oztrack.org</url>
+    <url>http://oztrack.org/</url>
     <inceptionYear>2011</inceptionYear>
     <developers>
         <developer>
             <id>peggy.newman</id>
             <name>Peggy Newman</name>
             <email>peggy.newman@uq.edu.au</email>
-            <url>http://itee.uq.edu.au/~eresearch/people</url>
+            <url>http://itee.uq.edu.au/~eresearch/about.php</url>
             <organization>School of ITEE, University of Queensland</organization>
-            <organizationUrl>http://www.itee.uq.edu.au</organizationUrl>
+            <organizationUrl>http://www.itee.uq.edu.au/</organizationUrl>
             <roles>
                 <role>Developer</role>
             </roles>
@@ -93,19 +94,19 @@
                 </executions>
             </plugin>
             <plugin>
-            	<groupId>org.mortbay.jetty</groupId>
-            	<artifactId>maven-jetty-plugin</artifactId>
-            	<version>6.1.24</version>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>maven-jetty-plugin</artifactId>
+                <version>6.1.24</version>
                 <configuration>
-	                <webAppConfig>
-	                    <contextPath>/</contextPath>
-	                    <overrideDescriptor>${basedir}/src/main/resources/override-web.xml</overrideDescriptor>
-	                </webAppConfig>
-	                <connectors>
-			            <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-			                <port>8181</port>
-			            </connector>
-			        </connectors>
+                    <webAppConfig>
+                        <contextPath>/</contextPath>
+                        <overrideDescriptor>${basedir}/src/main/resources/override-web.xml</overrideDescriptor>
+                    </webAppConfig>
+                    <connectors>
+                        <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                            <port>8181</port>
+                        </connector>
+                    </connectors>
                 </configuration>
             </plugin>
         </plugins>
@@ -164,18 +165,18 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.5.8</version>
         </dependency>
-		<dependency>
-		  <groupId>javax.servlet</groupId>
-		  <artifactId>jstl</artifactId>
-		  <scope>runtime</scope>
-		  <version>1.1.2</version>
-		</dependency>
-		<dependency>
-		  <groupId>taglibs</groupId>
-		  <artifactId>standard</artifactId>
-		  <scope>runtime</scope>
-		  <version>1.1.2</version>
-		</dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <scope>runtime</scope>
+            <version>1.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+            <scope>runtime</scope>
+            <version>1.1.2</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring</artifactId>
@@ -240,13 +241,11 @@
             <artifactId>postgresql</artifactId>
             <version>8.4-701.jdbc4</version>
         </dependency>
-        <!-- the Postgis JDBC driver -->
         <dependency>
             <groupId>org.postgis</groupId>
             <artifactId>postgis-jdbc</artifactId>
             <version>1.3.3</version>
         </dependency>
-
 
         <!--Testing Frameworks-->
         <dependency>
@@ -350,20 +349,21 @@
             <artifactId>xercesImpl</artifactId>
             <version>2.10.0</version>
         </dependency>
-        <dependency>	 
+        <dependency>     
             <groupId>com.samskivert</groupId>
             <artifactId>jmustache</artifactId>
             <version>1.3</version>
         </dependency>
-       <!--<dependency>-->
-        <!--<groupId>com.google.code</groupId>-->
-        <!--<artifactId>couchdb4j</artifactId>-->
-        <!--<version>0.1.2</version>-->
-        <!--<scope>system</scope>-->
-        <!--<systemPath>${basedir}/lib/couchdb4j/couchdb4j-0.1.2.jar</systemPath>-->
-        <!--</dependency>-->
+        <!--
+        <dependency>
+            <groupId>com.google.code</groupId>
+            <artifactId>couchdb4j</artifactId>
+            <version>0.1.2</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/couchdb4j/couchdb4j-0.1.2.jar</systemPath>
+        </dependency>
+        -->
     </dependencies>
-
     <repositories>
         <repository>
             <id>maven2-repository.dev.java.net</id>
@@ -391,5 +391,4 @@
             <url>http://www.hibernatespatial.org/repository</url>
         </repository>
    </repositories>
-
 </project>
