@@ -35,7 +35,7 @@
  		
 				<div id="animalHeader">	            	
 	            	<div class="column animalCheckbox">
-	            		<input style="float:left;" type="checkbox" class="shortInputCheckbox" name="animalCheckbox" id="select-animal-${animal.id}" value="${animal.id}">
+	            		<input style="float:left;" type="checkbox" name="animalCheckbox" id="select-animal-${animal.id}" value="${animal.id}">
 	                    <script type="text/javascript">
 	                        $('input[id=select-animal-${animal.id}]').change(function() {
 	                                toggleAllAnimalFeatures("${animal.id}",this.checked);
@@ -91,7 +91,7 @@
 	                <c:forEach items="${mapQueryTypeList}" var="mapQueryType">
 	                    <c:if test="${!fn:contains(mapQueryType,'ALL_')}">
 	                        <tr>
-	                         <td><input class="shortInputRadioButton" type="radio" name="mapQueryTypeSelect" value="${mapQueryType}"/></td>
+	                         <td><input type="radio" name="mapQueryTypeSelect" value="${mapQueryType}"/></td>
 	                         <td id="${mapQueryType}"><c:out value="${mapQueryType.displayName}"/></td>
 	                        </tr>
 	                    </c:if>

@@ -593,13 +593,6 @@ form div select, form div textarea, form div input {
   display:inline;
 }
 
-.shortInputRadioButton, .shortInputCheckbox {
-  width:10px;
-/*  margin-top:5px; */
-  display:inline;
-}
-
-
 .formErrors {
     padding-left: 180px;
     font-style: italic;

@@ -392,7 +392,7 @@ function updateAnimalInfo(wfsLayer) {
                 var checkboxValue = layerId + "-" + feature.id;
                 var checkboxId = checkboxValue.replace(/\./g,"");
                 
-                var checkboxHtml = "<input type='checkbox' class='shortInputCheckbox' " 
+                var checkboxHtml = "<input type='checkbox' " 
                 				 + "id='select-feature-" + checkboxId + "' value='" + checkboxValue + "' checked='true'/></input>";
                 
                 var layerNameHtml = "<b>&nbsp;&nbsp;" + layerName + "</b>";
@@ -620,7 +620,7 @@ function updateAnimalInfoFromKML(layerName, e) {
 
 		var checkboxValue = feature.layer.id + "-" + feature.id;
         var checkboxId = checkboxValue.replace(/\./g,"");
-	    var checkboxHtml = "<input type='checkbox' class='shortInputCheckbox' " 
+	    var checkboxHtml = "<input type='checkbox' " 
 			 + "id='select-feature-" + checkboxId + "' value='" + checkboxValue + "' checked='true'/></input>";
 		var html = "&nbsp;&nbsp;<b>" + layerName + "</b>" 
 //				+ "<br> Area: " + 		Math.round(area*1000)/1000 + "<br>";
