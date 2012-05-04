@@ -222,7 +222,7 @@
         <dependency>
             <groupId>au.edu.uq.itee.maenad</groupId>
             <artifactId>dataaccess</artifactId>
-            <version>0.2.3</version>
+            <version>0.3.0</version>
         </dependency>
 
         <!--Database connectors and drivers-->
