@@ -25,8 +25,8 @@
   <bean name="/dataspace" class="org.oztrack.controller.DataSpaceInterfaceController"/>
   
   <bean name="/home" class="org.oztrack.controller.HomeController"/>
-  <bean name="/about" class="org.oztrack.controller.HomeController"/>
-    <bean name="/contact" class="org.oztrack.controller.HomeController"/>
+  <bean name="/about" class="org.oztrack.controller.AboutController"/>
+    <bean name="/contact" class="org.oztrack.controller.ContactController"/>
 
   <bean name="/users" class="org.oztrack.controller.UserListController"/>
   <bean name="/projects" class="org.oztrack.controller.ProjectListController"/>
