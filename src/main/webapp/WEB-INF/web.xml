@@ -1,21 +1,23 @@
-<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd" >
-<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4">
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app
+    xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+    version="2.4">
 
     <display-name>OzTrack</display-name>
     <description>OzTrack</description>
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>
-            classpath:/conf/spring/applicationContext.xml
-        </param-value>
+        <param-value>classpath:/conf/spring/applicationContext.xml</param-value>
     </context-param>
 
-    <!--Listeners-->
     <listener>
         <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
     </listener>
-
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
@@ -30,140 +32,112 @@
     </servlet>
 
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/home</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/home</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/users</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/users</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/register</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/register</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/login</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/login</url-pattern>
     </servlet-mapping>
-    
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/projects</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/projects</url-pattern>
     </servlet-mapping>
-    
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/projectadd</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/projectadd</url-pattern>
     </servlet-mapping>
-    
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/projectdetail</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/projectdetail</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/projectdescr</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/projectdescr</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/publish</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/publish</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/projectmap</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/projectmap</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/datafiles</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/datafiles</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/projectanimals</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/projectanimals</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/animalform</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/animalform</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/projectreceivers</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/projectreceivers</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/datafileadd</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/datafileadd</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/datafiledetail</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/datafiledetail</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/searchacoustic</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/searchacoustic</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/searchform</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/searchform</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/logout</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/logout</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/about</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/about</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/contact</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/contact</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/sighting</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/sighting</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/mapQueryKML</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/mapQueryKML</url-pattern>
     </servlet-mapping>
-
-
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/mapQueryWFS</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/mapQueryWFS</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/export</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/export</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/exportKML</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/exportKML</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
-      <servlet-name>springmvc</servlet-name>
-      <url-pattern>/dataspace</url-pattern>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/dataspace</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>
