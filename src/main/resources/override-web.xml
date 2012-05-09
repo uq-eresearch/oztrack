@@ -7,12 +7,8 @@
     id="WebApp_ID"
     version="2.5">
     <context-param>
-        <param-name>org.mortbay.jetty.servlet.SessionDomain</param-name>
-        <param-value>127.0.0.1</param-value>
-    </context-param>
-    <context-param>
-        <param-name>org.mortbay.jetty.servlet.SessionPath</param-name>
-        <param-value>/</param-value>
+        <param-name>org.mortbay.jetty.servlet.SessionURL</param-name>
+        <param-value>none</param-value>
     </context-param>
     <context-param>
         <param-name>org.mortbay.jetty.servlet.MaxAge</param-name>
