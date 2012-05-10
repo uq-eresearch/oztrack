@@ -75,7 +75,13 @@
 
 </td></tr>
 
-<tr><td class="projectFieldName">Contact:</td><td><c:out value="${project.dataSpaceAgent.firstName}"/>&nbsp;<c:out value="${project.dataSpaceAgent.lastName}"/><br><c:out value="${project.dataSpaceAgent.email}"/></td></tr>
+<tr>
+    <td class="projectFieldName">Contact:</td>
+    <td>
+        <c:out value="${project.dataSpaceAgent.firstName}"/>&nbsp;<c:out value="${project.dataSpaceAgent.lastName}"/><br>
+        <a href="<c:out value="${project.dataSpaceAgent.email}"/>"><c:out value="${project.dataSpaceAgent.email}"/></a>
+    </td>
+</tr>
 <tr><td class="projectFieldName">Contact Organisation:</td><td><c:out value="${project.dataSpaceAgent.organisation}"/></td></tr>
 
 <tr><td class="projectFieldName">Publications:</td><td><i><c:out value="${project.publicationTitle}"/></i><br> <c:out value="${project.publicationUrl}"/></td></tr>
