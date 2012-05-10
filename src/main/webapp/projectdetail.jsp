@@ -10,7 +10,7 @@
 
 <div style="float:left; width:420px;">
 
-<h2>Data Summary</h2>
+<h2 style="margin-top: 0;">Data Summary</h2>
 
 <c:choose>
  
