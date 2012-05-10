@@ -7,6 +7,10 @@
 <script type="text/javascript" src="js/projectmap.js"></script>
 <script type="text/javascript"> 
 	mapPage = true;
+    $(document).ready(function() {
+        $('#fromDatepicker').datepicker();
+        $('#toDatepicker').datepicker();
+    });
 </script>
 
 <div class="mapTool">
@@ -239,10 +243,10 @@
            <h3><a href="#">Project Menu</a></h3>
         <div id="projectMenu" style="font-size:1.2em;">		      
       <ul>
-        <li><a href="<c:url value="projectdetail"/>">Project Details</a></li>
-        <li><a href="<c:url value="projectmap"/>">Analysis Tools</a></li>
-        <li><a href="<c:url value="searchform"/>">View Raw Data</a></li>
-        <li><a href="<c:url value="datafiles"/>">Data Uploads</a></li>
+        <li><a href="<c:url value="projectdetail"><c:param name="project_id" value="${project.id}"/></c:url>">Project Details</a></li>
+        <li><a href="<c:url value="projectmap"><c:param name="project_id" value="${project.id}"/></c:url>">Analysis Tools</a></li>
+        <li><a href="<c:url value="searchform"><c:param name="project_id" value="${project.id}"/></c:url>">View Raw Data</a></li>
+        <li><a href="<c:url value="datafiles"><c:param name="project_id" value="${project.id}"/></c:url>">Data Uploads</a></li>
       </ul>
 		</div>
     </div>

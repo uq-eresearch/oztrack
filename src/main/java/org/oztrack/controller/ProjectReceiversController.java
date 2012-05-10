@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.oztrack.app.OzTrackApplication;
+import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.ReceiverDeploymentDao;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.ReceiverDeployment;
@@ -21,9 +22,18 @@ import org.springframework.web.servlet.mvc.Controller;
 public class ProjectReceiversController implements Controller {
     
     @Override
-    public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Long projectId = null;
+        if (request.getParameter("project_id") != null) {
+            projectId = Long.parseLong(request.getParameter("project_id"));
+        }
+        Project project = null;
+        if (projectId != null) {
+            ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
+            project = projectDao.getProjectById(projectId);
+            projectDao.refresh(project);
+        }
         
-        Project project =  (Project) httpServletRequest.getSession().getAttribute("project");
         List<ReceiverDeployment> receiverList = null;
         String errors = "";
         

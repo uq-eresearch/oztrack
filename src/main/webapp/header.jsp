@@ -100,6 +100,7 @@
 
 
 <div id="crumbs">
+    <a id="homeUrl" href="<c:url value="/"/>">Home</a>
 </div>
 
 <div id="main">
@@ -115,10 +116,10 @@
 		 </c:when>
 		 <c:otherwise>
 		      <ul>
-		        <li><a href="<c:url value="projectdetail"/>">Project Details</a></li>
-		        <li><a href="<c:url value="projectmap"/>">Analysis Tools</a></li>
-		        <li><a href="<c:url value="searchform"/>">View Raw Data</a></li>
-		        <li><a href="<c:url value="datafiles"/>">Data Uploads</a></li>
+		        <li><a href="<c:url value="projectdetail"><c:param name="project_id" value="${project.id}"/></c:url>">Project Details</a></li>
+		        <li><a href="<c:url value="projectmap"><c:param name="project_id" value="${project.id}"/></c:url>">Analysis Tools</a></li>
+		        <li><a href="<c:url value="searchform"><c:param name="project_id" value="${project.id}"/></c:url>">View Raw Data</a></li>
+		        <li><a href="<c:url value="datafiles"><c:param name="project_id" value="${project.id}"/></c:url>">Data Uploads</a></li>
 		      </ul>
 		 </c:otherwise>
 		</c:choose>

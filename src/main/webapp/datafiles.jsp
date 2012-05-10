@@ -10,14 +10,18 @@
 
 <c:choose>
  <c:when test="${(empty dataFileList)}">
-	<p>This project has no data to work with. You might like to <a href="<c:url value='datafileadd'/>">upload a data file.</a></p>
+	<p>This project has no data to work with. You might like to <a href="<c:url value='datafileadd'>
+	    <c:param name="project_id" value="${project.id}"/>
+	</c:url>">upload a data file.</a></p>
 	<a class="oztrackButton" id="pageRefresh" href="#">Refresh</a>
  </c:when>
  <c:otherwise>
     
     <p><c:out value="${fn:length(dataFileList)}"/> data file(s) found.</p>
 
-		<p><a class="oztrackButton" href="<c:url value='datafileadd'/>" >Add a Datafile</a>
+		<p><a class="oztrackButton" href="<c:url value='datafileadd'>
+	        <c:param name="project_id" value="${project.id}"/>
+	    </c:url>" >Add a Datafile</a>
 		<a class="oztrackButton" id="pageRefresh" href="#">Refresh</a></p>
 		
 		<p><c:out value="${errorStr}"/></p>
@@ -39,7 +43,12 @@
 		            	</c:if>
 		             </td>	
 		            <td><fmt:formatDate pattern="${dateFormatPattern}" value="${dataFile.createDate}"/>
-		            <td><a href="<c:url value="datafiledetail"><c:param name="datafile_id" value="${dataFile.id}"/></c:url>"><c:out value="${dataFile.status}"/></a></td>
+		            <td>
+		                <a href="<c:url value="datafiledetail">
+					        <c:param name="project_id" value="${project.id}"/>
+					        <c:param name="datafile_id" value="${dataFile.id}"/>
+				            </c:url>"><c:out value="${dataFile.status}"/></a>
+		            </td>
 				</tr>
 		    </c:forEach>
 		</table>

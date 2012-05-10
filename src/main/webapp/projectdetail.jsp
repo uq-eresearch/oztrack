@@ -16,27 +16,35 @@
  
  <c:when test="${(empty dataFileList)}">
 	 <p>
-	 There is no data uploaded for this project yet. You might like to <a href="<c:url value='datafileadd'/>">upload a datafile.
+	 There is no data uploaded for this project yet. You might like to <a href="<c:url value='datafileadd'>
+         <c:param name="project_id" value="${project.id}"/>
+     </c:url>">upload a datafile.
 	 </a>
 	 </p>
  </c:when>
  <c:otherwise>	 	 	
 	<table class="projectListTable">
-	<tr><td class="projectFieldName">Datafile Count:</td>
-					<td><a href="<c:url value="datafiles"/>"><c:out value="${fn:length(dataFileList)}"/></a></td></tr>
+	<tr>
+	    <td class="projectFieldName">Datafile Count:</td>
+		<td>
+		    <a href="<c:url value="datafiles">
+	           <c:param name="project_id" value="${project.id}"/>
+	        </c:url>"><c:out value="${fn:length(dataFileList)}"/></a>
+        </td>
+    </tr>
 	<tr><td class="projectFieldName">Detection Count:</td>
-					<td><a href="<c:url value="searchform"/>"><c:out value="${project.detectionCount}"/></a></td></tr>
+					<td><a href="<c:url value="searchform"><c:param name="project_id" value="${project.id}"/></c:url>"><c:out value="${project.detectionCount}"/></a></td></tr>
 	<tr><td class="projectFieldName">Detection Date Range:</td><td><fmt:formatDate pattern="${dateFormatPattern}" value="${project.firstDetectionDate}"/> to <fmt:formatDate pattern="${dateFormatPattern}" value="${project.lastDetectionDate}"/></td></tr>
 	<tr><td class="projectFieldName">Animals:</td><td>
 							<c:forEach items="${projectAnimalsList}" var="animal">
 									<a href="<c:url value="animalform"><c:param name="animal_id" value="${animal.id}"/></c:url>"><c:out value="${animal.animalName}"/></a>,
 							  </c:forEach>
-							  <a href="<c:url value="projectanimals"/>">View All</a>	
+							  <a href="<c:url value="projectanimals"><c:param name="project_id" value="${project.id}"/></c:url>">View All</a>	
 		</td>
 	</tr>
 	
 	<c:if test="${project.projectType == 'PASSIVE_ACOUSTIC'}">
-		<tr><td class="projectFieldName">Receivers:</td><td><a href="<c:url value="projectreceivers"/>">View List</a></td></tr>
+		<tr><td class="projectFieldName">Receivers:</td><td><a href="<c:url value="projectreceivers"><c:param name="project_id" value="${project.id}"/></c:url>">View List</a></td></tr>
 	</c:if>
 	</table>
   </c:otherwise>

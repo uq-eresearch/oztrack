@@ -16,49 +16,34 @@ import org.oztrack.data.model.User;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
-
-
 public class DataSpaceInterfaceController implements Controller {
-
-    /**
-    * Logger for this class and subclasses
-    */
     protected final Log logger = LogFactory.getLog(getClass());
     
 	@Override
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-        // parameters from ajax post
         String projectId = request.getParameter("project");
         String username = request.getParameter("username");
         String action = request.getParameter("action");
         
-        //User currentUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER);
         UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();
         User currentUser = userDao.getByUsername(username);
         ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
 
         if (currentUser == null) {
-        	
         	return new ModelAndView("login");
-        	
-        } else {
-        	
+        }
+        else {
         	if (projectId == null) {
-        		
         		return new ModelAndView("projects");
-        		
-        	} else {
-        		
+        	}
+        	else {
         		Project project = projectDao.getProjectById(Long.parseLong(projectId));
         		Map <String, Object> projectActionMap = new HashMap<String, Object>();
         		projectActionMap.put("project", project);
         		projectActionMap.put("action", action);
         		
-        		
         		logger.info("request for dataspace syndication by user: " + currentUser.getUsername() + " for project: " + project.getTitle());
         		return new ModelAndView("java_DataSpaceInterface", "projectActionMap", projectActionMap);
-        		
         	}
         }
 	}

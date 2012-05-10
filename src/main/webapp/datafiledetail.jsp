@@ -19,7 +19,10 @@
         <c:out value="${dataFile.status}"/>
         <c:choose>
              <c:when test="${dataFile.status=='FAILED'}">
-                &nbsp;&nbsp;<a href="<c:url value="datafileadd"><c:param name="datafile_id" value="${dataFile.id}"/><c:param name="project_id" value="${dataFile.project.id}"/></c:url>">Retry</a>
+                &nbsp;&nbsp;<a href="<c:url value="datafileadd">
+                    <c:param name="datafile_id" value="${dataFile.id}"/>
+                    <c:param name="project_id" value="${dataFile.project.id}"/>
+                </c:url>">Retry</a>
              </c:when>
         </c:choose>
     </td>

@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.PositionFixDao;
+import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
@@ -25,103 +26,78 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import au.edu.uq.itee.maenad.dataaccess.Page;
 
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 24/05/11
- * Time: 11:24 AM
-  */
 public class SearchFormController extends SimpleFormController {
-
-    /**
-     * Logger for this class and subclasses
-     */
     protected final Log logger = LogFactory.getLog(getClass());
 
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-
-        Project project =  (Project) request.getSession().getAttribute("project");
+        Long projectId = null;
+        if (request.getParameter("project_id") != null) {
+            projectId = Long.parseLong(request.getParameter("project_id"));
+        }
+        Project project = null;
+        if (projectId != null) {
+            ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
+            project = projectDao.getProjectById(projectId);
+            projectDao.refresh(project);
+        }
+        
         SearchQuery searchQuery = (SearchQuery) command;
         searchQuery.setProject(project);
         request.getSession().setAttribute("searchQuery", searchQuery);
 
- //       List<AcousticDetection> acousticDetections = queryAcousticDetections(searchQuery);
-
-        ModelAndView modelAndView = showForm(request, response, errors);
- //       modelAndView.addObject("acousticDetectionsList", acousticDetections);
-
-        return modelAndView;
-
+        return showFormInternal(request, response, errors);
     }
 
     @Override
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
-
-        // handle date format from datepicker
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        CustomDateEditor editor = new CustomDateEditor(sdf, true);
-        binder.registerCustomEditor(Date.class,editor);
-
-
-        // bind animalList object
-        binder.registerCustomEditor(List.class,"animalList", new CustomCollectionEditor(List.class) {
-
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("dd/MM/yyyy"), true));
+        binder.registerCustomEditor(List.class, "animalList", new CustomCollectionEditor(List.class) {
             @Override
             protected Object convertElement(Object element) {
                 String animalId = (String) element;
-                logger.debug("Initbinder: animalId: " + animalId);
-                //AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
                 Animal animal = new Animal();
                 animal.setId(Long.valueOf(animalId));
                 return animal;
             }
         });
-
-        super.initBinder(request, binder);    //To change body of overridden methods use File | Settings | File Templates.
+        super.initBinder(request, binder);
     }
-
-/*
-   //screws up the data
+    
     @Override
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
-
-        // add a searchQuery command object
-        Project project = (Project) request.getSession().getAttribute("project");
+        // If we have a SearchQuery instance in the session from a previously posted form,
+        // replace the default SearchQuery instance in the model so we show previous values in the form.
         SearchQuery searchQuery = (SearchQuery) request.getSession().getAttribute("searchQuery");
-
-        if (searchQuery == null) {
-            searchQuery = new SearchQuery();
-            searchQuery.setProject(project);
-            request.getSession().setAttribute("searchQuery",searchQuery);
+        if (searchQuery != null) {
+            return searchQuery;
         }
-
-        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
-        List<Animal> animalList = animalDao.getAnimalsByProjectId(project.getId());
-        searchQuery.setAnimalList(animalList);
-
-        return searchQuery;//super.formBackingObject(request);    //To change body of overridden methods use File | Settings | File Templates.
+        return super.formBackingObject(request);
     }
-
-    */
-
-
+    
     @Override
     protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
-
-        // find the project, add a searchQuery command object
-        Project project =  (Project) request.getSession().getAttribute("project");
-        SearchQuery searchQuery = (SearchQuery) request.getSession().getAttribute("searchQuery");
-        // get a list of animals for the form to use
+        return showFormInternal(request, response, errors);
+    }
+    
+    private ModelAndView showFormInternal(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
+        Long projectId = null;
+        if (request.getParameter("project_id") != null) {
+            projectId = Long.parseLong(request.getParameter("project_id"));
+        }
+        Project project = null;
+        if (projectId != null) {
+            ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
+            project = projectDao.getProjectById(projectId);
+            projectDao.refresh(project);
+        }
+        
         AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
 
-        if (searchQuery == null) {
-            searchQuery = new SearchQuery();
-            searchQuery.setProject(project);
-            request.getSession().setAttribute("searchQuery",searchQuery);
+        SearchQuery searchQuery = (SearchQuery) errors.getModel().get("searchQuery");
+        searchQuery.setProject(project);
 
-        }
         // for pagination
         int offset=0;
         int nbrObjectsPerPage=30;
@@ -132,46 +108,15 @@ public class SearchFormController extends SimpleFormController {
             offset = Integer.parseInt(request.getParameter("offset"));
         }
 
-        /*
-        // in the searchQuery, put the animals being searched on
-        // remove the same from the animalList
-        if (searchQuery.getAnimalList() == null) {
-            List<Animal> animalsInSearchList = animalDao.getAnimalsByProjectId(project.getId());
-            searchQuery.setAnimalList(animalsInSearchList);
-        }
-
-        for (Animal animal: searchQuery.getAnimalList()) {
-            animalsNotInSearchList.remove(animal);
-
-        } */
-
-        ModelAndView modelAndView = new ModelAndView("searchform");
-        modelAndView.addObject("searchQuery",searchQuery); // empty searchQuery
+        ModelAndView modelAndView = new ModelAndView(getFormView(), errors.getModel());
+        modelAndView.addObject("project", project);
+        modelAndView.addObject("searchQuery", searchQuery);
         modelAndView.addObject("projectAnimalsList", projectAnimalsList);
 
-        /*
-        AcousticDetectionDao acousticDetectionDao = OzTrackApplication.getApplicationContext().getDaoManager().getAcousticDetectionDao();
-        Page<AcousticDetection> acousticDetectionsPage = acousticDetectionDao.getPage(offset,nbrObjectsPerPage);
-        List<AcousticDetection> acousticDetectionsList = acousticDetectionsPage.getObjects();
-        nbrObjectsThisPage = acousticDetectionsList.size();
-
-        totalCount=acousticDetectionDao.getTotalCount();
-
-
-        modelAndView.addObject("acousticDetectionsList", acousticDetectionsList);
-        modelAndView.addObject("offset", offset);
-        modelAndView.addObject("nbrObjectsPerPage", nbrObjectsPerPage);
-        modelAndView.addObject("nbrObjectsThisPage", nbrObjectsThisPage);
-        modelAndView.addObject("totalCount", totalCount);
-        */
-
         switch (project.getProjectType()) {
-             case PASSIVE_ACOUSTIC:
-                 //modelAndView.addObject("acousticDetectionsList", queryAcousticDetections(searchQuery));
-                 break;
              case GPS:
                  PositionFixDao positionFixDao = OzTrackApplication.getApplicationContext().getDaoManager().getPositionFixDao();
-                 Page<PositionFix> positionFixPage = positionFixDao.getPage(searchQuery,offset, nbrObjectsPerPage);
+                 Page<PositionFix> positionFixPage = positionFixDao.getPage(searchQuery, offset, nbrObjectsPerPage);
                  nbrObjectsThisPage = positionFixPage.getObjects().size();
                  totalCount = positionFixPage.getCount();
                  modelAndView.addObject("positionFixList", positionFixPage.getObjects());
@@ -186,21 +131,5 @@ public class SearchFormController extends SimpleFormController {
         modelAndView.addObject("totalCount", totalCount);
 
         return modelAndView;
-        //return super.showForm(request, response, errors);    //To change body of overridden methods use File | Settings | File Templates.
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

@@ -13,32 +13,22 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
 public class ProjectListController implements Controller {
-
-	/** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 	
 	@Override
     public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-		
-//        AuthenticationManager authenticationManager = OzTrackApplication.getApplicationContext().getAuthenticationManager();
-//        HttpSession session = httpServletRequest.getSession();
-//        User currentUser = authenticationManager.getUserFromSession(session);
         User currentUser = (User) httpServletRequest.getSession().getAttribute(Constants.CURRENT_USER);
-        ModelAndView modelAndView;
+        ModelAndView modelAndView = null;
         
         if (currentUser == null) {
-        	
         	modelAndView = new ModelAndView("redirect:login");
-        
-        } else {
-        	
+        }
+        else {
             UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();
             User user = userDao.getByUsername(currentUser.getUsername());
             userDao.refresh(user);
             modelAndView = new ModelAndView("projects");
-            //modelAndView.addObject("userProjectList", userProjectList);
             modelAndView.addObject("user", user);
-        	
         }
         return modelAndView;
     }

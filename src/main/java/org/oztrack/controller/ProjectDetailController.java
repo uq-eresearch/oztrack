@@ -25,34 +25,23 @@ public class ProjectDetailController implements Controller {
     protected final Log logger = LogFactory.getLog(getClass());
 	
 	@Override
-    public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         //String modelAndViewName = "projectdetail"; 
         ModelAndView modelAndView;
         String errorMessage = null;
         
-        Project sessionProject = (Project) httpServletRequest.getSession().getAttribute("project");
-        User sessionUser = (User) httpServletRequest.getSession().getAttribute(Constants.CURRENT_USER);
+        User sessionUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER);
         
         if (sessionUser == null) {
-        	
         	modelAndView = new ModelAndView("redirect:login");
-        
-        } else {
-        	
+        }
+        else {
             Long projectId = null;
-            
-        	if (httpServletRequest.getParameter("project_id") == null) {
-            	
-            	if (sessionProject != null) {
-            		projectId = sessionProject.getId();
-            	}
-            	
-            } else { 
-            	
-            	projectId = Long.parseLong(httpServletRequest.getParameter("project_id"));
+        	if (request.getParameter("project_id") != null) {
+            	projectId = Long.parseLong(request.getParameter("project_id"));
             }
-        
+
 	        if (projectId != null) {
 	        	
 	        	// check that the user has access to this project
@@ -61,14 +50,13 @@ public class ProjectDetailController implements Controller {
 		        Project project = projectDao.getProjectById(projectId);
 		        projectDao.refresh(project);
 		        
-		        httpServletRequest.getSession().setAttribute("project", project);
 		        String modelAndViewName = "projectdetail";
 		        
-		        if (httpServletRequest.getRequestURI().contains("projectmap")) {
+		        if (request.getRequestURI().contains("projectmap")) {
 		            modelAndViewName = "projectmap";
-		        } else if (httpServletRequest.getRequestURI().contains("projectanimals")) {
+		        } else if (request.getRequestURI().contains("projectanimals")) {
 		            modelAndViewName = "projectanimals";
-		        } else if (httpServletRequest.getRequestURI().contains("publish")) {
+		        } else if (request.getRequestURI().contains("publish")) {
 		            modelAndViewName = "publish";
 		        }
 		        
@@ -85,7 +73,8 @@ public class ProjectDetailController implements Controller {
 		        modelAndView.addObject("dataFileList", dataFileList);
 		        modelAndView.addObject("dataSpaceURL",dataSpaceURL);
 	        
-	        } else {
+	        }
+	        else {
 	        	modelAndView = new ModelAndView("redirect:projects");
 	        }
 	        

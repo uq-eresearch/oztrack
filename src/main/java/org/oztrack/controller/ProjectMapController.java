@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.Constants;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.AnimalDao;
+import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.User;
@@ -28,31 +29,33 @@ public class ProjectMapController implements Controller {
     	ModelAndView modelAndView; 
     	String errorMessage = "";
         User sessionUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER);
-        Project sessionProject = (Project) request.getSession().getAttribute("project");
 
         if (sessionUser == null) {
-        
         	modelAndView = new ModelAndView("redirect:login");
-//        	modelAndView.addObject("errorMessage","You need to be logged in to view this page.");
-        
-        } else {
-            
-        	if (sessionProject == null) {
-            
-        		modelAndView = new ModelAndView("redirect:projects");
-//            	modelAndView.addObject("errorMessage","Please choose a project to continue.");
-            
-        	} else {
+        }
+        else {
+            Long projectId = null;
+            if (request.getParameter("project_id") != null) {
+                projectId = Long.parseLong(request.getParameter("project_id"));
+            }
+
+            if (projectId != null) {
+                ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
+                Project project = projectDao.getProjectById(projectId);
+                projectDao.refresh(project);
                 
         		modelAndView = new ModelAndView("projectmap");
             	MapQueryType [] mapQueryTypeList = MapQueryType.values();
                 AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
-                List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(sessionProject.getId());
+                List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
 
                 modelAndView.addObject("errorMessage", errorMessage);
-                modelAndView.addObject("project", sessionProject);
+                modelAndView.addObject("project", project);
                 modelAndView.addObject("mapQueryTypeList", mapQueryTypeList);
                 modelAndView.addObject("projectAnimalsList", projectAnimalsList);
+            }
+            else {
+                modelAndView = new ModelAndView("redirect:projects");
             }
         }
         return modelAndView;

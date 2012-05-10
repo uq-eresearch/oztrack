@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.Constants;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.DataFileDao;
+import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.User;
@@ -80,7 +81,16 @@ public class DataFileFormController extends SimpleFormController {
 
         } else {
 
-	    	Project project = (Project) request.getSession().getAttribute("project");
+            Long projectId = null;
+            if (request.getParameter("project_id") != null) {
+                projectId = Long.parseLong(request.getParameter("project_id"));
+            }
+            Project project = null;
+            if (projectId != null) {
+                ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
+                project = projectDao.getProjectById(projectId);
+                projectDao.refresh(project);
+            }
 	        
 	    	if (project != null) {
 	    		
@@ -103,7 +113,7 @@ public class DataFileFormController extends SimpleFormController {
 	        
 		        modelAndView = super.showForm(request, response, errors, controlModel);    //To change body of overridden methods use File | Settings | File Templates.
 		        modelAndView.addObject("fileHeaders", fileHeaders);
-		        modelAndView.addObject("project",project);
+		        modelAndView.addObject("project", project);
 		        return modelAndView;
 		        
 	    	} else {
@@ -129,8 +139,18 @@ public class DataFileFormController extends SimpleFormController {
         String filePath = null;
         ModelAndView modelAndView;
         
-        Project project =  (Project) request.getSession().getAttribute("project");
         User currentUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER);
+        
+        Long projectId = null;
+        if (request.getParameter("project_id") != null) {
+            projectId = Long.parseLong(request.getParameter("project_id"));
+        }
+        Project project = null;
+        if (projectId != null) {
+            ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
+            project = projectDao.getProjectById(projectId);
+            projectDao.refresh(project);
+        }
 
         if ((project != null) && (currentUser != null)) {
         	
@@ -168,6 +188,7 @@ public class DataFileFormController extends SimpleFormController {
 	        dataFile.setStatus(DataFileStatus.NEW);
 	        dataFileDao.update(dataFile);
 	        modelAndView = new ModelAndView(getSuccessView());
+	        modelAndView.addObject("project_id", project.getId());
 
         } else {
 
