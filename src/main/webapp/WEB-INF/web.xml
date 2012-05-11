@@ -1,11 +1,9 @@
-<!DOCTYPE web-app
-    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-    "http://java.sun.com/dtd/web-app_2_3.dtd">
+<?xml version="1.0" encoding="utf-8"?>
 <web-app
-    xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns="http://java.sun.com/xml/ns/javaee"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
-    version="2.4">
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    version="2.5">
 
     <display-name>OzTrack</display-name>
     <description>OzTrack</description>
@@ -35,10 +33,13 @@
         <servlet-name>springmvc</servlet-name>
         <url-pattern>/home</url-pattern>
     </servlet-mapping>
+    <!-- Temporarily disabled: should require admin role for listing users. -->
+    <!--
     <servlet-mapping>
         <servlet-name>springmvc</servlet-name>
         <url-pattern>/users</url-pattern>
     </servlet-mapping>
+    -->
     <servlet-mapping>
         <servlet-name>springmvc</servlet-name>
         <url-pattern>/register</url-pattern>
@@ -141,6 +142,6 @@
     </servlet-mapping>
 
     <welcome-file-list>
-        <welcome-file id="welcome-page">index.jsp</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 </web-app>
