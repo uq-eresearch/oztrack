@@ -1,122 +1,118 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" 
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+<beans
+    xmlns="http://www.springframework.org/schema/beans" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <bean id="handlerMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
-      <property name="alwaysUseFullPath" value="true"/>
-  </bean>
+    <bean id="handlerMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
+        <property name="alwaysUseFullPath" value="true"/>
+    </bean>
 
-  <bean id="javaViewResolver" class="org.oztrack.view.JavaViewResolver">
-      <property name="viewPrefix" value="java_"></property>
-  </bean>
+    <bean id="javaViewResolver" class="org.oztrack.view.JavaViewResolver">
+        <property name="viewPrefix" value="java_"></property>
+    </bean>
 
-  <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-      <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
-      <property name="prefix" value="/"/>
-      <property name="suffix" value=".jsp"/>
-  </bean>
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
 
-  <bean name="/mapQueryKML" class="org.oztrack.controller.KMLProjectMapController"/>
-  <bean name="/mapQueryWFS" class="org.oztrack.controller.WFSProjectMapController"/>
-  <bean name="/export" class="org.oztrack.controller.SearchQueryExportController"/>
-  <bean name="/exportKML" class="org.oztrack.controller.KMLExportController"/>
-  <bean name="/dataspace" class="org.oztrack.controller.DataSpaceInterfaceController"/>
-  
-  <bean name="/home" class="org.oztrack.controller.HomeController"/>
-  <bean name="/about" class="org.oztrack.controller.AboutController"/>
-  <bean name="/contact" class="org.oztrack.controller.ContactController"/>
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize"><value>100000000</value></property>
+    </bean>
 
-  <bean name="/users" class="org.oztrack.controller.UserListController"/>
-  <bean name="/projects" class="org.oztrack.controller.ProjectListController"/>
-  <bean name="/projectdetail" class="org.oztrack.controller.ProjectDetailController"/>
-  <bean name="/projectdescr" class="org.oztrack.controller.ProjectDescrController"/>
-  <bean name="/publish" class="org.oztrack.controller.ProjectDetailController"/>
-  <bean name="/datafiles" class="org.oztrack.controller.DataFileDetailController"/>
-  <bean name="/projectanimals" class="org.oztrack.controller.ProjectDetailController"/>
-  <bean name="/projectreceivers" class="org.oztrack.controller.ProjectReceiversController"/>
-  <bean name="/datafiledetail" class="org.oztrack.controller.DataFileDetailController"/>
-  <bean name="/searchacoustic" class="org.oztrack.controller.SearchAcousticController"/>
-  <bean name="/logout" class="org.oztrack.controller.LogoutController"/>
+    <bean name="/mapQueryKML" class="org.oztrack.controller.KMLProjectMapController"/>
+    <bean name="/mapQueryWFS" class="org.oztrack.controller.WFSProjectMapController"/>
+    <bean name="/export" class="org.oztrack.controller.SearchQueryExportController"/>
+    <bean name="/exportKML" class="org.oztrack.controller.KMLExportController"/>
+    <bean name="/dataspace" class="org.oztrack.controller.DataSpaceInterfaceController"/>
+    
+    <bean name="/home" class="org.oztrack.controller.HomeController"/>
+    <bean name="/about" class="org.oztrack.controller.AboutController"/>
+    <bean name="/contact" class="org.oztrack.controller.ContactController"/>
+    
+    <bean name="/users" class="org.oztrack.controller.UserListController"/>
+    <bean name="/projects" class="org.oztrack.controller.ProjectListController"/>
+    <bean name="/projectdetail" class="org.oztrack.controller.ProjectDetailController"/>
+    <bean name="/projectdescr" class="org.oztrack.controller.ProjectDescrController"/>
+    <bean name="/publish" class="org.oztrack.controller.ProjectDetailController"/>
+    <bean name="/datafiles" class="org.oztrack.controller.DataFileDetailController"/>
+    <bean name="/projectanimals" class="org.oztrack.controller.ProjectDetailController"/>
+    <bean name="/projectreceivers" class="org.oztrack.controller.ProjectReceiversController"/>
+    <bean name="/datafiledetail" class="org.oztrack.controller.DataFileDetailController"/>
+    <bean name="/searchacoustic" class="org.oztrack.controller.SearchAcousticController"/>
+    <bean name="/logout" class="org.oztrack.controller.LogoutController"/>
+    
+    <bean name="/projectmap" class="org.oztrack.controller.ProjectMapController"/>
+    
+    <bean name="/register" class="org.oztrack.controller.RegisterFormController">
+        <property name="sessionForm"><value>false</value></property>
+        <property name="commandName"><value>user</value></property>
+        <property name="commandClass"><value>org.oztrack.data.model.User</value></property>
+        <property name="validator"><ref bean="registerFormValidator"/></property>
+        <property name="formView"><value>register</value></property>
+        <property name="successView"><value>registersuccess</value></property>
+    </bean>
+    <bean id="registerFormValidator" class="org.oztrack.validator.RegisterFormValidator"/>
+            
+    <bean name="/login" class="org.oztrack.controller.LoginFormController">
+        <property name="sessionForm"><value>false</value></property>
+        <property name="commandName"><value>user</value></property>
+        <property name="commandClass"><value>org.oztrack.data.model.User</value></property>
+        <property name="validator"><ref bean="loginFormValidator"/></property>
+        <property name="formView"><value>login</value></property>
+        <property name="successView"><value>redirect:projects</value></property>
+    </bean>
+    <bean id="loginFormValidator" class="org.oztrack.validator.LoginFormValidator"/>
 
-  <bean name="/projectmap" class="org.oztrack.controller.ProjectMapController"/>
+    <bean name="/projectadd" class="org.oztrack.controller.ProjectFormController">
+        <property name="sessionForm"><value>false</value></property>
+        <property name="commandName"><value>project</value></property>
+        <property name="commandClass"><value>org.oztrack.data.model.Project</value></property>
+        <property name="validator"><ref bean="projectFormValidator"/></property>
+        <property name="formView"><value>projectadd</value></property>
+        <property name="successView"><value>redirect:projects</value></property>
+    </bean>
+    <bean id="projectFormValidator" class="org.oztrack.validator.ProjectFormValidator"/>
 
-  <bean name="/register" class="org.oztrack.controller.RegisterFormController">
-		<property name="sessionForm"><value>false</value></property>
-		<property name="commandName"><value>user</value></property>
-		<property name="commandClass"><value>org.oztrack.data.model.User</value></property>
-		<property name="validator"><ref bean="registerFormValidator"/></property>
-		<property name="formView"><value>register</value></property>
-		<property name="successView"><value>registersuccess</value></property>
-  </bean>
-  <bean id="registerFormValidator" class="org.oztrack.validator.RegisterFormValidator"/>
-  		  
-  <bean name="/login" class="org.oztrack.controller.LoginFormController">
-		<property name="sessionForm"><value>false</value></property>
-		<property name="commandName"><value>user</value></property>
-		<property name="commandClass"><value>org.oztrack.data.model.User</value></property>
-		<property name="validator"><ref bean="loginFormValidator"/></property>
-		<property name="formView"><value>login</value></property>
-		<property name="successView"><value>redirect:projects</value></property>
-  </bean>
-  <bean id="loginFormValidator" class="org.oztrack.validator.LoginFormValidator"/>
-
-  <bean name="/projectadd" class="org.oztrack.controller.ProjectFormController">
-		<property name="sessionForm"><value>false</value></property>
-		<property name="commandName"><value>project</value></property>
-		<property name="commandClass"><value>org.oztrack.data.model.Project</value></property>
-		<property name="validator"><ref bean="projectFormValidator"/></property>
-		<property name="formView"><value>projectadd</value></property>
-		<property name="successView"><value>redirect:projects</value></property>
-  </bean>
-  <bean id="projectFormValidator" class="org.oztrack.validator.ProjectFormValidator"/>
-
-  <bean name="/datafileadd" class="org.oztrack.controller.DataFileFormController">
-          <property name="sessionForm"><value>false</value></property>
-          <property name="commandName"><value>dataFile</value></property>
-          <property name="commandClass"><value>org.oztrack.data.model.DataFile</value></property>
-          <property name="validator"><ref bean="dataFileFormValidator"/></property>
-          <property name="formView"><value>datafileadd</value></property>
-          <property name="successView"><value>redirect:datafiles</value></property>
-  </bean>
-  <bean id="dataFileFormValidator" class="org.oztrack.validator.DataFileFormValidator"/>
+    <bean name="/datafileadd" class="org.oztrack.controller.DataFileFormController">
+        <property name="sessionForm"><value>false</value></property>
+        <property name="commandName"><value>dataFile</value></property>
+        <property name="commandClass"><value>org.oztrack.data.model.DataFile</value></property>
+        <property name="validator"><ref bean="dataFileFormValidator"/></property>
+        <property name="formView"><value>datafileadd</value></property>
+        <property name="successView"><value>redirect:datafiles</value></property>
+    </bean>
+    <bean id="dataFileFormValidator" class="org.oztrack.validator.DataFileFormValidator"/>
 
     <bean name="/animalform" class="org.oztrack.controller.AnimalFormController">
-            <property name="sessionForm"><value>false</value></property>
-            <property name="commandName"><value>animal</value></property>
-            <property name="commandClass"><value>org.oztrack.data.model.Animal</value></property>
-            <property name="validator"><ref bean="animalFormValidator"/></property>
-            <property name="formView"><value>animalform</value></property>
-            <property name="successView"><value>redirect:projectanimals</value></property>
+        <property name="sessionForm"><value>false</value></property>
+        <property name="commandName"><value>animal</value></property>
+        <property name="commandClass"><value>org.oztrack.data.model.Animal</value></property>
+        <property name="validator"><ref bean="animalFormValidator"/></property>
+        <property name="formView"><value>animalform</value></property>
+        <property name="successView"><value>redirect:projectanimals</value></property>
     </bean>
     <bean id="animalFormValidator" class="org.oztrack.validator.AnimalFormValidator"/>
 
     <bean name="/searchform" class="org.oztrack.controller.SearchFormController">
-            <property name="sessionForm"><value>false</value></property>
-            <property name="commandName"><value>searchQuery</value></property>
-            <property name="commandClass"><value>org.oztrack.data.model.SearchQuery</value></property>
-            <property name="validator"><ref bean="searchFormValidator"/></property>
-            <property name="formView"><value>searchform</value></property>
-            <property name="successView"><value>searchform</value></property>
+        <property name="sessionForm"><value>false</value></property>
+        <property name="commandName"><value>searchQuery</value></property>
+        <property name="commandClass"><value>org.oztrack.data.model.SearchQuery</value></property>
+        <property name="validator"><ref bean="searchFormValidator"/></property>
+        <property name="formView"><value>searchform</value></property>
+        <property name="successView"><value>searchform</value></property>
     </bean>
     <bean id="searchFormValidator" class="org.oztrack.validator.SearchFormValidator"/>
 
     <bean name="/sighting" class="org.oztrack.controller.SightingFormController">
-            <property name="sessionForm"><value>false</value></property>
-            <property name="commandName"><value>sighting</value></property>
-            <property name="commandClass"><value>org.oztrack.data.model.Sighting</value></property>
-            <property name="validator"><ref bean="sightingFormValidator"/></property>
-            <property name="formView"><value>sighting</value></property>
-            <property name="successView"><value>sightingsuccess</value></property>
+        <property name="sessionForm"><value>false</value></property>
+        <property name="commandName"><value>sighting</value></property>
+        <property name="commandClass"><value>org.oztrack.data.model.Sighting</value></property>
+        <property name="validator"><ref bean="sightingFormValidator"/></property>
+        <property name="formView"><value>sighting</value></property>
+        <property name="successView"><value>sightingsuccess</value></property>
     </bean>
     <bean id="sightingFormValidator" class="org.oztrack.validator.SightingFormValidator"/>
-
-
-
-  <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-    <!-- one of the properties available; the maximum file size in bytes -->
-        <property name="maxUploadSize"><value>100000000</value></property>
-  </bean>
-
 </beans>
