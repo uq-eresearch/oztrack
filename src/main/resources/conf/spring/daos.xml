@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
-
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
     <bean id="acousticDetectionDao" class="org.oztrack.data.access.impl.AcousticDetectionDaoImpl">
         <constructor-arg ref="jpaConnector"/>
     </bean>
@@ -16,21 +18,18 @@
         <constructor-arg ref="jpaConnector"/>
     </bean>
     <bean id="projectDao" class="org.oztrack.data.access.impl.ProjectDaoImpl">
-      <constructor-arg ref="jpaConnector"/>
+        <constructor-arg ref="jpaConnector"/>
     </bean>
     <bean id="dataFileDao" class="org.oztrack.data.access.impl.DataFileDaoImpl">
-      <constructor-arg ref="jpaConnector"/>
+        <constructor-arg ref="jpaConnector"/>
     </bean>
     <bean id="rawAcousticDetectionDao" class="org.oztrack.data.access.impl.RawAcousticDetectionDaoImpl">
-      <constructor-arg ref="jpaConnector"/>
+        <constructor-arg ref="jpaConnector"/>
     </bean>
     <bean id="receiverDeploymentDao" class="org.oztrack.data.access.impl.ReceiverDeploymentDaoImpl">
-      <constructor-arg ref="jpaConnector"/>
+        <constructor-arg ref="jpaConnector"/>
     </bean>
     <bean id="sightingDao" class="org.oztrack.data.access.impl.SightingDaoImpl">
-      <constructor-arg ref="jpaConnector"/>
+        <constructor-arg ref="jpaConnector"/>
     </bean>
-
-
-
 </beans>
