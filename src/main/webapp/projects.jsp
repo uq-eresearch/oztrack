@@ -40,7 +40,7 @@
 			
 			<c:forEach items="${user.projectUsers}" var="project">
 			<tr>
-			    <td><a href="<c:url value="projectdetail"><c:param name="project_id" value="${project.pk.project.id}"/></c:url>">
+			    <td><a href="<c:url value="projectdetail"><c:param name="id" value="${project.pk.project.id}"/></c:url>">
 			            <c:out value="${project.pk.project.title}"/></a></td>
 			    <td><c:out value="${project.pk.project.spatialCoverageDescr}"/></td>
 			    <td><c:out value="${project.pk.project.projectType.displayName}"/></td>

@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class ProjectMapController {
     @RequestMapping(value="/projectmap", method=RequestMethod.GET)
-    public String getView(HttpSession session, Model model, @RequestParam("project_id") Long projectId) {
+    public String getView(HttpSession session, Model model, @RequestParam("id") Long projectId) {
         User sessionUser = (User) session.getAttribute(Constants.CURRENT_USER);
         if (sessionUser == null) {
         	return "redirect:login";

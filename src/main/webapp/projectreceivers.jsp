@@ -16,7 +16,7 @@
     <jsp:attribute name="breadcrumbs">
         <a id="homeUrl" href="<c:url value="/"/>">Home</a>
         &rsaquo; <a href="/projects">Animal Tracking</a>
-        &rsaquo; <a href="/projectdetail?project_id=${project.id}">${project.title}</a>
+        &rsaquo; <a href="/projectdetail?id=${project.id}">${project.title}</a>
         &rsaquo; <span class="aCrumb">Receivers</span>
     </jsp:attribute>
     <jsp:body>

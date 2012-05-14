@@ -227,7 +227,7 @@
 				<c:choose>
 				<c:when test ="${empty project.dataSpaceUpdateDate}">
 					Your project metadata has not yet been published to ANDS. 
-					<a href="<c:url value="publish"><c:param name="project_id" value="${project.id}"/></c:url>">Publish to ANDS now</a>.
+					<a href="<c:url value="publish"><c:param name="id" value="${project.id}"/></c:url>">Publish to ANDS now</a>.
 				</c:when>
 				<c:otherwise>
 					Your project metadata has been published and was last updated on 

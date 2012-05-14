@@ -24,7 +24,7 @@
     <jsp:attribute name="breadcrumbs">
         <a id="homeUrl" href="<c:url value="/"/>">Home</a>
         &rsaquo; <a href="/projects">Animal Tracking</a>
-        &rsaquo; <a href="/projectdetail?project_id=${project.id}">${project.title}</a>
+        &rsaquo; <a href="/projectdetail?id=${project.id}">${project.title}</a>
         &rsaquo; <span class="aCrumb">Analysis Tools</span>
     </jsp:attribute>
     <jsp:body>
@@ -258,8 +258,8 @@
 		           <h3><a href="#">Project Menu</a></h3>
 		        <div id="projectMenu" style="font-size:1.2em;">		      
 		      <ul>
-		        <li><a href="<c:url value="projectdetail"><c:param name="project_id" value="${project.id}"/></c:url>">Project Details</a></li>
-		        <li><a href="<c:url value="projectmap"><c:param name="project_id" value="${project.id}"/></c:url>">Analysis Tools</a></li>
+		        <li><a href="<c:url value="projectdetail"><c:param name="id" value="${project.id}"/></c:url>">Project Details</a></li>
+		        <li><a href="<c:url value="projectmap"><c:param name="id" value="${project.id}"/></c:url>">Analysis Tools</a></li>
 		        <li><a href="<c:url value="searchform"><c:param name="project_id" value="${project.id}"/></c:url>">View Raw Data</a></li>
 		        <li><a href="<c:url value="datafiles"><c:param name="project_id" value="${project.id}"/></c:url>">Data Uploads</a></li>
 		      </ul>

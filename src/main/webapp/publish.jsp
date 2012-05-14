@@ -18,7 +18,7 @@
     <jsp:attribute name="breadcrumbs">
         <a id="homeUrl" href="<c:url value="/"/>">Home</a>
         &rsaquo; <a href="/projects">Animal Tracking</a>
-        &rsaquo; <a href="/projectdetail?project_id=${project.id}">${project.title}</a>
+        &rsaquo; <a href="/projectdetail?id=${project.id}">${project.title}</a>
         &rsaquo; <span class="aCrumb">Metadata Publication</span>
     </jsp:attribute>
     <jsp:body>
@@ -165,7 +165,7 @@
 			<br/><br/>
 			<a class="oztrackButton" href="<c:url value="projectadd"><c:param name="update" value="${true}"/><c:param name="id" value="${project.id}"/></c:url>">Edit</a>
 			&nbsp;&nbsp;
-			<a class="oztrackButton" href="<c:url value="projectdetail"/>">Cancel</a>
+			<a class="oztrackButton" href="<c:url value="projectdetail"><c:param name="id" value="${project.id}"/></c:url>">Cancel</a>
 			<br><br></td></tr>
 		</table>
     </jsp:body>

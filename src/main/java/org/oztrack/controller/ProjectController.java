@@ -33,62 +33,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class ProjectController {
     protected final Log logger = LogFactory.getLog(getClass());
     
-    @RequestMapping(value="/projects", method=RequestMethod.GET)
-    public String getListView(HttpSession session, Model model) {
-        User currentUser = (User) session.getAttribute(Constants.CURRENT_USER);
-        if (currentUser == null) {
-        	return "redirect:login";
-        }
-        UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();
-        User user = userDao.getByUsername(currentUser.getUsername());
-        userDao.refresh(user);
-        model.addAttribute("user", user);
-        return "projects";
-    }
-    
-    @RequestMapping(value="/projectdetail", method=RequestMethod.GET)
-    public String getDetailView(HttpSession session, Model model, @RequestParam("project_id") Long projectId) {
-        return getProjectView(session, model, projectId, "projectdetail");
-    }
-    
-    @RequestMapping(value="/projectdescr", method=RequestMethod.GET)
-    public String getDescriptionView(HttpSession session, Model model, @RequestParam("project_id") Long projectId) {
-        return getProjectView(session, model, projectId, "projectdescr");
-    }
-    
-    @RequestMapping(value="/publish", method=RequestMethod.GET)
-    public String getPublishView(HttpSession session, Model model, @RequestParam("project_id") Long projectId) {
-        return getProjectView(session, model, projectId, "publish");
-    }
-    
-    @RequestMapping(value="/projectanimals", method=RequestMethod.GET)
-    public String getAnimalsView(HttpSession session, Model model, @RequestParam("project_id") Long projectId) {
-        return getProjectView(session, model, projectId, "projectanimals");
-    }
-    
-    private String getProjectView(HttpSession session, Model model, Long projectId, String viewName) {
-        User sessionUser = (User) session.getAttribute(Constants.CURRENT_USER);
-        if (sessionUser == null) {
-            return "redirect:login";
-        }
-            
-        ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
-        Project project = projectDao.getProjectById(projectId);
-        
-        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
-        List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
-        DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
-        List<DataFile> dataFileList = dataFileDao.getDataFilesByProject(project);
-        String dataSpaceURL = OzTrackApplication.getApplicationContext().getDataSpaceURL();
-        
-        model.addAttribute("project", project);
-        model.addAttribute("projectAnimalsList", projectAnimalsList);
-        model.addAttribute("dataFileList", dataFileList);
-        model.addAttribute("dataSpaceURL", dataSpaceURL);
-        
-        return viewName;
-    }
-    
     @ModelAttribute("project")
     public Project getProject(@RequestParam(value="id", required=false) Long projectId) {
         Project project = null;
@@ -101,6 +45,46 @@ public class ProjectController {
             project = projectDao.getProjectById(projectId);
         }
         return project;
+    }
+    
+    @RequestMapping(value="/projectdetail", method=RequestMethod.GET)
+    public String getDetailView(HttpSession session, Model model, @ModelAttribute(value="project") Project project) {
+        return getView(session, model, project, "projectdetail");
+    }
+    
+    @RequestMapping(value="/projectdescr", method=RequestMethod.GET)
+    public String getDescriptionView(HttpSession session, Model model, @ModelAttribute(value="project") Project project) {
+        return getView(session, model, project, "projectdescr");
+    }
+    
+    @RequestMapping(value="/publish", method=RequestMethod.GET)
+    public String getPublishView(HttpSession session, Model model, @ModelAttribute(value="project") Project project) {
+        return getView(session, model, project, "publish");
+    }
+    
+    @RequestMapping(value="/projectanimals", method=RequestMethod.GET)
+    public String getAnimalsView(HttpSession session, Model model, @ModelAttribute(value="project") Project project) {
+        return getView(session, model, project, "projectanimals");
+    }
+    
+    private String getView(HttpSession session, Model model, Project project, String viewName) {
+        User sessionUser = (User) session.getAttribute(Constants.CURRENT_USER);
+        if (sessionUser == null) {
+            return "redirect:login";
+        }
+            
+        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
+        List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
+        DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
+        List<DataFile> dataFileList = dataFileDao.getDataFilesByProject(project);
+        String dataSpaceURL = OzTrackApplication.getApplicationContext().getDataSpaceURL();
+        
+        model.addAttribute("project", project);
+        model.addAttribute("projectAnimalsList", projectAnimalsList);
+        model.addAttribute("dataFileList", dataFileList);
+        model.addAttribute("dataSpaceURL", dataSpaceURL);
+        
+        return viewName;
     }
     
     @RequestMapping(value="/projectadd", method=RequestMethod.GET)
@@ -140,7 +124,7 @@ public class ProjectController {
         return "redirect:projects";
     }
     
-    protected void addNewProject(ProjectDao projectDao, Project project, User currentUser) throws Exception {
+    private void addNewProject(ProjectDao projectDao, Project project, User currentUser) throws Exception {
         logger.info(" User: " + currentUser.getFullName() + " Creating project: " + project.getTitle() + " " + new java.util.Date().toString());
 
         // create/update details
@@ -174,7 +158,6 @@ public class ProjectController {
         project.setDataDirectoryPath(getProjectDirectoryPath(project));
         project.setImageFileLocation(saveProjectImage(project));
         projectDao.update(project);
-
     }
     
     private String saveProjectImage(Project project) throws Exception {

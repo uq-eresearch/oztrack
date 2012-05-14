@@ -60,7 +60,7 @@
 									<c:forEach items="${projectAnimalsList}" var="animal">
 											<a href="<c:url value="animalform"><c:param name="animal_id" value="${animal.id}"/></c:url>"><c:out value="${animal.animalName}"/></a>,
 									  </c:forEach>
-									  <a href="<c:url value="projectanimals"><c:param name="project_id" value="${project.id}"/></c:url>">View All</a>	
+									  <a href="<c:url value="projectanimals"><c:param name="id" value="${project.id}"/></c:url>">View All</a>	
 				</td>
 			</tr>
 			
@@ -137,7 +137,7 @@
 		<tr><td class="projectFieldName"></td><td>
 			<a class="oztrackButton" href="<c:url value="projectadd"><c:param name="update" value="${true}"/><c:param name="id" value="${project.id}"/></c:url>">Edit Project Metadata</a>
 			&nbsp;&nbsp;
-			<a class="oztrackButton" href="<c:url value="publish"><c:param name="project_id" value="${project.id}"/></c:url>"><c:out value="${publishButtonText}"/></a>
+			<a class="oztrackButton" href="<c:url value="publish"><c:param name="id" value="${project.id}"/></c:url>"><c:out value="${publishButtonText}"/></a>
 		
 			<br><br></td></tr>
 		
