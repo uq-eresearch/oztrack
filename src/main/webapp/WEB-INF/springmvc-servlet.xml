@@ -39,7 +39,6 @@
     <bean name="/about" class="org.oztrack.controller.AboutController"/>
     <bean name="/contact" class="org.oztrack.controller.ContactController"/>
     
-    <bean name="/users" class="org.oztrack.controller.UserListController"/>
     <bean name="/projects" class="org.oztrack.controller.ProjectListController"/>
     <bean name="/projectdetail" class="org.oztrack.controller.ProjectDetailController"/>
     <bean name="/projectdescr" class="org.oztrack.controller.ProjectDescrController"/>
