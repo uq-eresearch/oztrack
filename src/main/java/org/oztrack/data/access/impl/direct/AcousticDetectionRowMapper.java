@@ -9,17 +9,9 @@ import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.ReceiverDeployment;
 import org.springframework.jdbc.core.RowMapper;
 
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 25/05/11
- * Time: 12:30 PM
- */
-public class AcousticDetectionRowMapper implements RowMapper {
-
+public class AcousticDetectionRowMapper implements RowMapper<AcousticDetection> {
     @Override
-    public Object mapRow(ResultSet resultSet, int i) throws SQLException {
-
+    public AcousticDetection mapRow(ResultSet resultSet, int i) throws SQLException {
         Animal animal = new Animal();
         animal.setId(resultSet.getLong("animalId"));
         animal.setProjectAnimalId(resultSet.getString("projectanimalid"));

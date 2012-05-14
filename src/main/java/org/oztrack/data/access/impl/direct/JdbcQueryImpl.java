@@ -29,8 +29,7 @@ public class JdbcQueryImpl extends JdbcDaoSupport implements JdbcQuery {
 
     public List<AcousticDetection> queryAcousticDetections(String sql) {
 
-        @SuppressWarnings("unchecked")
-        List<AcousticDetection> acousticDetections = getJdbcTemplate().query(sql, new BeanPropertyRowMapper(AcousticDetection.class) );
+        List<AcousticDetection> acousticDetections = getJdbcTemplate().query(sql, new BeanPropertyRowMapper<AcousticDetection>(AcousticDetection.class) );
         return acousticDetections;
 
     }
@@ -103,7 +102,6 @@ public class JdbcQueryImpl extends JdbcDaoSupport implements JdbcQuery {
         logger.debug(sql);
 
         AcousticDetectionRowMapper acousticDetectionRowMapper = new AcousticDetectionRowMapper();
-        @SuppressWarnings("unchecked")
         List<AcousticDetection> acousticDetections = getJdbcTemplate().query(sql, acousticDetectionRowMapper);
 
         return acousticDetections;
@@ -152,7 +150,6 @@ public class JdbcQueryImpl extends JdbcDaoSupport implements JdbcQuery {
 
         NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(getJdbcTemplate());
         PositionFixRowMapper positionFixRowMapper = new PositionFixRowMapper();
-        @SuppressWarnings("unchecked")
         List<PositionFix> result = namedParameterJdbcTemplate.query(sql, mapSqlParameterSource, positionFixRowMapper );
         return result;
     }

@@ -44,6 +44,7 @@
         <restletVersion>1.1.8</restletVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <geotools.version>2.7.2</geotools.version>
+        <spring.version>3.1.1.RELEASE</spring.version>
     </properties>
     <build>
         <finalName>ROOT</finalName>
@@ -116,7 +117,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>3.0.4.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mortbay.jetty</groupId>
@@ -179,13 +180,13 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
-            <version>2.5.6</version>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>2.5.6</version>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.restlet</groupId>
@@ -209,8 +210,8 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>2.5.6.SEC02</version>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
         </dependency>
 
         <!--Local libraries-->
