@@ -120,7 +120,7 @@ a:hover {
 }
 
 #navMenu {
-	padding-left:290px;
+	padding-left: 300px;
 }	
 
 #crumbs {
@@ -197,21 +197,16 @@ a:hover {
     margin: 0px;
 }
 
-
-
-/*
-  nav elements
-*/
-
+/* nav elements */
 
 #navMenu {
-    margin-top:0px;
-    margin-bottom:0px;
-    padding-top:1.2ex;
-    padding-bottom:1.2ex;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 1.2ex;
+    padding-bottom: 1.2ex;
     list-style-type: none;
     list-style-image: none;
-    display:inline-block;
+    display: inline-block;
 }
 
 #navMenu a,
@@ -219,10 +214,10 @@ a:hover {
 #navMenu a:visited,
 #navMenu a:hover,
 #navMenu a:active {
-    font-size:0.9em;
-    font-weight:bold;
-    padding-right: 40px;
-    text-decoration:none;
+    font-size: 0.9em;
+    font-weight: bold;
+    margin-right: 50px;
+    text-decoration: none;
 }
 
 #navMenu a,
@@ -236,51 +231,21 @@ a:hover {
     color:#f7a700;
 }
 
-#navMenu li {
-    position:relative;
-    float:left;
-    padding-left:10px;
-}
-
 #navMenu ul {
-    padding:0px; margin:0px; display:block; display:inline;
-
+    padding: 0px;
+    margin: 0px;
+    display: inline;
 }
 
-#navMenu li ul {
-    position:absolute;
-    left:0px;
-    top:0px;
-    margin-top:3ex;
-    width: 180px;
-    line-height:4ex;
-    background-color: #131f00;
-    display:none;
-    font-size:0.9em;
-    z-index:1;
-	    /*--Bottom right rounded corner--*/
-    	-moz-border-radius-bottomright: 5px;
-    	-khtml-border-radius-bottomright: 5px;
-    	-webkit-border-bottom-right-radius: 5px;
-    	/*--Bottom left rounded corner--*/
-    	-moz-border-radius-bottomleft: 5px;
-    	-khtml-border-radius-bottomleft: 5px;
-    	-webkit-border-bottom-left-radius: 5px;
-
-
+#navMenu li {
+    position: relative;
+    float: left;
+    padding-left: 0px;
 }
-
-#navMenu li ul li{
-    display:block;
-    list-style-type: none;
-    list-style-image: none;}
-
-
 
 #crumbs a, #crumbs a:visited{
     color:#263f00;
     text-decoration:none;
-
 }
 
 #crumbs a:hover,#crumbs a:active, #login a:hover, #login a:active  {
@@ -291,7 +256,6 @@ a:hover {
 .aCrumb {
     color:#ef9800;
 }
-
 
 #projectMenu ul {
     margin-left:0px;
@@ -823,29 +787,6 @@ tbody tr:hover {
     border: #263f00 solid 1px;
     padding: 5px;
 }
-
-
-
-
-
-/*
-
-#container, #content {
-    border: solid yellow 2px;
-}
-
-#topHeader, #nav, #crumbs, #login, #projectMenu, #main, #footer {
-    border: solid red 1px;
-}
-
-#main {
-    border: solid blue 1px;
-}
-
-*/
-
-
-
 
 div.olControlPanel {
     top: 0px;

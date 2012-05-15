@@ -59,19 +59,7 @@
 <div id="nav">
     <ul id="navMenu">
         <li><a id="navHome" href="<c:url value="/"/>">Home</a></li>
-        <c:choose>
-         <c:when test="${currentUser != null}">
-            <li><a id="navTrack" class="menuParent" href="#">Animal Tracking</a>
-                <ul>
-                    <li><a href="<c:url value="/projectadd"/>">Create New Project</a></li>
-                    <li><a href="<c:url value="/projects"/>">Project List</a></li>
-                </ul>
-            </li>
-         </c:when>
-        <c:otherwise>
-            <li><a id="navTrack" href="<c:url value="/login"/>">Animal Tracking</a></li>
-        </c:otherwise>
-        </c:choose>
+        <li><a id="navTrack" href="<c:url value="/projects"/>">Animal Tracking</a></li>
         <li><a id="navAbout" href="<c:url value="/about"/>">About</a></li>
         <li><a id="navContact" href="<c:url value="/contact"/>">Contact</a></li>
     </ul>
