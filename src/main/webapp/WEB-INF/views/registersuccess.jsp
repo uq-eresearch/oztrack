@@ -9,13 +9,13 @@
         <script type="text/javascript"> 
             projectPage = true;
             $(document).ready(function() {
-                $('#navHome').css('color','#f7a700');
+                $('#navHome').addClass('active');
             });
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <span class="aCrumb">Registration successful</span>
+        &rsaquo; <span class="active">Registration successful</span>
     </jsp:attribute>
     <jsp:body>
 		<h2>Registration successful</h2>

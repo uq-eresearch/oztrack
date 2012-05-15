@@ -9,7 +9,7 @@
         <script type="text/javascript"> 
             projectPage = true;
             $(document).ready(function() {
-                $('#navTrack').css('color','#f7a700');
+                $('#navTrack').addClass('active');
             });
         </script>
     </jsp:attribute>
@@ -17,7 +17,7 @@
         <a href="<c:url value="/"/>">Home</a>
         &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
         &rsaquo; <a href="<c:url value="/projectdetail?id=${project.id}"/>">${project.title}</a>
-        &rsaquo; <span class="aCrumb">Receivers</span>
+        &rsaquo; <span class="active">Receivers</span>
     </jsp:attribute>
     <jsp:body>
 		<h1 id="projectTitle"><c:out value="${project.title}"/></h1>

@@ -19,14 +19,14 @@
     <jsp:attribute name="head">
         <script type="text/javascript"> 
             $(document).ready(function() {
-            	$('#navTrack').css('color','#f7a700');
+            	$('#navTrack').addClass('active');
             });
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
         &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
-        &rsaquo; <span class="aCrumb">Create New Project</span>
+        &rsaquo; <span class="active">Create New Project</span>
     </jsp:attribute>
     <jsp:body>
 		<c:choose>

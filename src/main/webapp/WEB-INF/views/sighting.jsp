@@ -13,14 +13,14 @@
         <script type="text/javascript"> 
             mapPage = true;
             $(document).ready(function() {
-                $('#navHome').css('color','#f7a700');
+                $('#navHome').addClass('active');
                 $('#sightingDatepicker').datepicker();
             });
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <span class="aCrumb">Report Animal Sighting</span>
+        &rsaquo; <span class="active">Report Animal Sighting</span>
     </jsp:attribute>
     <jsp:body>
 		<h1>Report an Animal Sighting</h1>

@@ -8,14 +8,14 @@
     <jsp:attribute name="head">
         <script type="text/javascript"> 
             $(document).ready(function() {
-            	$('#navHome').css('color','#f7a700');
+            	$('#navHome').addClass('active');
             });
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
         &rsaquo; <a href="<c:url value="/sighting"/>">Reporting Animal Sighting</a>
-        &rsaquo; <span class="aCrumb">Sighting Reported</span>
+        &rsaquo; <span class="active">Sighting Reported</span>
     </jsp:attribute>
     <jsp:body>
 		<h1>Thank You.</h1>

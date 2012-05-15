@@ -15,7 +15,7 @@
         <script type="text/javascript"> 
             mapPage = true;
             $(document).ready(function() {
-                $('#navTrack').css('color','#f7a700');
+                $('#navTrack').addClass('active');
                 $('#fromDatepicker').datepicker();
                 $('#toDatepicker').datepicker();
             });
@@ -25,7 +25,7 @@
         <a href="<c:url value="/"/>">Home</a>
         &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
         &rsaquo; <a href="<c:url value="/projectdetail?id=${project.id}"/>">${project.title}</a>
-        &rsaquo; <span class="aCrumb">Analysis Tools</span>
+        &rsaquo; <span class="active">Analysis Tools</span>
     </jsp:attribute>
     <jsp:body>
 		<div class="mapTool">

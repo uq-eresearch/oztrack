@@ -243,18 +243,31 @@ a:hover {
     padding-left: 0px;
 }
 
-#crumbs a, #crumbs a:visited{
+#navMenu a.active,
+#navMenu a.active:link,
+#navMenu a.active:visited {
+    color: #ef9800;
+}
+
+#crumbs a,
+#crumbs a:link,
+#crumbs a:visited {
     color:#263f00;
     text-decoration:none;
 }
 
-#crumbs a:hover,#crumbs a:active, #login a:hover, #login a:active  {
-    color:#ef9800;
-
+#crumbs a:hover,
+#crumbs a:active {
+    color: #ef9800;
 }
 
-.aCrumb {
-    color:#ef9800;
+#crumbs .active {
+    color: #ef9800;
+}
+
+#login a:hover,
+#login a:active {
+    color: #ef9800;
 }
 
 #projectMenu ul {

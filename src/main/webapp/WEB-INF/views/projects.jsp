@@ -8,13 +8,13 @@
     <jsp:attribute name="head">
         <script type="text/javascript"> 
             $(document).ready(function() {
-                $('#navTrack').css('color','#f7a700');
+                $('#navTrack').addClass('active');
             });
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <span class="aCrumb">Projects</span>
+        &rsaquo; <span class="active">Projects</span>
     </jsp:attribute>
     <jsp:body>
 		<h1>Projects</h1>

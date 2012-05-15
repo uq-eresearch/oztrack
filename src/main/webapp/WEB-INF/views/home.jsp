@@ -6,7 +6,7 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <tags:page title="Home">
 	<jsp:attribute name="breadcrumbs">
-	    <span class="aCrumb">Home</span>
+	    <span class="active">Home</span>
 	</jsp:attribute>
 	<jsp:attribute name="head">
         <script src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
@@ -15,7 +15,7 @@
         <script type="text/javascript"> 
             mapPage = true;
             $(document).ready(function() {
-                $('#navHome').css('color','#f7a700');
+                $('#navHome').addClass('active');
             });
         </script>
     </jsp:attribute>

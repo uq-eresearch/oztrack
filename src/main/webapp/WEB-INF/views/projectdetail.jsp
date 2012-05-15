@@ -15,14 +15,14 @@
         <script type="text/javascript"> 
             projectPage = true;
             $(document).ready(function() {
-                $('#navTrack').css('color','#f7a700');
+                $('#navTrack').addClass('active');
             });
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
         &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
-        &rsaquo; <span class="aCrumb">${project.title}</span>
+        &rsaquo; <span class="active">${project.title}</span>
     </jsp:attribute>
     <jsp:body>
 		<h1 id="projectTitle"><c:out value="${project.title}"/></h1>

@@ -12,13 +12,13 @@
 		<script type="text/javascript" src="<c:url value="/js/coveragemap.js"/>"></script>
         <script type="text/javascript"> 
             $(document).ready(function() {
-                $('#navHome').css('color','#f7a700');
+                $('#navHome').addClass('active');
             });
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <span class="aCrumb">${project.title}</span>
+        &rsaquo; <span class="active">${project.title}</span>
     </jsp:attribute>
     <jsp:body>
 		<span id="projectTitle" style="display:none"><c:out value="${project.title}"/></span>
