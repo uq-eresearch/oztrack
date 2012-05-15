@@ -17,7 +17,7 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
-        <a id="homeUrl" href="<c:url value="/"/>">Home</a>
+        <a href="<c:url value="/"/>">Home</a>
         &rsaquo; <span class="aCrumb">${project.title}</span>
     </jsp:attribute>
     <jsp:body>
@@ -71,6 +71,6 @@
 		</table>
 		
 		<span id="bbWKT"><c:out value="${project.boundingBox}"/></span>
-		<p><a href="home">Return to Home page</a></p>
+		<p><a href="<c:url value="/"/>">Return to Home page</a></p>
     </jsp:body>
 </tags:page>

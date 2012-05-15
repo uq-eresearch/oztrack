@@ -58,7 +58,7 @@
 </div>
 <div id="nav">
     <ul id="navMenu">
-        <li><a id="navHome" href="<c:url value="home"/>">Home</a></li>
+        <li><a id="navHome" href="<c:url value="/"/>">Home</a></li>
         <c:choose>
          <c:when test="${currentUser != null}">
             <li><a id="navTrack" class="menuParent" href="#">Animal Tracking</a>
