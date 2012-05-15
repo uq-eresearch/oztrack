@@ -16,8 +16,8 @@
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="/projects">Animal Tracking</a>
-        &rsaquo; <a href="/projectdetail?id=${project.id}">${project.title}</a>
+        &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
+        &rsaquo; <a href="<c:url value="/projectdetail?id=${project.id}"/>">${project.title}</a>
         &rsaquo; <span class="aCrumb">Data Uploads</span>
     </jsp:attribute>
     <jsp:body>
@@ -26,7 +26,7 @@
 		
 		<c:choose>
 		 <c:when test="${(empty dataFileList)}">
-			<p>This project has no data to work with. You might like to <a href="<c:url value='datafileadd'>
+			<p>This project has no data to work with. You might like to <a href="<c:url value='/datafileadd'>
 			    <c:param name="project_id" value="${project.id}"/>
 			</c:url>">upload a data file.</a></p>
 			<a class="oztrackButton" id="pageRefresh" href="#">Refresh</a>
@@ -35,7 +35,7 @@
 		    
 		    <p><c:out value="${fn:length(dataFileList)}"/> data file(s) found.</p>
 		
-				<p><a class="oztrackButton" href="<c:url value='datafileadd'>
+				<p><a class="oztrackButton" href="<c:url value='/datafileadd'>
 			        <c:param name="project_id" value="${project.id}"/>
 			    </c:url>" >Add a Datafile</a>
 				<a class="oztrackButton" id="pageRefresh" href="#">Refresh</a></p>
@@ -60,7 +60,7 @@
 				             </td>	
 				            <td><fmt:formatDate pattern="${dateFormatPattern}" value="${dataFile.createDate}"/>
 				            <td>
-				                <a href="<c:url value="datafiledetail">
+				                <a href="<c:url value="/datafiledetail">
 							        <c:param name="project_id" value="${project.id}"/>
 							        <c:param name="datafile_id" value="${dataFile.id}"/>
 						            </c:url>"><c:out value="${dataFile.status}"/></a>

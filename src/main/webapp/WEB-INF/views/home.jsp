@@ -10,8 +10,8 @@
 	</jsp:attribute>
 	<jsp:attribute name="head">
         <script src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
-        <script type="text/javascript" src="js/openlayers/OpenLayers.js" /></script>
-        <script type="text/javascript" src="js/homemap.js" /></script>
+        <script type="text/javascript" src="<c:url value="/js/openlayers/OpenLayers.js"/>" /></script>
+        <script type="text/javascript" src="<c:url value="/js/homemap.js"/>" /></script>
         <script type="text/javascript"> 
             mapPage = true;
             $(document).ready(function() {
@@ -30,9 +30,9 @@
 		            home-ranges for animals anywhere in the world.
 	            </p>
 	            <div id="logos" style="margin: 75px 40px 0 40px;">
-	                <a href="http://nectar.org.au/"><img src="images/nectar-logo.png" width="140px" height="32px"/></a>
-	                <a href="http://ands.org.au/"><img src="images/ands-logo.png" width="90px" height="40px" style="margin-top: -8px;"/></a>
-	                <a href="http://itee.uq.edu.au/~eresearch/"><img src="images/uq_logo.png" width="140px" height="40px"/></a>
+	                <a href="http://nectar.org.au/"><img src="<c:url value="/images/nectar-logo.png"/>" width="140px" height="32px"/></a>
+	                <a href="http://ands.org.au/"><img src="<c:url value="/images/ands-logo.png"/>" width="90px" height="40px" style="margin-top: -8px;"/></a>
+	                <a href="http://itee.uq.edu.au/~eresearch/"><img src="<c:url value="/images/uq_logo.png"/>" width="140px" height="40px"/></a>
 	            </div>
 	        </div>
 	        <div id="homeMap"></div>

@@ -10,8 +10,8 @@
 <tags:page title="${project.title}">
     <jsp:attribute name="head">
 		<script src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
-		<script type="text/javascript" src="js/openlayers/OpenLayers.js"></script>
-		<script type="text/javascript" src="js/coveragemap.js"></script>
+		<script type="text/javascript" src="<c:url value="/js/openlayers/OpenLayers.js"/>"></script>
+		<script type="text/javascript" src="<c:url value="/js/coveragemap.js"/>"></script>
         <script type="text/javascript"> 
             projectPage = true;
             $(document).ready(function() {
@@ -21,7 +21,7 @@
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="/projects">Animal Tracking</a>
+        &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
         &rsaquo; <span class="aCrumb">${project.title}</span>
     </jsp:attribute>
     <jsp:body>
@@ -37,7 +37,7 @@
 		 
 		 <c:when test="${(empty dataFileList)}">
 			 <p>
-			 There is no data uploaded for this project yet. You might like to <a href="<c:url value='datafileadd'>
+			 There is no data uploaded for this project yet. You might like to <a href="<c:url value='/datafileadd'>
 		         <c:param name="project_id" value="${project.id}"/>
 		     </c:url>">upload a datafile.
 			 </a>
@@ -48,24 +48,24 @@
 			<tr>
 			    <td class="projectFieldName">Datafile Count:</td>
 				<td>
-				    <a href="<c:url value="datafiles">
+				    <a href="<c:url value="/datafiles">
 			           <c:param name="project_id" value="${project.id}"/>
 			        </c:url>"><c:out value="${fn:length(dataFileList)}"/></a>
 		        </td>
 		    </tr>
 			<tr><td class="projectFieldName">Detection Count:</td>
-							<td><a href="<c:url value="searchform"><c:param name="project_id" value="${project.id}"/></c:url>"><c:out value="${project.detectionCount}"/></a></td></tr>
+							<td><a href="<c:url value="/searchform"><c:param name="project_id" value="${project.id}"/></c:url>"><c:out value="${project.detectionCount}"/></a></td></tr>
 			<tr><td class="projectFieldName">Detection Date Range:</td><td><fmt:formatDate pattern="${dateFormatPattern}" value="${project.firstDetectionDate}"/> to <fmt:formatDate pattern="${dateFormatPattern}" value="${project.lastDetectionDate}"/></td></tr>
 			<tr><td class="projectFieldName">Animals:</td><td>
 									<c:forEach items="${projectAnimalsList}" var="animal">
-											<a href="<c:url value="animalform"><c:param name="animal_id" value="${animal.id}"/></c:url>"><c:out value="${animal.animalName}"/></a>,
+											<a href="<c:url value="/animalform"><c:param name="animal_id" value="${animal.id}"/></c:url>"><c:out value="${animal.animalName}"/></a>,
 									  </c:forEach>
-									  <a href="<c:url value="projectanimals"><c:param name="id" value="${project.id}"/></c:url>">View All</a>	
+									  <a href="<c:url value="/projectanimals"><c:param name="id" value="${project.id}"/></c:url>">View All</a>	
 				</td>
 			</tr>
 			
 			<c:if test="${project.projectType == 'PASSIVE_ACOUSTIC'}">
-				<tr><td class="projectFieldName">Receivers:</td><td><a href="<c:url value="projectreceivers"><c:param name="project_id" value="${project.id}"/></c:url>">View List</a></td></tr>
+				<tr><td class="projectFieldName">Receivers:</td><td><a href="<c:url value="/projectreceivers"><c:param name="project_id" value="${project.id}"/></c:url>">View List</a></td></tr>
 			</c:if>
 			</table>
 		  </c:otherwise>
@@ -100,7 +100,7 @@
 		    <td class="projectFieldName">Contact:</td>
 		    <td>
 		        <c:out value="${project.dataSpaceAgent.firstName}"/>&nbsp;<c:out value="${project.dataSpaceAgent.lastName}"/><br>
-		        <a href="<c:out value="${project.dataSpaceAgent.email}"/>"><c:out value="${project.dataSpaceAgent.email}"/></a>
+		        <a href="mailto:<c:out value="${project.dataSpaceAgent.email}"/>"><c:out value="${project.dataSpaceAgent.email}"/></a>
 		    </td>
 		</tr>
 		<tr><td class="projectFieldName">Contact Organisation:</td><td><c:out value="${project.dataSpaceAgent.organisation}"/></td></tr>
@@ -135,9 +135,9 @@
 		</td></tr>
 		
 		<tr><td class="projectFieldName"></td><td>
-			<a class="oztrackButton" href="<c:url value="projectadd"><c:param name="update" value="${true}"/><c:param name="id" value="${project.id}"/></c:url>">Edit Project Metadata</a>
+			<a class="oztrackButton" href="<c:url value="/projectadd"><c:param name="update" value="${true}"/><c:param name="id" value="${project.id}"/></c:url>">Edit Project Metadata</a>
 			&nbsp;&nbsp;
-			<a class="oztrackButton" href="<c:url value="publish"><c:param name="id" value="${project.id}"/></c:url>"><c:out value="${publishButtonText}"/></a>
+			<a class="oztrackButton" href="<c:url value="/publish"><c:param name="id" value="${project.id}"/></c:url>"><c:out value="${publishButtonText}"/></a>
 		
 			<br><br></td></tr>
 		

@@ -40,7 +40,7 @@
 		<form:form commandName="user" method="POST" name="user">
 		
 			<div class="help">
-			<a class=info href="#"><img src="images/help.png" border="0">
+			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
 			<span><b>Username:</b><br> This will be the name that you log on to OzTrack with.
 			</span></a>
 			</div>
@@ -85,7 +85,7 @@
 		</div>
 		
 			<div class="help">
-			<a class=info href="#"><img src="images/help.png" border="0">
+			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
 			<span><b>Description:</b><br> This field is important when project metadata is syndicated to DataSpace and ANDS.
 			See examples at http://dataspace.uq.edu.au/agents.
 			</span></a>
@@ -98,7 +98,7 @@
 		</div>
 		
 			<div class="help">
-			<a class=info href="#"><img src="images/help.png" border="0">
+			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
 			<span><b>Organisation:</b><br> Please give the name of the organisation in full. This field is important when project metadata is syndicated to DataSpace and ANDS.
 			</span></a>
 			</div>

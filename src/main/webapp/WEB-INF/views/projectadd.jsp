@@ -25,7 +25,7 @@
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="/projects">Animal Tracking</a>
+        &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
         &rsaquo; <span class="aCrumb">Create New Project</span>
     </jsp:attribute>
     <jsp:body>
@@ -48,7 +48,7 @@
 		<div class="formSubheader">Data Contact</div>
 		
 			<div class="help">
-			<a class=info href="#"><img src="images/help.png" border="0">
+			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
 			<span><b>Contact:</b><br> This person is the contact for the data and becomes the Agent specified in the ANDS Collection Registry. 
 			</span></a>
 			</div>
@@ -92,7 +92,7 @@
 		<div class="formSubheader">Project Metadata</div>
 		
 			<div class="help">
-			<a class=info href="#"><img src="images/help.png" border="0">
+			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
 			<span><b>Title:</b> A short title (less than 50 characters if possible) to identify your project in OzTrack.
 			</span></a>
 			</div>
@@ -104,7 +104,7 @@
 		</div>
 		
 			<div class="help">
-			<a class=info href="#"><img src="images/help.png" border="0">
+			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
 			<span><b>Description:</b><br> Required by ANDS. 
 			</span></a>
 			</div>
@@ -116,7 +116,7 @@
 		</div>
 		
 			<div class="help">
-			<a class=info href="#"><img src="images/help.png" border="0">
+			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
 			<span><b>Project Type:</b><br> What kind of telemetry device was used to track your animal? This 
 										   will determine the format of the datafiles you upload, and the 
 										   types of analysis available to this project's dataset. 
@@ -136,7 +136,7 @@
 		</div>
 		
 			<div class="help">
-			<a class=info href="#"><img src="images/help.png" border="0">
+			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
 			<span><b>Location Description:</b><br> The general area of the study, eg. country, state, town. 
 			</span></a>
 			</div>
@@ -189,7 +189,7 @@
 		<div class="formSubheader">Data Availability</div>
 		
 			<div class="help">
-			<a class=info href="#"><img src="images/help.png" border="0">
+			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
 			<span><b>Availability:</b><br> Project data is currently only available to users with Admin access to a project, but can
 		be made available to all users.
 			</span></a>
@@ -201,7 +201,7 @@
 		</div>
 		
 			<div class="help">
-			<a class=info href="#"><img src="images/help.png" border="0">
+			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
 			<span><b>Rights Statement:</b><br>This should reflect any restrictions around the access rights and use of your data.
 			</span></a>
 			</div>
@@ -216,7 +216,7 @@
 		<c:when test="${param.update}">
 		
 				<div class="help">
-				<a class=info href="#"><img src="images/help.png" border="0">
+				<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
 				<span><b>Metadata to ANDS:</b><br> 	Project metadata on OzTrack is publicly available, and users are encouraged 
 				to publish their metadata as a collection record in the Australian National Data Service. 
 				</span></a>
@@ -227,7 +227,7 @@
 				<c:choose>
 				<c:when test ="${empty project.dataSpaceUpdateDate}">
 					Your project metadata has not yet been published to ANDS. 
-					<a href="<c:url value="publish"><c:param name="id" value="${project.id}"/></c:url>">Publish to ANDS now</a>.
+					<a href="<c:url value="/publish"><c:param name="id" value="${project.id}"/></c:url>">Publish to ANDS now</a>.
 				</c:when>
 				<c:otherwise>
 					Your project metadata has been published and was last updated on 

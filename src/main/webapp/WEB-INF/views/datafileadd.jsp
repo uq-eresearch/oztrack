@@ -15,9 +15,9 @@
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="/projects">Animal Tracking</a>
-        &rsaquo; <a href="/projectdetail?id=${project.id}">${project.title}</a>
-        &rsaquo; <a href="/datafiles?project_id=${project.id}">Data Uploads</a>
+        &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
+        &rsaquo; <a href="<c:url value="/projectdetail?id=${project.id}"/>">${project.title}</a>
+        &rsaquo; <a href="<c:url value="/datafiles?project_id=${project.id}"/>">Data Uploads</a>
         &rsaquo; <span class="aCrumb">Add a Data File</span>
     </jsp:attribute>
     <jsp:body>
@@ -32,7 +32,7 @@
 		
 		
 			<div class="help">
-			<a class=info href="#"><img src="images/help.png" border="0">
+			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
 			<span><b>DataFile Type:</b><br>Determined by the Project Type (specified on the creation of the project).
 			</span></a>
 			</div>
@@ -45,7 +45,7 @@
 		<br>
 		
 			<div class="help">
-			<a class=info href="#"><img src="images/help.png" border="0">
+			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
 			<span><b>File Description:</b><br>A short description to help you identify the contents of the file.<br>
 			</span></a>
 			</div>
@@ -61,7 +61,7 @@
 		<br>
 		
 			<div class="help">
-			<a class=info href="#"><img src="images/help.png" border="0">
+			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
 			<span><b>Time Conversion:</b><br>Specify a time conversion value to apply to the timestamps in your file.<br>
 			</span></a>
 			</div>
@@ -76,7 +76,7 @@
 		<br>
 		
 			<div class="help">
-			<a class=info href="#"><img src="images/help.png" border="0">
+			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
 			<span><b>Important!</b><br>The file loader assumes that there is an Id field in the data which will identify an animal.
 									   If this isn't the case, checking this box will create a new animal in the database and allocate
 									   the data in this file to the new animal.<br>
@@ -93,7 +93,7 @@
 		<br>
 		
 			<div class="help">
-			<a class=info href="#"><img src="images/help.png" border="0">
+			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
 			<span><b>Uploading the File:</b><br>See below for details on the required file format.
 			</span></a>
 			</div>

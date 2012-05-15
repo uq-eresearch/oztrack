@@ -27,9 +27,9 @@
 		
 		<c:choose>
 		 <c:when test="${offset > 0}">
-		    <a href="<c:url value="searchacoustic"><c:param name="offset" value="${0}"/></c:url>">&lt;&lt;</a>
+		    <a href="<c:url value="/searchacoustic"><c:param name="offset" value="${0}"/></c:url>">&lt;&lt;</a>
 		    &nbsp;&nbsp;
-		    <a href="<c:url value="searchacoustic"><c:param name="offset" value="${offset-nbrObjectsPerPage}"/></c:url>">&lt;</a>
+		    <a href="<c:url value="/searchacoustic"><c:param name="offset" value="${offset-nbrObjectsPerPage}"/></c:url>">&lt;</a>
 		 </c:when>
 		 <c:otherwise>&lt;&lt;&nbsp;&nbsp;&lt;</c:otherwise>
 		</c:choose>
@@ -37,9 +37,9 @@
 		
 		<c:choose>
 		 <c:when test="${offset < totalCount - (totalCount % nbrObjectsPerPage)}">
-		    <a href="<c:url value="searchacoustic"><c:param name="offset" value="${offset+nbrObjectsThisPage}"/></c:url>">&gt;</a>
+		    <a href="<c:url value="/searchacoustic"><c:param name="offset" value="${offset+nbrObjectsThisPage}"/></c:url>">&gt;</a>
 		    &nbsp;&nbsp;
-		    <a href="<c:url value="searchacoustic"><c:param name="offset" value="${totalCount - (totalCount % nbrObjectsPerPage)}"/></c:url>">&gt;&gt;</a>
+		    <a href="<c:url value="/searchacoustic"><c:param name="offset" value="${totalCount - (totalCount % nbrObjectsPerPage)}"/></c:url>">&gt;&gt;</a>
 		 </c:when>
 		 <c:otherwise>&gt;&nbsp;&nbsp;&gt;&gt;</c:otherwise>
 		</c:choose>

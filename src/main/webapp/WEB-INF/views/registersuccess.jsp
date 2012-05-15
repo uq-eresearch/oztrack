@@ -34,7 +34,7 @@
 			</tr>
 		</table>
 		<p>
-		    <a href="<c:url value="login"/>">Proceed to Login</a>
+		    <a href="<c:url value="/login"/>">Proceed to Login</a>
 		</p>
     </jsp:body>
 </tags:page>

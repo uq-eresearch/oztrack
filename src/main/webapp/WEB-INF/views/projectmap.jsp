@@ -8,10 +8,10 @@
     <jsp:attribute name="head">
         <!--script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key=${initParam['api-key']}"></script-->
         <script src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
-        <script type="text/javascript" src="js/proj4js/proj4js-combined.js"></script>
-        <script type="text/javascript" src="js/openlayers/OpenLayers.js"></script>
-        <script type="text/javascript" src="js/openlayers/LoadingPanel.js"></script>
-        <script type="text/javascript" src="js/projectmap.js"></script>
+        <script type="text/javascript" src="<c:url value="/js/proj4js/proj4js-combined.js"/>"></script>
+        <script type="text/javascript" src="<c:url value="/js/openlayers/OpenLayers.js"/>"></script>
+        <script type="text/javascript" src="<c:url value="/js/openlayers/LoadingPanel.js"/>"></script>
+        <script type="text/javascript" src="<c:url value="/js/projectmap.js"/>"></script>
         <script type="text/javascript"> 
             mapPage = true;
             $(document).ready(function() {
@@ -23,8 +23,8 @@
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="/projects">Animal Tracking</a>
-        &rsaquo; <a href="/projectdetail?id=${project.id}">${project.title}</a>
+        &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
+        &rsaquo; <a href="<c:url value="/projectdetail?id=${project.id}"/>">${project.title}</a>
         &rsaquo; <span class="aCrumb">Analysis Tools</span>
     </jsp:attribute>
     <jsp:body>
@@ -78,7 +78,7 @@
 		            		
 		                </div>
 		                <div id="animalInfo-${animal.id}" class="animalInfo">
-		                     <a style="float:right; margin-right:10px;" href="<c:url value="exportKML"><c:param name="projectId" value="${project.id}"/><c:param name="animalId" value="${animal.id}"/></c:url>">KML</a> 
+		                     <a style="float:right; margin-right:10px;" href="<c:url value="/exportKML"><c:param name="projectId" value="${project.id}"/><c:param name="animalId" value="${animal.id}"/></c:url>">KML</a> 
 						</div>
 		                
 		            </c:forEach>
@@ -258,10 +258,10 @@
 		           <h3><a href="#">Project Menu</a></h3>
 		        <div id="projectMenu" style="font-size:1.2em;">		      
 		      <ul>
-		        <li><a href="<c:url value="projectdetail"><c:param name="id" value="${project.id}"/></c:url>">Project Details</a></li>
-		        <li><a href="<c:url value="projectmap"><c:param name="id" value="${project.id}"/></c:url>">Analysis Tools</a></li>
-		        <li><a href="<c:url value="searchform"><c:param name="project_id" value="${project.id}"/></c:url>">View Raw Data</a></li>
-		        <li><a href="<c:url value="datafiles"><c:param name="project_id" value="${project.id}"/></c:url>">Data Uploads</a></li>
+		        <li><a href="<c:url value="/projectdetail"><c:param name="id" value="${project.id}"/></c:url>">Project Details</a></li>
+		        <li><a href="<c:url value="/projectmap"><c:param name="id" value="${project.id}"/></c:url>">Analysis Tools</a></li>
+		        <li><a href="<c:url value="/searchform"><c:param name="project_id" value="${project.id}"/></c:url>">View Raw Data</a></li>
+		        <li><a href="<c:url value="/datafiles"><c:param name="project_id" value="${project.id}"/></c:url>">Data Uploads</a></li>
 		      </ul>
 				</div>
 		    </div>

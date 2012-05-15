@@ -16,9 +16,9 @@
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="/projects">Animal Tracking</a>
-        &rsaquo; <a href="/projectdetail?id=${project.id}">${project.title}</a>
-        &rsaquo; <a href="/datafiles?project_id=${project.id}">Data Uploads</a>
+        &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
+        &rsaquo; <a href="<c:url value="/projectdetail?id=${project.id}"/>">${project.title}</a>
+        &rsaquo; <a href="<c:url value="/datafiles?project_id=${project.id}"/>">Data Uploads</a>
         &rsaquo; <span class="aCrumb">Data File Detail</span>
     </jsp:attribute>
     <jsp:body>
@@ -37,7 +37,7 @@
 		        <c:out value="${dataFile.status}"/>
 		        <c:choose>
 		             <c:when test="${dataFile.status=='FAILED'}">
-		                &nbsp;&nbsp;<a href="<c:url value="datafileadd">
+		                &nbsp;&nbsp;<a href="<c:url value="/datafileadd">
 		                    <c:param name="datafile_id" value="${dataFile.id}"/>
 		                    <c:param name="project_id" value="${dataFile.project.id}"/>
 		                </c:url>">Retry</a>

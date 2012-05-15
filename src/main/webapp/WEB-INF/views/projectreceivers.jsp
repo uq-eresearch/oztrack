@@ -15,8 +15,8 @@
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="/projects">Animal Tracking</a>
-        &rsaquo; <a href="/projectdetail?id=${project.id}">${project.title}</a>
+        &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
+        &rsaquo; <a href="<c:url value="/projectdetail?id=${project.id}"/>">${project.title}</a>
         &rsaquo; <span class="aCrumb">Receivers</span>
     </jsp:attribute>
     <jsp:body>
@@ -47,7 +47,7 @@
 		            <td><c:out value="${receiver.receiverLocation.longitude}"/></td>
 		            <td>
 				        <!--
-				            <a href="<c:url value="receiverform"><c:param name="receiver_id" value="${receiver.id}"/></c:url>">
+				            <a href="<c:url value="/receiverform"><c:param name="receiver_id" value="${receiver.id}"/></c:url>">
 		                -->
 		                <a href="#">
 		                Edit

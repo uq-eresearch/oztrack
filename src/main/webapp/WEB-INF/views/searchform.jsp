@@ -19,8 +19,8 @@
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="/projects">Animal Tracking</a>
-        &rsaquo; <a href="/projectdetail?id=${project.id}">${project.title}</a>
+        &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
+        &rsaquo; <a href="<c:url value="/projectdetail?id=${project.id}"/>">${project.title}</a>
         &rsaquo; <span class="aCrumb">View Raw Data</span>
     </jsp:attribute>
     <jsp:body>
@@ -60,12 +60,12 @@
 		<div style="float:right">
 		    <c:choose>
 		     <c:when test="${offset > 0}">
-		        <a href="<c:url value="searchform">
+		        <a href="<c:url value="/searchform">
 		            <c:param name="project_id" value="${searchQuery.project.id}"/>
 		            <c:param name="offset" value="${0}"/>
 		        </c:url>">&lt;&lt;</a>
 		        &nbsp;&nbsp;
-		        <a href="<c:url value="searchform">
+		        <a href="<c:url value="/searchform">
 		            <c:param name="project_id" value="${searchQuery.project.id}"/>
 		            <c:param name="offset" value="${offset-nbrObjectsPerPage}"/>
 		        </c:url>">&lt;</a>
@@ -75,19 +75,19 @@
 		    &nbsp;&nbsp;
 		    <c:choose>
 		     <c:when test="${offset < totalCount - (totalCount % nbrObjectsPerPage)}">
-		        <a href="<c:url value="searchform">
+		        <a href="<c:url value="/searchform">
 		            <c:param name="project_id" value="${searchQuery.project.id}"/>
 		            <c:param name="offset" value="${offset+nbrObjectsThisPage}"/>
 		        </c:url>">&gt;</a>
 		        &nbsp;&nbsp;
-		        <a href="<c:url value="searchform">
+		        <a href="<c:url value="/searchform">
 		            <c:param name="project_id" value="${searchQuery.project.id}"/>
 		            <c:param name="offset" value="${totalCount - (totalCount % nbrObjectsPerPage)}"/>
 		        </c:url>">&gt;&gt;</a>
 		     </c:when>
 		     <c:otherwise>&gt;&nbsp;&nbsp;&gt;&gt;</c:otherwise>
 		    </c:choose>
-		    <a href="<c:url value="export">
+		    <a href="<c:url value="/export">
 		        <c:param name="project_id" value="${searchQuery.project.id}"/>
 		    </c:url>">Export</a>
 		</div>
@@ -110,12 +110,12 @@
 		    <tr>
 		        <td><fmt:formatDate pattern="${dateTimeFormatPattern}" value="${detection.detectionTime}"/></td>
 		        <td><c:out value="${detection.animal.projectAnimalId}"/></td>
-		        <td><a href="<c:url value="animalform"><c:param name="animal_id" value="${detection.animal.id}"/></c:url>">
+		        <td><a href="<c:url value="/animalform"><c:param name="animal_id" value="${detection.animal.id}"/></c:url>">
 		                <c:out value="${detection.animal.animalName}"/></a></td>
 		        <td><c:out value="${detection.latitude}"/></td>
 		        <td><c:out value="${detection.longitude}"/></td>
 		        <td>
-		            <a href="<c:url value="datafiledetail">
+		            <a href="<c:url value="/datafiledetail">
 			            <c:param name="project_id" value="${searchQuery.project.id}"/>
 			            <c:param name="datafile_id" value="${detection.dataFile.id}"/>
 		            </c:url>">
