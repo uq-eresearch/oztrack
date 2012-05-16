@@ -37,9 +37,7 @@
     <div id="header_left"></div>
     <div id="header_right">
         <div id="login">
-            <c:set var="thisURL" value="${pageContext.request.requestURL}"/>
-            <c:if test="${!fn:contains(thisURL,'login') && !fn:contains(thisURL,'register')}">
-                <c:choose>
+            <c:choose>
                 <c:when test="${currentUser != null}">
                   Welcome, <c:out value="${currentUser.firstName}"/>
                   &nbsp;|&nbsp;
@@ -48,11 +46,11 @@
                   <a href="<c:url value="/logout"/>">Logout</a>
                 </c:when>
                 <c:otherwise>
-                  <a href="<c:url value="/login"/>">Login</a> or <a href="<c:url value="/register"/>">Register</a>
+                  <a href="<c:url value="/login"/>">Login</a>
+                  or
+                  <a href="<c:url value="/register"/>">Register</a>
                 </c:otherwise>
-                </c:choose>
-            
-            </c:if>
+            </c:choose>
         </div>   
     </div>
 </div>

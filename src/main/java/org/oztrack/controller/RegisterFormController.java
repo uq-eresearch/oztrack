@@ -24,8 +24,11 @@ public class RegisterFormController {
     protected final Log logger = LogFactory.getLog(getClass());
 
     @ModelAttribute("user")
-    public User getUser(@RequestParam(value="user", required=false) String username) throws Exception {
-        if (username == null) {
+    public User getUser(
+        @RequestParam(value="user", required=false) String username,
+        @RequestParam(value="update", defaultValue="false") boolean update
+    ) throws Exception {
+        if (!update || username == null) {
             return new User();
         }
         else {
@@ -35,9 +38,13 @@ public class RegisterFormController {
     }
 
     @RequestMapping(value="/register", method=RequestMethod.GET)
-    public String getFormView(HttpSession session, @ModelAttribute(value="user") User user) {
+    public String getFormView(
+        HttpSession session,
+        @ModelAttribute(value="user") User user,
+        @RequestParam(value="update", defaultValue="false") boolean update
+    ) {
         User currentUser = (User) session.getAttribute(Constants.CURRENT_USER);
-        if (currentUser != user) {
+        if (update && (currentUser == null || !currentUser.equals(user))) {
             return "redirect:login";
         }
         return "register";
@@ -49,13 +56,11 @@ public class RegisterFormController {
         Model model,
         @ModelAttribute(value="user") User user,
         BindingResult bindingResult,
-        @RequestParam(value="update", required=false) String update
+        @RequestParam(value="update", defaultValue="false") Boolean update
     ) throws Exception {
-        if (update != null) {
-            User currentUser = (User) session.getAttribute(Constants.CURRENT_USER);
-            if (currentUser == null || currentUser != user) {
-                return "redirect:login";
-            }
+        User currentUser = (User) session.getAttribute(Constants.CURRENT_USER);
+        if (update && (currentUser == null || !currentUser.equals(user))) {
+            return "redirect:login";
         }
         
         new RegisterFormValidator().validate(user, bindingResult);
@@ -69,7 +74,7 @@ public class RegisterFormController {
         userDao.save(user);
         logger.debug("register user: " + user.getUsername());
 
-        if (update != null) {
+        if (update) {
             return "redirect:projects";
         }
         else {
