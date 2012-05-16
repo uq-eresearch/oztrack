@@ -2,9 +2,6 @@ package org.oztrack.controller;
 
 import java.util.ArrayList;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
@@ -13,30 +10,25 @@ import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
+import org.oztrack.view.KMLExportView;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.View;
 
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 4/08/11
- * Time: 11:38 AM
- */
-public class KMLExportController implements Controller{
-
-    /**
-    * Logger for this class and subclasses
-    */
+@Controller
+public class KMLExportController {
     protected final Log logger = LogFactory.getLog(getClass());
     
-    @Override
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        /* parameters from OpenLayers HTTP request */
-        String projectId = request.getParameter("projectId");
-        String animalId = request.getParameter("animalId");
+    @RequestMapping(value="/exportKML", method=RequestMethod.GET)
+    public View handleRequest(
+        Model model,
+        @RequestParam(value="projectId", required=false) String projectId,
+        @RequestParam(value="animalId", required=false) String animalId
+    ) throws Exception {
         SearchQuery searchQuery = new SearchQuery();
-
         if ((projectId != null) && (animalId != null))  {
             logger.debug("for projectId: " + projectId);
             
@@ -46,25 +38,14 @@ public class KMLExportController implements Controller{
             
             AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
             Animal animal = animalDao.getAnimalById(Long.valueOf(animalId));
-            ArrayList<Animal> animalList = new ArrayList<Animal>(1); // searchQuery.getAnimalList();
+            ArrayList<Animal> animalList = new ArrayList<Animal>(1);
             animalList.add(animal);
             searchQuery.setAnimalList(animalList);
-            
-
         }
         else {
             logger.debug("no projectId or queryType");
         }
-
-        return new ModelAndView("java_KMLExport","searchQuery", searchQuery);
+        model.addAttribute("searchQuery", searchQuery);
+        return new KMLExportView();
     }
-
-
-
-    /*
-    @Override
-    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-
-    }
-    */
 }

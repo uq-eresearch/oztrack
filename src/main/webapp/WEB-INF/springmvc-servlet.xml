@@ -36,8 +36,6 @@
         <property name="maxUploadSize"><value>100000000</value></property>
     </bean>
 
-    <bean name="/export" class="org.oztrack.controller.SearchQueryExportController"/>
-    <bean name="/exportKML" class="org.oztrack.controller.KMLExportController"/>
     <bean name="/dataspace" class="org.oztrack.controller.DataSpaceInterfaceController"/>
     
     <bean name="/about" class="org.oztrack.controller.AboutController"/>
