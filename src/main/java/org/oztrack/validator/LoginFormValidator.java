@@ -22,16 +22,16 @@ public class LoginFormValidator implements Validator {
         User user = userDao.getByUsername(loginUser.getUsername());
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "error.empty.field", "Please enter User Name");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "error.empty.field", "Please Enter Password");
-        if (!errors.hasFieldErrors("username")) {
-            if (user == null) {
-                errors.rejectValue("username", "unknown.user", "Invalid username/password");
-            } else {
-                if (!errors.hasFieldErrors("password")) {
-                    if (!(BCrypt.checkpw(loginUser.getPassword(), user.getPassword()))) {
-                        errors.rejectValue("password", "wrong.password", "Invalid username/password");
-                    }
-                }
-            }
+        if (errors.hasFieldErrors("username") || errors.hasFieldErrors("password")) {
+            return;
+        }
+        if (user == null) {
+            errors.rejectValue("username", "unknown.user", "Invalid username/password");
+            return;
+        }
+        if (!(BCrypt.checkpw(loginUser.getPassword(), user.getPassword()))) {
+            errors.rejectValue("password", "wrong.password", "Invalid username/password");
+            return;
         }
     }
 }	

@@ -43,7 +43,6 @@
 
     <bean name="/projectreceivers" class="org.oztrack.controller.ProjectReceiversController"/>
     <bean name="/searchacoustic" class="org.oztrack.controller.SearchAcousticController"/>
-    <bean name="/logout" class="org.oztrack.controller.LogoutController"/>
     
     <bean name="/register" class="org.oztrack.controller.RegisterFormController">
         <property name="sessionForm"><value>false</value></property>
@@ -54,15 +53,6 @@
         <property name="successView"><value>registersuccess</value></property>
     </bean>
             
-    <bean name="/login" class="org.oztrack.controller.LoginFormController">
-        <property name="sessionForm"><value>false</value></property>
-        <property name="commandName"><value>user</value></property>
-        <property name="commandClass"><value>org.oztrack.data.model.User</value></property>
-        <property name="validator"><bean class="org.oztrack.validator.LoginFormValidator"/></property>
-        <property name="formView"><value>login</value></property>
-        <property name="successView"><value>redirect:projects</value></property>
-    </bean>
-
     <bean name="/animalform" class="org.oztrack.controller.AnimalFormController">
         <property name="sessionForm"><value>false</value></property>
         <property name="commandName"><value>animal</value></property>
