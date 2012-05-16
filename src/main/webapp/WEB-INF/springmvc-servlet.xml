@@ -41,7 +41,6 @@
         <property name="maxUploadSize"><value>100000000</value></property>
     </bean>
 
-    <bean name="/projectreceivers" class="org.oztrack.controller.ProjectReceiversController"/>
     <bean name="/searchacoustic" class="org.oztrack.controller.SearchAcousticController"/>
     
     <bean name="/register" class="org.oztrack.controller.RegisterFormController">
