@@ -41,8 +41,6 @@
         <property name="maxUploadSize"><value>100000000</value></property>
     </bean>
 
-    <bean name="/searchacoustic" class="org.oztrack.controller.SearchAcousticController"/>
-    
     <bean name="/register" class="org.oztrack.controller.RegisterFormController">
         <property name="sessionForm"><value>false</value></property>
         <property name="commandName"><value>user</value></property>

@@ -2,61 +2,38 @@ package org.oztrack.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.AcousticDetectionDao;
 import org.oztrack.data.model.AcousticDetection;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import au.edu.uq.itee.maenad.dataaccess.Page;
 
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 11/05/11
- * Time: 1:21 PM
- */
-public class SearchAcousticController implements Controller {
-
-    public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
-
-        int offset=0;
+@Controller
+public class SearchAcousticController {
+    @RequestMapping(value="/searchacoustic", method=RequestMethod.GET)
+    public String handleRequest(
+        Model model,
+        @RequestParam(value="offset", defaultValue="0") int offset
+    ) throws Exception {
         int nbrObjectsPerPage=30;
-        int totalCount=0;
-        int nbrObjectsThisPage=0;
-
-        if (httpServletRequest.getParameter("offset") != null) {
-            offset = Integer.parseInt(httpServletRequest.getParameter("offset"));
-        }
 
         AcousticDetectionDao acousticDetectionDao = OzTrackApplication.getApplicationContext().getDaoManager().getAcousticDetectionDao();
-        Page<AcousticDetection> acousticDetectionsPage = acousticDetectionDao.getPage(offset,nbrObjectsPerPage);
+        Page<AcousticDetection> acousticDetectionsPage = acousticDetectionDao.getPage(offset, nbrObjectsPerPage);
         List<AcousticDetection> acousticDetectionsList = acousticDetectionsPage.getObjects();
-        nbrObjectsThisPage = acousticDetectionsList.size();
+        
+        int nbrObjectsThisPage = acousticDetectionsList.size();
+        int totalCount = acousticDetectionDao.getTotalCount();
 
-        totalCount=acousticDetectionDao.getTotalCount();
-
-
-        ModelAndView modelAndView = new ModelAndView("searchacoustic");
-        modelAndView.addObject("acousticDetectionsList", acousticDetectionsList);
-        modelAndView.addObject("offset", offset);
-        modelAndView.addObject("nbrObjectsPerPage", nbrObjectsPerPage);
-        modelAndView.addObject("nbrObjectsThisPage", nbrObjectsThisPage);
-        modelAndView.addObject("totalCount", totalCount);
-        return modelAndView;
+        model.addAttribute("acousticDetectionsList", acousticDetectionsList);
+        model.addAttribute("offset", offset);
+        model.addAttribute("nbrObjectsPerPage", nbrObjectsPerPage);
+        model.addAttribute("nbrObjectsThisPage", nbrObjectsThisPage);
+        model.addAttribute("totalCount", totalCount);
+        return "searchacoustic";
     }
-      /**
-     * Retrieves "page" of objects of the type managed.
-     *
-     * @param offset object index to start from (zero based)
-     * @param limit maximum number of objects per page (will only be less on last page)
-     *
-     * @return instance of <code>Page</code> capturing object sublist and position information
-     */
-    //Page<T> getPage(int offset, int limit);
-
-
 }
