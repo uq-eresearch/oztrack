@@ -4,11 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.PositionFixDao;
@@ -17,40 +14,67 @@ import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
+import org.oztrack.validator.SearchFormValidator;
 import org.springframework.beans.propertyeditors.CustomCollectionEditor;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.validation.BindException;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import au.edu.uq.itee.maenad.dataaccess.Page;
 
-public class SearchFormController extends SimpleFormController {
-    protected final Log logger = LogFactory.getLog(getClass());
-
-    @Override
-    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-        Long projectId = null;
-        if (request.getParameter("project_id") != null) {
-            projectId = Long.parseLong(request.getParameter("project_id"));
-        }
+@Controller
+public class SearchFormController {
+    @ModelAttribute("project")
+    public Project getProject(@RequestParam(value="project_id", required=false) Long projectId) {
         Project project = null;
-        if (projectId != null) {
+        if (projectId == null) {
+            project = new Project();
+            project.setRightsStatement("The data is the property of the University of Queensland. Permission is required to use this material.");
+        }
+        else {
             ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
             project = projectDao.getProjectById(projectId);
-            projectDao.refresh(project);
         }
-        
-        SearchQuery searchQuery = (SearchQuery) command;
-        searchQuery.setProject(project);
-        request.getSession().setAttribute("searchQuery", searchQuery);
-
-        return showFormInternal(request, response, errors);
+        return project;
+    }
+    
+    @ModelAttribute("searchQuery")
+    public SearchQuery getSearchQUery(HttpSession session, @ModelAttribute(value="project") Project project) {
+        // If we have a SearchQuery instance in the session from a previously posted form,
+        // replace the default SearchQuery instance in the model so we show previous values in the form.
+        SearchQuery searchQuery = (SearchQuery) session.getAttribute("searchQuery");
+        if (searchQuery == null) {
+            searchQuery = new SearchQuery();
+            searchQuery.setProject(project);
+        }
+        return searchQuery;
+    }
+    
+    @RequestMapping(value="/searchform", method=RequestMethod.POST)
+    protected String onSubmit(
+        HttpSession session,
+        Model model,
+        @ModelAttribute(value="project") Project project,
+        @ModelAttribute(value="searchQuery") SearchQuery searchQuery,
+        BindingResult bindingResult
+    ) throws Exception {
+        new SearchFormValidator().validate(searchQuery, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "searchquery";
+        }
+        session.setAttribute("searchQuery", searchQuery);
+        return showFormInternal(model, project, searchQuery, 0);
     }
 
-    @Override
-    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("dd/MM/yyyy"), true));
         binder.registerCustomEditor(List.class, "animalList", new CustomCollectionEditor(List.class) {
             @Override
@@ -61,57 +85,30 @@ public class SearchFormController extends SimpleFormController {
                 return animal;
             }
         });
-        super.initBinder(request, binder);
     }
     
-    @Override
-    protected Object formBackingObject(HttpServletRequest request) throws Exception {
-        // If we have a SearchQuery instance in the session from a previously posted form,
-        // replace the default SearchQuery instance in the model so we show previous values in the form.
-        SearchQuery searchQuery = (SearchQuery) request.getSession().getAttribute("searchQuery");
-        if (searchQuery != null) {
-            return searchQuery;
-        }
-        return super.formBackingObject(request);
+    @RequestMapping(value="/searchform", method=RequestMethod.GET)
+    protected String showForm(
+        Model model,
+        @ModelAttribute(value="project") Project project,
+        @ModelAttribute(value="searchQuery") SearchQuery searchQuery,
+        @RequestParam(value="offset", defaultValue="0") int offset
+    ) throws Exception {
+        return showFormInternal(model, project, searchQuery, offset);
     }
     
-    @Override
-    protected ModelAndView showForm(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
-        return showFormInternal(request, response, errors);
-    }
-    
-    private ModelAndView showFormInternal(HttpServletRequest request, HttpServletResponse response, BindException errors) throws Exception {
-        Long projectId = null;
-        if (request.getParameter("project_id") != null) {
-            projectId = Long.parseLong(request.getParameter("project_id"));
-        }
-        Project project = null;
-        if (projectId != null) {
-            ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
-            project = projectDao.getProjectById(projectId);
-            projectDao.refresh(project);
-        }
-        
+    private String showFormInternal(
+        Model model,
+        Project project,
+        SearchQuery searchQuery,
+        int offset
+    ) throws Exception {
         AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
 
-        SearchQuery searchQuery = (SearchQuery) errors.getModel().get("searchQuery");
-        searchQuery.setProject(project);
-
-        // for pagination
-        int offset=0;
         int nbrObjectsPerPage=30;
         int totalCount=0;
         int nbrObjectsThisPage=0;
-
-        if (request.getParameter("offset") != null) {
-            offset = Integer.parseInt(request.getParameter("offset"));
-        }
-
-        ModelAndView modelAndView = new ModelAndView(getFormView(), errors.getModel());
-        modelAndView.addObject("project", project);
-        modelAndView.addObject("searchQuery", searchQuery);
-        modelAndView.addObject("projectAnimalsList", projectAnimalsList);
 
         switch (project.getProjectType()) {
              case GPS:
@@ -119,17 +116,17 @@ public class SearchFormController extends SimpleFormController {
                  Page<PositionFix> positionFixPage = positionFixDao.getPage(searchQuery, offset, nbrObjectsPerPage);
                  nbrObjectsThisPage = positionFixPage.getObjects().size();
                  totalCount = positionFixPage.getCount();
-                 modelAndView.addObject("positionFixList", positionFixPage.getObjects());
+                 model.addAttribute("positionFixList", positionFixPage.getObjects());
                  break;
              default:
                  break;
         }
 
-        modelAndView.addObject("offset", offset);
-        modelAndView.addObject("nbrObjectsPerPage", nbrObjectsPerPage);
-        modelAndView.addObject("nbrObjectsThisPage", nbrObjectsThisPage);
-        modelAndView.addObject("totalCount", totalCount);
-
-        return modelAndView;
+        model.addAttribute("projectAnimalsList", projectAnimalsList);
+        model.addAttribute("offset", offset);
+        model.addAttribute("nbrObjectsPerPage", nbrObjectsPerPage);
+        model.addAttribute("nbrObjectsThisPage", nbrObjectsThisPage);
+        model.addAttribute("totalCount", totalCount);
+        return "searchform";
     }
 }
