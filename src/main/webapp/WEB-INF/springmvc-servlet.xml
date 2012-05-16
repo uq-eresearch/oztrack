@@ -15,6 +15,11 @@
     <context:component-scan base-package="org.oztrack.controller"/>
 
     <mvc:annotation-driven/>
+    
+    <mvc:view-controller path="/" view-name="home"/>
+    <mvc:view-controller path="/home" view-name="home"/>
+    <mvc:view-controller path="/about" view-name="about"/>
+    <mvc:view-controller path="/contact" view-name="contact"/>
 
     <mvc:default-servlet-handler/>
 
@@ -36,9 +41,6 @@
         <property name="maxUploadSize"><value>100000000</value></property>
     </bean>
 
-    <bean name="/about" class="org.oztrack.controller.AboutController"/>
-    <bean name="/contact" class="org.oztrack.controller.ContactController"/>
-    
     <bean name="/datafiles" class="org.oztrack.controller.DataFileDetailController"/>
     <bean name="/projectreceivers" class="org.oztrack.controller.ProjectReceiversController"/>
     <bean name="/datafiledetail" class="org.oztrack.controller.DataFileDetailController"/>
