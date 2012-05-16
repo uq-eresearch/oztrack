@@ -4,31 +4,50 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.SightingDao;
 import org.oztrack.data.model.Sighting;
+import org.oztrack.validator.SightingFormValidator;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.validation.BindException;
-import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
 
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 8/06/11
- * Time: 9:42 AM
- * To change this template use File | Settings | File Templates.
- */
-public class SightingFormController extends SimpleFormController {
+@Controller
+public class SightingFormController {
+    protected final Log logger = LogFactory.getLog(getClass());
+    
+    @ModelAttribute("sighting")
+    public Sighting getSighting() {
+        return new Sighting();
+    }
 
-    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-
-        Sighting sighting = (Sighting)command;
+    @RequestMapping(value="/sighting", method=RequestMethod.GET)
+    protected String showForm() throws Exception {
+        return "sighting";
+    }
+    
+    @RequestMapping(value="/sighting", method=RequestMethod.POST)
+    public String onSubmit(
+        HttpSession session,
+        Model model,
+        @ModelAttribute(value="sighting") Sighting sighting,
+        BindingResult bindingResult
+    ) throws Exception {
+        new SightingFormValidator().validate(sighting, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "sighting";
+        }
         SightingDao sightingDao = OzTrackApplication.getApplicationContext().getDaoManager().getSightingDao();
         sightingDao.save(sighting);
 
@@ -52,18 +71,13 @@ public class SightingFormController extends SimpleFormController {
         saveFile.mkdirs();
         file.transferTo(saveFile);
 
-
-        ModelAndView modelAndView = new ModelAndView(getSuccessView());
-        return modelAndView;
-
+        return "sightingsuccess";
     }
 
-    @Override
-    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         CustomDateEditor editor = new CustomDateEditor(sdf, true);
         binder.registerCustomEditor(Date.class,editor);
-
-        super.initBinder(request, binder);    //To change body of overridden methods use File | Settings | File Templates.
     }
 }
