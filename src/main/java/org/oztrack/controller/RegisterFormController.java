@@ -1,70 +1,79 @@
 package org.oztrack.controller;
 
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.oztrack.app.Constants;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
-import org.springframework.validation.BindException;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
+import org.oztrack.validator.RegisterFormValidator;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import au.edu.uq.itee.maenad.util.BCrypt;
 
+@Controller
+public class RegisterFormController {
+    protected final Log logger = LogFactory.getLog(getClass());
 
-/**
- * @author uqpnewm5
- *
- */
+    @ModelAttribute("user")
+    public User getUser(@RequestParam(value="user", required=false) String username) throws Exception {
+        if (username == null) {
+            return new User();
+        }
+        else {
+            UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();
+            return userDao.getByUsername(username);
+        }
+    }
 
-
-public class RegisterFormController extends SimpleFormController {
-	  
-	 /** Logger for this class and subclasses */
-     protected final Log logger = LogFactory.getLog(getClass());
-	
-     @Override
-     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
-
-		User user = (User) command;
-		
+    @RequestMapping(value="/register", method=RequestMethod.GET)
+    public String getFormView(HttpSession session, @ModelAttribute(value="user") User user) {
+        User currentUser = (User) session.getAttribute(Constants.CURRENT_USER);
+        if (currentUser != user) {
+            return "redirect:login";
+        }
+        return "register";
+    }
+    
+    @RequestMapping(value="/register", method=RequestMethod.POST)
+    public String onSubmit(
+        HttpSession session,
+        Model model,
+        @ModelAttribute(value="user") User user,
+        BindingResult bindingResult,
+        @RequestParam(value="update", required=false) String update
+    ) throws Exception {
+        if (update != null) {
+            User currentUser = (User) session.getAttribute(Constants.CURRENT_USER);
+            if (currentUser == null || currentUser != user) {
+                return "redirect:login";
+            }
+        }
+        
+        new RegisterFormValidator().validate(user, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "register";
+        }
+        
+        UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();
         String passwordHash = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-		user.setPassword(passwordHash);
-		
-		UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();
-		userDao.save(user);
+        user.setPassword(passwordHash);
+        userDao.save(user);
         logger.debug("register user: " + user.getUsername());
 
-        ModelAndView modelAndView;
-        
-        if (request.getParameter("update") != null) { 
-        	modelAndView = new ModelAndView("redirect:projects");
-        } else {
-        	modelAndView = new ModelAndView(getSuccessView());
-        	modelAndView.addObject("user", user);
+        if (update != null) {
+            return "redirect:projects";
         }
-       	return modelAndView;    
-
+        else {
+            return "registersuccess";
+        }
      }
-	  
-	  @Override
-	  protected Object formBackingObject(HttpServletRequest request) throws Exception {
-
-	      String username = request.getParameter("user");
-	      User user = new User();
-
-          if (username != null) {
-              UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();
-              user = userDao.getByUsername(username);
-          }
-
-	      return user;
-	  }
-
-}	
-	
-
+}
