@@ -1,10 +1,6 @@
 
 $(document).ready(function() {
  
-    if (mapPage) {
-        $("#leftMenu").hide();
-    }
-    
      if ($('#sightingMap').length) {
         initializeSightingMap();
      }

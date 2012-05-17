@@ -11,7 +11,6 @@
 		<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/keydragzoom/src/keydragzoom_packed.js" /></script>
 		<script type="text/javascript" src="<c:url value="/js/sightingmap.js"/>" /></script>
         <script type="text/javascript"> 
-            mapPage = true;
             $(document).ready(function() {
                 $('#navHome').addClass('active');
                 $('#sightingDatepicker').datepicker();

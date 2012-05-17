@@ -13,7 +13,6 @@
         <script type="text/javascript" src="<c:url value="/js/openlayers/LoadingPanel.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/js/projectmap.js"/>"></script>
         <script type="text/javascript"> 
-            mapPage = true;
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
                 $('#fromDatepicker').datepicker();

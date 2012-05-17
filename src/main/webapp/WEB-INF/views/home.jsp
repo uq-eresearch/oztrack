@@ -13,7 +13,6 @@
         <script type="text/javascript" src="<c:url value="/js/openlayers/OpenLayers.js"/>" /></script>
         <script type="text/javascript" src="<c:url value="/js/homemap.js"/>" /></script>
         <script type="text/javascript"> 
-            mapPage = true;
             $(document).ready(function() {
                 $('#navHome').addClass('active');
             });

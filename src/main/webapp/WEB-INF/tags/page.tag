@@ -23,9 +23,6 @@
     <link rel="stylesheet" type="text/css" href="<c:url value="/css/ui-jquery/jquery-ui-1.8.16.custom.css"/>"/>
     
     <script type="text/javascript" src="<c:url value="/js/oztrack.js"/>"></script>
-    <script type="text/javascript"> 
-        var mapPage = false;
-    </script>   
     
     <title>OzTrack: ${title}</title>
     
