@@ -17,6 +17,7 @@
         &rsaquo; <a href="<c:url value="/sighting"/>">Reporting Animal Sighting</a>
         &rsaquo; <span class="active">Sighting Reported</span>
     </jsp:attribute>
+    <jsp:attribute name="sidebar"/>
     <jsp:body>
 		<h1>Thank You.</h1>
 		<p>Your sighting has been included.</p>

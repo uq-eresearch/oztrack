@@ -137,8 +137,16 @@ a:hover {
     font-size: 0.8em;
 }
 
-#crumbs, #content  {
+#crumbs {
     margin-left: 300px;
+}
+
+#content.narrow {
+    margin-left: 300px;
+}
+
+#content.wide {
+    margin-left: 40px;
 }
 
 #content {
@@ -332,7 +340,6 @@ a:hover {
    position:relative;
    float:left;
 	padding: 8px;   
-	left:-260px;
     /*--Top right rounded corner--*/
     -moz-border-radius-topright: 10px;
     -khtml-border-radius-topright: 10px;

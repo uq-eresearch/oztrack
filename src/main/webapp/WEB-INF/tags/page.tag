@@ -66,6 +66,7 @@
     <jsp:invoke fragment="breadcrumbs"/>
 </div>
 <div id="main">
+    <c:if test="${!empty sidebar}">
 	<div id="leftMenu">
         <jsp:invoke fragment="sidebar"/>
 	    <div id="logos">
@@ -74,7 +75,8 @@
 	        <a href="http://itee.uq.edu.au/~eresearch/"><img src="<c:url value="/images/uq_logo.png"/>" width="140px" height="40px"/></a>
 	    </div>
 	</div>
-	<div id="content">
+    </c:if>
+	<div id="content" class="${empty sidebar ? 'wide' : 'narrow'}">
 		<jsp:doBody/>
 		<div class="clearboth">&nbsp;</div>
 	</div> <!-- content -->

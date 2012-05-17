@@ -16,9 +16,7 @@
         <a href="<c:url value="/"/>">Home</a>
         &rsaquo; <span class="active">Registration successful</span>
     </jsp:attribute>
-    <jsp:attribute name="sidebar">
-        <tags:project-menu project="${project}"/>
-    </jsp:attribute>
+    <jsp:attribute name="sidebar"/>
     <jsp:body>
 		<h2>Registration successful</h2>
 		<table id="registrationTable">

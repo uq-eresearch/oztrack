@@ -22,6 +22,7 @@
         <a href="<c:url value="/"/>">Home</a>
         &rsaquo; <span class="active">Report Animal Sighting</span>
     </jsp:attribute>
+    <jsp:attribute name="sidebar"/>
     <jsp:body>
 		<h1>Report an Animal Sighting</h1>
 		

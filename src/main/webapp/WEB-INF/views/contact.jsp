@@ -16,6 +16,7 @@
         <a href="<c:url value="/"/>">Home</a>
         &rsaquo; <span class="active">Contact</span> 
     </jsp:attribute>
+    <jsp:attribute name="sidebar"/>
     <jsp:body>
 		<h1>Contacts</h1>
 		<div style="width:80%">

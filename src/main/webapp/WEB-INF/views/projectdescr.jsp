@@ -20,6 +20,7 @@
         <a href="<c:url value="/"/>">Home</a>
         &rsaquo; <span class="active">${project.title}</span>
     </jsp:attribute>
+    <jsp:attribute name="sidebar"/>
     <jsp:body>
 		<span id="projectTitle" style="display:none"><c:out value="${project.title}"/></span>
 		
