@@ -64,7 +64,5 @@
 				</tr>
 		</c:forEach>
 		</table>
-		
-		</center>
     </jsp:body>
 </tags:page>

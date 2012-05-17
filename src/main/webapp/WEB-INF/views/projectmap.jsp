@@ -21,6 +21,14 @@
                 initializeProjectMap();
             });
         </script>
+        <style type="text/css">
+            #animalHeader {float:left;}
+            .column {font-size:0.9em;}
+            .animalCheckbox {float:left; width:15px;}
+            .animalLabel {float:left; width:120px; margin-bottom:5px;font-weight:bold;margin-right:5px;}
+            .zoom {float: right;}   
+            .animalInfoToggle {float:right;}    
+        </style>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
@@ -41,16 +49,7 @@
 		        <h3 id="projectTitle"><a href="#"><c:out value="${project.title}"/></a></h3>
 		
 		        <div id="animalPanel">
-		             
-		             <style type="text/css">
-		                #animalHeader {float:left;}
-						.column {font-size:0.9em;}
-						.animalCheckbox {float:left; width:15px;}
-						.animalLabel {float:left; width:120px; margin-bottom:5px;font-weight:bold;margin-right:5px;}
-						.zoom {float: right;}	
-						.animalInfoToggle {float:right;}	
-		 			 </style>
-					
+				
 		             <c:forEach items="${projectAnimalsList}" var="animal">
 		 		
 						<div id="animalHeader">	            	

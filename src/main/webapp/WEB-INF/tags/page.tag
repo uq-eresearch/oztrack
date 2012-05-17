@@ -20,7 +20,7 @@
     <script type="text/javascript" src="<c:url value="/js/jquery/jquery.formalize.min.js"/>"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
     <script type="text/javascript" src="<c:url value="/js/jquery/jquery-ui-1.8.16.custom.min.js"/>"></script>
-    <link rel="stylesheet" type="text/css" href="<c:url value="/css/ui-jquery/jquery-ui-1.8.16.custom.css"/>"/>
+    <link rel="stylesheet" type="text/css" href="<c:url value="/css/jquery-ui/jquery-ui-1.8.16.custom.css"/>"/>
     
     <script type="text/javascript" src="<c:url value="/js/oztrack.js"/>"></script>
     
