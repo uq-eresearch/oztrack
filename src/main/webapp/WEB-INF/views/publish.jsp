@@ -8,7 +8,46 @@
 <c:set var="shortDateFormatPattern" value="MMMM yyyy"/>
 <tags:page title="${project.title}: Metadata Publication">
     <jsp:attribute name="head">
-        <script type="text/javascript"> 
+        <script type="text/javascript">
+            function publishToDataSpace(id, username, action) {
+                var loadingGraphicHtml = "Sending request ...";
+                $('#publicationStatus').html(loadingGraphicHtml);
+                 
+                var url = "dataspace";
+                var params =  {
+                    project: id,
+                    username: username,
+                    action: action
+                };
+                var request = $.ajax({
+                    url:url,
+                    type: "POST",
+                    data: params
+                });
+                 
+                request.done(function(data) {
+                    var successHtml = "";
+                    if (action == "publish") {
+                        successHtml = "<b>Collection Manager record: </b>"
+                            + "<br/>Published to " + data.dataSpaceAgentURL 
+                            + "<br/>Last updated on " + data.dataSpaceAgentUpdateDate + ".<br/><br/>"
+                            + "<b>Collection record: </b>"
+                            + "<br/>Published to " + data.dataSpaceCollectionURL
+                            + "<br/>Last updated on " + data.dataSpaceUpdateDate + ".";
+                    }
+                    else if (action == "delete") {
+                        successHtml = "<b>Collection Manager record: </b>"
+                            + "<br/>Unpublished on " + data.dataSpaceAgentUpdateDate + ".<br/><br/>"
+                            + "<b>Collection record: </b>"
+                            + "<br/>Unpublished on " + data.dataSpaceUpdateDate + ".";
+                    }
+                    $('#publicationStatus').html(successHtml);
+                });
+    
+                request.fail(function(jqXHR, textStatus, data) {
+                    alert( "Request failed: " + textStatus );
+                });
+            }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
             });

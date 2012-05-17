@@ -8,19 +8,7 @@ function initializeCoverageMap(bbWKT) {
 	bb = bbWKT;
 	var projection900913 = new OpenLayers.Projection('EPSG:900913');
     var projection4326 =  new OpenLayers.Projection("EPSG:4326");
-/*    var mapOptions = {
-       maxExtent: new OpenLayers.Bounds(
-            -128 * 156543.0339,
-            -128 * 156543.0339,
-             128 * 156543.0339,
-             128 * 156543.0339),
-       maxResolution: 156543.0339,
-       units: 'm',
-       projection: projection900913,
-       displayProjection: projection4326
-    };
-    map = new OpenLayers.Map('coverageMap',mapOptions);
-*/  map = new OpenLayers.Map('coverageMap');
+    map = new OpenLayers.Map('coverageMap');
     var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
     map.addControl(layerSwitcher);
 

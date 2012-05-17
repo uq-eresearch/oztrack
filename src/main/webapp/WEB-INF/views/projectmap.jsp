@@ -15,8 +15,10 @@
         <script type="text/javascript"> 
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
+                $("#accordion").accordion();
                 $('#fromDatepicker').datepicker();
                 $('#toDatepicker').datepicker();
+                initializeProjectMap();
             });
         </script>
     </jsp:attribute>
@@ -118,7 +120,7 @@
 			                <br>
 						<b>Spatial Reference System:</b><br>
 						<input id="projectionCode" class="shortInputBox" value="EPSG:20355"/>&nbsp;&nbsp;<a href="#" onclick="reportProjectionDescr(); return false;">Find</a>&nbsp;
-						<a href="http://spatialreference.org/ref/epsg" rel="1" class="newWindow">See List</a><br>
+						<a href="javascript:void(window.open('http://spatialreference.org/ref/epsg', 'popup', 'width=600,height=400,scrollbars=yes'))">See List</a><br>
 						<div id="projectionDescr" style="color:grey;"><br></div>
 			                
 			            <div class="formButton"><input type="submit" id="projectMapSubmit" value="Calculate"/></div>

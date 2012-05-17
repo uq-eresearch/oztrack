@@ -14,6 +14,7 @@
             $(document).ready(function() {
                 $('#navHome').addClass('active');
                 $('#sightingDatepicker').datepicker();
+                initializeSightingMap();
             });
         </script>
     </jsp:attribute>

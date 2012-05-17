@@ -13,6 +13,7 @@
         <script type="text/javascript"> 
             $(document).ready(function() {
                 $('#navHome').addClass('active');
+                initializeCoverageMap($("#bbWKT").text());
             });
         </script>
     </jsp:attribute>

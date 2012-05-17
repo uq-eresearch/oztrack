@@ -397,23 +397,10 @@ a:hover {
 */
 }
 
-
-#accordian form div {
-    margin: 0px;
-    padding: 0px;
-}
-
 #accordion .ui-accordion-content {
     padding-left: 5px;
-    padding-right:5px;
-    }
-    
-
-
-#accordian h3 a {
-	font-size:0.9em;
-	font-weight:bold;
-}	
+    padding-right: 5px;
+}
 
 #animalPanel, #homeRangeCalculatorPanel, #projectMapHelp {
 	height:350px;

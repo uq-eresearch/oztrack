@@ -31,7 +31,7 @@
 			<p>This project has no data to work with. You might like to <a href="<c:url value='/datafileadd'>
 			    <c:param name="project_id" value="${project.id}"/>
 			</c:url>">upload a data file.</a></p>
-			<a class="oztrackButton" id="pageRefresh" href="#">Refresh</a>
+			<a class="oztrackButton" id="pageRefresh" href="javascript:location.reload(true)">Refresh</a>
 		 </c:when>
 		 <c:otherwise>
 		    
@@ -40,7 +40,7 @@
 				<p><a class="oztrackButton" href="<c:url value='/datafileadd'>
 			        <c:param name="project_id" value="${project.id}"/>
 			    </c:url>" >Add a Datafile</a>
-				<a class="oztrackButton" id="pageRefresh" href="#">Refresh</a></p>
+				<a class="oztrackButton" id="pageRefresh" href="javascript:location.reload(true)">Refresh</a></p>
 				
 				<p><c:out value="${errorStr}"/></p>
 				

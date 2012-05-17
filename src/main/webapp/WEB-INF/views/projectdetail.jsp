@@ -15,6 +15,7 @@
         <script type="text/javascript"> 
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
+                initializeCoverageMap($("#bbWKT").text());
             });
         </script>
     </jsp:attribute>
