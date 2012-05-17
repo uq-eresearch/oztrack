@@ -4,10 +4,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
-<tags:page title="${animal.project.title}: Update Animal Details">
+<tags:page title="${project.title}: Update Animal Details">
     <jsp:attribute name="head">
         <script type="text/javascript"> 
-	        projectPage = true;
             $(document).ready(function() {
             	$('#navTrack').addClass('active');
             });
@@ -16,12 +15,15 @@
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
         &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
-        &rsaquo; <a href="<c:url value="/projectdetail?id=${animal.project.id}"/>">${animal.project.title}</a>
-        &rsaquo; <a href="<c:url value="/projectanimals?id=${animal.project.id}"/>">Animals</a>
+        &rsaquo; <a href="<c:url value="/projectdetail?id=${project.id}"/>">${project.title}</a>
+        &rsaquo; <a href="<c:url value="/projectanimals?id=${project.id}"/>">Animals</a>
         &rsaquo; <span class="active">Edit</span> 
     </jsp:attribute>
+    <jsp:attribute name="sidebar">
+        <tags:project-menu project="${project}"/>
+    </jsp:attribute>
     <jsp:body>
-		<h1 id="projectTitle"><c:out value="${animal.project.title}"/></h1>
+		<h1 id="projectTitle"><c:out value="${project.title}"/></h1>
 		<h2>Update Animal Details</h2>
 		<form:form commandName="animal" method="POST" name="animal">
 			<div>

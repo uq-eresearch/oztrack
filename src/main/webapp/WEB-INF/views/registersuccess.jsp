@@ -7,7 +7,6 @@
 <tags:page title="Registration successful">
     <jsp:attribute name="head">
         <script type="text/javascript"> 
-            projectPage = true;
             $(document).ready(function() {
                 $('#navHome').addClass('active');
             });
@@ -16,6 +15,9 @@
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
         &rsaquo; <span class="active">Registration successful</span>
+    </jsp:attribute>
+    <jsp:attribute name="sidebar">
+        <tags:project-menu project="${project}"/>
     </jsp:attribute>
     <jsp:body>
 		<h2>Registration successful</h2>

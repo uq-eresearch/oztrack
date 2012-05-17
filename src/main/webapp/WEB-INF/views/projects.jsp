@@ -16,6 +16,13 @@
         <a href="<c:url value="/"/>">Home</a>
         &rsaquo; <span class="active">Projects</span>
     </jsp:attribute>
+    <jsp:attribute name="sidebar">
+        <div class="sidebarMenu">
+            <ul>
+                <li><a href="<c:url value="/projectadd"/>">Create New Project</a></li>
+            </ul>
+        </div>
+    </jsp:attribute>
     <jsp:body>
 		<h1>Projects</h1>
 		

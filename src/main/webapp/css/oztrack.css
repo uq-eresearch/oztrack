@@ -151,18 +151,7 @@ a:hover {
     width: 175px;
     margin-left:50px;
     padding-bottom:20px;
-/*	border: solid red 1px;*/
 }	
-
-.projectMenuActive  {
-	display:block;
-}
-
-.projectMenuHidden {
-	display:none;
-}	
-
-
 
 #logos {
     width:150px;
@@ -270,7 +259,7 @@ a:hover {
     color: #ef9800;
 }
 
-#projectMenu ul {
+.sidebarMenu ul {
     margin-left:0px;
     margin-right:0px;
     margin-top:0px;
@@ -278,17 +267,17 @@ a:hover {
     padding:0px;
 }
 
-#projectMenu ul li ul {
+.sidebarMenu ul li ul {
     padding-left:10px;
 }
 
-#projectMenu ul li ul li {
+.sidebarMenu ul li ul li {
     border: 0px;
     padding-top: 0.4ex;
     padding-bottom: 0.3ex;
 }
 
-#projectMenu li    {
+.sidebarMenu li    {
     list-style-type: none;
     list-style-image: none;
     background-repeat: no-repeat;
@@ -299,14 +288,14 @@ a:hover {
     border-bottom: dashed 1px black;
 }
 
-#projectMenu li a {
+.sidebarMenu li a {
     text-decoration:none;
-    font-size: 0.8em;
+    font-size: 11px;
     font-weight: bolder;
     color:black;
 }
 
-#projectMenu li a:active, #projectMenu li a:hover  {
+.sidebarMenu li a:active, .sidebarMenu li a:hover  {
     color:#ef9800;
 }
 

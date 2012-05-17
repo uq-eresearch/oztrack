@@ -7,7 +7,6 @@
 <tags:page title="${project.title}: Animals">
     <jsp:attribute name="head">
         <script type="text/javascript"> 
-            projectPage = true;
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
             });
@@ -18,6 +17,9 @@
         &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
         &rsaquo; <a href="<c:url value="/projectdetail?id=${project.id}"/>">${project.title}</a>
         &rsaquo; <span class="active">Animals</span>
+    </jsp:attribute>
+    <jsp:attribute name="sidebar">
+        <tags:project-menu project="${project}"/>
     </jsp:attribute>
     <jsp:body>
 		<h1 id="projectTitle"><c:out value="${project.title}"/></h1>

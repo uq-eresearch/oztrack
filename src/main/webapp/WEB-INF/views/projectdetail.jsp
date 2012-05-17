@@ -13,7 +13,6 @@
 		<script type="text/javascript" src="<c:url value="/js/openlayers/OpenLayers.js"/>"></script>
 		<script type="text/javascript" src="<c:url value="/js/coveragemap.js"/>"></script>
         <script type="text/javascript"> 
-            projectPage = true;
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
             });
@@ -23,6 +22,9 @@
         <a href="<c:url value="/"/>">Home</a>
         &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
         &rsaquo; <span class="active">${project.title}</span>
+    </jsp:attribute>
+    <jsp:attribute name="sidebar">
+        <tags:project-menu project="${project}"/>
     </jsp:attribute>
     <jsp:body>
 		<h1 id="projectTitle"><c:out value="${project.title}"/></h1>

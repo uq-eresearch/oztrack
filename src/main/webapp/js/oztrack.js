@@ -5,14 +5,6 @@ $(document).ready(function() {
         $("#leftMenu").hide();
     }
     
-    if (projectPage) {
-   	 $("#projectMenu").addClass('projectMenuActive');
-   	 $("#projectMenu").removeClass('projectMenuHidden');
-    } else {
-   	 $("#projectMenu").addClass('projectMenuHidden');
-   	 $("#projectMenu").removeClass('projectMenuActive');
-    } 
-	
      if ($('#sightingMap').length) {
         initializeSightingMap();
      }

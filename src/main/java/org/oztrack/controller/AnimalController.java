@@ -7,6 +7,7 @@ import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.validator.AnimalFormValidator;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,17 +19,17 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AnimalController {
     @ModelAttribute("animal")
     public Animal getAnimal(@RequestParam(value="animal_id") Long animalId) throws Exception {
-        if (animalId == null) {
-            return new Animal();
-        }
-        else {
-            AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
-            return animalDao.getAnimalById(animalId);
-        }
+        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
+        return animalDao.getAnimalById(animalId);
     }
 
     @RequestMapping(value="/animalform", method=RequestMethod.GET)
-    public String getFormView(HttpSession session) {
+    public String getFormView(
+        HttpSession session,
+        Model model,
+        @ModelAttribute("animal") Animal animal
+    ) {
+        model.addAttribute("project", animal.getProject());
         return "animalform";
     }
     

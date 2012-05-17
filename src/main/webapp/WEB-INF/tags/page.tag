@@ -7,6 +7,7 @@
 <%@ attribute name="title" required="true" %>
 <%@ attribute name="head" required="true" fragment="true" %>
 <%@ attribute name="breadcrumbs" required="true" fragment="true" %>
+<%@ attribute name="sidebar" required="false" fragment="true" %>
 <html>
 <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
@@ -24,7 +25,6 @@
     <script type="text/javascript" src="<c:url value="/js/oztrack.js"/>"></script>
     <script type="text/javascript"> 
         var mapPage = false;
-        var projectPage = false;
     </script>   
     
     <title>OzTrack: ${title}</title>
@@ -67,24 +67,7 @@
 </div>
 <div id="main">
 	<div id="leftMenu">
-	    <div id="projectMenu">
-	        <c:choose>
-	         <c:when test="${project == null}">
-	            <ul>
-	            <li><a href="<c:url value="/projectadd"/>">Create New Project</a></li>
-	            <li><a href="<c:url value="/projects"/>">Project List</a></li>
-	            </ul>
-	         </c:when>
-	         <c:otherwise>
-	              <ul>
-	                <li><a href="<c:url value="/projectdetail"><c:param name="id" value="${project.id}"/></c:url>">Project Details</a></li>
-	                <li><a href="<c:url value="/projectmap"><c:param name="id" value="${project.id}"/></c:url>">Analysis Tools</a></li>
-	                <li><a href="<c:url value="/searchform"><c:param name="project_id" value="${project.id}"/></c:url>">View Raw Data</a></li>
-	                <li><a href="<c:url value="/datafiles"><c:param name="project_id" value="${project.id}"/></c:url>">Data Uploads</a></li>
-	              </ul>
-	         </c:otherwise>
-	        </c:choose>
-	    </div>
+        <jsp:invoke fragment="sidebar"/>
 	    <div id="logos">
 	        <a href="http://nectar.org.au/"><img src="<c:url value="/images/nectar-logo.png"/>" width="140px" height="32px"/></a>
 	        <a href="http://ands.org.au/"><img src="<c:url value="/images/ands-logo.png"/>" width="90px" height="40px" style="margin-top: -8px;"/></a>

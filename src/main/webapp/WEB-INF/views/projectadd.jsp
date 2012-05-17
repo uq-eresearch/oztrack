@@ -28,6 +28,13 @@
         &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
         &rsaquo; <span class="active">Create New Project</span>
     </jsp:attribute>
+    <jsp:attribute name="sidebar">
+        <div class="sidebarMenu">
+            <ul>
+                <li><a href="<c:url value="/projects"/>">Project List</a></li>
+            </ul>
+        </div>
+    </jsp:attribute>
     <jsp:body>
 		<c:choose>
 		<c:when test="${param.update}">
