@@ -106,12 +106,12 @@
 			            </table>
 						<br>
 						<b>Layer Type:</b><br>
-						<table class="mapQueryType" style="margin-left:15px; margin-top:5px;">
+						<table class="mapQueryType" style="margin-top:5px;">
 			                <c:forEach items="${mapQueryTypeList}" var="mapQueryType">
 			                    <c:if test="${!fn:contains(mapQueryType,'ALL_')}">
 			                        <tr>
-			                         <td><input type="radio" name="mapQueryTypeSelect" value="${mapQueryType}"/></td>
-			                         <td id="${mapQueryType}"><c:out value="${mapQueryType.displayName}"/></td>
+			                         <td style="padding: 0 5px;"><input type="radio" name="mapQueryTypeSelect" id="mapQueryTypeSelect-${mapQueryType}" value="${mapQueryType}"/></td>
+			                         <td id="${mapQueryType}"><label for="mapQueryTypeSelect-${mapQueryType}"><c:out value="${mapQueryType.displayName}"/></label></td>
 			                        </tr>
 			                    </c:if>
 			                </c:forEach>
