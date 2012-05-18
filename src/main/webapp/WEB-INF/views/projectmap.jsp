@@ -17,7 +17,9 @@
             function updateParamTable(mapQueryType) {
                 $('#paramTable').hide();
                 $('#percentRow').hide();
+                $('#percent').val('');
                 $('#hRow').hide();
+                $('#h').val('');
                 if (mapQueryType == 'MCP') {
                     $('#percentRow').show();
                     $('#percent').val('100');
@@ -95,7 +97,7 @@
 		            		
 		                </div>
 		                <div id="animalInfo-${animal.id}" class="animalInfo">
-		                     <a style="float:right; margin-right:10px;" href="<c:url value="/exportKML"><c:param name="projectId" value="${project.id}"/><c:param name="animalId" value="${animal.id}"/></c:url>">KML</a> 
+		                     <a style="float:right; margin-right:10px; margin-top: 0.5em;" href="<c:url value="/exportKML"><c:param name="projectId" value="${project.id}"/><c:param name="animalId" value="${animal.id}"/></c:url>">KML</a> 
 						</div>
 		                
 		            </c:forEach>

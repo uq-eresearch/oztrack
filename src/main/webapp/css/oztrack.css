@@ -363,9 +363,9 @@ a:hover {
 	float:left;
 	font-size: 0.9em;
 	/*border: solid 1px black;*/
-	margin-left:8px;
-	margin-top:10px;
-	margin-bottom:10px;
+	margin-left: 8px;
+	margin-top: 0;
+	margin-bottom: 0;
 }
 
 .animalInfo table {
@@ -377,6 +377,9 @@ a:hover {
 	width:7em;
 }
 
+.layerInfo {
+    margin: 0.5em 0;
+}
 
 #homeMap, #projectMap{
     width: 650px;

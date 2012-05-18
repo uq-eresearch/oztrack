@@ -406,12 +406,12 @@ function updateAnimalInfo(wfsLayer) {
                 var distanceRowHtml = "";
                 if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.LineString") {
         	    	var distance = feature.geometry.getGeodesicLength(map.projection)/1000;
-        	    	distanceRowHtml = "<tr><td class='label'>Minimum Distance: </td><td>" + Math.round(distance*1000)/1000 + "km </td></tr>";
+        	    	distanceRowHtml = "<tr><td class='label'>Min Distance: </td><td>" + Math.round(distance*1000)/1000 + "km </td></tr>";
                 }
                 
-                var html = layerNameHtml + tableRowsHtml + distanceRowHtml + "</table><br>";
+                var html = layerNameHtml + tableRowsHtml + distanceRowHtml + "</table>";
                 
-                $('#animalInfo-'+ feature.attributes.animalId).append(checkboxHtml + html);
+                $('#animalInfo-'+ feature.attributes.animalId).append('<div class="layerInfo">' + checkboxHtml + html + '</div>');
  	            $('input[id=select-feature-' + checkboxId + ']').change(function() {
                     toggleFeature(this.value,this.checked);
                 });
@@ -567,7 +567,7 @@ function addProjectMapLayer() {
 	    } else if (queryType.val() == "POINTS") {
 	    	addWFSLayer(layerName, params, pointsStyleMap);
 	    } else {
-	        addKMLLayer(layerName,params);
+	        addKMLLayer(layerName, params);
 	    }
 	    
     } else {
@@ -576,7 +576,7 @@ function addProjectMapLayer() {
         
 }
 
-function addKMLLayer(layerName, params) {
+function addKMLLayer(layerName, params, percent, h) {
 
 
 	
@@ -584,7 +584,7 @@ function addKMLLayer(layerName, params) {
                 layerName,{
                 	strategies: [new OpenLayers.Strategy.Fixed()],
                 	eventListeners: {
-                		loadend: function (e) {updateAnimalInfoFromKML(layerName, e);}
+                		loadend: function (e) {updateAnimalInfoFromKML(layerName, params, e);}
                 	},
                 	protocol: new OpenLayers.Protocol.HTTP(
                 			{url: "mapQueryKML",
@@ -604,7 +604,7 @@ function addKMLLayer(layerName, params) {
         map.addLayer(queryOverlay);
 }
                 
-function updateAnimalInfoFromKML(layerName, e) {
+function updateAnimalInfoFromKML(layerName, params, e) {
 	
 	for (var f in e.object.features) {
 		var feature = e.object.features[f];
@@ -617,11 +617,17 @@ function updateAnimalInfoFromKML(layerName, e) {
         var checkboxId = checkboxValue.replace(/\./g,"");
 	    var checkboxHtml = "<input type='checkbox' " 
 			 + "id='select-feature-" + checkboxId + "' value='" + checkboxValue + "' checked='true'/></input>";
-		var html = "&nbsp;&nbsp;<b>" + layerName + "</b>" 
-   		+ "<table>"
-   		+ "<tr><td> Area: </td><td>" + Math.round(area*1000)/1000 + " km<sup>2</sup></td></tr>"
-   		+ "</table><br>";
-		$('#animalInfo-'+ feature.attributes.id.value).append(checkboxHtml + html);
+		var html = "&nbsp;&nbsp;<b>" + layerName + "</b>"; 
+   		html += '<table>';
+   		if (params.percent) {
+   		    html += '<tr><td class="label">Percent: </td><td>' + params.percent + '%</td></tr>';
+	    }
+   		if (params.h) {
+   		    html += '<tr><td class="label">h value: </td><td>' + params.h + '</td></tr>';
+   		}
+   		html += '<tr><td class="label">Area: </td><td>' + Math.round(area*1000)/1000 + ' km<sup>2</sup></td></tr>';
+   		html += '</table>';
+		$('#animalInfo-'+ feature.attributes.id.value).append('<div class="layerInfo">' + checkboxHtml + html + '</div>');
 	    $('input[id=select-feature-' + checkboxId + ']').change(function() {
 	        toggleFeature(this.value,this.checked);
 	    });
