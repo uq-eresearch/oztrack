@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
+<%@ page import="org.oztrack.data.model.types.MapQueryType" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -12,7 +13,23 @@
         <script type="text/javascript" src="<c:url value="/js/openlayers/OpenLayers.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/js/openlayers/LoadingPanel.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/js/projectmap.js"/>"></script>
-        <script type="text/javascript"> 
+        <script type="text/javascript">
+            function updateParamTable(mapQueryType) {
+                $('#paramTable').hide();
+                $('#percentRow').hide();
+                $('#hRow').hide();
+                if (mapQueryType == 'MCP') {
+                    $('#percentRow').show();
+                    $('#percent').val('100');
+                }
+                if (mapQueryType == 'KUD') {
+                    $('#percentRow').show();
+                    $('#percent').val('95');
+                    $('#hRow').show();
+                    $('#h').val('href');
+                }
+                $('#paramTable').appendTo('#' + mapQueryType).fadeIn('slow');            
+            }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
                 $("#accordion").accordion();
@@ -90,19 +107,16 @@
 			    <div id="homeRangeCalculatorPanel">
 			        
 			        <form method="POST" id="mapToolForm" onsubmit="addProjectMapLayer(); return false;">
-			        
-			        
 			            <b>Date Range:</b>
-			            
 			            <table style="margin-left:5px;">
-			             <tr>
-			                <td><b>From:</b></td>
-			                <td><input id="fromDatepicker" class="shortInputBox"/></td>
-			             </tr>
-			             <tr>
-			                <td><b>To:</b></td>
-			                <td><input id="toDatepicker" class="shortInputBox"/></td>
-			             </tr>
+    			            <tr>
+    			                <td><b>From:</b></td>
+    			                <td><input id="fromDatepicker" class="shortInputBox"/></td>
+    			            </tr>
+    			            <tr>
+    			                <td><b>To:</b></td>
+    			                <td><input id="toDatepicker" class="shortInputBox"/></td>
+    			            </tr>
 			            </table>
 						<br>
 						<b>Layer Type:</b><br>
@@ -110,13 +124,32 @@
 			                <c:forEach items="${mapQueryTypeList}" var="mapQueryType">
 			                    <c:if test="${!fn:contains(mapQueryType,'ALL_')}">
 			                        <tr>
-			                         <td style="padding: 0 5px;"><input type="radio" name="mapQueryTypeSelect" id="mapQueryTypeSelect-${mapQueryType}" value="${mapQueryType}"/></td>
-			                         <td id="${mapQueryType}"><label for="mapQueryTypeSelect-${mapQueryType}"><c:out value="${mapQueryType.displayName}"/></label></td>
+			                        <td style="padding: 0 5px; vertical-align: top;">
+                                        <input type="radio"
+                                            name="mapQueryTypeSelect"
+                                            id="mapQueryTypeSelect-${mapQueryType}"
+                                            value="${mapQueryType}"
+                                            onClick="updateParamTable('${mapQueryType}')"
+                                        />
+                                    </td>
+			                        <td id="${mapQueryType}">
+                                        <label for="mapQueryTypeSelect-${mapQueryType}"><c:out value="${mapQueryType.displayName}"/></label>
+                                    </td>
 			                        </tr>
 			                    </c:if>
 			                </c:forEach>
-			                </table>
-			                <br>
+		                </table>
+                        <table id="paramTable" style="display: none; margin-left:5px;">
+                            <tr id="percentRow">
+                                <td>Percent:</td>
+                                <td><input id="percent" name="percent" class="shortInputBox" style="width: 4em; text-align: right;"/></td>
+                            </tr>
+                            <tr id="hRow">
+                                <td>h value:</td>
+                                <td><input id="h" name="h" class="shortInputBox" style="width: 4em; text-align: right;"/></td>
+                            </tr>
+                        </table>
+                        <br>
 						<b>Spatial Reference System:</b><br>
 						<input id="projectionCode" class="shortInputBox" value="EPSG:20355"/>&nbsp;&nbsp;<a href="#" onclick="reportProjectionDescr(); return false;">Find</a>&nbsp;
 						<a href="javascript:void(window.open('http://spatialreference.org/ref/epsg', 'popup', 'width=600,height=400,scrollbars=yes'))">See List</a><br>

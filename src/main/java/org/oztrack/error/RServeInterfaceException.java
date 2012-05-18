@@ -1,22 +1,11 @@
 package org.oztrack.error;
 
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 9/08/11
- * Time: 10:52 AM
- * sorry
- */
 public class RServeInterfaceException extends Exception {
-
-   private String message;
-
     public RServeInterfaceException(String message) {
-        this.message = message;
+        super(message);
     }
-
-    @Override
-    public String toString() {
-        return this.message;
+    
+    public RServeInterfaceException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

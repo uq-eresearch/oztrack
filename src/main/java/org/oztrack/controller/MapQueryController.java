@@ -10,7 +10,7 @@ import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.data.model.types.MapQueryType;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,78 +19,48 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class MapQueryController {
     protected final Log logger = LogFactory.getLog(getClass());
     
-    @RequestMapping(value="/mapQueryKML", method=RequestMethod.GET)
-    public String handleKMLQuery(
-        Model model,
+    @ModelAttribute("searchQuery")
+    public SearchQuery getSearchQuery(
         @RequestParam(value="projectId", required=false) Long projectId,
         @RequestParam(value="queryType", required=false) String queryType,
         @RequestParam(value="dateFrom", required=false) String dateFrom,
-        @RequestParam(value="dateTo", required=false) String dateTo
-    )
-    throws Exception {
-        return handleQuery(
-            model,
-            projectId,
-            queryType,
-            dateFrom,
-            dateTo,    
-            "java_KMLMapQuery"
-        );
-    }
-    
-    @RequestMapping(value="/mapQueryWFS", method=RequestMethod.POST)
-    public String handleWFSQuery(
-        Model model,
-        @RequestParam(value="projectId", required=false) Long projectId,
-        @RequestParam(value="queryType", required=false) String queryType,
-        @RequestParam(value="dateFrom", required=false) String dateFrom,
-        @RequestParam(value="dateTo", required=false) String dateTo
-    )
-    throws Exception {
-        return handleQuery(
-            model,
-            projectId,
-            queryType,
-            dateFrom,
-            dateTo,    
-            "java_WFSMapQuery"
-        );
-    }
-
-    private String handleQuery(
-        Model model,
-        Long projectId,
-        String queryType,
-        String dateFrom,
-        String dateTo,
-        String viewName
+        @RequestParam(value="dateTo", required=false) String dateTo,
+        @RequestParam(value="percent", required=false) Double percent,
+        @RequestParam(value="h", required=false) String h
     )
     throws Exception {
         SearchQuery searchQuery = new SearchQuery();
-
-        if ((projectId != null) && (queryType != null)) {
-            logger.debug("for projectId: " + projectId + " + queryType: " + queryType);
+        if (projectId != null) {
             ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
             Project project = projectDao.getProjectById(Long.valueOf(projectId));
             searchQuery.setProject(project);
-            searchQuery.setMapQueryType(MapQueryType.valueOf(queryType));
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            if (dateFrom !=  null) {
-                searchQuery.setFromDate(sdf.parse(dateFrom));
-            }
-            if (dateTo != null) {
-                searchQuery.setToDate(sdf.parse(dateTo));
-            }
         }
-        else if ((projectId == null) && (queryType != null)) {
+        if (queryType != null) {
             searchQuery.setMapQueryType(MapQueryType.valueOf(queryType));
         }
-        else {
-            logger.debug("no projectId or queryType");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        if (dateFrom != null) {
+            searchQuery.setFromDate(sdf.parse(dateFrom));
         }
-
-        model.addAttribute("searchQuery", searchQuery);
-        
-        return viewName;
+        if (dateTo != null) {
+            searchQuery.setToDate(sdf.parse(dateTo));
+        }
+        if (percent != null && !percent.isNaN()) {
+            searchQuery.setPercent(percent);
+        }
+        if (h != null && !h.isEmpty()) {
+            searchQuery.setH(h);
+        }
+        return searchQuery;
+    }
+    
+    @RequestMapping(value="/mapQueryKML", method=RequestMethod.GET)
+    public String handleKMLQuery() throws Exception {
+        return "java_KMLMapQuery";
+    }
+    
+    @RequestMapping(value="/mapQueryWFS", method=RequestMethod.POST)
+    public String handleWFSQuery() throws Exception {
+        return "java_WFSMapQuery";
     }
 }

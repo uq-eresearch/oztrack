@@ -30,6 +30,8 @@ public class SearchQuery {
     private String [] speciesList;
     private Project project;
     private MapQueryType mapQueryType;
+    private Double percent;
+    private String h;
 
     public SearchQuery() {
         this.fromDate = null;
@@ -110,35 +112,19 @@ public class SearchQuery {
         this.mapQueryType = mapQueryType;
     }
 
-
-
-    /*
-    public File generateKMLFile() {
-
-        String kmlFilePath = this.project.getDataDirectoryPath() + File.separator + this.mapQueryType.toString() + ".kml";
-        logger.debug("kml file name: " + kmlFilePath);
-
-        // get the data
-        List<PositionFix> positionFixList = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcQuery().queryProjectPositionFixes(this);
-        RServeInterface rServe = new RServeInterface(positionFixList, this.mapQueryType, kmlFilePath);
-
-        try {
-            rServe.createPositionFixKml();
-        } catch (RServeInterfaceException e) {
-            logger.error("R error :" + e.toString());
-        }
-
-        return new File(kmlFilePath);
+    public Double getPercent() {
+        return percent;
     }
-    */
 
-
-
-/*
-    public String buildQuery() {
-
-
+    public void setPercent(Double percent) {
+        this.percent = percent;
     }
-*/
 
+    public String getH() {
+        return h;
+    }
+
+    public void setH(String h) {
+        this.h = h;
+    }
 }

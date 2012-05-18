@@ -541,20 +541,15 @@ function addProjectMapLayer() {
     var dateTo=$('input[id=toDatepicker]').val();
     var queryType =$('input[name=mapQueryTypeSelect]:checked');
     var queryTypeDescription =  queryType.parent().next().text();
-     
+    var percent = $('input[id=percent]').val();
+    var h = $('input[id=h]').val();
 
-/*
-    var data = '&dateFrom=' + dateFrom
-     + '&dateTo=' + dateTo
-     + '&queryType=' + queryType.val()
-     + '&mapQueryTypeDescription=' + queryTypeDescription;
-    
-     alert("data : " + data);
-*/
     if (queryType.val() != null) {
     
         var params = {projectId: projectId
-	                 ,queryType: queryType.val()};
+	                 ,queryType: queryType.val()
+	                 ,percent: percent
+	                 ,h: h};
 	    var layerName = queryTypeDescription;
 	
 	    if (dateFrom.length == 10) {

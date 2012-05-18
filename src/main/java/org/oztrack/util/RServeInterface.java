@@ -26,24 +26,8 @@ import org.rosuda.REngine.RList;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
 
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 8/08/11
- * Time: 2:06 PM
- */
 public class RServeInterface {
-
-    /**
-    * Logger for this class and subclasses
-    */
     protected final Log logger = LogFactory.getLog(getClass());
-
-    /* inputs
-    private List<PositionFix> positionFixList;
-    private MapQueryType mapQueryType;
-    private String outFileName;
-    */
 
     private RConnection rConnection;
     private String rWorkingDir;
@@ -53,17 +37,9 @@ public class RServeInterface {
     public RServeInterface() {
     }
 
-    /*
-    public RServeInterface(List<PositionFix> positionFixList, MapQueryType mapQueryType, String outFileName) {
-       // this.positionFixList = positionFixList;
-        this.mapQueryType = mapQueryType;
-        this.outFileName = outFileName;
-    }
-    */
-
     public File createKml(SearchQuery searchQuery) throws RServeInterfaceException {
-
         this.searchQuery = searchQuery;
+        
         startRConnection();
 
         // create a temporary file name
@@ -88,51 +64,27 @@ public class RServeInterface {
             case ALL_POINTS:
                 writePositionFixKmlFile(fileName);
                 break;
-            case MCP100:
-            case MCP95:
-            case MCP50:
-                writeMCPKmlFile(fileName, mapQueryType);
+            case MCP:
+                writeMCPKmlFile(fileName, searchQuery);
+                break;
+            case KUD:
+                writeKernelUDKmlFile(fileName, searchQuery);
                 break;
 //            case CHARHULL100:
 //            case CHARHULL95:
 //            case CHARHULL50:
 //                writeCharHullKmlFile(fileName, mapQueryType);
 //                break;
-            case KUD95:
-            case KUD50:
-                writeKernelUDKmlFile(fileName, mapQueryType);
-                break;
             default:
                 throw new RServeInterfaceException("Unhandled MapQueryType: " + searchQuery.getMapQueryType());
         }
-
+        
         rConnection.close();
-
+        
         return new File(fileName);
-
-
     }
-
-    /*
-    public void createPositionFixKml() throws RServeInterfaceException {
-
-        startRConnection();
-        createRPositionFixDataFrame();
-
-        switch (this.mapQueryType) {
-            case ALL_POINTS:
-                //writePositionFixKmlFile();
-                break;
-            default:
-                throw new RServeInterfaceException("Unhandled MapQueryType: " + this.mapQueryType);
-        }
-        rConnection.close();
-    }
-    */
-
 
     protected void startRConnection() throws RServeInterfaceException {
-
         try {
             if (checkLocalRserve()) {
                 this.rConnection = new RConnection();
@@ -146,14 +98,15 @@ public class RServeInterface {
                 if (osname != null && osname.length() >= 7 && osname.substring(0,7).equals("Windows")) {
                     this.rWorkingDir = this.rWorkingDir.replace("\\","/");
                 }
-
-           } else {
+            }
+            else {
                 throw new RServeInterfaceException("RServe not started.");
-           }
-
-        } catch (RserveException e) {
+            }
+        }
+        catch (RserveException e) {
             throw new RServeInterfaceException(e.toString());
-        } catch (REXPMismatchException e) {
+        }
+        catch (REXPMismatchException e) {
             throw new RServeInterfaceException(e.toString());
         }
     }
@@ -165,12 +118,10 @@ public class RServeInterface {
         int [] animalIds = new int[positionFixList.size()];
         double [] latitudes= new double[positionFixList.size()];
         double [] longitudes= new double[positionFixList.size()];
-        String [] detectionTimes= new String[positionFixList.size()];
 
         /* load up the arrays from the database result set*/
         for (int i=0; i < positionFixList.size(); i++) {
             PositionFix positionFix = positionFixList.get(i);
-            detectionTimes[i] = "foo"; //sdf.format(positionFix.getDetectionTime());
             animalIds[i] = Integer.parseInt(positionFix.getAnimal().getId().toString());
             latitudes[i] = Double.parseDouble(positionFix.getLatitude());
             longitudes[i] = Double.parseDouble(positionFix.getLongitude());
@@ -181,9 +132,7 @@ public class RServeInterface {
         rPositionFixList.put("Id", new REXPInteger(animalIds));
         rPositionFixList.put("X", new REXPDouble(latitudes));
         rPositionFixList.put("Y", new REXPDouble(longitudes));
-        //rPositionFixList.put("Foo", new REXPString(detectionTimes));
 
-        /* assign the dataFrame */
         try {
             REXP rPosFixDataFrame = REXP.createDataFrame(rPositionFixList);
             this.rConnection.assign("positionFix", new REXPNull());
@@ -207,76 +156,39 @@ public class RServeInterface {
             }
             rLog = rLog + "coordinates + 2 projections defined.";
 
-        } catch (REngineException e) {
-             throw new RServeInterfaceException(e.toString() + "Log: " + rLog);
-        } catch (REXPMismatchException e) {
-             throw new RServeInterfaceException(e.toString() + "Log: " + rLog);
+        }
+        catch (REngineException e) {
+            throw new RServeInterfaceException(e.toString() + "Log: " + rLog);
+        }
+        catch (REXPMismatchException e) {
+            throw new RServeInterfaceException(e.toString() + "Log: " + rLog);
         }
     }
 
 
-    protected void writeMCPKmlFile(String fileName, MapQueryType mapQueryType) throws RServeInterfaceException {
-
-        String rCommand;
-        String queryType = mapQueryType.toString(); // eg.MCP100
-        String percent = queryType.replace("MCP","");
-
-        try {
-
-            rCommand = queryType + " <- mcp(positionFix.xy,percent=" + percent + ")";
-            rConnection.voidEval(rCommand);
-            rLog = rLog + queryType + " object set. " ;
-
-//            rCommand = queryType + "$area <- mcp(positionFix.proj,percent=" + percent + ")$area";
-            rCommand = queryType + "$area <- mcp(positionFix.proj,percent=" + percent + ",unin=c(\"m\"),unout=c(\"km2\"))$area";
-            rConnection.voidEval(rCommand);
-            rLog = rLog + queryType + "$area object set";
-
-            rCommand = "writeOGR(" + queryType +", dsn=\"" + fileName + "\", layer= \"" + queryType + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))";
-            rConnection.voidEval(rCommand);
-            rLog = rLog + "KML written.";
-
-        } catch (RserveException e) {
-            throw new RServeInterfaceException(e.toString() + " Log: " + rLog);
-        }
+    protected void writeMCPKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
+        String queryType = searchQuery.getMapQueryType().toString();
+        Double percent = (searchQuery.getPercent() != null) ? searchQuery.getPercent() : 100d;
+        safeEval(queryType + " <- mcp(positionFix.xy,percent=" + percent + ")");
+        safeEval(queryType + "$area <- mcp(positionFix.proj,percent=" + percent + ",unin=c(\"m\"),unout=c(\"km2\"))$area");
+        safeEval("writeOGR(" + queryType +", dsn=\"" + fileName + "\", layer= \"" + queryType + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
     }
     
-    protected void writeKernelUDKmlFile(String fileName, MapQueryType mapQueryType) throws RServeInterfaceException {
-
-        String rCommand;
-        String queryType = mapQueryType.toString(); // eg.MCP100
-        String percent = queryType.replace("KUD","");
-        
-        try {
-
-            rCommand = "KerHR <- kernelUD(positionFix.xy, h = \"href\");"
-                     + "KerHRp <- kernelUD(positionFix.proj, h = \"href\");";
-            rConnection.voidEval(rCommand);
-            rLog = rLog + "KerHR and KerHRp objects set. ";
-
-            rCommand = queryType + " <- getverticeshr(KerHR,percent=" + percent + ");"
-                     //+ queryType + "$area <- getverticeshr(KerHRp,percent=" + percent + ")$area";
-                     + queryType + "$area <- getverticeshr(KerHRp,percent=" + percent + ", unin=c(\"m\"), unout=c(\"km2\"))$area";
-            rConnection.voidEval(rCommand);
-            rLog = rLog + queryType + " object set. ";
-
-            rCommand = "writeOGR(" + queryType +", dsn=\"" + fileName + "\", layer= \"" + queryType + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))";
-            rConnection.voidEval(rCommand);
-            rLog = rLog + "KML written. ";
-
-        } catch (RserveException e) {
-            throw new RServeInterfaceException(e.toString() + " Log: " + rLog);
-        }
+    protected void writeKernelUDKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
+        String name = searchQuery.getMapQueryType().toString();
+        Double percent = (searchQuery.getPercent() != null) ? searchQuery.getPercent() : 100d;
+        String h = (searchQuery.getH() != null) ? searchQuery.getH() : "href";
+        safeEval("KerHRp <- kernelUD(positionFix.proj, h = \"" + h + "\")");
+        safeEval("KerHR <- kernelUD(positionFix.xy, h = \"" + h + "\")");
+        safeEval(name + " <- getverticeshr(KerHR,percent=" + percent + ")");
+        safeEval(name + "$area <- getverticeshr(KerHRp,percent=" + percent + ", unin=c(\"m\"), unout=c(\"km2\"))$area");
+        safeEval("writeOGR(" + name +", dsn=\"" + fileName + "\", layer= \"" + name + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
     }
-
     
     protected void writeCharHullKmlFile(String fileName, MapQueryType mapQueryType) throws RServeInterfaceException {
-
         String rCommand;
-        String outFileNameFix = fileName.replace("\\","/"); /* for R in windows */
-        
-        try {
 
+        try {
             rCommand = "coordinates(positionFix) <- c(\"Y\",\"X\");proj4string(positionFix)=CRS(\"+init=epsg:4326\")";
             rConnection.eval(rCommand);
             logger.debug(rCommand);
@@ -293,25 +205,21 @@ public class RServeInterface {
             rConnection.voidEval(rCommand);
             rLog = rLog + queryType + " object set.";
 
-            rCommand = "writeOGR(" + queryType +", dsn=\"" + outFileNameFix + "\", layer= \"" + queryType + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))";
+            rCommand = "writeOGR(" + queryType +", dsn=\"" + fileName + "\", layer= \"" + queryType + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))";
             rConnection.eval(rCommand);
             logger.debug(rCommand);
             rLog = rLog + "KML written.";
-
-        } catch (RserveException e) {
+        }
+        catch (RserveException e) {
             throw new RServeInterfaceException(e.toString() + " Log: " + rLog);
         }
     }
 
-
     protected void writePositionFixKmlFile(String fileName) throws RServeInterfaceException {
-
         String rCommand;
         String outFileNameFix = fileName;
-        //String outFileNameFix = fileName.replace("\\","/"); /* for R in windows */
 
         try {
-
             rCommand = "coordinates(positionFix) <- c(\"Y\",\"X\");proj4string(positionFix)=CRS(\"+init=epsg:4326\")";
             rLog = rLog + "coordinates + projection defined for KML";
             logger.debug(rCommand);
@@ -324,12 +232,41 @@ public class RServeInterface {
             logger.debug(rCommand);
             rConnection.eval(rCommand);
             rLog = rLog + "KML written";
-
-        } catch (RserveException e) {
+        }
+        catch (RserveException e) {
             throw new RServeInterfaceException(e.toString() + "Log: " + rLog);
         }
-
     }
-
-
+    
+    // Wraps an R statement inside a try({...}, silent=TRUE) so we can catch any exception
+    // that occurs during evaluation. This gives us a much better error message, such as
+    // 
+    //     Error in .kernelUDs(SpatialPoints(x, proj4string = CRS(as.character(pfs1))),  :
+    //     h should be numeric or equal to either "href" or "LSCV"
+    // 
+    // instead of just this if we catch exceptions from RConnection.voidEval(...)
+    // 
+    //     org.rosuda.REngine.Rserve.RserveException: voidEval failed
+    // 
+    private void safeEval(String rCommand) throws RServeInterfaceException {
+        REXP rExp;
+        try {
+            rExp = rConnection.eval("try({" + rCommand + "}, silent=TRUE)");
+        }
+        catch (RserveException e) {
+            throw new RServeInterfaceException("Error evaluating expression", e);
+        }
+        String errorMessage = null;
+        try {
+            if (rExp.inherits("try-error")) {
+                errorMessage = rExp.asString();
+            }
+        }
+        catch (REXPMismatchException e) {
+            throw new RServeInterfaceException("Error getting error message", e);
+        }
+        if (errorMessage != null) {
+            throw new RServeInterfaceException(errorMessage);
+        }
+    }
 }
