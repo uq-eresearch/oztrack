@@ -540,7 +540,7 @@ function addProjectMapLayer() {
     var dateFrom = $('input[id=fromDatepicker]').val();
     var dateTo=$('input[id=toDatepicker]').val();
     var queryType =$('input[name=mapQueryTypeSelect]:checked');
-    var queryTypeDescription =  queryType.parent().next().text();
+    var queryTypeDescription = $('label[for="' + queryType.attr('id') + '"]').text();
     var percent = $('input[id=percent]').val();
     var h = $('input[id=h]').val();
 
@@ -618,8 +618,9 @@ function updateAnimalInfoFromKML(layerName, e) {
 	    var checkboxHtml = "<input type='checkbox' " 
 			 + "id='select-feature-" + checkboxId + "' value='" + checkboxValue + "' checked='true'/></input>";
 		var html = "&nbsp;&nbsp;<b>" + layerName + "</b>" 
-//				+ "<br> Area: " + 		Math.round(area*1000)/1000 + "<br>";
-   		+ "<table><tr><td> Area: </td><td>" + Math.round(area*1000)/1000 + " km<sup>2</sup></td></tr></table><br>";
+   		+ "<table>"
+   		+ "<tr><td> Area: </td><td>" + Math.round(area*1000)/1000 + " km<sup>2</sup></td></tr>"
+   		+ "</table><br>";
 		$('#animalInfo-'+ feature.attributes.id.value).append(checkboxHtml + html);
 	    $('input[id=select-feature-' + checkboxId + ']').change(function() {
 	        toggleFeature(this.value,this.checked);
