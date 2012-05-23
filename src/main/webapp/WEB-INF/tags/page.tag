@@ -59,7 +59,7 @@
         <li><a id="navTrack" href="<c:url value="/projects"/>">Animal Tracking</a></li>
         <li><a id="navAbout" href="<c:url value="/about"/>">About</a></li>
         <li><a id="navContact" href="<c:url value="/contact"/>">Contact</a></li>
-        <c:if test="${currentUser != null}">
+        <c:if test="${currentUser.admin}">
         <li><a id="navSettings" href="<c:url value="/settings"/>">Settings</a></li>
         </c:if>
     </ul>

@@ -25,7 +25,7 @@ public class SettingsController {
     @RequestMapping(value="/settings", method=RequestMethod.GET)
     public String handleRequest(HttpSession session) {
         User sessionUser = (User) session.getAttribute(Constants.CURRENT_USER);
-        if (sessionUser == null) {
+        if (sessionUser == null || !sessionUser.getAdmin()) {
             return "redirect:login";
         }
         return "settings";
@@ -38,7 +38,7 @@ public class SettingsController {
         BindingResult bindingResult
     ) throws Exception {
         User sessionUser = (User) session.getAttribute(Constants.CURRENT_USER);
-        if (sessionUser == null) {
+        if (sessionUser == null || !sessionUser.getAdmin()) {
             return "redirect:login";
         }
         new SettingsFormValidator().validate(settings, bindingResult);

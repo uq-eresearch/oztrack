@@ -41,6 +41,7 @@ public class User implements Serializable {
     private String lastName;
     private String organisation;
     private String password;
+    private Boolean admin;
     private String dataSpaceAgentURI;
     private String dataSpaceAgentDescription;
     private Date dataSpaceAgentUpdateDate;
@@ -146,6 +147,13 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    public Boolean getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        this.admin = admin;
+    }
 
     public List<ProjectUser> getProjectUsers() {
         return this.projectUsers;
