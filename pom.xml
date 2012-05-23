@@ -366,6 +366,11 @@
             <systemPath>${basedir}/lib/couchdb4j/couchdb4j-0.1.2.jar</systemPath>
         </dependency>
         -->
+        <dependency>
+            <groupId>com.googlecode.flyway</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>1.5</version>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
