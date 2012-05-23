@@ -12,6 +12,8 @@ public class SettingsFormValidator implements Validator {
     }
 
     public void validate(Object obj, Errors errors) {
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "homeText", "error.empty.field", "Please enter text for the 'Home' page");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "aboutText", "error.empty.field", "Please enter text for the 'About' page");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "contactText", "error.empty.field", "Please enter text for the 'Contact' page");
     }
 }

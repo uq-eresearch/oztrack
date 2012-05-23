@@ -20,9 +20,15 @@
         <h1>Settings</h1>
         <form:form commandName="settings" method="POST" name="settings" cssStyle="width: 100%; padding: 0; background-color: transparent;">
             <div>
+                <h2>Home text</h2>
+                <form:textarea path="homeText" id="homeText" cssClass="ckeditor"/>
+                <form:errors path="homeText" cssClass="formErrors"/>
                 <h2>About text</h2>
                 <form:textarea path="aboutText" id="aboutText" cssClass="ckeditor"/>
                 <form:errors path="aboutText" cssClass="formErrors"/>
+                <h2>Contact text</h2>
+                <form:textarea path="contactText" id="contactText" cssClass="ckeditor"/>
+                <form:errors path="contactText" cssClass="formErrors"/>
             </div>
             <div>
                 <input type="submit" value="Save" class="oztrackButton" />

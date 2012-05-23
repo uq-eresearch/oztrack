@@ -16,10 +16,6 @@
 
     <mvc:annotation-driven/>
     
-    <mvc:view-controller path="/" view-name="home"/>
-    <mvc:view-controller path="/home" view-name="home"/>
-    <mvc:view-controller path="/contact" view-name="contact"/>
-
     <mvc:default-servlet-handler/>
 
     <bean id="handlerMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">

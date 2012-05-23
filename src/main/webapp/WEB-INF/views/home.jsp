@@ -22,13 +22,7 @@
 	<jsp:body>
 	    <div class="mapTool">
 	        <div id="homeMapOptions">
-	            <h1>Welcome to OzTrack Beta!</h1>
-	            <p style="font-size:1.2em">
-		            OzTrack is a free-to-use web-based platform for the analysis and 
-		            visualisation of animal tracking data. It was developed for the Australian 
-		            animal tracking community but can be used to determine, measure and plot 
-		            home-ranges for animals anywhere in the world.
-	            </p>
+                ${text}
 	            <div id="logos" style="margin: 75px 40px 0 40px;">
 	                <a href="http://nectar.org.au/"><img src="<c:url value="/images/nectar-logo.png"/>" width="140px" height="32px"/></a>
 	                <a href="http://ands.org.au/"><img src="<c:url value="/images/ands-logo.png"/>" width="90px" height="40px" style="margin-top: -8px;"/></a>

@@ -18,6 +18,6 @@
     </jsp:attribute>
     <jsp:attribute name="sidebar"/>
     <jsp:body>
-		${aboutText}
+		${text}
     </jsp:body>
 </tags:page>
