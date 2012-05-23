@@ -9,17 +9,12 @@ import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.RawAcousticDetectionDao;
 import org.oztrack.data.access.ReceiverDeploymentDao;
+import org.oztrack.data.access.SettingsDao;
 import org.oztrack.data.access.SightingDao;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.access.direct.JdbcAccess;
 import org.oztrack.data.access.direct.JdbcQuery;
 
-
-/**
- * Author: alabri
- * Date: 9/03/11
- * Time: 11:21 AM
- */
 public interface DaoManager {
     AcousticDetectionDao getAcousticDetectionDao();
     PositionFixDao getPositionFixDao();
@@ -33,6 +28,5 @@ public interface DaoManager {
     JdbcAccess getJdbcAccess();
     JdbcQuery getJdbcQuery();
     SightingDao getSightingDao();
-
-
+    SettingsDao getSettingsDao();
 }

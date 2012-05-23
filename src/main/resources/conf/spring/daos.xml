@@ -32,4 +32,7 @@
     <bean id="sightingDao" class="org.oztrack.data.access.impl.SightingDaoImpl">
         <constructor-arg ref="jpaConnector"/>
     </bean>
+    <bean id="settingsDao" class="org.oztrack.data.access.impl.SettingsDaoImpl">
+        <constructor-arg ref="jpaConnector"/>
+    </bean>
 </beans>

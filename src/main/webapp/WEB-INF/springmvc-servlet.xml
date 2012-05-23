@@ -18,7 +18,6 @@
     
     <mvc:view-controller path="/" view-name="home"/>
     <mvc:view-controller path="/home" view-name="home"/>
-    <mvc:view-controller path="/about" view-name="about"/>
     <mvc:view-controller path="/contact" view-name="contact"/>
 
     <mvc:default-servlet-handler/>

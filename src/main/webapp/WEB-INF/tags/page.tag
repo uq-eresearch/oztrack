@@ -21,6 +21,8 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
     <script type="text/javascript" src="<c:url value="/js/jquery/jquery-ui-1.8.16.custom.min.js"/>"></script>
     <link rel="stylesheet" type="text/css" href="<c:url value="/css/jquery-ui/jquery-ui-1.8.16.custom.css"/>"/>
+    <script type="text/javascript" src="<c:url value="/js/ckeditor/ckeditor.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/js/ckeditor/adapters/jquery.js"/>"></script>
     
     <script type="text/javascript" src="<c:url value="/js/oztrack.js"/>"></script>
     
@@ -57,6 +59,9 @@
         <li><a id="navTrack" href="<c:url value="/projects"/>">Animal Tracking</a></li>
         <li><a id="navAbout" href="<c:url value="/about"/>">About</a></li>
         <li><a id="navContact" href="<c:url value="/contact"/>">Contact</a></li>
+        <c:if test="${currentUser != null}">
+        <li><a id="navSettings" href="<c:url value="/settings"/>">Settings</a></li>
+        </c:if>
     </ul>
 </div>
 <div id="crumbs">

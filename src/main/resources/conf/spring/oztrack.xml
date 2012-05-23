@@ -50,6 +50,7 @@
         <property name="jdbcAccess" ref="jdbcAccess"/>
         <property name="jdbcQuery" ref="jdbcQuery"/>
         <property name="sightingDao" ref="sightingDao"/>
+        <property name="settingsDao" ref="settingsDao"/>
     </bean>
 
     <bean id="authenticationManager" class="org.oztrack.app.AuthenticationManager">

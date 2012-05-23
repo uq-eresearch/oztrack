@@ -9,6 +9,7 @@ import org.oztrack.data.access.impl.DataFileDaoImpl;
 import org.oztrack.data.access.impl.ProjectDaoImpl;
 import org.oztrack.data.access.impl.RawAcousticDetectionDaoImpl;
 import org.oztrack.data.access.impl.ReceiverDeploymentDaoImpl;
+import org.oztrack.data.access.impl.SettingsDaoImpl;
 import org.oztrack.data.access.impl.SightingDaoImpl;
 import org.oztrack.data.access.impl.UserDaoImpl;
 import org.oztrack.data.access.impl.direct.JdbcAccessImpl;
@@ -35,6 +36,7 @@ public class DaoManagerImpl implements DaoManager {
     private JdbcAccessImpl JdbcAccess;
     private JdbcQueryImpl JdbcQuery;
     private SightingDaoImpl sightingDao;
+    private SettingsDaoImpl settingsDao;
 
     public JdbcAccessImpl getJdbcAccess() {
         return JdbcAccess;
@@ -115,6 +117,14 @@ public class DaoManagerImpl implements DaoManager {
 
     public void setSightingDao(SightingDaoImpl sightingDao) {
         this.sightingDao = sightingDao;
+    }
+    
+    public SettingsDaoImpl getSettingsDao() {
+        return settingsDao;
+    }
+
+    public void setSettingsDao(SettingsDaoImpl settingsDao) {
+        this.settingsDao = settingsDao;
     }
 
     public JdbcQueryImpl getJdbcQuery() {
