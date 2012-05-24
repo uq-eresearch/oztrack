@@ -318,7 +318,7 @@ function projectionCallback() {
 				}
 				//labelText = thisProjection.defData;
 			} else {
-				detailText = "Projection exists."
+				detailText = "Projection exists.";
 			}
 		}
 	}
@@ -326,7 +326,7 @@ function projectionCallback() {
 	// TO DO: get the units, must be in m for the calculations to work!
 	
 	
-	var headerText = "<b>" + thisProjection.srsCodeInput + "</b><br>"
+	var headerText = "<b>" + thisProjection.srsCodeInput + "</b><br>";
 	
 	
 	$('#projectionDescr').html(headerText+detailText);
@@ -340,7 +340,7 @@ function trim(str) {
 
 Proj4js.reportError = function(msg) {
     	$('#projectionDescr').html(msg + "Manually search for a code at <a href='http://spatialreference.org'>spatialreference.org</a>");
-}
+};
 
 /*
 function setupAnimalInfo(allPointsLayer) {
