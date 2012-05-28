@@ -6,10 +6,10 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <tags:page title="Report Animal Sighting">
     <jsp:attribute name="head">
-		<!--<script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key=${initParam['api-key']}" /></script>-->
+		<!--<script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key=${initParam['api-key']}"></script>-->
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-		<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/keydragzoom/src/keydragzoom_packed.js" /></script>
-		<script type="text/javascript" src="<c:url value="/js/sightingmap.js"/>" /></script>
+		<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/keydragzoom/src/keydragzoom_packed.js"></script>
+		<script type="text/javascript" src="<c:url value="/js/sightingmap.js"/>"></script>
         <script type="text/javascript"> 
             $(document).ready(function() {
                 $('#navHome').addClass('active');
