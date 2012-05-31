@@ -41,7 +41,6 @@
         </snapshotRepository>
     </distributionManagement>
     <properties>
-        <restletVersion>1.1.8</restletVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <geotools.version>2.7.2</geotools.version>
         <spring.version>3.1.1.RELEASE</spring.version>
@@ -226,11 +225,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.restlet</groupId>
-            <artifactId>org.restlet</artifactId>
-            <version>${restletVersion}</version>
         </dependency>
         <dependency>
            <groupId>commons-fileupload</groupId>
