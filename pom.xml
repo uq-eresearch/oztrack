@@ -43,7 +43,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <geotools.version>2.7.2</geotools.version>
-        <spring.version>3.1.1.RELEASE</spring.version>
     </properties>
     <build>
         <finalName>ROOT</finalName>
@@ -149,11 +148,6 @@
     <dependencies>
         <!--Frameworks-->
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.mortbay.jetty</groupId>
             <artifactId>jetty</artifactId>
             <version>6.1.24</version>
@@ -207,6 +201,11 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.hibernatespatial</groupId>
+            <artifactId>hibernate-spatial-postgis</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.5.8</version>
@@ -219,17 +218,27 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>${spring.version}</version>
+            <version>3.1.1.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
-            <version>${spring.version}</version>
+            <version>3.1.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+            <version>3.1.0.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
+            <version>3.1.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>3.1.1.RELEASE</version>
         </dependency>
         <dependency>
            <groupId>commons-fileupload</groupId>
@@ -246,13 +255,18 @@
            <artifactId>commons-httpclient</artifactId>
            <version>3.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>1.8.5</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.4</version>
+        </dependency>
 
         <!--Local libraries-->
-        <dependency>
-            <groupId>au.edu.uq.itee.maenad</groupId>
-            <artifactId>util</artifactId>
-            <version>0.2.0</version>
-        </dependency>
         <dependency>
             <groupId>au.edu.uq.itee.maenad</groupId>
             <artifactId>dataaccess</artifactId>
@@ -273,26 +287,15 @@
         <dependency>
             <groupId>org.postgis</groupId>
             <artifactId>postgis-jdbc</artifactId>
-            <version>1.3.3</version>
+            <version>1.5.2</version>
         </dependency>
 
         <!--Testing Frameworks-->
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-            <version>3.0</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.1</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4.1</version>
         </dependency>
 
         <!-- Utilities -->
@@ -300,16 +303,6 @@
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
             <version>3.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>1.8.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernatespatial</groupId>
-            <artifactId>hibernate-spatial-postgis</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.oztrack</groupId>
@@ -320,11 +313,6 @@
             <groupId>org.oztrack</groupId>
             <artifactId>REngine</artifactId>
             <version>0.6-5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-shapefile</artifactId>
-            <version>${geotools.version}</version>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>

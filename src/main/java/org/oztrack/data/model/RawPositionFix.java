@@ -1,6 +1,5 @@
 package org.oztrack.data.model;
 
-//import org.postgis.Point;
 import java.util.Date;
 
 import javax.persistence.Column;

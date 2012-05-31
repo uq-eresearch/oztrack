@@ -7,10 +7,8 @@
         <properties>
             <property name="hibernate.show_sql" value="false"/>
             <property name="hibernate.format_sql" value="false"/>
-            <property name="hibernate.connection.driver_class"
-                      value="org.hsqldb.jdbcDriver"/>
-            <property name="hibernate.connection.url"
-                      value="jdbc:hsqldb:file:local/database/starterkitdb;shutdown=true"/>
+            <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver"/>
+            <property name="hibernate.connection.url" value="jdbc:hsqldb:file:local/database/starterkitdb;shutdown=true"/>
             <property name="hibernate.connection.username" value="sa"/>
             <property name="hibernate.connection.password" value=""/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
@@ -24,10 +22,8 @@
         <properties>
             <property name="hibernate.show_sql" value="false"/>
             <property name="hibernate.format_sql" value="false"/>
-            <property name="hibernate.connection.driver_class"
-                      value="org.h2.Driver"/>
-            <property name="hibernate.connection.url"
-                      value="jdbc:h2:file:local/database/starterkitdb;FILE_LOCK=NO"/>
+            <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
+            <property name="hibernate.connection.url" value="jdbc:h2:file:local/database/starterkitdb;FILE_LOCK=NO"/>
             <property name="hibernate.connection.username" value="sa"/>
             <property name="hibernate.connection.password" value=""/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
@@ -42,8 +38,7 @@
             <property name="hibernate.show_sql" value="false"/>
             <property name="hibernate.format_sql" value="false"/>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
-            <property name="hibernate.connection.url"
-                      value="jdbc:postgresql://localhost/oztrack"/>
+            <property name="hibernate.connection.url" value="jdbc:postgresql://localhost/oztrack"/>
             <property name="hibernate.connection.username" value="oztrack"/>
             <property name="hibernate.connection.password" value="ozadmin"/>
             <property name="hibernate.dialect" value="org.hibernatespatial.postgis.PostgisDialect"/>
