@@ -53,20 +53,4 @@
             <property name="hibernate.jdbc.batch_size" value="50"/>
         </properties>
     </persistence-unit>
-    <persistence-unit name="mysql-pu" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <properties>
-            <property name="hibernate.show_sql" value="false"/>
-            <property name="hibernate.format_sql" value="false"/>
-            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
-            <property name="hibernate.connection.url"
-                      value="jdbc:mysql://localhost:3306/starterkitdb?autoReconnect=true"/>
-            <property name="hibernate.connection.username" value="username"/>
-            <property name="hibernate.connection.password" value="password"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
-            <property name="hibernate.cache.use_second_level_cache" value="false"/>
-            <property name="hibernate.cache.use_query_cache" value="false"/>
-        </properties>
-    </persistence-unit>
 </persistence>
