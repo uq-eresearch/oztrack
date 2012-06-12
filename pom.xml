@@ -366,15 +366,6 @@
             <artifactId>jmustache</artifactId>
             <version>1.3</version>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>com.google.code</groupId>
-            <artifactId>couchdb4j</artifactId>
-            <version>0.1.2</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/couchdb4j/couchdb4j-0.1.2.jar</systemPath>
-        </dependency>
-        -->
         <dependency>
             <groupId>com.googlecode.flyway</groupId>
             <artifactId>flyway-core</artifactId>
