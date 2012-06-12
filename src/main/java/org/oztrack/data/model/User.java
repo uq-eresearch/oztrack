@@ -16,7 +16,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 
 import org.hibernate.annotations.Cascade;
-import org.hibernate.validator.NotNull;
 
 /**
  * Author: alabri
@@ -32,8 +31,7 @@ public class User implements Serializable {
     @Column(nullable=false)
     private Long id;
 
-    @NotNull
-    @Column(unique = true)
+    @Column(unique = true, nullable=false)
     private String username;
     private String email;
     private String title;
@@ -47,9 +45,8 @@ public class User implements Serializable {
     private Date dataSpaceAgentUpdateDate;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade =
-    {CascadeType.PERSIST, CascadeType.MERGE})
-    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
-    org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
+    {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true)
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private List<ProjectUser> projectUsers = new LinkedList<ProjectUser>();
 
     /*

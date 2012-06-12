@@ -180,40 +180,24 @@
             <version>1.2</version>
         </dependency>
         <dependency>
-            <groupId>javax.transaction</groupId>
-            <artifactId>transaction-api</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>3.1.0.GA</version>
-        </dependency>
-        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>3.4.0.GA</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>jta</artifactId>
-                    <groupId>javax.transaction</groupId>
-                </exclusion>
-            </exclusions>
+            <version>3.6.9.Final</version>
         </dependency>
         <dependency>
             <groupId>org.hibernatespatial</groupId>
             <artifactId>hibernate-spatial-postgis</artifactId>
-            <version>1.0</version>
+            <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.5.8</version>
+            <version>1.6.1</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.5.8</version>
+            <version>1.6.1</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -397,6 +381,10 @@
         <repository>
             <id>Hibernate Spatial repo</id>
             <url>http://www.hibernatespatial.org/repository</url>
+        </repository>
+        <repository>
+            <id>JBoss Releases</id>
+            <url>https://repository.jboss.org/nexus/content/repositories/releases</url>
         </repository>
    </repositories>
 </project>
