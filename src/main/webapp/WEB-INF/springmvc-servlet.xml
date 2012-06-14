@@ -17,6 +17,10 @@
     <mvc:annotation-driven/>
     
     <mvc:default-servlet-handler/>
+    
+    <mvc:interceptors>
+        <bean class="org.oztrack.controller.CurrentUserInterceptor"/>
+    </mvc:interceptors>
 
     <bean id="handlerMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
         <property name="alwaysUseFullPath" value="true"/>

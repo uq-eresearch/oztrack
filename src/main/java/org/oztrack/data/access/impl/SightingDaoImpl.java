@@ -1,23 +1,21 @@
 package org.oztrack.data.access.impl;
 
-import java.io.Serializable;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.oztrack.data.access.SightingDao;
 import org.oztrack.data.model.Sighting;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
-import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
-
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 8/06/11
- * Time: 9:45 AM
- */
-public class SightingDaoImpl extends JpaDao<Sighting> implements SightingDao, Serializable {
-
-    public SightingDaoImpl(EntityManagerSource entityManagerSource) {
-        super(entityManagerSource);
+@Service
+public class SightingDaoImpl implements SightingDao {
+    @PersistenceContext
+    private EntityManager em;
+    
+    @Override
+    @Transactional
+    public void save(Sighting sighting) {
+        em.persist(sighting);
     }
-
 }

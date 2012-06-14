@@ -1,9 +1,10 @@
 package org.oztrack.data.access;
 
 import org.oztrack.data.model.Settings;
+import org.springframework.stereotype.Service;
 
-import au.edu.uq.itee.maenad.dataaccess.Dao;
-
-public interface SettingsDao extends Dao<Settings> {
+@Service
+public interface SettingsDao {
     Settings getSettings();
+    Settings update(Settings settings);
 }

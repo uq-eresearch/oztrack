@@ -1,29 +1,24 @@
 package org.oztrack.data.access.impl;
 
-import java.io.Serializable;
-
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
-import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
-
-/**
- * Author: alabri
- * Date: 9/03/11
- * Time: 11:08 AM
- */
-public class UserDaoImpl extends JpaDao<User> implements UserDao, Serializable {
-    public UserDaoImpl(EntityManagerSource entityManagerSource) {
-        super(entityManagerSource);
-    }
-
+@Service
+public class UserDaoImpl implements UserDao {
+    @PersistenceContext
+    private EntityManager em;
+    
     @Override
+    @Transactional(readOnly=true)
     public User getByUsername(String username) {
-        Query query = entityManagerSource.getEntityManager().createQuery("SELECT o FROM AppUser o WHERE o.username = :username");
+        Query query = em.createQuery("SELECT o FROM AppUser o WHERE o.username = :username");
         query.setParameter("username", username);
         try {
             return (User) query.getSingleResult();
@@ -33,8 +28,9 @@ public class UserDaoImpl extends JpaDao<User> implements UserDao, Serializable {
     }
     
     @Override
+    @Transactional(readOnly=true)
     public User getUserById(Long id) {
-        Query query = entityManagerSource.getEntityManager().createQuery("SELECT o FROM AppUser o WHERE o.id = :id");
+        Query query = em.createQuery("SELECT o FROM AppUser o WHERE o.id = :id");
         query.setParameter("id", id);
         try {
             return (User) query.getSingleResult();
@@ -42,5 +38,16 @@ public class UserDaoImpl extends JpaDao<User> implements UserDao, Serializable {
             return null;
         }
     }
-    
+
+    @Override
+    @Transactional
+    public void save(User user) {
+        em.persist(user);
+    }
+
+    @Override
+    @Transactional
+    public User update(User user) {
+        return em.merge(user);
+    }
 }

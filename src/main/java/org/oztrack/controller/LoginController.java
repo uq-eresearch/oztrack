@@ -5,10 +5,10 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.Constants;
-import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
 import org.oztrack.validator.LoginFormValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,6 +20,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class LoginController {
     protected final Log logger = LogFactory.getLog(getClass());
+    
+    @Autowired
+    private UserDao userDao;
     
     @ModelAttribute("user")
     public User getUser() {
@@ -40,13 +43,12 @@ public class LoginController {
         BindingResult bindingResult
     ) throws Exception {
         logger.info("Login User: " + user.getUsername());
-        new LoginFormValidator().validate(user, bindingResult);
+        new LoginFormValidator(userDao).validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
             return "login";
         }        
-        UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();
         User currentUser = userDao.getByUsername(user.getUsername());
-        session.setAttribute(Constants.CURRENT_USER, currentUser);
+        session.setAttribute(Constants.CURRENT_USER_ID, currentUser.getId());
         return "redirect:projects";
     }
     

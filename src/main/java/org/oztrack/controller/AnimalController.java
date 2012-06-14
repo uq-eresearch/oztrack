@@ -2,10 +2,10 @@ package org.oztrack.controller;
 
 import javax.servlet.http.HttpSession;
 
-import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.validator.AnimalFormValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,9 +17,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class AnimalController {
+    @Autowired
+    private AnimalDao animalDao;
+    
     @ModelAttribute("animal")
     public Animal getAnimal(@RequestParam(value="animal_id") Long animalId) throws Exception {
-        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
         return animalDao.getAnimalById(animalId);
     }
 
@@ -44,7 +46,6 @@ public class AnimalController {
         if (bindingResult.hasErrors()) {
             return "animalform";
         }
-        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
         animalDao.update(animal);
         redirectAttributes.addAttribute("projectId", animal.getProject().getId());
         return "redirect:projectanimals?id={projectId}";

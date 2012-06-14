@@ -250,13 +250,6 @@
             <version>1.4.4</version>
         </dependency>
 
-        <!--Local libraries-->
-        <dependency>
-            <groupId>au.edu.uq.itee.maenad</groupId>
-            <artifactId>dataaccess</artifactId>
-            <version>0.3.0</version>
-        </dependency>
-
         <!--Database connectors and drivers-->
         <dependency>
             <groupId>com.h2database</groupId>

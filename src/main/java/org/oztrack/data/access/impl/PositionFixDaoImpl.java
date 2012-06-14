@@ -1,43 +1,50 @@
 package org.oztrack.data.access.impl;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.oztrack.data.access.Page;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import au.edu.uq.itee.maenad.dataaccess.Page;
-import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
-import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
-
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 11/08/11
- * Time: 1:10 PM
- */
-public class PositionFixDaoImpl extends JpaDao<PositionFix> implements PositionFixDao, Serializable {
-
-    /**
-     * Logger for this class and subclasses
-     */
+@Service
+public class PositionFixDaoImpl implements PositionFixDao {
     protected final Log logger = LogFactory.getLog(getClass());
 
-    public PositionFixDaoImpl(EntityManagerSource entityManagerSource) {
-        super(entityManagerSource);
+    private EntityManager em;
+    
+    private DataSource dataSource;
+
+    @PersistenceContext
+    public void setEntityManger(EntityManager em) {
+        this.em = em;
+    }
+    
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
+    @Override
+    @Transactional(readOnly=true)
     public Page<PositionFix> getPage(SearchQuery searchQuery, int offset, int nbrObjectsPerPage) {
-
        try {
             Query query = buildQuery(searchQuery, false);
             logger.debug(query.toString());
@@ -49,12 +56,11 @@ public class PositionFixDaoImpl extends JpaDao<PositionFix> implements PositionF
             int count = Integer.parseInt(countQuery.getSingleResult().toString());
             return new Page<PositionFix>(positionFixList,offset,nbrObjectsPerPage, count);
        } catch (NoResultException ex) {
-           entityManagerSource.getEntityManager().getTransaction().rollback();
+           em.getTransaction().rollback();
            return null;
        }
     }
 
-    // count : indicates whether the query returns a count of rows
     public Query buildQuery(SearchQuery searchQuery, boolean count) {
 
         String select = (count ? "count(o) " : "o ");
@@ -83,7 +89,7 @@ public class PositionFixDaoImpl extends JpaDao<PositionFix> implements PositionF
 
 
         sql = sql + orderBy;
-        Query query = entityManagerSource.getEntityManager().createQuery(sql);
+        Query query = em.createQuery(sql);
         query.setParameter("projectId", searchQuery.getProject().getId());
 
 
@@ -103,33 +109,66 @@ public class PositionFixDaoImpl extends JpaDao<PositionFix> implements PositionF
         return query;
     }
 
+    @Override
+    @Transactional(readOnly=true)
     public List<PositionFix> getProjectPositionFixList(SearchQuery searchQuery) {
         Query query = buildQuery(searchQuery, false);
         @SuppressWarnings("unchecked")
         List<PositionFix> resultList = (List<PositionFix>) query.getResultList();
         return resultList;
     }
+    
+    @Override
+    @Transactional(readOnly=true)
+    public List<PositionFix> queryProjectPositionFixes(SearchQuery searchQuery) {
 
-    /*
-    public Polygon getProjectBoundingBox(Project project) {
-    	
-    	String projectId =  project.getId().toString();
-    	String sql  = "(select (ST_Envelope(ST_Collect(t.locationGeometry))) "
-                + " from PositionFix t "
-                + ", dataFile d "
-                + " where t.datafile_id=d.id"
-                + " and d.project_id = :projectId) ";
-    	
-    	Query query = entityManagerSource.getEntityManager().createNativeQuery(sql);
-    	query.setParameter("projectId", projectId);
-    	Type polygonType = new CustomType(Polygon.class, null);
-    	
-    	Polygon boundingBox = (Polygon)query.getSingleResult();
-    	return boundingBox;
+        Long projectId = searchQuery.getProject().getId();
+        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+        mapSqlParameterSource.addValue("projectId", projectId);
+
+        String sql = "SELECT o.animal_id "
+                   +  ",o.detectiontime "
+                   +  ",o.latitude "
+                   +  ",o.longitude "
+                   +  "from PositionFix o "
+                   +  ", datafile d "
+                   +  "where o.datafile_id=d.id "
+                   +  "and d.project_id = :projectId " ;
+                     //"limit 20";
+
+        if (searchQuery.getFromDate() != null) {
+            sql = sql + "and o.detectionTime >= :fromDate ";
+            mapSqlParameterSource.addValue("fromDate", searchQuery.getFromDate());
+        }
+        if (searchQuery.getToDate() != null) {
+            sql = sql + "and o.detectionTime <= :toDate ";
+            mapSqlParameterSource.addValue("toDate", searchQuery.getToDate());
+        }
+        if (searchQuery.getAnimalList() != null) {
+            String animalClause = "and o.animal_id in (";
+            for (int i=0; i < searchQuery.getAnimalList().size(); i++) {
+                String thisAnimal = "animalId" + i;
+                animalClause = animalClause + ":" + thisAnimal + ",";
+                mapSqlParameterSource.addValue(thisAnimal,searchQuery.getAnimalList().get(i).getId());
+            }
+            animalClause = animalClause.substring(0,animalClause.length()-1) + ")";
+            sql = sql + animalClause;
+        }
+
+        String orderBy = " order by o.detectionTime ";
+        sql = sql + orderBy;
+
+        logger.debug("Position fix jdbc query: " + sql);
+
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+        PositionFixRowMapper positionFixRowMapper = new PositionFixRowMapper();
+        List<PositionFix> result = namedParameterJdbcTemplate.query(sql, mapSqlParameterSource, positionFixRowMapper );
+        return result;
     }
-    
-    */
-    
+
+    @Override
+    @Transactional(readOnly=true)
     public Date getProjectFirstDetectionDate(Project project) {
     	
     	String projectId =  project.getId().toString();
@@ -138,12 +177,14 @@ public class PositionFixDaoImpl extends JpaDao<PositionFix> implements PositionF
         + "where o.dataFile in "
         + "(select d from datafile d where d.project.id = :projectId) ";
     	
-    	Query query = entityManagerSource.getEntityManager().createQuery(sql);
+    	Query query = em.createQuery(sql);
     	query.setParameter("projectId", projectId);
     	Date firstDate = (Date)query.getSingleResult();
     	return firstDate;
     }
     
+    @Override
+    @Transactional(readOnly=true)
     public Date getProjectLastDetectionDate(Project project) {
     	
     	String projectId =  project.getId().toString();
@@ -152,37 +193,37 @@ public class PositionFixDaoImpl extends JpaDao<PositionFix> implements PositionF
             + "where o.dataFile in "
             + "(select d from datafile d where d.project.id = :projectId) ";
     	
-    	Query query = entityManagerSource.getEntityManager().createQuery(sql);
+    	Query query = em.createQuery(sql);
     	query.setParameter("projectId", projectId);
     	Date lastDate = (Date)query.getSingleResult();
     	return lastDate;
     }
     
+    @Override
+    @Transactional(readOnly=true)
     public Date getDataFileFirstDetectionDate(DataFile dataFile) {
     	
         String sql = "select min(o.detectionTime)" 
         + "from PositionFix o "
         + "where o.dataFile = :dataFile";
     	
-    	Query query = entityManagerSource.getEntityManager().createQuery(sql);
+    	Query query = em.createQuery(sql);
     	query.setParameter("dataFile", dataFile);
     	Date firstDate = (Date) query.getSingleResult();
     	return firstDate;
     }
 
+    @Override
+    @Transactional(readOnly=true)
     public Date getDataFileLastDetectionDate(DataFile dataFile) {
     	
         String sql = "select max(o.detectionTime)" 
         + "from PositionFix o "
         + "where o.dataFile = :dataFile";
     	
-    	Query query = entityManagerSource.getEntityManager().createQuery(sql);
+    	Query query = em.createQuery(sql);
     	query.setParameter("dataFile", dataFile);
     	Date lastDate = (Date) query.getSingleResult();
     	return lastDate;
     }
-    
-
-
-
 }

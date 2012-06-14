@@ -1,22 +1,29 @@
 package org.oztrack.data.access.impl;
 
-import java.io.Serializable;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.oztrack.data.access.SettingsDao;
 import org.oztrack.data.model.Settings;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
-import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
-
-public class SettingsDaoImpl extends JpaDao<Settings> implements SettingsDao, Serializable {
-    public SettingsDaoImpl(EntityManagerSource entityManagerSource) {
-        super(entityManagerSource);
+@Service
+public class SettingsDaoImpl implements SettingsDao {
+    @PersistenceContext
+    private EntityManager em;    
+    
+    @Override
+    @Transactional(readOnly=true)
+    public Settings getSettings() {
+        return (Settings) em
+            .createQuery("from org.oztrack.data.model.Settings")
+            .getSingleResult();
     }
     
     @Override
-    public Settings getSettings() {
-        return (Settings) entityManagerSource.getEntityManager()
-            .createQuery("from org.oztrack.data.model.Settings")
-            .getSingleResult();
+    @Transactional
+    public Settings update(Settings settings) {
+        return em.merge(settings);
     }
 }

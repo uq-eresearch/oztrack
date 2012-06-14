@@ -1,31 +1,30 @@
 package org.oztrack.data.access.impl;
 
-import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.oztrack.data.access.ReceiverDeploymentDao;
 import org.oztrack.data.model.ReceiverDeployment;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
-import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
-
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 5/05/11
- * Time: 2:07 PM
- */
-public class ReceiverDeploymentDaoImpl extends JpaDao<ReceiverDeployment> implements ReceiverDeploymentDao, Serializable {
-
-    public ReceiverDeploymentDaoImpl(EntityManagerSource entityManagerSource) {
-        super(entityManagerSource);
+@Service
+public class ReceiverDeploymentDaoImpl implements ReceiverDeploymentDao {
+    private EntityManager em;
+    
+    @PersistenceContext
+    public void setEntityManager(EntityManager em) {
+        this.em = em;
     }
 
+    @Override
+    @Transactional(readOnly=true)
     public List<ReceiverDeployment> getReceiversByProjectId(Long projectId) {
-        Query query = entityManagerSource.getEntityManager().createQuery("select o from ReceiverDeployment o where o.project.id = :projectId");
+        Query query = em.createQuery("select o from ReceiverDeployment o where o.project.id = :projectId");
         query.setParameter("projectId", projectId);
         try {
             @SuppressWarnings("unchecked")
@@ -36,8 +35,10 @@ public class ReceiverDeploymentDaoImpl extends JpaDao<ReceiverDeployment> implem
         }
     }
 
+    @Override
+    @Transactional(readOnly=true)
     public ReceiverDeployment getReceiverDeployment(String originalId, Long projectId) {
-        Query query = entityManagerSource.getEntityManager().createQuery("select o from ReceiverDeployment o where o.originalId = :originalId and o.project.id=:projectId");
+        Query query = em.createQuery("select o from ReceiverDeployment o where o.originalId = :originalId and o.project.id=:projectId");
         query.setParameter("originalId",originalId);
         query.setParameter("projectId",projectId);
         try {
@@ -48,14 +49,16 @@ public class ReceiverDeploymentDaoImpl extends JpaDao<ReceiverDeployment> implem
     }
 
     @Override
+    @Transactional
     public void save(ReceiverDeployment object) {
         object.setUpdateDate(new java.util.Date());
-        super.save(object);    //To change body of overridden methods use File | Settings | File Templates.
+        em.persist(object);
     }
 
     @Override
+    @Transactional
     public ReceiverDeployment update(ReceiverDeployment object) {
         object.setUpdateDate(new java.util.Date());
-        return super.update(object);    //To change body of overridden methods use File | Settings | File Templates.
+        return em.merge(object);
     }
 }

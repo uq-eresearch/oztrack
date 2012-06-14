@@ -6,8 +6,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.AnimalDao;
+import org.oztrack.data.access.Page;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Animal;
@@ -15,6 +15,7 @@ import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.validator.SearchFormValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomCollectionEditor;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -27,10 +28,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import au.edu.uq.itee.maenad.dataaccess.Page;
-
 @Controller
 public class SearchFormController {
+    @Autowired
+    private ProjectDao projectDao;
+    
+    @Autowired
+    private PositionFixDao positionFixDao;
+    
+    @Autowired
+    AnimalDao animalDao;
+
     @ModelAttribute("project")
     public Project getProject(@RequestParam(value="project_id", required=false) Long projectId) {
         Project project = null;
@@ -39,7 +47,6 @@ public class SearchFormController {
             project.setRightsStatement("The data is the property of the University of Queensland. Permission is required to use this material.");
         }
         else {
-            ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
             project = projectDao.getProjectById(projectId);
         }
         return project;
@@ -103,7 +110,6 @@ public class SearchFormController {
         SearchQuery searchQuery,
         int offset
     ) throws Exception {
-        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
 
         int nbrObjectsPerPage=30;
@@ -112,7 +118,6 @@ public class SearchFormController {
 
         switch (project.getProjectType()) {
              case GPS:
-                 PositionFixDao positionFixDao = OzTrackApplication.getApplicationContext().getDaoManager().getPositionFixDao();
                  Page<PositionFix> positionFixPage = positionFixDao.getPage(searchQuery, offset, nbrObjectsPerPage);
                  nbrObjectsThisPage = positionFixPage.getObjects().size();
                  totalCount = positionFixPage.getCount();

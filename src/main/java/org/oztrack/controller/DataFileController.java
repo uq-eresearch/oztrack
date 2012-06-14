@@ -8,9 +8,9 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.oztrack.app.Constants;
-import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.User;
@@ -18,6 +18,7 @@ import org.oztrack.data.model.types.AcousticFileHeader;
 import org.oztrack.data.model.types.DataFileStatus;
 import org.oztrack.data.model.types.PositionFixFileHeader;
 import org.oztrack.validator.DataFileFormValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,9 +31,17 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class DataFileController {
+    @Autowired
+    private ProjectDao projectDao;
+    
+    @Autowired
+    private DataFileDao dataFileDao;
+    
+    @Autowired
+    private UserDao userDao;
+
     @ModelAttribute("project")
     public Project getProject(@RequestParam(value="project_id") Long projectId) {
-        ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
         return projectDao.getProjectById(projectId);
     }
     
@@ -44,7 +53,6 @@ public class DataFileController {
             return dataFile;
         }
         else {
-            DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
             return dataFileDao.getDataFileById(dataFileId);
         }
     }
@@ -55,11 +63,10 @@ public class DataFileController {
         Model model,
         @ModelAttribute(value="project") Project project
     ) throws Exception {
-        User sessionUser = (User) session.getAttribute(Constants.CURRENT_USER);
-        if (sessionUser == null) {
+        Long currentUserId = (Long) session.getAttribute(Constants.CURRENT_USER_ID);
+        if (currentUserId == null) {
             return "redirect:login";
         }
-        DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
         List<DataFile> dataFileList = dataFileDao.getDataFilesByProject(project);
         model.addAttribute("dataFileList", dataFileList);
         return "datafiles";
@@ -71,8 +78,8 @@ public class DataFileController {
         @ModelAttribute(value="project") Project project,
         @ModelAttribute(value="dataFile") DataFile dataFile
     ) throws Exception {
-        User sessionUser = (User) session.getAttribute(Constants.CURRENT_USER);
-        if (sessionUser == null) {
+        Long currentUserId = (Long) session.getAttribute(Constants.CURRENT_USER_ID);
+        if (currentUserId == null) {
             return "redirect:login";
         }
         return "datafiledetail";
@@ -85,8 +92,8 @@ public class DataFileController {
         @ModelAttribute(value="project") Project project,
         @ModelAttribute(value="dataFile") DataFile dataFile
     ) {
-        User sessionUser = (User) session.getAttribute(Constants.CURRENT_USER);
-        if (sessionUser == null) {
+        Long currentUserId = (Long) session.getAttribute(Constants.CURRENT_USER_ID);
+        if (currentUserId == null) {
             return "redirect:login";
         }
         ArrayList <String> fileHeaders = new ArrayList <String>();
@@ -118,16 +125,16 @@ public class DataFileController {
         BindingResult bindingResult,
         @RequestParam(value="update", required=false) String update
     ) throws Exception {
-        User currentUser = (User) session.getAttribute(Constants.CURRENT_USER);
-        if (currentUser == null) {
+        Long currentUserId = (Long) session.getAttribute(Constants.CURRENT_USER_ID);
+        if (currentUserId == null) {
             return "redirect:login";
         }
+        User currentUser = userDao.getUserById(currentUserId);
         new DataFileFormValidator().validate(dataFile, bindingResult);
         if (bindingResult.hasErrors()) {
             return "datafileadd";
         }
         
-        DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
         MultipartFile file = dataFile.getFile();
         dataFile.setSingleAnimalInFile(false);
         dataFile.setUserGivenFileName(file.getOriginalFilename());

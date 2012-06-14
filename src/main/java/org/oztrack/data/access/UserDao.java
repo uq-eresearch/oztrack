@@ -1,16 +1,12 @@
 package org.oztrack.data.access;
 
 import org.oztrack.data.model.User;
+import org.springframework.stereotype.Service;
 
-import au.edu.uq.itee.maenad.dataaccess.Dao;
-
-/**
- * Author: alabri
- * Date: 9/03/11
- * Time: 11:17 AM
- */
-public interface UserDao extends Dao<User> {
+@Service
+public interface UserDao {
     User getByUsername(String username);
     User getUserById(Long id);
-    
+    void save(User user);
+    User update(User user);
 }

@@ -1,33 +1,24 @@
 package org.oztrack.data.access.impl;
 
-import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.oztrack.data.access.RawAcousticDetectionDao;
-import org.oztrack.data.model.RawAcousticDetection;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
-import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
+@Service
+public class RawAcousticDetectionDaoImpl implements RawAcousticDetectionDao {
+    @PersistenceContext
+    private EntityManager em;
 
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 13/04/11
- * Time: 1:13 PM
- * To change this template use File | Settings | File Templates.
- */
-public class RawAcousticDetectionDaoImpl extends JpaDao<RawAcousticDetection> implements RawAcousticDetectionDao, Serializable {
-
-	public RawAcousticDetectionDaoImpl(EntityManagerSource entityManagerSource) {
-        super(entityManagerSource);
-    }
-
-
+    @Transactional(readOnly=true)
     public int getNumberRawDetections() {
-        Query query = entityManagerSource.getEntityManager().createQuery("SELECT count(*) FROM RawAcousticDetection");
+        Query query = em.createQuery("SELECT count(*) FROM RawAcousticDetection");
         try {
             return Integer.parseInt(query.getSingleResult().toString());
         } catch (NoResultException ex) {
@@ -35,8 +26,9 @@ public class RawAcousticDetectionDaoImpl extends JpaDao<RawAcousticDetection> im
         }
     }
 
+    @Transactional(readOnly=true)
     public List <String> getAllAnimalIds() {
-        Query query = entityManagerSource.getEntityManager().createQuery("SELECT distinct animalid from RawAcousticDetection");
+        Query query = em.createQuery("SELECT distinct animalid from RawAcousticDetection");
         try {
             @SuppressWarnings("unchecked")
             List <String> resultList = query.getResultList();
@@ -47,8 +39,9 @@ public class RawAcousticDetectionDaoImpl extends JpaDao<RawAcousticDetection> im
 
     }
 
+    @Transactional(readOnly=true)
     public List<String> getAllReceiverIds() {
-        Query query = entityManagerSource.getEntityManager().createQuery("SELECT distinct receiversn from RawAcousticDetection");
+        Query query = em.createQuery("SELECT distinct receiversn from RawAcousticDetection");
         try {
             @SuppressWarnings("unchecked")
             List <String> resultList = query.getResultList();
@@ -57,10 +50,4 @@ public class RawAcousticDetectionDaoImpl extends JpaDao<RawAcousticDetection> im
             return null;
         }
     }
-
-//    java.util.Date getMinDetectionDate();
-//    java.util.Date getMaxDetectionDate();
-//    int [] getAllAnimalIds();
-//    int [] getAllReceiverIds();
-
 }

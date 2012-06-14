@@ -1,4 +1,4 @@
-package org.oztrack.data.access.impl.direct;
+package org.oztrack.data.access.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

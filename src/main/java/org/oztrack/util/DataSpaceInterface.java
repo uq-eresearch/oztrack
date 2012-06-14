@@ -37,23 +37,21 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class DataSpaceInterface {
-
-    /**
-     * Logger for this class and subclasses
-     */
     protected final Log logger = LogFactory.getLog(getClass());
+    // TODO: DAO should not appear in this layer.
+    private ProjectDao projectDao;
+    // TODO: DAO should not appear in this layer.
+    private UserDao userDao;
     private String dataSpaceURL;
     private String dataSpaceResponse;
 
-
-    public DataSpaceInterface() {
+    public DataSpaceInterface(ProjectDao projectDao, UserDao userDao) {
+        this.projectDao = projectDao;
+        this.userDao = userDao;
         this.dataSpaceURL = OzTrackApplication.getApplicationContext().getDataSpaceURL();
     }
 
     public void deleteFromDataSpace(Project project) throws DataSpaceInterfaceException {
-
-        ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
-        UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();
         User dataSpaceAgent = userDao.getUserById(project.getDataSpaceAgent().getId());
         String agentURI = project.getDataSpaceAgent().getDataSpaceAgentURI();
         String collectionURI = project.getDataSpaceURI();
@@ -74,7 +72,6 @@ public class DataSpaceInterface {
 
         project = projectDao.update(project);
 
-
         if (deleteAgent) {
 
             statusCode = executeDeleteMethod("agents/" + agentURI, project);
@@ -92,9 +89,6 @@ public class DataSpaceInterface {
     }
 
     public void updateDataSpace(Project project) throws DataSpaceInterfaceException {
-
-        ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
-        UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();
         User dataSpaceAgent = userDao.getUserById(project.getDataSpaceAgent().getId());
         String agentURI = project.getDataSpaceAgent().getDataSpaceAgentURI();
         String collectionURI = project.getDataSpaceURI();
@@ -441,6 +435,4 @@ public class DataSpaceInterface {
         return uri;
 
     }
-
-
 }

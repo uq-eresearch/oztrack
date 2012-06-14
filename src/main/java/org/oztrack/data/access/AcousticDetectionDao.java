@@ -1,18 +1,10 @@
 package org.oztrack.data.access;
 
 import org.oztrack.data.model.AcousticDetection;
+import org.springframework.stereotype.Service;
 
-import au.edu.uq.itee.maenad.dataaccess.Dao;
-
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 6/05/11
- * Time: 1:29 PM
- * To change this template use File | Settings | File Templates.
- */
-public interface AcousticDetectionDao extends Dao<AcousticDetection> {
-
+@Service
+public interface AcousticDetectionDao {
+    Page<AcousticDetection> getPage(int offset, int limit);
     int getTotalCount();
-
 }

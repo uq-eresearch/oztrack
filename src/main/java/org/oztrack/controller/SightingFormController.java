@@ -12,6 +12,7 @@ import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.SightingDao;
 import org.oztrack.data.model.Sighting;
 import org.oztrack.validator.SightingFormValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +27,9 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 public class SightingFormController {
     protected final Log logger = LogFactory.getLog(getClass());
+
+    @Autowired
+    private SightingDao sightingDao;
     
     @ModelAttribute("sighting")
     public Sighting getSighting() {
@@ -48,7 +52,6 @@ public class SightingFormController {
         if (bindingResult.hasErrors()) {
             return "sighting";
         }
-        SightingDao sightingDao = OzTrackApplication.getApplicationContext().getDaoManager().getSightingDao();
         sightingDao.save(sighting);
 
         // sort out the image file - need the id to sort out the file path

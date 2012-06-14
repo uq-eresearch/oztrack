@@ -1,30 +1,34 @@
 package org.oztrack.data.access.impl;
 
-import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Project;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import au.edu.uq.itee.maenad.dataaccess.jpa.EntityManagerSource;
-import au.edu.uq.itee.maenad.dataaccess.jpa.JpaDao;
-
-/**
- * Author: alabri
- * Date: 9/03/11
- * Time: 11:08 AM
- */
-public class ProjectDaoImpl extends JpaDao<Project> implements ProjectDao, Serializable {
+@Service
+public class ProjectDaoImpl implements ProjectDao {
+    @PersistenceContext
+    private EntityManager em;
     
-	public ProjectDaoImpl(EntityManagerSource entityManagerSource) {
-        super(entityManagerSource);
+    @Override
+    @Transactional(readOnly=true)
+    public List<Project> getAll() {
+        @SuppressWarnings("unchecked")
+        List<Project> resultList = em.createQuery("from Project").getResultList();
+        return resultList;
     }
 
     @Override
+    @Transactional(readOnly=true)
     public Project getProjectById(Long id) {
-        Query query = entityManagerSource.getEntityManager().createQuery("SELECT o FROM Project o WHERE o.id = :id");
+        Query query = em.createQuery("SELECT o FROM Project o WHERE o.id = :id");
         query.setParameter("id", id);
         try {
             return (Project) query.getSingleResult();
@@ -32,42 +36,18 @@ public class ProjectDaoImpl extends JpaDao<Project> implements ProjectDao, Seria
             return null;
         }
     }
-    
-/*
-    public List<PositionFix> getAllPositionFixes(Long projectId) {
-
-        Query query = entityManagerSource.getEntityManager().createQuery("SELECT o from PositionFix o, datafile d where o.datafile_id=d.id and d.project_id = :projectId");
-        query.setParameter("projectId", projectId);
-        try {
-            return (List <PositionFix>) query.getResultList();
-        } catch (NoResultException ex) {
-            return null;
-        }
-    }
- */
 
     @Override
+    @Transactional
     public void save(Project object) {
         object.setUpdateDate(new java.util.Date());
-        super.save(object);    //To change body of overridden methods use File | Settings | File Templates.
+        em.persist(object);
     }
-
+    
     @Override
+    @Transactional
     public Project update(Project object) {
         object.setUpdateDate(new java.util.Date());
-        return super.update(object);    //To change body of overridden methods use File | Settings | File Templates.
+        return em.merge(object);
     }
-
-    /*    public List<Project> getProjectListByUserId(Long id) {
-            Query query = entityManagerSource.getEntityManager().createQuery("SELECT o FROM Project o " +
-                                                                             "WHERE o.id in (select pu.project_id from ProjectUser pu " +
-                                                                             "where pu.user_id = :id)");
-            query.setParameter("id", id);
-            try {
-                return (List<Project>) query.getResultList();
-            } catch (NoResultException ex) {
-                return null;
-            }
-        }
-    */
 }

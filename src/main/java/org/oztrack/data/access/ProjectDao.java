@@ -1,18 +1,14 @@
 package org.oztrack.data.access;
 
+import java.util.List;
+
 import org.oztrack.data.model.Project;
+import org.springframework.stereotype.Service;
 
-import au.edu.uq.itee.maenad.dataaccess.Dao;
-
-/**
- * author: uqpnewm5
- * 29/03/2011
- * 1:36:37 PM
- */
-
-
-public interface ProjectDao extends Dao<Project> {
+@Service
+public interface ProjectDao {
+    List<Project> getAll();
     Project getProjectById(Long id);
-    //List<PositionFix> getAllPositionFixes(Long projectId);
-    //List<Project> getProjectListByUserId(Long id);
+    void save(Project object);
+    Project update(Project object);
 }

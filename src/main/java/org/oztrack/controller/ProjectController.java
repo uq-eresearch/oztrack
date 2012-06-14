@@ -20,6 +20,7 @@ import org.oztrack.data.model.ProjectUser;
 import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.Role;
 import org.oztrack.validator.ProjectFormValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,6 +34,18 @@ import org.springframework.web.multipart.MultipartFile;
 public class ProjectController {
     protected final Log logger = LogFactory.getLog(getClass());
     
+    @Autowired
+    ProjectDao projectDao;
+    
+    @Autowired
+    DataFileDao dataFileDao;
+    
+    @Autowired
+    AnimalDao animalDao;
+    
+    @Autowired
+    UserDao userDao;
+    
     @ModelAttribute("project")
     public Project getProject(@RequestParam(value="id", required=false) Long projectId) {
         Project project = null;
@@ -41,7 +54,6 @@ public class ProjectController {
             project.setRightsStatement("The data is the property of the University of Queensland. Permission is required to use this material.");
         }
         else {
-            ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
             project = projectDao.getProjectById(projectId);
         }
         return project;
@@ -68,14 +80,12 @@ public class ProjectController {
     }
     
     private String getView(HttpSession session, Model model, Project project, String viewName) {
-        User sessionUser = (User) session.getAttribute(Constants.CURRENT_USER);
-        if (sessionUser == null) {
+        Long currentUserId = (Long) session.getAttribute(Constants.CURRENT_USER_ID);
+        if (currentUserId == null) {
             return "redirect:login";
         }
             
-        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
-        DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
         List<DataFile> dataFileList = dataFileDao.getDataFilesByProject(project);
         String dataSpaceURL = OzTrackApplication.getApplicationContext().getDataSpaceURL();
         
@@ -89,8 +99,8 @@ public class ProjectController {
     
     @RequestMapping(value="/projectadd", method=RequestMethod.GET)
     public String getFormView(HttpSession session, @ModelAttribute(value="project") Project project) {
-        User sessionUser = (User) session.getAttribute(Constants.CURRENT_USER);
-        if (sessionUser == null) {
+        Long currentUserId = (Long) session.getAttribute(Constants.CURRENT_USER_ID);
+        if (currentUserId == null) {
             return "redirect:login";
         }
         return "projectadd";
@@ -103,15 +113,15 @@ public class ProjectController {
         BindingResult bindingResult,
         @RequestParam(value="update", required=false) String update
     ) throws Exception {
-        User sessionUser = (User) session.getAttribute(Constants.CURRENT_USER);
-        if (sessionUser == null) {
+        Long currentUserId = (Long) session.getAttribute(Constants.CURRENT_USER_ID);
+        if (currentUserId == null) {
             return "redirect:login";
         }
+        User currentUser = userDao.getUserById(currentUserId);
         new ProjectFormValidator().validate(project, bindingResult);
         if (bindingResult.hasErrors()) {
             return "projectadd";
         }
-        ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
         if (update != null) {
             if (project.getImageFile().getSize() != 0) {
                 project.setImageFileLocation(saveProjectImage(project));
@@ -119,12 +129,12 @@ public class ProjectController {
             projectDao.update(project);
         }
         else {
-            this.addNewProject(projectDao, project, sessionUser);
+            this.addNewProject(project, currentUser);
         }
         return "redirect:projects";
     }
     
-    private void addNewProject(ProjectDao projectDao, Project project, User currentUser) throws Exception {
+    private void addNewProject(Project project, User currentUser) throws Exception {
         logger.info(" User: " + currentUser.getFullName() + " Creating project: " + project.getTitle() + " " + new java.util.Date().toString());
 
         // create/update details
@@ -151,7 +161,6 @@ public class ProjectController {
         // save it all - project first
         projectDao.save(project);
         
-        UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();
         User user = userDao.getUserById(currentUser.getId());
         userDao.update(user);
 

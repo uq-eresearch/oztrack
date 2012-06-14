@@ -13,9 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 
-import org.oztrack.app.OzTrackApplication;
+import org.oztrack.data.access.AnimalDao;
+import org.oztrack.data.access.DataFileDao;
+import org.oztrack.data.access.JdbcAccess;
 import org.oztrack.data.access.ReceiverDeploymentDao;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.RawAcousticDetection;
@@ -23,28 +24,29 @@ import org.oztrack.data.model.ReceiverDeployment;
 import org.oztrack.data.model.types.AcousticFileHeader;
 import org.oztrack.error.FileProcessingException;
 
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 10/06/11
- * Time: 9:08 AM
- */
 public class AcousticFileLoader extends DataFileLoader {
-
-    AcousticFileLoader(DataFile dataFile) {
-       super(dataFile);
+    private ReceiverDeploymentDao receiverDeploymentDao;
+    
+    public AcousticFileLoader(
+        DataFile dataFile,
+        DataFileDao dataFileDao,
+        AnimalDao animalDao,
+        EntityManager entityManager,
+        JdbcAccess jdbcAccess,
+        ReceiverDeploymentDao receiverDeploymentDao
+    ) {
+        super(dataFile, dataFileDao, animalDao, entityManager, jdbcAccess);
+        this.receiverDeploymentDao = receiverDeploymentDao;
     }
 
+    @Override
     public void process() throws FileProcessingException {
         super.process();
     }
 
     @Override
     public void insertRawObservations() throws FileProcessingException {
-    //public void createRawAcousticDetections() throws FileProcessingException {
-
         int lineNumber = 0;
-        logger.info("processing raw acoustic file : " + this.dataFile.getOzTrackFileName());
 
         FileInputStream fileInputStream;
 
@@ -101,13 +103,8 @@ public class AcousticFileLoader extends DataFileLoader {
         boolean localTimeConversionRequired = this.dataFile.getLocalTimeConversionRequired();
         long localTimeConversionHours = this.dataFile.getLocalTimeConversionHours();
 
-        EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
-
         try {
-               while ((strLine = br.readLine()) != null) {
-
+            while ((strLine = br.readLine()) != null) {
                 lineNumber++;
                 dataRow = strLine.split(",");
                 RawAcousticDetection rawAcousticDetection = new RawAcousticDetection();
@@ -129,7 +126,6 @@ public class AcousticFileLoader extends DataFileLoader {
                                         calendar.add(Calendar.HOUR,(int)localTimeConversionHours);
                                     rawAcousticDetection.setDatetime(calendar.getTime());
                                 } catch (ParseException e) {
-                                    transaction.rollback();
                                     throw new FileProcessingException("Incorrect date format on line "+ lineNumber +". Must be 2007-11-27 12:57:00");
                                 }
                                 break;
@@ -141,7 +137,6 @@ public class AcousticFileLoader extends DataFileLoader {
                                  try {
                                      rawAcousticDetection.setSensor1(Double.parseDouble(dataRow[i]));
                                  } catch (NumberFormatException e) {
-                                     transaction.rollback();
                                      throw new FileProcessingException("Sensor1 value is not a number on line " + lineNumber);
                                  }
                                 }
@@ -160,7 +155,6 @@ public class AcousticFileLoader extends DataFileLoader {
                                  try {
                                      rawAcousticDetection.setSensor2(Double.parseDouble(dataRow[i]));
                                  } catch (NumberFormatException e) {
-                                     transaction.rollback();
                                      throw new FileProcessingException("Sensor2 value is not a number on line " + lineNumber);
                                  }
                                 }
@@ -198,26 +192,14 @@ public class AcousticFileLoader extends DataFileLoader {
             }
 
         } catch (IOException e) {
-             transaction.rollback();
              throw new FileProcessingException("Problem reading file at line number :" + lineNumber);
         }
-        // commit after reading whole file
-        transaction.commit();
         logger.debug(lineNumber + " rows persisted.");
-
     }
-
-
 
     @Override
     public void checkReceivers() throws FileProcessingException {
-
-
-        // the Daos
-        //RawAcousticDetectionDao rawAcousticDetectionDao = OzTrackApplication.getApplicationContext().getDaoManager().getRawAcousticDetectionDao();
-        ReceiverDeploymentDao receiverDeploymentDao = OzTrackApplication.getApplicationContext().getDaoManager().getReceiverDeploymentDao();
-
-        List<String> newReceiverIdList = this.dataFileDao.getAllReceiverIds();
+        List<String> newReceiverIdList = dataFileDao.getAllReceiverIds();
         List<ReceiverDeployment> projectReceiversList = receiverDeploymentDao.getReceiversByProjectId(dataFile.getProject().getId());
         boolean receiverFound;
         String originalId;
@@ -243,13 +225,4 @@ public class AcousticFileLoader extends DataFileLoader {
         }
 
     }
-
-
-
-
-
-
-
-
-
 }

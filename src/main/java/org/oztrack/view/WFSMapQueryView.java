@@ -31,6 +31,8 @@ import org.geotools.xml.Encoder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.oztrack.app.OzTrackApplication;
+import org.oztrack.data.access.PositionFixDao;
+import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
@@ -44,16 +46,19 @@ import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 3/08/11
- * Time: 2:36 PM
- */
 public class WFSMapQueryView extends AbstractView {
-
-    /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
+    
+    // TODO: DAO should not appear in this layer.
+    private ProjectDao projectDao;
+
+    // TODO: DAO should not appear in this layer.
+    private PositionFixDao positionFixDao;
+    
+    public WFSMapQueryView(ProjectDao projectDao, PositionFixDao positionFixDao) {
+        this.projectDao = projectDao;
+        this.positionFixDao = positionFixDao;
+    }
 
     @Override
     protected void renderMergedOutputModel(
@@ -86,13 +91,13 @@ public class WFSMapQueryView extends AbstractView {
                     @SuppressWarnings("unchecked")
                     EList<SimpleFeatureCollection> feature = featureCollectionType.getFeature();
                     switch (searchQuery.getMapQueryType()) {
-                    case ALL_PROJECTS:
+                        case ALL_PROJECTS:
                     		collection = this.buildAllProjectsFeatureCollection();
                     		e.getNamespaces().declarePrefix("Project", namespaceURI);
                     		feature.add(collection);
                     		break;
-                    case ALL_POINTS:
-                    case POINTS:
+                        case ALL_POINTS:
+                        case POINTS:
                             collection = this.buildFeatureCollection(searchQuery,"points");
                             //**encoder.setNamespace("PositionFix", namespaceURI);
                             e.getNamespaces().declarePrefix("Track", namespaceURI);
@@ -136,7 +141,7 @@ public class WFSMapQueryView extends AbstractView {
     
     private SimpleFeatureCollection buildFeatureCollection(SearchQuery searchQuery, String collectionType) {
 
-        List<PositionFix> positionFixList = OzTrackApplication.getApplicationContext().getDaoManager().getPositionFixDao().getProjectPositionFixList(searchQuery);
+        List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
 
         String namespaceURI = OzTrackApplication.getApplicationContext().getUriPrefix();
         SimpleFeatureCollection collection = FeatureCollections.newCollection();
@@ -145,7 +150,7 @@ public class WFSMapQueryView extends AbstractView {
         SimpleFeatureTypeBuilder simpleFeatureTypeBuilder = new SimpleFeatureTypeBuilder();
         simpleFeatureTypeBuilder.setName("Track");
         simpleFeatureTypeBuilder.setNamespaceURI(namespaceURI);
-        int srid = positionFixList.get(0).getLocationGeometry().getSRID();
+        Integer srid = positionFixList.isEmpty() ? null : positionFixList.get(0).getLocationGeometry().getSRID();
         
         if (collectionType == "points") {
             simpleFeatureTypeBuilder.add("track", MultiPoint.class, srid);
@@ -224,8 +229,7 @@ public class WFSMapQueryView extends AbstractView {
 
     
     private  SimpleFeatureCollection buildAllProjectsFeatureCollection() {
-    	
-        List<Project> projectList = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao().getAll();
+        List<Project> projectList = projectDao.getAll();
 
         String namespaceURI = OzTrackApplication.getApplicationContext().getUriPrefix();
         SimpleFeatureCollection collection = FeatureCollections.newCollection();

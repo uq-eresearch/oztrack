@@ -9,11 +9,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.oztrack.app.OzTrackApplication;
-import org.oztrack.data.access.direct.JdbcQuery;
+import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.data.model.types.ProjectType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
 /**
@@ -25,6 +25,9 @@ import org.springframework.web.servlet.view.document.AbstractExcelView;
 public class SearchQueryXLSView extends AbstractExcelView {
 
     public static final String SEARCH_QUERY_KEY = "searchQuery";
+
+    @Autowired
+    private PositionFixDao positionFixDao;
 
     @Override
     protected void buildExcelDocument(
@@ -52,8 +55,7 @@ public class SearchQueryXLSView extends AbstractExcelView {
 
     protected void buildPositionFixSheet(HSSFSheet sheet, SearchQuery searchQuery) {
 
-        JdbcQuery jdbcQuery = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcQuery();
-        List<PositionFix> positionFixes = jdbcQuery.queryProjectPositionFixes(searchQuery);
+        List<PositionFix> positionFixes = positionFixDao.queryProjectPositionFixes(searchQuery);
 
         HSSFRow headerRow = sheet.createRow(0);
         headerRow.createCell(0).setCellValue("animal_id");

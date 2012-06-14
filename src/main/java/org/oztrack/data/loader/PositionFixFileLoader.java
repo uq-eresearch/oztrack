@@ -13,9 +13,10 @@ import java.util.Date;
 import java.util.HashMap;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 
-import org.oztrack.app.OzTrackApplication;
+import org.oztrack.data.access.AnimalDao;
+import org.oztrack.data.access.DataFileDao;
+import org.oztrack.data.access.JdbcAccess;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.RawPositionFix;
@@ -27,16 +28,19 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 10/06/11
- * Time: 10:07 AM
- */
 public class PositionFixFileLoader extends DataFileLoader {
+    private PositionFixDao positionFixDao;
 
-    PositionFixFileLoader(DataFile dataFile) {
-        super(dataFile);
+    public PositionFixFileLoader(
+        DataFile dataFile,
+        DataFileDao dataFileDao,
+        AnimalDao animalDao,
+        EntityManager entityManager,
+        JdbcAccess jdbcAccess,
+        PositionFixDao positionFixDao
+    ) {
+        super(dataFile, dataFileDao, animalDao, entityManager, jdbcAccess);
+        this.positionFixDao = positionFixDao;
     }
 
     @Override
@@ -46,9 +50,7 @@ public class PositionFixFileLoader extends DataFileLoader {
 
     @Override
     public void insertRawObservations() throws FileProcessingException {
-
         int lineNumber = 0;
-        logger.info("processing raw position fix file : " + dataFile.getOzTrackFileName());
 
         FileInputStream fileInputStream;
 
@@ -140,14 +142,10 @@ public class PositionFixFileLoader extends DataFileLoader {
 
         logger.debug("File opened + header read.");
 
-        EntityManager entityManager = OzTrackApplication.getApplicationContext().getDaoManager().getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy H:m:s");
 
         try {
-               while ((strLine = br.readLine()) != null) {
-
+            while ((strLine = br.readLine()) != null) {
                 lineNumber++;
                 dataRow = strLine.split(",");
                 RawPositionFix rawPositionFix= new RawPositionFix();
@@ -181,7 +179,6 @@ public class PositionFixFileLoader extends DataFileLoader {
                                            }
                                            rawPositionFix.setDetectionTime(calendar.getTime());
                                        } catch (FileProcessingException e) {
-                                            transaction.rollback();
                                             throw new FileProcessingException(e.toString() + "Using date: "+ dataRow[i] + " from line : "  + lineNumber);
                                        }
                                     break;
@@ -190,7 +187,6 @@ public class PositionFixFileLoader extends DataFileLoader {
                                     try {
                                         rawPositionFix.setDetectionTime(timeHandler(rawPositionFix.getDetectionTime(),dataRow[i]));
                                     } catch (FileProcessingException e) {
-                                        transaction.rollback();
                                         throw new FileProcessingException("Unable to read time format on line " + lineNumber + ": " + dataRow[i] );
                                     }
                                     break;
@@ -214,7 +210,6 @@ public class PositionFixFileLoader extends DataFileLoader {
                                      try {
                                          rawPositionFix.setHDOP(Double.parseDouble(dataRow[i]));
                                      } catch (NumberFormatException e) {
-                                         transaction.rollback();
                                          throw new FileProcessingException("HDOP value is not a number on line " + lineNumber);
                                      }
                                     break;
@@ -222,14 +217,12 @@ public class PositionFixFileLoader extends DataFileLoader {
                                      try {
                                          rawPositionFix.setSensor1value(Double.parseDouble(dataRow[i]));
                                      } catch (NumberFormatException e) {
-                                         transaction.rollback();
                                          throw new FileProcessingException("Sensor1 value is not a number on line " + lineNumber);
                                      }
                                 case SENSOR02:
                                      try {
                                          rawPositionFix.setSensor1value(Double.parseDouble(dataRow[i]));
                                      } catch (NumberFormatException e) {
-                                         transaction.rollback();
                                          throw new FileProcessingException("Sensor2 value is not a number on line " + lineNumber);
                                      }
                                     break;
@@ -248,7 +241,6 @@ public class PositionFixFileLoader extends DataFileLoader {
 		                Point locationGeometry = findLocationGeometry(rawPositionFix.getLatitude(),rawPositionFix.getLongitude());
 		                rawPositionFix.setLocationGeometry(locationGeometry);
 	                } catch (Exception e) {
-	                	transaction.rollback();
 	                	throw new FileProcessingException("Problems at line number: " + lineNumber + " parsing these as Latitude/Longitude in WGS84: " + rawPositionFix.getLatitude() + "," + rawPositionFix.getLongitude());
 	                }
                 }
@@ -256,21 +248,23 @@ public class PositionFixFileLoader extends DataFileLoader {
                 if ((rawPositionFix.getDetectionTime() != null) && (rawPositionFix.getLocationGeometry() != null)) {
                     entityManager.persist(rawPositionFix);
                 }
-
             }
-
-        } catch (IOException e) {
-             transaction.rollback();
+        }
+        catch (IOException e) {
              throw new FileProcessingException("Problem reading file at line number :" + lineNumber);
         }
-        // commit after reading whole file
-        transaction.commit();
         logger.debug(lineNumber + " rows persisted.");
-
+    }
+    
+    @Override
+    public void updateDataFileMetadata() throws FileProcessingException {
+        dataFile.setFirstDetectionDate(positionFixDao.getDataFileFirstDetectionDate(dataFile));
+        dataFile.setLastDetectionDate(positionFixDao.getDataFileLastDetectionDate(dataFile));
+        dataFileDao.update(dataFile);
     }
 
     // handles fields that are either just a date OR a date and time
-    public SimpleDateFormat findDateFormat(String dateString) throws FileProcessingException {
+    private SimpleDateFormat findDateFormat(String dateString) throws FileProcessingException {
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s.S");
         //Calendar calendar = Calendar.getInstance();
@@ -329,7 +323,7 @@ public class PositionFixFileLoader extends DataFileLoader {
 
      }
 
-    public Date timeHandler(Date date, String timeString) throws FileProcessingException {
+    private Date timeHandler(Date date, String timeString) throws FileProcessingException {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -372,7 +366,7 @@ public class PositionFixFileLoader extends DataFileLoader {
 
     }
 
-    public Point findLocationGeometry(String latitude, String longitude) throws FileProcessingException {
+    private Point findLocationGeometry(String latitude, String longitude) throws FileProcessingException {
 
         Double dLatitude = Double.parseDouble(latitude);
         Double dLongitude = Double.parseDouble(longitude);
@@ -383,14 +377,4 @@ public class PositionFixFileLoader extends DataFileLoader {
         return geometryFactory.createPoint(coordinate);
 
     }
-    
-    public void updateDataFileMetadata() throws FileProcessingException {
-    	
-    	// update datafile dates 
-        PositionFixDao p = OzTrackApplication.getApplicationContext().getDaoManager().getPositionFixDao();
-        dataFile.setFirstDetectionDate(p.getDataFileFirstDetectionDate(dataFile));
-        dataFile.setLastDetectionDate(p.getDataFileLastDetectionDate(dataFile));
-        dataFileDao.update(dataFile);
-    }
-
 }

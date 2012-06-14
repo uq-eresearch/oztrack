@@ -3,7 +3,6 @@ package org.oztrack.validator;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
-import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
 import org.springframework.validation.Errors;
@@ -11,7 +10,11 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 public class RegisterFormValidator implements Validator {
-
+    private UserDao userDao;
+    
+    public RegisterFormValidator(UserDao userDao) {
+        this.userDao = userDao;
+    }
 	
 	@Override
     public boolean supports(@SuppressWarnings("rawtypes") Class clazz) {
@@ -24,7 +27,6 @@ public class RegisterFormValidator implements Validator {
 
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "error.empty.field", "Please Enter User Name");
         User loginUser = (User) obj;
-        UserDao userDao = OzTrackApplication.getApplicationContext().getDaoManager().getUserDao();
         User user = userDao.getByUsername(loginUser.getUsername());
 
         if (!errors.hasFieldErrors("username")) {

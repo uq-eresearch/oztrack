@@ -14,15 +14,17 @@ import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.kml.KML;
 import org.geotools.kml.KMLConfiguration;
 import org.geotools.xml.Encoder;
-import org.oztrack.app.OzTrackApplication;
+import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.SearchQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.view.AbstractView;
 
 import com.vividsolutions.jts.geom.Point;
 
 public class KMLExportView extends AbstractView{
-
+    @Autowired
+    private PositionFixDao positionFixDao;
 	
 	@Override
 	protected void renderMergedOutputModel(
@@ -56,8 +58,7 @@ public class KMLExportView extends AbstractView{
 	
 	
     private SimpleFeatureCollection buildPointsFeatureCollection(SearchQuery searchQuery) {
-
-        List<PositionFix> positionFixList = OzTrackApplication.getApplicationContext().getDaoManager().getPositionFixDao().getProjectPositionFixList(searchQuery);
+        List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy H:m:s");
         int count = 1;
 

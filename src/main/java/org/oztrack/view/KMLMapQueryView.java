@@ -9,21 +9,21 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.util.RServeInterface;
 import org.springframework.web.servlet.view.AbstractView;
 
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 3/08/11
- * Time: 2:36 PM
- */
 public class KMLMapQueryView extends AbstractView {
-
-    /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
-
+    
+    // TODO: DAO should not appear in this layer.
+    private PositionFixDao positionFixDao;
+    
+    public KMLMapQueryView(PositionFixDao positionFixDao) {
+        this.positionFixDao = positionFixDao;
+    }
+    
     @Override
     protected void renderMergedOutputModel(
         @SuppressWarnings("rawtypes") Map model,
@@ -39,13 +39,12 @@ public class KMLMapQueryView extends AbstractView {
             searchQuery = (SearchQuery) model.get("searchQuery");
 
             if (searchQuery.getProject() != null) {
-                RServeInterface r = new RServeInterface();
-                kmlFile = r.createKml(searchQuery);
+                RServeInterface rServeInterface = new RServeInterface(searchQuery, positionFixDao);
+                kmlFile = rServeInterface.createKml();
 
             }
         }
 
-        //write out the kml
         FileInputStream fin = new FileInputStream(kmlFile);
         byte kmlContent[] = new byte[(int) kmlFile.length()];
         fin.read(kmlContent);
@@ -53,6 +52,5 @@ public class KMLMapQueryView extends AbstractView {
         response.setContentType("text/xml");
         response.getOutputStream().write(kmlContent);
         kmlFile.delete();
-
     }
 }

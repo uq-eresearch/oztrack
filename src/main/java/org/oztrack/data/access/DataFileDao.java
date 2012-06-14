@@ -5,21 +5,15 @@ import java.util.List;
 
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
+import org.springframework.stereotype.Service;
 
-import au.edu.uq.itee.maenad.dataaccess.Dao;
-
-/**
- * author: uqpnewm5
- * 29/03/2011
- * 1:36:37 PM
- */
-
-
-public interface DataFileDao extends Dao<DataFile> {
+@Service
+public interface DataFileDao {
 	DataFile getDataFileById(Long id);
     DataFile getNextDataFile();
     ArrayList<String> getAllAnimalIds(DataFile datafile);
     List<String> getAllReceiverIds();
     List<DataFile> getDataFilesByProject(Project project);
-
+    void save(DataFile object);
+    DataFile update(DataFile object);
 }

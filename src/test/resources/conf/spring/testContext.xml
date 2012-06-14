@@ -14,6 +14,5 @@
             </list>
         </property>
     </bean>
-    <import resource="daos.xml"/>
     <import resource="oztrack.xml"/>
 </beans>

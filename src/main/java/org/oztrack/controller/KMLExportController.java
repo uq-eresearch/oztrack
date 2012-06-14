@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.view.KMLExportView;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +22,12 @@ import org.springframework.web.servlet.View;
 public class KMLExportController {
     protected final Log logger = LogFactory.getLog(getClass());
     
+    @Autowired
+    private ProjectDao projectDao;
+    
+    @Autowired
+    private AnimalDao animalDao;
+    
     @RequestMapping(value="/exportKML", method=RequestMethod.GET)
     public View handleRequest(
         Model model,
@@ -32,11 +38,9 @@ public class KMLExportController {
         if ((projectId != null) && (animalId != null))  {
             logger.debug("for projectId: " + projectId);
             
-            ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
             Project project = projectDao.getProjectById(Long.valueOf(projectId));
             searchQuery.setProject(project);
             
-            AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
             Animal animal = animalDao.getAnimalById(Long.valueOf(animalId));
             ArrayList<Animal> animalList = new ArrayList<Animal>(1);
             animalList.add(animal);

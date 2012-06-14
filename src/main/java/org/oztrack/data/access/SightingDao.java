@@ -1,16 +1,9 @@
 package org.oztrack.data.access;
 
 import org.oztrack.data.model.Sighting;
+import org.springframework.stereotype.Service;
 
-import au.edu.uq.itee.maenad.dataaccess.Dao;
-
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 8/06/11
- * Time: 9:44 AM
- */
-public interface SightingDao extends Dao<Sighting> {
-
-
+@Service
+public interface SightingDao {
+    void save(Sighting sighting);
 }

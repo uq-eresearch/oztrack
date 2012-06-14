@@ -1,24 +1,14 @@
-package org.oztrack.data.access.impl.direct;
+package org.oztrack.data.access.impl;
 
-import org.oztrack.data.access.direct.JdbcAccess;
+import org.oztrack.data.access.JdbcAccess;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 9/05/11
- * Time: 12:03 PM
- */
 public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
-
-
-	
-	public int loadObservations(DataFile dataFile) {
-
+    public int loadObservations(DataFile dataFile) {
         String sql = "";
         long dataFileId = dataFile.getId();
         long projectId = dataFile.getProject().getId();
@@ -98,7 +88,7 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
         return nbrObservations;
     }
 	
-    public String getTableName(Project project) {
+    private String getTableName(Project project) {
     	
     	String tableName = "foo";
     	
@@ -116,14 +106,11 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
     }
 
     public void truncateRawObservations(DataFile dataFile) {
-
         String tableName = "raw" + this.getTableName(dataFile.getProject());
         getJdbcTemplate().execute("TRUNCATE TABLE " + tableName);
     }
 
-
     public int updateProjectMetadata(Project project) {
-
         MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
         mapSqlParameterSource.addValue("projectId", project.getId());
         String tableName = this.getTableName(project);
@@ -158,5 +145,4 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
         NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(getJdbcTemplate());
         return namedParameterJdbcTemplate.update(sql,mapSqlParameterSource);
     }
-
 }

@@ -4,20 +4,30 @@ import java.text.SimpleDateFormat;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.oztrack.app.OzTrackApplication;
+import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.data.model.types.MapQueryType;
+import org.oztrack.view.KMLMapQueryView;
+import org.oztrack.view.WFSMapQueryView;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.View;
 
 @Controller
 public class MapQueryController {
     protected final Log logger = LogFactory.getLog(getClass());
+    
+    @Autowired
+    private ProjectDao projectDao;
+    
+    @Autowired
+    private PositionFixDao positionFixDao;
     
     @ModelAttribute("searchQuery")
     public SearchQuery getSearchQuery(
@@ -31,7 +41,6 @@ public class MapQueryController {
     throws Exception {
         SearchQuery searchQuery = new SearchQuery();
         if (projectId != null) {
-            ProjectDao projectDao = OzTrackApplication.getApplicationContext().getDaoManager().getProjectDao();
             Project project = projectDao.getProjectById(Long.valueOf(projectId));
             searchQuery.setProject(project);
         }
@@ -55,12 +64,12 @@ public class MapQueryController {
     }
     
     @RequestMapping(value="/mapQueryKML", method=RequestMethod.GET)
-    public String handleKMLQuery() throws Exception {
-        return "java_KMLMapQuery";
+    public View handleKMLQuery() throws Exception {
+        return new KMLMapQueryView(positionFixDao);
     }
     
     @RequestMapping(value="/mapQueryWFS", method=RequestMethod.POST)
-    public String handleWFSQuery() throws Exception {
-        return "java_WFSMapQuery";
+    public View handleWFSQuery() throws Exception {
+        return new WFSMapQueryView(projectDao, positionFixDao);
     }
 }

@@ -4,66 +4,78 @@ import static org.oztrack.util.OzTrackUtil.removeDuplicateLinesFromFile;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
-import org.oztrack.data.access.direct.JdbcAccess;
+import org.oztrack.data.access.JdbcAccess;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.error.FileProcessingException;
 
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 21/04/11
- * Time: 8:59 AM
- */
 public class DataFileLoader {
-    /**
-     * Logger for this class and subclasses
-     */
     protected final Log logger = LogFactory.getLog(getClass());
+    
     protected DataFile dataFile;
     protected DataFileDao dataFileDao;
+    protected EntityManager entityManager;
+    
+    private AnimalDao animalDao;
+    private JdbcAccess jdbcAccess;
 
-    public DataFileLoader(DataFile dataFile) {
-
-        DataFileDao dataFileDao = OzTrackApplication.getApplicationContext().getDaoManager().getDataFileDao();
-        DataFile thisDataFile = dataFileDao.getDataFileById(dataFile.getId());
-        this.dataFileDao=dataFileDao;
-        this.dataFile=thisDataFile;
+    public DataFileLoader(DataFile dataFile, DataFileDao dataFileDao, AnimalDao animalDao, EntityManager entityManager, JdbcAccess jdbcAccess) {
+        this.dataFile = dataFileDao.getDataFileById(dataFile.getId());
+        this.dataFileDao = dataFileDao;
+        this.animalDao = animalDao;
+        this.entityManager = entityManager;
+        this.jdbcAccess = jdbcAccess;
     }
 
     public void process() throws FileProcessingException {
-
         removeDuplicateLinesFromFile(this.dataFile.getOzTrackFileName());
-        insertRawObservations();
-        checkAnimals();
-        checkReceivers();
-        createFinalObservations();
-        updateDataFileMetadata();
-
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        try {
+            logger.info("Inserting raw observations for " + this.dataFile.getOzTrackFileName());
+            insertRawObservations();
+            logger.info("Checking animals for " + this.dataFile.getOzTrackFileName());
+            checkAnimals();
+            logger.info("Checking receivers for " + this.dataFile.getOzTrackFileName());
+            checkReceivers();
+            transaction.commit();
+        }
+        catch (FileProcessingException e) {
+            transaction.rollback();
+            throw e;
+        }
+        transaction = entityManager.getTransaction();
+        transaction.begin();
+        try {
+            logger.info("Creating final observations for " + this.dataFile.getOzTrackFileName());
+            createFinalObservations();
+            logger.info("Updating data file metdata for " + this.dataFile.getOzTrackFileName());
+            updateDataFileMetadata();
+            transaction.commit();
+        }
+        catch (FileProcessingException e) {
+            transaction.rollback();
+            throw e;
+        }
     }
 
-    public void insertRawObservations() throws FileProcessingException {};
-    public void checkReceivers() throws FileProcessingException {};
-    public void updateDataFileMetadata() throws FileProcessingException {};
-
-    public DataFile getDataFile() {
-        return dataFile;
-    }
-
-    public void setDataFile(DataFile dataFile) {
-        this.dataFile = dataFile;
-    }
+    public void insertRawObservations() throws FileProcessingException {
+    };
+    
+    public void checkReceivers() throws FileProcessingException {
+    };
+    
+    public void updateDataFileMetadata() throws FileProcessingException {
+    };
 
     public void checkAnimals() throws FileProcessingException {
-
-        AnimalDao animalDao = OzTrackApplication.getApplicationContext().getDaoManager().getAnimalDao();
-
-
         if (dataFile.getSingleAnimalInFile()) {
             // only one animal in the file being uploaded. Create it.
             Animal animal = new Animal();
@@ -125,12 +137,8 @@ public class DataFileLoader {
     }
 
     public void createFinalObservations() throws FileProcessingException {
-
-        JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
-
         int nbrObservationsCreated = 0;
         try {
-
             nbrObservationsCreated = jdbcAccess.loadObservations(dataFile);
             
             dataFile.setDetectionCount(nbrObservationsCreated);
@@ -148,17 +156,4 @@ public class DataFileLoader {
             throw new FileProcessingException(e.toString());
         }
     }
-    
-
-    public void updateMetadata() throws FileProcessingException {
-    	
-        JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
-
-        int projectUpdated = jdbcAccess.updateProjectMetadata(dataFile.getProject());
-        if (projectUpdated != 1) {
-            throw new FileProcessingException("Problem recalculating project metadata - bounding box or start and end dates.");
-        }
-    }
-
-
 }
