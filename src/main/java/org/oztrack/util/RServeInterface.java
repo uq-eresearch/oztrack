@@ -92,7 +92,11 @@ public class RServeInterface {
             if (checkLocalRserve()) {
                 this.rConnection = new RConnection();
                 this.rConnection.setSendBufferSize(10485760);
-                this.rConnection.voidEval("library(adehabitatHR);library(adehabitatMA);library(maptools);library(rgdal);library(shapefiles)");
+                this.rConnection.voidEval("library(adehabitatHR)");
+                this.rConnection.voidEval("library(adehabitatMA)");
+                this.rConnection.voidEval("library(maptools)");
+                this.rConnection.voidEval("library(rgdal)");
+                this.rConnection.voidEval("library(shapefiles)");
                 rLog = rLog + "Libraries Loaded ";
 
                 // get the working directory: Java and R have different ideas about windows fileNames
@@ -145,6 +149,15 @@ public class RServeInterface {
             String rCommand;
             REXP rResult;
 
+            // We use WGS84 for coordinates and project to AGD66,
+            // which has units of metres, for area calculations.
+            //
+            // * EPSG:4326 (WGS 84)
+            //   http://spatialreference.org/ref/epsg/4326/
+            //
+            // * EPSG:20255 (AGD66 / AMG zone 55)
+            //   http://spatialreference.org/ref/epsg/20255/
+            //
             rCommand = "positionFix$Name <- positionFix$Id;"
                      + "coordinates(positionFix) <- ~Y+X;"
                      + "positionFix.xy <- positionFix[,ncol(positionFix)];"
