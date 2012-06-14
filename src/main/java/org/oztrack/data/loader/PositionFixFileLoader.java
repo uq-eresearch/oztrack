@@ -49,7 +49,7 @@ public class PositionFixFileLoader extends DataFileLoader {
     }
 
     @Override
-    public void insertRawObservations() throws FileProcessingException {
+    public void createRawObservations() throws FileProcessingException {
         int lineNumber = 0;
 
         FileInputStream fileInputStream;

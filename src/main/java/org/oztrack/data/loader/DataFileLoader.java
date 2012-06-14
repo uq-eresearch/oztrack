@@ -16,7 +16,7 @@ import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.error.FileProcessingException;
 
-public class DataFileLoader {
+public abstract class DataFileLoader {
     protected final Log logger = LogFactory.getLog(getClass());
     
     protected DataFile dataFile;
@@ -36,22 +36,30 @@ public class DataFileLoader {
 
     public void process() throws FileProcessingException {
         removeDuplicateLinesFromFile(this.dataFile.getOzTrackFileName());
+        processRawObservations();
+        processFinalObservations();
+    }
+
+    private void processRawObservations() throws FileProcessingException {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         try {
             logger.info("Inserting raw observations for " + this.dataFile.getOzTrackFileName());
-            insertRawObservations();
+            createRawObservations();
             logger.info("Checking animals for " + this.dataFile.getOzTrackFileName());
             checkAnimals();
-            logger.info("Checking receivers for " + this.dataFile.getOzTrackFileName());
-            checkReceivers();
+            logger.info("Checking data for " + this.dataFile.getOzTrackFileName());
+            checkData();
             transaction.commit();
         }
         catch (FileProcessingException e) {
             transaction.rollback();
             throw e;
         }
-        transaction = entityManager.getTransaction();
+    }
+
+    private void processFinalObservations() throws FileProcessingException {
+        EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         try {
             logger.info("Creating final observations for " + this.dataFile.getOzTrackFileName());
@@ -66,16 +74,9 @@ public class DataFileLoader {
         }
     }
 
-    public void insertRawObservations() throws FileProcessingException {
-    };
-    
-    public void checkReceivers() throws FileProcessingException {
-    };
-    
-    public void updateDataFileMetadata() throws FileProcessingException {
-    };
+    public abstract void createRawObservations() throws FileProcessingException;
 
-    public void checkAnimals() throws FileProcessingException {
+    private void checkAnimals() throws FileProcessingException {
         if (dataFile.getSingleAnimalInFile()) {
             // only one animal in the file being uploaded. Create it.
             Animal animal = new Animal();
@@ -89,17 +90,18 @@ public class DataFileLoader {
             animal.setProjectAnimalId(animal.getId().toString());
             animal.setAnimalName("Animal_" + animal.getId().toString());
             animalDao.update(animal);
-
-        } else {
-
+        }
+        else {
         	// get a list of the animal IDs in the raw file just loaded
             List<String> newAnimalIdList = this.dataFileDao.getAllAnimalIds(this.dataFile);
             
             if (newAnimalIdList.size() > 20) {
             	
-            	throw new FileProcessingException("OzTrack only allows 20 animals per file. The Id/Animal Id field in the " +
-            									  "file contains more than 20. An easy fix may be to rename the Id field to something else." +
-            									  " Fix and retry the upload.");
+            	throw new FileProcessingException(
+            	    "OzTrack only allows 20 animals per file. The Id/Animal Id field in the " +
+            		"file contains more than 20. An easy fix may be to rename the Id field to something else. " +
+            		"Fix and retry the upload."
+        		);
             }
             
             // all the animals for this project
@@ -135,8 +137,11 @@ public class DataFileLoader {
             }
         }
     }
+    
+    public void checkData() throws FileProcessingException {
+    }
 
-    public void createFinalObservations() throws FileProcessingException {
+    private void createFinalObservations() throws FileProcessingException {
         int nbrObservationsCreated = 0;
         try {
             nbrObservationsCreated = jdbcAccess.loadObservations(dataFile);
@@ -155,5 +160,8 @@ public class DataFileLoader {
             jdbcAccess.truncateRawObservations(dataFile);
             throw new FileProcessingException(e.toString());
         }
+    }
+    
+    public void updateDataFileMetadata() throws FileProcessingException {
     }
 }

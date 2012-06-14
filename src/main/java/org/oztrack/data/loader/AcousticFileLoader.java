@@ -45,7 +45,7 @@ public class AcousticFileLoader extends DataFileLoader {
     }
 
     @Override
-    public void insertRawObservations() throws FileProcessingException {
+    public void createRawObservations() throws FileProcessingException {
         int lineNumber = 0;
 
         FileInputStream fileInputStream;
@@ -186,30 +186,33 @@ public class AcousticFileLoader extends DataFileLoader {
                         }
                     }
                 }
-
                 entityManager.persist(rawAcousticDetection);
-
             }
-
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
              throw new FileProcessingException("Problem reading file at line number :" + lineNumber);
         }
         logger.debug(lineNumber + " rows persisted.");
     }
 
     @Override
-    public void checkReceivers() throws FileProcessingException {
+    public void checkData() throws FileProcessingException {
+        checkReceivers();
+    }
+
+    private void checkReceivers() {
         List<String> newReceiverIdList = dataFileDao.getAllReceiverIds();
         List<ReceiverDeployment> projectReceiversList = receiverDeploymentDao.getReceiversByProjectId(dataFile.getProject().getId());
         boolean receiverFound;
         String originalId;
 
         for (String newReceiverId : newReceiverIdList) {
-            receiverFound=false;
+            receiverFound = false;
             for (ReceiverDeployment receiverDeployment : projectReceiversList) {
                 originalId = receiverDeployment.getOriginalId();
-                if (newReceiverId.equals(originalId))
+                if (newReceiverId.equals(originalId)) {
                     receiverFound = true;
+                }
             }
             if (!receiverFound) {
                 ReceiverDeployment receiverDeployment = new ReceiverDeployment();
@@ -223,6 +226,5 @@ public class AcousticFileLoader extends DataFileLoader {
                 receiverDeploymentDao.save(receiverDeployment);
             }
         }
-
     }
 }
