@@ -32,6 +32,7 @@ public class SearchQuery {
     private MapQueryType mapQueryType;
     private Double percent;
     private String h;
+    private Double alpha;
 
     public SearchQuery() {
         this.fromDate = null;
@@ -118,6 +119,14 @@ public class SearchQuery {
 
     public void setPercent(Double percent) {
         this.percent = percent;
+    }
+
+    public Double getAlpha() {
+        return alpha;
+    }
+
+    public void setAlpha(Double alpha) {
+        this.alpha = alpha;
     }
 
     public String getH() {

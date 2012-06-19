@@ -17,7 +17,8 @@ public enum MapQueryType {
     ,POINTS("Detections")
     ,LINES ("Trajectory")
     ,MCP("Minimum Convex Polygon")
-    ,KUD("Kernel Utilization Distribution");
+    ,KUD("Kernel Utilization Distribution")
+    ,AHULL("Alpha Hull");
 //    ,CHARHULL100("Home Range Estimation 100% (Delaunay Triangulation)")
 //    ,CHARHULL95("Home Range Estimation 95% (Delaunay Triangulation)")
 //    ,CHARHULL50("Home Range Estimation 50% (Delaunay Triangulation)");

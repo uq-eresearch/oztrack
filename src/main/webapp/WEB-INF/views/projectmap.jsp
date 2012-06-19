@@ -20,6 +20,8 @@
                 $('#percent').val('');
                 $('#hRow').hide();
                 $('#h').val('');
+                $('#alphaRow').hide();
+                $('#alpha').val('');
                 if (mapQueryType == 'MCP') {
                     $('#percentRow').show();
                     $('#percent').val('100');
@@ -29,6 +31,10 @@
                     $('#percent').val('95');
                     $('#hRow').show();
                     $('#h').val('href');
+                }
+                if (mapQueryType == 'AHULL') {
+                    $('#alphaRow').show();
+                    $('#alpha').val('100');
                 }
                 $('#paramTable').appendTo('#' + mapQueryType).fadeIn('slow');            
             }
@@ -143,12 +149,16 @@
 		                </table>
                         <table id="paramTable" style="display: none; margin-left:5px;">
                             <tr id="percentRow">
-                                <td>Percent:</td>
+                                <td>percent:</td>
                                 <td><input id="percent" name="percent" class="shortInputBox" style="width: 4em; text-align: right;"/></td>
                             </tr>
                             <tr id="hRow">
                                 <td>h value:</td>
                                 <td><input id="h" name="h" class="shortInputBox" style="width: 4em; text-align: right;"/></td>
+                            </tr>
+                            <tr id="alphaRow">
+                                <td>alpha:</td>
+                                <td><input id="alpha" name="alpha" class="shortInputBox" style="width: 4em; text-align: right;"/></td>
                             </tr>
                         </table>
                         <br>

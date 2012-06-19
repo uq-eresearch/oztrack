@@ -3,11 +3,13 @@ package org.oztrack.util;
 import static org.oztrack.util.StartRserve.checkLocalRserve;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.access.PositionFixDao;
@@ -73,6 +75,9 @@ public class RServeInterface {
             case KUD:
                 writeKernelUDKmlFile(fileName, searchQuery);
                 break;
+            case AHULL:
+                writeAlphahullKmlFile(fileName, searchQuery);
+                break;
 //            case CHARHULL100:
 //            case CHARHULL95:
 //            case CHARHULL50:
@@ -94,10 +99,15 @@ public class RServeInterface {
                 this.rConnection.setSendBufferSize(10485760);
                 this.rConnection.voidEval("library(adehabitatHR)");
                 this.rConnection.voidEval("library(adehabitatMA)");
+                this.rConnection.voidEval("library(alphahull)");
                 this.rConnection.voidEval("library(maptools)");
                 this.rConnection.voidEval("library(rgdal)");
                 this.rConnection.voidEval("library(shapefiles)");
                 rLog = rLog + "Libraries Loaded ";
+                
+                String script = IOUtils.toString(getClass().getResourceAsStream("/r/to_SPLDF.r"), "UTF-8");
+                this.rConnection.voidEval(script);
+                rLog = rLog + "Scripts Loaded ";
 
                 // get the working directory: Java and R have different ideas about windows fileNames
                 this.rWorkingDir = rConnection.eval("getwd()").asString() + File.separator;
@@ -114,6 +124,9 @@ public class RServeInterface {
             throw new RServeInterfaceException(e.toString());
         }
         catch (REXPMismatchException e) {
+            throw new RServeInterfaceException(e.toString());
+        }
+        catch (IOException e) {
             throw new RServeInterfaceException(e.toString());
         }
     }
@@ -198,6 +211,16 @@ public class RServeInterface {
         safeEval(name + " <- getverticeshr(KerHR,percent=" + percent + ")");
         safeEval(name + "$area <- getverticeshr(KerHRp,percent=" + percent + ", unin=c(\"m\"), unout=c(\"km2\"))$area");
         safeEval("writeOGR(" + name +", dsn=\"" + fileName + "\", layer= \"" + name + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
+    }
+    
+    protected void writeAlphahullKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
+        String name = searchQuery.getMapQueryType().toString();
+        Double alpha = (searchQuery.getAlpha() != null) ? searchQuery.getAlpha() : 0.1;
+        safeEval("ahull.proj <- ahull(unique(coordinates(positionFix.proj)), alpha=" + alpha + ")");
+        safeEval("ahull.proj.sp <- ahull_to_SPLDF(ahull.proj, \"+init=epsg:20255\")");
+        safeEval(name + " <- spTransform(ahull.proj.sp, CRS(\"+init=epsg:4326\"))");
+        safeEval(name + "$area <- areaahull(ahull.proj)");
+        safeEval("writeOGR(" + name + ", dsn=\"" + fileName + "\", layer= \"" + name + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
     }
     
     protected void writeCharHullKmlFile(String fileName, MapQueryType mapQueryType) throws RServeInterfaceException {

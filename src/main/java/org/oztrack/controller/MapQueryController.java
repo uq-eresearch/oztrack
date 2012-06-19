@@ -36,7 +36,8 @@ public class MapQueryController {
         @RequestParam(value="dateFrom", required=false) String dateFrom,
         @RequestParam(value="dateTo", required=false) String dateTo,
         @RequestParam(value="percent", required=false) Double percent,
-        @RequestParam(value="h", required=false) String h
+        @RequestParam(value="h", required=false) String h,
+        @RequestParam(value="alpha", required=false) Double alpha
     )
     throws Exception {
         SearchQuery searchQuery = new SearchQuery();
@@ -59,6 +60,9 @@ public class MapQueryController {
         }
         if (h != null && !h.isEmpty()) {
             searchQuery.setH(h);
+        }
+        if (alpha != null && !alpha.isNaN()) {
+            searchQuery.setAlpha(alpha);
         }
         return searchQuery;
     }

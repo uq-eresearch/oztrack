@@ -543,13 +543,15 @@ function addProjectMapLayer() {
     var queryTypeDescription = $('label[for="' + queryType.attr('id') + '"]').text();
     var percent = $('input[id=percent]').val();
     var h = $('input[id=h]').val();
+    var alpha = $('input[id=alpha]').val();
 
     if (queryType.val() != null) {
     
         var params = {projectId: projectId
 	                 ,queryType: queryType.val()
 	                 ,percent: percent
-	                 ,h: h};
+	                 ,h: h
+	                 ,alpha: alpha};
 	    var layerName = queryTypeDescription;
 	
 	    if (dateFrom.length == 10) {
@@ -576,10 +578,7 @@ function addProjectMapLayer() {
         
 }
 
-function addKMLLayer(layerName, params, percent, h) {
-
-
-	
+function addKMLLayer(layerName, params) {
 	var queryOverlay = new OpenLayers.Layer.Vector(
                 layerName,{
                 	strategies: [new OpenLayers.Strategy.Fixed()],
@@ -625,6 +624,9 @@ function updateAnimalInfoFromKML(layerName, params, e) {
    		if (params.h) {
    		    html += '<tr><td class="label">h value: </td><td>' + params.h + '</td></tr>';
    		}
+   		if (params.alpha) {
+            html += '<tr><td class="label">alpha: </td><td>' + params.alpha + '</td></tr>';
+        }
    		html += '<tr><td class="label">Area: </td><td>' + Math.round(area*1000)/1000 + ' km<sup>2</sup></td></tr>';
    		html += '</table>';
 		$('#animalInfo-'+ feature.attributes.id.value).append('<div class="layerInfo">' + checkboxHtml + html + '</div>');
