@@ -219,7 +219,7 @@ public class RServeInterface {
         safeEval("ahull.proj <- ahull(unique(coordinates(positionFix.proj)), alpha=" + alpha + ")");
         safeEval("ahull.proj.sp <- ahull_to_SPLDF(ahull.proj, \"+init=epsg:20255\")");
         safeEval(name + " <- spTransform(ahull.proj.sp, CRS(\"+init=epsg:4326\"))");
-        safeEval(name + "$area <- areaahull(ahull.proj)");
+        safeEval(name + "$area <- areaahull(ahull.proj) / 1000000.0");
         safeEval("writeOGR(" + name + ", dsn=\"" + fileName + "\", layer= \"" + name + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
     }
     
