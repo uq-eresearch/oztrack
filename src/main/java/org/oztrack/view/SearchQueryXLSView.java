@@ -13,7 +13,6 @@ import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.data.model.types.ProjectType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
 /**
@@ -26,8 +25,12 @@ public class SearchQueryXLSView extends AbstractExcelView {
 
     public static final String SEARCH_QUERY_KEY = "searchQuery";
 
-    @Autowired
+    // TODO: DAO should not appear in this layer.
     private PositionFixDao positionFixDao;
+
+    public SearchQueryXLSView(PositionFixDao positionFixDao) {
+        this.positionFixDao = positionFixDao;
+    }
 
     @Override
     protected void buildExcelDocument(
