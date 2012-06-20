@@ -217,9 +217,10 @@ public class RServeInterface {
         String name = searchQuery.getMapQueryType().toString();
         Double alpha = (searchQuery.getAlpha() != null) ? searchQuery.getAlpha() : 0.1;
         safeEval("ahull.proj <- ahull(unique(coordinates(positionFix.proj)), alpha=" + alpha + ")");
-        safeEval("ahull.proj.sp <- ahull_to_SPLDF(ahull.proj, \"+init=epsg:20255\")");
+        safeEval("ahull.proj.sp <- id.alpha(dxy=positionFix.proj, ialpha=" + alpha + ", sCS=\"+init=epsg:20255\")");
         safeEval(name + " <- spTransform(ahull.proj.sp, CRS(\"+init=epsg:4326\"))");
         safeEval(name + "$area <- areaahull(ahull.proj) / 1000000.0");
+        safeEval(name + "$ID <- " + name + "$name <- unique(positionFix.proj$Name)");
         safeEval("writeOGR(" + name + ", dsn=\"" + fileName + "\", layer= \"" + name + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
     }
     

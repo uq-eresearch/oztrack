@@ -1,5 +1,5 @@
 #Function converts alphahull object into sp object
-ahull_to_SPLDF <- function(x,new.projection)
+ahull_to_SPLDF <- function(x,new.projection,sid)
 	{
 	if(class(x) != 'ahull')
 		stop('this function will only work with an `ahull` object')
@@ -30,14 +30,36 @@ ahull_to_SPLDF <- function(x,new.projection)
 		}
 
 	# promote to Lines class, then to SpatialLines class
- 	l <- Lines(l.list, ID="1")
+ 	l <- Lines(l.list, ID=sid)
 
 	# Convert to a spatial lines object with the pre-defined projection
 	l.spl <- SpatialLines(list(l), proj4string=CRS(new.projection))
 
 	# In order to export to OGR, promote to SpatialLinesDataFrame 
-	l.spldf <- SpatialLinesDataFrame(l.spl, data=data.frame(id=1), match.ID=FALSE)
+	l.spldf <- SpatialLinesDataFrame(l.spl, data=data.frame(id=sid), match.ID=FALSE)
 
 	return(l.spldf)
 	}
 
+# Function to calculate alpha convex hull for multiple animals
+id.alpha <- function(dxy,ialpha,sCS)
+{
+  iTransmitterNames <- unique(dxy[[1]])
+  iTransmitterCount <- length(iTransmitterNames)
+  
+  fgenpoly <- function(sTransmitterId)
+  {
+    infile <- subset(dxy, dxy[[1]] == iTransmitterNames[sTransmitterId])
+    # Need to remove duplicates for function to work)
+    ahull.Pobj <- ahull(unique(coordinates(dxy)), alpha = ialpha)
+    ahull.as.sppdf <- ahull_to_SPLDF(ahull.Pobj,sCS,iTransmitterNames[sTransmitterId])
+    # Need to give unique row.names to spldf object
+    row.names(ahull.as.sppdf@data) <- iTransmitterNames[sTransmitterId]
+    return(ahull.as.sppdf)
+  }
+
+  # Run the function for all transmitters
+  lspdf <- lapply(1:iTransmitterCount,fgenpoly)
+  # Collapse the list object into a spldf object
+  return(do.call(rbind,lspdf))
+}
