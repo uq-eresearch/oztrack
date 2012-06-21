@@ -36,10 +36,7 @@ ahull_to_SPLDF <- function(x,new.projection,sid)
   l.spl <- SpatialLines(list(l), proj4string=CRS(new.projection))
 
   # In order to export to OGR, promote to SpatialLinesDataFrame 
-  l.spldf <- SpatialLinesDataFrame(l.spl, data=data.frame(id=sid), match.ID=FALSE)
-
-  # Need to give unique row.names to spldf object
-  row.names(l.spldf@data) <- sid
+  l.spldf <- SpatialLinesDataFrame(l.spl, data=data.frame(id=sid, row.names=as.character(sid)), match.ID=FALSE)
 
   return(l.spldf)
 }
