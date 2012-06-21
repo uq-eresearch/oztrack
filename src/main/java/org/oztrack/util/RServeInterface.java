@@ -216,12 +216,9 @@ public class RServeInterface {
     protected void writeAlphahullKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
         String name = searchQuery.getMapQueryType().toString();
         Double alpha = (searchQuery.getAlpha() != null) ? searchQuery.getAlpha() : 0.1;
-        safeEval("ahull.proj <- ahull(unique(coordinates(positionFix.proj)), alpha=" + alpha + ")");
-        safeEval("ahull.proj.sp <- id.alpha(dxy=positionFix.proj, ialpha=" + alpha + ", sCS=\"+init=epsg:20255\")");
-        safeEval(name + " <- spTransform(ahull.proj.sp, CRS(\"+init=epsg:4326\"))");
-        safeEval(name + "$area <- areaahull(ahull.proj) / 1000000.0");
-        safeEval(name + "$ID <- " + name + "$name <- unique(positionFix.proj$Name)");
-        safeEval("writeOGR(" + name + ", dsn=\"" + fileName + "\", layer= \"" + name + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
+        safeEval("ahull.proj.spldf <- id.alpha(dxy=positionFix.proj, ialpha=" + alpha + ", sCS=\"+init=epsg:20255\")");
+        safeEval("ahull.xy.spldf <- spTransform(ahull.proj.spldf, CRS(\"+init=epsg:4326\"))");
+        safeEval("writeOGR(ahull.xy.spldf, dsn=\"" + fileName + "\", layer= \"" + name + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
     }
     
     protected void writeCharHullKmlFile(String fileName, MapQueryType mapQueryType) throws RServeInterfaceException {
