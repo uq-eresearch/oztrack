@@ -38,6 +38,9 @@ ahull_to_SPLDF <- function(x,new.projection,sid)
   # In order to export to OGR, promote to SpatialLinesDataFrame 
   l.spldf <- SpatialLinesDataFrame(l.spl, data=data.frame(id=sid), match.ID=FALSE)
 
+  # Need to give unique row.names to spldf object
+  row.names(l.spldf@data) <- sid
+
   return(l.spldf)
 }
 
@@ -50,11 +53,7 @@ id.alpha <- function(dxy, ialpha, sCS)
     # Need to remove duplicates for function to work)
     ahull.Pobj <- ahull(unique(coordinates(transmitterDxy)), alpha = ialpha)
     ahull.as.spldf <- ahull_to_SPLDF(ahull.Pobj, sCS, sTransmitterName)
-    ahull.as.spldf$id <- sTransmitterName
-    # Assign area, converting m^2 to km^2
-    ahull.as.spldf$area <- areaahull(ahull.Pobj) / 1000000
-    # Need to give unique row.names to spldf object
-    row.names(ahull.as.spldf@data) <- sTransmitterName
+    ahull.as.spldf$area <- areaahull(ahull.Pobj) / 1000000 # convert m^2 to km^2
     return(ahull.as.spldf)
   }
 
