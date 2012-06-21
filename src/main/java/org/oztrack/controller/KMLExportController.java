@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.access.AnimalDao;
+import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
@@ -28,6 +29,9 @@ public class KMLExportController {
     @Autowired
     private AnimalDao animalDao;
     
+    @Autowired
+    private PositionFixDao positionFixDao;
+
     @RequestMapping(value="/exportKML", method=RequestMethod.GET)
     public View handleRequest(
         Model model,
@@ -50,6 +54,6 @@ public class KMLExportController {
             logger.debug("no projectId or queryType");
         }
         model.addAttribute("searchQuery", searchQuery);
-        return new KMLExportView();
+        return new KMLExportView(positionFixDao);
     }
 }

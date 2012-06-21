@@ -17,14 +17,17 @@ import org.geotools.xml.Encoder;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.SearchQuery;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.view.AbstractView;
 
 import com.vividsolutions.jts.geom.Point;
 
 public class KMLExportView extends AbstractView{
-    @Autowired
+    // TODO: DAO should not appear in this layer.
     private PositionFixDao positionFixDao;
+
+    public KMLExportView(PositionFixDao positionFixDao) {
+        this.positionFixDao = positionFixDao;
+    }
 	
 	@Override
 	protected void renderMergedOutputModel(
