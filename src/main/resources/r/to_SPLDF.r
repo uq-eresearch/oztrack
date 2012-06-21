@@ -50,7 +50,6 @@ id.alpha <- function(dxy, ialpha, sCS)
     # Need to remove duplicates for function to work)
     ahull.Pobj <- ahull(unique(coordinates(transmitterDxy)), alpha = ialpha)
     ahull.as.spldf <- ahull_to_SPLDF(ahull.Pobj, sCS, sTransmitterName)
-    #ahull.as.spldf$Name <- sTransmitterName
     ahull.as.spldf$id <- sTransmitterName
     # Assign area, converting m^2 to km^2
     ahull.as.spldf$area <- areaahull(ahull.Pobj) / 1000000
