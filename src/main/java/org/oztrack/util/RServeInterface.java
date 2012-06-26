@@ -78,11 +78,6 @@ public class RServeInterface {
             case AHULL:
                 writeAlphahullKmlFile(fileName, searchQuery);
                 break;
-//            case CHARHULL100:
-//            case CHARHULL95:
-//            case CHARHULL50:
-//                writeCharHullKmlFile(fileName, mapQueryType);
-//                break;
             default:
                 throw new RServeInterfaceException("Unhandled MapQueryType: " + searchQuery.getMapQueryType());
         }
@@ -158,7 +153,6 @@ public class RServeInterface {
             this.rConnection.assign("positionFix", rPosFixDataFrame);
             rLog = rLog + " | PositionFix dataFrame assigned ";
 
-            // spatial it up
             String rCommand;
             REXP rResult;
 
@@ -221,36 +215,6 @@ public class RServeInterface {
         safeEval("writeOGR(ahull.xy.spldf, dsn=\"" + fileName + "\", layer= \"" + name + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
     }
     
-    protected void writeCharHullKmlFile(String fileName, MapQueryType mapQueryType) throws RServeInterfaceException {
-        String rCommand;
-
-        try {
-            rCommand = "coordinates(positionFix) <- c(\"Y\",\"X\");proj4string(positionFix)=CRS(\"+init=epsg:4326\")";
-            rConnection.eval(rCommand);
-            logger.debug(rCommand);
-            rLog = rLog + "coordinates + projection defined for KML.";
-
-            String queryType = mapQueryType.toString(); // eg.MCP100
-            String percent = queryType.replace("CHARHULL","");
-
-            rCommand = "CharHullHR <- CharHull(positionFix[,1])";
-            rConnection.voidEval(rCommand);
-            rLog = rLog + "CharHullHR object set.";
-
-            rCommand = queryType + " <- getverticeshr(CharHullHR,percent=" + percent + ")";
-            rConnection.voidEval(rCommand);
-            rLog = rLog + queryType + " object set.";
-
-            rCommand = "writeOGR(" + queryType +", dsn=\"" + fileName + "\", layer= \"" + queryType + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))";
-            rConnection.eval(rCommand);
-            logger.debug(rCommand);
-            rLog = rLog + "KML written.";
-        }
-        catch (RserveException e) {
-            throw new RServeInterfaceException(e.toString() + " Log: " + rLog);
-        }
-    }
-
     protected void writePositionFixKmlFile(String fileName) throws RServeInterfaceException {
         String rCommand;
         String outFileNameFix = fileName;
