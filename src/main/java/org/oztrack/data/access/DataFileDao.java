@@ -12,7 +12,6 @@ public interface DataFileDao {
 	DataFile getDataFileById(Long id);
     DataFile getNextDataFile();
     ArrayList<String> getAllAnimalIds(DataFile datafile);
-    List<String> getAllReceiverIds();
     List<DataFile> getDataFilesByProject(Project project);
     void save(DataFile object);
     DataFile update(DataFile object);

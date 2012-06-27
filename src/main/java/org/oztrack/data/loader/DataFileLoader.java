@@ -48,8 +48,6 @@ public abstract class DataFileLoader {
             createRawObservations();
             logger.info("Checking animals for " + this.dataFile.getOzTrackFileName());
             checkAnimals();
-            logger.info("Checking data for " + this.dataFile.getOzTrackFileName());
-            checkData();
             transaction.commit();
         }
         catch (FileProcessingException e) {
@@ -127,20 +125,12 @@ public abstract class DataFileLoader {
                      animal.setProjectAnimalId(newAnimalId);
                      animal.setProject(dataFile.getProject());
                      animal.setCreateDate(new java.util.Date());
-                     // TODO:
-                     // name = transmitter name
-                     // transmitterID = transmitter SN where sensor1 is null
-                     // sensorTransmitterID= transmitter SN where sensor1 is not null
-                     // transmitter type code = dependent on how sensor works (C=temp; m=depth?)
-                    animalDao.save(animal);
+                     animalDao.save(animal);
                  }
             }
         }
     }
     
-    public void checkData() throws FileProcessingException {
-    }
-
     private void createFinalObservations() throws FileProcessingException {
         int nbrObservationsCreated = 0;
         try {
@@ -162,6 +152,6 @@ public abstract class DataFileLoader {
         }
     }
     
-    public void updateDataFileMetadata() throws FileProcessingException {
+    protected void updateDataFileMetadata() throws FileProcessingException {
     }
 }

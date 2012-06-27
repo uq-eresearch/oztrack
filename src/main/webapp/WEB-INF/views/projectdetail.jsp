@@ -66,10 +66,6 @@
 									  <a href="<c:url value="/projectanimals"><c:param name="id" value="${project.id}"/></c:url>">View All</a>	
 				</td>
 			</tr>
-			
-			<c:if test="${project.projectType == 'PASSIVE_ACOUSTIC'}">
-				<tr><td class="projectFieldName">Receivers:</td><td><a href="<c:url value="/projectreceivers"><c:param name="project_id" value="${project.id}"/></c:url>">View List</a></td></tr>
-			</c:if>
 			</table>
 		  </c:otherwise>
 		</c:choose>

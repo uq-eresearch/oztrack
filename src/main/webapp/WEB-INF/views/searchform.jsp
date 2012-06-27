@@ -45,7 +45,6 @@
 			    <label for="sortField">Sort by:</label>
 			    <form:select path="sortField">
 			        <form:option value="Animal"/>
-			         <c:if test="${project.projectType == 'PASSIVE_ACOUSTIC'}"><form:option value="Receiver"/> </c:if>
 			        <form:option value="Detection Time"/>
 			    </form:select>
 		    </div>

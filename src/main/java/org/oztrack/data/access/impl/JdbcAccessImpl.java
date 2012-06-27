@@ -15,62 +15,21 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
         int nbrObservations = 0;
 
         switch (dataFile.getProject().getProjectType()) {
-            case PASSIVE_ACOUSTIC:
-                sql =   "INSERT INTO acousticdetection (" +
-                        " id" +
-                        " ,detectiontime" +
-                        " ,sensor1value" +
-                        " ,sensor1units" +
-                        " ,sensor2value" +
-                        " ,sensor2units" +
-                        " ,animal_id" +
-                        " ,datafile_id" +
-                        " ,receiverdeployment_id)" +
-                        " SELECT rad.id" +
-                        " ,rad.datetime" +
-                        " ,rad.sensor1" +
-                        " ,rad.units1" +
-                        " ,rad.sensor2" +
-                        " ,rad.units2" +
-                        " ,ani.id" +
-                        " ,?" +
-                        " ,rdp.id" +
-                        " FROM rawacousticdetection rad" +
-                        " ,animal ani" +
-                        " ,receiverdeployment rdp" +
-                        " WHERE rad.animalid = ani.projectanimalid  "  +
-                        " AND  ani.project_id = ?" +
-                        " AND rad.receiversn=rdp.originalid" +
-                        " AND rdp.project_id = ?"
-                        ;
-                        nbrObservations = getJdbcTemplate().update(sql, new Object [] { dataFileId, projectId, projectId} );
-                break;
             case GPS:
-            case ARGOS:
                 sql =   "INSERT INTO positionfix (" +
                         " id" +
                         " ,detectiontime" +
                         " ,latitude" +
                         " ,longitude" +
-                        " ,sensor1value" +
-                        " ,sensor1units" +
-                        " ,sensor2value" +
-                        " ,sensor2units" +
                         " ,animal_id" +
                         " ,datafile_id" +
-                        " ,hdop" +
                         " ,locationgeometry)" +
                         " SELECT rpf.id" +
                         " ,rpf.detectiontime" +
                         " ,rpf.latitude" +
                         " ,rpf.longitude" +
-                        " ,rpf.sensor1value" +
-                        " ,rpf.sensor1units" +
-                        " ,rpf.sensor2value" +
-                        " ,rpf.sensor2units" +
                         " ,ani.id" +
                         " ,?" +
-                        " ,rpf.hdop" +
                         " ,rpf.locationgeometry " +
                         " FROM rawpositionfix rpf" +
                         " ,animal ani" ;
@@ -93,11 +52,7 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
     	String tableName = "foo";
     	
         switch (project.getProjectType()) {
-        case PASSIVE_ACOUSTIC:
-            tableName = "acousticdetection";
-            break;
         case GPS:
-        case ARGOS:
             tableName = "positionfix";
 
             break;

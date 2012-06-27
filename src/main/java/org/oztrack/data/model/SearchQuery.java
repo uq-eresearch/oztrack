@@ -7,24 +7,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.model.types.MapQueryType;
 
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 24/05/11
- * Time: 12:27 PM
- */
-
 public class SearchQuery {
-
-    /**
-     * Logger for this class and subclasses
-     */
     protected final Log logger = LogFactory.getLog(getClass());
 
     private Date fromDate;
     private Date toDate;
     private String projectAnimalId;
-    private String receiverOriginalId;
     private String sortField;
     private List<Animal> animalList;
     private String [] speciesList;
@@ -38,7 +26,6 @@ public class SearchQuery {
         this.fromDate = null;
         this.toDate = null;
         this.projectAnimalId = "";
-        this.receiverOriginalId = "";
     }
 
     public Date getFromDate() {
@@ -63,14 +50,6 @@ public class SearchQuery {
 
     public void setProjectAnimalId(String projectAnimalId) {
         this.projectAnimalId = projectAnimalId;
-    }
-
-    public String getReceiverOriginalId() {
-        return receiverOriginalId;
-    }
-
-    public void setReceiverOriginalId(String receiverOriginalId) {
-        this.receiverOriginalId = receiverOriginalId;
     }
 
     public String getSortField() {

@@ -135,10 +135,6 @@
 		
 		<form:select path="projectType">
 		    <form:option value="GPS">GPS Based Telemetry</form:option>
-		    <!--<form:option value="PASSIVE_ACOUSTIC">Passive Acoustic Telemetry</form:option>
-		    <form:option value="ACTIVE_ACOUSTIC">Active Acoustic Telemetry</form:option>
-		    <form:option value="ARGOS">ARGOS Telemetry</form:option>
-		    <form:option value="RADIO">Radio Telemetry</form:option> -->
 		</form:select>
 		</div>
 		

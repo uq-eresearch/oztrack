@@ -58,9 +58,6 @@ public class DataFileDaoImpl implements DataFileDao {
         String entityName = "RawPositionFix";
 
         switch (dataFile.getProject().getProjectType()) {
-            case PASSIVE_ACOUSTIC:
-                entityName = "RawAcousticDetection";
-                break;
             case GPS:
                 entityName = "RawPositionFix";
                 break;
@@ -94,19 +91,6 @@ public class DataFileDaoImpl implements DataFileDao {
             return null;
         }
 
-    }
-
-    @Override
-    @Transactional(readOnly=true)
-    public List<String> getAllReceiverIds() {
-        Query query = em.createQuery("SELECT distinct receiversn from RawAcousticDetection");
-        try {
-            @SuppressWarnings("unchecked")
-            List <String> resultList = (List <String>) query.getResultList();
-            return resultList;
-        } catch (NoResultException ex) {
-            return null;
-        }
     }
     
     @Override

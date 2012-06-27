@@ -51,18 +51,5 @@
 		<tr><td><b>File Processing Messages:</b></td><td><c:out value="${dataFile.statusMessage}"/></td></tr>
 		
 		</table>
-		
-		
-		<table>
-		<c:forEach items="${rawAcousticDetectionsList}" var="detection">
-		        <tr>
-		            <td><c:out value="${detection.datetime}"/></td>
-		            <td><c:out value="${detection.animalid}"/></td>
-		            <td><c:out value="${detection.sensor1}"/></td>
-		            <td><c:out value="${detection.units1}"/></td>
-		            <td><c:out value="${detection.receiverid}"/></td>
-				</tr>
-		</c:forEach>
-		</table>
     </jsp:body>
 </tags:page>

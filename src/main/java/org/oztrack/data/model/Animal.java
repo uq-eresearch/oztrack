@@ -13,16 +13,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 4/05/11
- * Time: 11:05 AM
- */
-
 @Entity(name = "Animal")
 public class Animal extends OztrackBaseEntity implements Serializable  {
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "animalid_seq")
     @SequenceGenerator(name = "animalid_seq", sequenceName = "animalid_seq",allocationSize = 1)
@@ -36,7 +28,6 @@ public class Animal extends OztrackBaseEntity implements Serializable  {
     private String verifiedSpeciesName;
     private String transmitterTypeCode;
     private String transmitterId;
-    private String sensorTransmitterId;
     private Long pingIntervalSeconds;
     @Temporal(TemporalType.TIMESTAMP)
     private Date transmitterDeployDate;
@@ -105,14 +96,6 @@ public class Animal extends OztrackBaseEntity implements Serializable  {
 
     public void setTransmitterId(String transmitterId) {
         this.transmitterId = transmitterId;
-    }
-
-    public String getSensorTransmitterId() {
-        return sensorTransmitterId;
-    }
-
-    public void setSensorTransmitterId(String sensorTransmitterId) {
-        this.sensorTransmitterId = sensorTransmitterId;
     }
 
     public Long getPingIntervalSeconds() {

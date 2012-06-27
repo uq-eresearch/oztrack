@@ -15,7 +15,6 @@ import org.oztrack.data.access.impl.AnimalDaoImpl;
 import org.oztrack.data.access.impl.DataFileDaoImpl;
 import org.oztrack.data.access.impl.JdbcAccessImpl;
 import org.oztrack.data.access.impl.PositionFixDaoImpl;
-import org.oztrack.data.access.impl.ReceiverDeploymentDaoImpl;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.types.DataFileStatus;
 import org.oztrack.error.FileProcessingException;
@@ -41,9 +40,6 @@ public class DataFileRunner {
         
         AnimalDaoImpl animalDao = new AnimalDaoImpl();
         animalDao.setEntityManger(entityManager);
-
-        ReceiverDeploymentDaoImpl receiverDeploymentDao = new ReceiverDeploymentDaoImpl();
-        receiverDeploymentDao.setEntityManager(entityManager);
 
         PositionFixDaoImpl positionFixDao = new PositionFixDaoImpl();
         positionFixDao.setEntityManger(entityManager);
@@ -84,17 +80,9 @@ public class DataFileRunner {
     	try {
         	try {
                 switch (nextDataFile.getProject().getProjectType()) {
-                    case PASSIVE_ACOUSTIC:
-                        AcousticFileLoader acousticFileLoader = new AcousticFileLoader(nextDataFile, dataFileDao, animalDao, entityManager, jdbcAccess, receiverDeploymentDao);
-                        acousticFileLoader.process();
-                        break;
-                    case ARGOS:
                     case GPS:
                         PositionFixFileLoader positionFixFileLoader = new PositionFixFileLoader(nextDataFile, dataFileDao, animalDao, entityManager, jdbcAccess, positionFixDao);
                         positionFixFileLoader.process();
-                        break;
-                    case ACTIVE_ACOUSTIC:
-                    case RADIO:
                         break;
                     default:
                         break;

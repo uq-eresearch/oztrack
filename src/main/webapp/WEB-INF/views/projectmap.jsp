@@ -295,7 +295,10 @@
 					
 					<b>To view in GoogleEarth:  </b>
 					<p>
-					To speed up processing time of the web browser we have opted not to show point files within the web-based browser of OZ-track. IF users wish to view there data as a point file we offer the option to create a kml file  which will show the animal tracks as points as animations within Google Earth. Each point will have date and time information plus a number which denotes the satellite resolution (HDOP or SDOP) for each point, if provided.  
+    					To speed up processing time of the web browser we have opted not to show point files within
+                        the web-based browser of OZ-track. IF users wish to view there data as a point file we offer
+                        the option to create a kml file  which will show the animal tracks as points as animations
+                        within Google Earth. Each point will have date and time information.  
 					</p>
 					
 					</div>

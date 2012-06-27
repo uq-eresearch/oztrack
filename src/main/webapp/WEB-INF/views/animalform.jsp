@@ -57,11 +57,6 @@
 				<form:errors path="transmitterId" cssClass="formErrors"/>
 			</div>
 			<div>
-				<label for="sensorTransmitterId">sensorTransmitterId:</label>
-				<form:input path="sensorTransmitterId" id="sensorTransmitterId"/>
-				<form:errors path="sensorTransmitterId" cssClass="formErrors"/>
-			</div>
-			<div>
 				<label for="pingIntervalSeconds">pingIntervalSeconds:</label>
 				<form:input path="pingIntervalSeconds" id="pingIntervalSeconds"/>
 				<form:errors path="pingIntervalSeconds" cssClass="formErrors"/>

@@ -192,8 +192,6 @@ public class PositionFixFileLoader extends DataFileLoader {
                                     break;
                                 case ID:
                                 case ANIMALID:
-                                case PLATFORMID:
-                                case ARGOSID:
                                     rawPositionFix.setAnimalId(dataRow[i]);
                                     break;
                                 case LAT:
@@ -205,27 +203,6 @@ public class PositionFixFileLoader extends DataFileLoader {
                                 case LONGITUDE:
                                      rawPositionFix.setLongitude(dataRow[i]);
                                      break;
-                                case GDOP:
-                                case HDOP:
-                                     try {
-                                         rawPositionFix.setHDOP(Double.parseDouble(dataRow[i]));
-                                     } catch (NumberFormatException e) {
-                                         throw new FileProcessingException("HDOP value is not a number on line " + lineNumber);
-                                     }
-                                    break;
-                                case SENSOR01:
-                                     try {
-                                         rawPositionFix.setSensor1value(Double.parseDouble(dataRow[i]));
-                                     } catch (NumberFormatException e) {
-                                         throw new FileProcessingException("Sensor1 value is not a number on line " + lineNumber);
-                                     }
-                                case SENSOR02:
-                                     try {
-                                         rawPositionFix.setSensor1value(Double.parseDouble(dataRow[i]));
-                                     } catch (NumberFormatException e) {
-                                         throw new FileProcessingException("Sensor2 value is not a number on line " + lineNumber);
-                                     }
-                                    break;
                                 default:
                                     logger.debug("Problem in switch(dataFileHeader)");
                                     break;

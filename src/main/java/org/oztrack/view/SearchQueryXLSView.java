@@ -15,14 +15,7 @@ import org.oztrack.data.model.SearchQuery;
 import org.oztrack.data.model.types.ProjectType;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 16/08/11
- * Time: 10:50 AM
- */
 public class SearchQueryXLSView extends AbstractExcelView {
-
     public static final String SEARCH_QUERY_KEY = "searchQuery";
 
     // TODO: DAO should not appear in this layer.
@@ -46,9 +39,6 @@ public class SearchQueryXLSView extends AbstractExcelView {
         switch (projectType) {
             case GPS:
                this.buildPositionFixSheet(sheet,searchQuery);
-               break;
-            case PASSIVE_ACOUSTIC:
-               this.buildAcousticDetectionSheet(sheet,searchQuery);
                break;
             default:
                 ;
@@ -78,10 +68,5 @@ public class SearchQueryXLSView extends AbstractExcelView {
             row.createCell(4).setCellValue(positionFix.getLongitude());
             rowNum++;
         }
-    }
-
-    protected void buildAcousticDetectionSheet(HSSFSheet sheet, SearchQuery searchQuery) {
-
-
     }
 }

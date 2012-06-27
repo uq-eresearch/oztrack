@@ -14,17 +14,8 @@ import org.hibernate.annotations.Type;
 
 import com.vividsolutions.jts.geom.Point;
 
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 16/06/11
- * Time: 3:19 PM
- */
 @Entity(name="PositionFix")
 public class PositionFix implements Serializable{
-
-    // id set in raw position fix
-
     @Id
     @Column(nullable=false)
     private Long id;
@@ -34,6 +25,7 @@ public class PositionFix implements Serializable{
     private Date detectionTime;
 
     private String latitude;
+
     private String longitude;
 
     @ManyToOne
@@ -45,12 +37,6 @@ public class PositionFix implements Serializable{
     @Column(name = "locationgeometry", columnDefinition="GEOMETRY")
     @Type(type = "org.hibernatespatial.GeometryUserType")
     private Point locationGeometry;
-
-    private Double HDOP;
-    private Double sensor1Value;
-    private Double sensor2Value;
-    private String sensor1Units;
-    private String sensor2Units;
 
     public Long getId() {
         return id;
@@ -84,8 +70,6 @@ public class PositionFix implements Serializable{
         this.longitude = longitude;
     }
 
-
-
     public Animal getAnimal() {
         return animal;
     }
@@ -102,30 +86,6 @@ public class PositionFix implements Serializable{
         this.dataFile = dataFile;
     }
 
-    public Double getSensor1Value() {
-        return sensor1Value;
-    }
-
-    public void setSensor1Value(Double sensor1Value) {
-        this.sensor1Value = sensor1Value;
-    }
-
-    public Double getSensor2Value() {
-        return sensor2Value;
-    }
-
-    public void setSensor2Value(Double sensor2Value) {
-        this.sensor2Value = sensor2Value;
-    }
-
-       public Double getHDOP() {
-        return HDOP;
-    }
-
-    public void setHDOP(Double HDOP) {
-        this.HDOP = HDOP;
-    }
-
     public Point getLocationGeometry() {
         return locationGeometry;
     }
@@ -133,23 +93,4 @@ public class PositionFix implements Serializable{
     public void setLocationGeometry(Point locationGeometry) {
         this.locationGeometry = locationGeometry;
     }
-
-        public String getSensor1Units() {
-        return sensor1Units;
-    }
-
-    public void setSensor1Units(String sensor1Units) {
-        this.sensor1Units = sensor1Units;
-    }
-
-    public String getSensor2Units() {
-        return sensor2Units;
-    }
-
-    public void setSensor2Units(String sensor2Units) {
-        this.sensor2Units = sensor2Units;
-    }
-
-
-
 }

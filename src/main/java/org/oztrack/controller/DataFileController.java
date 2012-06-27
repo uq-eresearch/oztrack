@@ -14,7 +14,6 @@ import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.User;
-import org.oztrack.data.model.types.AcousticFileHeader;
 import org.oztrack.data.model.types.DataFileStatus;
 import org.oztrack.data.model.types.PositionFixFileHeader;
 import org.oztrack.validator.DataFileFormValidator;
@@ -100,11 +99,6 @@ public class DataFileController {
         switch (project.getProjectType()) {
             case GPS:
                 for (PositionFixFileHeader h : PositionFixFileHeader.values()) {
-                    fileHeaders.add(h.toString());
-                }
-                break;
-            case PASSIVE_ACOUSTIC:
-                for (AcousticFileHeader h : AcousticFileHeader.values()) {
                     fileHeaders.add(h.toString());
                 }
                 break;
