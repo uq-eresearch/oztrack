@@ -1,11 +1,10 @@
 package org.oztrack.controller;
 
-import javax.servlet.http.HttpSession;
-
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.validator.AnimalFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,18 +25,15 @@ public class AnimalController {
     }
 
     @RequestMapping(value="/animalform", method=RequestMethod.GET)
-    public String getFormView(
-        HttpSession session,
-        Model model,
-        @ModelAttribute("animal") Animal animal
-    ) {
+    @PreAuthorize("hasPermission(#animal.project, 'write')")
+    public String getFormView(Model model, @ModelAttribute("animal") Animal animal) {
         model.addAttribute("project", animal.getProject());
         return "animalform";
     }
     
     @RequestMapping(value="/animalform", method=RequestMethod.POST)
+    @PreAuthorize("hasPermission(#animal.project, 'write')")
     public String processSubmit(
-        HttpSession session,
         RedirectAttributes redirectAttributes,
         @ModelAttribute(value="animal") Animal animal,
         BindingResult bindingResult

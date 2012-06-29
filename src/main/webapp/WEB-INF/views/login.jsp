@@ -20,20 +20,22 @@
     <jsp:body>
 		<h1>Login</h1>
 		
-		<div class="errorMessage"><c:out value="${errorMessage}"/></div>
+        <c:if test="${not empty sessionScope['SPRING_SECURITY_LAST_EXCEPTION'].message}">
+        <p class="errorMessage">
+            ${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}
+        </p>
+        </c:if>
         
-		<form:form commandName="user" method="POST" name="login">
+		<form method="POST" action="/j_spring_security_check">
 		
 		<div>
 		<label for="username">Username:</label>
-		<form:input path="username" id="username"/>
-		<form:errors path="username" cssClass="formErrors"/>
+		<input type="text" name="username" id="username"/>
 		</div>
 		
 		<div>
 		<label for="password">Password:</label>
-		<form:password path="password" id="password"/>
-		<form:errors path="password" cssClass="formErrors"/>
+		<input type="password" name="password" id="password"/>
 		</div>
 		
 		<div>
@@ -43,6 +45,6 @@
 		
 		<div><label></label><a href="<c:url value="/register"/>">Register as a new user</a>
 		</div>
-		</form:form>
+		</form>
     </jsp:body>
 </tags:page>

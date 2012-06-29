@@ -90,7 +90,10 @@ public class User implements Serializable {
         return getId().equals(other.getId());
     }
 
-
+    @Override
+    public int hashCode() {
+        return (getId() != null) ? getId().intValue() : super.hashCode();
+    }
 
     public String getEmail() {
         return email;

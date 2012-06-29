@@ -3,11 +3,8 @@ package org.oztrack.controller;
 import java.io.File;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.oztrack.app.Constants;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
@@ -21,6 +18,8 @@ import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.Role;
 import org.oztrack.validator.ProjectFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -60,31 +59,30 @@ public class ProjectController {
     }
     
     @RequestMapping(value="/projectdetail", method=RequestMethod.GET)
-    public String getDetailView(HttpSession session, Model model, @ModelAttribute(value="project") Project project) {
-        return getView(session, model, project, "projectdetail");
+    @PreAuthorize("hasPermission(#project, 'read')")
+    public String getDetailView(Model model, @ModelAttribute(value="project") Project project) {
+        return getView(model, project, "projectdetail");
     }
     
     @RequestMapping(value="/projectdescr", method=RequestMethod.GET)
-    public String getDescriptionView(HttpSession session, Model model, @ModelAttribute(value="project") Project project) {
-        return getView(session, model, project, "projectdescr");
+    @PreAuthorize("#project.global or hasPermission(#project, 'read')")
+    public String getDescriptionView(Model model, @ModelAttribute(value="project") Project project) {
+        return getView(model, project, "projectdescr");
     }
     
     @RequestMapping(value="/publish", method=RequestMethod.GET)
-    public String getPublishView(HttpSession session, Model model, @ModelAttribute(value="project") Project project) {
-        return getView(session, model, project, "publish");
+    @PreAuthorize("hasPermission(#project, 'read')")
+    public String getPublishView(Model model, @ModelAttribute(value="project") Project project) {
+        return getView(model, project, "publish");
     }
     
     @RequestMapping(value="/projectanimals", method=RequestMethod.GET)
-    public String getAnimalsView(HttpSession session, Model model, @ModelAttribute(value="project") Project project) {
-        return getView(session, model, project, "projectanimals");
+    @PreAuthorize("hasPermission(#project, 'read')")    
+    public String getAnimalsView(Model model, @ModelAttribute(value="project") Project project) {
+        return getView(model, project, "projectanimals");
     }
     
-    private String getView(HttpSession session, Model model, Project project, String viewName) {
-        Long currentUserId = (Long) session.getAttribute(Constants.CURRENT_USER_ID);
-        if (currentUserId == null) {
-            return "redirect:login";
-        }
-            
+    private String getView(Model model, Project project, String viewName) {
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
         List<DataFile> dataFileList = dataFileDao.getDataFilesByProject(project);
         String dataSpaceURL = OzTrackApplication.getApplicationContext().getDataSpaceURL();
@@ -98,26 +96,20 @@ public class ProjectController {
     }
     
     @RequestMapping(value="/projectadd", method=RequestMethod.GET)
-    public String getFormView(HttpSession session, @ModelAttribute(value="project") Project project) {
-        Long currentUserId = (Long) session.getAttribute(Constants.CURRENT_USER_ID);
-        if (currentUserId == null) {
-            return "redirect:login";
-        }
+    @PreAuthorize("isAuthenticated()")
+    public String getFormView(@ModelAttribute(value="project") Project project) {
         return "projectadd";
     }
     
     @RequestMapping(value="/projectadd", method=RequestMethod.POST)
+    @PreAuthorize("isAuthenticated()")
     public String processSubmit(
-        HttpSession session,
+        Authentication authentication,
         @ModelAttribute(value="project") Project project,
         BindingResult bindingResult,
         @RequestParam(value="update", required=false) String update
     ) throws Exception {
-        Long currentUserId = (Long) session.getAttribute(Constants.CURRENT_USER_ID);
-        if (currentUserId == null) {
-            return "redirect:login";
-        }
-        User currentUser = userDao.getUserById(currentUserId);
+        User currentUser = userDao.getByUsername((String) authentication.getPrincipal());
         new ProjectFormValidator().validate(project, bindingResult);
         if (bindingResult.hasErrors()) {
             return "projectadd";

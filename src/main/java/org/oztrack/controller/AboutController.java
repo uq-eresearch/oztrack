@@ -1,9 +1,8 @@
 package org.oztrack.controller;
 
-import javax.servlet.http.HttpSession;
-
 import org.oztrack.data.access.SettingsDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +19,8 @@ public class AboutController {
     }
 
     @RequestMapping(value="/about", method=RequestMethod.GET)
-    public String handleRequest(HttpSession session) {
+    @PreAuthorize("permitAll")
+    public String handleRequest() {
         return "about";
     }
 }

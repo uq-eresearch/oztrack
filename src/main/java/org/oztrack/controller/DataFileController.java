@@ -5,9 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
-import org.oztrack.app.Constants;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.UserDao;
@@ -18,6 +15,8 @@ import org.oztrack.data.model.types.DataFileStatus;
 import org.oztrack.data.model.types.PositionFixFileHeader;
 import org.oztrack.validator.DataFileFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -57,44 +56,32 @@ public class DataFileController {
     }
     
     @RequestMapping(value="/datafiles", method=RequestMethod.GET)
+    @PreAuthorize("hasPermission(#project, 'read')")
     public String handleDataFilesRequest(
-        HttpSession session,
         Model model,
         @ModelAttribute(value="project") Project project
     ) throws Exception {
-        Long currentUserId = (Long) session.getAttribute(Constants.CURRENT_USER_ID);
-        if (currentUserId == null) {
-            return "redirect:login";
-        }
         List<DataFile> dataFileList = dataFileDao.getDataFilesByProject(project);
         model.addAttribute("dataFileList", dataFileList);
         return "datafiles";
     }
     
     @RequestMapping(value="/datafiledetail", method=RequestMethod.GET)
+    @PreAuthorize("hasPermission(#project, 'read')")
     public String handleDataFileDetailsRequest(
-        HttpSession session,
         @ModelAttribute(value="project") Project project,
         @ModelAttribute(value="dataFile") DataFile dataFile
     ) throws Exception {
-        Long currentUserId = (Long) session.getAttribute(Constants.CURRENT_USER_ID);
-        if (currentUserId == null) {
-            return "redirect:login";
-        }
         return "datafiledetail";
     }
     
     @RequestMapping(value="/datafileadd", method=RequestMethod.GET)
+    @PreAuthorize("hasPermission(#project, 'write')")
     public String getFormView(
-        HttpSession session,
         Model model,
         @ModelAttribute(value="project") Project project,
         @ModelAttribute(value="dataFile") DataFile dataFile
     ) {
-        Long currentUserId = (Long) session.getAttribute(Constants.CURRENT_USER_ID);
-        if (currentUserId == null) {
-            return "redirect:login";
-        }
         ArrayList <String> fileHeaders = new ArrayList <String>();
         switch (project.getProjectType()) {
             case GPS:
@@ -110,8 +97,9 @@ public class DataFileController {
     }
     
     @RequestMapping(value="/datafileadd", method=RequestMethod.POST)
+    @PreAuthorize("hasPermission(#project, 'write')")
     public String processSubmit(
-        HttpSession session,
+        Authentication authentication,
         Model model,
         RedirectAttributes redirectAttributes,
         @ModelAttribute(value="project") Project project,
@@ -119,11 +107,7 @@ public class DataFileController {
         BindingResult bindingResult,
         @RequestParam(value="update", required=false) String update
     ) throws Exception {
-        Long currentUserId = (Long) session.getAttribute(Constants.CURRENT_USER_ID);
-        if (currentUserId == null) {
-            return "redirect:login";
-        }
-        User currentUser = userDao.getUserById(currentUserId);
+        User currentUser = userDao.getByUsername((String) authentication.getPrincipal());
         new DataFileFormValidator().validate(dataFile, bindingResult);
         if (bindingResult.hasErrors()) {
             return "datafileadd";

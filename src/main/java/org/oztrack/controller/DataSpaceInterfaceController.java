@@ -10,6 +10,7 @@ import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,7 @@ public class DataSpaceInterfaceController {
     private UserDao userDao;
     
     @RequestMapping(value="/dataspace", method=RequestMethod.POST)
+    @PreAuthorize("hasPermission(#animal.project, 'write')")
 	public String handleRequest(
 	    Model model,
 	    @RequestParam(value="project", required=false) String projectId,

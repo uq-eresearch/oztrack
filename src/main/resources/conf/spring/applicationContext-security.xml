@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:security="http://www.springframework.org/schema/security"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+    <bean id="authenticationProvider" class="org.oztrack.controller.OzTrackAuthenticationProvider"/>
+    
+    <security:authentication-manager alias="authenticationManager">
+        <security:authentication-provider ref="authenticationProvider"/>
+    </security:authentication-manager>
+    
+    <bean id="securityExpressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+        <property name="permissionEvaluator">
+            <bean class="org.oztrack.controller.OzTrackPermissionEvaluator"/>
+        </property>
+    </bean>
+    
+    <security:http use-expressions="true" authentication-manager-ref="authenticationManager">
+        <security:intercept-url pattern="/login" access="permitAll"/>
+        <security:intercept-url pattern="/**" access="permitAll"/>
+        <security:form-login
+            login-page="/login"
+            login-processing-url="/j_spring_security_check"
+            username-parameter="username"
+            password-parameter="password"/>
+        <security:logout logout-url="/logout"/>
+        <security:session-management invalid-session-url="/login"/>
+    </security:http>
+</beans>

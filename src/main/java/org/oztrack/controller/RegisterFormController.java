@@ -1,14 +1,14 @@
 package org.oztrack.controller;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.oztrack.app.Constants;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
 import org.oztrack.validator.RegisterFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,12 +40,10 @@ public class RegisterFormController {
 
     @RequestMapping(value="/register", method=RequestMethod.GET)
     public String getFormView(
-        HttpSession session,
         @ModelAttribute(value="user") User user,
         @RequestParam(value="update", defaultValue="false") boolean update
     ) {
-        Long currentUserId = (Long) session.getAttribute(Constants.CURRENT_USER_ID);
-        User currentUser = (currentUserId == null) ? null : userDao.getUserById(currentUserId);
+        User currentUser = getCurrentUser();
         if (update && (currentUser == null || !currentUser.equals(user))) {
             return "redirect:login";
         }
@@ -54,14 +52,12 @@ public class RegisterFormController {
     
     @RequestMapping(value="/register", method=RequestMethod.POST)
     public String onSubmit(
-        HttpSession session,
         Model model,
         @ModelAttribute(value="user") User user,
         BindingResult bindingResult,
         @RequestParam(value="update", defaultValue="false") Boolean update
     ) throws Exception {
-        Long currentUserId = (Long) session.getAttribute(Constants.CURRENT_USER_ID);
-        User currentUser = (currentUserId == null) ? null : userDao.getUserById(currentUserId);
+        User currentUser = getCurrentUser();
         if (update && (currentUser == null || !currentUser.equals(user))) {
             return "redirect:login";
         }
@@ -82,5 +78,18 @@ public class RegisterFormController {
         else {
             return "registersuccess";
         }
-     }
+    }
+
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = null;
+        if (
+            (authentication != null) &&
+            authentication.isAuthenticated() &&
+            authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))
+        ) {
+            currentUser = userDao.getByUsername((String) authentication.getPrincipal());
+        }
+        return currentUser;
+    }
 }

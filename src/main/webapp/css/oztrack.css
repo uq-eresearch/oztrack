@@ -309,7 +309,8 @@ a:hover {
 
 
 .errorMessage {
-    font-style: italic; color:red;
+    font-style: italic;
+    color:red;
 }
 
 

@@ -18,6 +18,7 @@ import org.oztrack.validator.SearchFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomCollectionEditor;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -65,6 +66,7 @@ public class SearchFormController {
     }
     
     @RequestMapping(value="/searchform", method=RequestMethod.POST)
+    @PreAuthorize("hasPermission(#project, 'read')")
     protected String onSubmit(
         HttpSession session,
         Model model,
@@ -95,6 +97,7 @@ public class SearchFormController {
     }
     
     @RequestMapping(value="/searchform", method=RequestMethod.GET)
+    @PreAuthorize("hasPermission(#project, 'read')")
     protected String showForm(
         Model model,
         @ModelAttribute(value="project") Project project,

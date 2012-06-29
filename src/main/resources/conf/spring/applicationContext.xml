@@ -9,8 +9,6 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
-    <context:component-scan base-package="org.oztrack"/>
-
     <bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="ignoreResourceNotFound" value="true"/>
         <property name="systemPropertiesMode" value="2"/>
@@ -33,6 +31,26 @@
         </property>
     </bean>
 
-    <import resource="oztrack.xml"/>
-    <import resource="spring-quartz.xml"/>
+    <context:component-scan base-package="org.oztrack"/>
+
+    <import resource="applicationContext-security.xml"/>
+    <import resource="applicationContext-data.xml"/>
+    <import resource="applicationContext-quartz.xml"/>
+    
+    <bean id="applicationContext" class="org.oztrack.app.OzTrackConfigurationImpl">
+        <property name="applicationTitle" value="${application.title}"/>
+        <property name="applicationEmail" value="${application.email}"/>
+        <property name="smtpServer" value="${application.emailServer}"/>
+        <property name="version" value="${application.version}"/>
+        <property name="uriPrefix" value="${application.uri.prefix}"/>
+        <property name="dataDir" value="${application.dataDir}"/>
+        <property name="dataSpaceURL" value="${dataSpaceURL}"/>
+        <property name="dataSpaceUsername" value="${dataSpaceUsername}"/>
+        <property name="dataSpacePassword" value="${dataSpacePassword}"/>
+        <property name="serverProxyName" value="${serverProxyName}"/>
+    </bean>
+
+    <bean id="ozTrackApplication" class="org.oztrack.app.OzTrackApplication">
+        <property name="applicationContext" ref="applicationContext"/>
+    </bean>
 </beans>

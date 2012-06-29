@@ -7,11 +7,13 @@ import org.oztrack.app.Constants;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 /**
- * Sets the "currentUser" model attribute based on user ID obtained from session.
+ * Sets the "currentUser" model attribute based on user ID obtained from Spring Security.
  */
 public class CurrentUserInterceptor extends HandlerInterceptorAdapter {
     @Autowired
@@ -22,9 +24,9 @@ public class CurrentUserInterceptor extends HandlerInterceptorAdapter {
         if (modelAndView == null) {
             return;
         }
-        Long currentUserId = (Long) request.getSession().getAttribute(Constants.CURRENT_USER_ID);
-        if (currentUserId != null) {
-            User currentUser = userDao.getUserById(currentUserId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if ((authentication != null) && authentication.isAuthenticated()) {
+            User currentUser = userDao.getByUsername((String) authentication.getPrincipal());
             modelAndView.getModel().put(Constants.CURRENT_USER, currentUser);
         }
     }

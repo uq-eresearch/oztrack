@@ -4,8 +4,6 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
@@ -14,6 +12,7 @@ import org.oztrack.data.model.Sighting;
 import org.oztrack.validator.SightingFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -37,13 +36,14 @@ public class SightingFormController {
     }
 
     @RequestMapping(value="/sighting", method=RequestMethod.GET)
+    @PreAuthorize("permitAll")
     protected String showForm() throws Exception {
         return "sighting";
     }
     
     @RequestMapping(value="/sighting", method=RequestMethod.POST)
+    @PreAuthorize("permitAll")
     public String onSubmit(
-        HttpSession session,
         Model model,
         @ModelAttribute(value="sighting") Sighting sighting,
         BindingResult bindingResult
