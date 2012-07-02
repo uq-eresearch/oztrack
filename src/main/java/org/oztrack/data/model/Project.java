@@ -61,8 +61,7 @@ public class Project extends OztrackBaseEntity implements Serializable {
     @Column(columnDefinition = "TEXT")
     private String dataDirectoryPath;
     
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.project", cascade =
-    {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.project", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true)
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private List<ProjectUser> projectUsers = new LinkedList<ProjectUser>();
 

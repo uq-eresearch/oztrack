@@ -67,7 +67,7 @@ public class SearchFormController {
     
     @RequestMapping(value="/searchform", method=RequestMethod.POST)
     @PreAuthorize("hasPermission(#project, 'read')")
-    protected String onSubmit(
+    public String onSubmit(
         HttpSession session,
         Model model,
         @ModelAttribute(value="project") Project project,
@@ -98,7 +98,7 @@ public class SearchFormController {
     
     @RequestMapping(value="/searchform", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#project, 'read')")
-    protected String showForm(
+    public String showForm(
         Model model,
         @ModelAttribute(value="project") Project project,
         @ModelAttribute(value="searchQuery") SearchQuery searchQuery,

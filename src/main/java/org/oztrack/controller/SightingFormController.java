@@ -37,7 +37,7 @@ public class SightingFormController {
 
     @RequestMapping(value="/sighting", method=RequestMethod.GET)
     @PreAuthorize("permitAll")
-    protected String showForm() throws Exception {
+    public String showForm() throws Exception {
         return "sighting";
     }
     

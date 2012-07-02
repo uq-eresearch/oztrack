@@ -50,15 +50,11 @@ public class KMLExportView extends AbstractView{
         if (model != null) {
             searchQuery = (SearchQuery) model.get("searchQuery");
             if (searchQuery.getProject() != null) {
-
             	collection = this.buildPointsFeatureCollection(searchQuery);
             	encoder.encode(collection,KML.kml, response.getOutputStream());
-            	
             }    
         }	
 	}
-	
-	
 	
     private SimpleFeatureCollection buildPointsFeatureCollection(SearchQuery searchQuery) {
         List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
@@ -90,5 +86,4 @@ public class KMLExportView extends AbstractView{
         }
         return collection;
     }
-
 }

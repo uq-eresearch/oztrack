@@ -71,7 +71,7 @@ public class ProjectController {
     }
     
     @RequestMapping(value="/publish", method=RequestMethod.GET)
-    @PreAuthorize("hasPermission(#project, 'read')")
+    @PreAuthorize("hasPermission(#project, 'write')")
     public String getPublishView(Model model, @ModelAttribute(value="project") Project project) {
         return getView(model, project, "publish");
     }

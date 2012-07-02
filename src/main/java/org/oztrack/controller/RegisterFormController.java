@@ -6,6 +6,7 @@ import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
 import org.oztrack.validator.RegisterFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,6 +40,7 @@ public class RegisterFormController {
     }
 
     @RequestMapping(value="/register", method=RequestMethod.GET)
+    @PreAuthorize("permitAll")
     public String getFormView(
         @ModelAttribute(value="user") User user,
         @RequestParam(value="update", defaultValue="false") boolean update
@@ -51,6 +53,7 @@ public class RegisterFormController {
     }
     
     @RequestMapping(value="/register", method=RequestMethod.POST)
+    @PreAuthorize("permitAll")
     public String onSubmit(
         Model model,
         @ModelAttribute(value="user") User user,

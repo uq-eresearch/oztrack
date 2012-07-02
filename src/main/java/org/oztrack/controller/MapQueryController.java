@@ -12,6 +12,7 @@ import org.oztrack.data.model.types.MapQueryType;
 import org.oztrack.view.KMLMapQueryView;
 import org.oztrack.view.WFSMapQueryView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,12 +69,14 @@ public class MapQueryController {
     }
     
     @RequestMapping(value="/mapQueryKML", method=RequestMethod.GET)
-    public View handleKMLQuery() throws Exception {
+    @PreAuthorize("hasPermission(#searchQuery.project, 'read')")
+    public View handleKMLQuery(@ModelAttribute(value="searchQuery") SearchQuery searchQuery) throws Exception {
         return new KMLMapQueryView(positionFixDao);
     }
     
     @RequestMapping(value="/mapQueryWFS", method=RequestMethod.POST)
-    public View handleWFSQuery() throws Exception {
+    @PreAuthorize("(#searchQuery.mapQueryType == T(org.oztrack.data.model.types.MapQueryType).ALL_PROJECTS) or hasPermission(#searchQuery.project, 'read')")
+    public View handleWFSQuery(@ModelAttribute(value="searchQuery") SearchQuery searchQuery) throws Exception {
         return new WFSMapQueryView(projectDao, positionFixDao);
     }
 }

@@ -12,8 +12,10 @@ import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.view.KMLExportView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,17 +34,22 @@ public class KMLExportController {
     @Autowired
     private PositionFixDao positionFixDao;
 
+    @ModelAttribute("project")
+    public Project getProject(@RequestParam(value="projectId") Long projectId) {
+        return projectDao.getProjectById(projectId);
+    }
+
     @RequestMapping(value="/exportKML", method=RequestMethod.GET)
+    @PreAuthorize("hasPermission(#project, 'read')")
     public View handleRequest(
         Model model,
-        @RequestParam(value="projectId", required=false) String projectId,
+        @ModelAttribute(value="project") Project project,
         @RequestParam(value="animalId", required=false) String animalId
     ) throws Exception {
         SearchQuery searchQuery = new SearchQuery();
-        if ((projectId != null) && (animalId != null))  {
-            logger.debug("for projectId: " + projectId);
+        if ((project != null) && (animalId != null))  {
+            logger.debug("for projectId: " + project.getId());
             
-            Project project = projectDao.getProjectById(Long.valueOf(projectId));
             searchQuery.setProject(project);
             
             Animal animal = animalDao.getAnimalById(Long.valueOf(animalId));

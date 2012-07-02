@@ -54,6 +54,6 @@ public class OzTrackPermissionEvaluator implements PermissionEvaluator {
 
     @Override
     public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
-        return true;
+        return false;
     }
 }
