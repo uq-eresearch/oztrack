@@ -31,6 +31,6 @@
             username-parameter="username"
             password-parameter="password"/>
         <security:logout logout-url="/logout"/>
-        <security:session-management invalid-session-url="/login"/>
+        <security:session-management/>
     </security:http>
 </beans>
