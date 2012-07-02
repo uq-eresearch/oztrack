@@ -163,9 +163,17 @@
                         </table>
                         <br>
 						<b>Spatial Reference System:</b><br>
-						<input id="projectionCode" class="shortInputBox" value="EPSG:20355"/>&nbsp;&nbsp;<a href="#" onclick="reportProjectionDescr(); return false;">Find</a>&nbsp;
-						<a href="javascript:void(window.open('http://spatialreference.org/ref/epsg', 'popup', 'width=600,height=400,scrollbars=yes'))">See List</a><br>
-						<div id="projectionDescr" style="color:grey;"><br></div>
+						<!--
+                            Defaults to EPSG:20255 (AGD66 / AMG zone 55)
+                            Area: Australia and PNG - 144°E to 150°E
+                            Link: http://spatialreference.org/ref/epsg/20255/
+                        -->
+                        <input id="projectionCode" class="shortInputBox" value="EPSG:20255"/>&nbsp;
+                        <a href="#" onclick="reportProjectionDescr(); return false;">Find</a>&nbsp;
+						<a href="javascript:void(window.open('http://spatialreference.org/ref/epsg', 'popup', 'width=600,height=400,scrollbars=yes'))">See List</a>
+                        <br />
+						<div id="projectionDescr" style="color:grey;"><br />
+                        </div>
 			                
 			            <div class="formButton"><input type="submit" id="projectMapSubmit" value="Calculate"/></div>
 		

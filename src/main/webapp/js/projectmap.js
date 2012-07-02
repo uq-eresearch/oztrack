@@ -261,7 +261,6 @@ function initStyles() {
 
 
 function reportProjectionDescr() {
-
 	// request code from spatial reference site
 	var projectionCode = $('input[id=projectionCode]').val();
 	$('#projectionDescr').html("Searching for " + projectionCode + "...");
@@ -514,6 +513,7 @@ function addProjectMapLayer() {
     var dateTo=$('input[id=toDatepicker]').val();
     var queryType =$('input[name=mapQueryTypeSelect]:checked');
     var queryTypeDescription = $('label[for="' + queryType.attr('id') + '"]').text();
+    var srs = $('input[id=projectionCode]').val();
     var percent = $('input[id=percent]').val();
     var h = $('input[id=h]').val();
     var alpha = $('input[id=alpha]').val();
@@ -522,6 +522,7 @@ function addProjectMapLayer() {
     
         var params = {projectId: projectId
 	                 ,queryType: queryType.val()
+	                 ,srs: srs
 	                 ,percent: percent
 	                 ,h: h
 	                 ,alpha: alpha};

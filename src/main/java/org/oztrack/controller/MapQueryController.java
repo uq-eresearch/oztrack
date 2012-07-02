@@ -36,6 +36,7 @@ public class MapQueryController {
         @RequestParam(value="queryType", required=false) String queryType,
         @RequestParam(value="dateFrom", required=false) String dateFrom,
         @RequestParam(value="dateTo", required=false) String dateTo,
+        @RequestParam(value="srs", required=false) String srs,
         @RequestParam(value="percent", required=false) Double percent,
         @RequestParam(value="h", required=false) String h,
         @RequestParam(value="alpha", required=false) Double alpha
@@ -56,10 +57,28 @@ public class MapQueryController {
         if (dateTo != null) {
             searchQuery.setToDate(sdf.parse(dateTo));
         }
+        if (srs != null && !srs.isEmpty()) {
+            String regex = "(epsg|EPSG):[0-9]+";
+            if (!srs.matches(regex)) {
+                throw new RuntimeException("Invalid SRS code: must match " + regex);
+            }
+            searchQuery.setSrs(srs);
+        }
         if (percent != null && !percent.isNaN()) {
             searchQuery.setPercent(percent);
         }
         if (h != null && !h.isEmpty()) {
+            boolean validDouble = false;
+            try {
+                Double.parseDouble(h);
+                validDouble = true;
+            }
+            catch (NumberFormatException e) {
+            }
+            String regex = "href|LSCV";
+            if (!h.matches(regex) && !validDouble) {
+                throw new RuntimeException("Invalid h value: must be number or match " + regex);
+            }
             searchQuery.setH(h);
         }
         if (alpha != null && !alpha.isNaN()) {

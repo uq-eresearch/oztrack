@@ -30,20 +30,14 @@ public class KMLMapQueryView extends AbstractView {
         HttpServletRequest request,
         HttpServletResponse response
     ) throws Exception {
-
-        SearchQuery searchQuery;
-        File kmlFile = null;
-
-        if (model != null) {
-            logger.debug("Resolving ajax request view ");
-            searchQuery = (SearchQuery) model.get("searchQuery");
-
-            if (searchQuery.getProject() != null) {
-                RServeInterface rServeInterface = new RServeInterface(searchQuery, positionFixDao);
-                kmlFile = rServeInterface.createKml();
-
-            }
+        logger.debug("Resolving ajax request view ");
+        SearchQuery searchQuery = (SearchQuery) model.get("searchQuery");
+        if (searchQuery.getProject() == null) {
+            return;
         }
+
+        RServeInterface rServeInterface = new RServeInterface(searchQuery, positionFixDao);
+        File kmlFile = rServeInterface.createKml();
 
         FileInputStream fin = new FileInputStream(kmlFile);
         byte kmlContent[] = new byte[(int) kmlFile.length()];

@@ -18,6 +18,7 @@ public class SearchQuery {
     private String [] speciesList;
     private Project project;
     private MapQueryType mapQueryType;
+    private String srs;
     private Double percent;
     private String h;
     private Double alpha;
@@ -90,6 +91,14 @@ public class SearchQuery {
 
     public void setMapQueryType(MapQueryType mapQueryType) {
         this.mapQueryType = mapQueryType;
+    }
+
+    public String getSrs() {
+        return srs;
+    }
+
+    public void setSrs(String srs) {
+        this.srs = srs;
     }
 
     public Double getPercent() {

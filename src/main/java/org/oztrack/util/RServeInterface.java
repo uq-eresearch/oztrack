@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import org.apache.commons.io.IOUtils;
@@ -33,7 +34,8 @@ public class RServeInterface {
 
     private RConnection rConnection;
     private String rWorkingDir;
-    private SearchQuery searchQuery;
+    private final SearchQuery searchQuery;
+    private final String srs;
     private String rLog = "";
 
     // TODO: DAO should not appear in this layer.
@@ -41,6 +43,7 @@ public class RServeInterface {
 
     public RServeInterface(SearchQuery searchQuery, PositionFixDao positionFixDao) {
         this.searchQuery = searchQuery;
+        this.srs = (searchQuery.getSrs() != null) ? searchQuery.getSrs().toLowerCase(Locale.ENGLISH) : "EPSG:20255";
         this.positionFixDao = positionFixDao;
     }
 
@@ -153,31 +156,14 @@ public class RServeInterface {
             this.rConnection.assign("positionFix", rPosFixDataFrame);
             rLog = rLog + " | PositionFix dataFrame assigned ";
 
-            String rCommand;
-            REXP rResult;
-
-            // We use WGS84 for coordinates and project to AGD66,
-            // which has units of metres, for area calculations.
-            //
-            // * EPSG:4326 (WGS 84)
-            //   http://spatialreference.org/ref/epsg/4326/
-            //
-            // * EPSG:20255 (AGD66 / AMG zone 55)
-            //   http://spatialreference.org/ref/epsg/20255/
-            //
-            rCommand = "positionFix$Name <- positionFix$Id;"
-                     + "coordinates(positionFix) <- ~Y+X;"
-                     + "positionFix.xy <- positionFix[,ncol(positionFix)];"
-                     + "proj4string(positionFix.xy) <- CRS(\"+init=epsg:4326\");"
-                     + "positionFix.proj <- spTransform(positionFix.xy,CRS(\"+init=epsg:20255\"));";
-
-            logger.debug(rCommand);
-            rResult = rConnection.parseAndEval(rCommand);
-            if (rResult.inherits("try-error")) {
-                throw new RServeInterfaceException(" Log: " + rLog + " " + rResult.asString());
-            }
+            // We use WGS84 for coordinates and project to a user-defined SRS.
+            // We assume the user-supplied SRS has units of metres in our area calculations.
+            safeEval("positionFix$Name <- positionFix$Id;");
+            safeEval("coordinates(positionFix) <- ~Y+X;");
+            safeEval("positionFix.xy <- positionFix[,ncol(positionFix)];");
+            safeEval("proj4string(positionFix.xy) <- CRS(\"+init=epsg:4326\");");
+            safeEval("positionFix.proj <- spTransform(positionFix.xy,CRS(\"+init=" + srs + "\"));");
             rLog = rLog + "coordinates + 2 projections defined.";
-
         }
         catch (REngineException e) {
             throw new RServeInterfaceException(e.toString() + "Log: " + rLog);
@@ -210,7 +196,7 @@ public class RServeInterface {
     protected void writeAlphahullKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
         String name = searchQuery.getMapQueryType().toString();
         Double alpha = (searchQuery.getAlpha() != null) ? searchQuery.getAlpha() : 0.1;
-        safeEval("ahull.proj.spldf <- id.alpha(dxy=positionFix.proj, ialpha=" + alpha + ", sCS=\"+init=epsg:20255\")");
+        safeEval("ahull.proj.spldf <- id.alpha(dxy=positionFix.proj, ialpha=" + alpha + ", sCS=\"+init=" + srs + "\")");
         safeEval("ahull.xy.spldf <- spTransform(ahull.proj.spldf, CRS(\"+init=epsg:4326\"))");
         safeEval("writeOGR(ahull.xy.spldf, dsn=\"" + fileName + "\", layer= \"" + name + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
     }
@@ -249,6 +235,7 @@ public class RServeInterface {
     //     org.rosuda.REngine.Rserve.RserveException: voidEval failed
     // 
     private void safeEval(String rCommand) throws RServeInterfaceException {
+        logger.debug(String.format("Evaluating R: %s", rCommand));
         REXP rExp;
         try {
             rExp = rConnection.eval("try({" + rCommand + "}, silent=TRUE)");
