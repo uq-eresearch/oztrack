@@ -326,14 +326,6 @@ a:hover {
     z-index:2;
 }
 
-#sightingMap {
-    width: 280px;
-    height:100%;
-    height: 260px;
-    margin-top:0px;
-}
-
-
 .mapTool {
    background-color:#e6e6c0;
    font-size: 0.8em;
@@ -575,10 +567,6 @@ form div .checkbox, form div .radiobutton {
 
 #localTimeConversionHours {
     width:30px;
-}
-
-#sightingLatitude, #sightingLongitude {
-    width:120px;
 }
 
 .oztrackButton, a.oztrackButton input.oztrackButton{
