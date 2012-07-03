@@ -1,16 +1,11 @@
 package org.oztrack.controller;
 
-import java.io.File;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Project;
-import org.oztrack.data.model.ProjectUser;
 import org.oztrack.data.model.User;
-import org.oztrack.data.model.types.Role;
 import org.oztrack.validator.ProjectFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,10 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class ProjectListController {
