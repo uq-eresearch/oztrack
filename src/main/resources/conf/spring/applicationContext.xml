@@ -53,4 +53,8 @@
     <bean id="ozTrackApplication" class="org.oztrack.app.OzTrackApplication">
         <property name="applicationContext" ref="applicationContext"/>
     </bean>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize"><value>100000000</value></property>
+    </bean>
 </beans>

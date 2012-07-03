@@ -6,7 +6,7 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <c:set var="title">
     <c:choose>
-    <c:when test="${param.update}">
+    <c:when test="${user.id != null}">
     Edit User Profile
     </c:when>
     <c:otherwise>
@@ -30,15 +30,25 @@
     <jsp:body>
 		<h1>${title}</h1>
 		<c:choose>
-		<c:when test="${param.update}">
+		<c:when test="${user.id != null}">
 		<c:set var="buttonText" value="Update"/>
 		</c:when>
 		<c:otherwise>
 		<c:set var="buttonText" value="Register"/>
 		</c:otherwise>
 		</c:choose>
-		
-		<form:form commandName="user" method="POST" name="user">
+
+        <c:choose>
+            <c:when test="${user.id != null}">
+                <c:set var="method" value="PUT"/>
+                <c:set var="action" value="/users/${user.id}"/>
+            </c:when>
+            <c:otherwise>
+                <c:set var="method" value="POST"/>
+                <c:set var="action" value="/users"/>
+            </c:otherwise>
+        </c:choose>
+		<form:form method="${method}" action="${action}" commandName="user" name="user">
 		
 			<div class="help">
 			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">

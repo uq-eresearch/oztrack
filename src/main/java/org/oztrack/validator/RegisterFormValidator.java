@@ -22,9 +22,6 @@ public class RegisterFormValidator implements Validator {
     }
 	
 	public void validate(Object obj, Errors errors) {
-	      
-		//User user = (User) obj;     
-
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "error.empty.field", "Please Enter User Name");
         User loginUser = (User) obj;
         User user = userDao.getByUsername(loginUser.getUsername());
@@ -50,7 +47,5 @@ public class RegisterFormValidator implements Validator {
         		errors.rejectValue("email", "invalid.email", "Email error: " + ex.getMessage());
         	}
         }
-        
 	}
-	
-}	
+}

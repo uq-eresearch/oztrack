@@ -24,7 +24,7 @@ public class SearchQueryExportController {
         return (SearchQuery) session.getAttribute("searchQuery");
     }
 
-    @RequestMapping(value="/export", method=RequestMethod.GET)
+    @RequestMapping(value="/project/{id}/export", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#searchQuery.project, 'read')")
     public View handleRequest(@ModelAttribute(value="searchQuery") SearchQuery searchQuery, Model model) throws Exception {
         model.addAttribute(SearchQueryXLSView.SEARCH_QUERY_KEY, searchQuery);

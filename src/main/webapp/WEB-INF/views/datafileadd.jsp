@@ -15,8 +15,8 @@
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
         &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
-        &rsaquo; <a href="<c:url value="/projectdetail?id=${project.id}"/>">${project.title}</a>
-        &rsaquo; <a href="<c:url value="/datafiles?project_id=${project.id}"/>">Data Uploads</a>
+        &rsaquo; <a href="<c:url value="/projects/${project.id}"/>">${project.title}</a>
+        &rsaquo; <a href="<c:url value="/projects/${project.id}/datafiles"/>">Data Uploads</a>
         &rsaquo; <span class="active">Add a Data File</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
@@ -30,7 +30,7 @@
 		available for visualisations and analysis for your project.
 		</p>
 		
-		<form:form commandName="dataFile" method="POST" enctype="multipart/form-data">
+		<form:form action="/projects/${project.id}/datafiles" commandName="dataFile" method="POST" enctype="multipart/form-data">
 		
 		
 			<div class="help">

@@ -9,9 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -20,20 +20,20 @@ public class AnimalController {
     private AnimalDao animalDao;
     
     @ModelAttribute("animal")
-    public Animal getAnimal(@RequestParam(value="animal_id") Long animalId) throws Exception {
+    public Animal getAnimal(@PathVariable(value="id") Long animalId) throws Exception {
         return animalDao.getAnimalById(animalId);
     }
 
-    @RequestMapping(value="/animalform", method=RequestMethod.GET)
+    @RequestMapping(value="/animals/{id}/edit", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#animal.project, 'write')")
-    public String getFormView(Model model, @ModelAttribute("animal") Animal animal) {
+    public String getEditView(Model model, @ModelAttribute("animal") Animal animal) {
         model.addAttribute("project", animal.getProject());
         return "animalform";
     }
     
-    @RequestMapping(value="/animalform", method=RequestMethod.POST)
+    @RequestMapping(value="/animals/{id}", method=RequestMethod.PUT)
     @PreAuthorize("hasPermission(#animal.project, 'write')")
-    public String processSubmit(
+    public String processUpdate(
         RedirectAttributes redirectAttributes,
         @ModelAttribute(value="animal") Animal animal,
         BindingResult bindingResult
@@ -44,6 +44,6 @@ public class AnimalController {
         }
         animalDao.update(animal);
         redirectAttributes.addAttribute("projectId", animal.getProject().getId());
-        return "redirect:projectanimals?id={projectId}";
+        return "redirect:/projects/{projectId}/animals";
     }
 }

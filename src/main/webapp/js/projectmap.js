@@ -103,7 +103,7 @@ function initializeProjectMap() {
             {
             projection: projection4326,
             protocol: new OpenLayers.Protocol.WFS.v1_1_0({
-               url:  "mapQueryWFS?projectId=" + projectId + "&queryType=ALL_POINTS",
+               url:  "/mapQueryWFS?projectId=" + projectId + "&queryType=ALL_POINTS",
                featureType: "Track",
                featureNS: "http://localhost:8080/"
                }),
@@ -560,7 +560,7 @@ function addKMLLayer(layerName, params) {
                 		loadend: function (e) {updateAnimalInfoFromKML(layerName, params, e);}
                 	},
                 	protocol: new OpenLayers.Protocol.HTTP(
-                			{url: "mapQueryKML",
+                			{url: "/mapQueryKML",
                 			 params: params,
                 			 format: new OpenLayers.Format.KML(
 		                        {//extractStyles: true,
@@ -624,7 +624,7 @@ function addWFSLayer(layerName, params, styleMap) {
              },
              projection: projection4326,
              protocol: new OpenLayers.Protocol.WFS.v1_1_0({
-                url:  "mapQueryWFS",
+                url:  "/mapQueryWFS",
                 params:params,
                 featureType: "Track",
                 featureNS: "http://localhost:8080/"

@@ -15,8 +15,8 @@
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
         &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
-        &rsaquo; <a href="<c:url value="/projectdetail?id=${project.id}"/>">${project.title}</a>
-        &rsaquo; <a href="<c:url value="/projectanimals?id=${project.id}"/>">Animals</a>
+        &rsaquo; <a href="<c:url value="/projects/${project.id}"/>">${project.title}</a>
+        &rsaquo; <a href="<c:url value="/projects/${project.id}/animals"/>">Animals</a>
         &rsaquo; <span class="active">Edit</span> 
     </jsp:attribute>
     <jsp:attribute name="sidebar">
@@ -25,7 +25,7 @@
     <jsp:body>
 		<h1 id="projectTitle"><c:out value="${project.title}"/></h1>
 		<h2>Update Animal Details</h2>
-		<form:form commandName="animal" method="POST" name="animal">
+		<form:form action="/animals/${animal.id}" commandName="animal" method="PUT" name="animal">
 			<div>
 				<label for="projectAnimalId">Animal Id:</label>
 				<form:input path="projectAnimalId" id="projectAnimalId"/>

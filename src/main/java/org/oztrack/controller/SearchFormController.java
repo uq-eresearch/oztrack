@@ -25,6 +25,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,16 +42,8 @@ public class SearchFormController {
     AnimalDao animalDao;
 
     @ModelAttribute("project")
-    public Project getProject(@RequestParam(value="project_id", required=false) Long projectId) {
-        Project project = null;
-        if (projectId == null) {
-            project = new Project();
-            project.setRightsStatement("The data is the property of the University of Queensland. Permission is required to use this material.");
-        }
-        else {
-            project = projectDao.getProjectById(projectId);
-        }
-        return project;
+    public Project getProject(@PathVariable(value="project_id") Long projectId) {
+        return projectDao.getProjectById(projectId);
     }
     
     @ModelAttribute("searchQuery")
@@ -65,7 +58,7 @@ public class SearchFormController {
         return searchQuery;
     }
     
-    @RequestMapping(value="/searchform", method=RequestMethod.POST)
+    @RequestMapping(value="/projects/{id}/search", method=RequestMethod.POST)
     @PreAuthorize("hasPermission(#project, 'read')")
     public String onSubmit(
         HttpSession session,
@@ -96,7 +89,7 @@ public class SearchFormController {
         });
     }
     
-    @RequestMapping(value="/searchform", method=RequestMethod.GET)
+    @RequestMapping(value="/projects/{id}/search", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#project, 'read')")
     public String showForm(
         Model model,

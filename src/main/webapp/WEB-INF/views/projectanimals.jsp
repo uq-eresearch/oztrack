@@ -15,7 +15,7 @@
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
         &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
-        &rsaquo; <a href="<c:url value="/projectdetail?id=${project.id}"/>">${project.title}</a>
+        &rsaquo; <a href="<c:url value="/projects/${project.id}"/>">${project.title}</a>
         &rsaquo; <span class="active">Animals</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
@@ -54,7 +54,7 @@
 		
 		            <td><c:out value="${animal.pingIntervalSeconds}"/></td>
 		            <td>
-				        <a href="<c:url value="/animalform"><c:param name="animal_id" value="${animal.id}"/></c:url>">
+				        <a href="<c:url value="/animals/${animal.id}/edit"/>">
 		                Edit
 		                </a>
 		            </td>

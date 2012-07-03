@@ -8,7 +8,7 @@
 <tags:page>
     <jsp:attribute name="title">
         <c:choose>
-        <c:when test="${param.update}">
+        <c:when test="${project.id != null}">
             Update Project Metadata
         </c:when>
         <c:otherwise>
@@ -37,7 +37,7 @@
     </jsp:attribute>
     <jsp:body>
 		<c:choose>
-		<c:when test="${param.update}">
+		<c:when test="${project.id != null}">
 			<h1>Update Project Metadata</h1>
 		</c:when>
 		<c:otherwise>
@@ -50,7 +50,19 @@
 		subsequently to the Australian National Data Service, ANDS. A link will be made available to complete the syndication after 
 		data has been uploaded to OzTrack, and you have the opportunity to edit this information before syndication.</p>
 		
-		<form:form commandName="project" method="POST" name="project"  enctype="multipart/form-data">
+        <c:choose>
+            <c:when test="${project.id != null}">
+                <c:set var="method" value="PUT"/>
+                <c:set var="action" value="/projects/${project.id}"/>
+            </c:when>
+            <c:otherwise>
+                <c:set var="method" value="POST"/>
+                <c:set var="action" value="/projects"/>
+            </c:otherwise>
+        </c:choose>
+		<form:form
+            method="${method}" action="${action}"
+            commandName="project" name="project"  enctype="multipart/form-data">
 		
 		<div class="formSubheader">Data Contact</div>
 		
@@ -62,7 +74,7 @@
 		
 		<c:set var="dataSpaceAgent" value="${currentUser}"/>
 		
-		<c:if test="${param.update}">
+		<c:if test="${project.id != null}">
 			<c:set var="dataSpaceAgent" value="${project.dataSpaceAgent}"/>
 		</c:if>	
 		
@@ -86,16 +98,6 @@
 		<div><c:out value="${dataSpaceAgent.email}"/>&nbsp;</div>
 		</div>
 		
-		<!-- 
-		<c:if test="${param.update}">
-		<div>
-		<label>&nbsp;</label>
-		<div><a href="#">Change the user prescribed as the contact for this project ... </a></div>
-		</div>
-		</c:if>
-		 -->
-		
-		 
 		<div class="formSubheader">Project Metadata</div>
 		
 			<div class="help">
@@ -216,7 +218,7 @@
 		</div>
 		
 		<c:choose>
-		<c:when test="${param.update}">
+		<c:when test="${project.id != null}">
 		
 				<div class="help">
 				<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
@@ -230,7 +232,7 @@
 				<c:choose>
 				<c:when test ="${empty project.dataSpaceUpdateDate}">
 					Your project metadata has not yet been published to ANDS. 
-					<a href="<c:url value="/publish"><c:param name="id" value="${project.id}"/></c:url>">Publish to ANDS now</a>.
+					<a href="<c:url value="/projects/${project.id}/publish"/>">Publish to ANDS now</a>.
 				</c:when>
 				<c:otherwise>
 					Your project metadata has been published and was last updated on 

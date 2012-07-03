@@ -19,7 +19,7 @@
     <jsp:attribute name="sidebar">
         <div class="sidebarMenu">
             <ul>
-                <li><a href="<c:url value="/projectadd"/>">Create New Project</a></li>
+                <li><a href="<c:url value="/projects/new"/>">Create New Project</a></li>
             </ul>
         </div>
     </jsp:attribute>
@@ -28,11 +28,11 @@
 		
 		<c:choose>
 		 <c:when test="${(empty currentUser.projectUsers)}">
-			<p>You have no projects to work with yet. You might like to <a href="<c:url value='/projectadd'/>">add a project.</a></p>
+			<p>You have no projects to work with yet. You might like to <a href="<c:url value='/projects/new'/>">add a project.</a></p>
 		 </c:when>
 		 <c:otherwise>
 		    <p>You have access to <c:out value="${fn:length(currentUser.projectUsers)}"/> project(s). <br>
-		    Select a project to work with from the list below, or <a href="<c:url value='/projectadd'/>">create a new project.</a></p>
+		    Select a project to work with from the list below, or <a href="<c:url value='/projects/new'/>">create a new project.</a></p>
 		
 			<h2>My Projects</h2>
 			
@@ -47,7 +47,7 @@
 			
 			<c:forEach items="${currentUser.projectUsers}" var="project">
 			<tr>
-			    <td><a href="<c:url value="/projectdetail"><c:param name="id" value="${project.pk.project.id}"/></c:url>">
+			    <td><a href="<c:url value="/projects/${project.pk.project.id}"/>">
 			            <c:out value="${project.pk.project.title}"/></a></td>
 			    <td><c:out value="${project.pk.project.spatialCoverageDescr}"/></td>
 			    <td><c:out value="${project.pk.project.projectType.displayName}"/></td>

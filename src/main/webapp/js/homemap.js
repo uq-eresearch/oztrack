@@ -60,7 +60,7 @@ function initializeHomeMap() {
             "All Projects",{
             projection: projection4326,
             protocol: new OpenLayers.Protocol.WFS.v1_1_0({
-               url:  "mapQueryWFS?queryType=ALL_PROJECTS",
+               url:  "/mapQueryWFS?queryType=ALL_PROJECTS",
                featureType: "Project",
                featureNS: "http://localhost:8080/",
                geometryName: "hello"
@@ -141,7 +141,7 @@ function buildPopup(e) {
 				  + "<p><b>Species: </b><br>" + f.attributes.speciesCommonName + "</p>"
 				  + "<p><b>Coverage: </b><br>" + f.attributes.spatialCoverageDescr + "</p>"
 				  + "<p><b>Date Range: </b><br>" + firstDate + " to " + lastDate + "</p>"
-				  + "<p><a href='projectdescr?id=" + projectId + "'>more</a> ...</p>"
+				  + "<p><a href='projects/" + projectId + "/description'>more</a> ...</p>"
 				  + "</div>";
 
 	var popup = new OpenLayers.Popup.AnchoredBubble(

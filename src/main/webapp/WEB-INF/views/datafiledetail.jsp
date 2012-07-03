@@ -5,7 +5,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <c:set var="dateTimeFormatPattern" value="dd/MM/yyyy HH:mm:ss"/>
-<tags:page title="${project.title}: Data File Detail">
+<tags:page title="${dataFile.project.title}: Data File Detail">
     <jsp:attribute name="head">
         <script type="text/javascript"> 
             $(document).ready(function() {
@@ -16,15 +16,15 @@
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
         &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
-        &rsaquo; <a href="<c:url value="/projectdetail?id=${project.id}"/>">${project.title}</a>
-        &rsaquo; <a href="<c:url value="/datafiles?project_id=${project.id}"/>">Data Uploads</a>
+        &rsaquo; <a href="<c:url value="/projects/${dataFile.project.id}"/>">${dataFile.project.title}</a>
+        &rsaquo; <a href="<c:url value="/projects/${dataFile.project.id}/datafiles"/>">Data Uploads</a>
         &rsaquo; <span class="active">Data File Detail</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
-        <tags:project-menu project="${project}"/>
+        <tags:project-menu project="${dataFile.project}"/>
     </jsp:attribute>
     <jsp:body>
-		<h1 id="projectTitle"><c:out value="${project.title}"/></h1>
+		<h1 id="projectTitle"><c:out value="${dataFile.project.title}"/></h1>
 		<h2>Data File Detail</h2>
 		
 		<table class="projectListTable">
@@ -39,10 +39,7 @@
 		        <c:out value="${dataFile.status}"/>
 		        <c:choose>
 		             <c:when test="${dataFile.status=='FAILED'}">
-		                &nbsp;&nbsp;<a href="<c:url value="/datafileadd">
-		                    <c:param name="datafile_id" value="${dataFile.id}"/>
-		                    <c:param name="project_id" value="${dataFile.project.id}"/>
-		                </c:url>">Retry</a>
+		                &nbsp;&nbsp;<a href="<c:url value="/datafiles/${dataFile.id}"/>">Retry</a>
 		             </c:when>
 		        </c:choose>
 		    </td>

@@ -40,14 +40,14 @@
                 <c:when test="${currentUser != null}">
                   Welcome, <c:out value="${currentUser.firstName}"/>
                   &nbsp;|&nbsp;
-                  <a href="<c:url value="/register"><c:param name="user" value="${currentUser.username}"/><c:param name="update" value="${true}"/></c:url>">Profile</a>
+                  <a href="<c:url value="/users/${currentUser.id}/edit"/>">Profile</a>
                   &nbsp;|&nbsp;
                   <a href="<c:url value="/logout"/>">Logout</a>
                 </c:when>
                 <c:otherwise>
                   <a href="<c:url value="/login"/>">Login</a>
                   or
-                  <a href="<c:url value="/register"/>">Register</a>
+                  <a href="<c:url value="/users/new"/>">Register</a>
                 </c:otherwise>
             </c:choose>
         </div>   

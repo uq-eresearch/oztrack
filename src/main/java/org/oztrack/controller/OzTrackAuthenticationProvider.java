@@ -26,7 +26,7 @@ public class OzTrackAuthenticationProvider implements AuthenticationProvider {
         }
         List<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        if (user.getAdmin()) {
+        if ((user.getAdmin() != null) && user.getAdmin()) {
             authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         }
         return new UsernamePasswordAuthenticationToken(

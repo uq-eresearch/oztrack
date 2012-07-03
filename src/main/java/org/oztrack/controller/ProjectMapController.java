@@ -12,9 +12,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ProjectMapController {
@@ -25,11 +25,11 @@ public class ProjectMapController {
     AnimalDao animalDao;
 
     @ModelAttribute("project")
-    public Project getProject(@RequestParam(value="id") Long projectId) {
+    public Project getProject(@PathVariable(value="id") Long projectId) {
         return projectDao.getProjectById(projectId);
     }
     
-    @RequestMapping(value="/projectmap", method=RequestMethod.GET)
+    @RequestMapping(value="/projects/{id}/tools", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#project, 'read')")
     public String getView(Model model, @ModelAttribute(value="project") Project project) {
     	MapQueryType [] mapQueryTypeList = MapQueryType.values();

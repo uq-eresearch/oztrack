@@ -17,15 +17,8 @@ import javax.persistence.SequenceGenerator;
 
 import org.hibernate.annotations.Cascade;
 
-/**
- * Author: alabri
- * Date: 10/11/2010
- * Time: 3:02:42 PM
- */
-
 @Entity(name = "AppUser")
 public class User implements Serializable {
-
 	@Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userid_seq")
     @SequenceGenerator(name = "userid_seq", sequenceName = "userid_seq", allocationSize = 1)
     @Column(nullable=false)
@@ -44,15 +37,9 @@ public class User implements Serializable {
     private String dataSpaceAgentDescription;
     private Date dataSpaceAgentUpdateDate;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade =
-    {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true)
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private List<ProjectUser> projectUsers = new LinkedList<ProjectUser>();
-
-    /*
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "id")
-    private Set<Project> projects = new HashSet<Project>();
-    */
 
     public User() {
     }

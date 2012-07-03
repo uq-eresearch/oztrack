@@ -16,7 +16,7 @@
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
         &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
-        &rsaquo; <a href="<c:url value="/projectdetail?id=${project.id}"/>">${project.title}</a>
+        &rsaquo; <a href="<c:url value="/projects/${project.id}"/>">${project.title}</a>
         &rsaquo; <span class="active">Data Uploads</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
@@ -28,18 +28,17 @@
 		
 		<c:choose>
 		 <c:when test="${(empty dataFileList)}">
-			<p>This project has no data to work with. You might like to <a href="<c:url value='/datafileadd'>
-			    <c:param name="project_id" value="${project.id}"/>
-			</c:url>">upload a data file.</a></p>
+			<p>
+                This project has no data to work with. You might like to
+                <a href="<c:url value='/projects/${project.id}/datafiles/new'/>">upload a data file.</a>
+            </p>
 			<a class="oztrackButton" id="pageRefresh" href="javascript:location.reload(true)">Refresh</a>
 		 </c:when>
 		 <c:otherwise>
 		    
 		    <p><c:out value="${fn:length(dataFileList)}"/> data file(s) found.</p>
 		
-				<p><a class="oztrackButton" href="<c:url value='/datafileadd'>
-			        <c:param name="project_id" value="${project.id}"/>
-			    </c:url>" >Add a Datafile</a>
+				<p><a class="oztrackButton" href="<c:url value='/projects/${project.id}/datafiles/new'/>" >Add a Datafile</a>
 				<a class="oztrackButton" id="pageRefresh" href="javascript:location.reload(true)">Refresh</a></p>
 				
 				<p><c:out value="${errorStr}"/></p>
@@ -62,10 +61,7 @@
 				             </td>	
 				            <td><fmt:formatDate pattern="${dateFormatPattern}" value="${dataFile.createDate}"/>
 				            <td>
-				                <a href="<c:url value="/datafiledetail">
-							        <c:param name="project_id" value="${project.id}"/>
-							        <c:param name="datafile_id" value="${dataFile.id}"/>
-						            </c:url>"><c:out value="${dataFile.status}"/></a>
+				                <a href="<c:url value="/datafiles/${dataFile.id}"/>"><c:out value="${dataFile.status}"/></a>
 				            </td>
 						</tr>
 				    </c:forEach>

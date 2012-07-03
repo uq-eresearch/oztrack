@@ -43,7 +43,7 @@
 		<div class="formButton"><input type="submit" value="Login"/></div>
 		</div>
 		
-		<div><label></label><a href="<c:url value="/register"/>">Register as a new user</a>
+		<div><label></label><a href="<c:url value="/users/new"/>">Register as a new user</a>
 		</div>
 		</form>
     </jsp:body>

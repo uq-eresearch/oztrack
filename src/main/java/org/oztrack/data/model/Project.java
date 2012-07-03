@@ -31,7 +31,6 @@ import com.vividsolutions.jts.geom.Polygon;
 
 @Entity(name = "Project")
 public class Project extends OztrackBaseEntity implements Serializable {
-	
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "projectid_seq")
     @SequenceGenerator(name = "projectid_seq", sequenceName = "projectid_seq",allocationSize = 1)
@@ -45,12 +44,6 @@ public class Project extends OztrackBaseEntity implements Serializable {
     private String spatialCoverageDescr;
     @ManyToOne
     private User dataSpaceAgent;
-//    private String contactGivenName;
-//    private String contactFamilyName;
-//    private String contactOrganisation;
-//    private String contactEmail;
-//    @Column(columnDefinition = "TEXT")
-//    private String contactUrl;
     @Column(columnDefinition = "TEXT")
     private String publicationTitle;
     @Column(columnDefinition = "TEXT")
@@ -126,44 +119,6 @@ public class Project extends OztrackBaseEntity implements Serializable {
         this.isGlobal = isGlobal;
     }
 
-//    public String getContactGivenName() {
-//		return contactGivenName;
-//	}
-//    
-//	public void setContactGivenName(String contactGivenName) {
-//		this.contactGivenName = contactGivenName;
-//	}
-//	public String getContactFamilyName() {
-//		return contactFamilyName;
-//	}
-//	public void setContactFamilyName(String contactFamilyName) {
-//		this.contactFamilyName = contactFamilyName;
-//	}
-//
-//    public String getContactOrganisation() {
-//        return contactOrganisation;
-//    }
-//
-//    public void setContactOrganisation(String contactOrganisation) {
-//        this.contactOrganisation = contactOrganisation;
-//    }
-//
-//    public String getContactEmail() {
-//        return contactEmail;
-//    }
-//
-//    public void setContactEmail(String contactEmail) {
-//        this.contactEmail = contactEmail;
-//    }
-//
-//    public String getContactUrl() {
-//        return contactUrl;
-//    }
-//
-//    public void setContactUrl(String contactUrl) {
-//        this.contactUrl = contactUrl;
-//    }
-//    
     public List<ProjectUser> getProjectUsers() {
         return this.projectUsers;
     }
