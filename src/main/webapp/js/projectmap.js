@@ -578,7 +578,6 @@ function addKMLLayer(layerName, params) {
 }
                 
 function updateAnimalInfoFromKML(layerName, params, e) {
-	
 	for (var f in e.object.features) {
 		var feature = e.object.features[f];
 		var area = feature.attributes.area.value;
@@ -601,15 +600,14 @@ function updateAnimalInfoFromKML(layerName, params, e) {
    		if (params.alpha) {
             html += '<tr><td class="label">alpha: </td><td>' + params.alpha + '</td></tr>';
         }
+   		html += '<tr><td class="label">SRS: </td><td>' + params.srs + '</td></tr>';
    		html += '<tr><td class="label">Area: </td><td>' + Math.round(area*1000)/1000 + ' km<sup>2</sup></td></tr>';
    		html += '</table>';
 		$('#animalInfo-'+ feature.attributes.id.value).append('<div class="layerInfo">' + checkboxHtml + html + '</div>');
 	    $('input[id=select-feature-' + checkboxId + ']').change(function() {
 	        toggleFeature(this.value,this.checked);
 	    });
-
 	}
-	
 }
 
 function addWFSLayer(layerName, params, styleMap) {
