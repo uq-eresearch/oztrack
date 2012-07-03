@@ -162,9 +162,8 @@ See http://www.rforge.net/Rserve/faq.html#start
 The `application.properties` file contains some important values that need to be
 set for OzTrack to run correctly.
 
-* `dataDir`: If this isn't set, OzTrack will use the user.home environment variable
-  (possibly of the server user environment) to store files. Ensure that such a
-  directory is available and can be written to.
+* `dataDir`: Used to store files. Ensure that such a directory is available and
+  can be written to.
 * `dataSpaceURL`: This is the URL that project collection records will be written
   to. A username and password must be provided in this file for the functionality
   to work.

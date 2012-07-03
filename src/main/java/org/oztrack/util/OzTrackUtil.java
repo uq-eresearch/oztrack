@@ -24,13 +24,7 @@ import org.apache.log4j.Logger;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.error.FileProcessingException;
 
-/**
- * Author: alabri
- * Date: 9/03/11
- * Time: 11:41 AM
- */
 public class OzTrackUtil {
-
     private static Logger logger = Logger.getLogger(OzTrackUtil.class);
 
     public static void sendEmail(String toEmailAddress, String fromEmailAddress, String subject, String text) throws MessagingException {
@@ -48,9 +42,7 @@ public class OzTrackUtil {
         logger.info("Email Sent to " + toEmailAddress);
     }
 
-
     public static void removeDuplicateLinesFromFile(String fileName) throws FileProcessingException {
-
         File inFile = new File(fileName);
         File outFile = new File(fileName + ".dedup");
         HashSet<String> hashSet = new HashSet<String>(10000);
@@ -100,14 +92,9 @@ public class OzTrackUtil {
              inFile.renameTo(origFile);
              outFile.renameTo(finalFile);
              outFile.delete();
-
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
              throw new FileProcessingException("File Processing problem (dedup.");
         }
-
-
     }
-
-
-
 }

@@ -2,6 +2,7 @@ package org.oztrack.data.model;
 
 import static javax.persistence.EnumType.STRING;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
@@ -22,15 +23,11 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Type;
+import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.model.types.ProjectType;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.vividsolutions.jts.geom.Polygon;
-
-/**
- * Author: peggy
- * Date: 28/03/2010
- */
 
 @Entity(name = "Project")
 public class Project extends OztrackBaseEntity implements Serializable {
@@ -71,7 +68,7 @@ public class Project extends OztrackBaseEntity implements Serializable {
 
     private String speciesCommonName;
     private String speciesScientificName;
-    private String imageFileLocation;
+    private String imageFilePath;
 
     @Transient
     private MultipartFile imageFile;
@@ -239,12 +236,16 @@ public class Project extends OztrackBaseEntity implements Serializable {
         this.speciesScientificName = speciesScientificName;
     }
 
-    public String getImageFileLocation() {
-        return imageFileLocation;
+    public String getImageFilePath() {
+        return imageFilePath;
     }
 
-    public void setImageFileLocation(String imageFileLocation) {
-        this.imageFileLocation = imageFileLocation;
+    public void setImageFilePath(String imageFilePath) {
+        this.imageFilePath = imageFilePath;
+    }
+    
+    public String getAbsoluteImageFilePath() {
+        return getAbsoluteDataDirectoryPath() + File.separator + "img" + File.separator + getImageFilePath();
     }
 
     public String getDataDirectoryPath() {
@@ -253,6 +254,10 @@ public class Project extends OztrackBaseEntity implements Serializable {
 
     public void setDataDirectoryPath(String dataDirectoryPath) {
         this.dataDirectoryPath = dataDirectoryPath;
+    }
+    
+    public String getAbsoluteDataDirectoryPath() {
+        return OzTrackApplication.getApplicationContext().getDataDir() + File.separator + getDataDirectoryPath();
     }
 
     public Polygon getBoundingBox() {

@@ -115,9 +115,7 @@ public class ProjectController {
             return "projectadd";
         }
         if (update != null) {
-            if (project.getImageFile().getSize() != 0) {
-                project.setImageFileLocation(saveProjectImage(project));
-            }
+            saveProjectImageFile(project);
             projectDao.update(project);
         }
         else {
@@ -156,25 +154,19 @@ public class ProjectController {
         User user = userDao.getUserById(currentUser.getId());
         userDao.update(user);
 
-        project.setDataDirectoryPath(getProjectDirectoryPath(project));
-        project.setImageFileLocation(saveProjectImage(project));
+        project.setDataDirectoryPath("project-" + project.getId().toString());
+        saveProjectImageFile(project);
         projectDao.update(project);
     }
     
-    private String saveProjectImage(Project project) throws Exception {
+    private void saveProjectImageFile(Project project) throws Exception {
         MultipartFile file = project.getImageFile();
-        String imgFilePath = getProjectDirectoryPath(project) + File.separator + "img" + File.separator + file.getOriginalFilename();
-        File saveFile = new File(imgFilePath);
+        if ((file == null) || project.getImageFile().getSize() == 0) {
+            return;
+        }
+        project.setImageFilePath(file.getOriginalFilename());
+        File saveFile = new File(project.getAbsoluteImageFilePath());
         saveFile.mkdirs();
         file.transferTo(saveFile);
-        return imgFilePath;
-    }
-    
-    private String getProjectDirectoryPath(Project project) {
-        String dataDir = OzTrackApplication.getApplicationContext().getDataDir();
-        if ((dataDir == null) || (dataDir.isEmpty())) {
-            dataDir = System.getProperty("user.home");
-        }
-        return dataDir + File.separator + "oztrack" + File.separator + "project-" + project.getId().toString();
     }
 }

@@ -55,7 +55,7 @@ public class PositionFixFileLoader extends DataFileLoader {
         FileInputStream fileInputStream;
 
         try {
-            fileInputStream = new FileInputStream(dataFile.getOzTrackFileName());
+            fileInputStream = new FileInputStream(dataFile.getAbsoluteDataFilePath());
         } catch (FileNotFoundException e) {
              throw new FileProcessingException("File not found.");
         }

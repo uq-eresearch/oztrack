@@ -35,7 +35,7 @@ public abstract class DataFileLoader {
     }
 
     public void process() throws FileProcessingException {
-        removeDuplicateLinesFromFile(this.dataFile.getOzTrackFileName());
+        removeDuplicateLinesFromFile(this.dataFile.getAbsoluteDataFilePath());
         processRawObservations();
         processFinalObservations();
     }
@@ -44,9 +44,9 @@ public abstract class DataFileLoader {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         try {
-            logger.info("Inserting raw observations for " + this.dataFile.getOzTrackFileName());
+            logger.info("Inserting raw observations for " + this.dataFile.getAbsoluteDataFilePath());
             createRawObservations();
-            logger.info("Checking animals for " + this.dataFile.getOzTrackFileName());
+            logger.info("Checking animals for " + this.dataFile.getAbsoluteDataFilePath());
             checkAnimals();
             transaction.commit();
         }
@@ -60,9 +60,9 @@ public abstract class DataFileLoader {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         try {
-            logger.info("Creating final observations for " + this.dataFile.getOzTrackFileName());
+            logger.info("Creating final observations for " + this.dataFile.getAbsoluteDataFilePath());
             createFinalObservations();
-            logger.info("Updating data file metdata for " + this.dataFile.getOzTrackFileName());
+            logger.info("Updating data file metdata for " + this.dataFile.getAbsoluteDataFilePath());
             updateDataFileMetadata();
             transaction.commit();
         }

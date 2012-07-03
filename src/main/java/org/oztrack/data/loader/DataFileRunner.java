@@ -113,8 +113,8 @@ public class DataFileRunner {
                 dataFileDao.update(failureDataFile);
                 failureTransaction.commit();
 
-                File file = new File(failureDataFile.getOzTrackFileName());
-                File origFile = new File(failureDataFile.getOzTrackFileName().replace(".csv",".orig"));
+                File file = new File(failureDataFile.getAbsoluteDataFilePath());
+                File origFile = new File(failureDataFile.getAbsoluteDataFilePath().replace(".csv",".orig"));
                 file.delete();
                 origFile.delete();
                 

@@ -3,6 +3,7 @@ package org.oztrack.data.model;
 
 import static javax.persistence.EnumType.STRING;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -22,21 +23,15 @@ import javax.persistence.Transient;
 import org.oztrack.data.model.types.DataFileStatus;
 import org.springframework.web.multipart.MultipartFile;
 
-/**
- * Author: peggy
- * Date: 05/04/2011
- */
-
 @Entity(name = "datafile")
 public class DataFile extends OztrackBaseEntity implements Serializable {
-	
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "datafileid_seq")
     @SequenceGenerator(name = "datafileid_seq", sequenceName = "datafileid_seq",allocationSize = 1)
     @Column(nullable=false)
     private Long id;
     
-    private String ozTrackFileName;
+    private String dataFilePath;
     private String userGivenFileName;
     @Column(columnDefinition = "TEXT")
     private String fileDescription;
@@ -85,12 +80,16 @@ public class DataFile extends OztrackBaseEntity implements Serializable {
         this.id = id;
     }
     
-    public String getOzTrackFileName() {
-        return ozTrackFileName;
+    public String getDataFilePath() {
+        return dataFilePath;
     }
 
-    public void setOzTrackFileName(String ozTrackFileName) {
-        this.ozTrackFileName = ozTrackFileName;
+    public void setDataFilePath(String dataFilePath) {
+        this.dataFilePath = dataFilePath;
+    }
+    
+    public String getAbsoluteDataFilePath() {
+        return project.getAbsoluteDataDirectoryPath() + File.separator + getDataFilePath();
     }
         
     public String getUserGivenFileName() {

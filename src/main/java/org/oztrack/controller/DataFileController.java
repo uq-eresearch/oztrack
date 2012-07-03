@@ -124,10 +124,10 @@ public class DataFileController {
         dataFile.setProject(project);
         dataFileDao.save(dataFile);
 
-        String filePath = project.getDataDirectoryPath() + File.separator + "datafile-" + dataFile.getId().toString() + ".csv";
-
+        dataFile.setDataFilePath("datafile-" + dataFile.getId().toString() + ".csv");
+        
         try {
-            File saveFile = new File(filePath);
+            File saveFile = new File(dataFile.getAbsoluteDataFilePath());
             saveFile.mkdirs();
             file.transferTo(saveFile);
         }
@@ -140,7 +140,6 @@ public class DataFileController {
         }
         
         // ready to go now; poller will pick the job up
-        dataFile.setOzTrackFileName(filePath);
         dataFile.setStatus(DataFileStatus.NEW);
         dataFileDao.update(dataFile);
         redirectAttributes.addAttribute("projectId", project.getId());

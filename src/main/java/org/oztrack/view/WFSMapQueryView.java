@@ -270,7 +270,6 @@ public class WFSMapQueryView extends AbstractView {
 	        	featureBuilder.set("projectDescription", project.getDescription());
 	        	featureBuilder.set("firstDetectionDate", sdf.format(project.getFirstDetectionDate()));
 	        	featureBuilder.set("lastDetectionDate", sdf.format(project.getLastDetectionDate()));
-	        //	featureBuilder.set("imageURL", project.getImageFileLocation());
 	        	featureBuilder.set("spatialCoverageDescr", project.getSpatialCoverageDescr());
 	        	featureBuilder.set("speciesCommonName", project.getSpeciesCommonName());
 	        	
