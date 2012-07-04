@@ -29,7 +29,7 @@ public class ProjectMapController {
         return projectDao.getProjectById(projectId);
     }
     
-    @RequestMapping(value="/projects/{id}/tools", method=RequestMethod.GET)
+    @RequestMapping(value="/projects/{id}/analysis", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#project, 'read')")
     public String getView(Model model, @ModelAttribute(value="project") Project project) {
     	MapQueryType [] mapQueryTypeList = MapQueryType.values();

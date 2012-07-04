@@ -4,7 +4,7 @@
 <div class="sidebarMenu">
     <ul>
         <li><a href="<c:url value="/projects/${project.id}"/>">Project Details</a></li>
-        <li><a href="<c:url value="/projects/${project.id}/tools"/>">Analysis Tools</a></li>
+        <li><a href="<c:url value="/projects/${project.id}/analysis"/>">Analysis Tools</a></li>
         <li><a href="<c:url value="/projects/${project.id}/search"/>">View Raw Data</a></li>
         <li><a href="<c:url value="/projects/${project.id}/datafiles"/>">Data Uploads</a></li>
     </ul>
