@@ -792,14 +792,6 @@ div.olControlPanel {
     background-color: #e6e6c0
 }
 
-.helpButtonItemInactive {
-    background-image: url("../images/help.png");
-    background-position:center;
-    background-repeat:no-repeat;
-    height:22px;
-    float:right;
-}
-
 .zoomButtonItemInactive {
     background-image: url("../images/zoomButton.png");
     background-position:center;
