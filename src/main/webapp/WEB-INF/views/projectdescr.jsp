@@ -13,7 +13,9 @@
         <script type="text/javascript"> 
             $(document).ready(function() {
                 $('#navHome').addClass('active');
-                initializeCoverageMap($("#bbWKT").text());
+                <c:if test="${not empty project.boundingBox}">
+                var coverageMap = createCoverageMap('coverageMap', '<c:out value="${project.boundingBox}"/>');
+                </c:if>
             });
         </script>
     </jsp:attribute>
@@ -45,8 +47,13 @@
 			</c:otherwise>
 			</c:choose>
 			</td></tr>
-		<tr><td class="projectFieldName">Spatial Coverage:</td><td><c:out value="${project.spatialCoverageDescr}"/><br/>
-		<div id="coverageMap" style="width:240px;height:200px;"></div>
+		<tr><td class="projectFieldName">Spatial Coverage:</td><td>
+        <div><c:out value="${project.spatialCoverageDescr}"/></div>
+		<c:if test="${not empty project.boundingBox}">
+        <div style="margin: 5px 0;">
+        <div id="coverageMap" style="width:240px; height:200px;"></div>
+        </div>
+        </c:if>
 		</td></tr>
 		
 		<tr>
@@ -78,7 +85,6 @@
 		</td></tr>
 		</table>
 		
-		<span id="bbWKT"><c:out value="${project.boundingBox}"/></span>
 		<p><a href="<c:url value="/"/>">Return to Home page</a></p>
     </jsp:body>
 </tags:page>

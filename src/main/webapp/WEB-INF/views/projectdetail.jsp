@@ -15,7 +15,9 @@
         <script type="text/javascript"> 
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
-                initializeCoverageMap($("#bbWKT").text());
+                <c:if test="${not empty project.boundingBox}">
+                var coverageMap = createCoverageMap('coverageMap', '<c:out value="${project.boundingBox}"/>');
+                </c:if>
             });
         </script>
     </jsp:attribute>
@@ -30,7 +32,9 @@
     <jsp:body>
 		<h1 id="projectTitle"><c:out value="${project.title}"/></h1>
 		
-		<div id="coverageMap" style="width:240px;height:200px; float:right"></div>
+		<c:if test="${not empty project.boundingBox}">
+        <div id="coverageMap" style="width:240px; height:200px; float:right"></div>
+        </c:if>
 		
 		<div style="float:left; width:420px;">
 		
@@ -140,12 +144,11 @@
 			<a class="oztrackButton" href="<c:url value="/projects/${project.id}/edit"/>">Edit Project Metadata</a>
 			&nbsp;&nbsp;
 			<a class="oztrackButton" href="<c:url value="/projects/${project.id}/publish"/>"><c:out value="${publishButtonText}"/></a>
-		
-			<br><br></td></tr>
+			<br />
+            <br />
+        </td></tr>
 		
 		</table>
 		</div>
-		
-		<span id="bbWKT"><c:out value="${project.boundingBox}"/></span>
     </jsp:body>
 </tags:page>

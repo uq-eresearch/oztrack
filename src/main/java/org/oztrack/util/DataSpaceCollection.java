@@ -137,16 +137,12 @@ public class DataSpaceCollection {
 	}
 
 	public String getBoundingBoxCoordinatesString() {
-
-		Coordinate c[] = project.getBoundingBox().getCoordinates();
-		String bb = "";
-		for (int i = 0; i < c.length; i++) {
-			bb = bb + " " + Double.toString(c[i].y) + " " + Double.toString(c[i].x);
-			
+		Coordinate[] coordinates = project.getBoundingBox().getCoordinates();
+		String result = "";
+		for (int i = 0; i < coordinates.length; i++) {
+			result = result + " " + Double.toString(coordinates[i].y) + " " + Double.toString(coordinates[i].x);
 		}
-		
-		return bb;
-		
+		return result;
 	}
 	
 	public String getSpatialCoverage() {
@@ -158,12 +154,13 @@ public class DataSpaceCollection {
 	}
 
 	public String getAccessRights() {
-		
 		if (project.getIsGlobal()) {
 			return "The data in the project is available in OzTrack for the public to use.";
-		} else {
-			return "The data in this project is only available to users on the OzTrack system whom have " +
-						"been granted access. Contact the Collection Manager regarding permission and procedures for accessing the data.";
+		}
+		else {
+			return
+			    "The data in this project is only available to users on the OzTrack system whom have " +
+				"been granted access. Contact the Collection Manager regarding permission and procedures for accessing the data.";
 		}
 	}
 	
