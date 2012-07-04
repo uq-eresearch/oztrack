@@ -1,5 +1,7 @@
 package org.oztrack.controller;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.access.ProjectDao;
@@ -33,9 +35,14 @@ public class ProjectListController {
         project.setRightsStatement("The data is the property of the University of Queensland. Permission is required to use this material.");
         return project;
     }
+
+    @ModelAttribute("publishedProjects")
+    public List<Project> getPublicProjects() {
+        return projectDao.getPublishedProjects();
+    }
     
     @RequestMapping(value="/projects", method=RequestMethod.GET)
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("permitAll")
     public String getListView(Model model) {
         return "projects";
     }

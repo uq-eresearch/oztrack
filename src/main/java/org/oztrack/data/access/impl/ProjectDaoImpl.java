@@ -95,4 +95,12 @@ public class ProjectDaoImpl implements ProjectDao {
         saveFile.mkdirs();
         file.transferTo(saveFile);
     }
+    
+    @Override
+    @Transactional
+    public List<Project> getPublishedProjects() {
+        @SuppressWarnings("unchecked")
+        List<Project> resultList = em.createQuery("from Project where isglobal = true").getResultList();
+        return resultList;
+    }
 }

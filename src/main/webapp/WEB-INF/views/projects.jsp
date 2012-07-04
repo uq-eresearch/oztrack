@@ -17,46 +17,67 @@
         &rsaquo; <span class="active">Projects</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
+        <c:if test="${currentUser != null}">
         <div class="sidebarMenu">
             <ul>
                 <li><a href="<c:url value="/projects/new"/>">Create New Project</a></li>
             </ul>
         </div>
+        </c:if>
     </jsp:attribute>
     <jsp:body>
-		<h1>Projects</h1>
-		
-		<c:choose>
-		 <c:when test="${(empty currentUser.projectUsers)}">
-			<p>You have no projects to work with yet. You might like to <a href="<c:url value='/projects/new'/>">add a project.</a></p>
-		 </c:when>
-		 <c:otherwise>
-		    <p>You have access to <c:out value="${fn:length(currentUser.projectUsers)}"/> project(s). <br>
-		    Select a project to work with from the list below, or <a href="<c:url value='/projects/new'/>">create a new project.</a></p>
-		
-			<h2>My Projects</h2>
-			
-			<table class="dataTable">
-			   <tr>
-			    <th>Title</th>
-			    <th>Spatial Coverage</th>
-			    <th>Project Type</th>
-			    <th>Created Date</th>
-			    <th>User role</th>
-			   </tr>
-			
-			<c:forEach items="${currentUser.projectUsers}" var="project">
-			<tr>
-			    <td><a href="<c:url value="/projects/${project.pk.project.id}"/>">
-			            <c:out value="${project.pk.project.title}"/></a></td>
-			    <td><c:out value="${project.pk.project.spatialCoverageDescr}"/></td>
-			    <td><c:out value="${project.pk.project.projectType.displayName}"/></td>
-			    <td><fmt:formatDate value="${project.pk.project.createDate}" type="date" dateStyle="long"/></td>
-			    <td><c:out value="${project.role}"/></td>
-			</tr>
-			</c:forEach>
-			</table>
-		 </c:otherwise>
-		</c:choose>
+        <h1>Projects</h1>
+        <c:if test="${currentUser != null}">
+            <c:choose>
+            <c:when test="${(empty currentUser.projectUsers)}">
+                <p>You have no projects to work with yet. You might like to <a href="<c:url value='/projects/new'/>">add a project.</a></p>
+            </c:when>
+            <c:otherwise>
+                <h2>My Projects</h2>
+                <p>You have access to <c:out value="${fn:length(currentUser.projectUsers)}"/> project(s).</p>
+                <p>Select a project to work with from the list below, or <a href="<c:url value='/projects/new'/>">create a new project.</a></p>
+                <table class="dataTable">
+                <tr>
+                    <th>Title</th>
+                    <th>Spatial Coverage</th>
+                    <th>Project Type</th>
+                    <th>Created Date</th>
+                    <th>User role</th>
+                </tr>
+                <c:forEach items="${currentUser.projectUsers}" var="project">
+                <tr>
+                    <td><a href="<c:url value="/projects/${project.pk.project.id}"/>"><c:out value="${project.pk.project.title}"/></a></td>
+                    <td><c:out value="${project.pk.project.spatialCoverageDescr}"/></td>
+                    <td><c:out value="${project.pk.project.projectType.displayName}"/></td>
+                    <td><fmt:formatDate value="${project.pk.project.createDate}" type="date" dateStyle="long"/></td>
+                    <td><c:out value="${project.role}"/></td>
+                </tr>
+                </c:forEach>
+                </table>
+            </c:otherwise>
+            </c:choose>
+        </c:if>
+        <c:if test="${not empty publishedProjects}">
+            <c:if test="${currentUser != null}">
+            <h2>Public Projects</h2>
+            </c:if>
+            <p>There are currently <c:out value="${fn:length(publishedProjects)}"/> published project(s) in OzTrack.</p>
+            <table class="dataTable">
+            <tr>
+                <th>Title</th>
+                <th>Spatial Coverage</th>
+                <th>Project Type</th>
+                <th>Created Date</th>
+            </tr>
+            <c:forEach items="${publishedProjects}" var="project">
+            <tr>
+                <td><a href="<c:url value="/projects/${project.id}"/>"><c:out value="${project.title}"/></a></td>
+                <td><c:out value="${project.spatialCoverageDescr}"/></td>
+                <td><c:out value="${project.projectType.displayName}"/></td>
+                <td><fmt:formatDate value="${project.createDate}" type="date" dateStyle="long"/></td>
+            </tr>
+            </c:forEach>
+            </table>
+        </c:if>
     </jsp:body>
 </tags:page>

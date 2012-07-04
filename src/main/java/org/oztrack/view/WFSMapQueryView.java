@@ -229,7 +229,7 @@ public class WFSMapQueryView extends AbstractView {
 
     
     private  SimpleFeatureCollection buildAllProjectsFeatureCollection() {
-        List<Project> projectList = projectDao.getAll();
+        List<Project> projectList = projectDao.getPublishedProjects();
 
         String namespaceURI = OzTrackApplication.getApplicationContext().getUriPrefix();
         SimpleFeatureCollection collection = FeatureCollections.newCollection();
