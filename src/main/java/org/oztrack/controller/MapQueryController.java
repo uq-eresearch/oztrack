@@ -58,7 +58,7 @@ public class MapQueryController {
             searchQuery.setToDate(sdf.parse(dateTo));
         }
         if (srs != null && !srs.isEmpty()) {
-            String regex = "(epsg|EPSG):[0-9]+";
+            String regex = "[a-zA-Z_-]+:[0-9]+";
             if (!srs.matches(regex)) {
                 throw new RuntimeException("Invalid SRS code: must match " + regex);
             }
