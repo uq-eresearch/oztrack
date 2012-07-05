@@ -170,14 +170,6 @@
                 </c:choose>
             </td>
         </tr>
-        <tr>
-            <th></th>
-            <td>
-            <a class="oztrackButton" href="<c:url value="/projects/${project.id}/edit"/>">Edit Project Metadata</a>
-            &nbsp;&nbsp;
-            <a class="oztrackButton" href="<c:url value="/projects/${project.id}/publish"/>"><c:out value="${publishButtonText}"/></a>
-            </td>
-        </tr>
         </sec:authorize>
         
         </table>
@@ -186,12 +178,14 @@
         <div style="clear: both;"></div>
         
         <sec:authorize access="hasPermission(#project, 'write')">
-        <c:if test="${empty project.dataSpaceURI}">
         <h2>Manage Project</h2>
         <ul style="font-size: 0.9em;">
-            <li><a href="javascript:void(deleteEntity('<c:url value="/projects/${project.id}"/>', '<c:url value="/projects"/>', 'Are you sure you want to delete this project?'));">Delete Project</a></li>
+            <li><a href="<c:url value="/projects/${project.id}/edit"/>">Edit project</a></li>
+            <c:if test="${empty project.dataSpaceURI}">
+            <li><a href="javascript:void(deleteEntity('<c:url value="/projects/${project.id}"/>', '<c:url value="/projects"/>', 'Are you sure you want to delete this project?'));">Delete project</a></li>
+            </c:if>
+            <li><a href="<c:url value="/projects/${project.id}/publish"/>"><c:out value="${publishButtonText}"/></a></li>
         </ul>
-        </c:if>
         </sec:authorize>
     </jsp:body>
 </tags:page>

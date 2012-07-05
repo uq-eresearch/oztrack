@@ -2,13 +2,17 @@ package org.oztrack.data.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -33,6 +37,9 @@ public class Animal extends OztrackBaseEntity implements Serializable  {
     private Date transmitterDeployDate;
     @ManyToOne
     private Project project;
+    
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "animal")
+    private List<PositionFix> positionFixes = new LinkedList<PositionFix>();
 
     public Long getId() {
         return id;
@@ -120,5 +127,13 @@ public class Animal extends OztrackBaseEntity implements Serializable  {
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    public List<PositionFix> getPositionFixes() {
+        return positionFixes;
+    }
+
+    public void setPositionFixes(List<PositionFix> positionFixes) {
+        this.positionFixes = positionFixes;
     }
 }

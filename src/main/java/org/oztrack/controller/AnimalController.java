@@ -1,5 +1,7 @@
 package org.oztrack.controller;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.validator.AnimalFormValidator;
@@ -52,5 +54,12 @@ public class AnimalController {
         animalDao.update(animal);
         redirectAttributes.addAttribute("projectId", animal.getProject().getId());
         return "redirect:/projects/{projectId}/animals";
+    }
+
+    @RequestMapping(value="/animals/{id}", method=RequestMethod.DELETE)
+    @PreAuthorize("hasPermission(#animal.project, 'write')")
+    public void processDelete(@ModelAttribute(value="animal") Animal animal, HttpServletResponse response) {
+        animalDao.delete(animal);
+        response.setStatus(204);
     }
 }

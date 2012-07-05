@@ -1,5 +1,7 @@
 package org.oztrack.controller;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.model.DataFile;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +18,20 @@ public class DataFileController {
     private DataFileDao dataFileDao;
 
     @ModelAttribute("dataFile")
-    public DataFile getDataFile(@PathVariable(value="datafile_id") Long dataFileId) {
+    public DataFile getDataFile(@PathVariable(value="id") Long dataFileId) {
         return dataFileDao.getDataFileById(dataFileId);
     }
     
-    @RequestMapping(value="/datafiles/{datafile_id}", method=RequestMethod.GET)
+    @RequestMapping(value="/datafiles/{id}", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#dataFile.project, 'read')")
-    public String handleDataFileDetailsRequest(
-        @ModelAttribute(value="dataFile") DataFile dataFile
-    ) throws Exception {
+    public String getView(@ModelAttribute(value="dataFile") DataFile dataFile) throws Exception {
         return "datafiledetail";
+    }
+
+    @RequestMapping(value="/datafiles/{id}", method=RequestMethod.DELETE)
+    @PreAuthorize("hasPermission(#dataFile.project, 'write')")
+    public void processDelete(@ModelAttribute(value="dataFile") DataFile dataFile, HttpServletResponse response) {
+        dataFileDao.delete(dataFile);
+        response.setStatus(204);
     }
 }

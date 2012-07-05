@@ -193,21 +193,18 @@
 				</c:choose>
 				<br/>
 		</td></tr>
+		</table>
 		
-		<tr><th></th><td>
+		<div style="font-size: 0.9em;">
+			<a href="<c:url value="/projects/${project.id}"/>">Cancel</a>
+            &nbsp;
 			<c:if test="${!empty project.firstDetectionDate}">
 				<a class="oztrackButton" href="#" onclick='publishToDataSpace(<c:out value="${project.id}"/>,"<c:out value="${currentUser.username}"/>","publish"); return false;'><c:out value="${publishButtonText}"/></a>
-				
-			</c:if>&nbsp;&nbsp;
+			</c:if>
+            &nbsp;
 			<c:if test="${!empty project.dataSpaceURI}">
 				<a class="oztrackButton" href="#" onclick='publishToDataSpace(<c:out value="${project.id}"/>,"<c:out value="${currentUser.username}"/>","delete"); return false;'>Delete from UQ DataSpace</a>
-				&nbsp;&nbsp;
 			</c:if>
-			<br/><br/>
-			<a class="oztrackButton" href="<c:url value="/projects/${project.id}/edit"/>">Edit</a>
-			&nbsp;&nbsp;
-			<a class="oztrackButton" href="<c:url value="/projects/${project.id}"/>">Cancel</a>
-			<br><br></td></tr>
-		</table>
+        </div>
     </jsp:body>
 </tags:page>

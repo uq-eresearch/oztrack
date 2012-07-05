@@ -46,7 +46,7 @@
 		    <c:forEach items="${projectAnimalsList}" var="animal">
 		        <tr>
 		            <td><c:out value="${animal.projectAnimalId}"/></td>
-		            <td><c:out value="${animal.animalName}"/></td>
+		            <td><a href="<c:url value="/animals/${animal.id}"/>"><c:out value="${animal.animalName}"/></a></td>
 		            <td><c:out value="${animal.animalDescription}"/></td>
 		            <td><c:out value="${animal.speciesName}"/></td>
 		            <td><c:out value="${animal.createDate}"/></td>
@@ -59,6 +59,9 @@
 		            <sec:authorize access="hasPermission(#project, 'write')">
                     <td>
 				        <a href="<c:url value="/animals/${animal.id}/edit"/>">Edit</a>
+                        <c:if test="${empty animal.positionFixes}">
+                        <br /><a href="javascript:void(deleteEntity('<c:url value="/animals/${animal.id}"/>', '<c:url value="/projects/${project.id}/animals"/>', 'Are you sure you want to delete this animal?'));">Delete</a>
+                        </c:if>
 		            </td>
                     </sec:authorize>
 				</tr>

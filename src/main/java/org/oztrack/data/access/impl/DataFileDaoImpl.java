@@ -122,4 +122,10 @@ public class DataFileDaoImpl implements DataFileDao {
         object.setUpdateDate(new java.util.Date());
         return em.merge(object);
     }
+    
+    @Override
+    @Transactional
+    public void delete(DataFile dataFile) {
+        em.remove(dataFile);
+    }
 }

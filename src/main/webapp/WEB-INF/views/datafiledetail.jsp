@@ -3,6 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <c:set var="dateTimeFormatPattern" value="dd/MM/yyyy HH:mm:ss"/>
 <tags:page title="${dataFile.project.title}: Data File Detail">
@@ -50,19 +51,19 @@
         </tr>
 		<tr>
             <th>Processing Status:</th>
-		    <td>
-		        <c:out value="${dataFile.status}"/>
-		        <c:choose>
-		             <c:when test="${dataFile.status=='FAILED'}">
-		                &nbsp;&nbsp;<a href="<c:url value="/datafiles/${dataFile.id}"/>">Retry</a>
-		             </c:when>
-		        </c:choose>
-		    </td>
+		    <td><c:out value="${dataFile.status}"/></td>
 		</tr>
 		<tr>
             <th>Processing Messages:</th>
             <td><c:out value="${dataFile.statusMessage}"/></td>
         </tr>
 		</table>
+
+        <sec:authorize access="hasPermission(#dataFile.project, 'write')">
+        <h2>Manage Data File</h2>
+        <ul style="font-size: 0.9em;">
+            <li><a href="javascript:void(deleteEntity('<c:url value="/datafiles/${dataFile.id}"/>', '<c:url value="/projects/${dataFile.project.id}/datafiles"/>', 'Are you sure you want to delete this data file?'));">Delete data file</a></li>
+        </ul>
+        </sec:authorize>
     </jsp:body>
 </tags:page>

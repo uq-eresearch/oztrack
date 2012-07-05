@@ -75,4 +75,10 @@ public class AnimalDaoImpl implements AnimalDao {
         object.setUpdateDate(new java.util.Date());
         return em.merge(object);
     }
+    
+    @Override
+    @Transactional
+    public void delete(Animal animal) {
+        em.remove(animal);
+    }
 }

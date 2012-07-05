@@ -12,4 +12,5 @@ public interface AnimalDao {
     Animal getAnimalById(Long id);
     void save(Animal object);
     Animal update(Animal object);
+    void delete(Animal animal);
 }

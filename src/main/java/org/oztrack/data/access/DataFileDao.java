@@ -15,4 +15,5 @@ public interface DataFileDao {
     List<DataFile> getDataFilesByProject(Project project);
     void save(DataFile object);
     DataFile update(DataFile object);
+    void delete(DataFile dataFile);
 }
