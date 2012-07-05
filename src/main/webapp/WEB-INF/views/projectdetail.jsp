@@ -178,14 +178,18 @@
         <div style="clear: both;"></div>
         
         <sec:authorize access="hasPermission(#project, 'write')">
+        <div class="actions">
         <h2>Manage Project</h2>
-        <ul style="font-size: 0.9em;">
-            <li><a href="<c:url value="/projects/${project.id}/edit"/>">Edit project</a></li>
+        <ul>
+            <li class="edit"><a href="<c:url value="/projects/${project.id}/edit"/>">Edit project</a></li>
+            <sec:authorize access="hasPermission(#project, 'manage')">
             <c:if test="${empty project.dataSpaceURI}">
-            <li><a href="javascript:void(deleteEntity('<c:url value="/projects/${project.id}"/>', '<c:url value="/projects"/>', 'Are you sure you want to delete this project?'));">Delete project</a></li>
+            <li class="delete"><a href="javascript:void(deleteEntity('<c:url value="/projects/${project.id}"/>', '<c:url value="/projects"/>', 'Are you sure you want to delete this project?'));">Delete project</a></li>
             </c:if>
-            <li><a href="<c:url value="/projects/${project.id}/publish"/>"><c:out value="${publishButtonText}"/></a></li>
+            </sec:authorize>
+            <li class="publish"><a href="<c:url value="/projects/${project.id}/publish"/>"><c:out value="${publishButtonText}"/></a></li>
         </ul>
+        </div>
         </sec:authorize>
     </jsp:body>
 </tags:page>
