@@ -57,10 +57,14 @@
             </c:otherwise>
             </c:choose>
         </c:if>
-        <c:if test="${not empty publishedProjects}">
-            <c:if test="${currentUser != null}">
-            <h2>Public Projects</h2>
-            </c:if>
+        <c:if test="${currentUser != null}">
+        <h2>Public Projects</h2>
+        </c:if>
+        <c:choose>
+        <c:when test="${empty publishedProjects}">
+            <p>There are currently no published projects in OzTrack.</p>
+        </c:when>
+        <c:otherwise>
             <p>There are currently <c:out value="${fn:length(publishedProjects)}"/> published project(s) in OzTrack.</p>
             <table class="dataTable">
             <tr>
@@ -78,6 +82,7 @@
             </tr>
             </c:forEach>
             </table>
-        </c:if>
+        </c:otherwise>
+        </c:choose>
     </jsp:body>
 </tags:page>
