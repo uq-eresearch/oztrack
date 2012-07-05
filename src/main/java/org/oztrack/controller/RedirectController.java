@@ -18,7 +18,7 @@ public class RedirectController {
     
     @RequestMapping(value="/projectdescr", method=RequestMethod.GET)
     public RedirectView redirectProjectDescriptionView(@RequestParam(value="id") Long id) {
-        return redirectTo("/projects/" + id + "/description");
+        return redirectTo("/projects/" + id);
     }
 
     private RedirectView redirectTo(String url) {
