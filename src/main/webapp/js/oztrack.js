@@ -16,3 +16,23 @@ $(document).ready(function() {
          ]
      });
 });
+function deleteEntity(url, destUrl, message) {
+    if (!confirm(message)) {
+        return;
+    }
+    jQuery.ajax({
+        url: url,
+        type: 'POST',
+        data: {
+            '_method': 'DELETE'
+        },
+        error: function(xhr, textStatus, errorThrown) {
+            alert('Error processing delete');
+        },
+        complete: function (xhr, textStatus) {
+            if (textStatus == 'success') {
+                window.location = destUrl;
+            }
+        }
+    });
+}

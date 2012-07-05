@@ -48,6 +48,9 @@ public class OzTrackPermissionEvaluator implements PermissionEvaluator {
             if (permission.equals("write") && (projectUser.getRole() == Role.ADMIN)) {
                 return true;
             }
+            if (permission.equals("manage") && (projectUser.getRole() == Role.ADMIN)) {
+                return true;
+            }
         }
         return false;
     }

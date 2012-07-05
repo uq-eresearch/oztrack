@@ -12,6 +12,7 @@ public interface ProjectDao {
     Project getProjectById(Long id);
     void save(Project object);
     Project update(Project object);
+    void delete(Project project);
     void create(Project project, User currentUser) throws Exception;
     void saveProjectImageFile(Project project) throws Exception;
     List<Project> getPublishedProjects();

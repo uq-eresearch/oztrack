@@ -182,5 +182,16 @@
         
         </table>
         </div>
+        
+        <div style="clear: both;"></div>
+        
+        <sec:authorize access="hasPermission(#project, 'write')">
+        <c:if test="${empty project.dataSpaceURI}">
+        <h2>Manage Project</h2>
+        <ul style="font-size: 0.9em;">
+            <li><a href="javascript:void(deleteEntity('<c:url value="/projects/${project.id}"/>', '<c:url value="/projects"/>', 'Are you sure you want to delete this project?'));">Delete Project</a></li>
+        </ul>
+        </c:if>
+        </sec:authorize>
     </jsp:body>
 </tags:page>

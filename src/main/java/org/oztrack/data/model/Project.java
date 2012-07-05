@@ -21,7 +21,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Type;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.model.types.ProjectType;
@@ -51,9 +50,14 @@ public class Project extends OztrackBaseEntity implements Serializable {
     @Column(columnDefinition = "TEXT")
     private String dataDirectoryPath;
     
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.project", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true)
-    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.project", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<ProjectUser> projectUsers = new LinkedList<ProjectUser>();
+    
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Animal> animals = new LinkedList<Animal>();
+    
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DataFile> dataFiles = new LinkedList<DataFile>();
 
     @Enumerated(STRING)
     @Column(name="projecttype")
@@ -125,6 +129,22 @@ public class Project extends OztrackBaseEntity implements Serializable {
 
     public void setProjectUsers(List<ProjectUser> projectUsers) {
         this.projectUsers = projectUsers;
+    }
+
+    public List<Animal> getAnimals() {
+        return animals;
+    }
+
+    public void setAnimals(List<Animal> animals) {
+        this.animals = animals;
+    }
+
+    public List<DataFile> getDataFiles() {
+        return dataFiles;
+    }
+
+    public void setDataFiles(List<DataFile> dataFiles) {
+        this.dataFiles = dataFiles;
     }
 
     public boolean isGlobal() {

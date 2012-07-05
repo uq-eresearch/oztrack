@@ -6,7 +6,10 @@ import static javax.persistence.EnumType.STRING;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
@@ -15,6 +18,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -58,6 +62,9 @@ public class DataFile extends OztrackBaseEntity implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade={}) //persist project yourself
     private Project project;
+    
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "dataFile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PositionFix> positionFixes = new LinkedList<PositionFix>();
 
     @Transient
     private MultipartFile  file;
@@ -116,7 +123,15 @@ public class DataFile extends OztrackBaseEntity implements Serializable {
         this.project = project;
     }
 
-        public String getContentType() {
+    public List<PositionFix> getPositionFixes() {
+        return positionFixes;
+    }
+
+    public void setPositionFixes(List<PositionFix> positionFixes) {
+        this.positionFixes = positionFixes;
+    }
+
+    public String getContentType() {
         return contentType;
     }
 

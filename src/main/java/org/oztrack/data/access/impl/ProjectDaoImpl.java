@@ -58,6 +58,12 @@ public class ProjectDaoImpl implements ProjectDao {
     
     @Override
     @Transactional
+    public void delete(Project project) {
+        em.remove(project);
+    }
+    
+    @Override
+    @Transactional
     public void create(Project project, User currentUser) throws Exception {
         // create/update details
         project.setCreateDate(new java.util.Date());

@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
@@ -87,7 +89,7 @@ public class ProjectController {
 
     @RequestMapping(value="/projects/{id}/edit", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#project, 'write')")
-    public String getEditView(Model model, @ModelAttribute(value="project") Project project) {
+    public String getEditView(@ModelAttribute(value="project") Project project) {
         return "projectadd";
     }
     
@@ -105,6 +107,17 @@ public class ProjectController {
         projectDao.saveProjectImageFile(project);
         projectDao.update(project);
         return "redirect:/projects/" + project.getId();
+    }
+
+    @RequestMapping(value="/projects/{id}", method=RequestMethod.DELETE)
+    @PreAuthorize("hasPermission(#project, 'manage')")
+    public void processDelete(@ModelAttribute(value="project") Project project, HttpServletResponse response) {
+        if ((project.getDataSpaceURI() != null) && !project.getDataSpaceURI().isEmpty()) {
+            response.setStatus(403);
+            return;
+        }
+        projectDao.delete(project);
+        response.setStatus(204);
     }
 
     private String getView(Model model, Project project, String viewName) {
