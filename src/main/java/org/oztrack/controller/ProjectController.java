@@ -53,19 +53,19 @@ public class ProjectController {
     @RequestMapping(value="/projects/{id}", method=RequestMethod.GET)
     @PreAuthorize("#project.global or hasPermission(#project, 'read')")
     public String getDetailView(Model model, @ModelAttribute(value="project") Project project) {
-        return getView(model, project, "projectdetail");
+        return getView(model, project, "project");
     }
     
     @RequestMapping(value="/projects/{id}/animals", method=RequestMethod.GET)
     @PreAuthorize("#project.global or hasPermission(#project, 'read')")
     public String getAnimalsView(Model model, @ModelAttribute(value="project") Project project) {
-        return getView(model, project, "projectanimals");
+        return getView(model, project, "project-animals");
     }
     
     @RequestMapping(value="/projects/{id}/publish", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#project, 'write')")
     public String getPublishView(Model model, @ModelAttribute(value="project") Project project) {
-        return getView(model, project, "publish");
+        return getView(model, project, "project-publish");
     }
 
     @RequestMapping(value="/projects/{id}/publish", method=RequestMethod.POST)
@@ -90,7 +90,7 @@ public class ProjectController {
     @RequestMapping(value="/projects/{id}/edit", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#project, 'write')")
     public String getEditView(@ModelAttribute(value="project") Project project) {
-        return "projectadd";
+        return "project-form";
     }
     
     @RequestMapping(value="/projects/{id}", method=RequestMethod.PUT)
@@ -102,7 +102,7 @@ public class ProjectController {
     ) throws Exception {
         new ProjectFormValidator().validate(project, bindingResult);
         if (bindingResult.hasErrors()) {
-            return "projectadd";
+            return "project-form";
         }
         projectDao.saveProjectImageFile(project);
         projectDao.update(project);

@@ -78,7 +78,7 @@ public class DataFileListController {
                 break;
         }
         model.addAttribute("fileHeaders", fileHeaders);
-        return "datafileadd";
+        return "datafile-form";
     }
     
     @RequestMapping(value="/projects/{project_id}/datafiles", method=RequestMethod.POST)
@@ -93,7 +93,7 @@ public class DataFileListController {
         User currentUser = userDao.getByUsername((String) authentication.getPrincipal());
         new DataFileFormValidator().validate(dataFile, bindingResult);
         if (bindingResult.hasErrors()) {
-            return "datafileadd";
+            return "datafile-form";
         }
         
         MultipartFile file = dataFile.getFile();
@@ -119,7 +119,7 @@ public class DataFileListController {
             model.addAttribute("errorMessage", "There was a problem with uploading that file. Please try and create a new one.");
             dataFile.setStatus(DataFileStatus.INACTIVE);
             dataFile.setStatusMessage("There was a problem with this file upload and it has been discarded. Please try again.");
-            return "datafileadd";
+            return "datafile-form";
         }
         
         // ready to go now; poller will pick the job up

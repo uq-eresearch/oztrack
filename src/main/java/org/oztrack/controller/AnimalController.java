@@ -37,7 +37,7 @@ public class AnimalController {
     @PreAuthorize("hasPermission(#animal.project, 'write')")
     public String getEditView(Model model, @ModelAttribute("animal") Animal animal) {
         model.addAttribute("project", animal.getProject());
-        return "animalform";
+        return "animal-form";
     }
     
     @RequestMapping(value="/animals/{id}", method=RequestMethod.PUT)
@@ -49,7 +49,7 @@ public class AnimalController {
     ) throws Exception {
         new AnimalFormValidator().validate(animal, bindingResult);
         if (bindingResult.hasErrors()) {
-            return "animalform";
+            return "animal-form";
         }
         animalDao.update(animal);
         redirectAttributes.addAttribute("projectId", animal.getProject().getId());

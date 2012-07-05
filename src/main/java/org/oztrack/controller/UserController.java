@@ -36,7 +36,7 @@ public class UserController {
         if (currentUser == null || !currentUser.equals(user)) {
             return "redirect:/login";
         }
-        return "register";
+        return "user-form";
     }
     
     @RequestMapping(value="/users/{id}", method=RequestMethod.PUT)
@@ -51,7 +51,7 @@ public class UserController {
         }
         new RegisterFormValidator(userDao).validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
-            return "register";
+            return "user-form";
         }
         user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
         userDao.save(user);

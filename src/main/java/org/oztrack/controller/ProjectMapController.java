@@ -32,15 +32,10 @@ public class ProjectMapController {
     @RequestMapping(value="/projects/{id}/analysis", method=RequestMethod.GET)
     @PreAuthorize("#project.global or hasPermission(#project, 'read')")
     public String getView(Model model, @ModelAttribute(value="project") Project project) {
-    	MapQueryType [] mapQueryTypeList = MapQueryType.values();
+        MapQueryType [] mapQueryTypeList = MapQueryType.values();
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
-
         model.addAttribute("mapQueryTypeList", mapQueryTypeList);
         model.addAttribute("projectAnimalsList", projectAnimalsList);
-        
-        return "projectmap";
+        return "project-analysis";
     }
 }
-
-
-

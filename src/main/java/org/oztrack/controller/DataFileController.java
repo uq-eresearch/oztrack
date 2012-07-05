@@ -25,7 +25,7 @@ public class DataFileController {
     @RequestMapping(value="/datafiles/{id}", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#dataFile.project, 'read')")
     public String getView(@ModelAttribute(value="dataFile") DataFile dataFile) throws Exception {
-        return "datafiledetail";
+        return "datafile";
     }
 
     @RequestMapping(value="/datafiles/{id}", method=RequestMethod.DELETE)

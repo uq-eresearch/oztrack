@@ -128,6 +128,6 @@ public class SearchFormController {
         model.addAttribute("nbrObjectsPerPage", nbrObjectsPerPage);
         model.addAttribute("nbrObjectsThisPage", nbrObjectsThisPage);
         model.addAttribute("totalCount", totalCount);
-        return "searchform";
+        return "project-search";
     }
 }

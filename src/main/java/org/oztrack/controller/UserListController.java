@@ -26,7 +26,7 @@ public class UserListController {
     @RequestMapping(value="/users/new", method=RequestMethod.GET)
     @PreAuthorize("permitAll")
     public String getFormView(@ModelAttribute(value="user") User user) {
-        return "register";
+        return "user-form";
     }
     
     @RequestMapping(value="/users", method=RequestMethod.POST)
@@ -38,7 +38,7 @@ public class UserListController {
     ) throws Exception {
         new RegisterFormValidator(userDao).validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
-            return "register";
+            return "user-form";
         }
         user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
         userDao.save(user);

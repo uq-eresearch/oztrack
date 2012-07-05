@@ -50,7 +50,7 @@ public class ProjectListController {
     @RequestMapping(value="/projects/new", method=RequestMethod.GET)
     @PreAuthorize("isAuthenticated()")
     public String getNewView(@ModelAttribute(value="project") Project project) {
-        return "projectadd";
+        return "project-form";
     }
     
     @RequestMapping(value="/projects", method=RequestMethod.POST)
@@ -63,7 +63,7 @@ public class ProjectListController {
         User currentUser = userDao.getByUsername((String) authentication.getPrincipal());
         new ProjectFormValidator().validate(project, bindingResult);
         if (bindingResult.hasErrors()) {
-            return "projectadd";
+            return "project-form";
         }
         projectDao.create(project, currentUser);
         return "redirect:/projects/" + project.getId();
