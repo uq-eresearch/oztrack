@@ -23,6 +23,13 @@ public class AnimalController {
     public Animal getAnimal(@PathVariable(value="id") Long animalId) throws Exception {
         return animalDao.getAnimalById(animalId);
     }
+    
+    @RequestMapping(value="/animals/{id}", method=RequestMethod.GET)
+    @PreAuthorize("#animal.project.global or hasPermission(#animal.project, 'read')")
+    public String getView(Model model, @ModelAttribute("animal") Animal animal) {
+        model.addAttribute("project", animal.getProject());
+        return "animal";
+    }
 
     @RequestMapping(value="/animals/{id}/edit", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#animal.project, 'write')")

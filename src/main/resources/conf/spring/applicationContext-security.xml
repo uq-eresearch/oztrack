@@ -12,14 +12,18 @@
 
     <bean id="authenticationProvider" class="org.oztrack.controller.OzTrackAuthenticationProvider"/>
     
+    <bean id="permissionEvaluator" class="org.oztrack.controller.OzTrackPermissionEvaluator"/>
+    
     <security:authentication-manager alias="authenticationManager">
         <security:authentication-provider ref="authenticationProvider"/>
     </security:authentication-manager>
     
-    <bean id="securityExpressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
-        <property name="permissionEvaluator">
-            <bean class="org.oztrack.controller.OzTrackPermissionEvaluator"/>
-        </property>
+    <bean id="methodSecurityExpressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+        <property name="permissionEvaluator" ref="permissionEvaluator"/>
+    </bean>
+    
+    <bean id="webSecurityExpressionHandler" class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
+        <property name="permissionEvaluator" ref="permissionEvaluator"/>
     </bean>
     
     <security:http use-expressions="true" authentication-manager-ref="authenticationManager">
@@ -32,5 +36,6 @@
             password-parameter="password"/>
         <security:logout logout-url="/logout"/>
         <security:session-management/>
+        <security:expression-handler ref="webSecurityExpressionHandler"/>
     </security:http>
 </beans>

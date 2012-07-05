@@ -18,7 +18,7 @@
     <context:component-scan base-package="org.oztrack.controller"/>
     
     <security:global-method-security authentication-manager-ref="authenticationManager" pre-post-annotations="enabled">
-        <security:expression-handler ref="securityExpressionHandler"/>
+        <security:expression-handler ref="methodSecurityExpressionHandler"/>
     </security:global-method-security>
 
     <mvc:annotation-driven/>

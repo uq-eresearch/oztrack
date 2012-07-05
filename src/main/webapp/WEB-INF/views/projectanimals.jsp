@@ -3,6 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <tags:page title="${project.title}: Animals">
     <jsp:attribute name="head">
@@ -37,7 +38,9 @@
 		        <th>Transmitter ID</th>
 		       <!-- <th>Transmitter Deploy Date</th> -->
 		        <th>Ping Interval (seconds)</th>
+                <sec:authorize access="hasPermission(#project, 'write')">
 		        <th> </th>
+                </sec:authorize>
 		    </tr>
 		
 		    <c:forEach items="${projectAnimalsList}" var="animal">
@@ -53,11 +56,11 @@
 		            <!--<td><c:out value="${animal.transmitterDeployDate}"/></td>-->
 		
 		            <td><c:out value="${animal.pingIntervalSeconds}"/></td>
-		            <td>
-				        <a href="<c:url value="/animals/${animal.id}/edit"/>">
-		                Edit
-		                </a>
+		            <sec:authorize access="hasPermission(#project, 'write')">
+                    <td>
+				        <a href="<c:url value="/animals/${animal.id}/edit"/>">Edit</a>
 		            </td>
+                    </sec:authorize>
 				</tr>
 		    </c:forEach>
 		</table>

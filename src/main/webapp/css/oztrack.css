@@ -722,38 +722,22 @@ tbody tr:hover {
     font-size: 1em;
 }
 
-.projectListTableHeader, .projectListTable {
+.entityTable {
+    margin: 10px 0;
+}
+
+.entityTable td,
+.entityTable th {
     font-size: 0.8em;
+    text-align: left;
+	vertical-align: top;
+    border: none;
+    padding: 5px;
 }
 
-.projectListTableHeader td, .projectListTable td {
-    border:none;
-    padding: 5px 5px;
-}
-
-.projectListTable .projectFieldName {
-	font-weight:bold;
-	width:120px;
-	vertical-align:top;
+.entityTable th {
+	font-weight: bold;
 }	
-
-.projectListTableHeader td {
-    width:33%;
-}
-
-.projectListTable {
-    margin-top:10px;
-    margin-bottom:10px;
-/*    background-color:#e6e6c0;*/
-}
-
-.projectListTable td {
-    padding-left:10px;
-}
-
-#contactsTable {
-    font-size:0.8em;
-}
 
 #registrationTable {
     width: 50%;
@@ -768,7 +752,6 @@ tbody tr:hover {
     font-weight: bold;
     border: #263f00 solid 1px;
     padding: 5px;
-
 }
 
 .infoTable  td {

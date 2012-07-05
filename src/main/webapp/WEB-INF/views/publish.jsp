@@ -94,13 +94,13 @@
 		</c:otherwise>
 		</c:choose>
 		
-		<table class="projectListTable">
+		<table class="entityTable">
 		
-		<tr><td class="projectFieldName">Collection Title:</td>
+		<tr><th>Collection Title:</th>
 			
 			<td id="projectTitle"><c:out value="${project.title}"/></td></tr>
 		
-		<tr><td class="projectFieldName">Collection Description:</td>
+		<tr><th>Collection Description:</th>
 		
 			<td><c:out value="${project.description}"/>
 			&nbsp;
@@ -109,25 +109,25 @@
 			<c:out value="${fn:length(projectAnimalsList)}"/> animals. -->
 			</td></tr>
 		
-		<tr><td class="projectFieldName">Collection URL:</td>
+		<tr><th>Collection URL:</th>
 			
 			<td>http://oztrack.org/projectdescr?id=<c:out value="${project.id}"/></td></tr>
 		
-		<tr><td class="projectFieldName">Species:</td><td><c:out value="${project.speciesCommonName}"/>
+		<tr><th>Species:</th><td><c:out value="${project.speciesCommonName}"/>
 			<i><br><c:out value="${project.speciesScientificName}"/></i>
 		</td></tr>
 		
-		<tr><td class="projectFieldName">Collection Manager:</td>
+		<tr><th>Collection Manager:</th>
 			
 		    <td><c:out value="${project.dataSpaceAgent.fullName}"/>
 		    <br><c:out value="${project.dataSpaceAgent.email}"/><br></td></tr>
 		
-		<tr><td class="projectFieldName">Collection Manager Description:</td>
+		<tr><th>Collection Manager Description:</th>
 			
 		    <td><c:out value="${project.dataSpaceAgent.dataSpaceAgentDescription}"/>
 			<br></td></tr>
 		
-		<tr><td class="projectFieldName">Temporal Coverage:</td><td>
+		<tr><th>Temporal Coverage:</th><td>
 		
 			<c:choose>
 			<c:when test="${empty project.firstDetectionDate}">
@@ -141,17 +141,17 @@
 			</c:choose>
 			</td></tr>
 			
-		<tr><td class="projectFieldName">Spatial Coverage:</td>
+		<tr><th>Spatial Coverage:</th>
 		
 			<td><c:out value="${project.spatialCoverageDescr}"/><br/><c:out value="${project.boundingBox}"/>
 			</td></tr>
 		
-		<tr><td class="projectFieldName">Rights Statement:</td>
+		<tr><th>Rights Statement:</th>
 		
 			<td><c:out value="${project.rightsStatement}"/></td></tr>
 		
 		
-		<tr><td class="projectFieldName">Access:</td><td>
+		<tr><th>Access:</th><td>
 			
 			<c:choose><c:when test="${project.isGlobal}">
 				The data in the project is available in OzTrack for the public to use.
@@ -164,7 +164,7 @@
 			
 		</td></tr>
 		
-		<tr><td class="projectFieldName">DataSpace Metadata Publication Status:</td><td id="publicationStatus">
+		<tr><th>DataSpace Metadata Publication Status:</th><td id="publicationStatus">
 		
 				<c:choose>
 				<c:when test ="${empty project.dataSpaceAgent.dataSpaceAgentURI}">
@@ -194,7 +194,7 @@
 				<br/>
 		</td></tr>
 		
-		<tr><td class="projectFieldName"></td><td>
+		<tr><th></th><td>
 			<c:if test="${!empty project.firstDetectionDate}">
 				<a class="oztrackButton" href="#" onclick='publishToDataSpace(<c:out value="${project.id}"/>,"<c:out value="${currentUser.username}"/>","publish"); return false;'><c:out value="${publishButtonText}"/></a>
 				

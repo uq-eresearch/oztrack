@@ -17,6 +17,7 @@
         &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
         &rsaquo; <a href="<c:url value="/projects/${project.id}"/>">${project.title}</a>
         &rsaquo; <a href="<c:url value="/projects/${project.id}/animals"/>">Animals</a>
+        &rsaquo; <a href="<c:url value="/animals/${animal.id}"/>">${animal.animalName}</a>
         &rsaquo; <span class="active">Edit</span> 
     </jsp:attribute>
     <jsp:attribute name="sidebar">
@@ -62,7 +63,12 @@
 				<form:errors path="pingIntervalSeconds" cssClass="formErrors"/>
 			</div>
 			<br>
-			<div align="center"><input type="submit" value="Update"/></div>
+			<div align="center">
+                <a href="<c:url value="/animals/${animal.id}"/>">Cancel</a>
+                &nbsp;
+                &nbsp;
+                <input type="submit" value="Update"/>
+            </div>
 		</form:form>
     </jsp:body>
 </tags:page>

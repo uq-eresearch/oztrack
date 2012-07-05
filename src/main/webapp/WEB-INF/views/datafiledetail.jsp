@@ -27,14 +27,29 @@
 		<h1 id="projectTitle"><c:out value="${dataFile.project.title}"/></h1>
 		<h2>Data File Detail</h2>
 		
-		<table class="projectListTable">
-		
-		<tr><td><b>File Provided:</b></td><td><c:out value="${dataFile.userGivenFileName}"/></td></tr>
-		<tr><td><b>Description:</b></td><td><c:out value="${dataFile.fileDescription}"/></td></tr>
-		<tr><td><b>Content Type:</b></td><td><c:out value="${dataFile.contentType}"/></td></tr>
-		<tr><td><b>Uploaded:</b></td><td><fmt:formatDate pattern="${dateTimeFormatPattern}" value="${dataFile.createDate}"/> by <c:out value="${dataFile.createUser.fullName}"/></td></tr>
-		<tr><td><b>Detection Count:</b></td><td><c:out value="${dataFile.detectionCount}"/></td></tr>
-		<tr><td><b>File Processing Status:</b></td>
+		<table class="entityTable">
+		<tr>
+            <th>File Provided:</th>
+            <td><c:out value="${dataFile.userGivenFileName}"/></td>
+        </tr>
+		<tr>
+            <th>Description:</th>
+            <td><c:out value="${dataFile.fileDescription}"/></td>
+        </tr>
+		<tr>
+            <th>Content Type:</th>
+            <td><c:out value="${dataFile.contentType}"/></td>
+        </tr>
+		<tr>
+            <th>Uploaded:</th>
+            <td><fmt:formatDate pattern="${dateTimeFormatPattern}" value="${dataFile.createDate}"/> by <c:out value="${dataFile.createUser.fullName}"/></td>
+        </tr>
+		<tr>
+            <th>Detection Count:</th>
+            <td><c:out value="${dataFile.detectionCount}"/></td>
+        </tr>
+		<tr>
+            <th>Processing Status:</th>
 		    <td>
 		        <c:out value="${dataFile.status}"/>
 		        <c:choose>
@@ -44,9 +59,10 @@
 		        </c:choose>
 		    </td>
 		</tr>
-		
-		<tr><td><b>File Processing Messages:</b></td><td><c:out value="${dataFile.statusMessage}"/></td></tr>
-		
+		<tr>
+            <th>Processing Messages:</th>
+            <td><c:out value="${dataFile.statusMessage}"/></td>
+        </tr>
 		</table>
     </jsp:body>
 </tags:page>

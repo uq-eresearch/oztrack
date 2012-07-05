@@ -42,7 +42,7 @@ public class SearchFormController {
     AnimalDao animalDao;
 
     @ModelAttribute("project")
-    public Project getProject(@PathVariable(value="project_id") Long projectId) {
+    public Project getProject(@PathVariable(value="id") Long projectId) {
         return projectDao.getProjectById(projectId);
     }
     
@@ -59,7 +59,7 @@ public class SearchFormController {
     }
     
     @RequestMapping(value="/projects/{id}/search", method=RequestMethod.POST)
-    @PreAuthorize("hasPermission(#project, 'read')")
+    @PreAuthorize("#project.global or hasPermission(#project, 'read')")
     public String onSubmit(
         HttpSession session,
         Model model,
@@ -90,7 +90,7 @@ public class SearchFormController {
     }
     
     @RequestMapping(value="/projects/{id}/search", method=RequestMethod.GET)
-    @PreAuthorize("hasPermission(#project, 'read')")
+    @PreAuthorize("#project.global or hasPermission(#project, 'read')")
     public String showForm(
         Model model,
         @ModelAttribute(value="project") Project project,

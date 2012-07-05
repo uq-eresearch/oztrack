@@ -88,13 +88,17 @@ public class MapQueryController {
     }
     
     @RequestMapping(value="/mapQueryKML", method=RequestMethod.GET)
-    @PreAuthorize("hasPermission(#searchQuery.project, 'read')")
+    @PreAuthorize("#searchQuery.project.global or hasPermission(#searchQuery.project, 'read')")
     public View handleKMLQuery(@ModelAttribute(value="searchQuery") SearchQuery searchQuery) throws Exception {
         return new KMLMapQueryView(positionFixDao);
     }
     
     @RequestMapping(value="/mapQueryWFS", method=RequestMethod.POST)
-    @PreAuthorize("(#searchQuery.mapQueryType == T(org.oztrack.data.model.types.MapQueryType).ALL_PROJECTS) or hasPermission(#searchQuery.project, 'read')")
+    @PreAuthorize(
+        "(#searchQuery.mapQueryType == T(org.oztrack.data.model.types.MapQueryType).ALL_PROJECTS) or " +
+        "#searchQuery.project.global or " +
+        "hasPermission(#searchQuery.project, 'read')"
+    )
     public View handleWFSQuery(@ModelAttribute(value="searchQuery") SearchQuery searchQuery) throws Exception {
         return new WFSMapQueryView(projectDao, positionFixDao);
     }

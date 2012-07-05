@@ -49,7 +49,7 @@ public class ProjectController {
     }
     
     @RequestMapping(value="/projects/{id}", method=RequestMethod.GET)
-    @PreAuthorize("hasPermission(#project, 'read')")
+    @PreAuthorize("#project.global or hasPermission(#project, 'read')")
     public String getDetailView(Model model, @ModelAttribute(value="project") Project project) {
         return getView(model, project, "projectdetail");
     }
@@ -61,7 +61,7 @@ public class ProjectController {
     }
     
     @RequestMapping(value="/projects/{id}/animals", method=RequestMethod.GET)
-    @PreAuthorize("hasPermission(#project, 'read')")    
+    @PreAuthorize("#project.global or hasPermission(#project, 'read')")
     public String getAnimalsView(Model model, @ModelAttribute(value="project") Project project) {
         return getView(model, project, "projectanimals");
     }

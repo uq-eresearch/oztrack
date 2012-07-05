@@ -84,7 +84,9 @@
 		     </c:when>
 		     <c:otherwise>&gt;&nbsp;&nbsp;&gt;&gt;</c:otherwise>
 		    </c:choose>
-		    <a href="<c:url value="/projects/${searchQuery.project.id}/export"/>">Export</a>
+		    <c:if test="${sessionScope.searchQuery != null}">
+            <a href="<c:url value="/projects/${searchQuery.project.id}/export"/>">Export</a>
+            </c:if>
 		</div>
 		</div>
 		
