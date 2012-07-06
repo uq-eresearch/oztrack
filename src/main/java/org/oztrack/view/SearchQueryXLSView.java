@@ -56,11 +56,13 @@ public class SearchQueryXLSView extends AbstractExcelView {
         int rowNum = 0;
 
         HSSFRow headerRow = sheet.createRow(rowNum++);
-        headerRow.createCell(0).setCellValue("Animal ID");
-        headerRow.createCell(1).setCellValue("Animal Name");
-        headerRow.createCell(2).setCellValue("Detection Time");
-        headerRow.createCell(3).setCellValue("Latitude");
-        headerRow.createCell(4).setCellValue("Longitude");
+        {
+            int colNum = 0;
+            headerRow.createCell(colNum++).setCellValue("Animal ID");
+            headerRow.createCell(colNum++).setCellValue("Detection Time");
+            headerRow.createCell(colNum++).setCellValue("Latitude");
+            headerRow.createCell(colNum++).setCellValue("Longitude");
+        }
 
         CreationHelper createHelper = workbook.getCreationHelper();
         CellStyle dateTimeCellStyle = workbook.createCellStyle();
@@ -75,9 +77,6 @@ public class SearchQueryXLSView extends AbstractExcelView {
     
                 HSSFCell animalIdCell = row.createCell(colNum++);
                 animalIdCell.setCellValue(positionFix.getAnimal().getId());
-    
-                HSSFCell animalNameCell = row.createCell(colNum++);
-                animalNameCell.setCellValue(positionFix.getAnimal().getAnimalName());
     
                 HSSFCell detectionTimeCell = row.createCell(colNum++);
                 detectionTimeCell.setCellValue(positionFix.getDetectionTime());
