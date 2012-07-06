@@ -179,7 +179,7 @@ public class RServeInterface {
         Double percent = (searchQuery.getPercent() != null) ? searchQuery.getPercent() : 100d;
         safeEval(queryType + " <- mcp(positionFix.xy,percent=" + percent + ")");
         safeEval(queryType + "$area <- mcp(positionFix.proj,percent=" + percent + ",unin=c(\"m\"),unout=c(\"km2\"))$area");
-        safeEval("writeOGR(" + queryType +", dsn=\"" + fileName + "\", layer= \"" + queryType + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
+        safeEval("writeOGR(" + queryType +", dsn=\"" + fileName + "\", layer= \"" + queryType + "\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
     }
     
     protected void writeKernelUDKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
@@ -190,7 +190,7 @@ public class RServeInterface {
         safeEval("KerHR <- kernelUD(positionFix.xy, h = \"" + h + "\")");
         safeEval(name + " <- getverticeshr(KerHR,percent=" + percent + ")");
         safeEval(name + "$area <- getverticeshr(KerHRp,percent=" + percent + ", unin=c(\"m\"), unout=c(\"km2\"))$area");
-        safeEval("writeOGR(" + name +", dsn=\"" + fileName + "\", layer= \"" + name + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
+        safeEval("writeOGR(" + name +", dsn=\"" + fileName + "\", layer= \"" + name + "\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
     }
     
     protected void writeAlphahullKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
@@ -198,7 +198,7 @@ public class RServeInterface {
         Double alpha = (searchQuery.getAlpha() != null) ? searchQuery.getAlpha() : 0.1;
         safeEval("ahull.proj.spldf <- id.alpha(dxy=positionFix.proj, ialpha=" + alpha + ", sCS=\"+init=" + srs + "\")");
         safeEval("ahull.xy.spldf <- spTransform(ahull.proj.spldf, CRS(\"+init=epsg:4326\"))");
-        safeEval("writeOGR(ahull.xy.spldf, dsn=\"" + fileName + "\", layer= \"" + name + "\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
+        safeEval("writeOGR(ahull.xy.spldf, dsn=\"" + fileName + "\", layer= \"" + name + "\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
     }
     
     protected void writePositionFixKmlFile(String fileName) throws RServeInterfaceException {
@@ -214,7 +214,7 @@ public class RServeInterface {
             @SuppressWarnings("unused")
             REXP foo = rConnection.eval("positionFix");
 
-            rCommand = "writeOGR(positionFix, dsn=\"" + outFileNameFix + "\", layer= \"positionFix\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))";
+            rCommand = "writeOGR(positionFix, dsn=\"" + outFileNameFix + "\", layer= \"positionFix\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))";
             logger.debug(rCommand);
             rConnection.eval(rCommand);
             rLog = rLog + "KML written";
