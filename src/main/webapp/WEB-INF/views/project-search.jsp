@@ -60,7 +60,7 @@
 		</div>
 		<div style="float:right">
 		    <c:choose>
-		     <c:when test="${offset > 0}">
+		    <c:when test="${offset > 0}">
 		        <a href="<c:url value="/projects/${searchQuery.project.id}/search">
 		            <c:param name="offset" value="${0}"/>
 		        </c:url>">&lt;&lt;</a>
@@ -68,12 +68,16 @@
 		        <a href="<c:url value="/projects/${searchQuery.project.id}/search">
 		            <c:param name="offset" value="${offset-nbrObjectsPerPage}"/>
 		        </c:url>">&lt;</a>
-		     </c:when>
-		     <c:otherwise>&lt;&lt;&nbsp;&nbsp;&lt;</c:otherwise>
+		    </c:when>
+		    <c:otherwise>
+                &lt;&lt;
+                &nbsp;&nbsp;
+                &lt;
+            </c:otherwise>
 		    </c:choose>
 		    &nbsp;&nbsp;
 		    <c:choose>
-		     <c:when test="${offset < totalCount - (totalCount % nbrObjectsPerPage)}">
+		    <c:when test="${offset < totalCount - (totalCount % nbrObjectsPerPage)}">
 		        <a href="<c:url value="/projects/${searchQuery.project.id}/search">
 		            <c:param name="offset" value="${offset+nbrObjectsThisPage}"/>
 		        </c:url>">&gt;</a>
@@ -81,12 +85,15 @@
 		        <a href="<c:url value="/projects/${searchQuery.project.id}/search">
 		            <c:param name="offset" value="${totalCount - (totalCount % nbrObjectsPerPage)}"/>
 		        </c:url>">&gt;&gt;</a>
-		     </c:when>
-		     <c:otherwise>&gt;&nbsp;&nbsp;&gt;&gt;</c:otherwise>
+		    </c:when>
+		    <c:otherwise>
+                &gt;
+                &nbsp;&nbsp;
+                &gt;&gt;
+            </c:otherwise>
 		    </c:choose>
-		    <c:if test="${sessionScope.searchQuery != null}">
+            &nbsp;&nbsp;
             <a href="<c:url value="/projects/${searchQuery.project.id}/export"/>">Export</a>
-            </c:if>
 		</div>
 		</div>
 		

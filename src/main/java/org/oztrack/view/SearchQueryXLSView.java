@@ -6,9 +6,14 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.SearchQuery;
@@ -17,6 +22,8 @@ import org.springframework.web.servlet.view.document.AbstractExcelView;
 
 public class SearchQueryXLSView extends AbstractExcelView {
     public static final String SEARCH_QUERY_KEY = "searchQuery";
+    
+    protected final Log logger = LogFactory.getLog(getClass());
 
     // TODO: DAO should not appear in this layer.
     private PositionFixDao positionFixDao;
@@ -33,40 +40,65 @@ public class SearchQueryXLSView extends AbstractExcelView {
         HttpServletResponse response
     ) throws Exception {
         SearchQuery searchQuery = (SearchQuery) model.get(SEARCH_QUERY_KEY);
-        ProjectType projectType = searchQuery.getProject().getProjectType();
-        HSSFSheet sheet = workbook.createSheet("OzTrack " + projectType.getDisplayName());
-
-        switch (projectType) {
-            case GPS:
-               this.buildPositionFixSheet(sheet,searchQuery);
-               break;
-            default:
-                ;
+        if (searchQuery.getProject().getProjectType() != ProjectType.GPS) {
+            throw new IllegalArgumentException("Can only export " + ProjectType.GPS.getDisplayName() + " projects");
         }
+        createPositionFixSheet(workbook, searchQuery);
+        response.setHeader("Content-Disposition", "attachment; filename=\"export.xls\"");
     }
 
 
-    protected void buildPositionFixSheet(HSSFSheet sheet, SearchQuery searchQuery) {
-
+    protected void createPositionFixSheet(HSSFWorkbook workbook, SearchQuery searchQuery) {
         List<PositionFix> positionFixes = positionFixDao.queryProjectPositionFixes(searchQuery);
 
-        HSSFRow headerRow = sheet.createRow(0);
-        headerRow.createCell(0).setCellValue("animal_id");
-        headerRow.createCell(1).setCellValue("name");
-        headerRow.createCell(2).setCellValue("detection_time");
-        headerRow.createCell(3).setCellValue("latitude");
-        headerRow.createCell(4).setCellValue("longitude");
+        HSSFSheet sheet = workbook.createSheet("Sheet");
 
-        int rowNum = 1;
+        int rowNum = 0;
+
+        HSSFRow headerRow = sheet.createRow(rowNum++);
+        headerRow.createCell(0).setCellValue("Animal ID");
+        headerRow.createCell(1).setCellValue("Animal Name");
+        headerRow.createCell(2).setCellValue("Detection Time");
+        headerRow.createCell(3).setCellValue("Latitude");
+        headerRow.createCell(4).setCellValue("Longitude");
+
+        CreationHelper createHelper = workbook.getCreationHelper();
+        CellStyle dateTimeCellStyle = workbook.createCellStyle();
+        dateTimeCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("yyyy-mm-dd hh:mm:ss"));
+        CellStyle latLngCellStyle = workbook.createCellStyle();
+        latLngCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("0.000000"));
+        
         for (PositionFix positionFix : positionFixes) {
-
-            HSSFRow row = sheet.createRow(rowNum);
-            row.createCell(0).setCellValue(positionFix.getAnimal().getId().toString());
-            row.createCell(1).setCellValue(positionFix.getAnimal().getAnimalName());
-            row.createCell(2).setCellValue(positionFix.getDetectionTime());
-            row.createCell(3).setCellValue(positionFix.getLatitude());
-            row.createCell(4).setCellValue(positionFix.getLongitude());
-            rowNum++;
+            try {
+                int colNum = 0;
+                HSSFRow row = sheet.createRow(rowNum++);
+    
+                HSSFCell animalIdCell = row.createCell(colNum++);
+                animalIdCell.setCellValue(positionFix.getAnimal().getId());
+    
+                HSSFCell animalNameCell = row.createCell(colNum++);
+                animalNameCell.setCellValue(positionFix.getAnimal().getAnimalName());
+    
+                HSSFCell detectionTimeCell = row.createCell(colNum++);
+                detectionTimeCell.setCellValue(positionFix.getDetectionTime());
+                detectionTimeCell.setCellStyle(dateTimeCellStyle);
+    
+                HSSFCell latCell = row.createCell(colNum++);
+                latCell.setCellValue(Double.parseDouble(positionFix.getLatitude()));
+                latCell.setCellStyle(latLngCellStyle);
+    
+                HSSFCell lngCell = row.createCell(colNum++);
+                lngCell.setCellValue(Double.parseDouble(positionFix.getLongitude()));
+                lngCell.setCellStyle(latLngCellStyle);
+            }
+            catch (Exception e) {
+                logger.error("Error writing position fix " + positionFix.getId() + " to XLS", e);
+            }
+        }
+        
+        sheet.createFreezePane(0, 1, 0, 1);
+        for (short cellNum = headerRow.getFirstCellNum(); cellNum < headerRow.getLastCellNum(); cellNum++) {
+            sheet.autoSizeColumn(cellNum);
         }
     }
 }

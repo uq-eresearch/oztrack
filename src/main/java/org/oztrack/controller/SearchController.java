@@ -15,6 +15,7 @@ import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.validator.SearchFormValidator;
+import org.oztrack.view.SearchQueryXLSView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomCollectionEditor;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -29,9 +30,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.View;
 
 @Controller
-public class SearchFormController {
+public class SearchController {
     @Autowired
     private ProjectDao projectDao;
     
@@ -47,7 +49,7 @@ public class SearchFormController {
     }
     
     @ModelAttribute("searchQuery")
-    public SearchQuery getSearchQUery(HttpSession session, @ModelAttribute(value="project") Project project) {
+    public SearchQuery getSearchQuery(HttpSession session, @ModelAttribute(value="project") Project project) {
         // If we have a SearchQuery instance in the session from a previously posted form,
         // replace the default SearchQuery instance in the model so we show previous values in the form.
         SearchQuery searchQuery = (SearchQuery) session.getAttribute("searchQuery");
@@ -98,6 +100,13 @@ public class SearchFormController {
         @RequestParam(value="offset", defaultValue="0") int offset
     ) throws Exception {
         return showFormInternal(model, project, searchQuery, offset);
+    }
+
+    @RequestMapping(value="/projects/{id}/export", method=RequestMethod.GET)
+    @PreAuthorize("#searchQuery.project.global or hasPermission(#searchQuery.project, 'read')")
+    public View handleRequest(@ModelAttribute(value="searchQuery") SearchQuery searchQuery, Model model) throws Exception {
+        model.addAttribute(SearchQueryXLSView.SEARCH_QUERY_KEY, searchQuery);
+        return new SearchQueryXLSView(positionFixDao);
     }
     
     private String showFormInternal(
