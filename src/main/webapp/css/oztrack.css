@@ -354,9 +354,11 @@ a:hover {
 
 .animalInfo {
 	float:left;
+	width: 100%;
 	font-size: 0.9em;
 	/*border: solid 1px black;*/
 	margin-left: 8px;
+	margin-right: 8px;
 	margin-top: 0;
 	margin-bottom: 0;
 }

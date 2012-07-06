@@ -490,15 +490,16 @@ function addProjectMapLayer() {
 }
 
 function addKMLLayer(layerName, params) {
+    var url = "/mapQueryKML";
     var queryOverlay = new OpenLayers.Layer.Vector(
         layerName,
         {
             strategies: [new OpenLayers.Strategy.Fixed()],
             eventListeners: {
-                loadend: function (e) {updateAnimalInfoFromKML(layerName, params, e);}
+                loadend: function (e) {updateAnimalInfoFromKML(layerName, url, params, e);}
             },
             protocol: new OpenLayers.Protocol.HTTP({
-                url: "/mapQueryKML",
+                url: url,
                 params: params,
                 format: new OpenLayers.Format.KML({
                     extractAttributes: true,
@@ -514,7 +515,7 @@ function addKMLLayer(layerName, params) {
     map.addLayer(queryOverlay);
 }
                 
-function updateAnimalInfoFromKML(layerName, params, e) {
+function updateAnimalInfoFromKML(layerName, url, params, e) {
     for (var f in e.object.features) {
         var feature = e.object.features[f];
         var area = feature.attributes.area.value;
@@ -540,7 +541,16 @@ function updateAnimalInfoFromKML(layerName, params, e) {
         html += '<tr><td class="label">SRS: </td><td>' + params.srs + '</td></tr>';
         html += '<tr><td class="label">Area: </td><td>' + Math.round(area*1000)/1000 + ' km<sup>2</sup></td></tr>';
         html += '</table>';
-        $('#animalInfo-'+ feature.attributes.id.value).append('<div class="layerInfo">' + checkboxHtml + html + '</div>');
+        var urlWithParams = url;
+        var paramString = OpenLayers.Util.getParameterString(params);
+        if (paramString.length > 0) {
+            var separator = (url.indexOf('?') > -1) ? '&' : '?';
+            url += separator + paramString;
+        }
+        $('#animalInfo-'+ feature.attributes.id.value).append(
+            '<a style="float: right; margin-right: 18px;" href="' + urlWithParams + '">KML</a>' +
+            '<div class="layerInfo">' + checkboxHtml + html + '</div>'
+        );
         $('input[id=select-feature-' + checkboxId + ']').change(function() {
             toggleFeature(this.value,this.checked);
         });
