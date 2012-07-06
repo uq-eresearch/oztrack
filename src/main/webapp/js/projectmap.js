@@ -544,8 +544,8 @@ function updateAnimalInfoFromKML(layerName, url, params, e) {
         var urlWithParams = url;
         var paramString = OpenLayers.Util.getParameterString(params);
         if (paramString.length > 0) {
-            var separator = (url.indexOf('?') > -1) ? '&' : '?';
-            url += separator + paramString;
+            var separator = (urlWithParams.indexOf('?') > -1) ? '&' : '?';
+            urlWithParams += separator + paramString;
         }
         $('#animalInfo-'+ feature.attributes.id.value).append(
             '<a style="float: right; margin-right: 18px;" href="' + urlWithParams + '">KML</a>' +
