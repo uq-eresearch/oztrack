@@ -64,9 +64,6 @@ function initializeProjectMap() {
     var navToolbar = new OpenLayers.Control.NavToolbar();
     map.addControl(navToolbar);
     var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
-    //map.addControl(new OpenLayers.Control.Measure());
-    //layerSwitcher.div = OpenLayers.Util.getElement('customLayerSwitcher');
-    //layerSwitcher.roundedCorner = false;
     map.addControl(layerSwitcher);
     map.addControl(new OpenLayers.Control.LoadingPanel());
     
@@ -74,7 +71,6 @@ function initializeProjectMap() {
     var gsat = new OpenLayers.Layer.Google("Google Satellite", {type: google.maps.MapTypeId.SATELLITE});
     
     var panel = new OpenLayers.Control.Panel();
-    //panel.div = OpenLayers.Util.getElement('mapControlPanel');
     panel.addControls([
         new OpenLayers.Control.Button({
             displayClass: "zoomButton",
