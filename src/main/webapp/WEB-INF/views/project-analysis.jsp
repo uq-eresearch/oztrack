@@ -9,7 +9,7 @@
     <jsp:attribute name="head">
         <!--script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key=${initParam['api-key']}"></script-->
         <script src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
-        <script type="text/javascript" src="${pageContext.request.contextPath}/js/proj4js/proj4js-combined.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/proj4js/proj4js-compressed.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/OpenLayers.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/LoadingPanel.js"></script>
         <script type="text/javascript" src="<c:url value="/js/projectmap.js"/>"></script>
