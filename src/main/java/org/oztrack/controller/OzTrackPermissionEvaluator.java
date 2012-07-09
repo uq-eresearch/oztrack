@@ -27,7 +27,7 @@ public class OzTrackPermissionEvaluator implements PermissionEvaluator {
             return false;
         }
         User currentUser = userDao.getByUsername((String) authentication.getPrincipal());
-        if (currentUser.getAdmin()) {
+        if ((currentUser.getAdmin() != null) && currentUser.getAdmin()) {
             return true;
         }
         if (targetDomainObject instanceof Project) {
