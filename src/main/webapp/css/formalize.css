@@ -1,6 +1,3 @@
-/* `Widths
-----------------------------------------------------------------------------------------------------*/
-
 .input_tiny {
   width: 50px;
 }
@@ -29,74 +26,113 @@
   width: 100%;
 }
 
-/*
-  Added via JS to <textarea> and class="input_full".
-  Applies only to IE7. Other browsers don't need it.
-*/
 .input_full_wrap {
   display: block;
   padding-right: 8px;
-}
-
-/* `UI Consistency
-----------------------------------------------------------------------------------------------------*/
-
-::-moz-focus-inner {
-  border: 0;
-  padding: 0;
 }
 
 input[type="search"]::-webkit-search-decoration {
   display: none;
 }
 
-input,
-button,
-select,
-textarea {
-  margin: 0;
-  vertical-align: middle;
+input:invalid,
+button:invalid,
+select:invalid,
+textarea:invalid {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+input:focus,
+button:focus,
+select:focus,
+textarea:focus {
+  -webkit-box-shadow: #0066ff 0 0 5px 0;
+  -moz-box-shadow: #0066ff 0 0 5px 0;
+  box-shadow: #0066ff 0 0 5px 0;
+  z-index: 1;
+}
+
+input[type="file"]:focus, input[type="file"]:active,
+input[type="radio"]:focus,
+input[type="radio"]:active,
+input[type="checkbox"]:focus,
+input[type="checkbox"]:active {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
 }
 
 button,
 input[type="reset"],
 input[type="submit"],
 input[type="button"] {
-/*  -webkit-appearance: none;
-  -moz-border-radius: 11px;
-  -webkit-border-radius: 11px;
-  -moz-background-clip: padding;
+  -webkit-appearance: none;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
   -webkit-background-clip: padding;
+  -moz-background-clip: padding;
   background-clip: padding-box;
-  border-radius: 11px;
-  */
-  background: #adbc6b;
-/*
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fff), color-stop(1, #ddd));
-  background: -moz-linear-gradient(top center, #fff 0%, #adbc6b 100%);
-*/
+  background: #dddddd url('../images/button.png?1298351022') repeat-x;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #dddddd));
+  background-image: -webkit-linear-gradient(#ffffff, #dddddd);
+  background-image: -moz-linear-gradient(#ffffff, #dddddd);
+  background-image: -o-linear-gradient(#ffffff, #dddddd);
+  background-image: -ms-linear-gradient(#ffffff, #dddddd);
+  background-image: linear-gradient(#ffffff, #dddddd);
   border: 1px solid;
-  border-color: #839537;
+  border-color: #dddddd #bbbbbb #999999;
   cursor: pointer;
-  color: #000;
+  color: #333333;
+  font: bold 12px/1.3 "Helvetica Neue", Arial, "Liberation Sans", FreeSans, sans-serif;
   outline: 0;
   overflow: visible;
-  padding-bottom: 2px;
-    padding-left: 3px;
-    padding-right: 3px;
-    padding-top: 2px;
-    font-family:Arial,Verdana, sans-serif;
-    font-size:12px;
-    font-weight:bold;
+  margin: 0;
+  padding: 3px 10px;
+  text-shadow: white 0 1px 1px;
+  vertical-align: top;
   width: auto;
-
-  /* IE7 */
   *padding-top: 2px;
-  *padding-bottom: 0px;
+  *padding-bottom: 0;
+}
+button:hover,
+input[type="reset"]:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover {
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(1px, #eeeeee), color-stop(100%, #cccccc));
+  background-image: -webkit-linear-gradient(#ffffff, #eeeeee 1px, #cccccc);
+  background-image: -moz-linear-gradient(#ffffff, #eeeeee 1px, #cccccc);
+  background-image: -o-linear-gradient(#ffffff, #eeeeee 1px, #cccccc);
+  background-image: -ms-linear-gradient(#ffffff, #eeeeee 1px, #cccccc);
+  background-image: linear-gradient(#ffffff, #eeeeee 1px, #cccccc);
+}
+button:active,
+input[type="reset"]:active,
+input[type="submit"]:active,
+input[type="button"]:active {
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(1px, #dddddd), color-stop(100%, #eeeeee));
+  background-image: -webkit-linear-gradient(#ffffff, #dddddd 1px, #eeeeee);
+  background-image: -moz-linear-gradient(#ffffff, #dddddd 1px, #eeeeee);
+  background-image: -o-linear-gradient(#ffffff, #dddddd 1px, #eeeeee);
+  background-image: -ms-linear-gradient(#ffffff, #dddddd 1px, #eeeeee);
+  background-image: linear-gradient(#ffffff, #dddddd 1px, #eeeeee);
+  -webkit-box-shadow: inset rgba(0, 0, 0, 0.25) 0 1px 2px 0;
+  -moz-box-shadow: inset rgba(0, 0, 0, 0.25) 0 1px 2px 0;
+  box-shadow: inset rgba(0, 0, 0, 0.25) 0 1px 2px 0;
+  border-color: #999999 #bbbbbb #dddddd;
+}
+button::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner {
+  border: 0;
+  padding: 0;
 }
 
 button {
-  /* IE7 */
   *padding-top: 1px;
   *padding-bottom: 1px;
 }
@@ -116,82 +152,36 @@ input[type="text"],
 input[type="time"],
 input[type="url"],
 input[type="week"] {
-  -webkit-appearance: none;
-  -moz-border-radius: 0;
-  -webkit-border-radius: 0;
-  border-radius: 0;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  -moz-background-clip: padding;
   -webkit-background-clip: padding;
+  -moz-background-clip: padding;
   background-clip: padding-box;
-  background-color: #fff;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  -ms-border-radius: 0;
+  -o-border-radius: 0;
+  border-radius: 0;
+  -webkit-appearance: none;
+  background-color: white;
   border: 1px solid;
   border-color: #848484 #c1c1c1 #e1e1e1;
-  color: #000;
+  color: black;
   outline: 0;
+  margin: 0;
   padding: 2px 3px;
+  text-align: left;
   font-size: 13px;
-  font-family: Arial, sans-serif;
+  font-family: Arial, "Liberation Sans", FreeSans, sans-serif;
   height: 1.8em;
-
-  /* IE7 */
+  vertical-align: top;
   *padding-top: 2px;
   *padding-bottom: 1px;
   *height: auto;
 }
-
-/*
-  Separate rule for Firefox.
-  Cannot stack with WebKit's.
-*/
-input.placeholder_text,
-textarea.placeholder_text,
-input:-moz-placeholder,
-textarea:-moz-placeholder {
-  color: #888;
-}
-
-::-webkit-input-placeholder {
-  color: #888;
-}
-
-button:focus,
-button:active,
-input:focus,
-input:active,
-select:focus,
-select:active,
-textarea:focus,
-textarea:active {
-  -moz-box-shadow: #263F00 0 0 7px;
-  -webkit-box-shadow: #263F00 0 0 7px;
-  box-shadow: #263F00 0 0 7px;
-
-  /* for Opera */
-  z-index: 1;
-}
-
-button:hover {
-	color:#ffffff;
-    background-color:#263f00;
-	
-}
-
-input[type="file"]:focus,
-input[type="file"]:active,
-input[type="radio"]:focus,
-input[type="radio"]:active,
-input[type="checkbox"]:focus,
-input[type="checkbox"]:active {
-  -moz-box-shadow: none;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-}
-
-select[disabled],
 textarea[disabled],
+select[disabled],
 input[type="date"][disabled],
 input[type="datetime"][disabled],
 input[type="datetime-local"][disabled],
@@ -205,7 +195,7 @@ input[type="text"][disabled],
 input[type="time"][disabled],
 input[type="url"][disabled],
 input[type="week"][disabled] {
-  background-color: #eee;
+  background-color: #eeeeee;
 }
 
 button[disabled],
@@ -214,22 +204,30 @@ select[disabled],
 select[disabled] option,
 select[disabled] optgroup,
 textarea[disabled] {
-  -moz-box-shadow: none;
   -webkit-box-shadow: none;
+  -moz-box-shadow: none;
   box-shadow: none;
+  -moz-user-select: -moz-none;
   -webkit-user-select: none;
-  -moz-user-select: none;
+  -khtml-user-select: none;
   user-select: none;
-  color: #888;
+  color: #888888;
   cursor: default;
 }
 
-.is_webkit select {
-  /* Tweaks for Safari + Chrome. */
-  background-image: url(../images/select_arrow.gif);
-  background-repeat: no-repeat;
-  background-position: right center;
-  padding-right: 20px;
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  color: #888888;
+}
+
+input:-moz-placeholder,
+textarea:-moz-placeholder {
+  color: #888888;
+}
+
+input.placeholder_text,
+textarea.placeholder_text {
+  color: #888888;
 }
 
 textarea,
@@ -238,57 +236,77 @@ select[multiple] {
   height: auto;
 }
 
-.is_webkit select[size],
-.is_webkit select[multiple] {
-  background-image: none;
-  padding: 0;
+select[size="0"],
+select[size="1"] {
+  height: 1.8em;
+  *height: auto;
 }
 
+@media (-webkit-min-device-pixel-ratio: 0) {
+  select[size],
+  select[multiple],
+  select[multiple][size] {
+    background-image: none;
+    padding-right: 3px;
+  }
+
+  select,
+  select[size="0"],
+  select[size="1"] {
+    background-image: url(data:image/png;base64,R0lGODlhDQAEAIAAAAAAAP8A/yH5BAEHAAEALAAAAAANAAQAAAILhA+hG5jMDpxvhgIAOw==);
+    background-repeat: no-repeat;
+    background-position: right center;
+    padding-right: 20px;
+  }
+
+  ::-webkit-validation-bubble-message {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #666666), color-stop(1, black));
+    border: 1px solid;
+    border-color: #747474 #5e5e5e #4f4f4f;
+    color: white;
+    font: 13px/17px "Lucida Grande", Arial, "Liberation Sans", FreeSans, sans-serif;
+    overflow: hidden;
+    padding: 15px 15px 17px;
+    text-shadow: black 0 0 1px;
+    height: 16px;
+  }
+
+  ::-webkit-validation-bubble-arrow,
+  ::-webkit-validation-bubble-top-outer-arrow,
+  ::-webkit-validation-bubble-top-inner-arrow {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    background: #666666;
+    border: 0;
+  }
+}
 textarea {
   min-height: 40px;
   overflow: auto;
   resize: vertical;
-/*  width: 100%; */
+  width: 100%;
 }
 
 optgroup {
-  color: #000;
+  color: black;
   font-style: normal;
   font-weight: normal;
+  font-family: Arial, "Liberation Sans", FreeSans, sans-serif;
 }
-
-/* `IE6
-----------------------------------------------------------------------------------------------------*/
-
-/*
-  Everything below this line is for IE6.
-  Delete it if you don't support it! :)
-
-  Classes are added dynamically via JS,
-  because IE6 doesn't support attribute
-  selectors: .ie6_button, .ie6_input, etc.
-
-  Note: These style rules are somewhat
-  duplicated because IE6 bombs out when
-  it sees attribute selectors. Example:
-
-  .ie6_button {
-    This works in IE6.
-  }
-
-  .ie6_button,
-  input[type=submit] {
-    This doesn't work.
-  }
-*/
+optgroup::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
 
 .ie6_button,
 * html button {
-  background: #ddd url(../images/button.png) repeat-x;
+  background: #dddddd url('../images/button.png?1298351022') repeat-x;
   border: 1px solid;
-  border-color: #ddd #bbb #999;
+  border-color: #dddddd #bbbbbb #999999;
   cursor: pointer;
-  color: #333;
+  color: #333333;
   font: bold 12px/1.2 Arial, sans-serif;
   padding: 2px 10px 0px;
   overflow: visible;
@@ -303,10 +321,10 @@ optgroup {
 .ie6_input,
 * html textarea,
 * html select {
-  background: #fff;
+  background: white;
   border: 1px solid;
   border-color: #848484 #c1c1c1 #e1e1e1;
-  color: #000;
+  color: black;
   padding: 2px 3px 1px;
   font-size: 13px;
   font-family: Arial, sans-serif;
@@ -320,9 +338,9 @@ optgroup {
 .placeholder_text,
 .ie6_input_disabled,
 .ie6_button_disabled {
-  color: #888;
+  color: #888888;
 }
 
 .ie6_input_disabled {
-  background: #eee;
+  background: #eeeeee;
 }

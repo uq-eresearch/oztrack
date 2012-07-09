@@ -12,18 +12,15 @@
 <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     
-    <link rel="stylesheet" type="text/css" href="<c:url value="/css/oztrack.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/css/formalize.css"/>"/>
-    
-    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-    <script type="text/javascript" src="<c:url value="/js/jquery/jquery.formalize.min.js"/>"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="<c:url value="/js/jquery/jquery-ui-1.8.16.custom.min.js"/>"></script>
     <link rel="stylesheet" type="text/css" href="<c:url value="/css/jquery-ui/jquery-ui-1.8.16.custom.css"/>"/>
+    <link rel="stylesheet" type="text/css" href="<c:url value="/css/oztrack.css"/>"/>
+    
+    <script type="text/javascript" src="<c:url value="/js/jquery/jquery-1.7.2.min.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/js/jquery/jquery.formalize.min.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/js/jquery/jquery-ui-1.8.16.custom.min.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/js/ckeditor/ckeditor.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/js/ckeditor/adapters/jquery.js"/>"></script>
-    
     <script type="text/javascript" src="<c:url value="/js/oztrack.js"/>"></script>
     
     <title>OzTrack: ${title}</title>
