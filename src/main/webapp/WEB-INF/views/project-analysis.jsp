@@ -112,6 +112,7 @@
 			    <div id="homeRangeCalculatorPanel">
 			        
 			        <form method="POST" id="mapToolForm" onsubmit="addProjectMapLayer(); return false;">
+                        <input id="projectId" type="hidden" value="${project.id}"/>
 			            <b>Date Range:</b>
 			            <table style="margin-left:5px;">
     			            <tr>

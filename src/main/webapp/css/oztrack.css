@@ -811,15 +811,18 @@ div.olControlPanel {
 
 .olControlLoadingPanel {
     border: solid 1px #adbc6b !important;
-    background-image:url(../images/ajax-loader.gif) !important;
-    background-color:#e6e6c0 !important;
-	width:22px !important;
-	height:22px !important;
-    background-position:center !important;
-    background-repeat:no-repeat !important;
-    margin-top:5px !important;
-    right:5px !important;
-    display: none !important;
+    background-image: url(../images/ajax-loader.gif) !important;
+    background-color: #e6e6c0 !important;
+    width: 22px !important;
+    height: 22px !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    margin-top: 5px !important;
+    right: 5px !important;
+}
+
+.olControlLayerSwitcher {
+    top: 31px !important;
 }
 
 /* formalize */

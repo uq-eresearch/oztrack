@@ -51,10 +51,8 @@ function initializeProjectMap(projectId) {
     map = new OpenLayers.Map('projectMap',mapOptions);
     map.addControl(new OpenLayers.Control.MousePosition());
     map.addControl(new OpenLayers.Control.ScaleLine());
-    var navToolbar = new OpenLayers.Control.NavToolbar();
-    map.addControl(navToolbar);
-    var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
-    map.addControl(layerSwitcher);
+    map.addControl(new OpenLayers.Control.NavToolbar());
+    map.addControl(new OpenLayers.Control.LayerSwitcher());
     map.addControl(new OpenLayers.Control.LoadingPanel());
     
     var gphy = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.TERRAIN});
