@@ -15,7 +15,7 @@
         <script type="text/javascript"> 
             $(document).ready(function() {
                 $('#navHome').addClass('active');
-                initializeHomeMap();
+                map = createHomeMap();
             });
         </script>
     </jsp:attribute>
