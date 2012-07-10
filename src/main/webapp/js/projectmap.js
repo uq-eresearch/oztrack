@@ -49,10 +49,8 @@ function initializeProjectMap(projectId) {
     };
 
     map = new OpenLayers.Map('projectMap',mapOptions);
-    // info on the map
     map.addControl(new OpenLayers.Control.MousePosition());
     map.addControl(new OpenLayers.Control.ScaleLine());
-    // controls to manipulate
     var navToolbar = new OpenLayers.Control.NavToolbar();
     map.addControl(navToolbar);
     var layerSwitcher = new OpenLayers.Control.LayerSwitcher();

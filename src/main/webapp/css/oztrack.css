@@ -768,8 +768,7 @@ div.olControlMousePosition {
 
 .olControlScaleLine {
     bottom: 35px !important;
-    left: auto !important;
-    right: 25px !important;
+    left: 5px !important;
 }
 
 div.olControlPanel {
@@ -777,8 +776,8 @@ div.olControlPanel {
     right: 29px !important;
     position: absolute !important;
     float: right !important;
-    
 }
+
 .olControlPanel div {
     display: block !important;
     width:  22px !important;
@@ -788,12 +787,26 @@ div.olControlPanel {
     background-color: #e6e6c0 !important;
 }
 
+.olControlNavToolbar,
+.olControlEditingToolbar {
+    top: 67px !important;
+    left: 8px !important;
+    margin: 0 !important;
+    background: rgba(255,255,255,0.4) !important;
+    border-radius: 4px !important;
+}
+
+.olControlNavToolbar div,
+.olControlEditingToolbar div {
+    margin: 2px !important;
+}
+
 .zoomButtonItemInactive {
-    background-image: url("../images/zoomButton.png");
-    background-position:center;
-    background-repeat:no-repeat;
-    height:22px;
-    float:right;
+    background-image: url("../images/zoomButton.png") !important;
+    background-position:center !important;
+    background-repeat:no-repeat !important;
+    height:22px !important;
+    float:right !important;
 }	
 
 .olControlLoadingPanel {
