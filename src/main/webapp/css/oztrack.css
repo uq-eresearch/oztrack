@@ -1,4 +1,6 @@
-html { height: 100% }
+html {
+    height: 100%;
+}
 
 body {
     padding: 0;
@@ -67,11 +69,7 @@ a:hover {
  color:#ef9800;
 }
 
-
-
-/*
-  main divs
-*/
+/* main divs */
 
 #container {
 	margin: auto auto;
@@ -116,7 +114,6 @@ a:hover {
 
 #nav {
     background-color: #131f00;
-
 }
 
 #navMenu {
@@ -313,10 +310,7 @@ a:hover {
     color:red;
 }
 
-
-/*
-    maps
-*/
+/* maps */
 
 #map_canvas {
     margin-left: 10px;
@@ -367,7 +361,6 @@ a:hover {
 	margin-top:5px;
 }
 
-
 .animalInfo .label {
 	width:7em;
 }
@@ -409,9 +402,7 @@ a:hover {
 }
 
 #projectMapHelp p {
-
 	text-align:justify;
-	
 }
 
 .citation {
@@ -429,19 +420,10 @@ form .dataLayersDiv input, form .baseLayersDiv input {
     width:25px;
 }
 
-
 .baseLbl, .dataLbl {
     width:100px;
     font-weight: bold;
     margin-top:5px;
-}
-
-.olLayerGoogleCopyright, .olLayerGoogleV3 {
-    display:none;
-}
-
-.olControlNoSelect {
-    color:#ffffff;
 }
 
 #mapToolForm {
@@ -460,12 +442,7 @@ form .dataLayersDiv input, form .baseLayersDiv input {
 	margin-left:5px;
 }	
 
-
-
-
-/*
-    forms
-*/
+/* forms */
 
 form {
     background-color:#e6e6c0;
@@ -502,8 +479,6 @@ form {
     font-size:14px;
     padding-top:10px;
 }
-
-
 
 form div {
 
@@ -565,7 +540,6 @@ form div .checkbox, form div .radiobutton {
     margin-left:180px;
 }
 
-
 #localTimeConversionHours {
     width:30px;
 }
@@ -586,17 +560,13 @@ form div .checkbox, form div .radiobutton {
     text-decoration:none;
 }
 
-
-
 .oztrackButton:hover {
     color:#ffffff;
     background-color:#263f00;
 
 }
 
-/*****************************************************/
 /* hover tooltips */
-/*****************************************************/
 
 div.help {
     float:right;
@@ -608,7 +578,7 @@ a.info {
     z-index:24;
     color:#000;
     text-decoration:none
-    }
+}
 
 a.info:hover{z-index:25;}
 
@@ -645,39 +615,17 @@ a.info:hover span { /*the span will display just on :hover state*/
     -moz-border-radius-bottomleft: 5px;
     -khtml-border-radius-bottomleft: 5px;
     -webkit-border-bottom-left-radius: 5px;
-    
-	}
+}
 
 a.info ul {
 	background-color:#BBD9EE; color:#159;
 	font-size: 1em;
+}
 
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-  tables
-*/
+/* tables */
 
 table {
     border-collapse: collapse;
-
 }
 
 tbody tr:hover {
@@ -704,7 +652,6 @@ tbody tr:hover {
     border: #263f00 solid 1px;
 }
 
-
 .dataTableNav {
     width:92%;
     margin-top:10px;
@@ -717,7 +664,6 @@ tbody tr:hover {
     font-weight:bold;
     text-decoration:none;
 }
-
 
 .formHeader {
     font-size: 1em;
@@ -799,41 +745,84 @@ div.actions ul li.publish {
     background-image: url(/images/page_white_go.png);
 }
 
-div.olControlPanel {
-    top: 0px;
-    right: 29px;
-    position: absolute;
-    float:right;
-    
+/* openlayers */
+
+.olControlNoSelect {
+    color: #ffffff !important;
 }
+
+.olControlScaleLineTop,
+.olControlScaleLineBottom {
+    border-width: 1px !important;
+    border-color: #ffffff !important;
+}
+
+.olControlScaleLineBottom {
+    margin-top: -1px !important;
+}
+
+div.olControlMousePosition {
+    right: 4px !important;
+    bottom: 22px !important;
+}
+
+.olControlScaleLine {
+    bottom: 35px !important;
+    left: 5px !important;
+}
+
+div.olControlPanel {
+    top: 0px !important;
+    right: 29px !important;
+    position: absolute !important;
+    float: right !important;
+}
+
 .olControlPanel div {
-    display: block;
-    width:  22px;
-    height: 22px;
-    border: solid 1px #adbc6b;
-    margin-top: 5px;
-    background-color: #e6e6c0
+    display: block !important;
+    width:  22px !important;
+    height: 22px !important;
+    border: solid 1px #adbc6b !important;
+    margin-top: 5px !important;
+    background-color: #e6e6c0 !important;
+}
+
+.olControlNavToolbar,
+.olControlEditingToolbar {
+    top: 67px !important;
+    left: 8px !important;
+    margin: 0 !important;
+    background: rgba(255,255,255,0.4) !important;
+    border-radius: 4px !important;
+}
+
+.olControlNavToolbar div,
+.olControlEditingToolbar div {
+    margin: 2px !important;
 }
 
 .zoomButtonItemInactive {
-    background-image: url("../images/zoomButton.png");
-    background-position:center;
-    background-repeat:no-repeat;
-    height:22px;
-    float:right;
+    background-image: url("../images/zoomButton.png") !important;
+    background-position:center !important;
+    background-repeat:no-repeat !important;
+    height:22px !important;
+    float:right !important;
 }	
 
 .olControlLoadingPanel {
-       border: solid 1px #adbc6b;
-       background-image:url(../images/ajax-loader.gif);
-       background-color:#e6e6c0;
-		width:22px;
-		height:22px;
-       background-position:center;
-       background-repeat:no-repeat;
-       margin-top:5px;
-       right:5px;
-       display: none;
+    border: solid 1px #adbc6b !important;
+    background-image: url(../images/ajax-loader.gif) !important;
+    background-color: #e6e6c0 !important;
+    width: 22px !important;
+    height: 22px !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    margin-top: 5px !important;
+    right: 5px !important;
+}
+
+.olControlLayerSwitcher {
+    top: 31px !important;
 }
 
 /* formalize */
@@ -861,6 +850,7 @@ input[type="button"] {
     font-family: Arial,Verdana,sans-serif;
     font-size: 11px;
 }
+
 button:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
@@ -869,6 +859,7 @@ input[type="button"]:hover {
     color: #ffffff;
     background: #263f00;
 }
+
 button:active,
 input[type="reset"]:active,
 input[type="submit"]:active,

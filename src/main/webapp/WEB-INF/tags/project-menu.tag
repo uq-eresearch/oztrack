@@ -9,6 +9,7 @@
         <li><a href="<c:url value="/projects/${project.id}/search"/>">View Raw Data</a></li>
         <sec:authorize access="hasPermission(#project, 'write')">
         <li><a href="<c:url value="/projects/${project.id}/datafiles"/>">Data Uploads</a></li>
+        <li><a href="<c:url value="/projects/${project.id}/cleanse"/>">Data Cleansing</a></li>
         </sec:authorize>
     </ul>
 </div>
