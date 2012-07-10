@@ -1,21 +1,12 @@
-var map;
-var allAnimalTracksLayer;
-var pointsLayer;
-var allDetectionsLayer;
 var projection900913 = new OpenLayers.Projection("EPSG:900913");
 var projection4326 =  new OpenLayers.Projection("EPSG:4326");
+var map;
+var pointsLayer;
+var allDetectionsLayer;
 var thisProjection;
-var polygonOnStyle;
-var polygonOffStyle;
 var polygonStyleMap;
-var lineOnStyle;
-var lineOffStyle;
 var lineStyleMap;
-var pointsOnStyle;
-var pointsOffStyle;
 var pointsStyleMap;
-var startEndPointsOnStyle;
-var startEndPointsOffStyle;
 var startEndPointsStyleMap;
 var colours = [
     '#8DD3C7',
@@ -154,9 +145,9 @@ function initStyles() {
         strokeOpacity: 1.0
     };
 
-    lineOnStyle = new OpenLayers.Style(lineOnTemplate, {context: wfsStyleContext});
+    var lineOnStyle = new OpenLayers.Style(lineOnTemplate, {context: wfsStyleContext});
     
-    lineOffStyle = {
+    var lineOffStyle = {
         strokeOpacity: 0.0
     };
     
@@ -175,8 +166,8 @@ function initStyles() {
         pointRadius:4
     };
     
-    pointsOnStyle = new OpenLayers.Style(pointsOnTemplate, {context: wfsStyleContext});
-    pointsOffStyle = {
+    var pointsOnStyle = new OpenLayers.Style(pointsOnTemplate, {context: wfsStyleContext});
+    var pointsOffStyle = {
         fillOpacity: 0.0,
         strokeOpacity: 0.0
     };
@@ -201,9 +192,9 @@ function initStyles() {
         fillOpacity: 0.5         
     };
     
-    polygonOnStyle = new OpenLayers.Style(polygonOnTemplate, {context:kmlStyleContext});
+    var polygonOnStyle = new OpenLayers.Style(polygonOnTemplate, {context:kmlStyleContext});
     
-    polygonOffStyle = {
+    var polygonOffStyle = {
         strokeOpacity: 0.0,
         fillOpacity: 0.0
     };
@@ -229,9 +220,9 @@ function initStyles() {
         strokeWidth: 1.2
     };
     
-    startEndPointsOnStyle = new OpenLayers.Style(startEndPointsOnTemplate, {context:startEndPointsStyleContext});
+    var startEndPointsOnStyle = new OpenLayers.Style(startEndPointsOnTemplate, {context:startEndPointsStyleContext});
     
-    startEndPointsOffStyle = {
+    var startEndPointsOffStyle = {
         strokeOpacity: 0,
         fillOpacity: 0
     };
@@ -299,10 +290,6 @@ function updateAnimalInfo(wfsLayer) {
     for (var key in wfsLayer.features) {
         var feature = wfsLayer.features[key];
         if (feature.attributes && feature.attributes.animalId) {
-            if (wfsLayer === allAnimalTracksLayer) {
-                layerName = "Trajectory";
-            }
-            
             feature.renderIntent = "default";
             
             // set the colour and make sure the show/hide all box is checked
