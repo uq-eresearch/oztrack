@@ -48,10 +48,10 @@
         <div class="mapTool">
         <div id="projectMapOptions">
             <h3 id="projectTitle"><a href="#"><c:out value="${project.title}"/></a></h3>
-            <div style="padding: 0; font-size: 0.9em;">
+            <div style="padding: 0;">
                 <form method="POST">
-                <p style="font-weight: bold">Data cleansing</p>
-                <p style="font-style: italic;">
+                <p style="font-weight: bold; font-size: 11px;">Data cleansing</p>
+                <p style="font-style: italic; font-size: 10px;">
                     Select points for removal from the project by drawing polygons around them.
                     Click to start drawing and click again to draw each side of your selected area.
                     Double-click to finish drawing. You can draw as many polygons as are required.
