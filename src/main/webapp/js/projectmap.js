@@ -51,7 +51,7 @@ function initializeProjectMap(projectId) {
     map.addControl(createControlPanel());
     
     lineStyleMap = createLineStyleMap();
-    pointStyleMap = createPointsStyleMap();
+    pointStyleMap = createPointStyleMap();
     polygonStyleMap = createPolygonStyleMap();
    
     allDetectionsLayer = createAllDetectionsLayer(projectId);
@@ -90,10 +90,10 @@ function createAllDetectionsLayer(projectId) {
             styleMap: pointStyleMap, 
             eventListeners: {
                 loadend: function (e) {
-                    map.zoomToExtent(allDetectionsLayer.getDataExtent(),false);
-                    updateAnimalInfo(allDetectionsLayer);
-                    createTrajectoryLayer(allDetectionsLayer);
-                    createStartEndPointsLayer(allDetectionsLayer);
+                    map.zoomToExtent(e.object.getDataExtent(),false);
+                    updateAnimalInfo(e.object);
+                    createTrajectoryLayer(e.object);
+                    createStartEndPointsLayer(e.object);
                 }
             }
         }
@@ -181,13 +181,13 @@ function createLineStyleMap() {
     return lineStyleMap;
 }
 
-function createPointsStyleMap() {
+function createPointStyleMap() {
     var styleContext = {
         getColour: function(feature) {
             return colours[feature.attributes.animalId % colours.length];
         }
     };
-    var pointsOnStyle = new OpenLayers.Style(
+    var pointOnStyle = new OpenLayers.Style(
         {
             fillColor: "${getColour}",
             strokeColor:"${getColour}",    
@@ -201,13 +201,13 @@ function createPointsStyleMap() {
             context: styleContext
         }
     );
-    var pointsOffStyle = {
+    var pointOffStyle = {
         strokeOpacity: 0.0,
         fillOpacity: 0.0
     };
     var pointStyleMap = new OpenLayers.StyleMap({
-        "default": pointsOnStyle,
-        "temporary": pointsOffStyle
+        "default": pointOnStyle,
+        "temporary": pointOffStyle
     });
     return pointStyleMap;
 }

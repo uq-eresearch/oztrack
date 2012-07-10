@@ -62,6 +62,12 @@ public class ProjectController {
         return getView(model, project, "project-animals");
     }
     
+    @RequestMapping(value="/projects/{id}/cleanse", method=RequestMethod.GET)
+    @PreAuthorize("hasPermission(#project, 'write')")
+    public String getCleanseView(Model model, @ModelAttribute(value="project") Project project) {
+        return "project-cleanse";
+    }
+    
     @RequestMapping(value="/projects/{id}/publish", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#project, 'write')")
     public String getPublishView(Model model, @ModelAttribute(value="project") Project project) {
