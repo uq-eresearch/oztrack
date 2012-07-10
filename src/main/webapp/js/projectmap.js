@@ -1,13 +1,5 @@
 var projection900913 = new OpenLayers.Projection("EPSG:900913");
 var projection4326 =  new OpenLayers.Projection("EPSG:4326");
-var map;
-var pointsLayer;
-var allDetectionsLayer;
-var thisProjection;
-var polygonStyleMap;
-var lineStyleMap;
-var pointsStyleMap;
-var startEndPointsStyleMap;
 var colours = [
     '#8DD3C7',
     '#FFFFB3',
@@ -23,6 +15,12 @@ var colours = [
     '#FFED6F'
 ];
 
+var map;
+var allDetectionsLayer;
+var polygonStyleMap;
+var lineStyleMap;
+var pointStyleMap;
+
 function animalInfoToggle () {
     $('.animalInfoToggle').each(function() {
         $(this).parent().next().hide();
@@ -36,19 +34,11 @@ function animalInfoToggle () {
 function initializeProjectMap(projectId) {
     animalInfoToggle();
     
-    var mapOptions = {
-       maxExtent: new OpenLayers.Bounds(
-            -128 * 156543.0339,
-            -128 * 156543.0339,
-             128 * 156543.0339,
-             128 * 156543.0339),
-       maxResolution: 156543.0339,
-       units: 'm',
-       projection: projection900913,
-       displayProjection: projection4326
-    };
-
-    map = new OpenLayers.Map('projectMap',mapOptions);
+    map = new OpenLayers.Map('projectMap', {
+        units: 'm',
+        projection: projection900913,
+        displayProjection: projection4326
+    });
     map.addControl(new OpenLayers.Control.MousePosition());
     map.addControl(new OpenLayers.Control.ScaleLine());
     map.addControl(new OpenLayers.Control.NavToolbar());
@@ -58,21 +48,36 @@ function initializeProjectMap(projectId) {
     var gphy = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.TERRAIN});
     var gsat = new OpenLayers.Layer.Google("Google Satellite", {type: google.maps.MapTypeId.SATELLITE});
     
+    map.addControl(createControlPanel());
+    
+    lineStyleMap = createLineStyleMap();
+    pointStyleMap = createPointsStyleMap();
+    polygonStyleMap = createPolygonStyleMap();
+   
+    allDetectionsLayer = createAllDetectionsLayer(projectId);
+        
+    map.addLayers([gsat, gphy, allDetectionsLayer]);
+    map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326, projection900913), 4);
+    
+    reportProjectionDescr();
+}
+
+function createControlPanel() {
     var panel = new OpenLayers.Control.Panel();
     panel.addControls([
         new OpenLayers.Control.Button({
+            title: 'Zoom to Data Extent',
             displayClass: "zoomButton",
             trigger: function() {
                 map.zoomToExtent(allDetectionsLayer.getDataExtent(),false);
-            },
-            title: 'Zoom to Data Extent'
+            }
         })
     ]);
-    map.addControl(panel);
-    
-    initStyles();
-   
-    allDetectionsLayer = new OpenLayers.Layer.Vector(
+    return panel;
+}
+
+function createAllDetectionsLayer(projectId) {
+    return new OpenLayers.Layer.Vector(
         "All Detections",
         {
             projection: projection4326,
@@ -82,22 +87,17 @@ function initializeProjectMap(projectId) {
                 featureNS: "http://localhost:8080/"
             }),
             strategies: [new OpenLayers.Strategy.Fixed()],
-            styleMap: pointsStyleMap, 
+            styleMap: pointStyleMap, 
             eventListeners: {
                 loadend: function (e) {
                     map.zoomToExtent(allDetectionsLayer.getDataExtent(),false);
                     updateAnimalInfo(allDetectionsLayer);
                     createTrajectoryLayer(allDetectionsLayer);
-                    if (!pointsLayer) {createPointsLayer();}
+                    createStartEndPointsLayer(allDetectionsLayer);
                 }
             }
         }
     );
-        
-    map.addLayers([gsat,gphy,allDetectionsLayer]);
-    map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326,projection900913), 4);
-    
-    reportProjectionDescr();
 }
 
 function createTrajectoryLayer(detectionsLayer) {
@@ -108,9 +108,6 @@ function createTrajectoryLayer(detectionsLayer) {
             styleMap: lineStyleMap    
         }
     );
-    
-    map.addLayer(trajectoryLayer);
-    
     for (var key in detectionsLayer.features) {
         var feature = detectionsLayer.features[key];
         var trajectoryFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString(feature.geometry.components));
@@ -120,126 +117,159 @@ function createTrajectoryLayer(detectionsLayer) {
             fromDate: feature.attributes.fromDate,
             toDate: feature.attributes.toDate
         };
-
         trajectoryLayer.addFeatures([trajectoryFeature]);
-        trajectoryLayer.redraw();
     }  
-    
+    map.addLayer(trajectoryLayer);
     updateAnimalInfo(trajectoryLayer);
 }
 
-function initStyles() {
-    var wfsStyleContext = {
-        getColour: function(feature) {
-            var c = feature.attributes.animalId%colours.length;
-            return colours[c];
+function createStartEndPointsLayer(allDetectionsLayer) {
+    var startEndPointsLayer = new OpenLayers.Layer.Vector(
+        "Start and End Points",
+        {
+            projection: projection4326,
+            styleMap: createStartEndPointsStyleMap()    
         }
-    };
-    
-    var lineOnTemplate = {
-        strokeColor: "${getColour}",
-        strokeWidth: 1,
-        strokeOpacity: 1.0
-    };
+    );
+    for (var key in allDetectionsLayer.features) {
+        var feature = allDetectionsLayer.features[key];
+        if (feature.attributes) {
+            var startPoint = new OpenLayers.Feature.Vector(feature.geometry.components[0]);
+            startPoint.attributes = {
+                animalId : feature.attributes.animalId,
+                animalName : feature.attributes.animalName, 
+                fromDate: feature.attributes.fromDate,
+                pointName: "start"
+            };
+            var endPoint = new OpenLayers.Feature.Vector(feature.geometry.components[feature.geometry.components.length - 1]);
+            endPoint.attributes = {
+                animalId : feature.attributes.animalId,
+                animalName : feature.attributes.animalName, 
+                toDate: feature.attributes.toDate,
+                pointName: "end"
+            };
+            startEndPointsLayer.addFeatures([startPoint,endPoint]);
+        }
+    }
+    map.addLayer(startEndPointsLayer);
+}
 
-    var lineOnStyle = new OpenLayers.Style(lineOnTemplate, {context: wfsStyleContext});
-    
-    var lineOffStyle = {
-        strokeOpacity: 0.0
-    };
-    
-    lineStyleMap = new OpenLayers.StyleMap({
-        "default":lineOnStyle,
-        "temporary":lineOffStyle
-    });
-    
-    var pointsOnTemplate = {
-        fillColor: "${getColour}",
-        strokeColor:"${getColour}",    
-        //fillOpacity: 0.5,
-        strokeOpacity: 0.8,
-        strokeWidth: 0.2,
-        graphicName: "cross",
-        pointRadius:4
-    };
-    
-    var pointsOnStyle = new OpenLayers.Style(pointsOnTemplate, {context: wfsStyleContext});
-    var pointsOffStyle = {
-        fillOpacity: 0.0,
-        strokeOpacity: 0.0
-    };
-    
-    pointsStyleMap = new OpenLayers.StyleMap({
-        "default": pointsOnStyle,
-        "temporary" : pointsOffStyle
-    });
-    
-    var kmlStyleContext = {
+function createLineStyleMap() {
+    var styleContext = {
         getColour: function(feature) {
-            var c = feature.attributes.id.value%colours.length;
-            return colours[c];
+            return colours[feature.attributes.animalId % colours.length];
         }
     };
-            
-    var polygonOnTemplate = {
-        strokeColor: "${getColour}",
-        strokeWidth: 2,
-        strokeOpacity: 1.0,
-        fillColor: "${getColour}",
-        fillOpacity: 0.5         
+    var lineOnStyle = new OpenLayers.Style(
+        {
+            strokeColor: "${getColour}",
+            strokeWidth: 1,
+            strokeOpacity: 1.0
+        },
+        {
+            context: styleContext
+        }
+    );
+    var lineStyleMap = new OpenLayers.StyleMap({
+        "default": lineOnStyle
+    });
+    return lineStyleMap;
+}
+
+function createPointsStyleMap() {
+    var styleContext = {
+        getColour: function(feature) {
+            return colours[feature.attributes.animalId % colours.length];
+        }
     };
-    
-    var polygonOnStyle = new OpenLayers.Style(polygonOnTemplate, {context:kmlStyleContext});
-    
+    var pointsOnStyle = new OpenLayers.Style(
+        {
+            fillColor: "${getColour}",
+            strokeColor:"${getColour}",    
+            //fillOpacity: 0.5,
+            strokeOpacity: 0.8,
+            strokeWidth: 0.2,
+            graphicName: "cross",
+            pointRadius:4
+        },
+        {
+            context: styleContext
+        }
+    );
+    var pointStyleMap = new OpenLayers.StyleMap({
+        "default": pointsOnStyle
+    });
+    return pointStyleMap;
+}
+
+function createPolygonStyleMap() {
+    var styleContext = {
+        getColour: function(feature) {
+            return colours[feature.attributes.id.value % colours.length];
+        }
+    };
+    var polygonOnStyle = new OpenLayers.Style(
+        {
+            strokeColor: "${getColour}",
+            strokeWidth: 2,
+            strokeOpacity: 1.0,
+            fillColor: "${getColour}",
+            fillOpacity: 0.5         
+        },
+        {
+            context: styleContext
+        }
+    );
     var polygonOffStyle = {
         strokeOpacity: 0.0,
         fillOpacity: 0.0
     };
-    
-    polygonStyleMap = new OpenLayers.StyleMap({
+    var polygonStyleMap = new OpenLayers.StyleMap({
         "default" : polygonOnStyle,
         "temporary" : polygonOffStyle
-     });
-    
-    var startEndPointsStyleContext = {
+    });
+    return polygonStyleMap;
+}
+
+function createStartEndPointsStyleMap() {
+    var styleContext = {
         getPointColour: function(feature) {
-            var pointColour = (feature.attributes.pointName == "start") ? "#00CD00" : "#CD0000";
-            return pointColour;
+            return (feature.attributes.pointName == "start") ? "#00CD00" : "#CD0000";
         }
     };
-        
-    var startEndPointsOnTemplate = {
-        pointRadius: 2,
-        fillColor: "${getPointColour}",
-        strokeColor:"${getPointColour}",    
-        fillOpacity: 0,
-        strokeOpacity: 1,
-        strokeWidth: 1.2
-    };
-    
-    var startEndPointsOnStyle = new OpenLayers.Style(startEndPointsOnTemplate, {context:startEndPointsStyleContext});
-    
+    var startEndPointsOnStyle = new OpenLayers.Style(
+        {
+            pointRadius: 2,
+            fillColor: "${getPointColour}",
+            strokeColor:"${getPointColour}",    
+            fillOpacity: 0,
+            strokeOpacity: 1,
+            strokeWidth: 1.2
+        },
+        {
+            context:styleContext
+        }
+    );
     var startEndPointsOffStyle = {
         strokeOpacity: 0,
         fillOpacity: 0
     };
-    
-    startEndPointsStyleMap = new OpenLayers.StyleMap({
+    var startEndPointsStyleMap = new OpenLayers.StyleMap({
         "default" : startEndPointsOnStyle,
         "temporary" : startEndPointsOffStyle
     });
+    return startEndPointsStyleMap;
 }
 
 function reportProjectionDescr() {
-    // request code from spatial reference site
     var projectionCode = $('input[id=projectionCode]').val();
     $('#projectionDescr').html("Searching for " + projectionCode + "...");
-    thisProjection = new Proj4js.Proj(projectionCode, projectionCallback);
+    new Proj4js.Proj(projectionCode, projectionCallback);
 }
 
-function projectionCallback() {
+function projectionCallback(projection) {
     var detailText = "";
-    var strArray = thisProjection.defData.split("+");
+    var strArray = projection.defData.split("+");
     var title;
     
     for (var s in strArray) {
@@ -249,16 +279,15 @@ function projectionCallback() {
     }
     
     if (detailText == "") {
-        if (thisProjection.ellipseName != null) {
-            detailText = "Ellipse Name: " + thisProjection.ellipseName;
+        if (projection.ellipseName != null) {
+            detailText = "Ellipse Name: " + projection.ellipseName;
         }
         else {
-            if (thisProjection.defData != null) {
+            if (projection.defData != null) {
                 detailText = "Details: ";
                 for (var i=1; i <strArray.length; i++) {
-                    detailText = detailText + trim(strArray[i]) + ", ";
+                    detailText = detailText + strArray[i].replace(/^\s+|\s+$/g,"") + ", ";
                 }
-                //labelText = thisProjection.defData;
             }
             else {
                 detailText = "Projection exists.";
@@ -266,13 +295,9 @@ function projectionCallback() {
         }
     }
     
-    // TO DO: get the units, must be in m for the calculations to work!
-    var headerText = "<b>" + thisProjection.srsCodeInput + "</b><br>";
+    // TODO: get the units, must be in m for the calculations to work!
+    var headerText = "<b>" + projection.srsCodeInput + "</b><br>";
     $('#projectionDescr').html(headerText + detailText);
-}
-
-function trim(str) {
-    return str.replace(/^\s+|\s+$/g,"");
 }
 
 Proj4js.reportError = function(msg) {
@@ -326,39 +351,6 @@ function updateAnimalInfo(wfsLayer) {
             });
         }
     }
-} 
-
-function createPointsLayer() {
-    pointsLayer = new OpenLayers.Layer.Vector(
-        "Start and End Points",
-        {
-            projection: projection4326,
-            styleMap: startEndPointsStyleMap    
-        }
-    );
-        
-    for (var key in allDetectionsLayer.features) {
-        var feature = allDetectionsLayer.features[key];
-        if (feature.attributes) {
-            // add features
-            var startPoint = new OpenLayers.Feature.Vector(feature.geometry.components[0]);
-            startPoint.attributes = {
-                animalId : feature.attributes.animalId,
-                animalName : feature.attributes.animalName, 
-                fromDate: feature.attributes.fromDate,
-                pointName: "start"
-            };
-            var endPoint = new OpenLayers.Feature.Vector(feature.geometry.components[feature.geometry.components.length-1]);
-            endPoint.attributes = {
-                animalId : feature.attributes.animalId,
-                animalName : feature.attributes.animalName, 
-                toDate: feature.attributes.toDate,
-                pointName: "end"
-            };
-            pointsLayer.addFeatures([startPoint,endPoint]);
-        }
-    }
-    map.addLayer(pointsLayer);
 }
 
 function zoomToTrack(animalId) {
@@ -458,7 +450,7 @@ function addProjectMapLayer() {
             addWFSLayer(layerName, params, lineStyleMap);
         }
         else if (queryTypeValue == "POINTS") {
-            addWFSLayer(layerName, params, pointsStyleMap);
+            addWFSLayer(layerName, params, pointStyleMap);
         }
         else {
             addKMLLayer(layerName, params);
@@ -489,7 +481,7 @@ function addKMLLayer(layerName, params) {
                     kmlns:"http://localhost:8080/"
                 })
             }),
-            styleMap:polygonStyleMap        
+            styleMap: polygonStyleMap        
         }
     );
     map.addLayer(queryOverlay);

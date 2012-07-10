@@ -167,8 +167,8 @@
                             Link: http://spatialreference.org/ref/epsg/20255/
                         -->
                         <input id="projectionCode" class="shortInputBox" value="EPSG:20255"/>&nbsp;
-                        <a href="#" onclick="reportProjectionDescr(); return false;">Find</a>&nbsp;
-						<a href="javascript:void(window.open('http://spatialreference.org/ref/epsg', 'popup', 'width=600,height=400,scrollbars=yes'))">See List</a>
+                        <a href="javascript:void(0)" onclick="reportProjectionDescr();">Find</a>&nbsp;
+						<a href="javascript:void(0)" onclick="window.open('http://spatialreference.org/ref/epsg', 'popup', 'width=600,height=400,scrollbars=yes');">See List</a>
                         <br />
 						<div id="projectionDescr" style="color:grey;"><br />
                         </div>
