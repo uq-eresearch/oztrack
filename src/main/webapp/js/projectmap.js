@@ -170,8 +170,13 @@ function createLineStyleMap() {
             context: styleContext
         }
     );
+    var lineOffStyle = {
+        strokeOpacity: 0.0,
+        fillOpacity: 0.0
+    };
     var lineStyleMap = new OpenLayers.StyleMap({
-        "default": lineOnStyle
+        "default": lineOnStyle,
+        "temporary": lineOffStyle
     });
     return lineStyleMap;
 }
@@ -196,8 +201,13 @@ function createPointsStyleMap() {
             context: styleContext
         }
     );
+    var pointsOffStyle = {
+        strokeOpacity: 0.0,
+        fillOpacity: 0.0
+    };
     var pointStyleMap = new OpenLayers.StyleMap({
-        "default": pointsOnStyle
+        "default": pointsOnStyle,
+        "temporary": pointsOffStyle
     });
     return pointStyleMap;
 }
