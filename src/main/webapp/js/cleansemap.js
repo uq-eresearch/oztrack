@@ -1,8 +1,9 @@
+var projection900913 = new OpenLayers.Projection("EPSG:900913");
+var projection4326 = new OpenLayers.Projection("EPSG:4326");
 var polygonFeatures = new Array();
+var highlightControl;
 
 function createCleanseMap(projectId) {
-    var projection900913 = new OpenLayers.Projection("EPSG:900913");
-    var projection4326 = new OpenLayers.Projection("EPSG:4326");
     var map = new OpenLayers.Map('projectMap', {
         units: 'm',
         projection: projection900913,
@@ -15,37 +16,89 @@ function createCleanseMap(projectId) {
     map.addControl(new OpenLayers.Control.LoadingPanel());
     
     var gphy = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.TERRAIN});
-    var gsat = new OpenLayers.Layer.Google("Google Satellite", {type: google.maps.MapTypeId.SATELLITE});
+    var gsat = new OpenLayers.Layer.Google("Google Satellite", {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22});
+    var gmap = new OpenLayers.Layer.Google("Google Streets", {numZoomLevels: 20});
+    var ghyb = new OpenLayers.Layer.Google("Google Hybrid", {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20});
     var allDetectionsLayer = createAllDetectionsLayer(projectId);
 
-    var polygonLayer = new OpenLayers.Layer.Vector("Polygon Layer");
+    var polygonLayer = new OpenLayers.Layer.Vector('Polygons');
     var polygonControl = new OpenLayers.Control.DrawFeature(polygonLayer, OpenLayers.Handler.Polygon);
-    polygonControl.events.register('featureadded', ' ', polygonAdded);
-    function polygonAdded(data) {
-        var wkt = new OpenLayers.Format.WKT();
-        wkt.write(data.feature);
-        polygonFeatures.push(data.feature);
-        jQuery('#cleanseList').append(
-            '<li id="item-' + data.feature.id + '">Polygon ' + polygonFeatures.length + ' ' +
-            '(<a href="javascript:void(0)" onclick="deleteCleanseItem(\'' + data.feature.id + '\');">delete</a>)</li>'
-        );
-    }
+    polygonControl.events.register('featureadded', null, polygonAdded);
     map.addControl(polygonControl);
     polygonControl.activate();
+    
+    highlightControl = createHighlightControl(polygonLayer);
+    map.addControl(highlightControl);
+    highlightControl.activate();
 
-    map.addLayers([gsat, gphy, allDetectionsLayer, polygonLayer]);
+    map.addLayers([gsat, gphy, gmap, ghyb, allDetectionsLayer, polygonLayer]);
 
     map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326, projection900913), 4);
     
     return map;
 }
 
+function createHighlightControl(layer) {
+    return new OpenLayers.Control.SelectFeature(
+        [layer],
+        {
+            hover: true,
+            highlightOnly: true,
+            renderIntent: "temporary"
+        }
+    );
+}
+
+function polygonAdded(e) {
+    polygonFeatures.push(e.feature);
+    jQuery('#cleanseList').append(
+        jQuery('<li>')
+        	.attr('id', 'item-' + e.feature.id)
+        	.append('Selection ' + polygonFeatures.length)
+        	.append(' (')
+        	.append(
+    			jQuery('<a>')
+    				.attr('href', 'javascript:void(0)')
+    				.attr('onclick', 'deleteCleanseItem(\'' + e.feature.id + '\');')
+					.attr('onmouseover', 'selectCleanseItem(\'' + e.feature.id + '\', true);')
+					.attr('onmouseout', 'selectCleanseItem(\'' + e.feature.id + '\', false);')
+    				.append('delete')
+			)
+			.append(')')
+    );
+    var geometry = e.feature.geometry.clone();
+    geometry.transform(projection900913, projection4326);
+    var wktFormat = new OpenLayers.Format.WKT();
+    var wkt = wktFormat.extractGeometry(geometry);
+    jQuery('#cleanseSelect').append(
+		jQuery('<option>')
+			.attr('id', 'option-' + e.feature.id)
+			.attr('value', wkt)
+			.attr('selected', 'selected')
+        	.append('Selection ' + polygonFeatures.length)
+	);
+    jQuery('#cleanseSubmit').removeAttr('disabled');
+}
+
+function selectCleanseItem(featureId, selected) {
+    for (var i = 0; i < polygonFeatures.length; i++) {
+        if (polygonFeatures[i].id == featureId) {
+        	highlightControl[selected ? 'select' : 'unselect'](polygonFeatures[i]);
+            break;
+        }
+    }
+}
+
 function deleteCleanseItem(featureId) {
     jQuery('*[id=\'item-' + featureId + '\']').remove();
+    jQuery('*[id=\'option-' + featureId + '\']').remove();
     for (var i = 0; i < polygonFeatures.length; i++) {
         if (polygonFeatures[i].id == featureId) {
             polygonFeatures[i].destroy();
             polygonFeatures.splice(i, 1);
+            if (polygonFeatures.length == 0) {
+            	jQuery('#cleanseSubmit').attr('disabled', 'disabled');
+            }
             break;
         }
     }
@@ -55,7 +108,7 @@ function createAllDetectionsLayer(projectId) {
     return new OpenLayers.Layer.Vector(
         "All Detections",
         {
-            projection: new OpenLayers.Projection("EPSG:4326"),
+            projection: projection4326,
             protocol: new OpenLayers.Protocol.WFS.v1_1_0({
                 url:  "/mapQueryWFS?projectId=" + projectId + "&queryType=ALL_POINTS",
                 featureType: "Track",

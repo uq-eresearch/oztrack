@@ -20,6 +20,23 @@
                 map = createCleanseMap(${project.id});
             });
         </script>
+        <style type="text/css">
+            ul#cleanseList {
+                margin: 10px 0;
+                padding-left: 0;
+            }
+            ul#cleanseList li {
+                margin: 2px 0;
+                list-style: none;
+                background-repeat: no-repeat;
+                background-position: left middle;
+                line-height: 22px;
+                padding: 0 0 5px 28px;
+            }
+            ul#cleanseList li {
+                background-image: url(/js/openlayers/theme/default/img/draw_polygon_on.png);
+            }
+        </style>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
@@ -28,19 +45,31 @@
         &rsaquo; <span class="active">Data Cleansing</span>
     </jsp:attribute>
     <jsp:body>
-		<div class="mapTool">
-	    <div id="projectMapOptions">
-	        <h3 id="projectTitle"><a href="#"><c:out value="${project.title}"/></a></h3>
-	        <div>
-                Data cleansing operations:
+        <div class="mapTool">
+        <div id="projectMapOptions">
+            <h3 id="projectTitle"><a href="#"><c:out value="${project.title}"/></a></h3>
+            <div style="padding: 0; font-size: 0.9em;">
+                <form method="POST">
+                <p style="font-weight: bold">Data cleansing</p>
+                <p style="font-style: italic;">
+                    Select points for removal from the project by drawing polygons around them.
+                    Click to start drawing and click again to draw each side of your selected area.
+                    Double-click to finish drawing. You can draw as many polygons as are required.
+                </p>
+                <select id="cleanseSelect" name="polygon" multiple="multiple" style="display: none;">
+                </select>
                 <ul id="cleanseList">
                 </ul>
-	        </div>
+                <div style="margin: 0; padding: 0;">
+                    <input type="submit" id="cleanseSubmit" value="Done" disabled="disabled"/>
+                </div>
+                </form>
+            </div>
             <h3><a href="#">Project Menu</a></h3>
             <tags:project-menu project="${project}"/>
-	    </div>
-		<div id="projectMap"></div>
-		<div class="clearboth">&nbsp;</div>
-		</div>
+        </div>
+        <div id="projectMap"></div>
+        <div class="clearboth">&nbsp;</div>
+        </div>
     </jsp:body>
 </tags:page>
