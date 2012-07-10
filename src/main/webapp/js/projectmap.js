@@ -24,16 +24,18 @@ var colours = [
 ];
 
 function animalInfoToggle () {
-    $('.animalInfoToggle').click(function() {
-        $(this).parent().next().toggle('fast');
-        return false;
-    }).parent().next().hide();
+    $('.animalInfoToggle').each(function() {
+        $(this).parent().next().hide();
+        $(this).click(function() {
+            $(this).parent().next().slideToggle('fast');
+            return false;
+        });
+    });
 }
 
-function initializeProjectMap() {
+function initializeProjectMap(projectId) {
     animalInfoToggle();
     
-    var projectId = $('#projectId').val();
     var mapOptions = {
        maxExtent: new OpenLayers.Bounds(
             -128 * 156543.0339,
@@ -49,7 +51,6 @@ function initializeProjectMap() {
     map = new OpenLayers.Map('projectMap',mapOptions);
     // info on the map
     map.addControl(new OpenLayers.Control.MousePosition());
-    map.addControl(new OpenLayers.Control.Scale());
     map.addControl(new OpenLayers.Control.ScaleLine());
     // controls to manipulate
     var navToolbar = new OpenLayers.Control.NavToolbar();

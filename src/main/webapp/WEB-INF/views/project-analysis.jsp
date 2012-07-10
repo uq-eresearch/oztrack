@@ -42,7 +42,7 @@
                 $("#accordion").accordion();
                 $('#fromDatepicker').datepicker();
                 $('#toDatepicker').datepicker();
-                initializeProjectMap();
+                initializeProjectMap(${project.id});
             });
         </script>
         <style type="text/css">
@@ -63,10 +63,6 @@
     <jsp:body>
 		<div class="mapTool">
 		<div id="projectMapOptions">
-		
-		
-		<input type="hidden" value="${project.id}" id="projectId"/>
-		<input type="hidden" value="${project.boundingBox}" id="projectBoundingBox"/>
 		
 		    <div id="accordion">
 		
