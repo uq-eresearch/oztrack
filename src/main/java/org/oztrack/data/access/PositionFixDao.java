@@ -9,6 +9,8 @@ import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
 import org.springframework.stereotype.Service;
 
+import com.vividsolutions.jts.geom.MultiPolygon;
+
 @Service
 public interface PositionFixDao {
     Page<PositionFix> getPage(SearchQuery searchQuery, int offset, int nbrObjectsPerPage);
@@ -21,4 +23,6 @@ public interface PositionFixDao {
 
     Date getDataFileFirstDetectionDate(DataFile dataFile);
     Date getDataFileLastDetectionDate(DataFile dataFile);
+    
+    int deleteOverlappingPositionFixes(Project project, MultiPolygon multiPolygon);
 }

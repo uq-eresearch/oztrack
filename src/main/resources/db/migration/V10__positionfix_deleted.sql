@@ -1,0 +1,1 @@
+alter table positionfix add column deleted boolean not null default false;

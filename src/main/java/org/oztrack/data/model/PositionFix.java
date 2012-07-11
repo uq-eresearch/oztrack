@@ -37,6 +37,8 @@ public class PositionFix implements Serializable{
     @Column(name = "locationgeometry", columnDefinition="GEOMETRY")
     @Type(type = "org.hibernatespatial.GeometryUserType")
     private Point locationGeometry;
+    
+    private Boolean deleted;
 
     public Long getId() {
         return id;
@@ -92,5 +94,13 @@ public class PositionFix implements Serializable{
 
     public void setLocationGeometry(Point locationGeometry) {
         this.locationGeometry = locationGeometry;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

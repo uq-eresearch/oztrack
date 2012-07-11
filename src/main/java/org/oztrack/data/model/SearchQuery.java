@@ -17,6 +17,7 @@ public class SearchQuery {
     private List<Animal> animalList;
     private String [] speciesList;
     private Project project;
+    private Boolean deleted;
     private MapQueryType mapQueryType;
     private String srs;
     private Double percent;
@@ -83,6 +84,14 @@ public class SearchQuery {
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     public MapQueryType getMapQueryType() {

@@ -51,6 +51,12 @@ function createHighlightControl(layer) {
 }
 
 function polygonAdded(e) {
+    // Polygons must have at least 3 sides.
+    // Discard any geometries that are just points or lines. 
+    if (e.feature.geometry.getVertices().length < 3) {
+        e.feature.destroy();
+        return;
+    }
     polygonFeatures.push(e.feature);
     jQuery('#cleanseList').append(
         jQuery('<li>')

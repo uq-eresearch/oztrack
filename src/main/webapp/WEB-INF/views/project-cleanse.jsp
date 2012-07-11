@@ -50,8 +50,13 @@
             <h3 id="projectTitle"><a href="#"><c:out value="${project.title}"/></a></h3>
             <div style="padding: 0;">
                 <form method="POST">
-                <p style="font-weight: bold; font-size: 11px;">Data cleansing</p>
-                <p style="font-style: italic; font-size: 10px;">
+                <p style="font-size: 11px; font-weight: bold;">Data cleansing</p>
+                <c:if test="${not empty numDeleted}">
+                <p style="font-size: 10px; font-weight: bold; color: red;">
+                    ${numDeleted} points deleted
+                </p>
+                </c:if>
+                <p style="font-size: 10px; font-style: italic;">
                     Select points for removal from the project by drawing polygons around them.
                     Click to start drawing and click again to draw each side of your selected area.
                     Double-click to finish drawing. You can draw as many polygons as are required.

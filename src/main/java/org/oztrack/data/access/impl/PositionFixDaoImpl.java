@@ -24,6 +24,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.io.WKTWriter;
+
 @Service
 public class PositionFixDaoImpl implements PositionFixDao {
     protected final Log logger = LogFactory.getLog(getClass());
@@ -69,7 +72,8 @@ public class PositionFixDaoImpl implements PositionFixDao {
         String sql = "select " + select
                    + "from PositionFix o "
                    + "where o.dataFile in "
-                   + "(select d from datafile d where d.project.id = :projectId) ";
+                   + "(select d from datafile d where d.project.id = :projectId) "
+                   + "and o.deleted = :deleted ";
 
 
         if (searchQuery.getFromDate() != null) {
@@ -91,7 +95,7 @@ public class PositionFixDaoImpl implements PositionFixDao {
         sql = sql + orderBy;
         Query query = em.createQuery(sql);
         query.setParameter("projectId", searchQuery.getProject().getId());
-
+        query.setParameter("deleted", (searchQuery.getDeleted() != null) && searchQuery.getDeleted());
 
         if (searchQuery.getFromDate() != null) {
             query.setParameter("fromDate", searchQuery.getFromDate());
@@ -132,8 +136,9 @@ public class PositionFixDaoImpl implements PositionFixDao {
                    +  ",o.longitude "
                    +  "from PositionFix o "
                    +  ", datafile d "
-                   +  "where o.datafile_id=d.id "
-                   +  "and d.project_id = :projectId " ;
+                   +  "where o.deleted = false "
+                   +  "and o.datafile_id = d.id "
+                   +  "and d.project_id = :projectId ";
                      //"limit 20";
 
         if (searchQuery.getFromDate() != null) {
@@ -174,7 +179,8 @@ public class PositionFixDaoImpl implements PositionFixDao {
     	String projectId =  project.getId().toString();
         String sql = "select min(o.detectionTime)" 
         + "from PositionFix o "
-        + "where o.dataFile in "
+        + "where o.deleted = false "
+        + "and o.dataFile in "
         + "(select d from datafile d where d.project.id = :projectId) ";
     	
     	Query query = em.createQuery(sql);
@@ -190,7 +196,8 @@ public class PositionFixDaoImpl implements PositionFixDao {
     	String projectId =  project.getId().toString();
         String sql = "select max(o.detectionTime)" 
             + "from PositionFix o "
-            + "where o.dataFile in "
+            + "where o.deleted = false "
+            + "and o.dataFile in "
             + "(select d from datafile d where d.project.id = :projectId) ";
     	
     	Query query = em.createQuery(sql);
@@ -205,7 +212,8 @@ public class PositionFixDaoImpl implements PositionFixDao {
     	
         String sql = "select min(o.detectionTime)" 
         + "from PositionFix o "
-        + "where o.dataFile = :dataFile";
+        + "where o.deleted = false "
+        + "and o.dataFile = :dataFile";
     	
     	Query query = em.createQuery(sql);
     	query.setParameter("dataFile", dataFile);
@@ -219,11 +227,28 @@ public class PositionFixDaoImpl implements PositionFixDao {
     	
         String sql = "select max(o.detectionTime)" 
         + "from PositionFix o "
-        + "where o.dataFile = :dataFile";
+        + "where o.deleted = false "
+        + "and o.dataFile = :dataFile";
     	
     	Query query = em.createQuery(sql);
     	query.setParameter("dataFile", dataFile);
     	Date lastDate = (Date) query.getSingleResult();
     	return lastDate;
+    }
+    
+    @Override
+    @Transactional
+    public int deleteOverlappingPositionFixes(Project project, MultiPolygon multiPolygon) {
+        String queryString =
+            "update positionfix\n" +
+            "set deleted = true\n" +
+            "where\n" +
+            "    deleted = false\n" +
+            "    and datafile_id in (select id from datafile where project_id = :projectId)\n" +
+            "    and ST_Within(locationgeometry, ST_GeomFromText(:wkt, 4326));";
+        return em.createNativeQuery(queryString)
+            .setParameter("projectId", project.getId())
+            .setParameter("wkt", new WKTWriter().write(multiPolygon))
+            .executeUpdate();
     }
 }
