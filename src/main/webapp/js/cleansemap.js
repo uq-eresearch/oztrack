@@ -1,6 +1,7 @@
 var projection900913 = new OpenLayers.Projection("EPSG:900913");
 var projection4326 = new OpenLayers.Projection("EPSG:4326");
 var polygonFeatures = new Array();
+var allDetectionsLayer;
 var highlightControl;
 
 function createCleanseMap(projectId) {
@@ -20,7 +21,7 @@ function createCleanseMap(projectId) {
     var gsat = new OpenLayers.Layer.Google("Google Satellite", {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22});
     var gmap = new OpenLayers.Layer.Google("Google Streets", {numZoomLevels: 20});
     var ghyb = new OpenLayers.Layer.Google("Google Hybrid", {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20});
-    var allDetectionsLayer = createAllDetectionsLayer(projectId);
+    allDetectionsLayer = createAllDetectionsLayer(projectId);
 
     var polygonLayer = new OpenLayers.Layer.Vector('Polygons');
     var polygonControl = new OpenLayers.Control.DrawFeature(polygonLayer, OpenLayers.Handler.Polygon);
@@ -84,6 +85,15 @@ function polygonAdded(e) {
 			.attr('selected', 'selected')
         	.append('Selection ' + polygonFeatures.length)
 	);
+}
+
+function resetCleanseMap() {
+    jQuery('#cleanseSelect').children().remove();
+    jQuery('#cleanseList').children().remove();
+    while (polygonFeatures.length > 0) {
+        polygonFeatures.shift().destroy();
+    }
+    allDetectionsLayer.refresh();
 }
 
 function selectCleanseItem(featureId, selected) {

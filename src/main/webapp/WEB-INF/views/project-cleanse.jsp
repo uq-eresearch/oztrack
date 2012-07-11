@@ -15,6 +15,20 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/LoadingPanel.js"></script>
         <script type="text/javascript" src="<c:url value="/js/cleansemap.js"/>"></script>
         <script type="text/javascript">
+            function submitCleanseForm(operation) {
+                jQuery.ajax({
+                    url: '/projects/${project.id}/cleanse',
+                    type: 'POST',
+                    data: 'operation=' + operation + '&' + jQuery('#cleanseForm').serialize(),
+                    success: function(data, textStatus, jqXHR) {
+                        resetCleanseMap();
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert('Error processing request.');
+                    }
+                });
+                return false;
+            }
             $(document).ready(function() {
                 $("#projectMapOptions").accordion({fillSpace: true});
                 map = createCleanseMap(${project.id});
@@ -49,18 +63,8 @@
         <div id="projectMapOptions">
             <h3 id="projectTitle"><a href="#"><c:out value="${project.title}"/></a></h3>
             <div style="padding: 0;">
-                <form method="POST">
+                <form id="cleanseForm" onsubmit="return false;">
                 <p style="font-size: 11px; font-weight: bold;">Data cleansing</p>
-                <c:if test="${not empty numDeleted}">
-                <p style="font-size: 10px; font-weight: bold; color: red;">
-                    ${numDeleted} points deleted
-                </p>
-                </c:if>
-                <c:if test="${not empty numUndeleted}">
-                <p style="font-size: 10px; font-weight: bold; color: green;">
-                    ${numUndeleted} points restored
-                </p>
-                </c:if>
                 <p style="font-size: 10px; font-style: italic;">
                     Select points for removal from the project by drawing polygons around them.
                     Click to start drawing and click again to draw each side of your selected area.
@@ -71,8 +75,8 @@
                 <ul id="cleanseList">
                 </ul>
                 <div style="margin: 0; padding: 0;">
-                    <button name="operation" value="delete" type="submit">Done</button>
-                    <button name="operation" value="undelete" type="submit">Restore deleted points</button>
+                    <button onclick="submitCleanseForm('delete');">Done</button>
+                    <button onclick="submitCleanseForm('undelete');">Restore deleted points</button>
                 </div>
                 </form>
             </div>

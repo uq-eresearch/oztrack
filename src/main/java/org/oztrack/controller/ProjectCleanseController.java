@@ -3,6 +3,7 @@ package org.oztrack.controller;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,7 +16,6 @@ import org.oztrack.data.model.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,11 +51,11 @@ public class ProjectCleanseController {
     
     @RequestMapping(value="/projects/{id}/cleanse", method=RequestMethod.POST)
     @PreAuthorize("hasPermission(#project, 'write')")
-    public String processCleanse(
-        Model model,
+    public void processCleanse(
         @ModelAttribute(value="project") Project project,
         @RequestParam(value="operation", defaultValue="delete") String operation,
-        HttpServletRequest request
+        HttpServletRequest request,
+        HttpServletResponse response
     ) {
         if (operation.equals("delete")) {
             Hints hints = new Hints();
@@ -77,13 +77,11 @@ public class ProjectCleanseController {
                 }
             }
             MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(polygons.toArray(new Polygon[0]));
-            int numDeleted = positionFixDao.deleteOverlappingPositionFixes(project, multiPolygon);
-            model.addAttribute("numDeleted", numDeleted);
+            positionFixDao.deleteOverlappingPositionFixes(project, multiPolygon);
         }
         else if (operation.equals("undelete")) {
-            int numUndeleted = positionFixDao.undeleteAllPositionFixes(project);
-            model.addAttribute("numUndeleted", numUndeleted);
+            positionFixDao.undeleteAllPositionFixes(project);
         }
-        return "project-cleanse";
+        response.setStatus(204);
     }
 }
