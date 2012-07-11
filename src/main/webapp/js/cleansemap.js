@@ -84,7 +84,6 @@ function polygonAdded(e) {
 			.attr('selected', 'selected')
         	.append('Selection ' + polygonFeatures.length)
 	);
-    jQuery('#cleanseSubmit').removeAttr('disabled');
 }
 
 function selectCleanseItem(featureId, selected) {
@@ -103,9 +102,6 @@ function deleteCleanseItem(featureId) {
         if (polygonFeatures[i].id == featureId) {
             polygonFeatures[i].destroy();
             polygonFeatures.splice(i, 1);
-            if (polygonFeatures.length == 0) {
-            	jQuery('#cleanseSubmit').attr('disabled', 'disabled');
-            }
             break;
         }
     }

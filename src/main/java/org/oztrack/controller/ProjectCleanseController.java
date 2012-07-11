@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
@@ -50,28 +51,39 @@ public class ProjectCleanseController {
     
     @RequestMapping(value="/projects/{id}/cleanse", method=RequestMethod.POST)
     @PreAuthorize("hasPermission(#project, 'write')")
-    public String processCleanse(Model model, @ModelAttribute(value="project") Project project, HttpServletRequest request) {
-        Hints hints = new Hints();
-        hints.put(Hints.CRS, DefaultGeographicCRS.WGS84);
-        GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(hints);
-        WKTReader reader = new WKTReader(geometryFactory);
-        String[] polygonsWkt = request.getParameterValues("polygon");
-        if (polygonsWkt == null) {
-            polygonsWkt = new String[0];
-        }
-        ArrayList<Polygon> polygons = new ArrayList<Polygon>();
-        for (String polygonWkt : polygonsWkt) {
-            try {
-                Polygon polygon = (Polygon) reader.read(polygonWkt);
-                polygons.add(polygon);
+    public String processCleanse(
+        Model model,
+        @ModelAttribute(value="project") Project project,
+        @RequestParam(value="operation", defaultValue="delete") String operation,
+        HttpServletRequest request
+    ) {
+        if (operation.equals("delete")) {
+            Hints hints = new Hints();
+            hints.put(Hints.CRS, DefaultGeographicCRS.WGS84);
+            GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(hints);
+            WKTReader reader = new WKTReader(geometryFactory);
+            String[] polygonsWkt = request.getParameterValues("polygon");
+            if (polygonsWkt == null) {
+                polygonsWkt = new String[0];
             }
-            catch (ParseException e) {
-                throw new RuntimeException("Error reading polygon: " + polygonWkt, e);
+            ArrayList<Polygon> polygons = new ArrayList<Polygon>();
+            for (String polygonWkt : polygonsWkt) {
+                try {
+                    Polygon polygon = (Polygon) reader.read(polygonWkt);
+                    polygons.add(polygon);
+                }
+                catch (ParseException e) {
+                    throw new RuntimeException("Error reading polygon: " + polygonWkt, e);
+                }
             }
+            MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(polygons.toArray(new Polygon[0]));
+            int numDeleted = positionFixDao.deleteOverlappingPositionFixes(project, multiPolygon);
+            model.addAttribute("numDeleted", numDeleted);
         }
-        MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(polygons.toArray(new Polygon[0]));
-        int numDeleted = positionFixDao.deleteOverlappingPositionFixes(project, multiPolygon);
-        model.addAttribute("numDeleted", numDeleted);
+        else if (operation.equals("undelete")) {
+            int numUndeleted = positionFixDao.undeleteAllPositionFixes(project);
+            model.addAttribute("numUndeleted", numUndeleted);
+        }
         return "project-cleanse";
     }
 }

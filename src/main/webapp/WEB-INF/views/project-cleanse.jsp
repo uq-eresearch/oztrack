@@ -56,6 +56,11 @@
                     ${numDeleted} points deleted
                 </p>
                 </c:if>
+                <c:if test="${not empty numUndeleted}">
+                <p style="font-size: 10px; font-weight: bold; color: green;">
+                    ${numUndeleted} points restored
+                </p>
+                </c:if>
                 <p style="font-size: 10px; font-style: italic;">
                     Select points for removal from the project by drawing polygons around them.
                     Click to start drawing and click again to draw each side of your selected area.
@@ -66,7 +71,8 @@
                 <ul id="cleanseList">
                 </ul>
                 <div style="margin: 0; padding: 0;">
-                    <input type="submit" id="cleanseSubmit" value="Done" disabled="disabled"/>
+                    <button name="operation" value="delete" type="submit">Done</button>
+                    <button name="operation" value="undelete" type="submit">Restore deleted points</button>
                 </div>
                 </form>
             </div>

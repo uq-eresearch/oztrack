@@ -251,4 +251,18 @@ public class PositionFixDaoImpl implements PositionFixDao {
             .setParameter("wkt", new WKTWriter().write(multiPolygon))
             .executeUpdate();
     }
+    
+    @Override
+    @Transactional
+    public int undeleteAllPositionFixes(Project project) {
+        String queryString =
+            "update positionfix\n" +
+            "set deleted = false\n" +
+            "where\n" +
+            "    deleted = true\n" +
+            "    and datafile_id in (select id from datafile where project_id = :projectId);";
+        return em.createNativeQuery(queryString)
+            .setParameter("projectId", project.getId())
+            .executeUpdate();
+    }
 }
