@@ -11,7 +11,8 @@ function createCleanseMap(projectId) {
     });
     map.addControl(new OpenLayers.Control.MousePosition());
     map.addControl(new OpenLayers.Control.ScaleLine());
-    map.addControl(new OpenLayers.Control.NavToolbar());
+    var navToolbar = new OpenLayers.Control.NavToolbar();
+    map.addControl(navToolbar);
     map.addControl(new OpenLayers.Control.LayerSwitcher());
     map.addControl(new OpenLayers.Control.LoadingPanel());
     
@@ -24,8 +25,8 @@ function createCleanseMap(projectId) {
     var polygonLayer = new OpenLayers.Layer.Vector('Polygons');
     var polygonControl = new OpenLayers.Control.DrawFeature(polygonLayer, OpenLayers.Handler.Polygon);
     polygonControl.events.register('featureadded', null, polygonAdded);
-    map.addControl(polygonControl);
-    polygonControl.activate();
+    navToolbar.addControls(polygonControl);
+    navToolbar.activateControl(polygonControl);
     
     highlightControl = createHighlightControl(polygonLayer);
     map.addControl(highlightControl);

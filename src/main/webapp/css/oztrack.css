@@ -825,6 +825,14 @@ div.olControlPanel {
     top: 31px !important;
 }
 
+.olControlDrawFeatureItemInactive {
+    background-position: -26px -1px !important;
+}
+
+.olControlDrawFeatureItemActive {
+    background-position: -26px -24px !important;
+}
+
 /* formalize */
 
 button,
