@@ -1,5 +1,7 @@
 package org.oztrack.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,14 +51,14 @@ public class ProjectCleanseController {
         return "project-cleanse";
     }
     
-    @RequestMapping(value="/projects/{id}/cleanse", method=RequestMethod.POST)
+    @RequestMapping(value="/projects/{id}/cleanse", method=RequestMethod.POST, produces="application/xml")
     @PreAuthorize("hasPermission(#project, 'write')")
     public void processCleanse(
         @ModelAttribute(value="project") Project project,
         @RequestParam(value="operation", defaultValue="delete") String operation,
         HttpServletRequest request,
         HttpServletResponse response
-    ) {
+    ) throws IOException {
         if (operation.equals("delete")) {
             Hints hints = new Hints();
             hints.put(Hints.CRS, DefaultGeographicCRS.WGS84);
@@ -77,11 +79,30 @@ public class ProjectCleanseController {
                 }
             }
             MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(polygons.toArray(new Polygon[0]));
-            positionFixDao.deleteOverlappingPositionFixes(project, multiPolygon);
+            int numDeleted = positionFixDao.deleteOverlappingPositionFixes(project, multiPolygon);
+            PrintWriter out = response.getWriter();
+            out.append("<?xml version=\"1.0\"?>\n");
+            out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");
+            out.append("    <num-deleted>" + numDeleted + "</num-deleted>\n");
+            out.append("</cleanse-response>\n");
+            response.setStatus(200);
         }
         else if (operation.equals("undelete")) {
-            positionFixDao.undeleteAllPositionFixes(project);
+            int numUndeleted = positionFixDao.undeleteAllPositionFixes(project);
+            PrintWriter out = response.getWriter();
+            out.append("<?xml version=\"1.0\"?>\n");
+            out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");
+            out.append("    <num-undeleted>" + numUndeleted + "</num-undeleted>\n");
+            out.append("</cleanse-response>\n");
+            response.setStatus(200);
         }
-        response.setStatus(204);
+        else {
+            PrintWriter out = response.getWriter();
+            out.append("<?xml version=\"1.0\"?>\n");
+            out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");
+            out.append("    <error>" + "Unknown operation: " + operation + "</error>\n");
+            out.append("</cleanse-response>\n");
+            response.setStatus(400);
+        }
     }
 }

@@ -15,17 +15,25 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/LoadingPanel.js"></script>
         <script type="text/javascript" src="<c:url value="/js/project-cleanse.js"/>"></script>
         <script type="text/javascript">
-            var cleanseMap;
             function submitCleanseForm(operation) {
+                jQuery('.cleanse-response').hide();
                 jQuery.ajax({
                     url: '<c:url value="/projects/${project.id}/cleanse"/>',
                     type: 'POST',
                     data: 'operation=' + operation + '&' + jQuery('#cleanseForm').serialize(),
                     success: function(data, textStatus, jqXHR) {
                         cleanseMap.reset();
+                        if (operation == 'delete') {
+                            var numDeleted = jQuery(data).find('num-deleted').text();
+                            jQuery('#cleanse-response-deleted').text(numDeleted + " points deleted").fadeIn();
+                        }
+                        else if (operation == 'undelete') {
+                            var numUndeleted = jQuery(data).find('num-undeleted').text();
+                            jQuery('#cleanse-response-undeleted').text(numUndeleted + " points restored").fadeIn();
+                        }
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
-                        alert('Error processing request.');
+                        jQuery('#cleanse-response-error').text('Error processing request').fadeIn();
                     }
                 });
                 return false;
@@ -79,6 +87,9 @@
                     <button onclick="submitCleanseForm('delete');">Done</button>
                     <button onclick="submitCleanseForm('undelete');">Restore deleted points</button>
                 </div>
+                <p id="cleanse-response-deleted" class="cleanse-response" style="font-size: 10px; font-weight: bold; color: red;"></p>
+                <p id="cleanse-response-undeleted" class="cleanse-response" style="font-size: 10px; font-weight: bold; color: green;"></p>
+                <p id="cleanse-response-error" class="cleanse-response" style="font-size: 10px; font-weight: bold; color: gray;"></p>
                 </form>
             </div>
             <h3><a href="#">Project Menu</a></h3>
