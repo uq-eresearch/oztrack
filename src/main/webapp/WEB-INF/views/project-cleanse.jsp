@@ -33,7 +33,8 @@
                         }
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
-                        jQuery('#cleanse-response-error').text('Error processing request').fadeIn();
+                        var message = jQuery(jqXHR.responseXML).find('error').text() || 'Error processing request';
+                        jQuery('#cleanse-response-error').text(message).fadeIn();
                     }
                 });
                 return false;
