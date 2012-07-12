@@ -45,6 +45,8 @@ function createCleanseMap(projectId) {
             });
             map.addControl(highlightControl);
             highlightControl.activate();
+            
+            map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326, projection900913), 4);
         }());
 
         cleanseMap.reset = function() {
