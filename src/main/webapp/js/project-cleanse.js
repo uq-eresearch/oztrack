@@ -1,10 +1,15 @@
-function createCleanseMap(projectId) {
+function createCleanseMap(options) {
     return (function() {
         var cleanseMap = {};
         
         var projection900913 = new OpenLayers.Projection('EPSG:900913');
         var projection4326 = new OpenLayers.Projection('EPSG:4326');
-        
+
+        var projectId = options.projectId;
+        var onReset = options.onReset;
+        var onPolygonFeatureAdded = options.onPolygonFeatureAdded;
+        var onDeletePolygonFeature = options.onDeletePolygonFeature;
+
         var map;
         var allDetectionsLayer;
         var polygonLayer;
@@ -44,17 +49,17 @@ function createCleanseMap(projectId) {
                 renderIntent: 'temporary'
             });
             map.addControl(highlightControl);
-            highlightControl.activate();
             
             map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326, projection900913), 4);
         }());
 
         cleanseMap.reset = function() {
             allDetectionsLayer.refresh();
-            jQuery('#cleanseSelect').children().remove();
-            jQuery('#cleanseList').children().remove();
             while (polygonFeatures.length > 0) {
                 polygonFeatures.shift().destroy();
+            }
+            if (onReset) {
+                onReset();
             }
         };
 
@@ -66,54 +71,36 @@ function createCleanseMap(projectId) {
                 return;
             }
             polygonFeatures.push(e.feature);
-            jQuery('#cleanseList').append(
-                jQuery('<li>')
-                    .attr('id', 'item-' + e.feature.id)
-                    .append('Selection ' + polygonFeatures.length)
-                    .append(' (')
-                    .append(
-                        jQuery('<a>')
-                            .attr('href', 'javascript:void(0)')
-                            .attr('onclick', 'deletePolygonFeature(\'' + e.feature.id + '\');')
-                            .attr('onmouseover', 'selectPolygonFeature(\'' + e.feature.id + '\', true);')
-                            .attr('onmouseout', 'selectPolygonFeature(\'' + e.feature.id + '\', false);')
-                            .append('delete')
-                    )
-                    .append(')')
-            );
-            var geometry = e.feature.geometry.clone();
-            geometry.transform(projection900913, projection4326);
-            var wktFormat = new OpenLayers.Format.WKT();
-            var wkt = wktFormat.extractGeometry(geometry);
-            jQuery('#cleanseSelect').append(
-                jQuery('<option>')
-                    .attr('id', 'option-' + e.feature.id)
-                    .attr('value', wkt)
-                    .attr('selected', 'selected')
-                    .append('Selection ' + polygonFeatures.length)
-            );
+            if (onPolygonFeatureAdded) {
+                var geometry = e.feature.geometry.clone();
+                geometry.transform(projection900913, projection4326);
+                var wktFormat = new OpenLayers.Format.WKT();
+                var wkt = wktFormat.extractGeometry(geometry);
+                onPolygonFeatureAdded(e.feature.id, 'Selection ' + polygonFeatures.length, wkt);
+            }
         }
-
-        function selectPolygonFeature(featureId, selected) {
+        
+        cleanseMap.selectPolygonFeature = function(id, selected) {
             for (var i = 0; i < polygonFeatures.length; i++) {
-                if (polygonFeatures[i].id == featureId) {
+                if (polygonFeatures[i].id == id) {
                     highlightControl[selected ? 'select' : 'unselect'](polygonFeatures[i]);
                     break;
                 }
             }
-        }
+        };
 
-        function deletePolygonFeature(featureId) {
-            jQuery('*[id=\'item-' + featureId + '\']').remove();
-            jQuery('*[id=\'option-' + featureId + '\']').remove();
+        cleanseMap.deletePolygonFeature = function(id) {
+            if (onDeletePolygonFeature) {
+                onDeletePolygonFeature(id);
+            }
             for (var i = 0; i < polygonFeatures.length; i++) {
-                if (polygonFeatures[i].id == featureId) {
+                if (polygonFeatures[i].id == id) {
                     polygonFeatures[i].destroy();
                     polygonFeatures.splice(i, 1);
                     break;
                 }
             }
-        }
+        };
 
         function createAllDetectionsLayer(projectId) {
             return new OpenLayers.Layer.Vector(

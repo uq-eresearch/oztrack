@@ -41,15 +41,49 @@
             }
             $(document).ready(function() {
                 $("#projectMapOptions").accordion({fillSpace: true});
-                cleanseMap = createCleanseMap(${project.id});
+                cleanseMap = createCleanseMap({
+                    projectId: <c:out value="${project.id}"/>,
+                    onReset: function() {
+                        jQuery('#cleanse-select').children().remove();
+                        jQuery('#cleanse-list').children().remove();
+                    },
+                    onPolygonFeatureAdded: function(id, title, wkt) {
+                        jQuery('#cleanse-list').append(
+                            jQuery('<li>')
+                                .attr('id', 'cleanse-li-' + id)
+                                .append(title)
+                                .append(' (')
+                                .append(
+                                    jQuery('<a>')
+                                        .attr('href', 'javascript:void(0)')
+                                        .attr('onclick', 'cleanseMap.deletePolygonFeature(\'' + id + '\');')
+                                        .attr('onmouseover', 'cleanseMap.selectPolygonFeature(\'' + id + '\', true);')
+                                        .attr('onmouseout', 'cleanseMap.selectPolygonFeature(\'' + id + '\', false);')
+                                        .append('delete')
+                                )
+                                .append(')')
+                        );
+                        jQuery('#cleanse-select').append(
+                            jQuery('<option>')
+                                .attr('id', 'cleanse-option-' + id)
+                                .attr('value', wkt)
+                                .attr('selected', 'selected')
+                                .append(title)
+                        );
+                    },
+                    onDeletePolygonFeature: function(id) {
+                        jQuery('*[id=\'cleanse-li-' + id + '\']').remove();
+                        jQuery('*[id=\'cleanse-option-' + id + '\']').remove();
+                    }
+                });
             });
         </script>
         <style type="text/css">
-            ul#cleanseList {
+            ul#cleanse-list {
                 margin: 10px 0;
                 padding-left: 0;
             }
-            ul#cleanseList li {
+            ul#cleanse-list li {
                 margin: 2px 0;
                 list-style: none;
                 background-repeat: no-repeat;
@@ -57,7 +91,7 @@
                 line-height: 22px;
                 padding: 0 0 5px 28px;
             }
-            ul#cleanseList li {
+            ul#cleanse-list li {
                 background-image: url(/js/openlayers/theme/default/img/draw_polygon_on.png);
             }
         </style>
@@ -80,9 +114,9 @@
                     Click to start drawing and click again to draw each side of your selected area.
                     Double-click to finish drawing. You can draw as many polygons as are required.
                 </p>
-                <select id="cleanseSelect" name="polygon" multiple="multiple" style="display: none;">
+                <select id="cleanse-select" name="polygon" multiple="multiple" style="display: none;">
                 </select>
-                <ul id="cleanseList">
+                <ul id="cleanse-list">
                 </ul>
                 <div style="margin: 0; padding: 0;">
                     <button onclick="submitCleanseForm('delete');">Done</button>
