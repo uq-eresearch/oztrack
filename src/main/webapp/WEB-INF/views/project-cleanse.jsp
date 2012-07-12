@@ -15,13 +15,14 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/LoadingPanel.js"></script>
         <script type="text/javascript" src="<c:url value="/js/cleansemap.js"/>"></script>
         <script type="text/javascript">
+            var cleanseMap;
             function submitCleanseForm(operation) {
                 jQuery.ajax({
-                    url: '/projects/${project.id}/cleanse',
+                    url: '<c:url value="/projects/${project.id}/cleanse"/>',
                     type: 'POST',
                     data: 'operation=' + operation + '&' + jQuery('#cleanseForm').serialize(),
                     success: function(data, textStatus, jqXHR) {
-                        resetCleanseMap();
+                        cleanseMap.reset();
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         alert('Error processing request.');
@@ -31,7 +32,7 @@
             }
             $(document).ready(function() {
                 $("#projectMapOptions").accordion({fillSpace: true});
-                map = createCleanseMap(${project.id});
+                cleanseMap = createCleanseMap(${project.id});
             });
         </script>
         <style type="text/css">
