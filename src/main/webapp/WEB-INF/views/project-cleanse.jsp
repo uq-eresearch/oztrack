@@ -13,7 +13,7 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/proj4js/proj4js-compressed.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/OpenLayers.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/LoadingPanel.js"></script>
-        <script type="text/javascript" src="<c:url value="/js/cleansemap.js"/>"></script>
+        <script type="text/javascript" src="<c:url value="/js/project-cleanse.js"/>"></script>
         <script type="text/javascript">
             var cleanseMap;
             function submitCleanseForm(operation) {
