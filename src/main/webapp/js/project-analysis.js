@@ -45,8 +45,10 @@ function initializeProjectMap(div, projectId) {
     map.addControl(new OpenLayers.Control.LayerSwitcher());
     map.addControl(new OpenLayers.Control.LoadingPanel());
     
-    var gphy = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.TERRAIN});
-    var gsat = new OpenLayers.Layer.Google("Google Satellite", {type: google.maps.MapTypeId.SATELLITE});
+    var gphy = new OpenLayers.Layer.Google('Google Physical', {type: google.maps.MapTypeId.TERRAIN});
+    var gsat = new OpenLayers.Layer.Google('Google Satellite', {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22});
+    var gmap = new OpenLayers.Layer.Google('Google Streets', {numZoomLevels: 20});
+    var ghyb = new OpenLayers.Layer.Google('Google Hybrid', {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20});
     
     map.addControl(createControlPanel());
     
@@ -56,7 +58,7 @@ function initializeProjectMap(div, projectId) {
    
     allDetectionsLayer = createAllDetectionsLayer(projectId);
         
-    map.addLayers([gsat, gphy, allDetectionsLayer]);
+    map.addLayers([gsat, gphy, gmap, ghyb, allDetectionsLayer]);
     map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326, projection900913), 4);
     
     reportProjectionDescr();
