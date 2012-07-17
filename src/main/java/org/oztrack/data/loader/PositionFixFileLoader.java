@@ -11,6 +11,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
 
@@ -30,6 +32,10 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 
 public class PositionFixFileLoader extends DataFileLoader {
     private PositionFixDao positionFixDao;
+
+    private Pattern degPattern = Pattern.compile("^([^\\s]+)$");
+    private Pattern degMinPattern = Pattern.compile("^([^\\s]+)\\s+([^\\s]+)$");
+    private Pattern degMinSecPattern = Pattern.compile("^([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+)$");
 
     public PositionFixFileLoader(
         DataFile dataFile,
@@ -214,10 +220,10 @@ public class PositionFixFileLoader extends DataFileLoader {
                 
                 if ((rawPositionFix.getLatitude() != null) && (rawPositionFix.getLongitude() != null)) {
 	                try {
-		                // have lat/long now: create them
 		                Point locationGeometry = findLocationGeometry(rawPositionFix.getLatitude(),rawPositionFix.getLongitude());
 		                rawPositionFix.setLocationGeometry(locationGeometry);
-	                } catch (Exception e) {
+	                }
+	                catch (Exception e) {
 	                	throw new FileProcessingException("Problems at line number: " + lineNumber + " parsing these as Latitude/Longitude in WGS84: " + rawPositionFix.getLatitude() + "," + rawPositionFix.getLongitude());
 	                }
                 }
@@ -345,14 +351,27 @@ public class PositionFixFileLoader extends DataFileLoader {
     }
 
     private Point findLocationGeometry(String latitude, String longitude) throws FileProcessingException {
-
-        Double dLatitude = Double.parseDouble(latitude);
-        Double dLongitude = Double.parseDouble(longitude);
-
-        GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(1000000),4326);
-        Coordinate coordinate = new Coordinate(dLongitude, dLatitude);
-
+        GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(1000000), 4326);
+        Coordinate coordinate = new Coordinate(parseCoordinate(longitude), parseCoordinate(latitude));
         return geometryFactory.createPoint(coordinate);
-
+    }
+    
+    private Double parseCoordinate(String s) throws FileProcessingException {
+        Matcher matcher = null;
+        if ((matcher = degPattern.matcher(s)).find()) {
+            return Double.parseDouble(matcher.group(1));
+        }
+        if ((matcher = degMinPattern.matcher(s)).find()) {
+            return
+                Double.parseDouble(matcher.group(1)) +
+                (Double.parseDouble(matcher.group(2)) / 60d);
+        }
+        if ((matcher = degMinSecPattern.matcher(s)).find()) {
+            return
+                Double.parseDouble(matcher.group(1)) +
+                (Double.parseDouble(matcher.group(2)) / 60d) +
+                (Double.parseDouble(matcher.group(3)) / 3600d);
+        }
+        throw new FileProcessingException("Could not parse coordinate: " + s);
     }
 }
