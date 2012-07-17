@@ -140,8 +140,8 @@ public class RServeInterface {
         for (int i=0; i < positionFixList.size(); i++) {
             PositionFix positionFix = positionFixList.get(i);
             animalIds[i] = Integer.parseInt(positionFix.getAnimal().getId().toString());
-            latitudes[i] = Double.parseDouble(positionFix.getLatitude());
-            longitudes[i] = Double.parseDouble(positionFix.getLongitude());
+            latitudes[i] = positionFix.getLocationGeometry().getY();
+            longitudes[i] = positionFix.getLocationGeometry().getX();
         }
 
         /* create the RList to become the dataFrame (add the name+array) */
