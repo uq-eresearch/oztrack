@@ -176,7 +176,14 @@
 			   a date or a date & time stamp. The time stamp can be in a separate field to the date, but the date field must precede it (left to right). </p>
 		</li>
 		<li>Spatial Coordinates
-			<p>At this stage we accept only decimal Lat/Longs in projection EPSG:4326.</p>
+			<p>At this stage we only accept Lat/Longs in projection EPSG:4326.</p>
+            <p>Coordinate formats that can be read:</p>
+                <ul>
+                    <li>Degrees (e.g., 153.017433)</li>
+                    <li>Degrees minutes (e.g., 153 1.046)</li>
+                    <li>Degrees minutes seconds (e.g., 153 1 2.76)</li>
+                </ul>
+            </p>
 		</li>
 		<li>Animals: 
 			<p>If there <b>is</b> an ID or ANIMAL Id field in the file, then OzTrack will assume that this field is the identifier of the animals.
