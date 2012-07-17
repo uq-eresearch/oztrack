@@ -321,29 +321,18 @@ a:hover {
 }
 
 .mapTool {
-   background-color:#e6e6c0;
-   font-size: 0.8em;
-   width:900px;
-   position:relative;
-   float:left;
+    background-color:#e6e6c0;
+    font-size: 0.8em;
+    width:900px;
+    position:relative;
+    float:left;
 	padding: 8px;   
-    /*--Top right rounded corner--*/
-    -moz-border-radius-topright: 10px;
-    -khtml-border-radius-topright: 10px;
-    -webkit-border-top-right-radius: 10px;
-    /*--Top left rounded corner--*/
-    -moz-border-radius-topleft: 10px;
-    -khtml-border-radius-topleft: 10px;
-    -webkit-border-top-left-radius: 10px;
-    /*--Bottom right rounded corner--*/
-    -moz-border-radius-bottomright: 10px;
-    -khtml-border-radius-bottomright: 10px;
-    -webkit-border-bottom-right-radius: 10px;
-    /*--Bottom left rounded corner--*/
-    -moz-border-radius-bottomleft: 10px;
-    -khtml-border-radius-bottomleft: 10px;
-    -webkit-border-bottom-left-radius: 10px;
-
+    -khtml-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    border-radius: 10px;
 }
 
 .animalInfo {
@@ -451,22 +440,12 @@ form {
     padding-top:5px;
     padding-bottom:15px;
     font-size: 0.8em;
-    /*--Top right rounded corner--*/
-    -moz-border-radius-topright: 10px;
-    -khtml-border-radius-topright: 10px;
-    -webkit-border-top-right-radius: 10px;
-    /*--Top left rounded corner--*/
-    -moz-border-radius-topleft: 10px;
-    -khtml-border-radius-topleft: 10px;
-    -webkit-border-top-left-radius: 10px;
-    /*--Bottom right rounded corner--*/
-    -moz-border-radius-bottomright: 10px;
-    -khtml-border-radius-bottomright: 10px;
-    -webkit-border-bottom-right-radius: 10px;
-    /*--Bottom left rounded corner--*/
-    -moz-border-radius-bottomleft: 10px;
-    -khtml-border-radius-bottomleft: 10px;
-    -webkit-border-bottom-left-radius: 10px;
+    -khtml-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    border-radius: 10px;
 }
 
 .formHeader,.formSubheader{
@@ -598,23 +577,12 @@ a.info:hover span { /*the span will display just on :hover state*/
     padding-right:4px;
     padding-bottom:2px;
     opacity:0.9;
-    
-        /*--Top right rounded corner--*/
-    -moz-border-radius-topright: 5px;
-    -khtml-border-radius-topright: 5px;
-    -webkit-border-top-right-radius: 5px;
-    /*--Top left rounded corner--*/
-    -moz-border-radius-topleft: 5px;
-    -khtml-border-radius-topleft: 5px;
-    -webkit-border-top-left-radius: 5px;
-    /*--Bottom right rounded corner--*/
-    -moz-border-radius-bottomright: 5px;
-    -khtml-border-radius-bottomright: 5px;
-    -webkit-border-bottom-right-radius: 5px;
-    /*--Bottom left rounded corner--*/
-    -moz-border-radius-bottomleft: 5px;
-    -khtml-border-radius-bottomleft: 5px;
-    -webkit-border-bottom-left-radius: 5px;
+    -khtml-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
 }
 
 a.info ul {
@@ -793,6 +761,11 @@ div.olControlPanel {
     left: 8px !important;
     margin: 0 !important;
     background: rgba(255,255,255,0.4) !important;
+    -khtml-border-radius: 4px !important;
+    -webkit-border-radius: 4px !important;
+    -moz-border-radius: 4px !important;
+    -ms-border-radius: 4px !important;
+    -o-border-radius: 4px !important;
     border-radius: 4px !important;
 }
 
@@ -840,6 +813,7 @@ input[type="reset"],
 input[type="submit"],
 input[type="button"] {
     -webkit-appearance: none;
+    -khtml-border-radius: 0;
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
     -ms-border-radius: 0;
@@ -848,7 +822,6 @@ input[type="button"] {
     -webkit-background-clip: padding;
     -moz-background-clip: padding;
     background-clip: padding-box;
-    border-radius: 0;
     border-color: #839537;
     background: #adbc6b;
     color: #000000;
