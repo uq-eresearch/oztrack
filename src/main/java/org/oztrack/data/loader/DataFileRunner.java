@@ -32,7 +32,7 @@ public class DataFileRunner {
     public DataFileRunner() {
     }
     
-    public void processNext() {        // Initialise our entity manager and DAOs (no Spring injection here)
+    public void processNext() {        // Initialise our entity manager and DAOs (no Spring injection here)
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         
         DataFileDaoImpl dataFileDao = new DataFileDaoImpl();
