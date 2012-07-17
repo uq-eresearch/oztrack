@@ -10,14 +10,20 @@
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
         <style type="text/css">
+            #projectMapOptions .ui-accordion-content {
+                padding: 1em 10px;
+            }
             #animalPanel, #homeRangeCalculatorPanel, #projectMapHelp {
                 height:350px;
             }
             #animalHeader {
-                width: 230px;
+                float: left;
+                width: 215px;
+                padding: 0;
             }
             #projectMapHelp p {
-                text-align:justify;
+                text-align: justify;
+                margin: 1em 0;
             }
             #mapToolForm {
                 padding-left:0px;
@@ -43,6 +49,13 @@
             .animalInfo .label {
                 width:7em;
             }
+            .animalLabel {
+                float: left;
+                width: 105px;
+                margin-bottom: 5px;
+                font-weight: bold;
+                margin-right: 5px;
+            }
             .layerInfo {
                 margin: 0.5em 0;
             }
@@ -57,6 +70,18 @@
             .citation {
                 font-weight: bold;
                 text-align: left;
+            }
+            .column {
+                font-size:0.9em;
+            }
+            .animalCheckbox {
+                float:left; width:15px;
+            }
+            .zoom {
+                float: right;
+            }   
+            .animalInfoToggle {
+                float:right;
             }
         </style>
         <script src="http://maps.google.com/maps/api/js?v=3.9&sensor=false"></script>
@@ -97,14 +122,6 @@
                 initializeProjectMap('projectMap', ${project.id});
             });
         </script>
-        <style type="text/css">
-            #animalHeader {float:left;}
-            .column {font-size:0.9em;}
-            .animalCheckbox {float:left; width:15px;}
-            .animalLabel {float:left; width:120px; margin-bottom:5px;font-weight:bold;margin-right:5px;}
-            .zoom {float: right;}   
-            .animalInfoToggle {float:right;}    
-        </style>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
