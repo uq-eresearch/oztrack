@@ -53,7 +53,7 @@ public class OzTrackUtil {
         try {
              fileInputStream = new FileInputStream(inFile);
         } catch (FileNotFoundException e) {
-             throw new FileProcessingException("File not found.");
+             throw new FileProcessingException("File not found.", e);
         }
         
         if (inFile.getTotalSpace() == 0) {
@@ -67,7 +67,7 @@ public class OzTrackUtil {
         try {
             bw = new BufferedWriter(new FileWriter(outFile));
         } catch (IOException e) {
-            throw new FileProcessingException("Couldn't create new file");
+            throw new FileProcessingException("Couldn't create new file", e);
         }
         
         try {

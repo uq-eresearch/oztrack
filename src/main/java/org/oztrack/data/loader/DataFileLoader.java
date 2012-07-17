@@ -148,7 +148,7 @@ public abstract class DataFileLoader {
 
         } catch (Exception e) {
             jdbcAccess.truncateRawObservations(dataFile);
-            throw new FileProcessingException(e.toString());
+            throw new FileProcessingException(e.getMessage(), e);
         }
     }
     

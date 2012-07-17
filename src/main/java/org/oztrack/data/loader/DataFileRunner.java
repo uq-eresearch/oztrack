@@ -109,7 +109,7 @@ public class DataFileRunner {
                 failureTransaction.begin();
                 DataFile failureDataFile = dataFileDao.getDataFileById(dataFileId);
             	failureDataFile.setStatus(DataFileStatus.FAILED);
-                failureDataFile.setStatusMessage(e.toString());
+                failureDataFile.setStatusMessage(e.getMessage());
                 dataFileDao.update(failureDataFile);
                 failureTransaction.commit();
 

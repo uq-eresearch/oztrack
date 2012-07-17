@@ -57,7 +57,7 @@ public class PositionFixFileLoader extends DataFileLoader {
         try {
             fileInputStream = new FileInputStream(dataFile.getAbsoluteDataFilePath());
         } catch (FileNotFoundException e) {
-             throw new FileProcessingException("File not found.");
+             throw new FileProcessingException("File not found.", e);
         }
 
          DataInputStream in = new DataInputStream(fileInputStream);
@@ -68,7 +68,7 @@ public class PositionFixFileLoader extends DataFileLoader {
             strLine = br.readLine();
             lineNumber++;
         } catch (IOException e) {
-            throw new FileProcessingException("Problem reading file.");
+            throw new FileProcessingException("Problem reading file.", e);
         }
 
         /* Populate a HashMap containing which columns contains which bits of data
@@ -187,7 +187,7 @@ public class PositionFixFileLoader extends DataFileLoader {
                                     try {
                                         rawPositionFix.setDetectionTime(timeHandler(rawPositionFix.getDetectionTime(),dataRow[i]));
                                     } catch (FileProcessingException e) {
-                                        throw new FileProcessingException("Unable to read time format on line " + lineNumber + ": " + dataRow[i] );
+                                        throw new FileProcessingException("Unable to read time format on line " + lineNumber + ": " + dataRow[i], e);
                                     }
                                     break;
                                 case ID:
@@ -315,28 +315,29 @@ public class PositionFixFileLoader extends DataFileLoader {
         String [] timeBits = timeString.split(":");
 
         try {
-         if (!timeBits[0].isEmpty()) {
+         if ((timeBits.length >= 1) && !timeBits[0].isEmpty()) {
              int hours = Integer.parseInt(timeBits[0]);
              calendar.set(Calendar.HOUR_OF_DAY, hours);
           }
-          if (!timeBits[1].isEmpty()) {
+          if ((timeBits.length >= 2) && !timeBits[1].isEmpty()) {
               calendar.set(Calendar.MINUTE, Integer.parseInt(timeBits[1]));
           }
-          if (!timeBits[2].isEmpty()) {
+          if ((timeBits.length >= 3) && !timeBits[2].isEmpty()) {
               if (timeBits[2].contains(".")) {
                 String [] seconds = timeBits[2].split("\\.");
-                if (!seconds[0].isEmpty()) {
+                if ((seconds.length >= 1) && !seconds[0].isEmpty()) {
                   calendar.set(Calendar.SECOND, Integer.parseInt(seconds[0]));
                 }
-                if (!seconds[1].isEmpty()) {
+                if ((seconds.length >= 2) && !seconds[1].isEmpty()) {
                   calendar.set(Calendar.MILLISECOND, Integer.parseInt(seconds[1]));
                 }
-              } else {
+              }
+              else {
                   calendar.set(Calendar.SECOND, Integer.parseInt(timeBits[2]));
               }
           }
         } catch (Exception e) {
-            throw new FileProcessingException("Error in time format.");
+            throw new FileProcessingException("Error in time format.", e);
         }
 
         return calendar.getTime();
