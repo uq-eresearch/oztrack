@@ -362,15 +362,19 @@ public class PositionFixFileLoader extends DataFileLoader {
             return Double.parseDouble(matcher.group(1));
         }
         if ((matcher = degMinPattern.matcher(s)).find()) {
+            double deg = Double.parseDouble(matcher.group(1));
+            double signFactor = deg / Math.abs(deg);
             return
-                Double.parseDouble(matcher.group(1)) +
-                (Double.parseDouble(matcher.group(2)) / 60d);
+                deg +
+                signFactor * (Double.parseDouble(matcher.group(2)) / 60d);
         }
         if ((matcher = degMinSecPattern.matcher(s)).find()) {
+            double deg = Double.parseDouble(matcher.group(1));
+            double signFactor = deg / Math.abs(deg);
             return
-                Double.parseDouble(matcher.group(1)) +
-                (Double.parseDouble(matcher.group(2)) / 60d) +
-                (Double.parseDouble(matcher.group(3)) / 3600d);
+                deg +
+                signFactor * (Double.parseDouble(matcher.group(2)) / 60d) +
+                signFactor * (Double.parseDouble(matcher.group(3)) / 3600d);
         }
         throw new FileProcessingException("Could not parse coordinate: " + s);
     }
