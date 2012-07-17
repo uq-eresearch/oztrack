@@ -1,4 +1,4 @@
-function createCleanseMap(options) {
+function createCleanseMap(div, options) {
     return (function() {
         var cleanseMap = {};
         
@@ -17,7 +17,7 @@ function createCleanseMap(options) {
         var highlightControl;
         
         (function() {
-            map = new OpenLayers.Map('projectMap', {
+            map = new OpenLayers.Map(div, {
                 units: 'm',
                 projection: projection900913,
                 displayProjection: projection4326

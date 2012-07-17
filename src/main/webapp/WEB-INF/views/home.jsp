@@ -11,13 +11,25 @@
 	<jsp:attribute name="head">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
+        <style type="text/css">
+            #homeMap {
+                width: 650px;
+                height: 500px;
+                float: right;
+            }
+            #homeMapOptions {
+                height: 100%;
+                width: 245px;
+                float: left;
+            }
+        </style>
         <script src="http://maps.google.com/maps/api/js?v=3.9&sensor=false"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/OpenLayers.js"></script>
         <script type="text/javascript" src="<c:url value="/js/home.js"/>"></script>
         <script type="text/javascript"> 
             $(document).ready(function() {
                 $('#navHome').addClass('active');
-                map = createHomeMap();
+                map = createHomeMap('homeMap');
             });
         </script>
     </jsp:attribute>

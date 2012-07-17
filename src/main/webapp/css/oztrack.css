@@ -304,21 +304,12 @@ a:hover {
     color:#ef9800;
 }
 
-
 .errorMessage {
     font-style: italic;
     color:red;
 }
 
 /* maps */
-
-#map_canvas {
-    margin-left: 10px;
-    height: 100%;
-    width:600px;
-    height:350px;
-    z-index:2;
-}
 
 .mapTool {
     background-color:#e6e6c0;
@@ -335,101 +326,17 @@ a:hover {
     border-radius: 10px;
 }
 
-.animalInfo {
-	float:left;
-	width: 100%;
-	font-size: 0.9em;
-	/*border: solid 1px black;*/
-	margin-left: 8px;
-	margin-right: 8px;
-	margin-top: 0;
-	margin-bottom: 0;
-}
-
-.animalInfo table {
-	margin-top:5px;
-}
-
-.animalInfo .label {
-	width:7em;
-}
-
-.layerInfo {
-    margin: 0.5em 0;
-}
-
-#homeMap, #projectMap{
+#projectMap {
     width: 650px;
-    height:500px;
-    float:right;
+    height: 500px;
+    float: right;
 }
 
-#homeMapOptions, #projectMapOptions  {
-    height:100%;
-    width:245px;
-    float:left;
+#projectMapOptions {
+    height: 100%;
+    width: 245px;
+    float: left;
 }
-
-.homeMapPopup {
-/*
-	background-color:#e6e6c0;
-	opacity:0.9;
-*/
-}
-
-#accordion .ui-accordion-content {
-    padding-left: 5px;
-    padding-right: 5px;
-}
-
-#animalPanel, #homeRangeCalculatorPanel, #projectMapHelp {
-	height:350px;
-}
-
-#animalHeader {
-    width: 230px;
-}
-
-#projectMapHelp p {
-	text-align:justify;
-}
-
-.citation {
-	font-weight:bold;
-	text-align:left;
-
-}	
-
-form .baseLayersDiv, .dataLayersDiv {
-    margin:0px;
-    padding:0px;
-}
-
-form .dataLayersDiv input, form .baseLayersDiv input {
-    width:25px;
-}
-
-.baseLbl, .dataLbl {
-    width:100px;
-    font-weight: bold;
-    margin-top:5px;
-}
-
-#mapToolForm {
-    padding-left:0px;
-    padding-top:0px;
-    width:100%;
-    height:100%;
-}
-
-.smallSquare {
-	display:block;
-	height:14px;
-	width:14px;
-	float:left;
-	margin-right:5px;
-	margin-left:5px;
-}	
 
 /* forms */
 

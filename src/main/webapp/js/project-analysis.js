@@ -31,10 +31,10 @@ function animalInfoToggle () {
     });
 }
 
-function initializeProjectMap(projectId) {
+function initializeProjectMap(div, projectId) {
     animalInfoToggle();
     
-    map = new OpenLayers.Map('projectMap', {
+    map = new OpenLayers.Map(div, {
         units: 'm',
         projection: projection900913,
         displayProjection: projection4326

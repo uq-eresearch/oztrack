@@ -9,6 +9,23 @@
     <jsp:attribute name="head">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
+        <style type="text/css">
+            ul#cleanse-list {
+                margin: 10px 0;
+                padding-left: 0;
+            }
+            ul#cleanse-list li {
+                margin: 2px 0;
+                list-style: none;
+                background-repeat: no-repeat;
+                background-position: left middle;
+                line-height: 22px;
+                padding: 0 0 5px 28px;
+            }
+            ul#cleanse-list li {
+                background-image: url(/js/openlayers/theme/default/img/draw_polygon_on.png);
+            }
+        </style>
         <script src="http://maps.google.com/maps/api/js?v=3.9&sensor=false"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/proj4js/proj4js-compressed.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/OpenLayers.js"></script>
@@ -41,7 +58,7 @@
             }
             $(document).ready(function() {
                 $("#projectMapOptions").accordion({fillSpace: true});
-                cleanseMap = createCleanseMap({
+                cleanseMap = createCleanseMap('projectMap', {
                     projectId: <c:out value="${project.id}"/>,
                     onReset: function() {
                         jQuery('#cleanse-select').children().remove();
@@ -78,23 +95,6 @@
                 });
             });
         </script>
-        <style type="text/css">
-            ul#cleanse-list {
-                margin: 10px 0;
-                padding-left: 0;
-            }
-            ul#cleanse-list li {
-                margin: 2px 0;
-                list-style: none;
-                background-repeat: no-repeat;
-                background-position: left middle;
-                line-height: 22px;
-                padding: 0 0 5px 28px;
-            }
-            ul#cleanse-list li {
-                background-image: url(/js/openlayers/theme/default/img/draw_polygon_on.png);
-            }
-        </style>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>

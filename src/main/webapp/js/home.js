@@ -1,8 +1,8 @@
-function createHomeMap() {
+function createHomeMap(div) {
     var projection900913 = new OpenLayers.Projection('EPSG:900913');
     var projection4326 =  new OpenLayers.Projection("EPSG:4326");
 
-    var map = new OpenLayers.Map('homeMap', {
+    var map = new OpenLayers.Map(div, {
         units: 'm',
         projection: projection900913,
         displayProjection: projection4326
@@ -131,7 +131,7 @@ function createProjectClickControl(map, projectPointsLayer) {
 function buildPopup(e) {
     var f = e.feature;
     var popupHtml =
-        "<div class='homeMapPopup'>" +
+        "<div>" +
         "<h3>" + f.attributes.projectTitle + "</h3>" +
         "<p><b>Species: </b><br>" + f.attributes.speciesCommonName + "</p>" +
         "<p><b>Coverage: </b><br>" + f.attributes.spatialCoverageDescr + "</p>" +

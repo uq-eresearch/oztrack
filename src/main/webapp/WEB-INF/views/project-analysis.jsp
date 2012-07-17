@@ -9,6 +9,56 @@
     <jsp:attribute name="head">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
+        <style type="text/css">
+            #animalPanel, #homeRangeCalculatorPanel, #projectMapHelp {
+                height:350px;
+            }
+            #animalHeader {
+                width: 230px;
+            }
+            #projectMapHelp p {
+                text-align:justify;
+            }
+            #mapToolForm {
+                padding-left:0px;
+                padding-top:0px;
+                width:100%;
+                height:100%;
+            }
+            .animalInfo {
+                float:left;
+                width: 100%;
+                font-size: 0.9em;
+                /*border: solid 1px black;*/
+                margin-left: 8px;
+                margin-right: 8px;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            
+            .animalInfo table {
+                margin-top:5px;
+            }
+            
+            .animalInfo .label {
+                width:7em;
+            }
+            .layerInfo {
+                margin: 0.5em 0;
+            }
+            .smallSquare {
+                display:block;
+                height:14px;
+                width:14px;
+                float:left;
+                margin-right:5px;
+                margin-left:5px;
+            }
+            .citation {
+                font-weight: bold;
+                text-align: left;
+            }
+        </style>
         <script src="http://maps.google.com/maps/api/js?v=3.9&sensor=false"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/proj4js/proj4js-compressed.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/OpenLayers.js"></script>
@@ -44,7 +94,7 @@
                 $("#projectMapOptions").accordion();
                 $('#fromDatepicker').datepicker();
                 $('#toDatepicker').datepicker();
-                initializeProjectMap(${project.id});
+                initializeProjectMap('projectMap', ${project.id});
             });
         </script>
         <style type="text/css">
