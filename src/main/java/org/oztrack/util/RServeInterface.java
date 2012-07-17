@@ -130,7 +130,7 @@ public class RServeInterface {
     }
 
     protected void createRPositionFixDataFrame() throws RServeInterfaceException {
-        List<PositionFix> positionFixList = positionFixDao.queryProjectPositionFixes(this.searchQuery);
+        List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(this.searchQuery);
 
         int [] animalIds = new int[positionFixList.size()];
         double [] latitudes= new double[positionFixList.size()];
