@@ -72,8 +72,7 @@ a:hover {
 /* main divs */
 
 #container {
-	margin: auto auto;
-	margin-top:20px;
+	margin: 20px auto;
 	width: 990px;
 	background-color:#FBFEE9;
 }
@@ -97,7 +96,7 @@ a:hover {
     height:140px;
 }	
 
-#login{
+#login {
     position: relative;
     float: right;
     top: 115px;
@@ -158,33 +157,36 @@ a:hover {
     padding-bottom:20px;
 }	
 
-#logos {
-    width:150px;
-    margin: 10px 0;
-    text-align: center;
-}
-
-#logos img {
-    margin: 12px 0;
-    border:none;
-}
-
 #main {
     margin-top: 10px;
-    padding-bottom: 20px;
     background-color: #fbfee9;
 }
 
-
 #footer {
-    bottom: 0;
-    font-size: 0.7em;
-    margin: 0.3em auto;
-    position: relative;
-    float: right;
-    color:#fbfee9;
+    margin-top: 30px;
+    text-align: center;
+    border-top: 1px solid #d0d0bb;
+    box-shadow: 0 5px 5px 0px #d4d4bf inset;
+    background: #f0f0da;
 }
- .clearboth {
+
+#logos {
+   padding: 16px 0;
+}
+
+#logos img {
+    margin: 0 20px;
+    border: none;
+}
+
+#copyright {
+    padding-bottom: 8px;
+    color: #666;
+    font-size: 0.7em;
+    text-align: center;
+}
+
+.clearboth {
     clear: both;
     width: 0px;
     height: 0px;
