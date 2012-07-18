@@ -8,7 +8,7 @@ body {
     height: 100%;
     font-family: Verdana, Helvetica, Arial, sans-serif;
     font-size:14px;
-    background-color: #263f00;
+    background-color: #263F00;
     background-repeat: no-repeat;
 }
 
@@ -72,9 +72,10 @@ a:hover {
 /* main divs */
 
 #container {
-	margin: 20px auto;
+	margin: 0 auto;
 	width: 990px;
-	background-color:#FBFEE9;
+	background-color: #FBFEE9;
+    box-shadow: 0 0 6px 6px #223900;
 }
 
 #header_left {
@@ -166,7 +167,6 @@ a:hover {
     margin-top: 30px;
     text-align: center;
     border-top: 1px solid #d0d0bb;
-    box-shadow: 0 5px 5px 0px #d4d4bf inset;
     background: #f0f0da;
 }
 
