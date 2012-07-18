@@ -6,7 +6,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ attribute name="title" required="true" %>
 <%@ attribute name="head" required="true" fragment="true" %>
-<%@ attribute name="breadcrumbs" required="true" fragment="true" %>
+<%@ attribute name="breadcrumbs" required="false" fragment="true" %>
 <%@ attribute name="sidebar" required="false" fragment="true" %>
 <html>
 <head>
@@ -61,9 +61,11 @@
         </c:if>
     </ul>
 </div>
+<c:if test="${!empty breadcrumbs}">
 <div id="crumbs">
     <jsp:invoke fragment="breadcrumbs"/>
 </div>
+</c:if>
 <div id="main">
     <c:if test="${!empty sidebar}">
 	<div id="leftMenu">
