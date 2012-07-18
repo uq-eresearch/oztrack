@@ -67,7 +67,7 @@ function createProjectPointsStyleMap() {
     };
     var pointsDefaultStyle = new OpenLayers.Style(
         {
-            pointRadius: 5,
+            pointRadius: 4.5,
             strokeColor: "#000000",
             strokeWidth: 1.5,
             strokeOpacity: 0.6,
@@ -80,9 +80,9 @@ function createProjectPointsStyleMap() {
     );
     var pointsSelectStyle = new OpenLayers.Style(
         {
-            pointRadius: 8,
+            pointRadius: 4.5,
             strokeColor: "#000000",
-            strokeWidth: 2,
+            strokeWidth: 1.5,
             strokeOpacity: 0.9,
             fillColor: "${getColour}",
             fillOpacity: 1.0
@@ -92,7 +92,7 @@ function createProjectPointsStyleMap() {
         }
     );
     var pointsTempStyle = {
-        strokeOpacity: 0.0,
+        fillOpacity: 0.9,
         cursor: 'pointer'
     };
     var pointsStyleMap = new OpenLayers.StyleMap({
