@@ -142,7 +142,7 @@ a:hover {
 }
 
 #content.wide {
-    margin-left: 40px;
+    margin-left: 20px;
 }
 
 #content {
@@ -316,9 +316,7 @@ a:hover {
 .mapTool {
     background-color:#e6e6c0;
     font-size: 0.8em;
-    width:900px;
     position:relative;
-    float:left;
 	padding: 8px;   
     -khtml-border-radius: 10px;
     -webkit-border-radius: 10px;
@@ -329,8 +327,8 @@ a:hover {
 }
 
 #projectMap {
-    width: 650px;
-    height: 500px;
+    width: 682px;
+    height: 520px;
     float: right;
 }
 

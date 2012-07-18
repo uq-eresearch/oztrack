@@ -116,7 +116,7 @@
             }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
-                $("#projectMapOptions").accordion();
+                $("#projectMapOptions").accordion({fillSpace: true});
                 $('#fromDatepicker').datepicker();
                 $('#toDatepicker').datepicker();
                 initializeProjectMap('projectMap', ${project.id});

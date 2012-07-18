@@ -57,6 +57,7 @@
                 return false;
             }
             $(document).ready(function() {
+                $('#navTrack').addClass('active');
                 $("#projectMapOptions").accordion({fillSpace: true});
                 cleanseMap = createCleanseMap('projectMap', {
                     projectId: <c:out value="${project.id}"/>,
