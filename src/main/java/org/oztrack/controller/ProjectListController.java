@@ -32,6 +32,7 @@ public class ProjectListController {
     @ModelAttribute("project")
     public Project getProject() {
         Project project = new Project();
+        project.setIsGlobal(true);
         project.setRightsStatement("The data is the property of the University of Queensland. Permission is required to use this material.");
         return project;
     }

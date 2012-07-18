@@ -193,16 +193,22 @@
 		
 		<div class="formSubheader">Data Availability</div>
 		
-			<div class="help">
-			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
-			<span><b>Availability:</b><br> Project data is currently only available to users with Admin access to a project, but can
-		be made available to all users.
-			</span></a>
-			</div>
+		<div class="help">
+			<a class=info href="#">
+            <img src="<c:url value="/images/help.png"/>" border="0">
+			<span>
+                <b>Access Rights:</b><br>
+                Whether project data are available to all users or only the owner of a project.
+                Note that metadata including title, description, location, and animal species
+                are made publicly available for all projects regardless of this setting.
+			</span>
+            </a>
+		</div>
 		
 		<div>
-		<label>Access Rights:</label><form:checkbox cssClass="checkbox" path="isGlobal" id="isGlobal"/>
-		The data in this project is to be made publicly available via OzTrack.
+		    <label>Access Rights:</label>
+            <form:checkbox cssClass="checkbox" path="isGlobal" id="isGlobal"/>
+            The data in this project is to be made publicly available via OzTrack.
 		</div>
 		
 			<div class="help">
