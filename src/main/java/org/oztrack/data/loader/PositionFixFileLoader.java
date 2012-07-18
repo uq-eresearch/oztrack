@@ -318,28 +318,28 @@ public class PositionFixFileLoader extends DataFileLoader {
         	calendar.add(Calendar.HOUR, dataFile.getLocalTimeConversionHours().intValue());
         }
         
-        String [] timeBits = timeString.split(":");
+        String [] timeTokens = timeString.split(":");
 
         try {
-         if ((timeBits.length >= 1) && !timeBits[0].isEmpty()) {
-             int hours = Integer.parseInt(timeBits[0]);
+         if ((timeTokens.length >= 1) && !timeTokens[0].trim().isEmpty()) {
+             int hours = Integer.parseInt(timeTokens[0].trim());
              calendar.set(Calendar.HOUR_OF_DAY, hours);
           }
-          if ((timeBits.length >= 2) && !timeBits[1].isEmpty()) {
-              calendar.set(Calendar.MINUTE, Integer.parseInt(timeBits[1]));
+          if ((timeTokens.length >= 2) && !timeTokens[1].trim().isEmpty()) {
+              calendar.set(Calendar.MINUTE, Integer.parseInt(timeTokens[1].trim()));
           }
-          if ((timeBits.length >= 3) && !timeBits[2].isEmpty()) {
-              if (timeBits[2].contains(".")) {
-                String [] seconds = timeBits[2].split("\\.");
-                if ((seconds.length >= 1) && !seconds[0].isEmpty()) {
-                  calendar.set(Calendar.SECOND, Integer.parseInt(seconds[0]));
+          if ((timeTokens.length >= 3) && !timeTokens[2].trim().isEmpty()) {
+              if (timeTokens[2].contains(".")) {
+                String [] secondsTokens = timeTokens[2].split("\\.");
+                if ((secondsTokens.length >= 1) && !secondsTokens[0].trim().isEmpty()) {
+                  calendar.set(Calendar.SECOND, Integer.parseInt(secondsTokens[0].trim()));
                 }
-                if ((seconds.length >= 2) && !seconds[1].isEmpty()) {
-                  calendar.set(Calendar.MILLISECOND, Integer.parseInt(seconds[1]));
+                if ((secondsTokens.length >= 2) && !secondsTokens[1].trim().isEmpty()) {
+                  calendar.set(Calendar.MILLISECOND, Integer.parseInt(secondsTokens[1].trim()));
                 }
               }
               else {
-                  calendar.set(Calendar.SECOND, Integer.parseInt(timeBits[2]));
+                  calendar.set(Calendar.SECOND, Integer.parseInt(timeTokens[2].trim()));
               }
           }
         } catch (Exception e) {
