@@ -44,7 +44,10 @@
 				<p><c:out value="${errorStr}"/></p>
 				
 				<table class="dataTable" id="dataFileStatusTable">
-				
+                    <col style="width: 200px;" />
+                    <col style="width: 150px;" />
+                    <col style="width: 100px;" />
+                    <col style="width: 100px;" />
 				    <tr>
 				        <th>File Name</th>
 				        <th>Detection Date Range</th>

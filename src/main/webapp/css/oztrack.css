@@ -31,11 +31,11 @@ td h2 {
 }
 
 #content {
-	margin-right:20px;
+    margin: 0 20px;
 }
 
 #content p {
-	margin-right:20px;
+	margin-right: 20px;
 }
 
 p {
@@ -133,11 +133,10 @@ a:hover {
 }
 
 #content.narrow {
-    margin-left: 300px;
+    margin-left: 240px;
 }
 
 #content.wide {
-    margin-left: 20px;
 }
 
 #content {
@@ -148,16 +147,15 @@ a:hover {
     position: relative;
     float: left;
     width: 200px;
-    margin: 0 40px;
+    margin: 0 20px 0 20px;
 }	
 
 #main {
-    margin-top: 10px;
+    margin: 20px 0 20px 0;
     background-color: #fbfee9;
 }
 
 #footer {
-    margin-top: 30px;
     text-align: center;
     border-top: 1px solid #d0d0bb;
     background: #f0f0da;
@@ -367,16 +365,41 @@ form div {
 
 }
 
+table.form {
+}
+
+table.form th,
+table.form td {
+    vertical-align: top;
+    padding: 5px 0;
+}
+
+table.form .form-label {
+}
+
+table.form .form-field {
+    width: 360px;
+}
+
+table.form .form-help {
+    width: 40px;
+    padding: 0 10px;
+}
+
+table.form th,
 form div label {
-   display: block;
-  float: left;
-  width: 160px;
-  padding-left:5px;
-  padding-top:5px;
-  padding-right:15px;
-  margin: 0 0 5px 0;
-  text-align: right;
-  font-weight:bold;
+    width: 160px;
+    padding-left: 5px;
+    padding-top: 5px;
+    padding-right: 15px;
+    margin: 0 0 5px 0;
+    text-align: right;
+    font-weight: bold;
+}
+
+form div label {
+    display: block;
+    float: left;
 }
 
 form div select, form div textarea, form div input {
@@ -501,21 +524,20 @@ tbody tr:hover {
 }
 
 .dataTable {
-    margin-top:10px;
-    text-align:center;
+    margin-top: 10px;
     font-size: 0.7em;
-    width:92%;
 }
 
 .dataTable  th {
+    text-align: center;
     font-weight: bold;
     background-color:#f5ce7c;
     padding: 5px 5px;
     border: #263f00 solid 1px;
-
 }
 
 .dataTable  td {
+    text-align: center;
     padding: 5px 5px;
     border: #263f00 solid 1px;
 }
@@ -525,7 +547,6 @@ tbody tr:hover {
     margin-top:10px;
     margin-bottom:10px;
     font-size: 0.8em;
-
 }
 
 .dataTableNav a {

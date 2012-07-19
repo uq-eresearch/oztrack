@@ -193,48 +193,48 @@
 		
 		<div class="formSubheader">Data Availability</div>
 		
-		<div class="help">
-			<a class=info href="#">
-            <img src="<c:url value="/images/help.png"/>" border="0">
-			<span>
-                <b>Access Rights:</b><br>
-                Whether project data are available to all users or only the owner of a project.
-                Note that metadata including title, description, location, and animal species
-                are made publicly available for all projects regardless of this setting.
-			</span>
-            </a>
-		</div>
-		
-		<div>
-		    <label>Access Rights:</label>
-            <form:checkbox cssClass="checkbox" path="isGlobal" id="isGlobal"/>
-            The data in this project is to be made publicly available via OzTrack.
-		</div>
-		
-			<div class="help">
-			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
-			<span><b>Rights Statement:</b><br>This should reflect any restrictions around the access rights and use of your data.
-			</span></a>
-			</div>
-		
-		<div>
-		<label>Rights Statement:</label>
-		<form:textarea path="rightsStatement" rows="3" cols="40" />
-		<form:errors path="rightsStatement" cssClass="formErrors"/>
-		</div>
-		
-		<c:choose>
-		<c:when test="${project.id != null}">
-		
-				<div class="help">
-				<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
-				<span><b>Metadata to ANDS:</b><br> 	Project metadata on OzTrack is publicly available, and users are encouraged 
-				to publish their metadata as a collection record in the Australian National Data Service. 
-				</span></a>
-				</div>
-			
-			<div>
-			<label style="height:6ex;">Metadata:</label>
+		<table class="form">
+        <tr>
+            <th class="form-label">
+		        Access Rights:
+            </th>
+            <td class="form-field">
+                <form:radiobutton id="isGlobalTrue" cssClass="checkbox" path="isGlobal" value="true"/>
+                <label for="isGlobalTrue" style="font-weight: bold; color: green;">Open Access</label>
+                <div style="margin: 0.5em 0;">
+                    Data in this project will be made publicly available via OzTrack.
+                </div>
+                <form:radiobutton id="isGlobalFalse" cssClass="checkbox" path="isGlobal" value="false"/>
+                <label for="isGlobalFalse" style="font-weight: bold; color: red;">Restricted Access</label>
+                <div style="margin: 0.5em 0;">
+                    Data in this project will only be accessible to you.
+                    However, note that metadata including title, description, location, and animal species
+                    are made publicly available for all projects in OzTrack.
+                </div>
+            </td>
+			<td class="form-help">
+			</td>
+	    </tr>
+        <tr>
+    		<th class="form-label">
+                <label>Rights Statement:</label>
+            </th>
+            <td class="form-field">
+        		<form:textarea path="rightsStatement" rows="3" cols="40" />
+        		<form:errors path="rightsStatement" cssClass="formErrors"/>
+            </td>
+            <td class="form-help">
+                <a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
+                <span><b>Rights Statement:</b><br>This should reflect any restrictions around the access rights and use of your data.</span>
+                </a>
+            </td>
+        </tr>
+		<c:if test="${project.id != null}">
+        <tr>
+			<th class="form-label">
+                <label>Metadata:</label>
+            </th>
+            <td class="form-field">
 				<c:choose>
 				<c:when test ="${empty project.dataSpaceUpdateDate}">
 					Your project metadata has not yet been published to ANDS. 
@@ -244,27 +244,24 @@
 					Your project metadata has been published and was last updated on 
 					<fmt:formatDate pattern="${dateTimeFormatPattern}" value="${project.dataSpaceUpdateDate}"/>.
 					You can <a href="#">update the record</a>.
-					
 				</c:otherwise>
 				</c:choose>
-			</div>
-			
-			<div>
-			<label></label>
-			<input type="submit" value="Update Project"  class="oztrackButton" />
-			</div>
-			
-		</c:when>
-		<c:otherwise>
-		
-			<div>
-			<label></label>
-			<div><input type="submit" value="Create OzTrack Project" class="oztrackButton" /></div>
-			</div>
-		
-		</c:otherwise>
-		</c:choose>
-		
+            </td>
+			<td class="form-help">
+				<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
+				<span>
+                    <b>Metadata to ANDS:</b><br>
+                    Project metadata on OzTrack is publicly available, and users are encouraged to
+                    publish their metadata as a collection record in the Australian National Data Service. 
+				</span>
+                </a>
+			</td>
+        </tr>
+        </c:if>
+        </table>
+		<div>
+		    <input class="oztrackButton" type="submit" value="${(project.id != null) ? 'Update Project' : 'Create OzTrack Project'}" />
+		</div>
 		</form:form>
     </jsp:body>
 </tags:page>

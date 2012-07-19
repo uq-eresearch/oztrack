@@ -6,6 +6,11 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <tags:page title="Projects">
     <jsp:attribute name="head">
+        <style type="text/css">
+            #content.narrow .dataTable {
+                width: 100%;
+            }
+        </style>
         <script type="text/javascript"> 
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
@@ -34,8 +39,10 @@
             </c:when>
             <c:otherwise>
                 <h2>My Projects</h2>
-                <p>You have access to <c:out value="${fn:length(currentUser.projectUsers)}"/> projects.</p>
-                <p>Select a project to work with from the list below, or <a href="<c:url value='/projects/new'/>">create a new project.</a></p>
+                <p>
+                    You have access to <c:out value="${fn:length(currentUser.projectUsers)}"/> projects.
+                    Select a project to work with from the list below, or <a href="<c:url value='/projects/new'/>">create a new project.</a>
+                </p>
                 <table class="dataTable">
                 <col style="width: 300px;" />
                 <col style="width: 150px;" />
@@ -62,9 +69,9 @@
             </c:otherwise>
             </c:choose>
         </c:if>
-        <h2>Public Projects</h2>
-        <tags:projects-table projects="${publicProjects}" adjective="public"/>
-        <h2>Private Projects</h2>
-        <tags:projects-table projects="${privateProjects}" adjective="private"/>
+        <h2>Open Access Projects</h2>
+        <tags:projects-table projects="${publicProjects}" adjective="open access"/>
+        <h2>Restricted Access Projects</h2>
+        <tags:projects-table projects="${privateProjects}" adjective="restricted access"/>
     </jsp:body>
 </tags:page>

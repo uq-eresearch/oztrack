@@ -7,10 +7,14 @@
 <%@ attribute name="adjective" type="java.lang.String" required="true" %>
 <c:choose>
 <c:when test="${empty projects}">
-    <p>There are currently no ${adjective} project<c:if test="${fn:length(projects) != 1}">s</c:if> in OzTrack.</p>
+    <p>
+        There are currently no ${adjective} projects in OzTrack.
+    </p>
 </c:when>
 <c:otherwise>
-    <p>There are currently <c:out value="${fn:length(projects)}"/> ${adjective} project<c:if test="${fn:length(projects) != 1}">s</c:if> in OzTrack.</p>
+    <p>
+        There are currently <c:out value="${fn:length(projects)}"/> ${adjective} projects in OzTrack.
+    </p>
     <table class="dataTable">
     <col style="width: 250px;" />
     <col style="width: 150px;" />

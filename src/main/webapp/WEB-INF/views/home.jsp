@@ -9,20 +9,8 @@
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
         <style type="text/css">
-            #homeMap {
-                margin: 20px 0 -10px 0;
-                height: 500px;
-                background-color:#e6e6c0;
-                padding: 8px;
-                -khtml-border-radius: 10px;
-                -webkit-border-radius: 10px;
-                -moz-border-radius: 10px;
-                -ms-border-radius: 10px;
-                -o-border-radius: 10px;
-                border-radius: 10px;
-            }
             #welcome {
-                margin: 10px 0 0 0;
+                margin: 0 0 0 0;
                 float: left;
                 text-align: justify;
                 z-index: 10000000;
@@ -40,6 +28,18 @@
             }
             #welcome p {
                 margin: 1em 1em 1em 0;
+            }
+            #homeMap {
+                margin: 20px 0 0 0;
+                height: 500px;
+                background-color:#e6e6c0;
+                padding: 8px;
+                -khtml-border-radius: 10px;
+                -webkit-border-radius: 10px;
+                -moz-border-radius: 10px;
+                -ms-border-radius: 10px;
+                -o-border-radius: 10px;
+                border-radius: 10px;
             }
         </style>
         <script src="http://maps.google.com/maps/api/js?v=3.9&sensor=false"></script>

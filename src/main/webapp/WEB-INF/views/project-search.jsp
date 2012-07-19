@@ -101,14 +101,20 @@
 		
 		<c:if test="${positionFixList != null}">
 		
-		    <table class="dataTable">
+		    <table class="dataTable" style="width: 92%;">
+            <col style="width: 110px;" />
+            <col style="width: 60px;" />
+            <col style="width: 150px;" />
+            <col style="width: 70px;" />
+            <col style="width: 70px;" />
+            <col style="width: 70px;" />
 		    <tr>
 		        <th>Date/Time</th>
 		        <th>Animal Id</th>
 		        <th>Animal Name</th>
 		        <th>Latitude</th>
 		        <th>Longitude</th>
-		        <th>DataFile Upload</th>
+		        <th>Uploaded</th>
 		    </tr>
 		    <c:forEach items="${positionFixList}" var="detection">
 		    <tr>
