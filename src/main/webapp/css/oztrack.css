@@ -113,11 +113,12 @@ a:hover {
 }	
 
 #nav {
+    text-align: center;
     background-color: #131f00;
 }
 
 #navMenu {
-	padding-left: 300px;
+    padding: 0;
 }	
 
 #crumbs {
@@ -201,9 +202,9 @@ a:hover {
 #navMenu a:visited,
 #navMenu a:hover,
 #navMenu a:active {
+    margin: 0 25px;
     font-size: 0.9em;
     font-weight: bold;
-    margin-right: 50px;
     text-decoration: none;
 }
 
