@@ -154,16 +154,21 @@
             </td>
         </tr>
         <tr>
-            <th>Contact Organisation:</th>
+            <th>Organisation:</th>
             <td><c:out value="${project.dataSpaceAgent.organisation}"/></td>
         </tr>
+        <c:if test="${not empty project.publicationTitle}">
         <tr>
             <th>Publication:</th>
             <td>
-                <i><c:out value="${project.publicationTitle}"/></i><br>
+                <i><c:out value="${project.publicationTitle}"/></i>
+                <c:if test="${not empty project.publicationUrl}">
+                <br>
                 <a href="<c:out value="${project.publicationUrl}"/>"><c:out value="${project.publicationUrl}"/></a>
+                </c:if>
             </td>
         </tr>
+        </c:if>
         <tr>
             <th>Rights Statement:</th>
             <td><c:out value="${project.rightsStatement}"/></td>
