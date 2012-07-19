@@ -107,7 +107,7 @@ public class ProjectDaoImpl implements ProjectDao {
     public List<Project> getProjectsByPublished(boolean published) {
         @SuppressWarnings("unchecked")
         List<Project> resultList = em
-            .createQuery("from Project where isglobal = :published")
+            .createQuery("from Project where isglobal = :published order by createDate")
             .setParameter("published", published)
             .getResultList();
         return resultList;
