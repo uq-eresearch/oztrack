@@ -245,6 +245,7 @@ public class WFSMapQueryView extends AbstractView {
         simpleFeatureTypeBuilder.add("lastDetectionDate",String.class);
         simpleFeatureTypeBuilder.add("spatialCoverageDescr", String.class);
         simpleFeatureTypeBuilder.add("speciesCommonName", String.class);
+        simpleFeatureTypeBuilder.add("global", Boolean.class);
 
         SimpleFeatureType simpleFeatureType = simpleFeatureTypeBuilder.buildFeatureType();
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(simpleFeatureType);
@@ -261,6 +262,7 @@ public class WFSMapQueryView extends AbstractView {
 	        	featureBuilder.set("lastDetectionDate", sdf.format(project.getLastDetectionDate()));
 	        	featureBuilder.set("spatialCoverageDescr", project.getSpatialCoverageDescr());
 	        	featureBuilder.set("speciesCommonName", project.getSpeciesCommonName());
+	        	featureBuilder.set("global", project.isGlobal());
 	        	
 	        	 SimpleFeature simpleFeature = featureBuilder.buildFeature(project.getId().toString());
 	             collection.add(simpleFeature);

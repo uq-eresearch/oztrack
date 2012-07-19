@@ -41,6 +41,18 @@
                 -o-border-radius: 10px;
                 border-radius: 10px;
             }
+            .home-popup {
+                margin-top: 0;
+                padding: 0 10px;
+                font-size: 11px;
+            }
+            .home-popup-attr-name {
+                font-weight: bold;
+                margin-bottom: 0.25em;
+            }
+            .home-popup-attr-value {
+                margin-bottom: 0.75em;
+            }
         </style>
         <script src="http://maps.google.com/maps/api/js?v=3.9&sensor=false"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/OpenLayers.js"></script>

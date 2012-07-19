@@ -121,23 +121,33 @@ function createProjectClickControl(map, projectPointsLayer) {
             clickout: true,
             eventListeners: {
                 featurehighlighted: function(e) {
-                    map.addPopup(buildPopup(e));
+                    map.addPopup(buildPopup(e.feature));
                 }
             }
         }
     );
 }
 
-function buildPopup(e) {
-    var f = e.feature;
+function buildPopup(f) {
     var popupHtml =
-        "<div>" +
-        "<h3>" + f.attributes.projectTitle + "</h3>" +
-        "<p><b>Species: </b><br>" + f.attributes.speciesCommonName + "</p>" +
-        "<p><b>Coverage: </b><br>" + f.attributes.spatialCoverageDescr + "</p>" +
-        "<p><b>Date Range: </b><br>" + f.attributes.firstDetectionDate + " to " + f.attributes.lastDetectionDate + "</p>" +
-        "<p><a href='projects/" + f.attributes.projectId + "'>more</a> ...</p>" +
-        "</div>";
+        '<div class="home-popup">' +
+        '    <h3>' + f.attributes.projectTitle + '</h3>' +
+        '    <div class="home-popup-attr-name">Species:</div>' +
+        '    <div class="home-popup-attr-value">' + f.attributes.speciesCommonName + '</div>' +
+        '    <div class="home-popup-attr-name">Coverage:</div>' +
+        '    <div class="home-popup-attr-value">' + f.attributes.spatialCoverageDescr + '</div>' +
+        '    <div class="home-popup-attr-name">Date range:</div>' +
+        '    <div class="home-popup-attr-value">' + f.attributes.firstDetectionDate + ' to ' + f.attributes.lastDetectionDate + '</div>' +
+        '    <div class="home-popup-attr-name">Data access:</div>' +
+        '    <div class="home-popup-attr-value">' + 
+        (
+            (f.attributes.global == 'true')
+            ? '<span style="font-weight: bold; color: green;">Open Access</span>'
+            : '<span style="font-weight: bold; color: red;">Restricted Access</span>'
+        ) +
+        '    </div>' +
+        '    <div style="margin-top: 1em;"><a href="projects/' + f.attributes.projectId + '">Open project</a></div>' +
+        '</div>';
     var popup = new OpenLayers.Popup.AnchoredBubble(
         f.attributes.projectId,
         f.geometry.getBounds().getCenterLonLat(),
@@ -148,7 +158,7 @@ function buildPopup(e) {
     );
     popup.autoSize = true;
     popup.setBackgroundColor("#FBFEE9");
-    popup.setOpacity("0.9");
+    popup.setOpacity("0.95");
     popup.closeOnMove = true;
     return popup;
 }
