@@ -5,8 +5,10 @@
 <div class="sidebarMenu">
     <ul>
         <li><a href="<c:url value="/projects/${project.id}"/>">Project Details</a></li>
+        <sec:authorize access="#project.global or hasPermission(#project, 'read')">
         <li><a href="<c:url value="/projects/${project.id}/analysis"/>">Analysis Tools</a></li>
         <li><a href="<c:url value="/projects/${project.id}/search"/>">View Raw Data</a></li>
+        </sec:authorize>
         <sec:authorize access="hasPermission(#project, 'write')">
         <li><a href="<c:url value="/projects/${project.id}/datafiles"/>">Data Uploads</a></li>
         <li><a href="<c:url value="/projects/${project.id}/cleanse"/>">Data Cleansing</a></li>

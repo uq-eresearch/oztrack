@@ -26,7 +26,7 @@
         </p>
         </c:if>
         
-		<form method="POST" action="/j_spring_security_check">
+		<form method="POST" action="/j_spring_security_check" style="width: 600px;">
 		
 		<div>
 		<label for="username">Username:</label>

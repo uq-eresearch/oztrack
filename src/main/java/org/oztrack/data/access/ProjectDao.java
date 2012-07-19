@@ -15,5 +15,5 @@ public interface ProjectDao {
     void delete(Project project);
     void create(Project project, User currentUser) throws Exception;
     void saveProjectImageFile(Project project) throws Exception;
-    List<Project> getPublishedProjects();
+    List<Project> getProjectsByPublished(boolean published);
 }

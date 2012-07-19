@@ -122,20 +122,14 @@ a:hover {
 
 #crumbs {
     background-color:#fbfee9;
-}
-
-#crumbs {
     font-size: 0.8em;
-    padding-top: 0.8em;
     padding-bottom: 0.8em;
+    margin: 10px 20px 20px 20px;
+    border-bottom: 1px solid #e8e8e8;
 }
 
 #login {
     font-size: 0.8em;
-}
-
-#crumbs {
-    margin-left: 300px;
 }
 
 #content.narrow {
@@ -151,11 +145,10 @@ a:hover {
 }
 
 #leftMenu {
-    position:relative;
-    float:left;
-    width: 175px;
-    margin-left:50px;
-    padding-bottom:20px;
+    position: relative;
+    float: left;
+    width: 200px;
+    margin: 0 40px;
 }	
 
 #main {

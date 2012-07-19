@@ -34,9 +34,14 @@
             </c:when>
             <c:otherwise>
                 <h2>My Projects</h2>
-                <p>You have access to <c:out value="${fn:length(currentUser.projectUsers)}"/> project(s).</p>
+                <p>You have access to <c:out value="${fn:length(currentUser.projectUsers)}"/> projects.</p>
                 <p>Select a project to work with from the list below, or <a href="<c:url value='/projects/new'/>">create a new project.</a></p>
                 <table class="dataTable">
+                <col style="width: 300px;" />
+                <col style="width: 150px;" />
+                <col style="width: 125px;" />
+                <col style="width: 100px;" />
+                <col style="width: 80px;" />
                 <tr>
                     <th>Title</th>
                     <th>Spatial Coverage</th>
@@ -57,32 +62,9 @@
             </c:otherwise>
             </c:choose>
         </c:if>
-        <c:if test="${currentUser != null}">
         <h2>Public Projects</h2>
-        </c:if>
-        <c:choose>
-        <c:when test="${empty publishedProjects}">
-            <p>There are currently no published projects in OzTrack.</p>
-        </c:when>
-        <c:otherwise>
-            <p>There are currently <c:out value="${fn:length(publishedProjects)}"/> published project(s) in OzTrack.</p>
-            <table class="dataTable">
-            <tr>
-                <th>Title</th>
-                <th>Spatial Coverage</th>
-                <th>Project Type</th>
-                <th>Created Date</th>
-            </tr>
-            <c:forEach items="${publishedProjects}" var="project">
-            <tr>
-                <td><a href="<c:url value="/projects/${project.id}"/>"><c:out value="${project.title}"/></a></td>
-                <td><c:out value="${project.spatialCoverageDescr}"/></td>
-                <td><c:out value="${project.projectType.displayName}"/></td>
-                <td><fmt:formatDate value="${project.createDate}" type="date" dateStyle="long"/></td>
-            </tr>
-            </c:forEach>
-            </table>
-        </c:otherwise>
-        </c:choose>
+        <tags:projects-table projects="${publicProjects}" adjective="public"/>
+        <h2>Private Projects</h2>
+        <tags:projects-table projects="${privateProjects}" adjective="private"/>
     </jsp:body>
 </tags:page>

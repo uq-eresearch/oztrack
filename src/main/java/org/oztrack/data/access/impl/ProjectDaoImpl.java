@@ -104,9 +104,12 @@ public class ProjectDaoImpl implements ProjectDao {
     
     @Override
     @Transactional
-    public List<Project> getPublishedProjects() {
+    public List<Project> getProjectsByPublished(boolean published) {
         @SuppressWarnings("unchecked")
-        List<Project> resultList = em.createQuery("from Project where isglobal = true").getResultList();
+        List<Project> resultList = em
+            .createQuery("from Project where isglobal = :published")
+            .setParameter("published", published)
+            .getResultList();
         return resultList;
     }
 }

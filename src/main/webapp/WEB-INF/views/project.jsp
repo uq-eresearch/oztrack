@@ -12,6 +12,26 @@
     <jsp:attribute name="head">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
+        <style type="text/css">
+            #coverageMap {
+                float: right;
+                width: 240px;
+                height: 200px;
+            }
+            #projectData {
+                float:left;
+                width:420px;
+            }
+            #projectDetails {
+                float: left;
+            }
+            #content.narrow #projectDetails {
+                width: 100%;
+            }
+            #content.wide #projectDetails {
+                width: 690px;
+            }
+        </style>
         <script src="http://maps.google.com/maps/api/js?v=3.9&sensor=false"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/OpenLayers.js"></script>
         <script type="text/javascript" src="<c:url value="/js/coverage.js"/>"></script>
@@ -30,22 +50,27 @@
         &rsaquo; <span class="active">${project.title}</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
+        <sec:authorize access="#project.global or hasPermission(#project, 'read')">
         <tags:project-menu project="${project}"/>
+        </sec:authorize>
     </jsp:attribute>
     <jsp:body>
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
         
         <c:if test="${not empty project.boundingBox}">
-        <div id="coverageMap" style="width:240px; height:200px; float:right"></div>
+        <div id="coverageMap"></div>
         </c:if>
         
-        <div style="float:left; width:420px;">
+        <sec:authorize access="#project.global or hasPermission(#project, 'read')">
+        <div id="projectData">
         <h2 style="margin-top: 0;">Data Summary</h2>
         <c:choose>
         <c:when test="${(empty dataFileList)}">
              <p>
-                 There is no data uploaded for this project yet. You might like to
-                 <a href="<c:url value='/projects/${project.id}/datafiles/new'/>">upload a datafile.
+                 There is no data uploaded for this project yet.
+                 <sec:authorize access="hasPermission(#project, 'write')">
+                 You might like to <a href="<c:url value='/projects/${project.id}/datafiles/new'/>">upload a datafile.
+                 </sec:authorize>
              </a>
              </p>
         </c:when>
@@ -59,12 +84,12 @@
             </tr>
             </sec:authorize>
             <tr>
-                <th>Detection Count:</th>
-                <td><a href="<c:url value="/projects/${project.id}/search"/>"><c:out value="${project.detectionCount}"/></a></td>
-            </tr>
-            <tr>
                 <th>Date Range:</th>
                 <td><fmt:formatDate pattern="${dateFormatPattern}" value="${project.firstDetectionDate}"/> to <fmt:formatDate pattern="${dateFormatPattern}" value="${project.lastDetectionDate}"/></td>
+            </tr>
+            <tr>
+                <th>Detection Count:</th>
+                <td><a href="<c:url value="/projects/${project.id}/search"/>"><c:out value="${project.detectionCount}"/></a></td>
             </tr>
             <tr>
                 <th>Animals:</th>
@@ -79,10 +104,12 @@
         </c:otherwise>
         </c:choose>
         </div>
+        </sec:authorize>
         
-        <div style="float:left">  
-        <h2>Project Details</h2>
+        <div id="projectDetails">
+        <h2 style="margin-top: 0;">Project Details</h2>
         <table class="entityTable">
+        <col style="width: 120px;" />
         <tr>
             <th>Title:</th>
             <td><c:out value="${project.title}"/></td>

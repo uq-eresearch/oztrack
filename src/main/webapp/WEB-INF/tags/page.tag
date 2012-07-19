@@ -67,12 +67,13 @@
 </div>
 </c:if>
 <div id="main">
-    <c:if test="${!empty sidebar}">
+    <jsp:invoke var="sidebarContent" fragment="sidebar"/>
+    <c:if test="${!empty sidebarContent}">
 	<div id="leftMenu">
-        <jsp:invoke fragment="sidebar"/>
+        ${sidebarContent}
 	</div>
     </c:if>
-	<div id="content" class="${empty sidebar ? 'wide' : 'narrow'}">
+	<div id="content" class="${empty sidebarContent ? 'wide' : 'narrow'}">
 		<jsp:doBody/>
 		<div class="clearboth">&nbsp;</div>
 	</div> <!-- content -->

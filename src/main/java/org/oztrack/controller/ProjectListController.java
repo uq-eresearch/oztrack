@@ -37,9 +37,14 @@ public class ProjectListController {
         return project;
     }
 
-    @ModelAttribute("publishedProjects")
+    @ModelAttribute("publicProjects")
     public List<Project> getPublicProjects() {
-        return projectDao.getPublishedProjects();
+        return projectDao.getProjectsByPublished(true);
+    }
+    
+    @ModelAttribute("privateProjects")
+    public List<Project> getPrivateProjects() {
+        return projectDao.getProjectsByPublished(false);
     }
     
     @RequestMapping(value="/projects", method=RequestMethod.GET)
