@@ -195,7 +195,7 @@
 		</td></tr>
 		</table>
 		
-		<div style="font-size: 0.9em;">
+		<div>
 			<a href="<c:url value="/projects/${project.id}"/>">Cancel</a>
             &nbsp;
 			<c:if test="${!empty project.firstDetectionDate}">

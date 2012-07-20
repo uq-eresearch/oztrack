@@ -20,6 +20,7 @@
                 float: left;
                 width: 215px;
                 padding: 0;
+                font-size: 11px;
             }
             #projectMapHelp p {
                 text-align: justify;
@@ -34,8 +35,7 @@
             .animalInfo {
                 float:left;
                 width: 100%;
-                font-size: 0.9em;
-                /*border: solid 1px black;*/
+                font-size: 11px;
                 margin-left: 8px;
                 margin-right: 8px;
                 margin-top: 0;
@@ -70,9 +70,6 @@
             .citation {
                 font-weight: bold;
                 text-align: left;
-            }
-            .column {
-                font-size:0.9em;
             }
             .animalCheckbox {
                 float:left; width:15px;
@@ -141,7 +138,7 @@
 	             <c:forEach items="${projectAnimalsList}" var="animal">
 	 		
 					<div id="animalHeader">	            	
-		            	<div class="column animalCheckbox">
+		            	<div class="animalCheckbox">
 		            		<input style="float:left;" type="checkbox" name="animalCheckbox" id="select-animal-${animal.id}" value="${animal.id}">
 		                    <script type="text/javascript">
 		                        $('input[id=select-animal-${animal.id}]').change(function() {
@@ -150,17 +147,17 @@
 		                    </script>
 		            	</div>
 	            	
-	            		<div class="column smallSquare" id="legend-colour-${animal.id}"></div>
+	            		<div class="smallSquare" id="legend-colour-${animal.id}"></div>
 	            		
-		            	<div class="column animalLabel">
+		            	<div class="animalLabel">
 		            		${animal.animalName}
 		            	</div>
 		            	
-	            		<div class="column animalInfoToggle">
-							<a style="font-size:0.9em;" href="#"><span class="ui-icon ui-icon-triangle-1-s"></span></a>
+	            		<div class="animalInfoToggle">
+							<a style="" href="#"><span class="ui-icon ui-icon-triangle-1-s"></span></a>
 	            		</div>
 	
-		            	<div class="column zoom">
+		            	<div class="zoom">
 		        			<a href="#" onclick="zoomToTrack(${animal.id});">Zoom</a>
 		            	</div>
 	            		

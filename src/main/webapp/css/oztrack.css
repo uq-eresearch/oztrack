@@ -7,20 +7,21 @@ body {
     margin: 0;
     height: 100%;
     font-family: Verdana, Helvetica, Arial, sans-serif;
-    font-size:14px;
+    font-size: 13px;
+    color: black;
     background-color: #263F00;
     background-repeat: no-repeat;
 }
 
 h1 {
-    font-size:1.5em;
+    font-size: 1.6em;
     font-weight:bold;
     color:black;
     margin-top:0px;
 }
 
 h2 {
-    font-size:1.2em;
+    font-size: 1.3em;
     font-weight:bold;
     color:#ef9800;
 }
@@ -33,30 +34,12 @@ h2 {
 	margin-right: 20px;
 }
 
-p {
-    font-size:0.9em;
-    color:black;
-}
-
-ul {
-    color: orange;
-}
-
-ul li {
-    color: black;
-}
-
-ul li span {
-    color: black;
-    font-size:0.9em;
-}
-
 a {
     color: black;
 }
 
 a:hover {
- color:#ef9800;
+    color:#ef9800;
 }
 
 /* main divs */
@@ -113,14 +96,14 @@ a:hover {
 
 #crumbs {
     background-color:#fbfee9;
-    font-size: 0.8em;
+    font-size: 11px;
     padding-bottom: 0.8em;
     margin: 10px 20px 20px 20px;
     border-bottom: 1px solid #e8e8e8;
 }
 
 #login {
-    font-size: 0.8em;
+    font-size: 11px;
 }
 
 #content.narrow {
@@ -164,7 +147,7 @@ a:hover {
 #copyright {
     padding-bottom: 8px;
     color: #666;
-    font-size: 0.7em;
+    font-size: 10px;
     text-align: center;
 }
 
@@ -193,7 +176,7 @@ a:hover {
 #navMenu a:hover,
 #navMenu a:active {
     margin: 0 25px;
-    font-size: 0.9em;
+    font-size: 13px;
     font-weight: bold;
     text-decoration: none;
 }
@@ -297,7 +280,7 @@ a:hover {
 
 .mapTool {
     background-color:#e6e6c0;
-    font-size: 0.8em;
+    font-size: 11px;
     position:relative;
 	padding: 8px;   
     -khtml-border-radius: 10px;
@@ -328,7 +311,7 @@ form {
     padding-left:15px;
     padding-top:5px;
     padding-bottom:15px;
-    font-size: 0.8em;
+    font-size: 11px;
     -khtml-border-radius: 10px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
@@ -337,19 +320,7 @@ form {
     border-radius: 10px;
 }
 
-.formHeader,.formSubheader{
-    color:#ef9800;
-    font-size:18px;
-    font-weight:bold;
-}
-
-.formSubheader {
-    font-size:14px;
-    padding-top:10px;
-}
-
 form div {
-
   display: block;
   margin: 5px 0 0 0;
   padding: 1px 3px;
@@ -491,7 +462,7 @@ a.info:hover span {
     width: 17em;
     background-color: #263f00;
     color: #fff;
-    font-size: 0.9em;
+    font-size: 10px;
     text-align: justify;
     padding: 2px 4px;
     opacity: 0.9;
@@ -506,7 +477,6 @@ a.info:hover span {
 a.info ul {
 	color: #159;
 	background-color: #BBD9EE;
-	font-size: 1em;
 }
 
 /* tables */
@@ -521,7 +491,7 @@ tbody tr:hover {
 
 .dataTable {
     margin-top: 10px;
-    font-size: 0.7em;
+    font-size: 11px;
 }
 
 .dataTable  th {
@@ -542,16 +512,12 @@ tbody tr:hover {
     width:92%;
     margin-top:10px;
     margin-bottom:10px;
-    font-size: 0.8em;
+    font-size: 11px;
 }
 
 .dataTableNav a {
     font-weight:bold;
     text-decoration:none;
-}
-
-.formHeader {
-    font-size: 1em;
 }
 
 .entityTable {
@@ -560,7 +526,7 @@ tbody tr:hover {
 
 .entityTable td,
 .entityTable th {
-    font-size: 0.8em;
+    font-size: 11px;
     text-align: left;
 	vertical-align: top;
     border: none;
@@ -577,7 +543,7 @@ tbody tr:hover {
 
 .infoTable {
     margin: 10px;
-    font-size: 0.9em;
+    font-size: 11px;
 }
 
 .infoTable  th {
@@ -592,7 +558,7 @@ tbody tr:hover {
 }
 
 div.actions {
-    font-size: 0.8em;
+    font-size: 11px;
     margin-top: 1.5em;
     padding: 0px 10px;
     background-color:#f6f6e6;

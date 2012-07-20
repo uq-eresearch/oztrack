@@ -109,8 +109,8 @@
             <h3 id="projectTitle"><a href="#"><c:out value="${project.title}"/></a></h3>
             <div style="padding: 0;">
                 <form id="cleanseForm" onsubmit="return false;">
-                <p style="font-size: 11px; font-weight: bold;">Data cleansing</p>
-                <p style="font-size: 10px; font-style: italic;">
+                <p style="font-weight: bold;">Data cleansing</p>
+                <p style="font-size: 0.9em; font-style: italic;">
                     Select points for removal from the project by drawing polygons around them.
                     Click to start drawing and click again to draw each side of your selected area.
                     Double-click to finish drawing. You can draw as many polygons as are required.
@@ -123,9 +123,9 @@
                     <button onclick="submitCleanseForm('delete');">Done</button>
                     <button onclick="submitCleanseForm('undelete');">Restore deleted points</button>
                 </div>
-                <p id="cleanse-response-deleted" class="cleanse-response" style="font-size: 10px; font-weight: bold; color: red;"></p>
-                <p id="cleanse-response-undeleted" class="cleanse-response" style="font-size: 10px; font-weight: bold; color: green;"></p>
-                <p id="cleanse-response-error" class="cleanse-response" style="font-size: 10px; font-weight: bold; color: gray;"></p>
+                <p id="cleanse-response-deleted" class="cleanse-response" style="font-weight: bold; color: red;"></p>
+                <p id="cleanse-response-undeleted" class="cleanse-response" style="font-weight: bold; color: green;"></p>
+                <p id="cleanse-response-error" class="cleanse-response" style="font-weight: bold; color: gray;"></p>
                 </form>
             </div>
             <h3><a href="#">Project Menu</a></h3>

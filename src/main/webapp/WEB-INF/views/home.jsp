@@ -24,7 +24,7 @@
                 border-radius: 10px;
             }
             #welcome h1 {
-                font-size: 12pt;
+                font-size: 16px;
             }
             #welcome p {
                 margin: 1em 1em 1em 0;

@@ -64,7 +64,7 @@
             method="${method}" action="${action}"
             commandName="project" name="project"  enctype="multipart/form-data">
 		
-		<div class="formSubheader">Data Contact</div>
+		<h2>Data Contact</h2>
 		
 			<div class="help">
 			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
@@ -98,7 +98,7 @@
 		<div><c:out value="${dataSpaceAgent.email}"/>&nbsp;</div>
 		</div>
 		
-		<div class="formSubheader">Project Metadata</div>
+		<h2>Project Metadata</h2>
 		
 			<div class="help">
 			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
@@ -152,7 +152,7 @@
 		<form:errors path="spatialCoverageDescr" cssClass="formErrors"/>
 		</div>
 		
-		<div class="formSubheader">Species</div>
+		<h2>Species</h2>
 		
 		<div>
 		<label for="speciesCommonName">Common Name:</label>
@@ -168,7 +168,7 @@
 		
 		
 		
-		<div class="formSubheader">Image</div>
+		<h2>Image</h2>
 		
 		<div>
 		<label for="imageFile">Upload an Image file:</label>
@@ -176,7 +176,7 @@
 		<form:errors path="imageFile" cssClass="formErrors"/>
 		</div>
 		
-		<div class="formSubheader">Publications</div>
+		<h2>Publications</h2>
 		
 		<div>
 		<label for="publicationTitle">Publication Title:</label>
@@ -191,7 +191,7 @@
 		</div>
 		
 		
-		<div class="formSubheader">Data Availability</div>
+		<h2>Data Availability</h2>
 		
 		<table class="form">
         <tr>
