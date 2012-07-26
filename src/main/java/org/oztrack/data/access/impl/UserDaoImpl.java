@@ -29,6 +29,18 @@ public class UserDaoImpl implements UserDao {
     
     @Override
     @Transactional(readOnly=true)
+    public User getByAafId(String aafId) {
+        Query query = em.createQuery("SELECT o FROM AppUser o WHERE o.aafId = :aafId");
+        query.setParameter("aafId", aafId);
+        try {
+            return (User) query.getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
+    }
+    
+    @Override
+    @Transactional(readOnly=true)
     public User getUserById(Long id) {
         Query query = em.createQuery("SELECT o FROM AppUser o WHERE o.id = :id");
         query.setParameter("id", id);

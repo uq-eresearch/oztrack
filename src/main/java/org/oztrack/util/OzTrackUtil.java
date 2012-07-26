@@ -22,7 +22,11 @@ import javax.mail.internet.MimeMessage;
 
 import org.apache.log4j.Logger;
 import org.oztrack.app.OzTrackApplication;
+import org.oztrack.data.access.UserDao;
+import org.oztrack.data.model.User;
 import org.oztrack.error.FileProcessingException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public class OzTrackUtil {
     private static Logger logger = Logger.getLogger(OzTrackUtil.class);
@@ -96,5 +100,17 @@ public class OzTrackUtil {
         catch (Exception e) {
              throw new FileProcessingException("File Processing problem (dedup.");
         }
+    }
+
+    public static User getCurrentUser(Authentication authentication, UserDao userDao) {
+        User currentUser = null;
+        if (
+            (authentication != null) &&
+            authentication.isAuthenticated() &&
+            authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))
+        ) {
+            currentUser = userDao.getByUsername((String) authentication.getPrincipal());
+        }
+        return currentUser;
     }
 }

@@ -26,25 +26,42 @@
         </p>
         </c:if>
         
-		<form method="POST" action="/j_spring_security_check" style="width: 600px;">
+        <p style="margin: 20px 0;">Don't have an account yet? <a href="<c:url value="/users/new"/>">Register as a new user</a></p>
+        
+		<div style="clear: both;"></div>
+        
+		<form method="POST" action="<c:url value="/j_spring_security_check"/>" style="float: left; width: 450px; height: 150px;">
 		
-		<div>
-		<label for="username">Username:</label>
+        <h2>Login using OzTrack</h2>
+        
+        <div>
+		<label for="username" style="width: auto; text-align: left;">Username:</label>
 		<input type="text" name="username" id="username"/>
 		</div>
 		
 		<div>
-		<label for="password">Password:</label>
+		<label for="password" style="width: auto; text-align: left;">Password:</label>
 		<input type="password" name="password" id="password"/>
 		</div>
 		
 		<div>
-		<label></label>
 		<div class="formButton"><input type="submit" value="Login"/></div>
 		</div>
-		
-		<div><label></label><a href="<c:url value="/users/new"/>">Register as a new user</a>
-		</div>
 		</form>
+        
+        <form style="float: left; margin-left: 20px; width: 450px; height: 150px;">
+        <h2>Login using AAF</h2>
+        <div style="margin-top: 2em;">
+            Click here to authenticate using the <a href="http://www.aaf.edu.au/">Australian Access Federation (AAF)</a>.
+        </div>
+        <div style="margin-top: 1em;">
+            You will be redirected to your home institution's website to login.
+        </div>
+        <div style="margin-top: 2.5em;">
+        <a class="oztrackButton" href="<c:url value="/login/shibboleth"/>">Login using AAF</a>
+        </div>
+        </form>
+
+        <div style="clear: both;"></div>
     </jsp:body>
 </tags:page>

@@ -33,6 +33,7 @@ public class User implements Serializable {
     private String organisation;
     private String password;
     private Boolean admin;
+    private String aafId;
     private String dataSpaceAgentURI;
     private String dataSpaceAgentDescription;
     private Date dataSpaceAgentUpdateDate;
@@ -140,6 +141,14 @@ public class User implements Serializable {
 
     public void setAdmin(Boolean admin) {
         this.admin = admin;
+    }
+
+    public String getAafId() {
+        return aafId;
+    }
+
+    public void setAafId(String aafId) {
+        this.aafId = aafId;
     }
 
     public List<ProjectUser> getProjectUsers() {

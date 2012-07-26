@@ -2,10 +2,9 @@ package org.oztrack.controller;
 
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
+import org.oztrack.util.OzTrackUtil;
 import org.oztrack.validator.RegisterFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
@@ -32,7 +31,7 @@ public class UserController {
         @ModelAttribute(value="user") User user,
         @RequestParam(value="update", defaultValue="false") boolean update
     ) {
-        User currentUser = getCurrentUser();
+        User currentUser = OzTrackUtil.getCurrentUser(SecurityContextHolder.getContext().getAuthentication(), userDao);
         if (currentUser == null || !currentUser.equals(user)) {
             return "redirect:/login";
         }
@@ -45,7 +44,7 @@ public class UserController {
         @ModelAttribute(value="user") User user,
         BindingResult bindingResult
     ) throws Exception {
-        User currentUser = getCurrentUser();
+        User currentUser = OzTrackUtil.getCurrentUser(SecurityContextHolder.getContext().getAuthentication(), userDao);
         if (currentUser == null || !currentUser.equals(user)) {
             return "redirect:/login";
         }
@@ -56,18 +55,5 @@ public class UserController {
         user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
         userDao.save(user);
         return "redirect:/projects";
-    }
-
-    private User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = null;
-        if (
-            (authentication != null) &&
-            authentication.isAuthenticated() &&
-            authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))
-        ) {
-            currentUser = userDao.getByUsername((String) authentication.getPrincipal());
-        }
-        return currentUser;
     }
 }
