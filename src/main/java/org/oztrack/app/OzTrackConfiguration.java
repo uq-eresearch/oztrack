@@ -8,6 +8,7 @@ public interface OzTrackConfiguration {
     String getUriPrefix();
     String getSmtpServer();
     String getDataDir();
+    boolean isAafEnabled();
     String getDataSpaceURL();
     String getDataSpaceUsername();
     String getDataSpacePassword();

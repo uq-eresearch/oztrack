@@ -1,9 +1,11 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
+<%@ page import="org.oztrack.app.OzTrackApplication" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
+<c:set var="aafEnabled"><%= OzTrackApplication.getApplicationContext().isAafEnabled() %></c:set>
 <c:set var="title">
     <c:choose>
     <c:when test="${user.id != null}">
@@ -68,25 +70,29 @@
 		<form:errors path="password" cssClass="formErrors"/>
 		</div>
         
-            <div class="help">
+        <c:if test="${aafEnabled}">
+        <div class="help">
             <a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
-            <span><b>AAF ID:</b><br>
-            Providing your Australian Access Federation (AAF) ID
-            allows you to login through your home institution as an alternative to using your OzTrack
-            username and password.<br/>
-            <br/>
-            Your AAF ID is made up of your username and the domain name for your
-            institution separated by '@'.
-            For example, if you are a
-            UQ staff member with username 'uqjsmith', your ID is 'uqjsmith@uq.edu.au'.
-            </span></a>
-            </div>
+            <span>
+                <b>AAF ID:</b><br>
+                <br/>
+                Providing your Australian Access Federation (AAF) ID allows you to login
+                through your home institution as an alternative to using your OzTrack
+                username and password.<br/>
+                <br/>
+                Your AAF ID is made up of your username and the domain name for your
+                institution separated by '@'. For example, if you are a UQ staff member
+                with username 'uqjsmith', your ID is 'uqjsmith@uq.edu.au'.
+            </span>
+            </a>
+        </div>
         
         <div>
-        <label for="aafId">AAF ID:</label>
-        <form:input path="aafId" id="aafId"/>
-        <form:errors path="aafId" cssClass="formErrors"/>
+            <label for="aafId">AAF ID:</label>
+            <form:input path="aafId" id="aafId"/>
+            <form:errors path="aafId" cssClass="formErrors"/>
         </div>
+        </c:if>
 		
 		<br/>
 		

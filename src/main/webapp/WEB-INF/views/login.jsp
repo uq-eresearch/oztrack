@@ -1,9 +1,11 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
+<%@ page import="org.oztrack.app.OzTrackApplication" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
+<c:set var="aafEnabled"><%= OzTrackApplication.getApplicationContext().isAafEnabled() %></c:set>
 <tags:page title="Login">
     <jsp:attribute name="head">
         <script type="text/javascript"> 
@@ -11,6 +13,23 @@
                 $('#navHome').addClass('active');
             });
         </script>
+        <style type="text/css">
+            #nativeLoginForm {
+                width: 450px;
+            }
+            <c:if test="${aafEnabled}">
+            #nativeLoginForm {
+                float: left;
+                height: 150px;
+            }
+            #aafLoginForm {
+                float: left;
+                margin-left: 20px;
+                width: 450px;
+                height: 150px;
+            }
+            </c:if>
+        </style>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
@@ -30,9 +49,11 @@
         
 		<div style="clear: both;"></div>
         
-		<form method="POST" action="<c:url value="/j_spring_security_check"/>" style="float: left; width: 450px; height: 150px;">
+		<form id="nativeLoginForm" method="POST" action="<c:url value="/j_spring_security_check"/>">
 		
+        <c:if test="${aafEnabled}">
         <h2>Login using OzTrack</h2>
+        </c:if>
         
         <div>
 		<label for="username" style="width: auto; text-align: left;">Username:</label>
@@ -49,7 +70,8 @@
 		</div>
 		</form>
         
-        <form style="float: left; margin-left: 20px; width: 450px; height: 150px;">
+        <c:if test="${aafEnabled}">
+        <form id="aafLoginForm">
         <h2>Login using AAF</h2>
         <div style="margin-top: 2em;">
             Click here to authenticate using the <a href="http://www.aaf.edu.au/">Australian Access Federation (AAF)</a>.
@@ -61,6 +83,7 @@
         <a class="oztrackButton" href="<c:url value="/login/shibboleth"/>">Login using AAF</a>
         </div>
         </form>
+        </c:if>
 
         <div style="clear: both;"></div>
     </jsp:body>

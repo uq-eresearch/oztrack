@@ -44,6 +44,7 @@
         <property name="version" value="${application.version}"/>
         <property name="uriPrefix" value="${application.uri.prefix}"/>
         <property name="dataDir" value="${application.dataDir}"/>
+        <property name="aafEnabled" value="${application.aafEnabled}"/>
         <property name="dataSpaceURL" value="${dataSpaceURL}"/>
         <property name="dataSpaceUsername" value="${dataSpaceUsername}"/>
         <property name="dataSpacePassword" value="${dataSpacePassword}"/>

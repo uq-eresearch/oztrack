@@ -7,6 +7,7 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
     private String uriPrefix;
     private String smtpServer;
     private String dataDir;
+    private boolean aafEnabled;
     private String dataSpaceURL;
     private String dataSpaceUsername;
     private String dataSpacePassword;
@@ -16,6 +17,7 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
         this.applicationTitle = registryTitle;
     }
 
+    @Override
     public String getApplicationTitle() {
         return applicationTitle;
     }
@@ -24,6 +26,7 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
         this.applicationEmail = registryEmail;
     }
 
+    @Override
     public String getApplicationEmail() {
         return applicationEmail;
     }
@@ -32,6 +35,7 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
         this.version = version;
     }
 
+    @Override
     public String getVersion() {
         return version;
     }
@@ -40,6 +44,7 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
         this.uriPrefix = uriPrefix;
     }
 
+    @Override
     public String getUriPrefix() {
         return uriPrefix;
     }
@@ -48,10 +53,12 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
         this.smtpServer = smtpServer;
     }
 
+    @Override
     public String getSmtpServer() {
         return smtpServer;
     }
     
+    @Override
     public String getDataDir() {
         return dataDir;
     }
@@ -60,7 +67,17 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
         this.dataDir = dataDir;
     }
 
-	public String getDataSpaceURL() {
+	@Override
+    public boolean isAafEnabled() {
+        return aafEnabled;
+    }
+
+    public void setAafEnabled(boolean aafEnabled) {
+        this.aafEnabled = aafEnabled;
+    }
+
+    @Override
+    public String getDataSpaceURL() {
 		return dataSpaceURL;
 	}
 
@@ -68,6 +85,7 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
 		this.dataSpaceURL = dataSpaceURL;
 	}
 
+	@Override
 	public String getDataSpaceUsername() {
 		return dataSpaceUsername;
 	}
@@ -76,6 +94,7 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
 		this.dataSpaceUsername = dataSpaceUsername;
 	}
 
+	@Override
 	public String getDataSpacePassword() {
 		return dataSpacePassword;
 	}
@@ -84,6 +103,7 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
 		this.dataSpacePassword = dataSpacePassword;
 	}
 
+	@Override
 	public String getServerProxyName() {
 		return serverProxyName;
 	}
@@ -91,6 +111,4 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
 	public void setServerProxyName(String serverProxyName) {
 		this.serverProxyName = serverProxyName;
 	}
-
-
 }

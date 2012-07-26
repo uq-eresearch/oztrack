@@ -2,6 +2,7 @@ package org.oztrack.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class ShibbolethController {
         @RequestHeader(value="cn", required=true) String commonName,
         @RequestHeader(value="o", required=true) String organisation
     ) throws Exception {
+        if (!OzTrackApplication.getApplicationContext().isAafEnabled()) {
+            throw new RuntimeException("AAF authentication is disabled");
+        }
         if ((eppn == null) || eppn.isEmpty()) {
             model.addAttribute("errorMessage", "No AAF credentials were supplied.");
         }
