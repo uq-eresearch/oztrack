@@ -92,41 +92,38 @@ public class PositionFixFileLoader extends DataFileLoader {
 
         // determine which columns contain which data
         for (int i = 0; i < colHeadings.length; i++) {
-
             String heading = colHeadings[i].replaceAll("/", "").replaceAll(" ", "").toUpperCase();
-
             for (PositionFixFileHeader positionFixFileHeader : PositionFixFileHeader.values()) {
-
                 if (heading.equals(positionFixFileHeader.toString())) {
-
                     headerMap.put(i,positionFixFileHeader);
-
-//                    if (heading.contains("DATE") && !dateFieldFound) {
-                    if (  (heading.equals("ACQUISITIONTIME") 
-                    	|| heading.equals("DATE")	
-                    	|| heading.equals("LOCDATE")	
-                    	|| heading.equals("UTCDATE")	
-                       )&& !dateFieldFound) {
-                    	dateFieldFound=true;
+                    switch (positionFixFileHeader) {
+                        case ACQUISITIONTIME:
+                        case UTCDATE:
+                        case LOCDATE:
+                        case DATE:
+                            dateFieldFound = true;
+                            break;
+                        case UTCTIME:
+                        case TIME:
+                            break;
+                        case LATITUDE:
+                        case LATT:
+                        case LAT:
+                            latFieldFound = true;
+                            break;
+                        case LONGITUDE:
+                        case LONG:
+                        case LON:
+                            longFieldFound = true;
+                            break;
+                        case ID:
+                        case ANIMALID:
+                            animalIdFieldFound = true;
+                            break;
+                        default:
+                            logger.debug("Unhandled positionFixFileHeader: " + positionFixFileHeader);
+                            break;
                     }
-
-                    if (heading.contains("LAT") && !latFieldFound) {
-                        latFieldFound=true;
-                    }
-
-                    if (heading.contains("LON") && !longFieldFound) {
-                        longFieldFound=true;
-                    }
-                    
-                    if (heading.equals("ANIMALID") && !animalIdFieldFound) {
-                    	animalIdFieldFound=true;
-                    }
-
-                    if (heading.equals("ID") && !animalIdFieldFound) {
-                    	animalIdFieldFound=true;
-                    }
-                    
-                    
                 }
             }
         }
@@ -166,13 +163,12 @@ public class PositionFixFileLoader extends DataFileLoader {
 
                         // retrieve the header for this column and use it to determine which field to update
                         if (headerMap.get(i) != null ) {
-
                             PositionFixFileHeader positionFixFileHeader = headerMap.get(i);
                             switch (positionFixFileHeader) {
                             	case ACQUISITIONTIME:
+                            	case UTCDATE:
+                            	case LOCDATE:
                             	case DATE:
-                                case LOCDATE:
-                                case UTCDATE:
                                        try {
                                            if (lineNumber == 2) {
                                         	   simpleDateFormat = findDateFormat(dataRow[i]);
@@ -188,29 +184,30 @@ public class PositionFixFileLoader extends DataFileLoader {
                                             throw new FileProcessingException(e.toString() + "Using date: "+ dataRow[i] + " from line : "  + lineNumber);
                                        }
                                     break;
+                            	case UTCTIME:
                                 case TIME:
-                                case UTCTIME:
                                     try {
                                         rawPositionFix.setDetectionTime(timeHandler(rawPositionFix.getDetectionTime(),dataRow[i]));
                                     } catch (FileProcessingException e) {
                                         throw new FileProcessingException("Unable to read time format on line " + lineNumber + ": " + dataRow[i], e);
                                     }
                                     break;
+                                case LATITUDE:
+                                case LATT:
+                                case LAT:
+                                    rawPositionFix.setLatitude(dataRow[i]);
+                                    break;
+                                case LONGITUDE:
+                                case LONG:
+                                case LON:
+                                     rawPositionFix.setLongitude(dataRow[i]);
+                                     break;
                                 case ID:
                                 case ANIMALID:
                                     rawPositionFix.setAnimalId(dataRow[i]);
                                     break;
-                                case LAT:
-                                case LATITUDE:
-                                    rawPositionFix.setLatitude(dataRow[i]);
-                                    break;
-                                case LONG:
-                                case LON:
-                                case LONGITUDE:
-                                     rawPositionFix.setLongitude(dataRow[i]);
-                                     break;
                                 default:
-                                    logger.debug("Problem in switch(dataFileHeader)");
+                                    logger.debug("Unhandled positionFixFileHeader: " + positionFixFileHeader);
                                     break;
                             }
                         }

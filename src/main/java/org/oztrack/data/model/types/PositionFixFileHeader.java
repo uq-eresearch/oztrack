@@ -8,6 +8,7 @@ public enum PositionFixFileHeader {
     UTCTIME,
     TIME,
     LATITUDE,
+    LATT,
     LAT,
     LONGITUDE,
     LONG,

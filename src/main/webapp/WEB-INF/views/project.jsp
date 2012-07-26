@@ -69,9 +69,8 @@
              <p>
                  There is no data uploaded for this project yet.
                  <sec:authorize access="hasPermission(#project, 'write')">
-                 You might like to <a href="<c:url value='/projects/${project.id}/datafiles/new'/>">upload a datafile.
+                 You might like to <a href="<c:url value='/projects/${project.id}/datafiles/new'/>">upload a datafile.</a>
                  </sec:authorize>
-             </a>
              </p>
         </c:when>
         <c:otherwise>              
