@@ -25,28 +25,37 @@ public class ShibbolethController {
     @PreAuthorize("permitAll")
     public String handleLogin(
         Model model,
-        @RequestHeader(value="eppn", required=true) String eppn,
-        @RequestHeader(value="cn", required=true) String commonName,
-        @RequestHeader(value="o", required=true) String organisation
+        @RequestHeader(value="eppn", required=true) String aafId,
+        @RequestHeader(value="title", required=false) String title,
+        @RequestHeader(value="givenname", required=false) String givenName,
+        @RequestHeader(value="sn", required=false) String surname,
+        @RequestHeader(value="description", required=false) String description,
+        @RequestHeader(value="mail", required=false) String email,
+        @RequestHeader(value="o", required=false) String organisation
     ) throws Exception {
         if (!OzTrackApplication.getApplicationContext().isAafEnabled()) {
             throw new RuntimeException("AAF authentication is disabled");
         }
-        if ((eppn == null) || eppn.isEmpty()) {
-            model.addAttribute("errorMessage", "No AAF credentials were supplied.");
+        if ((aafId == null) || aafId.isEmpty()) {
+            throw new RuntimeException("No AAF credentials were supplied.");
+        }
+        User existingUser = userDao.getByAafId(aafId);
+        if (existingUser != null) {
+            SecurityContextHolder.getContext().setAuthentication(OzTrackAuthenticationProvider.buildAuthentication(existingUser));
+            return "redirect:/";
         }
         else {
-            User user = userDao.getByAafId(eppn);
-            if (user != null) {
-                SecurityContextHolder.getContext().setAuthentication(OzTrackAuthenticationProvider.authenticate(user));
-                model.addAttribute("eppn", eppn);
-                model.addAttribute("commonName", commonName);
-                model.addAttribute("organisation", organisation);
-            }
-            else {
-                model.addAttribute("errorMessage", "Supplied AAF ID not associated with any OzTrack account.");
-            }
+            User newUser = new User();
+            newUser.setAafId(aafId);
+            newUser.setTitle(title);
+            newUser.setFirstName(givenName);
+            newUser.setLastName(surname);
+            newUser.setDataSpaceAgentDescription(description);
+            newUser.setEmail(email);
+            newUser.setOrganisation(organisation);
+            newUser.setUsername(aafId);
+            model.addAttribute("user", newUser);
+            return "user-form";
         }
-        return "shibboleth-login";
     }
 }

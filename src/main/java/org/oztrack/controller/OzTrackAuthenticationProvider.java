@@ -24,10 +24,10 @@ public class OzTrackAuthenticationProvider implements AuthenticationProvider {
         if ((user == null) || !BCrypt.checkpw((String) authentication.getCredentials(), user.getPassword())) {
             throw new BadCredentialsException("Invalid username or password.");
         }
-        return authenticate(user);
+        return buildAuthentication(user);
     }
 
-    public static Authentication authenticate(User user) {
+    public static Authentication buildAuthentication(User user) {
         List<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         if ((user.getAdmin() != null) && user.getAdmin()) {
