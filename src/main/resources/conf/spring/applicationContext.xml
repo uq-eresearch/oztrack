@@ -9,20 +9,11 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
-    <bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="ignoreResourceNotFound" value="true"/>
-        <property name="systemPropertiesMode" value="2"/>
-        <property name="locations">
-            <list>
-                <value>classpath:conf/properties/application.properties</value>
-            </list>
-        </property>
-    </bean>
+    <context:property-placeholder location="classpath:conf/properties/application.properties"/>
 
     <bean id="log4jInitialization"
           class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-        <property name="targetClass"
-                  value="org.springframework.util.Log4jConfigurer"/>
+        <property name="targetClass" value="org.springframework.util.Log4jConfigurer"/>
         <property name="targetMethod" value="initLogging"/>
         <property name="arguments">
             <list>
