@@ -110,7 +110,7 @@ function createCleanseMap(div, options) {
                     protocol: new OpenLayers.Protocol.WFS.v1_1_0({
                         url:  '/mapQueryWFS?projectId=' + projectId + '&queryType=ALL_POINTS',
                         featureType: 'Track',
-                        featureNS: 'http://localhost:8080/'
+                        featureNS: 'http://oztrack.org/xmlns#'
                     }),
                     strategies: [new OpenLayers.Strategy.Fixed()],
                     styleMap: createPointStyleMap(), 

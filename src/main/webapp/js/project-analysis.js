@@ -86,7 +86,7 @@ function createAllDetectionsLayer(projectId) {
             protocol: new OpenLayers.Protocol.WFS.v1_1_0({
                 url:  "/mapQueryWFS?projectId=" + projectId + "&queryType=ALL_POINTS",
                 featureType: "Track",
-                featureNS: "http://localhost:8080/"
+                featureNS: "http://oztrack.org/xmlns#"
             }),
             strategies: [new OpenLayers.Strategy.Fixed()],
             styleMap: pointStyleMap, 
@@ -490,7 +490,7 @@ function addKMLLayer(layerName, params) {
                     maxDepth: 2,
                     internalProjection: projection900913,
                     externalProjection: projection4326,
-                    kmlns:"http://localhost:8080/"
+                    kmlns: "http://oztrack.org/xmlns#"
                 })
             }),
             styleMap: polygonStyleMap        
@@ -558,7 +558,7 @@ function addWFSLayer(layerName, params, styleMap) {
                 url:  "/mapQueryWFS",
                 params:params,
                 featureType: "Track",
-                featureNS: "http://localhost:8080/"
+                featureNS: "http://oztrack.org/xmlns#"
             })
         }
     );

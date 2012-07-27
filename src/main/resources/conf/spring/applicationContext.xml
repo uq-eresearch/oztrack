@@ -38,17 +38,11 @@
     <import resource="applicationContext-quartz.xml"/>
     
     <bean id="applicationContext" class="org.oztrack.app.OzTrackConfigurationImpl">
-        <property name="applicationTitle" value="${application.title}"/>
-        <property name="applicationEmail" value="${application.email}"/>
-        <property name="smtpServer" value="${application.emailServer}"/>
-        <property name="version" value="${application.version}"/>
-        <property name="uriPrefix" value="${application.uri.prefix}"/>
+        <property name="dataSpaceURL" value="${application.dataSpaceURL}"/>
+        <property name="dataSpaceUsername" value="${application.dataSpaceUsername}"/>
+        <property name="dataSpacePassword" value="${application.dataSpacePassword}"/>
         <property name="dataDir" value="${application.dataDir}"/>
         <property name="aafEnabled" value="${application.aafEnabled}"/>
-        <property name="dataSpaceURL" value="${dataSpaceURL}"/>
-        <property name="dataSpaceUsername" value="${dataSpaceUsername}"/>
-        <property name="dataSpacePassword" value="${dataSpacePassword}"/>
-        <property name="serverProxyName" value="${serverProxyName}"/>
     </bean>
 
     <bean id="ozTrackApplication" class="org.oztrack.app.OzTrackApplication">

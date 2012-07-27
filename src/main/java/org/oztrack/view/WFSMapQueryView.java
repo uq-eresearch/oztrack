@@ -46,6 +46,9 @@ import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Point;
 
 public class WFSMapQueryView extends AbstractView {
+    private static final String namespacePrefix = "oztrack";
+    private static final String namespaceURI = "http://oztrack.org/xmlns#";
+    
     protected final Log logger = LogFactory.getLog(getClass());
     
     // TODO: DAO should not appear in this layer.
@@ -66,7 +69,6 @@ public class WFSMapQueryView extends AbstractView {
         HttpServletResponse response
     ) throws Exception {
         SearchQuery searchQuery;
-        String namespaceURI = OzTrackApplication.getApplicationContext().getUriPrefix();
 
         if (model != null) {
             logger.debug("Resolving ajax request view ");
@@ -87,21 +89,19 @@ public class WFSMapQueryView extends AbstractView {
                 switch (searchQuery.getMapQueryType()) {
                     case ALL_PROJECTS:
                 		collection = this.buildAllProjectsFeatureCollection();
-                		e.getNamespaces().declarePrefix("Project", namespaceURI);
+                		e.getNamespaces().declarePrefix(namespacePrefix, namespaceURI);
                 		feature.add(collection);
                 		break;
                     case ALL_POINTS:
                     case POINTS:
                         collection = this.buildFeatureCollection(searchQuery,"points");
-                        //**encoder.setNamespace("PositionFix", namespaceURI);
-                        e.getNamespaces().declarePrefix("Track", namespaceURI);
+                        e.getNamespaces().declarePrefix(namespacePrefix, namespaceURI);
                         feature.add(collection);
                         break;
                     case ALL_LINES:
                     case LINES:
                         collection = this.buildFeatureCollection(searchQuery,"lines");
-                        //**encoder.setNamespace("Track", namespaceURI);
-                        e.getNamespaces().declarePrefix("Track", namespaceURI);
+                        e.getNamespaces().declarePrefix(namespacePrefix, namespaceURI);
                         feature.add(collection);
                         break;
                     default:
@@ -135,7 +135,6 @@ public class WFSMapQueryView extends AbstractView {
 
         List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
 
-        String namespaceURI = OzTrackApplication.getApplicationContext().getUriPrefix();
         SimpleFeatureCollection collection = FeatureCollections.newCollection();
         GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
 
@@ -223,7 +222,6 @@ public class WFSMapQueryView extends AbstractView {
     private  SimpleFeatureCollection buildAllProjectsFeatureCollection() {
         List<Project> projectList = projectDao.getAll();
 
-        String namespaceURI = OzTrackApplication.getApplicationContext().getUriPrefix();
         SimpleFeatureCollection collection = FeatureCollections.newCollection();
 
         SimpleFeatureTypeBuilder simpleFeatureTypeBuilder = new SimpleFeatureTypeBuilder();
