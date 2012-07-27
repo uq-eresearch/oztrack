@@ -3,6 +3,5 @@
 .project
 .settings/
 .swp
-local/
 src/main/resources/conf/properties/application.properties
 target/
