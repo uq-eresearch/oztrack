@@ -22,22 +22,28 @@ public class RegisterFormValidator implements Validator {
     }
 	
 	public void validate(Object obj, Errors errors) {
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "error.empty.field", "Please Enter User Name");
-        User loginUser = (User) obj;
-        User user = userDao.getByUsername(loginUser.getUsername());
-
-        if (!errors.hasFieldErrors("username")) {
-            
-        	if ((user != null) && (user != loginUser)) {
-                errors.rejectValue("username", "unavailable.user", "This username is unavailable. Please try another.");
-            }
-            else {
-                ValidationUtils.rejectIfEmptyOrWhitespace(errors, "firstName", "error.empty.field", "Please Enter firstName");
-                ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "error.empty.field", "Please Enter lastName");
-                ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "error.empty.field", "Please Enter Password");
-                ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "error.empty.field", "Please Enter email");
+	    User loginUser = (User) obj;
+	    
+	    ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "error.empty.field", "Please enter username");
+		
+		User existingUserByUsername = userDao.getByUsername(loginUser.getUsername());
+    	if ((existingUserByUsername != null) && (existingUserByUsername != loginUser)) {
+            errors.rejectValue("username", "unavailable.user", "This username is unavailable. Please try another.");
+        }
+        
+        if ((loginUser.getAafId() != null) && !loginUser.getAafId().trim().isEmpty()) {
+            User existingUserByAafId = userDao.getByAafId(loginUser.getAafId());
+            if ((existingUserByAafId != null) && (existingUserByAafId != loginUser)) {
+                errors.rejectValue("aafId", "aafId.user", "This AAF ID is already associated with another account.");
             }
         }
+        else {
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "error.empty.field", "Please Enter Password");
+        }
+
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "firstName", "error.empty.field", "Please Enter firstName");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "error.empty.field", "Please Enter lastName");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "error.empty.field", "Please Enter email");
         
         if (!errors.hasFieldErrors("email")) {
         	try {

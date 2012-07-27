@@ -39,6 +39,21 @@
 		<c:set var="buttonText" value="Register"/>
 		</c:otherwise>
 		</c:choose>
+        
+        <c:if test="${aafEnabled && (user.id == null) && (user.aafId == null)}">
+        <form style="margin: 20px 0; width: 600px;">
+        <h2>Register using AAF</h2>
+        <div style="margin: 1em 0;">
+            Click here to register using your <a href="http://www.aaf.edu.au/">Australian Access Federation (AAF)</a> profile.
+        </div>
+        <div style="margin: 1em 0;">
+            You will be redirected to your home institution's login page.
+        </div>
+        <div style="margin: 1em 0;">
+        <a class="oztrackButton" href="<c:url value="/login/shibboleth"/>">Register using AAF</a>
+        </div>
+        </form>
+        </c:if>
 
         <c:choose>
             <c:when test="${user.id != null}">
@@ -50,27 +65,13 @@
                 <c:set var="action" value="/users"/>
             </c:otherwise>
         </c:choose>
-		<form:form method="${method}" action="${action}" commandName="user" name="user">
+		<form:form method="${method}" action="${action}" commandName="user" name="user" style="margin: 20px 0; width: 600px;">
 		
-			<div class="help">
-			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
-			<span><b>Username:</b><br> This will be the name that you log on to OzTrack with.
-			</span></a>
-			</div>
-			
-		<div>
-		<label for="username">Username:</label>
-		<form:input path="username" id="username"/><br>
-		<form:errors path="username" cssClass="formErrors"/>
-		</div>
-		
-		<div>
-		<label for="password">Password:</label>
-		<form:password path="password" id="password"/>
-		<form:errors path="password" cssClass="formErrors"/>
-		</div>
+        <c:if test="${aafEnabled && (user.id == null)}">
+        <h2>Register new profile</h2>
+        </c:if>
         
-        <c:if test="${aafEnabled}">
+        <c:if test="${aafEnabled && ((user.id != null) || (user.aafId != null))}">
         <div class="help">
             <a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
             <span>
@@ -92,9 +93,29 @@
             <form:input path="aafId" id="aafId"/>
             <form:errors path="aafId" cssClass="formErrors"/>
         </div>
+        
+        <br/>
         </c:if>
+        
+			<div class="help">
+			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
+			<span><b>Username:</b><br> This will be the name that you log on to OzTrack with.
+			</span></a>
+			</div>
+			
+		<div>
+		<label for="username">Username:</label>
+		<form:input path="username" id="username"/><br>
+		<form:errors path="username" cssClass="formErrors"/>
+		</div>
 		
-		<br/>
+		<div>
+		<label for="password">Password:</label>
+		<form:password path="password" id="password"/>
+		<form:errors path="password" cssClass="formErrors"/>
+		</div>
+        
+        <br/>
 		
 		<div>
 		<label for="title">Title:</label>

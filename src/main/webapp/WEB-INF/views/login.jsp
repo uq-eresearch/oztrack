@@ -13,23 +13,6 @@
                 $('#navHome').addClass('active');
             });
         </script>
-        <style type="text/css">
-            #nativeLoginForm {
-                width: 450px;
-            }
-            <c:if test="${aafEnabled}">
-            #nativeLoginForm {
-                float: left;
-                height: 150px;
-            }
-            #aafLoginForm {
-                float: left;
-                margin-left: 20px;
-                width: 450px;
-                height: 150px;
-            }
-            </c:if>
-        </style>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
@@ -45,11 +28,24 @@
         </p>
         </c:if>
         
-        <p style="margin: 20px 0;">Don't have an account yet? <a href="<c:url value="/users/new"/>">Register as a new user</a></p>
-        
 		<div style="clear: both;"></div>
+
+        <c:if test="${aafEnabled}">
+        <form style="width: 600px; margin: 20px 0;">
+        <h2>Login using AAF</h2>
+        <div style="margin: 1em 0;">
+            Click here to authenticate using the <a href="http://www.aaf.edu.au/">Australian Access Federation (AAF)</a>.
+        </div>
+        <div style="margin: 1em 0;">
+            You will be redirected to your home institution's website to login.
+        </div>
+        <div style="margin: 1em 0;">
+        <a class="oztrackButton" href="<c:url value="/login/shibboleth"/>">Login using AAF</a>
+        </div>
+        </form>
+        </c:if>
         
-		<form id="nativeLoginForm" method="POST" action="<c:url value="/j_spring_security_check"/>">
+		<form id="nativeLoginForm" method="POST" action="<c:url value="/j_spring_security_check"/>" style="width: 600px; margin: 20px 0;">
 		
         <c:if test="${aafEnabled}">
         <h2>Login using OzTrack</h2>
@@ -65,26 +61,13 @@
 		<input type="password" name="password" id="password"/>
 		</div>
 		
-		<div>
-		<div class="formButton"><input type="submit" value="Login"/></div>
+		<div style="margin: 1em 0;">
+		<input type="submit" value="Login"/>
 		</div>
 		</form>
-        
-        <c:if test="${aafEnabled}">
-        <form id="aafLoginForm">
-        <h2>Login using AAF</h2>
-        <div style="margin-top: 2em;">
-            Click here to authenticate using the <a href="http://www.aaf.edu.au/">Australian Access Federation (AAF)</a>.
-        </div>
-        <div style="margin-top: 1em;">
-            You will be redirected to your home institution's website to login.
-        </div>
-        <div style="margin-top: 2.5em;">
-        <a class="oztrackButton" href="<c:url value="/login/shibboleth"/>">Login using AAF</a>
-        </div>
-        </form>
-        </c:if>
 
         <div style="clear: both;"></div>
+
+        <p style="font-size: 12px; margin: 1em 0;">Don't have an account yet? <a href="<c:url value="/users/new"/>">Register as a new user</a></p>
     </jsp:body>
 </tags:page>
