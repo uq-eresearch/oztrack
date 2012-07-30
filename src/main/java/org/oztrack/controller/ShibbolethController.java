@@ -25,7 +25,7 @@ public class ShibbolethController {
     @PreAuthorize("permitAll")
     public String handleLogin(
         Model model,
-        @RequestHeader(value="eppn", required=true) String aafId,
+        @RequestHeader(value="eppn", required=false) String aafId,
         @RequestHeader(value="title", required=false) String title,
         @RequestHeader(value="givenname", required=false) String givenName,
         @RequestHeader(value="sn", required=false) String surname,
