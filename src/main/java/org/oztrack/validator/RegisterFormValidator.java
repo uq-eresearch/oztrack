@@ -3,6 +3,8 @@ package org.oztrack.validator;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang3.StringUtils;
+import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
 import org.springframework.validation.Errors;
@@ -31,19 +33,19 @@ public class RegisterFormValidator implements Validator {
             errors.rejectValue("username", "unavailable.user", "This username is unavailable. Please try another.");
         }
         
-        if ((loginUser.getAafId() != null) && !loginUser.getAafId().trim().isEmpty()) {
+    	if (OzTrackApplication.getApplicationContext().isAafEnabled() && StringUtils.isNotBlank(loginUser.getAafId())) {
             User existingUserByAafId = userDao.getByAafId(loginUser.getAafId());
             if ((existingUserByAafId != null) && (existingUserByAafId != loginUser)) {
                 errors.rejectValue("aafId", "aafId.user", "This AAF ID is already associated with another account.");
             }
         }
         else {
-            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "error.empty.field", "Please Enter Password");
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "error.empty.field", "Please enter password");
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "firstName", "error.empty.field", "Please Enter firstName");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "error.empty.field", "Please Enter lastName");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "error.empty.field", "Please Enter email");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "firstName", "error.empty.field", "Please enter first name");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "error.empty.field", "Please enter last name");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "error.empty.field", "Please enter email");
         
         if (!errors.hasFieldErrors("email")) {
         	try {

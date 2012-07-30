@@ -30,7 +30,6 @@ import org.geotools.wfs.v1_1.WFSConfiguration;
 import org.geotools.xml.Encoder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Animal;

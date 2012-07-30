@@ -40,7 +40,7 @@
 		</c:otherwise>
 		</c:choose>
         
-        <c:if test="${aafEnabled && (user.id == null) && (user.aafId == null)}">
+        <c:if test="${aafEnabled && (user.id == null) && (empty user.aafId)}">
         <form style="margin: 20px 0; width: 600px;">
         <h2>Register using AAF</h2>
         <div style="margin: 1em 0;">
@@ -71,7 +71,7 @@
         <h2>Register new profile</h2>
         </c:if>
         
-        <c:if test="${aafEnabled && ((user.id != null) || (user.aafId != null))}">
+        <c:if test="${aafEnabled && ((not empty user.aafId) || (user.id != null))}">
         <div class="help">
             <a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
             <span>
@@ -90,8 +90,15 @@
         
         <div>
             <label for="aafId">AAF ID:</label>
-            <form:input path="aafId" id="aafId"/>
-            <form:errors path="aafId" cssClass="formErrors"/>
+            <c:choose>
+                <c:when test="${not empty user.aafId}">
+                    <form:input path="aafId" id="aafId"/>
+                    <form:errors path="aafId" cssClass="formErrors"/>
+                </c:when>
+                <c:otherwise>
+                    <a class="oztrackButton" style="line-height: 24px;" href="<c:url value="/login/shibboleth"/>">Link profile with AAF ID</a>
+                </c:otherwise>
+            </c:choose>
         </div>
         
         <br/>
