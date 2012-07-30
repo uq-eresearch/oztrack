@@ -43,6 +43,31 @@ public class SearchController {
     @Autowired
     AnimalDao animalDao;
 
+    @InitBinder("project")
+    public void initProjectBinder(WebDataBinder binder) {
+        binder.setAllowedFields();
+    }
+
+    @InitBinder
+    public void initSearchQueryBinder(WebDataBinder binder) {
+        binder.setAllowedFields(
+            "fromDate",
+            "toDate",
+            "animalList",
+            "sortField"
+        );
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("dd/MM/yyyy"), true));
+        binder.registerCustomEditor(List.class, "animalList", new CustomCollectionEditor(List.class) {
+            @Override
+            protected Object convertElement(Object element) {
+                String animalId = (String) element;
+                Animal animal = new Animal();
+                animal.setId(Long.valueOf(animalId));
+                return animal;
+            }
+        });
+    }
+
     @ModelAttribute("project")
     public Project getProject(@PathVariable(value="id") Long projectId) {
         return projectDao.getProjectById(projectId);
@@ -75,20 +100,6 @@ public class SearchController {
         }
         session.setAttribute("searchQuery", searchQuery);
         return showFormInternal(model, project, searchQuery, 0);
-    }
-
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("dd/MM/yyyy"), true));
-        binder.registerCustomEditor(List.class, "animalList", new CustomCollectionEditor(List.class) {
-            @Override
-            protected Object convertElement(Object element) {
-                String animalId = (String) element;
-                Animal animal = new Animal();
-                animal.setId(Long.valueOf(animalId));
-                return animal;
-            }
-        });
     }
     
     @RequestMapping(value="/projects/{id}/search", method=RequestMethod.GET)

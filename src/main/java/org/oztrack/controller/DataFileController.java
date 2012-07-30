@@ -7,6 +7,8 @@ import org.oztrack.data.model.DataFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +18,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class DataFileController {
     @Autowired
     private DataFileDao dataFileDao;
+
+    @InitBinder("dataFile")
+    public void initDataFileBinder(WebDataBinder binder) {
+        binder.setAllowedFields();
+    }
 
     @ModelAttribute("dataFile")
     public DataFile getDataFile(@PathVariable(value="id") Long dataFileId) {

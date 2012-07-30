@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,11 @@ public class ProjectMapController {
     
     @Autowired
     AnimalDao animalDao;
+
+    @InitBinder("project")
+    public void initProjectBinder(WebDataBinder binder) {
+        binder.setAllowedFields();
+    }
 
     @ModelAttribute("project")
     public Project getProject(@PathVariable(value="id") Long projectId) {

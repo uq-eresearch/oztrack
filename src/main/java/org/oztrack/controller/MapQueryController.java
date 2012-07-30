@@ -14,6 +14,8 @@ import org.oztrack.view.WFSMapQueryView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,6 +31,11 @@ public class MapQueryController {
     
     @Autowired
     private PositionFixDao positionFixDao;
+
+    @InitBinder("searchQuery")
+    public void initSearchQueryBinder(WebDataBinder binder) {
+        binder.setAllowedFields();
+    }
     
     @ModelAttribute("searchQuery")
     public SearchQuery getSearchQuery(

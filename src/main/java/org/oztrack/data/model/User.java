@@ -182,14 +182,4 @@ public class User implements Serializable {
 	public void setDataSpaceAgentUpdateDate(Date dataSpaceAgentUpdateDate) {
 		this.dataSpaceAgentUpdateDate = dataSpaceAgentUpdateDate;
 	}
-
-    /*
-    public Set<Project> getProjects() {
-        return projects;
-    }
-
-    public void setProjects(Set<Project> projects) {
-        this.projects = projects;
-    }
-    */
 }

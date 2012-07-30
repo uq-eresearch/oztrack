@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,6 +17,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class SettingsController {
     @Autowired
     private SettingsDao settingsDao;
+    
+    @InitBinder("settings")
+    public void initSettingsBinder(WebDataBinder binder) {
+        binder.setAllowedFields(
+            "homeText",
+            "aboutText",
+            "contactText"
+        );
+    }
     
     @ModelAttribute("settings")
     public Settings getSettings() throws Exception {

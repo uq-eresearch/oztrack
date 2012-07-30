@@ -23,6 +23,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +46,23 @@ public class ProjectController {
     
     @Autowired
     private UserDao userDao;
+
+    @InitBinder("project")
+    public void initProjectBinder(WebDataBinder binder) {
+        binder.setAllowedFields(
+            "title",
+            "description",
+            "projectType",
+            "spatialCoverageDescr",
+            "speciesCommonName",
+            "speciesScientificName",
+            "imageFile",
+            "publicationTitle",
+            "publicationUrl",
+            "isGlobal",
+            "rightsStatement"
+        );
+    }
     
     @ModelAttribute("project")
     public Project getProject(@PathVariable(value="id") Long projectId) {

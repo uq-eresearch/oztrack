@@ -10,6 +10,8 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +22,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class UserController {
     @Autowired
     private UserDao userDao;
+
+    @InitBinder("user")
+    public void initUserBinder(WebDataBinder binder) {
+        binder.setAllowedFields(
+            "aafId",
+            "username",
+            "password",
+            "title",
+            "firstName",
+            "lastName",
+            "dataSpaceAgentDescription",
+            "organisation",
+            "email"
+        );
+    }
 
     @ModelAttribute("user")
     public User getUser(@PathVariable(value="id") Long id) throws Exception {

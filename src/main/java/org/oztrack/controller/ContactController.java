@@ -4,6 +4,8 @@ import org.oztrack.data.access.SettingsDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,6 +14,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class ContactController {
     @Autowired
     private SettingsDao settingsDao;
+
+    @InitBinder("text")
+    public void initTextBinder(WebDataBinder binder) {
+        binder.setAllowedFields();
+    }
     
     @ModelAttribute("text")
     public String getText() throws Exception {
