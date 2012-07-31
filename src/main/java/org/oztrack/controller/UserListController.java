@@ -59,6 +59,14 @@ public class UserListController {
             newUser.setDataSpaceAgentDescription(description);
             newUser.setEmail(email);
             newUser.setOrganisation(organisation);
+            if (aafId != null) {
+                if (aafId.contains("@")) {
+                    newUser.setUsername(aafId.substring(0, aafId.indexOf("@")));
+                }
+                else {
+                    newUser.setUsername(aafId);
+                }
+            }
         }
         return newUser;
     }
