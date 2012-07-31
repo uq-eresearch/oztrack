@@ -116,7 +116,9 @@
                 $("#projectMapOptions").accordion({fillSpace: true});
                 $('#fromDatepicker').datepicker();
                 $('#toDatepicker').datepicker();
-                initializeProjectMap('projectMap', ${project.id});
+                analysisMap = createAnalysisMap('projectMap', {
+                    projectId: <c:out value="${project.id}"/>
+                });
             });
         </script>
     </jsp:attribute>
@@ -127,7 +129,7 @@
         &rsaquo; <span class="active">Analysis Tools</span>
     </jsp:attribute>
     <jsp:body>
-		<div class="mapTool">
+        <div class="mapTool">
 		
 	    <div id="projectMapOptions">
 	
@@ -142,7 +144,7 @@
 		            		<input style="float:left;" type="checkbox" name="animalCheckbox" id="select-animal-${animal.id}" value="${animal.id}">
 		                    <script type="text/javascript">
 		                        $('input[id=select-animal-${animal.id}]').change(function() {
-		                                toggleAllAnimalFeatures("${animal.id}",this.checked);
+		                                analysisMap.toggleAllAnimalFeatures("${animal.id}",this.checked);
 		                        });
 		                    </script>
 		            	</div>
@@ -158,7 +160,7 @@
 	            		</div>
 	
 		            	<div class="zoom">
-		        			<a href="#" onclick="zoomToTrack(${animal.id});">Zoom</a>
+		        			<a href="#" onclick="analysisMap.zoomToTrack(${animal.id});">Zoom</a>
 		            	</div>
 	            		
 	                </div>
@@ -174,7 +176,7 @@
 	        
 		    <div id="homeRangeCalculatorPanel">
 		        
-		        <form method="POST" id="mapToolForm" onsubmit="addProjectMapLayer(); return false;">
+		        <form method="POST" id="mapToolForm" onsubmit="analysisMap.addProjectMapLayer(); return false;">
                     <input id="projectId" type="hidden" value="${project.id}"/>
 		            <b>Date Range:</b>
 		            <table style="margin-left:5px;">
