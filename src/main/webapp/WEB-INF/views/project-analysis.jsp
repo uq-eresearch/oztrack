@@ -225,11 +225,11 @@
                     <br>
 					<b>Spatial Reference System:</b><br>
 					<!--
-                        Defaults to EPSG:20255 (AGD66 / AMG zone 55)
-                        Area: Australia and PNG - 144°E to 150°E
-                        Link: http://spatialreference.org/ref/epsg/20255/
+                        Defaults to EPSG:3577 (GDA94 / Australian Albers)
+                        Australia-wide geoscience and statistical mapping.
+                        Link: http://spatialreference.org/ref/epsg/3577/
                     -->
-                    <input id="projectionCode" class="shortInputBox" value="EPSG:20255"/>&nbsp;
+                    <input id="projectionCode" class="shortInputBox" value="EPSG:3577"/>&nbsp;
                     <a href="javascript:void(0)" onclick="reportProjectionDescr();">Find</a>&nbsp;
 					<a href="javascript:void(0)" onclick="window.open('http://spatialreference.org/ref/epsg', 'popup', 'width=600,height=400,scrollbars=yes');">See List</a>
                     <br />
