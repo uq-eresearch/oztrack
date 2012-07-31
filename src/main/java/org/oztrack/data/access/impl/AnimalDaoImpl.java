@@ -22,7 +22,6 @@ public class AnimalDaoImpl implements AnimalDao {
     }
 
     @Override
-    @Transactional(readOnly=true)
     public List<Animal> getAnimalsByProjectId(Long projectId) {
         Query query = em.createQuery("select o from Animal o where o.project.id = :projectId order by o.projectAnimalId");
         query.setParameter("projectId", projectId);
@@ -36,7 +35,6 @@ public class AnimalDaoImpl implements AnimalDao {
     }
 
     @Override
-    @Transactional(readOnly=true)
     public Animal getAnimal(String animalId, Long projectId) {
         Query query = em.createQuery("select o from Animal o where o.project.id=:projectId and o.projectAnimalId=:animalId");
         query.setParameter("projectId", projectId);
@@ -50,7 +48,6 @@ public class AnimalDaoImpl implements AnimalDao {
     }
 
     @Override
-    @Transactional(readOnly=true)
     public Animal getAnimalById(Long id) {
         Query query = em.createQuery("SELECT o FROM Animal o WHERE o.id = :id");
         query.setParameter("id", id);

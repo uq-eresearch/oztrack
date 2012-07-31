@@ -23,7 +23,6 @@ public class ProjectDaoImpl implements ProjectDao {
     private EntityManager em;
     
     @Override
-    @Transactional(readOnly=true)
     public List<Project> getAll() {
         @SuppressWarnings("unchecked")
         List<Project> resultList = em.createQuery("from Project").getResultList();
@@ -31,7 +30,6 @@ public class ProjectDaoImpl implements ProjectDao {
     }
 
     @Override
-    @Transactional(readOnly=true)
     public Project getProjectById(Long id) {
         Query query = em.createQuery("SELECT o FROM Project o WHERE o.id = :id");
         query.setParameter("id", id);

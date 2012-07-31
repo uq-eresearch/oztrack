@@ -46,7 +46,6 @@ public class PositionFixDaoImpl implements PositionFixDao {
     }
 
     @Override
-    @Transactional(readOnly=true)
     public Page<PositionFix> getPage(SearchQuery searchQuery, int offset, int nbrObjectsPerPage) {
        try {
             Query query = buildQuery(searchQuery, false);
@@ -114,7 +113,6 @@ public class PositionFixDaoImpl implements PositionFixDao {
     }
 
     @Override
-    @Transactional(readOnly=true)
     public List<PositionFix> getProjectPositionFixList(SearchQuery searchQuery) {
         Query query = buildQuery(searchQuery, false);
         @SuppressWarnings("unchecked")
@@ -123,7 +121,6 @@ public class PositionFixDaoImpl implements PositionFixDao {
     }
     
     @Override
-    @Transactional(readOnly=true)
     public List<PositionFix> queryProjectPositionFixes(SearchQuery searchQuery) {
 
         Long projectId = searchQuery.getProject().getId();
@@ -173,7 +170,6 @@ public class PositionFixDaoImpl implements PositionFixDao {
     }
 
     @Override
-    @Transactional(readOnly=true)
     public Date getProjectFirstDetectionDate(Project project) {
     	
     	String projectId =  project.getId().toString();
@@ -190,7 +186,6 @@ public class PositionFixDaoImpl implements PositionFixDao {
     }
     
     @Override
-    @Transactional(readOnly=true)
     public Date getProjectLastDetectionDate(Project project) {
     	
     	String projectId =  project.getId().toString();
@@ -207,7 +202,6 @@ public class PositionFixDaoImpl implements PositionFixDao {
     }
     
     @Override
-    @Transactional(readOnly=true)
     public Date getDataFileFirstDetectionDate(DataFile dataFile) {
     	
         String sql = "select min(o.detectionTime)" 
@@ -222,7 +216,6 @@ public class PositionFixDaoImpl implements PositionFixDao {
     }
 
     @Override
-    @Transactional(readOnly=true)
     public Date getDataFileLastDetectionDate(DataFile dataFile) {
     	
         String sql = "select max(o.detectionTime)" 

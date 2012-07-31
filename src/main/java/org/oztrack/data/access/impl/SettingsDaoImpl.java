@@ -14,7 +14,6 @@ public class SettingsDaoImpl implements SettingsDao {
     private EntityManager em;    
     
     @Override
-    @Transactional(readOnly=true)
     public Settings getSettings() {
         return (Settings) em
             .createQuery("from org.oztrack.data.model.Settings")

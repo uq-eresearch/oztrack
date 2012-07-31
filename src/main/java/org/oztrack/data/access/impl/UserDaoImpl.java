@@ -16,7 +16,6 @@ public class UserDaoImpl implements UserDao {
     private EntityManager em;
     
     @Override
-    @Transactional(readOnly=true)
     public User getByUsername(String username) {
         Query query = em.createQuery("SELECT o FROM AppUser o WHERE o.username = :username");
         query.setParameter("username", username);
@@ -28,7 +27,6 @@ public class UserDaoImpl implements UserDao {
     }
     
     @Override
-    @Transactional(readOnly=true)
     public User getByAafId(String aafId) {
         Query query = em.createQuery("SELECT o FROM AppUser o WHERE o.aafId = :aafId");
         query.setParameter("aafId", aafId);
@@ -40,7 +38,6 @@ public class UserDaoImpl implements UserDao {
     }
     
     @Override
-    @Transactional(readOnly=true)
     public User getUserById(Long id) {
         Query query = em.createQuery("SELECT o FROM AppUser o WHERE o.id = :id");
         query.setParameter("id", id);

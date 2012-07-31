@@ -25,7 +25,6 @@ public class DataFileDaoImpl implements DataFileDao {
     }
     
     @Override
-    @Transactional(readOnly=true)
     public DataFile getDataFileById(Long id) {
         Query query = em.createQuery("SELECT o FROM datafile o WHERE o.id = :id");
         query.setParameter("id", id);
@@ -37,7 +36,6 @@ public class DataFileDaoImpl implements DataFileDao {
     }
 
     @Override
-    @Transactional(readOnly=true)
     public DataFile getNextDataFile() {
         Query query = em.createQuery("select o from datafile o " +
                 " where o.status='NEW'" +
@@ -52,7 +50,6 @@ public class DataFileDaoImpl implements DataFileDao {
     }
 
     @Override
-    @Transactional(readOnly=true)
     public ArrayList<String> getAllAnimalIds(DataFile dataFile) {
 
         String entityName = "RawPositionFix";
@@ -94,7 +91,6 @@ public class DataFileDaoImpl implements DataFileDao {
     }
     
     @Override
-    @Transactional(readOnly=true)
     public List<DataFile> getDataFilesByProject(Project project) {
     	Query query = em.createQuery("SELECT o from datafile o where o.project = :project order by o.createDate");
     	query.setParameter("project", project);
