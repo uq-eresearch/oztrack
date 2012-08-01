@@ -584,6 +584,10 @@ div.actions ul li {
     padding: 0 0 2px 22px;
 }
 
+div.actions ul li.create {
+    background-image: url(/images/page_white_edit.png);
+}
+
 div.actions ul li.edit {
     background-image: url(/images/page_white_edit.png);
 }

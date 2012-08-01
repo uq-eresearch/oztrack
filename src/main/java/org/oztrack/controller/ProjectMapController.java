@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.access.SrsDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.types.MapQueryType;
@@ -25,6 +26,9 @@ public class ProjectMapController {
     
     @Autowired
     AnimalDao animalDao;
+    
+    @Autowired
+    SrsDao srsDao;
 
     @InitBinder("project")
     public void initProjectBinder(WebDataBinder binder) {
@@ -43,6 +47,7 @@ public class ProjectMapController {
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
         model.addAttribute("mapQueryTypeList", mapQueryTypeList);
         model.addAttribute("projectAnimalsList", projectAnimalsList);
+        model.addAttribute("srsList", srsDao.getAll());
         return "project-analysis";
     }
 }

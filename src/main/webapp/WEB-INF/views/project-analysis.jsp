@@ -119,6 +119,22 @@
                 analysisMap = createAnalysisMap('projectMap', {
                     projectId: <c:out value="${project.id}"/>
                 });
+                srsSelector = createSrsSelector({
+                    srsList: [
+                        <c:forEach items= "${srsList}" var="srs" varStatus="status">
+                        {
+                            id: '<c:out value="${srs.identifier}"/>',
+                            title: '<c:out value="${srs.title}"/>',
+                            bounds: [
+                                <c:out value="${srs.bounds.envelopeInternal.minX}"/>,
+                                <c:out value="${srs.bounds.envelopeInternal.minY}"/>,
+                                <c:out value="${srs.bounds.envelopeInternal.maxX}"/>,
+                                <c:out value="${srs.bounds.envelopeInternal.maxY}"/>
+                            ]
+                        }<c:if test="${not status.last}">,</c:if>
+                        </c:forEach>
+                    ]
+                });
             });
         </script>
     </jsp:attribute>
@@ -226,6 +242,7 @@
                     </table>
                     <br>
 					<b>Spatial Reference System:</b><br>
+                    <a href="javascript:void(0)" onclick="srsSelector.showDialog();">Help me select an SRS</a><br>
 					<!--
                         Defaults to EPSG:3577 (GDA94 / Australian Albers)
                         Australia-wide geoscience and statistical mapping.

@@ -20,6 +20,8 @@
         <h1>Settings</h1>
         <form:form commandName="settings" method="POST" name="settings" cssStyle="width: 100%; padding: 0; background-color: transparent;">
             <div>
+                <h2>Spatial Reference Systems</h2>
+                <a href="<c:url value="/settings/srs"/>">Update spatial reference systems</a>
                 <h2>Home text</h2>
                 <form:textarea path="homeText" id="homeText" cssClass="ckeditor"/>
                 <form:errors path="homeText" cssClass="formErrors"/>
