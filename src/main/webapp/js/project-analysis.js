@@ -56,8 +56,6 @@ function createAnalysisMap(div, options) {
                 
             map.addLayers([gsat, gphy, gmap, ghyb, allDetectionsLayer]);
             map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326, projection900913), 4);
-            
-            reportProjectionDescr();
         }());
 
         function animalInfoToggle() {
@@ -540,6 +538,7 @@ function createSrsSelector(options) {
         var mapHeight = 500;
         
         var srsList = options.srsList;
+        var onSrsSelected = options.onSrsSelected;
         var dialogDiv = null;
 
         (function() {
@@ -570,7 +569,18 @@ function createSrsSelector(options) {
                 var gphy = new OpenLayers.Layer.Google('Google Physical', {type: google.maps.MapTypeId.TERRAIN});
                 map.addLayer(gphy);
                 
-                var srsLayer = new OpenLayers.Layer.Vector('Spatial Reference Systems');
+                var srsLayer = new OpenLayers.Layer.Vector('Spatial Reference Systems', {
+                    styleMap: new OpenLayers.StyleMap({
+                        'temporary': {
+                            strokeColor: '#0099ee',
+                            fillColor: '#0099ee',
+                            cursor: 'pointer',
+                            label : '${title} (${id})',
+                            fontSize: '11px',
+                            fontWeight: 'normal',
+                        }
+                    })
+                });
                 for (var i = 0; i < srsList.length; i++) {
                     var srs = srsList[i];
                     var bounds = new OpenLayers.Bounds(srs.bounds);
@@ -585,6 +595,27 @@ function createSrsSelector(options) {
                     srsLayer.addFeatures([srsFeature]);
                 }  
                 map.addLayer(srsLayer);
+                
+                var hoverControl = new OpenLayers.Control.SelectFeature([srsLayer], {
+                    hover: true,
+                    multiple: false,
+                    highlightOnly: true,
+                    renderIntent: 'temporary'
+                });
+                map.addControl(hoverControl);
+                hoverControl.activate();
+                
+                var selectControl = new OpenLayers.Control.SelectFeature([srsLayer], {
+                    hover: false,
+                    multiple: false,
+                    onSelect: function(e) {
+                        this.unselectAll();
+                        dialogDiv.dialog('close');
+                        onSrsSelected(e.attributes.id);
+                    }
+                });
+                map.addControl(selectControl);
+                selectControl.activate();
         
                 map.setCenter(new OpenLayers.LonLat(133, -28).transform(projection4326, projection900913), 3);
             }
@@ -596,46 +627,3 @@ function createSrsSelector(options) {
         return srsSelector;
     }());
 }
-
-function reportProjectionDescr() {
-    var projectionCode = $('input[id=projectionCode]').val();
-    $('#projectionDescr').html("Searching for " + projectionCode + "...");
-    new Proj4js.Proj(projectionCode, projectionCallback);
-}
-
-function projectionCallback(projection) {
-    var detailText = "";
-    var strArray = projection.defData.split("+");
-    var title;
-    
-    for (var s in strArray) {
-        if (strArray[s].indexOf("title") != -1) {
-            detailText = "Title: " + strArray[s].split("=")[1];
-        }
-    }
-    
-    if (detailText == "") {
-        if (projection.ellipseName != null) {
-            detailText = "Ellipse Name: " + projection.ellipseName;
-        }
-        else {
-            if (projection.defData != null) {
-                detailText = "Details: ";
-                for (var i=1; i <strArray.length; i++) {
-                    detailText = detailText + strArray[i].replace(/^\s+|\s+$/g,"") + ", ";
-                }
-            }
-            else {
-                detailText = "Projection exists.";
-            }
-        }
-    }
-    
-    // TODO: get the units, must be in m for the calculations to work!
-    var headerText = "<b>" + projection.srsCodeInput + "</b><br>";
-    $('#projectionDescr').html(headerText + detailText);
-}
-
-Proj4js.reportError = function(msg) {
-    $('#projectionDescr').html(msg + "Manually search for a code at <a href='http://spatialreference.org'>spatialreference.org</a>");
-};

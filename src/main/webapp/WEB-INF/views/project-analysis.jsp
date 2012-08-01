@@ -120,6 +120,9 @@
                     projectId: <c:out value="${project.id}"/>
                 });
                 srsSelector = createSrsSelector({
+                    onSrsSelected: function(id) {
+                        jQuery('#projectionCode').val(id);
+                    },
                     srsList: [
                         <c:forEach items= "${srsList}" var="srs" varStatus="status">
                         {
@@ -194,19 +197,19 @@
 		        
 		        <form method="POST" id="mapToolForm" onsubmit="analysisMap.addProjectMapLayer(); return false;">
                     <input id="projectId" type="hidden" value="${project.id}"/>
-		            <b>Date Range:</b>
+		            <b>Date Range</b>
 		            <table style="margin-left:5px;">
 			            <tr>
-			                <td><b>From:</b></td>
+			                <td>From:</td>
 			                <td><input id="fromDatepicker" class="shortInputBox"/></td>
 			            </tr>
 			            <tr>
-			                <td><b>To:</b></td>
+			                <td>To:</td>
 			                <td><input id="toDatepicker" class="shortInputBox"/></td>
 			            </tr>
 		            </table>
 					<br>
-					<b>Layer Type:</b><br>
+					<b>Layer Type</b><br>
 					<table class="mapQueryType" style="margin-top:5px;">
 		                <c:forEach items="${mapQueryTypeList}" var="mapQueryType">
 		                    <c:if test="${!fn:contains(mapQueryType,'ALL_')}">
@@ -241,22 +244,23 @@
                         </tr>
                     </table>
                     <br>
-					<b>Spatial Reference System:</b><br>
-                    <a href="javascript:void(0)" onclick="srsSelector.showDialog();">Help me select an SRS</a><br>
+					<b>Coordinate Reference System (CRS)</b><br>
 					<!--
                         Defaults to EPSG:3577 (GDA94 / Australian Albers)
                         Australia-wide geoscience and statistical mapping.
                         Link: http://spatialreference.org/ref/epsg/3577/
                     -->
-                    <input id="projectionCode" class="shortInputBox" value="EPSG:3577"/>&nbsp;
-                    <a href="javascript:void(0)" onclick="reportProjectionDescr();">Find</a>&nbsp;
-					<a href="javascript:void(0)" onclick="window.open('http://spatialreference.org/ref/epsg', 'popup', 'width=600,height=400,scrollbars=yes');">See List</a>
-                    <br />
-					<div id="projectionDescr" style="color:grey;"><br />
+                    <div>
+                        Code: <input id="projectionCode" class="shortInputBox" value="EPSG:3577"/>
                     </div>
-		                
-		            <div class="formButton"><input type="submit" id="projectMapSubmit" value="Calculate"/></div>
-	
+                    <div>
+                        <a href="javascript:void(0)" onclick="srsSelector.showDialog();">Select Australian CRS</a><br>
+    					<a href="javascript:void(0)" onclick="window.open('http://spatialreference.org/ref/epsg', 'popup', 'width=600,height=400,scrollbars=yes');">Search for international CRS codes</a>
+                    </div>
+
+                    <br>
+                    
+                    <div class="formButton"><input type="submit" id="projectMapSubmit" value="Calculate"/></div>
 	
 		          </form>      
 		        </div>
