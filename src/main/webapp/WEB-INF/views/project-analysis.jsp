@@ -244,7 +244,7 @@
                         </tr>
                     </table>
                     <br>
-					<b>Coordinate Reference System (CRS)</b><br>
+					<b>Spatial Reference System (SRS)</b><br>
 					<!--
                         Defaults to EPSG:3577 (GDA94 / Australian Albers)
                         Australia-wide geoscience and statistical mapping.
@@ -254,8 +254,8 @@
                         Code: <input id="projectionCode" class="shortInputBox" value="EPSG:3577"/>
                     </div>
                     <div>
-                        <a href="javascript:void(0)" onclick="srsSelector.showDialog();">Select Australian CRS</a><br>
-    					<a href="javascript:void(0)" onclick="window.open('http://spatialreference.org/ref/epsg', 'popup', 'width=600,height=400,scrollbars=yes');">Search for international CRS codes</a>
+                        <a href="javascript:void(0)" onclick="srsSelector.showDialog();">Select Australian SRS</a><br>
+    					<a href="javascript:void(0)" onclick="window.open('http://spatialreference.org/ref/epsg', 'popup', 'width=600,height=400,scrollbars=yes');">Search for international SRS codes</a>
                     </div>
 
                     <br>
