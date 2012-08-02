@@ -43,7 +43,7 @@ public class RServeInterface {
 
     public RServeInterface(SearchQuery searchQuery, PositionFixDao positionFixDao) {
         this.searchQuery = searchQuery;
-        this.srs = (searchQuery.getSrs() != null) ? searchQuery.getSrs().toLowerCase(Locale.ENGLISH) : "EPSG:3577";
+        this.srs = (searchQuery.getSrs() != null) ? searchQuery.getSrs().toLowerCase(Locale.ENGLISH) : "epsg:3577";
         this.positionFixDao = positionFixDao;
     }
 
