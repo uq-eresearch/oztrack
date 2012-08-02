@@ -19,12 +19,10 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.model.types.ProjectType;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.vividsolutions.jts.geom.Polygon;
 
@@ -37,16 +35,22 @@ public class Project extends OztrackBaseEntity implements Serializable {
     private Long id;
     
     private String title;
+    
     @Column(columnDefinition = "TEXT")
     private String description;
+    
     private boolean isGlobal;
+    
     private String spatialCoverageDescr;
     @ManyToOne
     private User dataSpaceAgent;
+    
     @Column(columnDefinition = "TEXT")
     private String publicationTitle;
+    
     @Column(columnDefinition = "TEXT")
     private String publicationUrl;
+    
     @Column(columnDefinition = "TEXT")
     private String dataDirectoryPath;
     
@@ -64,14 +68,9 @@ public class Project extends OztrackBaseEntity implements Serializable {
     private ProjectType projectType;
 
     private String speciesCommonName;
+    
     private String speciesScientificName;
-    private String imageFilePath;
-
-    @Transient
-    private MultipartFile imageFile;
-    public void setImageFile(MultipartFile imageFile) {this.imageFile = imageFile;}
-    public MultipartFile getImageFile() {return imageFile;}
-
+    
     @Column(name = "boundingbox", columnDefinition="GEOMETRY")
     @Type(type = "org.hibernatespatial.GeometryUserType")
     private Polygon boundingBox;
@@ -211,18 +210,6 @@ public class Project extends OztrackBaseEntity implements Serializable {
         this.speciesScientificName = speciesScientificName;
     }
 
-    public String getImageFilePath() {
-        return imageFilePath;
-    }
-
-    public void setImageFilePath(String imageFilePath) {
-        this.imageFilePath = imageFilePath;
-    }
-    
-    public String getAbsoluteImageFilePath() {
-        return getAbsoluteDataDirectoryPath() + File.separator + "img" + File.separator + getImageFilePath();
-    }
-
     public String getDataDirectoryPath() {
         return dataDirectoryPath;
     }
@@ -266,12 +253,15 @@ public class Project extends OztrackBaseEntity implements Serializable {
 	public String getDataSpaceURI() {
 		return dataSpaceURI;
 	}
+	
 	public void setDataSpaceURI(String dataSpaceURI) {
 		this.dataSpaceURI = dataSpaceURI;
 	}
+	
 	public Date getDataSpaceUpdateDate() {
 		return dataSpaceUpdateDate;
 	}
+	
 	public void setDataSpaceUpdateDate(Date dataSpaceUpdateDate) {
 		this.dataSpaceUpdateDate = dataSpaceUpdateDate;
 	}
@@ -279,9 +269,11 @@ public class Project extends OztrackBaseEntity implements Serializable {
 	public String getRightsStatement() {
 		return rightsStatement;
 	}
+	
 	public void setRightsStatement(String rightsStatement) {
 		this.rightsStatement = rightsStatement;
 	}
+	
 	@Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -295,6 +287,7 @@ public class Project extends OztrackBaseEntity implements Serializable {
         return getId().equals(other.getId());
     }
 	
+	@Override
 	public int hashCode() {
         if (id != null) {
             return id.hashCode();

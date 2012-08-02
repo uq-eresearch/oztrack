@@ -166,16 +166,6 @@
 		<form:errors path="speciesScientificName" cssClass="formErrors"/>
 		</div>
 		
-		
-		
-		<h2>Image</h2>
-		
-		<div>
-		<label for="imageFile">Upload an Image file:</label>
-		<input type="file" name="imageFile"/><br><br>
-		<form:errors path="imageFile" cssClass="formErrors"/>
-		</div>
-		
 		<h2>Publications</h2>
 		
 		<div>

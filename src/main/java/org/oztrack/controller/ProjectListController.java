@@ -40,7 +40,6 @@ public class ProjectListController {
             "spatialCoverageDescr",
             "speciesCommonName",
             "speciesScientificName",
-            "imageFile",
             "publicationTitle",
             "publicationUrl",
             "isGlobal",

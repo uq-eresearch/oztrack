@@ -56,7 +56,6 @@ public class ProjectController {
             "spatialCoverageDescr",
             "speciesCommonName",
             "speciesScientificName",
-            "imageFile",
             "publicationTitle",
             "publicationUrl",
             "isGlobal",
@@ -123,7 +122,6 @@ public class ProjectController {
         if (bindingResult.hasErrors()) {
             return "project-form";
         }
-        projectDao.saveProjectImageFile(project);
         projectDao.update(project);
         return "redirect:/projects/" + project.getId();
     }

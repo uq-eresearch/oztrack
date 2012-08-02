@@ -83,21 +83,7 @@ public class ProjectDaoImpl implements ProjectDao {
         save(project);
         
         project.setDataDirectoryPath("project-" + project.getId().toString());
-        saveProjectImageFile(project);
         update(project);
-    }
-    
-    @Override
-    @Transactional
-    public void saveProjectImageFile(Project project) throws Exception {
-        MultipartFile file = project.getImageFile();
-        if ((file == null) || project.getImageFile().getSize() == 0) {
-            return;
-        }
-        project.setImageFilePath(file.getOriginalFilename());
-        File saveFile = new File(project.getAbsoluteImageFilePath());
-        saveFile.mkdirs();
-        file.transferTo(saveFile);
     }
     
     @Override
