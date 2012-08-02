@@ -211,7 +211,7 @@
         
         <div style="clear: both;"></div>
         
-        <sec:authorize access="hasPermission(#project, 'manage')">
+        <sec:authorize access="hasPermission(#project, 'read')">
         <h2>User Roles</h2>
         <table class="entityTable" style="width: 100%;">
         <col style="width: 33%;" />
