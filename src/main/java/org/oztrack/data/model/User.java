@@ -38,7 +38,7 @@ public class User implements Serializable {
     private String dataSpaceAgentDescription;
     private Date dataSpaceAgentUpdateDate;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true)
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private List<ProjectUser> projectUsers = new LinkedList<ProjectUser>();
 

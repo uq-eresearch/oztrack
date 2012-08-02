@@ -1,6 +1,5 @@
 package org.oztrack.data.access.impl;
 
-import java.io.File;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -15,7 +14,6 @@ import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.Role;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ProjectDaoImpl implements ProjectDao {

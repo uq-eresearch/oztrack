@@ -56,13 +56,13 @@
                     <th>Created Date</th>
                     <th>User role</th>
                 </tr>
-                <c:forEach items="${currentUser.projectUsers}" var="project">
+                <c:forEach items="${currentUser.projectUsers}" var="projectUser">
                 <tr>
-                    <td><a href="<c:url value="/projects/${project.pk.project.id}"/>"><c:out value="${project.pk.project.title}"/></a></td>
-                    <td><c:out value="${project.pk.project.spatialCoverageDescr}"/></td>
-                    <td><c:out value="${project.pk.project.projectType.displayName}"/></td>
-                    <td><fmt:formatDate value="${project.pk.project.createDate}" type="date" dateStyle="long"/></td>
-                    <td><c:out value="${project.role}"/></td>
+                    <td><a href="<c:url value="/projects/${projectUser.project.id}"/>"><c:out value="${projectUser.project.title}"/></a></td>
+                    <td><c:out value="${projectUser.project.spatialCoverageDescr}"/></td>
+                    <td><c:out value="${projectUser.project.projectType.displayName}"/></td>
+                    <td><fmt:formatDate value="${projectUser.project.createDate}" type="date" dateStyle="long"/></td>
+                    <td><c:out value="${projectUser.role}"/></td>
                 </tr>
                 </c:forEach>
                 </table>

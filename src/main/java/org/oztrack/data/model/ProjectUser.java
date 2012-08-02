@@ -4,83 +4,99 @@ import static javax.persistence.EnumType.STRING;
 
 import java.io.Serializable;
 
-import javax.persistence.AssociationOverride;
-import javax.persistence.AssociationOverrides;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oztrack.data.model.types.Role;
 
 @Entity
-@Table(name = "project_user")
-@AssociationOverrides({
- @AssociationOverride(name = "pk.appuser", joinColumns = @JoinColumn(name = "user_id")),
- @AssociationOverride(name = "pk.project", joinColumns = @JoinColumn(name = "project_id"))
-        })
+@Table(name="project_user", uniqueConstraints=@UniqueConstraint(columnNames={"project_id", "user_id"}))
 public class ProjectUser implements Serializable {
-
-	private ProjectUserPk pk = new ProjectUserPk();
+    @Id
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="project_user_id_seq")
+    @SequenceGenerator(name="project_user_id_seq", sequenceName="project_user_id_seq",allocationSize=1)
+    @Column(nullable=false)
+    private Long id;
+    
+    @ManyToOne
+    @JoinColumn(name="project_id", nullable=false)
+    private Project project;
+    
+    @ManyToOne
+    @JoinColumn(name="user_id", nullable=false)
+    private User user;
 	
     @Enumerated(STRING)
-    @Column(name="role")
+    @Column(name="role", columnDefinition="text", nullable=false)
     private Role role;
-	
-	@EmbeddedId
-    public ProjectUserPk getPk() {
-        return pk;
+
+    public Long getId() {
+        return id;
     }
 
-    public void setPk(ProjectUserPk pk) {
-        this.pk = pk;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-
-	@Transient
-    public User getUser() {
-        return getPk().getUser();
-    }
-
-    public void setUser(User user) {
-        getPk().setUser(user);
-    }
-
-    @Transient
     public Project getProject() {
-        return getPk().getProject();
+        return project;
     }
 
     public void setProject(Project project) {
-        getPk().setProject(project);
+        this.project = project;
     }
 
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ProjectUser that = (ProjectUser) o;
-
-        if (getPk() != null ? !getPk().equals(that.getPk()) : that.getPk() != null) return false;
-
-        return true;
+    public User getUser() {
+        return user;
     }
 
-    public int hashCode() {
-        return (getPk() != null ? getPk().hashCode() : 0);
-    }
+    public void setUser(User user) {
+        this.user = user;
+    }	
     
     public Role getRole() {
-    	return role;
+        return role;
     }
 
     public void setRole(Role role) {
-    	this.role = role;
+        this.role = role;
     }
- 
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        ProjectUser that = (ProjectUser) obj;
+        return new EqualsBuilder()
+            .appendSuper(super.equals(obj))
+            .append(this.project, that.project)
+            .append(this.user, that.user)
+            .isEquals();
+    }
 
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(1, 31)
+            .append(project)
+            .append(user)
+            .toHashCode();
+    }
 }
