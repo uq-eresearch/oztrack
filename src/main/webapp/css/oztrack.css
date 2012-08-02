@@ -571,11 +571,13 @@ div.actions ul {
     margin: 10px 0;
 }
 
-div.actions ul {
+div.actions ul,
+ul.users {
     padding-left: 6px;
 }
 
-div.actions ul li {
+div.actions ul li,
+ul.users li {
     margin: 0.3em 0;
     list-style: none;
     background-repeat: no-repeat;
@@ -598,6 +600,22 @@ div.actions ul li.delete {
 
 div.actions ul li.publish {
     background-image: url(/images/page_white_go.png);
+}
+
+ul.users {
+    margin: 0;
+}
+
+ul.users li.manager {
+    background-image: url(/images/user.png);
+}
+
+ul.users li.writer {
+    background-image: url(/images/user_green.png);
+}
+
+ul.users li.reader {
+    background-image: url(/images/user_orange.png);
 }
 
 /* openlayers */

@@ -72,7 +72,7 @@ public class AnimalController {
     }
 
     @RequestMapping(value="/animals/{id}", method=RequestMethod.DELETE)
-    @PreAuthorize("hasPermission(#animal.project, 'write')")
+    @PreAuthorize("hasPermission(#animal.project, 'manage')")
     public void processDelete(@ModelAttribute(value="animal") Animal animal, HttpServletResponse response) {
         animalDao.delete(animal);
         response.setStatus(204);

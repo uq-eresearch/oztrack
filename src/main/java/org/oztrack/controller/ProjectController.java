@@ -16,6 +16,7 @@ import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
+import org.oztrack.data.model.types.Role;
 import org.oztrack.validator.ProjectFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -71,6 +72,9 @@ public class ProjectController {
     @RequestMapping(value="/projects/{id}", method=RequestMethod.GET)
     @PreAuthorize("permitAll")
     public String getDetailView(Model model, @ModelAttribute(value="project") Project project) {
+        model.addAttribute("managerProjectUsers", projectDao.getProjectUsersWithRole(project, Role.MANAGER));
+        model.addAttribute("writerProjectUsers", projectDao.getProjectUsersWithRole(project, Role.WRITER));
+        model.addAttribute("readerProjectUsers", projectDao.getProjectUsersWithRole(project, Role.READER));
         return getView(model, project, "project");
     }
     
@@ -81,13 +85,13 @@ public class ProjectController {
     }
     
     @RequestMapping(value="/projects/{id}/publish", method=RequestMethod.GET)
-    @PreAuthorize("hasPermission(#project, 'write')")
+    @PreAuthorize("hasPermission(#project, 'manage')")
     public String getPublishView(Model model, @ModelAttribute(value="project") Project project) {
         return getView(model, project, "project-publish");
     }
 
     @RequestMapping(value="/projects/{id}/publish", method=RequestMethod.POST)
-    @PreAuthorize("hasPermission(#project, 'write')")
+    @PreAuthorize("hasPermission(#project, 'manage')")
     public String handleRequest(
         Model model,
         @ModelAttribute(value="project") Project project,
@@ -112,7 +116,7 @@ public class ProjectController {
     }
     
     @RequestMapping(value="/projects/{id}", method=RequestMethod.PUT)
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasPermission(#project, 'write')")
     public String processUpdate(
         Authentication authentication,
         @ModelAttribute(value="project") Project project,

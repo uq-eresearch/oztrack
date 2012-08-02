@@ -186,7 +186,8 @@
             </td>
         </tr>
         
-        <sec:authorize access="hasPermission(#project, 'write')">
+        
+        <sec:authorize access="hasPermission(#project, 'manage')">
         <tr>
             <th>Publication Status:</th>
             <td>
@@ -210,6 +211,31 @@
         
         <div style="clear: both;"></div>
         
+        <sec:authorize access="hasPermission(#project, 'manage')">
+        <h2>User Roles</h2>
+        <table class="entityTable" style="width: 100%;">
+        <col style="width: 33%;" />
+        <col style="width: 33%;" />
+        <col style="width: 33%;" />
+        <tr>
+            <th style="border-bottom: 1px solid #e6e6c0; ">Managers</th>
+            <th style="border-bottom: 1px solid #e6e6c0;">Writers</th>
+            <th style="border-bottom: 1px solid #e6e6c0;">Readers</th>
+        </tr>
+        <tr>
+            <td>
+                <tags:project-user-list projectUsers="${managerProjectUsers}" role="manager"/>
+            </td>
+            <td>
+                <tags:project-user-list projectUsers="${writerProjectUsers}" role="writer"/>
+            </td>
+            <td>
+                <tags:project-user-list projectUsers="${readerProjectUsers}" role="reader"/>
+            </td>
+        </tr>
+        </table>
+        </sec:authorize>
+        
         <sec:authorize access="hasPermission(#project, 'write')">
         <div class="actions">
         <h2>Manage Project</h2>
@@ -219,8 +245,8 @@
             <c:if test="${empty project.dataSpaceURI}">
             <li class="delete"><a href="javascript:void(deleteEntity('<c:url value="/projects/${project.id}"/>', '<c:url value="/projects"/>', 'Are you sure you want to delete this project?'));">Delete project</a></li>
             </c:if>
-            </sec:authorize>
             <li class="publish"><a href="<c:url value="/projects/${project.id}/publish"/>"><c:out value="${publishButtonText}"/></a></li>
+            </sec:authorize>
         </ul>
         </div>
         </sec:authorize>

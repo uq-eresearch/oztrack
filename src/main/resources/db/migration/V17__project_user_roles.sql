@@ -1,0 +1,1 @@
+update project_user set role = 'MANAGER' where role = 'ADMIN';

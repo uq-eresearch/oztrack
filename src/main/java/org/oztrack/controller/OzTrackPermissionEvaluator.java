@@ -42,14 +42,19 @@ public class OzTrackPermissionEvaluator implements PermissionEvaluator {
             if (!projectUser.getUser().equals(currentUser)) {
                 continue;
             }
-            if (permission.equals("read") && ((projectUser.getRole() == Role.READ) || (projectUser.getRole() == Role.ADMIN))) {
-                return true;
+            if (permission.equals("read")) {
+                return
+                    (projectUser.getRole() == Role.READER) ||
+                    (projectUser.getRole() == Role.WRITER) ||
+                    (projectUser.getRole() == Role.MANAGER);
             }
-            if (permission.equals("write") && (projectUser.getRole() == Role.ADMIN)) {
-                return true;
+            else if (permission.equals("write")) {
+                return
+                    (projectUser.getRole() == Role.WRITER) ||
+                    (projectUser.getRole() == Role.MANAGER);
             }
-            if (permission.equals("manage") && (projectUser.getRole() == Role.ADMIN)) {
-                return true;
+            else if (permission.equals("manage")) {
+                return (projectUser.getRole() == Role.MANAGER);
             }
         }
         return false;

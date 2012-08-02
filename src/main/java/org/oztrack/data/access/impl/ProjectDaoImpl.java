@@ -70,7 +70,7 @@ public class ProjectDaoImpl implements ProjectDao {
         ProjectUser adminProjectUser = new ProjectUser();
         adminProjectUser.setProject(project);
         adminProjectUser.setUser(currentUser);
-        adminProjectUser.setRole(Role.ADMIN);
+        adminProjectUser.setRole(Role.MANAGER);
         
         // add this user to the project's list of users
         List <ProjectUser> projectProjectUsers = project.getProjectUsers();
@@ -85,12 +85,25 @@ public class ProjectDaoImpl implements ProjectDao {
     }
     
     @Override
-    @Transactional
     public List<Project> getProjectsByPublished(boolean published) {
         @SuppressWarnings("unchecked")
         List<Project> resultList = em
             .createQuery("from Project where isglobal = :published order by createDate")
             .setParameter("published", published)
+            .getResultList();
+        return resultList;
+    }
+    
+    @Override
+    public List<ProjectUser> getProjectUsersWithRole(Project project, Role role) {
+        @SuppressWarnings("unchecked")
+        List<ProjectUser> resultList = em
+            .createQuery(
+                "from org.oztrack.data.model.ProjectUser\n" +
+                "where project = :project and role = :role\n" +
+                "order by user.lastName, user.firstName")
+            .setParameter("project", project)
+            .setParameter("role", role)
             .getResultList();
         return resultList;
     }
