@@ -1,6 +1,13 @@
 package org.oztrack.controller;
 
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONException;
+import org.json.JSONWriter;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
@@ -110,5 +117,21 @@ public class UserListController {
         userDao.save(user);
         SecurityContextHolder.getContext().setAuthentication(OzTrackAuthenticationProvider.buildAuthentication(user));
         return "redirect:/";
+    }
+    
+    @RequestMapping(value="/users/search", method=RequestMethod.GET, produces="application/json")
+    @PreAuthorize("permitAll")
+    public void getSearchJson(@RequestParam(value="term") String term, HttpServletResponse response) throws JSONException, IOException {
+        List<User> users = userDao.search(term);
+        JSONWriter out = new JSONWriter(response.getWriter());
+        out.array();
+        for (User user : users) {
+            out.object();
+            out.key("id").value(user.getId());
+            out.key("value").value(user.getFirstName() + " " + user.getLastName());
+            out.key("label").value(user.getFirstName() + " " + user.getLastName() + " " + "(" + user.getUsername() + ")");
+            out.endObject();
+        }
+        out.endArray();
     }
 }

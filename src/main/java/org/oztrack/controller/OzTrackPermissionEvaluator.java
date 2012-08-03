@@ -43,18 +43,25 @@ public class OzTrackPermissionEvaluator implements PermissionEvaluator {
                 continue;
             }
             if (permission.equals("read")) {
-                return
-                    (projectUser.getRole() == Role.READER) ||
+                if ((projectUser.getRole() == Role.READER) ||
                     (projectUser.getRole() == Role.WRITER) ||
-                    (projectUser.getRole() == Role.MANAGER);
+                    (projectUser.getRole() == Role.MANAGER)
+                ) {
+                    return true;
+                }
             }
             else if (permission.equals("write")) {
-                return
+                if (
                     (projectUser.getRole() == Role.WRITER) ||
-                    (projectUser.getRole() == Role.MANAGER);
+                    (projectUser.getRole() == Role.MANAGER)
+                ) {
+                    return true;
+                }
             }
             else if (permission.equals("manage")) {
-                return (projectUser.getRole() == Role.MANAGER);
+                if (projectUser.getRole() == Role.MANAGER) {
+                    return true;
+                }
             }
         }
         return false;

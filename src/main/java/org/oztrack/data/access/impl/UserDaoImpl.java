@@ -1,5 +1,7 @@
 package org.oztrack.data.access.impl;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -46,6 +48,22 @@ public class UserDaoImpl implements UserDao {
         } catch (NoResultException ex) {
             return null;
         }
+    }
+    
+    @Override
+    public List<User> search(String term) {
+        @SuppressWarnings("unchecked")
+        List<User> resultList = em
+            .createQuery(
+                "from org.oztrack.data.model.User\n" +
+                "where\n" +
+                "  lower(username) like lower('%' || :term || '%') or" +
+                "  lower(firstName || ' ' || lastName) like lower('%' || :term || '%')"
+            )
+            .setParameter("term", term)
+            .setMaxResults(10)
+            .getResultList();
+        return resultList;
     }
 
     @Override

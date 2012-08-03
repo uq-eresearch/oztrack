@@ -35,12 +35,81 @@
         <script src="http://maps.google.com/maps/api/js?v=3.9&sensor=false"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/OpenLayers.js"></script>
         <script type="text/javascript" src="<c:url value="/js/coverage.js"/>"></script>
-        <script type="text/javascript"> 
-            $(document).ready(function() {
-                $('#navTrack').addClass('active');
+        <script type="text/javascript">
+            function addProjectUser() {
+                jQuery('#addProjectUserError').hide();
+                jQuery('#deleteProjectUserError').hide();
+                var userFullName = jQuery('#addProjectUserName').val();
+                var userId = jQuery('#addProjectUserId').val();
+                var role = jQuery('#addProjectUserRole').val();
+                jQuery.ajax({
+                    url: '<c:url value="/projects/${project.id}/users"/>',
+                    type: 'POST',
+                    data: {
+                        'user-id': userId,
+                        'role': role
+                    },
+                    success: function(data, textStatus, jqXHR) {
+                        jQuery('#addProjectUserName').val('');
+                        jQuery('#addProjectUserId').val('');
+                        jQuery('#' + role + 'ProjectUsersNone').hide();
+                        var projectUsersList = jQuery('#' + role + 'ProjectUsersList').show();
+                        jQuery('<li>')
+                            .attr('id', role + 'ProjectUser-' + userId)
+                            .addClass(role)
+                            .text(userFullName)
+                            .append(jQuery(
+                                '<a href="javascript:void(0)" ' +
+                                'onclick="deleteProjectUser(' + userId + ', \'' + role + '\', \'' + userFullName + '\');"' +
+                                '><img src="<c:url value="/images/bullet_delete.png"/>" /></a>'
+                            ))
+                            .hide().appendTo(projectUsersList).fadeIn();
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        var message = jQuery(jqXHR.responseXML).find('error').text() || 'Error processing request';
+                        jQuery('#addProjectUserError').text(message).fadeIn();
+                    }
+                });
+            }
+            function deleteProjectUser(userId, role, userFullName) {
+                jQuery('#addProjectUserError').hide();
+                jQuery('#deleteProjectUserError').hide();
+                if (!confirm('Are you sure you want to remove ' + userFullName + ' from this project?')) {
+                    return;
+                }
+                jQuery.ajax({
+                    url: '<c:url value="/projects/${project.id}/users/"/>' + userId,
+                    type: 'POST',
+                    data: {
+                        '_method': 'DELETE'
+                    },
+                    success: function(data, textStatus, jqXHR) {
+                        var projectUsersNone = jQuery('#' + role + 'ProjectUsersNone');
+                        var projectUsersList = jQuery('#' + role + 'ProjectUsersList');
+                        if (projectUsersList.children().length == 1) {
+                            projectUsersList.hide();
+                            projectUsersNone.fadeIn();
+                        }
+                        jQuery('#' + role + 'ProjectUser-' + userId).remove();
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        var message = jQuery(jqXHR.responseXML).find('error').text() || 'Error processing request';
+                        jQuery('#deleteProjectUserError').text(message).fadeIn();
+                    }
+                });
+            }
+            jQuery(document).ready(function() {
+                jQuery('#navTrack').addClass('active');
                 <c:if test="${not empty project.boundingBox}">
                 var coverageMap = createCoverageMap('coverageMap', '<c:out value="${project.boundingBox}"/>');
                 </c:if>
+                jQuery('#addProjectUserName').autocomplete({
+                    source: '<c:url value="/users/search"/>',
+                    minLength: 2,
+                    select: function(event, ui) {
+                        jQuery('#addProjectUserId').val(ui.item ? ui.item.id : '');
+                    }
+                });
             });
         </script>
     </jsp:attribute>
@@ -213,7 +282,7 @@
         
         <sec:authorize access="hasPermission(#project, 'read')">
         <h2>User Roles</h2>
-        <table class="entityTable" style="width: 100%;">
+        <table class="entityTable" style="width: 100%; margin: 0;">
         <col style="width: 33%;" />
         <col style="width: 33%;" />
         <col style="width: 33%;" />
@@ -223,11 +292,35 @@
             <th style="border-bottom: 1px solid #e6e6c0;">Readers</th>
         </tr>
         <tr>
-            <td><tags:project-user-list projectUsers="${managerProjectUsers}" role="manager"/></td>
-            <td><tags:project-user-list projectUsers="${writerProjectUsers}" role="writer"/></td>
-            <td><tags:project-user-list projectUsers="${readerProjectUsers}" role="reader"/></td>
+            <c:set var="showDeleteLinks" value="false"/>
+            <sec:authorize access="hasPermission(#project, 'write')">
+            <c:set var="showDeleteLinks" value="true"/>
+            </sec:authorize>
+            <td><tags:project-user-list projectUsers="${managerProjectUsers}" role="manager" showDeleteLinks="${showDeleteLinks}"/></td>
+            <td><tags:project-user-list projectUsers="${writerProjectUsers}" role="writer" showDeleteLinks="${showDeleteLinks}"/></td>
+            <td><tags:project-user-list projectUsers="${readerProjectUsers}" role="reader" showDeleteLinks="${showDeleteLinks}"/></td>
         </tr>
         </table>
+        <sec:authorize access="hasPermission(#project, 'manage')">
+        <div id="deleteProjectUserError" class="errorMessage" style="display: none; text-align: center; font-size: 11px; padding: 5px; background-color: #ffecec;"></div>
+        <form
+            onsubmit="return false;"
+            style="width: 100%; padding: 0; background-color: #F6F6E6; border: 0px solid #e6e6c0;
+                -webkit-border-radius: 0px; -moz-border-radius: 0px; -ms-border-radius: 0px; -o-border-radius: 0px; border-radius: 0px;">
+        <div style="margin: 0; padding: 10px;">
+            <span style="line-height: 1.8em; margin-right: 10px;">Assign a new user to the project:</span>
+            <input id="addProjectUserId" type="hidden" />
+            <input id="addProjectUserName" type="text" style="width: 200px;" placeholder="Type name to search" />
+            <select id="addProjectUserRole" style="width: auto;">
+                <option value="manager">Manager</option>
+                <option value="writer">Writer</option>
+                <option value="reader">Reader</option>
+            </select>
+            <button id="addProjectUserButton" onclick="addProjectUser();">Add</button>
+            <span id="addProjectUserError" class="errorMessage" style="margin-left: 10px;"></span>
+        </div>
+        </form>
+        </sec:authorize>
         </sec:authorize>
         
         <sec:authorize access="hasPermission(#project, 'write')">

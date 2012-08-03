@@ -272,8 +272,8 @@ a:hover {
 }
 
 .errorMessage {
-    font-style: italic;
-    color:red;
+    color: red;
+    font-weight: bold;
 }
 
 /* maps */
@@ -616,6 +616,12 @@ ul.users li.writer {
 
 ul.users li.reader {
     background-image: url(/images/user_orange.png);
+}
+
+/* jquery-ui */
+
+.ui-autocomplete-loading {
+    background: white url('jquery-ui/images/ui-anim_basic_16x16.gif') right center no-repeat;
 }
 
 /* openlayers */

@@ -1,7 +1,10 @@
 package org.oztrack.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +19,8 @@ import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
+import org.oztrack.data.model.ProjectUser;
+import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.Role;
 import org.oztrack.validator.ProjectFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,7 +134,7 @@ public class ProjectController {
         projectDao.update(project);
         return "redirect:/projects/" + project.getId();
     }
-
+    
     @RequestMapping(value="/projects/{id}", method=RequestMethod.DELETE)
     @PreAuthorize("hasPermission(#project, 'manage')")
     public void processDelete(@ModelAttribute(value="project") Project project, HttpServletResponse response) {
@@ -150,5 +155,104 @@ public class ProjectController {
         model.addAttribute("dataFileList", dataFileList);
         model.addAttribute("dataSpaceURL", dataSpaceURL);
         return viewName;
+    }
+
+    @RequestMapping(value="/projects/{id}/users", method=RequestMethod.POST, produces="application/xml")
+    @PreAuthorize("hasPermission(#project, 'manage')")
+    public void processAddUser(
+        Model model,
+        @ModelAttribute(value="project") Project project,
+        @RequestParam(value="user-id") Long userId,
+        @RequestParam(value="role") String role,
+        HttpServletResponse response
+    ) throws IOException {
+        if (userId == null) {
+            writeAddUserResponse(response.getWriter(), "No user selected");
+            response.setStatus(400);
+            return;
+        }
+        User user = userDao.getUserById(userId);
+        if (user == null) {
+            writeAddUserResponse(response.getWriter(), "Invalid user ID supplied");
+            response.setStatus(400);
+            return;
+        }
+        for (ProjectUser projectUser : project.getProjectUsers()) {
+            if (projectUser.getUser().equals(user)) {
+                writeAddUserResponse(response.getWriter(), "Already assigned to project");
+                response.setStatus(400);
+                return;
+            }
+        }
+        ProjectUser projectUser = new ProjectUser();
+        projectUser.setProject(project);
+        projectUser.setUser(user);
+        projectUser.setRole(Role.valueOf(role.toUpperCase(Locale.ENGLISH)));
+        project.getProjectUsers().add(projectUser);
+        projectDao.save(project);
+        writeAddUserResponse(response.getWriter(), null);
+        response.setStatus(204);
+    }
+    
+    private static void writeAddUserResponse(PrintWriter out, String error) {
+        out.append("<?xml version=\"1.0\"?>\n");
+        out.append("<add-project-user-response xmlns=\"http://oztrack.org/xmlns#\">\n");
+        if (error != null) {
+            out.append("    <error>" + error + "</error>\n");
+        }
+        out.append("</add-project-user-response>\n");
+    }
+    
+    @RequestMapping(value="/projects/{id}/users/{userId}", method=RequestMethod.DELETE)
+    @PreAuthorize("hasPermission(#project, 'manage')")
+    public void processUserDelete(
+        @ModelAttribute(value="project") Project project,
+        @PathVariable(value="userId") Long userId,
+        HttpServletResponse response
+    ) throws IOException {
+        if (userId == null) {
+            writeDeleteUserResponse(response.getWriter(), "No user selected");
+            response.setStatus(400);
+            return;
+        }
+        User user = userDao.getUserById(userId);
+        if (user == null) {
+            writeDeleteUserResponse(response.getWriter(), "Invalid user ID supplied");
+            response.setStatus(400);
+            return;
+        }
+        ProjectUser foundProjectUser = null;
+        boolean foundManager = false;
+        for (ProjectUser projectUser : project.getProjectUsers()) {
+            if (projectUser.getUser().equals(user)) {
+                foundProjectUser = projectUser;
+            }
+            else if (projectUser.getRole() == Role.MANAGER) {
+                foundManager = true;
+            }
+        }
+        if (foundProjectUser == null) {
+            writeDeleteUserResponse(response.getWriter(), "User not assigned to project");
+            response.setStatus(400);
+            return;
+        }
+        if (!foundManager) {
+            writeDeleteUserResponse(response.getWriter(), "There must be at least one manager remaining on a project");
+            response.setStatus(400);
+            return;
+        }
+        project.getProjectUsers().remove(foundProjectUser);
+        projectDao.save(project);
+        writeDeleteUserResponse(response.getWriter(), null);
+        response.setStatus(204);
+    }
+    
+    private static void writeDeleteUserResponse(PrintWriter out, String error) {
+        out.append("<?xml version=\"1.0\"?>\n");
+        out.append("<delete-project-user-response xmlns=\"http://oztrack.org/xmlns#\">\n");
+        if (error != null) {
+            out.append("    <error>" + error + "</error>\n");
+        }
+        out.append("</delete-project-user-response>\n");
     }
 }
