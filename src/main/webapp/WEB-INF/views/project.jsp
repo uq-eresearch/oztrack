@@ -218,20 +218,14 @@
         <col style="width: 33%;" />
         <col style="width: 33%;" />
         <tr>
-            <th style="border-bottom: 1px solid #e6e6c0; ">Managers</th>
+            <th style="border-bottom: 1px solid #e6e6c0;">Managers</th>
             <th style="border-bottom: 1px solid #e6e6c0;">Writers</th>
             <th style="border-bottom: 1px solid #e6e6c0;">Readers</th>
         </tr>
         <tr>
-            <td>
-                <tags:project-user-list projectUsers="${managerProjectUsers}" role="manager"/>
-            </td>
-            <td>
-                <tags:project-user-list projectUsers="${writerProjectUsers}" role="writer"/>
-            </td>
-            <td>
-                <tags:project-user-list projectUsers="${readerProjectUsers}" role="reader"/>
-            </td>
+            <td><tags:project-user-list projectUsers="${managerProjectUsers}" role="manager"/></td>
+            <td><tags:project-user-list projectUsers="${writerProjectUsers}" role="writer"/></td>
+            <td><tags:project-user-list projectUsers="${readerProjectUsers}" role="reader"/></td>
         </tr>
         </table>
         </sec:authorize>
