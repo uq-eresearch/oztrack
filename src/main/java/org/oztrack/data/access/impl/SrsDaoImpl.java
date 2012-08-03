@@ -23,6 +23,13 @@ public class SrsDaoImpl implements SrsDao {
     }
     
     @Override
+    public List<Srs> getAllOrderedByBoundsAreaDesc() {
+        @SuppressWarnings("unchecked")
+        List<Srs> resultList = em.createNativeQuery("select * from srs order by ST_Area(bounds) desc", Srs.class).getResultList();
+        return resultList;
+    }
+    
+    @Override
     public Srs getById(Long id) {
         return (Srs) em
             .createQuery("from org.oztrack.data.model.Srs where id = :id")

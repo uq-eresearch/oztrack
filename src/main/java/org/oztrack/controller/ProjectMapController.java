@@ -47,7 +47,7 @@ public class ProjectMapController {
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
         model.addAttribute("mapQueryTypeList", mapQueryTypeList);
         model.addAttribute("projectAnimalsList", projectAnimalsList);
-        model.addAttribute("srsList", srsDao.getAll());
+        model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
         return "project-analysis";
     }
 }

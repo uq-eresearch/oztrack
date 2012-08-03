@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface SrsDao {
     List<Srs> getAll();
+    List<Srs> getAllOrderedByBoundsAreaDesc();
     Srs getById(Long id);
     void save(Srs srs);
     Srs update(Srs srs);
