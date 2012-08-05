@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -77,9 +76,13 @@ public class ProjectController {
     @RequestMapping(value="/projects/{id}", method=RequestMethod.GET)
     @PreAuthorize("permitAll")
     public String getDetailView(Model model, @ModelAttribute(value="project") Project project) {
-        model.addAttribute("managerProjectUsers", projectDao.getProjectUsersWithRole(project, Role.MANAGER));
-        model.addAttribute("writerProjectUsers", projectDao.getProjectUsersWithRole(project, Role.WRITER));
-        model.addAttribute("readerProjectUsers", projectDao.getProjectUsersWithRole(project, Role.READER));
+        Role[] roles = Role.values();
+        HashMap<Role, List<ProjectUser>> projectUsersByRole = new HashMap<Role, List<ProjectUser>>();
+        for (Role role : roles) {
+            projectUsersByRole.put(role, projectDao.getProjectUsersWithRole(project, role));
+        }
+        model.addAttribute("roles", roles);
+        model.addAttribute("projectUsersByRole", projectUsersByRole);
         return getView(model, project, "project");
     }
     
@@ -187,7 +190,7 @@ public class ProjectController {
         ProjectUser projectUser = new ProjectUser();
         projectUser.setProject(project);
         projectUser.setUser(user);
-        projectUser.setRole(Role.valueOf(role.toUpperCase(Locale.ENGLISH)));
+        projectUser.setRole(Role.fromIdentifier(role));
         project.getProjectUsers().add(projectUser);
         projectDao.save(project);
         writeAddUserResponse(response.getWriter(), null);
@@ -222,13 +225,13 @@ public class ProjectController {
             return;
         }
         ProjectUser foundProjectUser = null;
-        boolean foundManager = false;
+        boolean foundOtherManager = false;
         for (ProjectUser projectUser : project.getProjectUsers()) {
             if (projectUser.getUser().equals(user)) {
                 foundProjectUser = projectUser;
             }
             else if (projectUser.getRole() == Role.MANAGER) {
-                foundManager = true;
+                foundOtherManager = true;
             }
         }
         if (foundProjectUser == null) {
@@ -236,7 +239,7 @@ public class ProjectController {
             response.setStatus(400);
             return;
         }
-        if (!foundManager) {
+        if (!foundOtherManager) {
             writeDeleteUserResponse(response.getWriter(), "There must be at least one manager remaining on a project");
             response.setStatus(400);
             return;
