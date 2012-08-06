@@ -9,14 +9,13 @@
 <tags:page title="${project.title}: Metadata Publication">
     <jsp:attribute name="head">
         <script type="text/javascript">
-            function publishToDataSpace(id, username, action) {
+            function publishToDataSpace(id, action) {
                 var loadingGraphicHtml = "Sending request ...";
                 $('#publicationStatus').html(loadingGraphicHtml);
                  
                 var url = "/projects/${project.id}/publish";
                 var params =  {
                     project: id,
-                    username: username,
                     action: action
                 };
                 var request = $.ajax({
@@ -199,11 +198,11 @@
 			<a href="<c:url value="/projects/${project.id}"/>">Cancel</a>
             &nbsp;
 			<c:if test="${!empty project.firstDetectionDate}">
-				<a class="oztrackButton" href="#" onclick='publishToDataSpace(<c:out value="${project.id}"/>,"<c:out value="${currentUser.username}"/>","publish"); return false;'><c:out value="${publishButtonText}"/></a>
+				<a class="oztrackButton" href="#" onclick="publishToDataSpace(<c:out value="${project.id}"/>, 'publish'); return false;"><c:out value="${publishButtonText}"/></a>
 			</c:if>
             &nbsp;
 			<c:if test="${!empty project.dataSpaceURI}">
-				<a class="oztrackButton" href="#" onclick='publishToDataSpace(<c:out value="${project.id}"/>,"<c:out value="${currentUser.username}"/>","delete"); return false;'>Delete from UQ DataSpace</a>
+				<a class="oztrackButton" href="#" onclick="publishToDataSpace(<c:out value="${project.id}"/>, 'delete'); return false;">Delete from UQ DataSpace</a>
 			</c:if>
         </div>
     </jsp:body>

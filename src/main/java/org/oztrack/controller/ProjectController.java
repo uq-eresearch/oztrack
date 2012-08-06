@@ -103,7 +103,6 @@ public class ProjectController {
     public String handleRequest(
         Model model,
         @ModelAttribute(value="project") Project project,
-        @RequestParam(value="username", required=false) String username,
         @RequestParam(value="action", required=false) String action
     ) throws Exception {
         Map <String, Object> projectActionMap = new HashMap<String, Object>();
