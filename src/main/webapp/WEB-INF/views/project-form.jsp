@@ -184,6 +184,9 @@
 		<h2>Data Availability</h2>
 		
 		<table class="form">
+        <col style="width: 180px;" />
+        <col style="width: 360px;" />
+        <col style="width: 40px;" />
         <tr>
             <th class="form-label">
 		        Access Rights:

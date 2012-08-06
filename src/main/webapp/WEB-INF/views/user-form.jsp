@@ -48,125 +48,174 @@
             <h2>Register new profile</h2>
             </c:if>
             
+            <fieldset>
+            <legend>Account details</legend>
+            <table class="form">
+            <col style="width: 120px;" />
+            <col style="width: 320px;" />
+            <col style="width: 40px;" />
             <c:if test="${aafEnabled && ((not empty user.aafId) || (user.id != null))}">
-            <div class="help">
-                <a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
-                <span>
-                    <b>AAF ID:</b><br>
-                    <br/>
-                    Providing your Australian Access Federation (AAF) ID allows you to login
-                    through your home institution as an alternative to using your OzTrack
-                    username and password.<br/>
-                    <br/>
-                    Your AAF ID is made up of your username and the domain name for your
-                    institution separated by '@'. For example, if you are a UQ staff member
-                    with username 'uqjsmith', your ID is 'uqjsmith@uq.edu.au'.
-                </span>
-                </a>
-            </div>
-            
-            <div>
-                <label for="aafId">AAF ID:</label>
-                <c:choose>
+            <tr>
+                <th class="form-label">
+                    <label for="aafId">AAF ID:</label>
+                </th>
+                <td class="form-field">
+                    <c:choose>
                     <c:when test="${not empty user.aafId}">
-                        <form:input path="aafId" id="aafId"/>
+                        <form:input path="aafId" id="aafId" cssStyle="width: 250px;"/>
                         <form:errors path="aafId" cssClass="formErrors"/>
                     </c:when>
                     <c:otherwise>
                         <a class="oztrackButton" style="line-height: 24px;" href="<c:url value="/login/shibboleth"/>">Link profile with AAF ID</a>
                     </c:otherwise>
-                </c:choose>
-            </div>
-            
-            <br/>
+                    </c:choose>
+                </td>
+                <td class="form-help">
+                    <a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
+                    <span>
+                        <b>AAF ID:</b><br>
+                        <br/>
+                        Providing your Australian Access Federation (AAF) ID allows you to login
+                        through your home institution as an alternative to using your OzTrack
+                        username and password.<br/>
+                        <br/>
+                        Your AAF ID is made up of your username and the domain name for your
+                        institution separated by '@'. For example, if you are a UQ staff member
+                        with username 'uqjsmith', your ID is 'uqjsmith@uq.edu.au'.
+                    </span>
+                    </a>
+                </td>
+            </tr>
             </c:if>
+            <tr>
+                <th class="form-label">
+                    <label for="username">Username:</label>
+                </th>
+                <td class="form-field">
+                    <form:input path="username" id="username" cssStyle="width: 250px;"/><br>
+                    <form:errors path="username" cssClass="formErrors"/>
+                </td>
+                <td class="form-help">
+                    <a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
+                    <span>
+                        <b>Username:</b><br>
+                        This will be the name that you log on to OzTrack with.
+                    </span>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <th class="form-label">
+                    <label for="password">Password:</label>
+                </th>
+                <td class="form-field">
+                    <form:password path="password" id="password" cssStyle="width: 250px;"/>
+                    <form:errors path="password" cssClass="formErrors"/>
+                </td>
+                <td class="form-help">
+                </td>
+            </tr>
+            </table>
+            </fieldset>
             
-            <div class="help">
-                <a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
-                <span>
-                    <b>Username:</b><br>
-                    This will be the name that you log on to OzTrack with.
-                </span>
-                </a>
-            </div>
+            <fieldset>
+            <legend>Personal details</legend>
+            <table class="form">
+            <col style="width: 120px;" />
+            <col style="width: 320px;" />
+            <col style="width: 40px;" />
+            <tr>
+                <th class="form-label">
+                    <label for="title">Title:</label>
+                </th>
+                <td class="form-field">
+                    <form:select path="title">
+                        <form:option value="none">--- Select ---</form:option>
+                        <form:option value="Dr">Dr</form:option>
+                        <form:option value="A/Prof">A/Prof</form:option>
+                        <form:option value="Prof">Prof</form:option>
+                        <form:option value="Mr">Mr</form:option>
+                        <form:option value="Ms">Ms</form:option>
+                        <form:option value="none">None</form:option>
+                    </form:select>
+                </td>
+                <td class="form-help">
+                </td>
+            </tr>
+            <tr>
+                <th class="form-label">
+                    <label for="firstname">First Name:</label>
+                </th>
+                <td class="form-field">
+                    <form:input path="firstName" id="firstname" cssStyle="width: 250px;"/>
+                    <form:errors path="firstName" cssClass="formErrors"/>
+                </td>
+                <td class="form-help">
+                </td>
+            </tr>
+
+            <tr>
+                <th class="form-label">
+                    <label for="lastname">Last Name:</label>
+                </th>
+                <td class="form-field">
+                    <form:input path="lastName" id="lastname" cssStyle="width: 250px;"/>
+                    <form:errors path="lastName" cssClass="formErrors"/>
+                </td>
+                <td class="form-help">
+                </td>
+            </tr>
+            <tr>
+                <th class="form-label">
+                    <label for="organisation">Organisation:</label>
+                </th>
+                <td class="form-field">
+                    <form:input path="organisation" id="organisation" cssStyle="width: 250px;"/>
+                    <form:errors path="organisation" cssClass="formErrors"/>
+                </td>
+                <td class="form-help">
+                    <a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
+                    <span>
+                        <b>Organisation:</b><br>
+                        Please give the name of the organisation in full.
+                        This field is important when project metadata is syndicated to DataSpace and ANDS.
+                    </span>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <th class="form-label">
+                    <label for="email">Email:</label>
+                </th>
+                <td class="form-field">
+                    <form:input path="email" id="email" cssStyle="width: 250px;"/>
+                    <form:errors path="email" cssClass="formErrors"/>
+                </td>
+                <td class="form-help">
+                </td>
+            </tr>
+            <tr>
+                <th class="form-label">
+                    <label for="dataSpaceAgentDescription">Description:</label>
+                </th>
+                <td class="form-field">
+                    <form:textarea path="dataSpaceAgentDescription" id="dataSpaceAgentDescription" cssStyle="width: 320px; height: 60px;"/>
+                    <form:errors path="dataSpaceAgentDescription" cssClass="formErrors"/>
+                </td>
+                <td class="form-help">
+                    <a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
+                    <span>
+                        <b>Description:</b><br>
+                        This field is important when project metadata is syndicated to DataSpace and ANDS.
+                        See examples at http://dataspace.uq.edu.au/agents.
+                    </span>
+                    </a>
+                </td>
+            </tr>
+            </table>
+            </fieldset>
             <div>
-                <label for="username">Username:</label>
-                <form:input path="username" id="username"/><br>
-                <form:errors path="username" cssClass="formErrors"/>
-            </div>
-            
-            <div>
-                <label for="password">Password:</label>
-                <form:password path="password" id="password"/>
-                <form:errors path="password" cssClass="formErrors"/>
-            </div>
-            
-            <br/>
-            
-            <div>
-                <label for="title">Title:</label>
-                <form:select path="title">
-                    <form:option value="none">--- Select ---</form:option>
-                    <form:option value="Dr">Dr</form:option>
-                    <form:option value="A/Prof">A/Prof</form:option>
-                    <form:option value="Prof">Prof</form:option>
-                    <form:option value="Mr">Mr</form:option>
-                    <form:option value="Ms">Ms</form:option>
-                    <form:option value="none">None</form:option>
-                </form:select>
-            </div>
-            
-            <div>
-                <label for="firstname">First Name:</label>
-                <form:input path="firstName" id="firstname"/>
-                <form:errors path="firstName" cssClass="formErrors"/>
-            </div>
-            
-            <div>
-                <label for="lastname">Last Name:</label>
-                <form:input path="lastName" id="lastname"/>
-                <form:errors path="lastName" cssClass="formErrors"/>
-            </div>
-            
-            <div class="help">
-                <a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
-                <span>
-                    <b>Description:</b><br>
-                    This field is important when project metadata is syndicated to DataSpace and ANDS.
-                    See examples at http://dataspace.uq.edu.au/agents.
-                </span>
-                </a>
-            </div>
-            <div>
-                <label for="dataSpaceAgentDescription">Description:</label>
-                <form:input path="dataSpaceAgentDescription" id="dataSpaceAgentDescription"/>
-                <form:errors path="dataSpaceAgentDescription" cssClass="formErrors"/>
-            </div>
-            
-            <div class="help">
-                <a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
-                <span>
-                    <b>Organisation:</b><br>
-                    Please give the name of the organisation in full.
-                    This field is important when project metadata is syndicated to DataSpace and ANDS.
-                </span>
-                </a>
-            </div>
-            <div>
-                <label for="organisation">Organisation:</label>
-                <form:input path="organisation" id="organisation"/>
-                <form:errors path="organisation" cssClass="formErrors"/>
-            </div>
-            
-            <div>
-                <label for="email">Email:</label>
-                <form:input path="email" id="email"/>
-                <form:errors path="email" cssClass="formErrors"/>
-            </div>
-            
-            <div>
-                <label>&nbsp;</label>
-                <div class="formButton"><input type="submit" value="${(user.id != null) ? 'Update' : 'Register'}"/></div>
+                <input type="submit" value="${(user.id != null) ? 'Update' : 'Register'}" />
             </div>
         </form:form>
     </jsp:body>
