@@ -1,18 +1,18 @@
 package org.oztrack.data.model.types;
 
 public enum PositionFixFileHeader {
-    ACQUISITIONTIME,
-	UTCDATE,
-    LOCDATE,
     DATE,
-    UTCTIME,
+    UTCDATE,
+    LOCDATE,
+    ACQUISITIONTIME,
     TIME,
+    UTCTIME,
     LATITUDE,
     LATT,
     LAT,
     LONGITUDE,
     LONG,
     LON,
-    ID,
-    ANIMALID
+    ANIMALID,
+    ID
 }
