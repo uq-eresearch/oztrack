@@ -53,8 +53,9 @@ function createAnalysisMap(div, options) {
             polygonStyleMap = createPolygonStyleMap();
            
             allDetectionsLayer = createAllDetectionsLayer(projectId);
+            var allTrajectoriesLayer = createAllTrajectoriesLayer(projectId);
                 
-            map.addLayers([gsat, gphy, gmap, ghyb, allDetectionsLayer]);
+            map.addLayers([gsat, gphy, gmap, ghyb, allDetectionsLayer, allTrajectoriesLayer]);
             map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326, projection900913), 4);
         }());
 
@@ -201,7 +202,7 @@ function createAnalysisMap(div, options) {
 
         function createAllDetectionsLayer(projectId) {
             return new OpenLayers.Layer.Vector(
-                "All Detections",
+                "Detections",
                 {
                     projection: projection4326,
                     protocol: new OpenLayers.Protocol.WFS.v1_1_0({
@@ -215,35 +216,33 @@ function createAnalysisMap(div, options) {
                         loadend: function (e) {
                             map.zoomToExtent(e.object.getDataExtent(),false);
                             updateAnimalInfo(e.object);
-                            createTrajectoryLayer(e.object);
                             createStartEndPointsLayer(e.object);
                         }
                     }
                 }
             );
         }
-
-        function createTrajectoryLayer(detectionsLayer) {
+        
+        function createAllTrajectoriesLayer(projectId) {
             var trajectoryLayer = new OpenLayers.Layer.Vector(
                 "Trajectory",
                 {
                     projection: projection4326,
-                    styleMap: lineStyleMap    
+                    protocol: new OpenLayers.Protocol.WFS.v1_1_0({
+                        url:  "/mapQueryWFS?projectId=" + projectId + "&queryType=LINES",
+                        featureType: "Track",
+                        featureNS: "http://oztrack.org/xmlns#"
+                    }),
+                    strategies: [new OpenLayers.Strategy.Fixed()],
+                    styleMap: lineStyleMap, 
+                    eventListeners: {
+                        loadend: function (e) {
+                            updateAnimalInfo(e.object);
+                        }
+                    }
                 }
             );
-            for (var key in detectionsLayer.features) {
-                var feature = detectionsLayer.features[key];
-                var trajectoryFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString(feature.geometry.components));
-                trajectoryFeature.attributes = {
-                    animalId : feature.attributes.animalId,
-                    animalName : feature.attributes.animalName, 
-                    fromDate: feature.attributes.fromDate,
-                    toDate: feature.attributes.toDate
-                };
-                trajectoryLayer.addFeatures([trajectoryFeature]);
-            }  
-            map.addLayer(trajectoryLayer);
-            updateAnimalInfo(trajectoryLayer);
+            return trajectoryLayer;
         }
 
         function createStartEndPointsLayer(allDetectionsLayer) {
@@ -395,7 +394,7 @@ function createAnalysisMap(div, options) {
                     var layerNameHtml = "<b>&nbsp;&nbsp;" + layerName + "</b>";
                     var tableRowsHtml = "";
                     
-                    if (layerName.indexOf("All Detections") == -1) {
+                    if (layerName.indexOf("Detections") == -1) {
                         tableRowsHtml =
                             "<table><tr><td class='label'>Date From:</td><td>" + feature.attributes.fromDate + "</td></tr>"
                             + "<tr><td class='label'>Date To:</td><td>" + feature.attributes.toDate + "</td></tr>";
