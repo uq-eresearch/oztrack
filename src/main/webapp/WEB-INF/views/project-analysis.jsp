@@ -29,8 +29,6 @@
             #mapToolForm {
                 padding-left:0px;
                 padding-top:0px;
-                width:100%;
-                height:100%;
             }
             .animalInfo {
                 float:left;
@@ -198,13 +196,13 @@
 		        <form method="POST" id="mapToolForm" onsubmit="analysisMap.addProjectMapLayer(); return false;">
                     <input id="projectId" type="hidden" value="${project.id}"/>
 		            <b>Date Range</b>
-		            <table style="margin-left:5px;">
+		            <table style="margin-top: 5px; margin-left:5px;">
 			            <tr>
-			                <td>From:</td>
+			                <td style="padding-right: 5px;">From:</td>
 			                <td><input id="fromDatepicker" class="shortInputBox"/></td>
 			            </tr>
 			            <tr>
-			                <td>To:</td>
+			                <td style="padding-right: 5px;">To:</td>
 			                <td><input id="toDatepicker" class="shortInputBox"/></td>
 			            </tr>
 		            </table>
