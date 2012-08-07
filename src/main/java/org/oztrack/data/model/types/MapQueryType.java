@@ -3,7 +3,8 @@ package org.oztrack.data.model.types;
 public enum MapQueryType {
     PROJECTS("All OzTrack Projects"),
     POINTS("Detections"),
-    LINES ("Trajectory"),
+    START_END("Start and End Points"),
+    LINES("Trajectory"),
     MCP("Minimum Convex Polygon"),
     KUD("Kernel Utilization Distribution"),
     AHULL("Alpha Hull");

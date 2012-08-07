@@ -26,6 +26,7 @@ function createAnalysisMap(div, options) {
         var polygonStyleMap;
         var lineStyleMap;
         var pointStyleMap;
+        var startEndStyleMap;
         
         (function() {
             animalInfoToggle();
@@ -50,12 +51,14 @@ function createAnalysisMap(div, options) {
             
             lineStyleMap = createLineStyleMap();
             pointStyleMap = createPointStyleMap();
+            startEndStyleMap = createStartEndPointsStyleMap();
             polygonStyleMap = createPolygonStyleMap();
            
             allDetectionsLayer = createAllDetectionsLayer(projectId);
             var allTrajectoriesLayer = createAllTrajectoriesLayer(projectId);
+            var allStartEndPointsLayer = createAllStartEndPointsLayer(projectId);
                 
-            map.addLayers([gsat, gphy, gmap, ghyb, allDetectionsLayer, allTrajectoriesLayer]);
+            map.addLayers([gsat, gphy, gmap, ghyb, allDetectionsLayer, allTrajectoriesLayer, allStartEndPointsLayer]);
             map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326, projection900913), 4);
         }());
 
@@ -172,13 +175,19 @@ function createAnalysisMap(div, options) {
         function createStartEndPointsStyleMap() {
             var styleContext = {
                 getColour: function(feature) {
-                    return (feature.attributes.pointName == "start") ? "#00CD00" : "#CD0000";
+                    if (feature.attributes.identifier == "start") {
+                        return "#00CD00";
+                    }
+                    if (feature.attributes.identifier == "end") {
+                        return "#CD0000";
+                    }
+                    return "#CDCDCD";
                 }
             };
             var startEndPointsOnStyle = new OpenLayers.Style(
                 {
                     pointRadius: 2,
-                    strokeColor:"${getColour}",
+                    strokeColor: "${getColour}",
                     strokeWidth: 1.2,
                     strokeOpacity: 1,
                     fillColor: "${getColour}",
@@ -215,7 +224,6 @@ function createAnalysisMap(div, options) {
                         loadend: function (e) {
                             map.zoomToExtent(e.object.getDataExtent(),false);
                             updateAnimalInfo(e.object);
-                            createStartEndPointsLayer(e.object);
                         }
                     }
                 }
@@ -223,7 +231,7 @@ function createAnalysisMap(div, options) {
         }
         
         function createAllTrajectoriesLayer(projectId) {
-            var trajectoryLayer = new OpenLayers.Layer.Vector(
+            return new OpenLayers.Layer.Vector(
                 "Trajectory",
                 {
                     projection: projection4326,
@@ -241,38 +249,22 @@ function createAnalysisMap(div, options) {
                     }
                 }
             );
-            return trajectoryLayer;
         }
 
-        function createStartEndPointsLayer(allDetectionsLayer) {
-            var startEndPointsLayer = new OpenLayers.Layer.Vector(
-                "Start and End Points",
-                {
-                    projection: projection4326,
-                    styleMap: createStartEndPointsStyleMap()    
-                }
-            );
-            for (var key in allDetectionsLayer.features) {
-                var feature = allDetectionsLayer.features[key];
-                if (feature.attributes) {
-                    var startPoint = new OpenLayers.Feature.Vector(feature.geometry.components[0]);
-                    startPoint.attributes = {
-                        animalId : feature.attributes.animalId,
-                        animalName : feature.attributes.animalName, 
-                        fromDate: feature.attributes.fromDate,
-                        pointName: "start"
-                    };
-                    var endPoint = new OpenLayers.Feature.Vector(feature.geometry.components[feature.geometry.components.length - 1]);
-                    endPoint.attributes = {
-                        animalId : feature.attributes.animalId,
-                        animalName : feature.attributes.animalName, 
-                        toDate: feature.attributes.toDate,
-                        pointName: "end"
-                    };
-                    startEndPointsLayer.addFeatures([startPoint,endPoint]);
-                }
-            }
-            map.addLayer(startEndPointsLayer);
+        function createAllStartEndPointsLayer(projectId) {
+            return new OpenLayers.Layer.Vector(
+                    "Start/End Points",
+                    {
+                        projection: projection4326,
+                        protocol: new OpenLayers.Protocol.WFS.v1_1_0({
+                            url:  "/mapQueryWFS?projectId=" + projectId + "&queryType=START_END",
+                            featureType: "Track",
+                            featureNS: "http://oztrack.org/xmlns#"
+                        }),
+                        strategies: [new OpenLayers.Strategy.Fixed()],
+                        styleMap: startEndStyleMap
+                    }
+                );
         }
 
         analysisMap.addProjectMapLayer = function() {
@@ -306,6 +298,9 @@ function createAnalysisMap(div, options) {
                 }
                 else if (queryTypeValue == "POINTS") {
                     addWFSLayer(layerName, params, pointStyleMap);
+                }
+                else if (queryTypeValue == "START_END") {
+                    addWFSLayer(layerName, params, startEndStyleMap);
                 }
                 else {
                     addKMLLayer(layerName, params);
@@ -393,7 +388,7 @@ function createAnalysisMap(div, options) {
                     var layerNameHtml = "<b>&nbsp;&nbsp;" + layerName + "</b>";
                     var tableRowsHtml = "";
                     
-                    if (layerName.indexOf("Detections") == -1) {
+                    if ((layerName.indexOf("Detections") == -1) && (layerName.indexOf("Start/End") == -1)) {
                         tableRowsHtml =
                             "<table><tr><td class='label'>Date From:</td><td>" + feature.attributes.fromDate + "</td></tr>"
                             + "<tr><td class='label'>Date To:</td><td>" + feature.attributes.toDate + "</td></tr>";

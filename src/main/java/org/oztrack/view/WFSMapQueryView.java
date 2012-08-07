@@ -92,26 +92,23 @@ public class WFSMapQueryView extends AbstractView {
                 		feature.add(collection);
                 		break;
                     case POINTS:
-                        collection = this.buildFeatureCollection(searchQuery,"points");
-                        e.getNamespaces().declarePrefix(namespacePrefix, namespaceURI);
-                        feature.add(collection);
-                        break;
                     case LINES:
-                        collection = this.buildFeatureCollection(searchQuery,"lines");
+                    case START_END:
+                        collection = this.buildFeatureCollection(searchQuery);
                         e.getNamespaces().declarePrefix(namespacePrefix, namespaceURI);
                         feature.add(collection);
                         break;
                     default:
-                        break;
+                        throw new RuntimeException("Unsupported map query type: " + searchQuery.getMapQueryType());
                 }
 
                 response.setContentType("text/xml");
                 response.setHeader("Content-Encoding", "gzip");
                 GZIPOutputStream gzipOutputStream = new GZIPOutputStream(response.getOutputStream());
-                //encoder.encode(gzipOutputStream, collection);
                 try {
                 	e.encode(featureCollectionType, org.geotools.wfs.WFS.FeatureCollection, gzipOutputStream);
-                } catch (IOException ex) {
+                }
+                catch (IOException ex) {
                 	logger.error(ex.getMessage());
                 }
                 gzipOutputStream.close();
@@ -128,95 +125,95 @@ public class WFSMapQueryView extends AbstractView {
         private Coordinate endPoint;
     }
     
-    private SimpleFeatureCollection buildFeatureCollection(SearchQuery searchQuery, String collectionType) {
-
+    private SimpleFeatureCollection buildFeatureCollection(SearchQuery searchQuery) {
         List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-
-        SimpleFeatureCollection collection = FeatureCollections.newCollection();
-        GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
-
+        Integer srid = positionFixList.isEmpty() ? null : positionFixList.get(0).getLocationGeometry().getSRID();
+        
         SimpleFeatureTypeBuilder simpleFeatureTypeBuilder = new SimpleFeatureTypeBuilder();
         simpleFeatureTypeBuilder.setName("Track");
         simpleFeatureTypeBuilder.setNamespaceURI(namespaceURI);
-        Integer srid = positionFixList.isEmpty() ? null : positionFixList.get(0).getLocationGeometry().getSRID();
-        
-        if (collectionType == "points") {
-            simpleFeatureTypeBuilder.add("track", MultiPoint.class, srid);
-        } else if (collectionType == "lines") {
-            simpleFeatureTypeBuilder.add("track", LineString.class, srid);
-        }
+        simpleFeatureTypeBuilder.add("identifier", String.class);
+        simpleFeatureTypeBuilder.add("animalId", String.class);
         simpleFeatureTypeBuilder.add("fromDate", Date.class);
         simpleFeatureTypeBuilder.add("toDate", Date.class);
-        simpleFeatureTypeBuilder.add("animalId",String.class);
-        simpleFeatureTypeBuilder.add("projectAnimalId",String.class);
-        simpleFeatureTypeBuilder.add("animalName",String.class);
-        simpleFeatureTypeBuilder.add("startPoint", Point.class, srid);
-        simpleFeatureTypeBuilder.add("endPoint", Point.class, srid);
+        Class<?> trackClass = null;
+        switch (searchQuery.getMapQueryType()) {
+            case POINTS:
+                trackClass = MultiPoint.class;
+                break;
+            case LINES:
+                trackClass = LineString.class;
+                break;
+            case START_END:
+                trackClass = MultiPoint.class;
+                break;
+            default:
+                throw new RuntimeException("Unsupported map query type: " + searchQuery.getMapQueryType());
+        }
+        simpleFeatureTypeBuilder.add("track", trackClass, srid);
 
-        SimpleFeatureType simpleFeatureType = simpleFeatureTypeBuilder.buildFeatureType();
-        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(simpleFeatureType);
         HashMap<Long, AnimalTrack> tracks = new HashMap<Long, AnimalTrack>();
-        
         for (PositionFix positionFix : positionFixList) {
-
             AnimalTrack thisTrack = tracks.get(positionFix.getAnimal().getId());
             Coordinate thisCoordinate = positionFix.getLocationGeometry().getCoordinate();
-            
             if (thisTrack == null) {
-
                 thisTrack = new AnimalTrack();
                 thisTrack.animal = positionFix.getAnimal();
-                thisTrack.fromDate = positionFix.getDetectionTime();
-                thisTrack.toDate = positionFix.getDetectionTime();
+                thisTrack.fromDate = null;
+                thisTrack.toDate = null;
                 thisTrack.coordinates = new ArrayList<Coordinate>();
-                thisTrack.coordinates.add(thisCoordinate);
+                thisTrack.startPoint = null;
+                thisTrack.endPoint = null;
+                tracks.put(positionFix.getAnimal().getId(), thisTrack);
+            }
+            thisTrack.coordinates.add(thisCoordinate);
+            if ((thisTrack.fromDate == null) || positionFix.getDetectionTime().before(thisTrack.fromDate)) {
+                thisTrack.fromDate = positionFix.getDetectionTime();
                 thisTrack.startPoint = thisCoordinate;
+            }
+            if ((thisTrack.toDate == null) || positionFix.getDetectionTime().after(thisTrack.toDate)) {
+                thisTrack.toDate = positionFix.getDetectionTime();
                 thisTrack.endPoint = thisCoordinate;
-                tracks.put(positionFix.getAnimal().getId(),thisTrack);
-
-            } else {
-
-                if (positionFix.getDetectionTime().before(thisTrack.fromDate)) {
-                    thisTrack.fromDate = positionFix.getDetectionTime();
-                    thisTrack.startPoint = thisCoordinate;
-                }
-                if (positionFix.getDetectionTime().after(thisTrack.toDate)) {
-                    thisTrack.toDate = positionFix.getDetectionTime();
-                    thisTrack.endPoint = thisCoordinate;
-                }
-                thisTrack.coordinates.add(thisCoordinate);
-
             }
         }
 
+        GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
+        SimpleFeatureType featureType = simpleFeatureTypeBuilder.buildFeatureType();
+        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
+        SimpleFeatureCollection featureCollection = FeatureCollections.newCollection();
         for (AnimalTrack animalTrack: tracks.values()) {
-
-            MultiPoint multiPoint;
-            LineString lineString; 
-            
-        	if (collectionType == "points") {
-            	multiPoint = geometryFactory.createMultiPoint(animalTrack.coordinates.toArray(new Coordinate[] {}));
-                featureBuilder.set("track",multiPoint);
-            } else if (collectionType == "lines") {
-            	lineString = geometryFactory.createLineString(animalTrack.coordinates.toArray(new Coordinate[] {}));
-                featureBuilder.set("track",lineString);
+            switch (searchQuery.getMapQueryType()) {
+            case POINTS:
+                MultiPoint points = geometryFactory.createMultiPoint(animalTrack.coordinates.toArray(new Coordinate[] {}));
+                featureCollection.add(buildAnimalTrackFeature(featureBuilder, animalTrack, "detections", points));
+                break;
+            case LINES:
+                LineString lines = geometryFactory.createLineString(animalTrack.coordinates.toArray(new Coordinate[] {}));
+                featureCollection.add(buildAnimalTrackFeature(featureBuilder, animalTrack, "trajectory", lines));
+                break;
+            case START_END:
+                MultiPoint startPoint = geometryFactory.createMultiPoint(new Coordinate[] {animalTrack.startPoint});
+                MultiPoint endPoint = geometryFactory.createMultiPoint(new Coordinate[] {animalTrack.endPoint});
+                featureCollection.add(buildAnimalTrackFeature(featureBuilder, animalTrack, "start", startPoint));
+                featureCollection.add(buildAnimalTrackFeature(featureBuilder, animalTrack, "end", endPoint));
+                break;
+            default:
+                throw new RuntimeException("Unsupported map query type: " + searchQuery.getMapQueryType());
             }
-            featureBuilder.set("fromDate",animalTrack.fromDate);
-            featureBuilder.set("toDate",animalTrack.toDate);
-            featureBuilder.set("animalId", animalTrack.animal.getId());
-            featureBuilder.set("projectAnimalId", animalTrack.animal.getProjectAnimalId());
-            featureBuilder.set("animalName",animalTrack.animal.getAnimalName());
-            featureBuilder.set("startPoint", geometryFactory.createPoint(animalTrack.startPoint));
-            featureBuilder.set("endPoint", geometryFactory.createPoint(animalTrack.endPoint));
-            SimpleFeature simpleFeature = featureBuilder.buildFeature(animalTrack.animal.getId().toString());
-            collection.add(simpleFeature);
         }
-        return collection;
+        return featureCollection;
+    }
+    
+    private SimpleFeature buildAnimalTrackFeature(SimpleFeatureBuilder featureBuilder, AnimalTrack animalTrack, String identifier, Object trackObject) {
+        featureBuilder.set("identifier", identifier);
+        featureBuilder.set("animalId", animalTrack.animal.getId());
+        featureBuilder.set("fromDate", animalTrack.fromDate);
+        featureBuilder.set("toDate", animalTrack.toDate);
+        featureBuilder.set("track", trackObject);
+        return featureBuilder.buildFeature(animalTrack.animal.getId().toString() + "-" + identifier);
     }
 
-
-    
-    private  SimpleFeatureCollection buildAllProjectsFeatureCollection() {
+    private SimpleFeatureCollection buildAllProjectsFeatureCollection() {
         List<Project> projectList = projectDao.getAll();
 
         SimpleFeatureCollection collection = FeatureCollections.newCollection();
