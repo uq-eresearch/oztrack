@@ -11,10 +11,10 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-public class RegisterFormValidator implements Validator {
+public class UserFormValidator implements Validator {
     private UserDao userDao;
     
-    public RegisterFormValidator(UserDao userDao) {
+    public UserFormValidator(UserDao userDao) {
         this.userDao = userDao;
     }
 	

@@ -1,0 +1,1 @@
+alter table appuser alter column email set not null;

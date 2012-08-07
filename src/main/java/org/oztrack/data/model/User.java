@@ -19,14 +19,18 @@ import org.hibernate.annotations.Cascade;
 
 @Entity(name = "AppUser")
 public class User implements Serializable {
-	@Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userid_seq")
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userid_seq")
     @SequenceGenerator(name = "userid_seq", sequenceName = "userid_seq", allocationSize = 1)
     @Column(nullable=false)
     private Long id;
 
-    @Column(unique = true, nullable=false)
+    @Column(unique=true, nullable=false)
     private String username;
+    
+    @Column(unique=true, nullable=false)
     private String email;
+    
     private String title;
     private String firstName;
     private String lastName;

@@ -11,7 +11,7 @@ import org.json.JSONWriter;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
-import org.oztrack.validator.RegisterFormValidator;
+import org.oztrack.validator.UserFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -104,7 +104,7 @@ public class UserListController {
                 throw new RuntimeException("Attempt to set AAF ID without being logged in");
             }
         }
-        new RegisterFormValidator(userDao).validate(user, bindingResult);
+        new UserFormValidator(userDao).validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
             return "user-form";
         }
