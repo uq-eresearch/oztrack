@@ -19,7 +19,7 @@
     </jsp:attribute>
     <jsp:body>
         <h1>Content</h1>
-        <form:form commandName="settings" method="POST" name="settings" cssStyle="width: 100%; padding: 0; background-color: transparent;">
+        <form:form commandName="settings" method="POST" name="settings" cssStyle="padding: 0; background-color: transparent;">
             <div>
                 <h2>Home text</h2>
                 <form:textarea path="homeText" id="homeText" cssClass="ckeditor"/>
