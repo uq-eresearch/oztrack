@@ -63,7 +63,7 @@
                     <c:choose>
                     <c:when test="${not empty user.aafId}">
                         <form:input path="aafId" id="aafId" cssStyle="width: 250px;"/>
-                        <form:errors path="aafId" cssClass="formErrors"/>
+                        <form:errors element="div" path="aafId" cssClass="formErrors"/>
                     </c:when>
                     <c:otherwise>
                         <a class="oztrackButton" style="line-height: 24px;" href="<c:url value="/login/shibboleth"/>">Link profile with AAF ID</a>
@@ -93,7 +93,7 @@
                 </th>
                 <td class="form-field">
                     <form:input path="username" id="username" cssStyle="width: 250px;"/><br>
-                    <form:errors path="username" cssClass="formErrors"/>
+                    <form:errors element="div" path="username" cssClass="formErrors"/>
                 </td>
                 <td class="form-help">
                     <a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
@@ -110,7 +110,7 @@
                 </th>
                 <td class="form-field">
                     <form:password path="password" id="password" cssStyle="width: 250px;"/>
-                    <form:errors path="password" cssClass="formErrors"/>
+                    <form:errors element="div" path="password" cssClass="formErrors"/>
                 </td>
                 <td class="form-help">
                 </td>
@@ -148,7 +148,7 @@
                 </th>
                 <td class="form-field">
                     <form:input path="firstName" id="firstname" cssStyle="width: 250px;"/>
-                    <form:errors path="firstName" cssClass="formErrors"/>
+                    <form:errors element="div" path="firstName" cssClass="formErrors"/>
                 </td>
                 <td class="form-help">
                 </td>
@@ -160,7 +160,7 @@
                 </th>
                 <td class="form-field">
                     <form:input path="lastName" id="lastname" cssStyle="width: 250px;"/>
-                    <form:errors path="lastName" cssClass="formErrors"/>
+                    <form:errors element="div" path="lastName" cssClass="formErrors"/>
                 </td>
                 <td class="form-help">
                 </td>
@@ -171,7 +171,7 @@
                 </th>
                 <td class="form-field">
                     <form:input path="organisation" id="organisation" cssStyle="width: 250px;"/>
-                    <form:errors path="organisation" cssClass="formErrors"/>
+                    <form:errors element="div" path="organisation" cssClass="formErrors"/>
                 </td>
                 <td class="form-help">
                     <a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
@@ -189,7 +189,7 @@
                 </th>
                 <td class="form-field">
                     <form:input path="email" id="email" cssStyle="width: 250px;"/>
-                    <form:errors path="email" cssClass="formErrors"/>
+                    <form:errors element="div" path="email" cssClass="formErrors"/>
                 </td>
                 <td class="form-help">
                 </td>
@@ -200,7 +200,7 @@
                 </th>
                 <td class="form-field">
                     <form:textarea path="dataSpaceAgentDescription" id="dataSpaceAgentDescription" cssStyle="width: 320px; height: 60px;"/>
-                    <form:errors path="dataSpaceAgentDescription" cssClass="formErrors"/>
+                    <form:errors element="div" path="dataSpaceAgentDescription" cssClass="formErrors"/>
                 </td>
                 <td class="form-help">
                     <a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">

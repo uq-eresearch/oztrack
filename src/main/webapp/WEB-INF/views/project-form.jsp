@@ -214,7 +214,7 @@
             </th>
             <td class="form-field">
         		<form:textarea path="rightsStatement" rows="3" cols="40" />
-        		<form:errors path="rightsStatement" cssClass="formErrors"/>
+        		<form:errors element="div" path="rightsStatement" cssClass="formErrors"/>
             </td>
             <td class="form-help">
                 <a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">

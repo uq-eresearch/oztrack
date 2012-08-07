@@ -359,6 +359,10 @@ table.form .form-label {
 table.form .form-field {
 }
 
+table.form .form-field .formErrors {
+    padding-left: 0;
+}
+
 table.form .form-help {
     padding: 0 10px;
 }
