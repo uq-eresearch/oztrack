@@ -69,7 +69,7 @@ public class RServeInterface {
         // mapQueryType tells us what R function to call
         MapQueryType mapQueryType = this.searchQuery.getMapQueryType();
         switch (mapQueryType) {
-            case ALL_POINTS:
+            case POINTS:
                 writePositionFixKmlFile(fileName);
                 break;
             case MCP:

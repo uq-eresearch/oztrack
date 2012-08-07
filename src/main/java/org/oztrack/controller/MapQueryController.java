@@ -102,7 +102,7 @@ public class MapQueryController {
     
     @RequestMapping(value="/mapQueryWFS", method=RequestMethod.POST)
     @PreAuthorize(
-        "(#searchQuery.mapQueryType == T(org.oztrack.data.model.types.MapQueryType).ALL_PROJECTS) or " +
+        "(#searchQuery.mapQueryType == T(org.oztrack.data.model.types.MapQueryType).PROJECTS) or " +
         "#searchQuery.project.global or " +
         "hasPermission(#searchQuery.project, 'read')"
     )

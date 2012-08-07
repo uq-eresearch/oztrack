@@ -108,7 +108,7 @@ function createCleanseMap(div, options) {
                 {
                     projection: projection4326,
                     protocol: new OpenLayers.Protocol.WFS.v1_1_0({
-                        url:  '/mapQueryWFS?projectId=' + projectId + '&queryType=ALL_POINTS',
+                        url:  '/mapQueryWFS?projectId=' + projectId + '&queryType=POINTS',
                         featureType: 'Track',
                         featureNS: 'http://oztrack.org/xmlns#'
                     }),

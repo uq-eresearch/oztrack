@@ -86,18 +86,16 @@ public class WFSMapQueryView extends AbstractView {
                 @SuppressWarnings("unchecked")
                 EList<SimpleFeatureCollection> feature = featureCollectionType.getFeature();
                 switch (searchQuery.getMapQueryType()) {
-                    case ALL_PROJECTS:
+                    case PROJECTS:
                 		collection = this.buildAllProjectsFeatureCollection();
                 		e.getNamespaces().declarePrefix(namespacePrefix, namespaceURI);
                 		feature.add(collection);
                 		break;
-                    case ALL_POINTS:
                     case POINTS:
                         collection = this.buildFeatureCollection(searchQuery,"points");
                         e.getNamespaces().declarePrefix(namespacePrefix, namespaceURI);
                         feature.add(collection);
                         break;
-                    case ALL_LINES:
                     case LINES:
                         collection = this.buildFeatureCollection(searchQuery,"lines");
                         e.getNamespaces().declarePrefix(namespacePrefix, namespaceURI);
