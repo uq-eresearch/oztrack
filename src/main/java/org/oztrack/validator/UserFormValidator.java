@@ -17,23 +17,28 @@ public class UserFormValidator implements Validator {
     public UserFormValidator(UserDao userDao) {
         this.userDao = userDao;
     }
-	
-	@Override
+    
+    @Override
     public boolean supports(@SuppressWarnings("rawtypes") Class clazz) {
         return User.class.isAssignableFrom(clazz);
     }
-	
-	public void validate(Object obj, Errors errors) {
-	    User loginUser = (User) obj;
-	    
-	    ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "error.empty.field", "Please enter username");
-		
-		User existingUserByUsername = userDao.getByUsername(loginUser.getUsername());
-    	if ((existingUserByUsername != null) && (existingUserByUsername != loginUser)) {
+    
+    public void validate(Object obj, Errors errors) {
+        User loginUser = (User) obj;
+        
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "error.empty.field", "Please enter username");
+        
+        User existingUserByUsername = userDao.getByUsername(loginUser.getUsername());
+        if ((existingUserByUsername != null) && (existingUserByUsername != loginUser)) {
             errors.rejectValue("username", "unavailable.user", "This username is unavailable. Please try another.");
         }
         
-    	if (OzTrackApplication.getApplicationContext().isAafEnabled() && StringUtils.isNotBlank(loginUser.getAafId())) {
+        User existingUserByEmail = userDao.getByEmail(loginUser.getEmail());
+        if ((existingUserByEmail != null) && (existingUserByEmail != loginUser)) {
+            errors.rejectValue("email", "unavailable.email", "This email address is already associated with another account.");
+        }
+        
+        if (OzTrackApplication.getApplicationContext().isAafEnabled() && StringUtils.isNotBlank(loginUser.getAafId())) {
             User existingUserByAafId = userDao.getByAafId(loginUser.getAafId());
             if ((existingUserByAafId != null) && (existingUserByAafId != loginUser)) {
                 errors.rejectValue("aafId", "aafId.user", "This AAF ID is already associated with another account.");
@@ -48,12 +53,12 @@ public class UserFormValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "error.empty.field", "Please enter email");
         
         if (!errors.hasFieldErrors("email")) {
-        	try {
-        		InternetAddress emailAddr = new InternetAddress(loginUser.getEmail());
-        		emailAddr.validate();
-        	} catch (AddressException ex) {
-        		errors.rejectValue("email", "invalid.email", "Email error: " + ex.getMessage());
-        	}
+            try {
+                InternetAddress emailAddr = new InternetAddress(loginUser.getEmail());
+                emailAddr.validate();
+            } catch (AddressException ex) {
+                errors.rejectValue("email", "invalid.email", "Email error: " + ex.getMessage());
+            }
         }
-	}
+    }
 }

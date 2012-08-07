@@ -52,7 +52,7 @@ public class DataSpaceInterface {
     }
 
     public void deleteFromDataSpace(Project project) throws DataSpaceInterfaceException {
-        User dataSpaceAgent = userDao.getUserById(project.getDataSpaceAgent().getId());
+        User dataSpaceAgent = userDao.getById(project.getDataSpaceAgent().getId());
         String agentURI = project.getDataSpaceAgent().getDataSpaceAgentURI();
         String collectionURI = project.getDataSpaceURI();
         boolean deleteAgent = false;
@@ -89,7 +89,7 @@ public class DataSpaceInterface {
     }
 
     public void updateDataSpace(Project project) throws DataSpaceInterfaceException {
-        User dataSpaceAgent = userDao.getUserById(project.getDataSpaceAgent().getId());
+        User dataSpaceAgent = userDao.getById(project.getDataSpaceAgent().getId());
         String agentURI = project.getDataSpaceAgent().getDataSpaceAgentURI();
         String collectionURI = project.getDataSpaceURI();
 

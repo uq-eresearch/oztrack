@@ -8,8 +8,9 @@ import org.springframework.stereotype.Service;
 @Service
 public interface UserDao {
     User getByUsername(String username);
+    User getByEmail(String email);
     User getByAafId(String aafId);
-    User getUserById(Long id);
+    User getById(Long id);
     List<User> search(String term);
     void save(User user);
     User update(User user);

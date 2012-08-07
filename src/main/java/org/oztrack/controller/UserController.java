@@ -42,7 +42,7 @@ public class UserController {
 
     @ModelAttribute("user")
     public User getUser(@PathVariable(value="id") Long id) throws Exception {
-        return userDao.getUserById(id);
+        return userDao.getById(id);
     }
 
     @RequestMapping(value="/users/{id}/edit", method=RequestMethod.GET)

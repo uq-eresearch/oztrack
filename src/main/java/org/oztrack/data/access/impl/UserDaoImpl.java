@@ -3,9 +3,7 @@ package org.oztrack.data.access.impl;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
@@ -19,35 +17,46 @@ public class UserDaoImpl implements UserDao {
     
     @Override
     public User getByUsername(String username) {
-        Query query = em.createQuery("SELECT o FROM AppUser o WHERE o.username = :username");
-        query.setParameter("username", username);
-        try {
-            return (User) query.getSingleResult();
-        } catch (NoResultException ex) {
-            return null;
-        }
+        @SuppressWarnings("unchecked")
+        List<User> resultList = em
+            .createQuery("from org.oztrack.data.model.User where lower(username) = lower(:username)")
+            .setParameter("username", username)
+            .getResultList();
+        assert resultList.size() <= 1;
+        return resultList.isEmpty() ? null : resultList.get(0);
+    }
+    
+    @Override
+    public User getByEmail(String email) {
+        @SuppressWarnings("unchecked")
+        List<User> resultList = em
+            .createQuery("from org.oztrack.data.model.User where lower(email) = lower(:email)")
+            .setParameter("email", email)
+            .getResultList();
+        assert resultList.size() <= 1;
+        return resultList.isEmpty() ? null : resultList.get(0);
     }
     
     @Override
     public User getByAafId(String aafId) {
-        Query query = em.createQuery("SELECT o FROM AppUser o WHERE o.aafId = :aafId");
-        query.setParameter("aafId", aafId);
-        try {
-            return (User) query.getSingleResult();
-        } catch (NoResultException ex) {
-            return null;
-        }
+        @SuppressWarnings("unchecked")
+        List<User> resultList = em
+            .createQuery("from org.oztrack.data.model.User where lower(aafId) = lower(:aafId)")
+            .setParameter("aafId", aafId)
+            .getResultList();
+        assert resultList.size() <= 1;
+        return resultList.isEmpty() ? null : resultList.get(0);
     }
     
     @Override
-    public User getUserById(Long id) {
-        Query query = em.createQuery("SELECT o FROM AppUser o WHERE o.id = :id");
-        query.setParameter("id", id);
-        try {
-            return (User) query.getSingleResult();
-        } catch (NoResultException ex) {
-            return null;
-        }
+    public User getById(Long id) {
+        @SuppressWarnings("unchecked")
+        List<User> resultList = em
+            .createQuery("from org.oztrack.data.model.User where id = :id")
+            .setParameter("id", id)
+            .getResultList();
+        assert resultList.size() <= 1;
+        return resultList.isEmpty() ? null : resultList.get(0);
     }
     
     @Override

@@ -173,7 +173,7 @@ public class ProjectController {
             response.setStatus(400);
             return;
         }
-        User user = userDao.getUserById(userId);
+        User user = userDao.getById(userId);
         if (user == null) {
             writeAddUserResponse(response.getWriter(), "Invalid user ID supplied");
             response.setStatus(400);
@@ -217,7 +217,7 @@ public class ProjectController {
             response.setStatus(400);
             return;
         }
-        User user = userDao.getUserById(userId);
+        User user = userDao.getById(userId);
         if (user == null) {
             writeDeleteUserResponse(response.getWriter(), "Invalid user ID supplied");
             response.setStatus(400);
