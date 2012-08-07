@@ -215,38 +215,28 @@ public class WFSMapQueryView extends AbstractView {
 
     private SimpleFeatureCollection buildAllProjectsFeatureCollection() {
         List<Project> projectList = projectDao.getAll();
+        Integer srid = 4326;
 
-        SimpleFeatureCollection collection = FeatureCollections.newCollection();
+        SimpleFeatureTypeBuilder featureTypeBuilder = new SimpleFeatureTypeBuilder();
+        featureTypeBuilder.setName("Project");
+        featureTypeBuilder.setNamespaceURI(namespaceURI);
+        featureTypeBuilder.add("projectCentroid", Point.class, srid);
+        featureTypeBuilder.add("projectId", String.class);
+        featureTypeBuilder.add("projectTitle", String.class);
+        featureTypeBuilder.add("projectDescription", String.class);
+        featureTypeBuilder.add("firstDetectionDate",String.class);
+        featureTypeBuilder.add("lastDetectionDate",String.class);
+        featureTypeBuilder.add("spatialCoverageDescr", String.class);
+        featureTypeBuilder.add("speciesCommonName", String.class);
+        featureTypeBuilder.add("global", Boolean.class);
+        SimpleFeatureType featureType = featureTypeBuilder.buildFeatureType();
 
-        SimpleFeatureTypeBuilder simpleFeatureTypeBuilder = new SimpleFeatureTypeBuilder();
-        simpleFeatureTypeBuilder.setName("Project");
-        simpleFeatureTypeBuilder.setNamespaceURI(namespaceURI);
-        int srid = 4326;// = projectList.get(0).getBoundingBox().getSRID();
-        
+        SimpleFeatureCollection featureCollection = FeatureCollections.newCollection();
+        SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy");
         for (Project project : projectList) {
         	if (project.getBoundingBox() != null) {
-        		srid = project.getBoundingBox().getSRID();
-        	}
-        }
-        
-        simpleFeatureTypeBuilder.add("projectCentroid", Point.class, srid);
-        simpleFeatureTypeBuilder.add("projectId", String.class);
-        simpleFeatureTypeBuilder.add("projectTitle", String.class);
-        simpleFeatureTypeBuilder.add("projectDescription", String.class);
-        simpleFeatureTypeBuilder.add("firstDetectionDate",String.class);
-        simpleFeatureTypeBuilder.add("lastDetectionDate",String.class);
-        simpleFeatureTypeBuilder.add("spatialCoverageDescr", String.class);
-        simpleFeatureTypeBuilder.add("speciesCommonName", String.class);
-        simpleFeatureTypeBuilder.add("global", Boolean.class);
-
-        SimpleFeatureType simpleFeatureType = simpleFeatureTypeBuilder.buildFeatureType();
-        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(simpleFeatureType);
-        
-        for (Project project : projectList) {
-        	if (project.getBoundingBox() != null) {
-        		SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy");
-        	
-        		featureBuilder.set("projectCentroid",project.getBoundingBox().getCentroid());
+        	    SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
+        		featureBuilder.set("projectCentroid", project.getBoundingBox().getCentroid());
         		featureBuilder.set("projectId", project.getId().toString());
         		featureBuilder.set("projectTitle", project.getTitle());
 	        	featureBuilder.set("projectDescription", project.getDescription());
@@ -255,16 +245,15 @@ public class WFSMapQueryView extends AbstractView {
 	        	featureBuilder.set("spatialCoverageDescr", project.getSpatialCoverageDescr());
 	        	featureBuilder.set("speciesCommonName", project.getSpeciesCommonName());
 	        	featureBuilder.set("global", project.isGlobal());
-	        	
-	        	 SimpleFeature simpleFeature = featureBuilder.buildFeature(project.getId().toString());
-	             collection.add(simpleFeature);
-    	
+
+	        	SimpleFeature feature = featureBuilder.buildFeature(project.getId().toString());
+	            featureCollection.add(feature);
         	}
         	else {
-        		logger.error("no bounding box in project: " + project.getId() + " " + project.getTitle());
+        		logger.error("No bounding box for project " + project.getId() + " (" + project.getTitle() + ")");
         	}
         }
 
-        return collection;
+        return featureCollection;
     }   
 }
