@@ -120,7 +120,6 @@ function createAnalysisMap(div, options) {
                 {
                     fillColor: "${getColour}",
                     strokeColor:"${getColour}",    
-                    //fillOpacity: 0.5,
                     strokeOpacity: 0.8,
                     strokeWidth: 0.2,
                     graphicName: "cross",
@@ -172,21 +171,21 @@ function createAnalysisMap(div, options) {
 
         function createStartEndPointsStyleMap() {
             var styleContext = {
-                getPointColour: function(feature) {
+                getColour: function(feature) {
                     return (feature.attributes.pointName == "start") ? "#00CD00" : "#CD0000";
                 }
             };
             var startEndPointsOnStyle = new OpenLayers.Style(
                 {
                     pointRadius: 2,
-                    fillColor: "${getPointColour}",
-                    strokeColor:"${getPointColour}",    
-                    fillOpacity: 0,
+                    strokeColor:"${getColour}",
+                    strokeWidth: 1.2,
                     strokeOpacity: 1,
-                    strokeWidth: 1.2
+                    fillColor: "${getColour}",
+                    fillOpacity: 0
                 },
                 {
-                    context:styleContext
+                    context: styleContext
                 }
             );
             var startEndPointsOffStyle = {
