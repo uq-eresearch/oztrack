@@ -43,8 +43,15 @@ public class ProjectMapController {
     @RequestMapping(value="/projects/{id}/analysis", method=RequestMethod.GET)
     @PreAuthorize("#project.global or hasPermission(#project, 'read')")
     public String getView(Model model, @ModelAttribute(value="project") Project project) {
-        MapQueryType [] mapQueryTypeList = MapQueryType.values();
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
+        MapQueryType [] mapQueryTypeList = new MapQueryType[] {
+            MapQueryType.LINES,
+            MapQueryType.POINTS,
+            MapQueryType.START_END,
+            MapQueryType.MCP,
+            MapQueryType.KUD,
+            MapQueryType.AHULL
+        };
         model.addAttribute("mapQueryTypeList", mapQueryTypeList);
         model.addAttribute("projectAnimalsList", projectAnimalsList);
         model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());

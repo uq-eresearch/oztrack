@@ -210,21 +210,19 @@
 					<b>Layer Type</b><br>
 					<table class="mapQueryType" style="margin-top:5px;">
 		                <c:forEach items="${mapQueryTypeList}" var="mapQueryType">
-		                    <c:if test="${!fn:contains(mapQueryType,'ALL_')}">
-		                        <tr>
-		                        <td style="padding: 0 5px; vertical-align: top;">
-                                    <input type="radio"
-                                        name="mapQueryTypeSelect"
-                                        id="mapQueryTypeSelect-${mapQueryType}"
-                                        value="${mapQueryType}"
-                                        onClick="updateParamTable('${mapQueryType}')"
-                                    />
-                                </td>
-		                        <td id="${mapQueryType}">
-                                    <label for="mapQueryTypeSelect-${mapQueryType}"><c:out value="${mapQueryType.displayName}"/></label>
-                                </td>
-		                        </tr>
-		                    </c:if>
+	                        <tr>
+	                        <td style="padding: 0 5px; vertical-align: top;">
+                                <input type="radio"
+                                    name="mapQueryTypeSelect"
+                                    id="mapQueryTypeSelect-${mapQueryType}"
+                                    value="${mapQueryType}"
+                                    onClick="updateParamTable('${mapQueryType}')"
+                                />
+                            </td>
+	                        <td id="${mapQueryType}">
+                                <label for="mapQueryTypeSelect-${mapQueryType}"><c:out value="${mapQueryType.displayName}"/></label>
+                            </td>
+	                        </tr>
 		                </c:forEach>
 	                </table>
                     <table id="paramTable" style="display: none; margin-left:5px;">
