@@ -80,7 +80,7 @@ function createAnalysisMap(div, options) {
                     title: 'Zoom to Data Extent',
                     displayClass: "zoomButton",
                     trigger: function() {
-                        map.zoomToExtent(allDetectionsLayer.getDataExtent(),false);
+                        map.zoomToExtent(allDetectionsLayer.getDataExtent(), false);
                     }
                 })
             ]);
@@ -223,7 +223,7 @@ function createAnalysisMap(div, options) {
                     styleMap: pointStyleMap, 
                     eventListeners: {
                         loadend: function (e) {
-                            map.zoomToExtent(e.object.getDataExtent(),false);
+                            map.zoomToExtent(e.object.getDataExtent(), false);
                             updateAnimalInfo(e.object);
                         }
                     }
@@ -245,6 +245,7 @@ function createAnalysisMap(div, options) {
                     styleMap: lineStyleMap, 
                     eventListeners: {
                         loadend: function (e) {
+                            map.zoomToExtent(e.object.getDataExtent(), false);
                             updateAnimalInfo(e.object);
                         }
                     }
