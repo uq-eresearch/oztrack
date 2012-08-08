@@ -40,6 +40,7 @@ public class WFSPositionFixSearchQueryView extends WFSSearchQueryView {
         this.positionFixDao = positionFixDao;
     }
     
+    @Override
     protected SimpleFeatureCollection buildFeatureCollection(SearchQuery searchQuery) {
         List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
         Integer srid = positionFixList.isEmpty() ? null : positionFixList.get(0).getLocationGeometry().getSRID();
