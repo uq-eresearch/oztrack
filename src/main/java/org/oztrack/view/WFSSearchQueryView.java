@@ -30,18 +30,22 @@ public abstract class WFSSearchQueryView extends AbstractView {
     protected final String namespacePrefix = "oztrack";
     protected final String namespaceURI = "http://oztrack.org/xmlns#";
     
+    protected final SearchQuery searchQuery;
+    
+    public WFSSearchQueryView(SearchQuery searchQuery) {
+        this.searchQuery = searchQuery;
+    }
+    
     @Override
     protected void renderMergedOutputModel(
         @SuppressWarnings("rawtypes") Map model,
         HttpServletRequest request,
         HttpServletResponse response
     ) {
-        SearchQuery searchQuery = (SearchQuery) model.get("searchQuery");
-
         FeatureCollectionType featureCollectionType = WfsFactory.eINSTANCE.createFeatureCollectionType();
         @SuppressWarnings("unchecked")
         EList<SimpleFeatureCollection> featureCollections = featureCollectionType.getFeature();
-        featureCollections.add(buildFeatureCollection(searchQuery));
+        featureCollections.add(buildFeatureCollection());
 
         WFSConfiguration wfsConfiguration = new WFSConfiguration();
         @SuppressWarnings("unchecked")
@@ -66,5 +70,5 @@ public abstract class WFSSearchQueryView extends AbstractView {
         }
     }
 
-    protected abstract SimpleFeatureCollection buildFeatureCollection(SearchQuery searchQuery);
+    protected abstract SimpleFeatureCollection buildFeatureCollection();
 }

@@ -216,7 +216,7 @@ function createAnalysisMap(div, options) {
                     projection: projection4326,
                     protocol: new OpenLayers.Protocol.WFS.v1_1_0({
                         url:  "/mapQueryWFS?projectId=" + projectId + "&queryType=POINTS",
-                        featureType: "Track",
+                        featureType: "Detections",
                         featureNS: "http://oztrack.org/xmlns#"
                     }),
                     strategies: [new OpenLayers.Strategy.Fixed()],
@@ -238,7 +238,7 @@ function createAnalysisMap(div, options) {
                     projection: projection4326,
                     protocol: new OpenLayers.Protocol.WFS.v1_1_0({
                         url:  "/mapQueryWFS?projectId=" + projectId + "&queryType=LINES",
-                        featureType: "Track",
+                        featureType: "Trajectory",
                         featureNS: "http://oztrack.org/xmlns#"
                     }),
                     strategies: [new OpenLayers.Strategy.Fixed()],
@@ -255,12 +255,12 @@ function createAnalysisMap(div, options) {
 
         function createAllStartEndPointsLayer(projectId) {
             return new OpenLayers.Layer.Vector(
-                    "Start/End Points",
+                    "Start and End Points",
                     {
                         projection: projection4326,
                         protocol: new OpenLayers.Protocol.WFS.v1_1_0({
                             url:  "/mapQueryWFS?projectId=" + projectId + "&queryType=START_END",
-                            featureType: "Track",
+                            featureType: "StartEnd",
                             featureNS: "http://oztrack.org/xmlns#"
                         }),
                         strategies: [new OpenLayers.Strategy.Fixed()],
@@ -296,13 +296,13 @@ function createAnalysisMap(div, options) {
                 }
             
                 if (queryTypeValue == "LINES") {
-                    addWFSLayer(layerName, params, lineStyleMap);
+                    addWFSLayer(layerName, 'Detections', params, lineStyleMap);
                 }
                 else if (queryTypeValue == "POINTS") {
-                    addWFSLayer(layerName, params, pointStyleMap);
+                    addWFSLayer(layerName, 'Trajectories', params, pointStyleMap);
                 }
                 else if (queryTypeValue == "START_END") {
-                    addWFSLayer(layerName, params, startEndStyleMap);
+                    addWFSLayer(layerName, 'StartEnd', params, startEndStyleMap);
                 }
                 else {
                     addKMLLayer(layerName, params);
@@ -339,7 +339,7 @@ function createAnalysisMap(div, options) {
             map.addLayer(queryOverlay);
         }
 
-        function addWFSLayer(layerName, params, styleMap) {
+        function addWFSLayer(layerName, featureType, params, styleMap) {
             newWFSOverlay = new OpenLayers.Layer.Vector(
                 layerName,
                 {
@@ -355,7 +355,7 @@ function createAnalysisMap(div, options) {
                     protocol: new OpenLayers.Protocol.WFS.v1_1_0({
                         url:  "/mapQueryWFS",
                         params:params,
-                        featureType: "Track",
+                        featureType: featureType,
                         featureNS: "http://oztrack.org/xmlns#"
                     })
                 }
@@ -390,7 +390,7 @@ function createAnalysisMap(div, options) {
                     var layerNameHtml = "<b>&nbsp;&nbsp;" + layerName + "</b>";
                     var tableRowsHtml = "";
                     
-                    if ((layerName.indexOf("Detections") == -1) && (layerName.indexOf("Start/End") == -1)) {
+                    if ((layerName.indexOf("Detections") == -1) && (layerName.indexOf("Start and End") == -1)) {
                         tableRowsHtml =
                             "<table><tr><td class='label'>Date From:</td><td>" + feature.attributes.fromDate + "</td></tr>"
                             + "<tr><td class='label'>Date To:</td><td>" + feature.attributes.toDate + "</td></tr>";
@@ -412,7 +412,7 @@ function createAnalysisMap(div, options) {
             }
         }
 
-        analysisMap.zoomToTrack = function(animalId) {
+        analysisMap.zoomToAnimal = function(animalId) {
             for (var key in allDetectionsLayer.features) {
                  var feature = allDetectionsLayer.features[key];
                  if (feature.attributes && animalId == feature.attributes.animalId) {

@@ -177,7 +177,7 @@
 	            		</div>
 	
 		            	<div class="zoom">
-		        			<a href="#" onclick="analysisMap.zoomToTrack(${animal.id});">Zoom</a>
+		        			<a href="#" onclick="analysisMap.zoomToAnimal(${animal.id});">Zoom</a>
 		            	</div>
 	            		
 	                </div>

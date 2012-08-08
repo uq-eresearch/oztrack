@@ -21,12 +21,13 @@ public class WFSProjectsSearchQueryView extends WFSSearchQueryView {
     // TODO: DAO should not appear in this layer.
     private ProjectDao projectDao;
 
-    public WFSProjectsSearchQueryView(ProjectDao projectDao) {
+    public WFSProjectsSearchQueryView(SearchQuery searchQuery, ProjectDao projectDao) {
+        super(searchQuery);
         this.projectDao = projectDao;
     }
 
     @Override
-    protected SimpleFeatureCollection buildFeatureCollection(SearchQuery searchQuery) {
+    protected SimpleFeatureCollection buildFeatureCollection() {
         List<Project> projectList = projectDao.getAll();
         SimpleFeatureType featureType = buildFeatureType();
         SimpleFeatureCollection featureCollection = FeatureCollections.newCollection();
@@ -41,7 +42,7 @@ public class WFSProjectsSearchQueryView extends WFSSearchQueryView {
         return featureCollection;
     }
 
-    public SimpleFeatureType buildFeatureType() {
+    private SimpleFeatureType buildFeatureType() {
         SimpleFeatureTypeBuilder featureTypeBuilder = new SimpleFeatureTypeBuilder();
         featureTypeBuilder.setName("Project");
         featureTypeBuilder.setNamespaceURI(namespaceURI);
@@ -57,7 +58,7 @@ public class WFSProjectsSearchQueryView extends WFSSearchQueryView {
         return featureTypeBuilder.buildFeatureType();
     }
 
-    public SimpleFeature buildFeature(SimpleFeatureType featureType, Project project) {
+    private SimpleFeature buildFeature(SimpleFeatureType featureType, Project project) {
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
         featureBuilder.set("projectCentroid", project.getBoundingBox().getCentroid());
         featureBuilder.set("projectId", project.getId().toString());

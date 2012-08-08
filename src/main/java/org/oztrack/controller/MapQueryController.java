@@ -12,6 +12,7 @@ import org.oztrack.data.model.types.MapQueryType;
 import org.oztrack.view.KMLMapQueryView;
 import org.oztrack.view.WFSPositionFixSearchQueryView;
 import org.oztrack.view.WFSProjectsSearchQueryView;
+import org.oztrack.view.WFSStartEndSearchQueryView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -110,11 +111,12 @@ public class MapQueryController {
     public View handleWFSQuery(@ModelAttribute(value="searchQuery") SearchQuery searchQuery) throws Exception {
         switch (searchQuery.getMapQueryType()) {
         case PROJECTS:
-            return new WFSProjectsSearchQueryView(projectDao);
+            return new WFSProjectsSearchQueryView(searchQuery, projectDao);
         case POINTS:
         case LINES:
+            return new WFSPositionFixSearchQueryView(searchQuery, positionFixDao);
         case START_END:
-            return new WFSPositionFixSearchQueryView(positionFixDao);
+            return new WFSStartEndSearchQueryView(searchQuery, positionFixDao);
         default:
             throw new RuntimeException("Unsupported map query type: " + searchQuery.getMapQueryType());
         }
