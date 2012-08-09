@@ -1,18 +1,38 @@
 package org.oztrack.controller;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Set;
+import java.util.zip.GZIPOutputStream;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.namespace.QName;
+
+import net.opengis.wfs.FeatureCollectionType;
+import net.opengis.wfs.WfsFactory;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.emf.common.util.EList;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.gml2.GMLConfiguration;
+import org.geotools.wfs.WFS;
+import org.geotools.wfs.v1_1.WFSConfiguration;
+import org.geotools.xml.Encoder;
+import org.oztrack.app.Constants;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.data.model.types.MapQueryType;
+import org.oztrack.view.AnimalDetectionsFeatureBuilder;
+import org.oztrack.view.AnimalStartEndFeatureBuilder;
+import org.oztrack.view.AnimalTrajectoryFeatureBuilder;
 import org.oztrack.view.KMLMapQueryView;
-import org.oztrack.view.WFSPositionFixSearchQueryView;
-import org.oztrack.view.WFSProjectsSearchQueryView;
-import org.oztrack.view.WFSStartEndSearchQueryView;
+import org.oztrack.view.ProjectsFeatureBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -108,17 +128,60 @@ public class MapQueryController {
         "#searchQuery.project.global or " +
         "hasPermission(#searchQuery.project, 'read')"
     )
-    public View handleWFSQuery(@ModelAttribute(value="searchQuery") SearchQuery searchQuery) throws Exception {
+    public void handleWFSQuery(
+        @ModelAttribute(value="searchQuery") SearchQuery searchQuery,
+        HttpServletResponse response
+    ) throws Exception {
+        SimpleFeatureCollection featureCollection = null;
         switch (searchQuery.getMapQueryType()) {
-        case PROJECTS:
-            return new WFSProjectsSearchQueryView(searchQuery, projectDao);
-        case POINTS:
-        case LINES:
-            return new WFSPositionFixSearchQueryView(searchQuery, positionFixDao);
-        case START_END:
-            return new WFSStartEndSearchQueryView(searchQuery, positionFixDao);
-        default:
-            throw new RuntimeException("Unsupported map query type: " + searchQuery.getMapQueryType());
+            case PROJECTS: {
+                featureCollection = new ProjectsFeatureBuilder(projectDao.getAll()).buildFeatureCollection();
+                break;
+            }
+            case POINTS: {
+                List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
+                featureCollection = new AnimalDetectionsFeatureBuilder(positionFixList).buildFeatureCollection();
+                break;
+            }
+            case LINES: {
+                List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
+                featureCollection = new AnimalTrajectoryFeatureBuilder(positionFixList).buildFeatureCollection();
+                break;
+            }
+            case START_END: {
+                List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
+                featureCollection = new AnimalStartEndFeatureBuilder(positionFixList).buildFeatureCollection();
+                break;
+            }
+            default:
+                throw new RuntimeException("Unsupported map query type: " + searchQuery.getMapQueryType());
+        }
+        
+        FeatureCollectionType featureCollectionType = WfsFactory.eINSTANCE.createFeatureCollectionType();
+        @SuppressWarnings("unchecked")
+        EList<SimpleFeatureCollection> featureCollections = featureCollectionType.getFeature();
+        featureCollections.add(featureCollection);
+
+        WFSConfiguration wfsConfiguration = new WFSConfiguration();
+        @SuppressWarnings("unchecked")
+        Set<QName> wfsConfigurationProperties = wfsConfiguration.getProperties();
+        wfsConfigurationProperties.add(GMLConfiguration.NO_FEATURE_BOUNDS);
+        Encoder encoder = new Encoder(wfsConfiguration);
+        encoder.getNamespaces().declarePrefix(Constants.namespacePrefix, Constants.namespaceURI);
+        encoder.setIndenting(true);
+
+        response.setContentType("text/xml");
+        response.setHeader("Content-Encoding", "gzip");
+        GZIPOutputStream gzipOutputStream = null;
+        try {
+            gzipOutputStream = new GZIPOutputStream(response.getOutputStream());
+            encoder.encode(featureCollectionType, WFS.FeatureCollection, gzipOutputStream);
+        }
+        catch (IOException e) {
+            logger.error("Error writing output stream", e);
+        }
+        finally {
+            IOUtils.closeQuietly(gzipOutputStream);
         }
     }
 }

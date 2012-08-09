@@ -3,32 +3,30 @@ package org.oztrack.view;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.oztrack.data.access.ProjectDao;
+import org.oztrack.app.Constants;
 import org.oztrack.data.model.Project;
-import org.oztrack.data.model.SearchQuery;
 
 import com.vividsolutions.jts.geom.Point;
 
-public class WFSProjectsSearchQueryView extends WFSSearchQueryView {
-    private SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy");
+public class ProjectsFeatureBuilder {
+    private final Log logger = LogFactory.getLog(getClass());
+    private final SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy");
     
-    // TODO: DAO should not appear in this layer.
-    private ProjectDao projectDao;
+    private final List<Project> projectList;
 
-    public WFSProjectsSearchQueryView(SearchQuery searchQuery, ProjectDao projectDao) {
-        super(searchQuery);
-        this.projectDao = projectDao;
+    public ProjectsFeatureBuilder(List<Project> projectList) {
+        this.projectList = projectList;
     }
 
-    @Override
-    protected SimpleFeatureCollection buildFeatureCollection() {
-        List<Project> projectList = projectDao.getAll();
+    public SimpleFeatureCollection buildFeatureCollection() {
         SimpleFeatureType featureType = buildFeatureType();
         SimpleFeatureCollection featureCollection = FeatureCollections.newCollection();
         for (Project project : projectList) {
@@ -45,7 +43,7 @@ public class WFSProjectsSearchQueryView extends WFSSearchQueryView {
     private SimpleFeatureType buildFeatureType() {
         SimpleFeatureTypeBuilder featureTypeBuilder = new SimpleFeatureTypeBuilder();
         featureTypeBuilder.setName("Project");
-        featureTypeBuilder.setNamespaceURI(namespaceURI);
+        featureTypeBuilder.setNamespaceURI(Constants.namespaceURI);
         featureTypeBuilder.add("projectCentroid", Point.class, 4326);
         featureTypeBuilder.add("projectId", String.class);
         featureTypeBuilder.add("projectTitle", String.class);

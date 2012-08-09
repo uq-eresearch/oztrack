@@ -9,31 +9,26 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.oztrack.data.access.PositionFixDao;
+import org.oztrack.app.Constants;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
-import org.oztrack.data.model.SearchQuery;
 
 import com.vividsolutions.jts.geom.Point;
 
-public class WFSStartEndSearchQueryView extends WFSSearchQueryView {
+public class AnimalStartEndFeatureBuilder {
     private static class AnimalStartEnd {
         private Animal animal;
         private PositionFix startPositionFix;
         private PositionFix endPositionFix;
     }
     
-    // TODO: DAO should not appear in this layer.
-    private PositionFixDao positionFixDao;
+    private final List<PositionFix> positionFixList;
     
-    public WFSStartEndSearchQueryView(SearchQuery searchQuery, PositionFixDao positionFixDao) {
-        super(searchQuery);
-        this.positionFixDao = positionFixDao;
+    public AnimalStartEndFeatureBuilder(List<PositionFix> positionFixList) {
+        this.positionFixList = positionFixList;
     }
     
-    @Override
-    protected SimpleFeatureCollection buildFeatureCollection() {
-        List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
+    public SimpleFeatureCollection buildFeatureCollection() {
         Integer srid = positionFixList.isEmpty() ? null : positionFixList.get(0).getLocationGeometry().getSRID();
         SimpleFeatureType featureType = buildFeatureType(srid);
         HashMap<Long, AnimalStartEnd> startEndByAnimal = buildAnimalStartEnds(positionFixList);
@@ -64,7 +59,7 @@ public class WFSStartEndSearchQueryView extends WFSSearchQueryView {
     private SimpleFeatureType buildFeatureType(Integer srid) {
         SimpleFeatureTypeBuilder simpleFeatureTypeBuilder = new SimpleFeatureTypeBuilder();
         simpleFeatureTypeBuilder.setName("StartEnd");
-        simpleFeatureTypeBuilder.setNamespaceURI(namespaceURI);
+        simpleFeatureTypeBuilder.setNamespaceURI(Constants.namespaceURI);
         simpleFeatureTypeBuilder.add("animalId", String.class);
         simpleFeatureTypeBuilder.add("identifier", String.class);
         simpleFeatureTypeBuilder.add("point", Point.class, srid);
@@ -84,7 +79,7 @@ public class WFSStartEndSearchQueryView extends WFSSearchQueryView {
         return featureBuilder.buildFeature(featureId);
     }
 
-    public SimpleFeatureCollection buildFeatureCollection(SimpleFeatureType featureType, HashMap<Long, AnimalStartEnd> startEndByAnimal) {
+    private SimpleFeatureCollection buildFeatureCollection(SimpleFeatureType featureType, HashMap<Long, AnimalStartEnd> startEndByAnimal) {
         SimpleFeatureCollection featureCollection = FeatureCollections.newCollection();
         for (AnimalStartEnd startEnd: startEndByAnimal.values()) {
             featureCollection.add(buildFeature(featureType, startEnd.animal, "start", startEnd.startPositionFix.getLocationGeometry()));

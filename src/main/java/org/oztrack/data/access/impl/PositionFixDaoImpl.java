@@ -66,7 +66,7 @@ public class PositionFixDaoImpl implements PositionFixDao {
     public Query buildQuery(SearchQuery searchQuery, boolean count) {
 
         String select = (count ? "count(o) " : "o ");
-        String orderBy = (count ? "" : " order by o.detectionTime ");
+        String orderBy = (count ? "" : " order by o.animal.id, o.detectionTime ");
 
         String sql = "select " + select
                    + "from PositionFix o "
@@ -157,7 +157,7 @@ public class PositionFixDaoImpl implements PositionFixDao {
             sql = sql + animalClause;
         }
 
-        String orderBy = " order by o.detectionTime ";
+        String orderBy = " order by o.animal.id, o.detectionTime ";
         sql = sql + orderBy;
 
         logger.debug("Position fix jdbc query: " + sql);
