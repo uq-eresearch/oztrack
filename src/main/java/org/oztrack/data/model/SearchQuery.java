@@ -23,6 +23,7 @@ public class SearchQuery {
     private Double percent;
     private String h;
     private Double alpha;
+    private Double gridSize;
 
     public SearchQuery() {
         this.fromDate = null;
@@ -132,5 +133,13 @@ public class SearchQuery {
 
     public void setH(String h) {
         this.h = h;
+    }
+
+    public Double getGridSize() {
+        return gridSize;
+    }
+
+    public void setGridSize(Double gridSize) {
+        this.gridSize = gridSize;
     }
 }

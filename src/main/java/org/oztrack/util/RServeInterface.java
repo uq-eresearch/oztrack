@@ -81,6 +81,12 @@ public class RServeInterface {
             case AHULL:
                 writeAlphahullKmlFile(fileName, searchQuery);
                 break;
+            case HEATMAP_POINT:
+                writePointHeatmapKmlFile(fileName, searchQuery);
+                break;
+            case HEATMAP_LINE:
+                writeLineHeatmapKmlFile(fileName, searchQuery);
+                break;
             default:
                 throw new RServeInterfaceException("Unhandled MapQueryType: " + searchQuery.getMapQueryType());
         }
@@ -103,8 +109,14 @@ public class RServeInterface {
                 this.rConnection.voidEval("library(shapefiles)");
                 rLog = rLog + "Libraries Loaded ";
                 
-                String script = IOUtils.toString(getClass().getResourceAsStream("/r/to_SPLDF.r"), "UTF-8");
-                this.rConnection.voidEval(script);
+                String[] scriptFiles = new String[] {
+                    "to_SPLDF.r",
+                    "heatmap.r"
+                };
+                for (String scriptFile : scriptFiles) {
+                    String script = IOUtils.toString(getClass().getResourceAsStream("/r/" + scriptFile), "UTF-8");
+                    this.rConnection.voidEval(script);
+                }
                 rLog = rLog + "Scripts Loaded ";
 
                 // get the working directory: Java and R have different ideas about windows fileNames
@@ -140,15 +152,15 @@ public class RServeInterface {
         for (int i=0; i < positionFixList.size(); i++) {
             PositionFix positionFix = positionFixList.get(i);
             animalIds[i] = Integer.parseInt(positionFix.getAnimal().getId().toString());
-            latitudes[i] = positionFix.getLocationGeometry().getY();
             longitudes[i] = positionFix.getLocationGeometry().getX();
+            latitudes[i] = positionFix.getLocationGeometry().getY();
         }
 
         /* create the RList to become the dataFrame (add the name+array) */
         RList rPositionFixList = new RList();
         rPositionFixList.put("Id", new REXPInteger(animalIds));
-        rPositionFixList.put("X", new REXPDouble(latitudes));
-        rPositionFixList.put("Y", new REXPDouble(longitudes));
+        rPositionFixList.put("X", new REXPDouble(longitudes));
+        rPositionFixList.put("Y", new REXPDouble(latitudes));
 
         try {
             REXP rPosFixDataFrame = REXP.createDataFrame(rPositionFixList);
@@ -159,7 +171,7 @@ public class RServeInterface {
             // We use WGS84 for coordinates and project to a user-defined SRS.
             // We assume the user-supplied SRS has units of metres in our area calculations.
             safeEval("positionFix$Name <- positionFix$Id;");
-            safeEval("coordinates(positionFix) <- ~Y+X;");
+            safeEval("coordinates(positionFix) <- ~X+Y;");
             safeEval("positionFix.xy <- positionFix[,ncol(positionFix)];");
             safeEval("proj4string(positionFix.xy) <- CRS(\"+init=epsg:4326\");");
             safeEval("positionFix.proj <- spTransform(positionFix.xy,CRS(\"+init=" + srs + "\"));");
@@ -199,6 +211,18 @@ public class RServeInterface {
         safeEval("ahull.proj.spldf <- id.alpha(dxy=positionFix.proj, ialpha=" + alpha + ", sCS=\"+init=" + srs + "\")");
         safeEval("ahull.xy.spldf <- spTransform(ahull.proj.spldf, CRS(\"+init=epsg:4326\"))");
         safeEval("writeOGR(ahull.xy.spldf, dsn=\"" + fileName + "\", layer= \"" + name + "\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
+    }
+    
+    protected void writePointHeatmapKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
+        Double gridSize = (searchQuery.getGridSize() != null) ? searchQuery.getGridSize() : 100d;
+        safeEval("PPA <- fpdens2kml(sdata=positionFix.xy,igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\",scol=\"Greens\", labsent=FALSE)");
+        safeEval("polykml(sw=PPA,filename=\"" + fileName + "\",kmlname=paste(unique(PPA$ID),\"_point_density\",sep=\"\"),namefield=unique(PPA$ID))");
+    }
+    
+    protected void writeLineHeatmapKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
+        Double gridSize = (searchQuery.getGridSize() != null) ? searchQuery.getGridSize() : 100d;
+        safeEval("LPA <- fldens2kml(sdata=positionFix.xy,igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\",scol=\"Greens\", labsent=FALSE)");
+        safeEval("polykml(sw=LPA,filename=\"" + fileName + "\",kmlname=paste(unique(LPA$ID),\"_line_density\",sep=\"\"),namefield=unique(LPA$ID))");
     }
     
     protected void writePositionFixKmlFile(String fileName) throws RServeInterfaceException {

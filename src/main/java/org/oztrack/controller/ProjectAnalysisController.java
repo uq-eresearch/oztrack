@@ -50,7 +50,9 @@ public class ProjectAnalysisController {
             MapQueryType.START_END,
             MapQueryType.MCP,
             MapQueryType.KUD,
-            MapQueryType.AHULL
+            MapQueryType.AHULL,
+            MapQueryType.HEATMAP_POINT,
+            MapQueryType.HEATMAP_LINE
         };
         model.addAttribute("mapQueryTypeList", mapQueryTypeList);
         model.addAttribute("projectAnimalsList", projectAnimalsList);

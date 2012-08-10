@@ -282,7 +282,8 @@ function createAnalysisMap(div, options) {
                     srs: $('input[id=projectionCode]').val(),
                     percent: $('input[id=percent]').val(),
                     h: $('input[id=h]').val(),
-                    alpha: $('input[id=alpha]').val()
+                    alpha: $('input[id=alpha]').val(),
+                    gridSize: $('input[id=gridSize]').val()
                 };
                 var dateFrom = $('input[id=fromDatepicker]').val();
                 var dateTo = $('input[id=toDatepicker]').val();
@@ -303,6 +304,9 @@ function createAnalysisMap(div, options) {
                 }
                 else if (queryTypeValue == "START_END") {
                     addWFSLayer(layerName, 'StartEnd', params, startEndStyleMap);
+                }
+                else if ((queryTypeValue == "HEATMAP_POINT") || (queryTypeValue == "HEATMAP_LINE")) {
+                    addHeatmapKMLLayer(layerName, params);
                 }
                 else {
                     addKMLLayer(layerName, params);
@@ -334,6 +338,29 @@ function createAnalysisMap(div, options) {
                         })
                     }),
                     styleMap: polygonStyleMap        
+                }
+            );
+            map.addLayer(queryOverlay);
+        }
+        
+        function addHeatmapKMLLayer(layerName, params) {
+            var url = "/mapQueryKML";
+            var queryOverlay = new OpenLayers.Layer.Vector(
+                layerName,
+                {
+                    strategies: [new OpenLayers.Strategy.Fixed()],
+                    protocol: new OpenLayers.Protocol.HTTP({
+                        url: url,
+                        params: params,
+                        format: new OpenLayers.Format.KML({
+                            extractStyles: true,
+                            extractAttributes: true,
+                            maxDepth: 2,
+                            internalProjection: projection900913,
+                            externalProjection: projection4326,
+                            kmlns: "http://oztrack.org/xmlns#"
+                        })
+                    })        
                 }
             );
             map.addLayer(queryOverlay);
@@ -501,6 +528,9 @@ function createAnalysisMap(div, options) {
                 }
                 if (params.alpha) {
                     html += '<tr><td class="label">alpha: </td><td>' + params.alpha + '</td></tr>';
+                }
+                if (params.gridSize) {
+                    html += '<tr><td class="label">Grid size (m): </td><td>' + params.gridSize + '</td></tr>';
                 }
                 html += '<tr><td class="label">SRS: </td><td>' + params.srs + '</td></tr>';
                 html += '<tr><td class="label">Area: </td><td>' + Math.round(area*1000)/1000 + ' km<sup>2</sup></td></tr>';

@@ -7,7 +7,9 @@ public enum MapQueryType {
     LINES("Trajectory"),
     MCP("Minimum Convex Polygon"),
     KUD("Kernel Utilization Distribution"),
-    AHULL("Alpha Hull");
+    AHULL("Alpha Hull"),
+    HEATMAP_POINT("Heat Map (Point Intensity)"),
+    HEATMAP_LINE("Heat Map (Line Intensity)");
 
     private final String displayName;
 

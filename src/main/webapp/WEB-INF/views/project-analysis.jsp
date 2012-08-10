@@ -93,6 +93,8 @@
                 $('#h').val('');
                 $('#alphaRow').hide();
                 $('#alpha').val('');
+                $('#gridSizeRow').hide();
+                $('#gridSize').val('');
                 if (mapQueryType == 'MCP') {
                     $('#percentRow').show();
                     $('#percent').val('100');
@@ -106,6 +108,10 @@
                 if (mapQueryType == 'AHULL') {
                     $('#alphaRow').show();
                     $('#alpha').val('100');
+                }
+                if ((mapQueryType == 'HEATMAP_POINT') || (mapQueryType == 'HEATMAP_LINE')) {
+                    $('#gridSizeRow').show();
+                    $('#gridSize').val('100');
                 }
                 $('#paramTable').appendTo('#' + mapQueryType).fadeIn('slow');            
             }
@@ -237,6 +243,10 @@
                         <tr id="alphaRow">
                             <td>alpha:</td>
                             <td><input id="alpha" name="alpha" class="shortInputBox" style="width: 4em; text-align: right;"/></td>
+                        </tr>
+                        <tr id="gridSizeRow">
+                            <td>grid size (m):</td>
+                            <td><input id="gridSize" name="gridSize" class="shortInputBox" style="width: 4em; text-align: right;"/></td>
                         </tr>
                     </table>
                     <br>
