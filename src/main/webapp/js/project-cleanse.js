@@ -104,12 +104,12 @@ function createCleanseMap(div, options) {
 
         function createAllDetectionsLayer(projectId) {
             return new OpenLayers.Layer.Vector(
-                'All Detections',
+                'Detections',
                 {
                     projection: projection4326,
                     protocol: new OpenLayers.Protocol.WFS.v1_1_0({
                         url:  '/mapQueryWFS?projectId=' + projectId + '&queryType=POINTS',
-                        featureType: 'Track',
+                        featureType: 'Detections',
                         featureNS: 'http://oztrack.org/xmlns#'
                     }),
                     strategies: [new OpenLayers.Strategy.Fixed()],
