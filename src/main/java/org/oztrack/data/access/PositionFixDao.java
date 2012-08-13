@@ -24,6 +24,6 @@ public interface PositionFixDao {
     Date getDataFileFirstDetectionDate(DataFile dataFile);
     Date getDataFileLastDetectionDate(DataFile dataFile);
     
-    int deleteOverlappingPositionFixes(Project project, MultiPolygon multiPolygon);
-    int undeleteAllPositionFixes(Project project);
+    int setDeletedOnOverlappingPositionFixes(Project project, MultiPolygon multiPolygon, boolean deleted);
+    int setDeletedOnAllPositionFixes(Project project, boolean deleted);
 }

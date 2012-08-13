@@ -21,7 +21,8 @@ import com.vividsolutions.jts.geom.MultiPoint;
 public class AnimalDetectionsFeatureBuilder {
     private static class AnimalDetections {
         private Animal animal;
-        private List<Coordinate> coordinates;
+        private List<Coordinate> nondeletedCoordinates;
+        private List<Coordinate> deletedCoordinates;
     }
     
     private final GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
@@ -36,7 +37,8 @@ public class AnimalDetectionsFeatureBuilder {
         SimpleFeatureType featureType = buildFeatureType(4326);
         SimpleFeatureCollection featureCollection = FeatureCollections.newCollection();
         for (AnimalDetections animalDetections : animalDetectionsList) {
-            featureCollection.add(buildFeature(featureType, animalDetections));
+            featureCollection.add(buildFeature(featureType, animalDetections, false));
+            featureCollection.add(buildFeature(featureType, animalDetections, true));
         }
         return featureCollection;
     }
@@ -48,28 +50,38 @@ public class AnimalDetectionsFeatureBuilder {
             if ((animalDetections == null) || (animalDetections.animal.getId() != positionFix.getAnimal().getId())) {
                 animalDetections = new AnimalDetections();
                 animalDetections.animal = positionFix.getAnimal();
-                animalDetections.coordinates = new ArrayList<Coordinate>();
+                animalDetections.nondeletedCoordinates = new ArrayList<Coordinate>();
+                animalDetections.deletedCoordinates = new ArrayList<Coordinate>();
                 animalDetectionsList.add(animalDetections);
             }
-            animalDetections.coordinates.add(positionFix.getLocationGeometry().getCoordinate());
+            if (positionFix.getDeleted()) {
+                animalDetections.deletedCoordinates.add(positionFix.getLocationGeometry().getCoordinate());
+            }
+            else {
+                animalDetections.nondeletedCoordinates.add(positionFix.getLocationGeometry().getCoordinate());
+            }
         }
         return animalDetectionsList;
     }
 
     private SimpleFeatureType buildFeatureType(Integer srid) {
-        SimpleFeatureTypeBuilder simpleFeatureTypeBuilder = new SimpleFeatureTypeBuilder();
-        simpleFeatureTypeBuilder.setName("Detections");
-        simpleFeatureTypeBuilder.setNamespaceURI(Constants.namespaceURI);
-        simpleFeatureTypeBuilder.add("animalId", String.class);
-        simpleFeatureTypeBuilder.add("multiPoint", MultiPoint.class, srid);
-        SimpleFeatureType featureType = simpleFeatureTypeBuilder.buildFeatureType();
+        SimpleFeatureTypeBuilder featureTypeBuilder = new SimpleFeatureTypeBuilder();
+        featureTypeBuilder.setName("Detections");
+        featureTypeBuilder.setNamespaceURI(Constants.namespaceURI);
+        featureTypeBuilder.add("animalId", String.class);
+        featureTypeBuilder.add("deleted", Boolean.class);
+        featureTypeBuilder.add("multiPoint", MultiPoint.class, srid);
+        SimpleFeatureType featureType = featureTypeBuilder.buildFeatureType();
         return featureType;
     }
     
-    private SimpleFeature buildFeature(SimpleFeatureType featureType, AnimalDetections animalDetections) {
+    private SimpleFeature buildFeature(SimpleFeatureType featureType, AnimalDetections animalDetections, boolean deleted) {
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
         featureBuilder.set("animalId", animalDetections.animal.getId());
-        featureBuilder.set("multiPoint", geometryFactory.createMultiPoint(animalDetections.coordinates.toArray(new Coordinate[] {})));
-        return featureBuilder.buildFeature(animalDetections.animal.getId().toString());
+        featureBuilder.set("deleted", deleted);
+        List<Coordinate> coordinates = deleted ? animalDetections.deletedCoordinates : animalDetections.nondeletedCoordinates;
+        featureBuilder.set("multiPoint", geometryFactory.createMultiPoint(coordinates.toArray(new Coordinate[] {})));
+        String featureId = animalDetections.animal.getId().toString() + "-" + (deleted ? "deleted" : "nondeleted");
+        return featureBuilder.buildFeature(featureId);
     }
 }

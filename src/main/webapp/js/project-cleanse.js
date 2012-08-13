@@ -108,7 +108,7 @@ function createCleanseMap(div, options) {
                 {
                     projection: projection4326,
                     protocol: new OpenLayers.Protocol.WFS.v1_1_0({
-                        url:  '/mapQueryWFS?projectId=' + projectId + '&queryType=POINTS',
+                        url:  '/mapQueryWFS?projectId=' + projectId + '&queryType=POINTS&includeDeleted=true',
                         featureType: 'Detections',
                         featureNS: 'http://oztrack.org/xmlns#'
                     }),
@@ -138,23 +138,44 @@ function createCleanseMap(div, options) {
                 '#CCEBC5',
                 '#FFED6F'
             ];
-            var styleContext = {
-                getColour: function(feature) {
-                    return colours[feature.attributes.animalId % colours.length];
-                }
-            };
             var pointsOnStyle = new OpenLayers.Style(
                 {
-                    fillColor: '${getColour}',
-                    fillOpacity: 1.0,
-                    strokeColor: '${getColour}',    
-                    strokeOpacity: 0.8,
-                    strokeWidth: 0.2,
                     graphicName: 'cross',
                     pointRadius: 4
                 },
                 {
-                    context: styleContext
+                    rules: [
+                        new OpenLayers.Rule({
+                            filter: new OpenLayers.Filter.Comparison({
+                                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                                property: "deleted",
+                                value: 'true',
+                            }),
+                            symbolizer: {
+                                fillColor: '#aa0000',
+                                fillOpacity: 1.0,
+                                strokeColor: '${getColour}',
+                                strokeOpacity: 0.8,
+                                strokeWidth: 0.75,
+                                pointRadius: 5.125
+                            }
+                        }),
+                        new OpenLayers.Rule({
+                            elseFilter: true,
+                            symbolizer: {
+                                fillColor: '${getColour}',
+                                fillOpacity: 1.0,
+                                strokeColor: '${getColour}',
+                                strokeOpacity: 0.8,
+                                strokeWidth: 0.2
+                            }
+                        })
+                    ],
+                    context: {
+                        getColour: function(feature) {
+                            return colours[feature.attributes.animalId % colours.length];
+                        }
+                    }
                 }
             );
             var pointStyleMap = new OpenLayers.StyleMap({

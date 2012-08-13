@@ -66,27 +66,27 @@ public class ProjectCleanseController {
         HttpServletRequest request,
         HttpServletResponse response
     ) throws IOException {
+        Hints hints = new Hints();
+        hints.put(Hints.CRS, DefaultGeographicCRS.WGS84);
+        GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(hints);
+        WKTReader reader = new WKTReader(geometryFactory);
+        String[] polygonsWkt = request.getParameterValues("polygon");
+        if (polygonsWkt == null) {
+            polygonsWkt = new String[0];
+        }
+        ArrayList<Polygon> polygons = new ArrayList<Polygon>();
+        for (String polygonWkt : polygonsWkt) {
+            try {
+                Polygon polygon = (Polygon) reader.read(polygonWkt);
+                polygons.add(polygon);
+            }
+            catch (ParseException e) {
+                throw new RuntimeException("Error reading polygon: " + polygonWkt, e);
+            }
+        }
+        MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(polygons.toArray(new Polygon[0]));
         if (operation.equals("delete")) {
-            Hints hints = new Hints();
-            hints.put(Hints.CRS, DefaultGeographicCRS.WGS84);
-            GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(hints);
-            WKTReader reader = new WKTReader(geometryFactory);
-            String[] polygonsWkt = request.getParameterValues("polygon");
-            if (polygonsWkt == null) {
-                polygonsWkt = new String[0];
-            }
-            ArrayList<Polygon> polygons = new ArrayList<Polygon>();
-            for (String polygonWkt : polygonsWkt) {
-                try {
-                    Polygon polygon = (Polygon) reader.read(polygonWkt);
-                    polygons.add(polygon);
-                }
-                catch (ParseException e) {
-                    throw new RuntimeException("Error reading polygon: " + polygonWkt, e);
-                }
-            }
-            MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(polygons.toArray(new Polygon[0]));
-            int numDeleted = positionFixDao.deleteOverlappingPositionFixes(project, multiPolygon);
+            int numDeleted = positionFixDao.setDeletedOnOverlappingPositionFixes(project, multiPolygon, true);
             PrintWriter out = response.getWriter();
             out.append("<?xml version=\"1.0\"?>\n");
             out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");
@@ -94,8 +94,11 @@ public class ProjectCleanseController {
             out.append("</cleanse-response>\n");
             response.setStatus(200);
         }
-        else if (operation.equals("undelete")) {
-            int numUndeleted = positionFixDao.undeleteAllPositionFixes(project);
+        else if (operation.equals("undelete") || operation.equals("undelete-all")) {
+            int numUndeleted =
+                operation.equals("undelete-all")
+                ? positionFixDao.setDeletedOnAllPositionFixes(project, false)
+                : positionFixDao.setDeletedOnOverlappingPositionFixes(project, multiPolygon, false);
             PrintWriter out = response.getWriter();
             out.append("<?xml version=\"1.0\"?>\n");
             out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");

@@ -71,10 +71,11 @@ public class PositionFixDaoImpl implements PositionFixDao {
         String sql = "select " + select
                    + "from PositionFix o "
                    + "where o.dataFile in "
-                   + "(select d from datafile d where d.project.id = :projectId) "
-                   + "and o.deleted = :deleted ";
+                   + "(select d from datafile d where d.project.id = :projectId) ";
 
-
+        if ((searchQuery.getIncludeDeleted() == null) || !searchQuery.getIncludeDeleted()) {
+            sql = sql + "and o.deleted = false ";
+        }
         if (searchQuery.getFromDate() != null) {
             sql = sql + "and o.detectionTime >= :fromDate ";
         }
@@ -94,7 +95,6 @@ public class PositionFixDaoImpl implements PositionFixDao {
         sql = sql + orderBy;
         Query query = em.createQuery(sql);
         query.setParameter("projectId", searchQuery.getProject().getId());
-        query.setParameter("deleted", (searchQuery.getDeleted() != null) && searchQuery.getDeleted());
 
         if (searchQuery.getFromDate() != null) {
             query.setParameter("fromDate", searchQuery.getFromDate());
@@ -231,31 +231,33 @@ public class PositionFixDaoImpl implements PositionFixDao {
     
     @Override
     @Transactional
-    public int deleteOverlappingPositionFixes(Project project, MultiPolygon multiPolygon) {
+    public int setDeletedOnOverlappingPositionFixes(Project project, MultiPolygon multiPolygon, boolean deleted) {
         String queryString =
             "update positionfix\n" +
-            "set deleted = true\n" +
+            "set deleted = :deleted\n" +
             "where\n" +
-            "    deleted = false\n" +
+            "    deleted = not(:deleted)\n" +
             "    and datafile_id in (select id from datafile where project_id = :projectId)\n" +
             "    and ST_Within(locationgeometry, ST_GeomFromText(:wkt, 4326));";
         return em.createNativeQuery(queryString)
             .setParameter("projectId", project.getId())
+            .setParameter("deleted", deleted)
             .setParameter("wkt", new WKTWriter().write(multiPolygon))
             .executeUpdate();
     }
     
     @Override
     @Transactional
-    public int undeleteAllPositionFixes(Project project) {
+    public int setDeletedOnAllPositionFixes(Project project, boolean deleted) {
         String queryString =
             "update positionfix\n" +
-            "set deleted = false\n" +
+            "set deleted = :deleted\n" +
             "where\n" +
-            "    deleted = true\n" +
+            "    deleted = not(:deleted)\n" +
             "    and datafile_id in (select id from datafile where project_id = :projectId);";
         return em.createNativeQuery(queryString)
             .setParameter("projectId", project.getId())
+            .setParameter("deleted", deleted)
             .executeUpdate();
     }
 }

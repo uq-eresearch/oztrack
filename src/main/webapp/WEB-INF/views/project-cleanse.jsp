@@ -44,7 +44,7 @@
                             var numDeleted = jQuery(data).find('num-deleted').text();
                             jQuery('#cleanse-response-deleted').text(numDeleted + " points deleted").fadeIn();
                         }
-                        else if (operation == 'undelete') {
+                        else if ((operation == 'undelete') || (operation == 'undelete-all')) {
                             var numUndeleted = jQuery(data).find('num-undeleted').text();
                             jQuery('#cleanse-response-undeleted').text(numUndeleted + " points restored").fadeIn();
                         }
@@ -77,7 +77,7 @@
                                         .attr('onclick', 'cleanseMap.deletePolygonFeature(\'' + id + '\');')
                                         .attr('onmouseover', 'cleanseMap.selectPolygonFeature(\'' + id + '\', true);')
                                         .attr('onmouseout', 'cleanseMap.selectPolygonFeature(\'' + id + '\', false);')
-                                        .append('delete')
+                                        .append('unselect')
                                 )
                                 .append(')')
                         );
@@ -119,13 +119,16 @@
                 </select>
                 <ul id="cleanse-list">
                 </ul>
-                <div style="margin: 0; padding: 0;">
-                    <button onclick="submitCleanseForm('delete');">Done</button>
-                    <button onclick="submitCleanseForm('undelete');">Restore deleted points</button>
-                </div>
                 <p id="cleanse-response-deleted" class="cleanse-response" style="font-weight: bold; color: red;"></p>
                 <p id="cleanse-response-undeleted" class="cleanse-response" style="font-weight: bold; color: green;"></p>
                 <p id="cleanse-response-error" class="cleanse-response" style="font-weight: bold; color: gray;"></p>
+                <div style="margin: 1em 0; padding: 0;">
+                    <button onclick="submitCleanseForm('delete');">Delete selected</button>
+                    <button onclick="submitCleanseForm('undelete');">Restore selected</button>
+                </div>
+                <div style="margin: 1em 0; padding: 0;">
+                    <button onclick="submitCleanseForm('undelete-all');">Restore all points</button>
+                </div>
                 </form>
             </div>
             <h3><a href="#">Project Menu</a></h3>

@@ -56,7 +56,7 @@ public class MapQueryController {
 
     @InitBinder("searchQuery")
     public void initSearchQueryBinder(WebDataBinder binder) {
-        binder.setAllowedFields();
+        binder.setAllowedFields("includeDeleted");
     }
     
     @ModelAttribute("searchQuery")
