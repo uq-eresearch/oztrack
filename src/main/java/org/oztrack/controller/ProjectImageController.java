@@ -26,6 +26,7 @@ import org.opengis.filter.FilterFactory;
 import org.opengis.style.GraphicalSymbol;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
@@ -47,6 +48,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ProjectImageController {
+    private static final Color[] colours = new Color[] {
+        new Color(0x8DD3C7),
+        new Color(0xFFFFB3),
+        new Color(0xBEBADA),
+        new Color(0xFB8072),
+        new Color(0x80B1D3),
+        new Color(0xFDB462),
+        new Color(0xB3DE69),
+        new Color(0xFCCDE5),
+        new Color(0xD9D9D9),
+        new Color(0xBC80BD),
+        new Color(0xCCEBC5),
+        new Color(0xFFED6F)
+    };
+    
     private final StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
     private final FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory(null);
     
@@ -87,13 +103,13 @@ public class ProjectImageController {
                 case POINTS: {
                     List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
                     featureCollection = new AnimalDetectionsFeatureBuilder(positionFixList).buildFeatureCollection();
-                    style = buildDetectionsStyle();
+                    style = buildDetectionsStyle(project.getAnimals());
                     break;
                 }
                 case LINES: {
                     List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
                     featureCollection = new AnimalTrajectoryFeatureBuilder(positionFixList).buildFeatureCollection();
-                    style = buildTrajectoryStyle();
+                    style = buildTrajectoryStyle(project.getAnimals());
                     break;
                 }
                 case START_END: {
@@ -112,10 +128,21 @@ public class ProjectImageController {
         mapContext.dispose();
     }
 
-    private Style buildDetectionsStyle() {
+    private Style buildDetectionsStyle(List<Animal> animals) {
+        FeatureTypeStyle featureTypeStyle = styleFactory.createFeatureTypeStyle();
+        for (Animal animal : animals) {
+            featureTypeStyle.rules().add(buildAnimalDetectionRule(animal));
+        }
+        Style style = styleFactory.createStyle();
+        style.featureTypeStyles().add(featureTypeStyle);
+        return style;
+    }
+
+    public Rule buildAnimalDetectionRule(Animal animal) {
+        Color colour = colours[(int) (animal.getId() % colours.length)];
         GraphicalSymbol mark = styleFactory.mark(
             filterFactory.literal("Cross"),
-            styleFactory.createFill(filterFactory.literal(new Color(0x6Db3a7)), filterFactory.literal(0.8)),
+            styleFactory.createFill(filterFactory.literal(colour), filterFactory.literal(0.8)),
             null
         );
     
@@ -130,23 +157,29 @@ public class ProjectImageController {
     
         Symbolizer symbolizer = styleFactory.createPointSymbolizer(graphic, null);
         Rule rule = styleFactory.createRule();
+        rule.setFilter(filterFactory.equals(filterFactory.property("animalId"), filterFactory.literal(animal.getId())));
         rule.symbolizers().add(symbolizer);
-        FeatureTypeStyle featureTypeStyle = styleFactory.createFeatureTypeStyle(new Rule[] {rule});
+        return rule;
+    }
+    
+    private Style buildTrajectoryStyle(List<Animal> animals) {
+        FeatureTypeStyle featureTypeStyle = styleFactory.createFeatureTypeStyle();
+        for (Animal animal : animals) {
+            featureTypeStyle.rules().add(buildAnimalTrajectoryRule(animal));
+        }
         Style style = styleFactory.createStyle();
         style.featureTypeStyles().add(featureTypeStyle);
         return style;
     }
-    
-    private Style buildTrajectoryStyle() {
-        Stroke stroke = styleFactory.createStroke(filterFactory.literal(new Color(0x6Db3a7)), filterFactory.literal(1.0), filterFactory.literal(1.0));
-    
+
+    public Rule buildAnimalTrajectoryRule(Animal animal) {
+        Color colour = colours[(int) (animal.getId() % colours.length)];
+        Stroke stroke = styleFactory.createStroke(filterFactory.literal(colour), filterFactory.literal(1.0), filterFactory.literal(1.0));
         LineSymbolizer symbolizer = styleFactory.createLineSymbolizer(stroke, null);
         Rule rule = styleFactory.createRule();
+        rule.setFilter(filterFactory.equals(filterFactory.property("animalId"), filterFactory.literal(animal.getId())));
         rule.symbolizers().add(symbolizer);
-        FeatureTypeStyle featureTypeStyle = styleFactory.createFeatureTypeStyle(new Rule[] {rule});
-        Style style = styleFactory.createStyle();
-        style.featureTypeStyles().add(featureTypeStyle);
-        return style;
+        return rule;
     }
 
     private Style buildStartEndStyle() {
