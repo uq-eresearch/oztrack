@@ -91,7 +91,7 @@ public class ProjectImageController {
     ) throws Exception {
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setProject(project);
-        ReferencedEnvelope mapBounds = new ReferencedEnvelope(project.getBoundingBox().getEnvelopeInternal(), CRS.decode("EPSG:" + 4326));
+        ReferencedEnvelope mapBounds = new ReferencedEnvelope(project.getBoundingBox().getEnvelopeInternal(), CRS.decode("EPSG:4326"));
         Dimension mapDimension = MapUtils.calculateMapDimension(mapBounds, 600);
         MapContext mapContext = new DefaultMapContext();
         mapContext.setAreaOfInterest(mapBounds);
