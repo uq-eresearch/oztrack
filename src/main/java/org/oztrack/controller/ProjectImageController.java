@@ -2,17 +2,20 @@ package org.oztrack.controller;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.wms.WebMapServer;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.DefaultMapContext;
 import org.geotools.map.FeatureLayer;
 import org.geotools.map.MapContext;
+import org.geotools.map.WMSLayer;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Graphic;
@@ -87,6 +90,7 @@ public class ProjectImageController {
     public void getView(
         @ModelAttribute(value="project") Project project,
         @RequestParam(value="mapQueryType", required=false) List<String> mapQueryTypes,
+        @RequestParam(value="includeBaseLayer", defaultValue="false") Boolean includeBaseLayer,
         HttpServletResponse response
     ) throws Exception {
         SearchQuery searchQuery = new SearchQuery();
@@ -95,6 +99,9 @@ public class ProjectImageController {
         Dimension mapDimension = MapUtils.calculateMapDimension(mapBounds, 600);
         MapContext mapContext = new DefaultMapContext();
         mapContext.setAreaOfInterest(mapBounds);
+        if (includeBaseLayer) {
+            mapContext.addLayer(buildBaseLayer(mapBounds, mapDimension));
+        }
         for (String mapQueryTypeString : mapQueryTypes) {
             MapQueryType mapQueryType = MapQueryType.valueOf(mapQueryTypeString);
             SimpleFeatureCollection featureCollection = null;
@@ -126,6 +133,21 @@ public class ProjectImageController {
         }
         MapUtils.writePng(mapContext, mapDimension, response.getOutputStream());
         mapContext.dispose();
+    }
+    
+    private WMSLayer buildBaseLayer(ReferencedEnvelope mapBounds, Dimension mapDimension) throws Exception {
+        URL capabilitiesURL = new URL("http://www.ga.gov.au/wms/getmap?dataset=national&request=getCapabilities");
+        String owsLayerName = "politicalpl";
+        WebMapServer wms = new WebMapServer(capabilitiesURL);
+        org.geotools.data.ows.Layer owsLayer = new org.geotools.data.ows.Layer(owsLayerName);
+        for (org.geotools.data.ows.Layer layer : wms.getCapabilities().getLayerList()) {
+            if (layer.getName() != null && layer.getName().equals(owsLayerName)) {
+                owsLayer = layer;
+                break;
+            }
+        }
+        WMSLayer wmsLayer = new WMSLayer(wms, owsLayer);
+        return wmsLayer;
     }
 
     private Style buildDetectionsStyle(List<Animal> animals) {
