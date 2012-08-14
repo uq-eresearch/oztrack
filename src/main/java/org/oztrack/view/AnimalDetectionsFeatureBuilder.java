@@ -68,7 +68,7 @@ public class AnimalDetectionsFeatureBuilder {
         SimpleFeatureTypeBuilder featureTypeBuilder = new SimpleFeatureTypeBuilder();
         featureTypeBuilder.setName("Detections");
         featureTypeBuilder.setNamespaceURI(Constants.namespaceURI);
-        featureTypeBuilder.add("animalId", String.class);
+        featureTypeBuilder.add("animalId", Long.class);
         featureTypeBuilder.add("deleted", Boolean.class);
         featureTypeBuilder.add("multiPoint", MultiPoint.class, srid);
         SimpleFeatureType featureType = featureTypeBuilder.buildFeatureType();

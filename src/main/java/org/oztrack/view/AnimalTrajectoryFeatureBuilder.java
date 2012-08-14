@@ -66,7 +66,7 @@ public class AnimalTrajectoryFeatureBuilder {
         SimpleFeatureTypeBuilder simpleFeatureTypeBuilder = new SimpleFeatureTypeBuilder();
         simpleFeatureTypeBuilder.setName("Trajectory");
         simpleFeatureTypeBuilder.setNamespaceURI(Constants.namespaceURI);
-        simpleFeatureTypeBuilder.add("animalId", String.class);
+        simpleFeatureTypeBuilder.add("animalId", Long.class);
         simpleFeatureTypeBuilder.add("fromDate", Date.class);
         simpleFeatureTypeBuilder.add("toDate", Date.class);
         simpleFeatureTypeBuilder.add("lineString", LineString.class, srid);

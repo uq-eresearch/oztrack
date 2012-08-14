@@ -60,7 +60,7 @@ public class AnimalStartEndFeatureBuilder {
         SimpleFeatureTypeBuilder simpleFeatureTypeBuilder = new SimpleFeatureTypeBuilder();
         simpleFeatureTypeBuilder.setName("StartEnd");
         simpleFeatureTypeBuilder.setNamespaceURI(Constants.namespaceURI);
-        simpleFeatureTypeBuilder.add("animalId", String.class);
+        simpleFeatureTypeBuilder.add("animalId", Long.class);
         simpleFeatureTypeBuilder.add("identifier", String.class);
         simpleFeatureTypeBuilder.add("point", Point.class, srid);
         SimpleFeatureType featureType = simpleFeatureTypeBuilder.buildFeatureType();
