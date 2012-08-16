@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 <%@ tag pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -8,8 +8,9 @@
 <%@ attribute name="head" required="true" fragment="true" %>
 <%@ attribute name="breadcrumbs" required="false" fragment="true" %>
 <%@ attribute name="sidebar" required="false" fragment="true" %>
-<html>
+<html lang="en">
 <head>
+    <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     
     <link rel="stylesheet" type="text/css" href="<c:url value="/css/formalize.css"/>"/>
