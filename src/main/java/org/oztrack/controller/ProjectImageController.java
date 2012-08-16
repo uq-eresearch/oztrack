@@ -51,7 +51,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ProjectImageController {
-    private static final Color[] colours = new Color[] {
+    private final String detectionMarkName = "Cross";
+    private final double detectionMarkOpacity = 0.8;
+    private final int detectionGraphicSize = 8;
+
+    private final double trajectoryLineWidth = 1.0;
+    private final double trajectoryLineOpacity = 0.8;
+
+    private final Color borderColour = new Color(0x888888);
+    private final double borderWidth = 0.5;
+    private final double borderOpacity = 0.6;
+
+    private final String startEndMarkName = "Circle";
+    private final double startEndMarkStrokeWidth = 1.2;
+    private final double startEndMarkOpacity = 1.0;
+    private final Color startMarkColour = new Color(0x00CD00);
+    private final Color endMarkColour = new Color(0xCD0000);
+    private final int startEndGraphicSize = 4;
+
+    private final Color[] colours = new Color[] {
         new Color(0x8DD3C7),
         new Color(0xFFFFB3),
         new Color(0xBEBADA),
@@ -160,23 +178,21 @@ public class ProjectImageController {
         return style;
     }
 
-    public Rule buildAnimalDetectionRule(Animal animal) {
+    private Rule buildAnimalDetectionRule(Animal animal) {
         Color colour = colours[(int) (animal.getId() % colours.length)];
         GraphicalSymbol mark = styleFactory.mark(
-            filterFactory.literal("Cross"),
-            styleFactory.createFill(filterFactory.literal(colour), filterFactory.literal(0.8)),
-            null
+            filterFactory.literal(detectionMarkName),
+            styleFactory.createFill(filterFactory.literal(colour), filterFactory.literal(detectionMarkOpacity)),
+            styleFactory.createStroke(filterFactory.literal(borderColour), filterFactory.literal(borderWidth), filterFactory.literal(borderOpacity))
         );
-    
         Graphic graphic = styleFactory.graphic(
             Arrays.asList(mark),
-            filterFactory.literal(1.0),
-            filterFactory.literal(8),
+            filterFactory.literal(detectionMarkOpacity),
+            filterFactory.literal(detectionGraphicSize),
             filterFactory.literal(0),
             styleFactory.anchorPoint(filterFactory.literal(0), filterFactory.literal(0)),
             styleFactory.displacement(filterFactory.literal(0), filterFactory.literal(0))
         );
-    
         Symbolizer symbolizer = styleFactory.createPointSymbolizer(graphic, null);
         Rule rule = styleFactory.createRule();
         rule.setFilter(filterFactory.equals(filterFactory.property("animalId"), filterFactory.literal(animal.getId())));
@@ -186,6 +202,7 @@ public class ProjectImageController {
     
     private Style buildTrajectoryStyle(List<Animal> animals) {
         FeatureTypeStyle featureTypeStyle = styleFactory.createFeatureTypeStyle();
+        featureTypeStyle.rules().add(buildAnimalTrajectoryBorderRule());
         for (Animal animal : animals) {
             featureTypeStyle.rules().add(buildAnimalTrajectoryRule(animal));
         }
@@ -194,9 +211,9 @@ public class ProjectImageController {
         return style;
     }
 
-    public Rule buildAnimalTrajectoryRule(Animal animal) {
+    private Rule buildAnimalTrajectoryRule(Animal animal) {
         Color colour = colours[(int) (animal.getId() % colours.length)];
-        Stroke stroke = styleFactory.createStroke(filterFactory.literal(colour), filterFactory.literal(1.0), filterFactory.literal(1.0));
+        Stroke stroke = styleFactory.createStroke(filterFactory.literal(colour), filterFactory.literal(trajectoryLineWidth), filterFactory.literal(trajectoryLineOpacity));
         LineSymbolizer symbolizer = styleFactory.createLineSymbolizer(stroke, null);
         Rule rule = styleFactory.createRule();
         rule.setFilter(filterFactory.equals(filterFactory.property("animalId"), filterFactory.literal(animal.getId())));
@@ -204,10 +221,18 @@ public class ProjectImageController {
         return rule;
     }
 
+    private Rule buildAnimalTrajectoryBorderRule() {
+        Stroke stroke = styleFactory.createStroke(filterFactory.literal(borderColour), filterFactory.literal(trajectoryLineWidth + (borderWidth * 2)), filterFactory.literal(borderOpacity));
+        LineSymbolizer symbolizer = styleFactory.createLineSymbolizer(stroke, null);
+        Rule rule = styleFactory.createRule();
+        rule.symbolizers().add(symbolizer);
+        return rule;
+    }
+
     private Style buildStartEndStyle() {
         FeatureTypeStyle featureTypeStyle = styleFactory.createFeatureTypeStyle(new Rule[] {
-            buildStartEndRule("start", new Color(0x00CD00)),
-            buildStartEndRule("end", new Color(0xCD0000))
+            buildStartEndRule("start", startMarkColour),
+            buildStartEndRule("end", endMarkColour)
         });
         Style style = styleFactory.createStyle();
         style.featureTypeStyles().add(featureTypeStyle);
@@ -216,20 +241,18 @@ public class ProjectImageController {
 
     private Rule buildStartEndRule(String identifier, Color color) {
         GraphicalSymbol mark = styleFactory.mark(
-            filterFactory.literal("Circle"),
+            filterFactory.literal(startEndMarkName),
             null,
-            styleFactory.createStroke(filterFactory.literal(color), filterFactory.literal(1.2), filterFactory.literal(1.0))
+            styleFactory.createStroke(filterFactory.literal(color), filterFactory.literal(startEndMarkStrokeWidth), filterFactory.literal(startEndMarkOpacity))
         );
-    
         Graphic graphic = styleFactory.graphic(
             Arrays.asList(mark),
-            filterFactory.literal(1.0),
-            filterFactory.literal(4),
+            filterFactory.literal(startEndMarkOpacity),
+            filterFactory.literal(startEndGraphicSize),
             filterFactory.literal(0),
             styleFactory.anchorPoint(filterFactory.literal(0), filterFactory.literal(0)),
             styleFactory.displacement(filterFactory.literal(0), filterFactory.literal(0))
         );
-    
         Symbolizer symbolizer = styleFactory.createPointSymbolizer(graphic, null);
         Rule rule = styleFactory.createRule();
         rule.setFilter(filterFactory.equals(filterFactory.property("identifier"), filterFactory.literal(identifier)));
