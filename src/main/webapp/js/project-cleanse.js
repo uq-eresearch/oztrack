@@ -141,7 +141,10 @@ function createCleanseMap(div, options) {
             var pointsOnStyle = new OpenLayers.Style(
                 {
                     graphicName: 'cross',
-                    pointRadius: 4
+                    pointRadius: 4,
+                    fillOpacity: 1.0,
+                    strokeOpacity: 0.8,
+                    strokeWidth: 0.2
                 },
                 {
                     rules: [
@@ -152,22 +155,15 @@ function createCleanseMap(div, options) {
                                 value: 'true',
                             }),
                             symbolizer: {
-                                fillColor: '#aa0000',
-                                fillOpacity: 1.0,
-                                strokeColor: '${getColour}',
-                                strokeOpacity: 0.8,
-                                strokeWidth: 0.75,
-                                pointRadius: 5.125
+                                fillColor: '#bc0000',
+                                strokeColor: '#ffffff',
                             }
                         }),
                         new OpenLayers.Rule({
                             elseFilter: true,
                             symbolizer: {
                                 fillColor: '${getColour}',
-                                fillOpacity: 1.0,
                                 strokeColor: '${getColour}',
-                                strokeOpacity: 0.8,
-                                strokeWidth: 0.2
                             }
                         })
                     ],
