@@ -25,6 +25,26 @@
             ul#cleanse-list li {
                 background-image: url(/js/openlayers/theme/default/img/draw_polygon_on.png);
             }
+            #animalHeader {
+                font-size: 11px;
+            }
+            .animalCheckbox {
+                float: left;
+                width: 15px;
+                margin: 0;
+                padding: 0;
+            }
+            .smallSquare {
+                float: left;
+                width: 12px;
+                height: 12px;
+                margin: 0 5px;
+                padding: 0;
+            }
+            .animalLabel {
+                margin: 2px 0 2px 40px;
+                padding: 0;
+            }
         </style>
         <script src="http://maps.google.com/maps/api/js?v=3.9&sensor=false"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/proj4js/proj4js-compressed.js"></script>
@@ -59,6 +79,26 @@
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
                 $("#projectMapOptions").accordion({fillSpace: true});
+                var colours = [
+                    '#8DD3C7',
+                    '#FFFFB3',
+                    '#BEBADA',
+                    '#FB8072',
+                    '#80B1D3',
+                    '#FDB462',
+                    '#B3DE69',
+                    '#FCCDE5',
+                    '#D9D9D9',
+                    '#BC80BD',
+                    '#CCEBC5',
+                    '#FFED6F'
+                ];
+                <c:forEach items="${projectAnimalsList}" var="animal">
+                jQuery('#legend-colour-${animal.id}').attr('style', 'background-color: ' + colours[${animal.id} % colours.length] + ';');
+                jQuery('#select-animal-${animal.id}').change(function() {
+                    cleanseMap.toggleAllAnimalFeatures("${animal.id}", this.checked);
+                });
+                </c:forEach>
                 cleanseMap = createCleanseMap('projectMap', {
                     projectId: <c:out value="${project.id}"/>,
                     onReset: function() {
@@ -109,7 +149,24 @@
             <h3 id="projectTitle"><a href="#"><c:out value="${project.title}"/></a></h3>
             <div style="padding: 0;">
                 <form id="cleanseForm" onsubmit="return false;">
-                <p style="font-weight: bold;">Data cleansing</p>
+                <p style="font-weight: bold;">Animals</p>
+                <div id="animalHeader" style="margin: 0;">
+                <c:forEach items="${projectAnimalsList}" var="animal">
+                    <div class="animalCheckbox">
+                        <input
+                            id="select-animal-${animal.id}"
+                            class="select-animal"
+                            name="animal"
+                            type="checkbox"
+                            value="${animal.id}"
+                            style="width: 15px;"
+                            checked="checked" />
+                    </div>
+                    <div class="smallSquare" id="legend-colour-${animal.id}"></div>
+                    <div class="animalLabel">${animal.animalName}</div>
+                </c:forEach>
+                </div>
+                <p style="font-weight: bold;">Selection</p>
                 <p style="font-size: 0.9em; font-style: italic;">
                     Select points for removal from the project by drawing polygons around them.
                     Click to start drawing and click again to draw each side of your selected area.

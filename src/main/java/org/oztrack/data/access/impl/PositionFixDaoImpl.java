@@ -231,16 +231,18 @@ public class PositionFixDaoImpl implements PositionFixDao {
     
     @Override
     @Transactional
-    public int setDeletedOnOverlappingPositionFixes(Project project, MultiPolygon multiPolygon, boolean deleted) {
+    public int setDeletedOnOverlappingPositionFixes(Project project, List<Long> animalIds, MultiPolygon multiPolygon, boolean deleted) {
         String queryString =
             "update positionfix\n" +
             "set deleted = :deleted\n" +
             "where\n" +
             "    deleted = not(:deleted)\n" +
             "    and datafile_id in (select id from datafile where project_id = :projectId)\n" +
+            "    and animal_id in (:animalIds)\n" +
             "    and ST_Within(locationgeometry, ST_GeomFromText(:wkt, 4326));";
         return em.createNativeQuery(queryString)
             .setParameter("projectId", project.getId())
+            .setParameter("animalIds", animalIds)
             .setParameter("deleted", deleted)
             .setParameter("wkt", new WKTWriter().write(multiPolygon))
             .executeUpdate();
@@ -248,15 +250,17 @@ public class PositionFixDaoImpl implements PositionFixDao {
     
     @Override
     @Transactional
-    public int setDeletedOnAllPositionFixes(Project project, boolean deleted) {
+    public int setDeletedOnAllPositionFixes(Project project, List<Long> animalIds, boolean deleted) {
         String queryString =
             "update positionfix\n" +
             "set deleted = :deleted\n" +
             "where\n" +
             "    deleted = not(:deleted)\n" +
-            "    and datafile_id in (select id from datafile where project_id = :projectId);";
+            "    and datafile_id in (select id from datafile where project_id = :projectId)\n" +
+            "    and animal_id in (:animalIds);";
         return em.createNativeQuery(queryString)
             .setParameter("projectId", project.getId())
+            .setParameter("animalIds", animalIds)
             .setParameter("deleted", deleted)
             .executeUpdate();
     }

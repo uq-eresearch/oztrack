@@ -3,6 +3,7 @@ package org.oztrack.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,12 +13,15 @@ import org.apache.commons.logging.LogFactory;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -41,6 +45,9 @@ public class ProjectCleanseController {
     
     @Autowired
     private PositionFixDao positionFixDao;
+    
+    @Autowired
+    AnimalDao animalDao;
 
     @InitBinder("project")
     public void initProjectBinder(WebDataBinder binder) {
@@ -54,7 +61,9 @@ public class ProjectCleanseController {
     
     @RequestMapping(value="/projects/{id}/cleanse", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#project, 'write')")
-    public String getCleanseView(@ModelAttribute(value="project") Project project) {
+    public String getCleanseView(Model model, @ModelAttribute(value="project") Project project) {
+        List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
+        model.addAttribute("projectAnimalsList", projectAnimalsList);
         return "project-cleanse";
     }
     
@@ -63,6 +72,7 @@ public class ProjectCleanseController {
     public void processCleanse(
         @ModelAttribute(value="project") Project project,
         @RequestParam(value="operation", defaultValue="delete") String operation,
+        @RequestParam(value="animal") List<Long> animalIds,
         HttpServletRequest request,
         HttpServletResponse response
     ) throws IOException {
@@ -86,7 +96,7 @@ public class ProjectCleanseController {
         }
         MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(polygons.toArray(new Polygon[0]));
         if (operation.equals("delete")) {
-            int numDeleted = positionFixDao.setDeletedOnOverlappingPositionFixes(project, multiPolygon, true);
+            int numDeleted = positionFixDao.setDeletedOnOverlappingPositionFixes(project, animalIds, multiPolygon, true);
             PrintWriter out = response.getWriter();
             out.append("<?xml version=\"1.0\"?>\n");
             out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");
@@ -97,8 +107,8 @@ public class ProjectCleanseController {
         else if (operation.equals("undelete") || operation.equals("undelete-all")) {
             int numUndeleted =
                 operation.equals("undelete-all")
-                ? positionFixDao.setDeletedOnAllPositionFixes(project, false)
-                : positionFixDao.setDeletedOnOverlappingPositionFixes(project, multiPolygon, false);
+                ? positionFixDao.setDeletedOnAllPositionFixes(project, animalIds, false)
+                : positionFixDao.setDeletedOnOverlappingPositionFixes(project, animalIds, multiPolygon, false);
             PrintWriter out = response.getWriter();
             out.append("<?xml version=\"1.0\"?>\n");
             out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");

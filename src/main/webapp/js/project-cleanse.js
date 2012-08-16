@@ -15,6 +15,7 @@ function createCleanseMap(div, options) {
         var polygonLayer;
         var polygonFeatures;
         var highlightControl;
+        var beforeFirstZoom = true;
         
         (function() {
             map = new OpenLayers.Map(div, {
@@ -62,6 +63,55 @@ function createCleanseMap(div, options) {
                 onReset();
             }
         };
+        
+        cleanseMap.toggleAllAnimalFeatures = function(animalId, setVisible) {
+            function getVectorLayers() {
+                var vectorLayers = new Array();
+                for (var c in map.controls) {
+                    var control = map.controls[c];
+                    if (control.id.indexOf("LayerSwitcher") != -1) {
+                        for (var i=0; i < control.dataLayers.length; i++) {
+                            vectorLayers.push(control.dataLayers[i].layer);
+                        }
+                    }
+                }
+                return vectorLayers;
+            }
+            
+            var vectorLayers = getVectorLayers();
+            for (var l in vectorLayers) {
+                var layer = vectorLayers[l];
+                var layerName = layer.name;
+                for (var f in layer.features) {
+                    var feature = layer.features[f];
+                    if (feature.attributes.animalId == animalId) {
+                        var featureIdentifier = layer.id + "-" + feature.id;
+                        toggleFeature(featureIdentifier, setVisible);
+                    }
+                }
+            }
+            $("#animalInfo-"+animalId).find(':checkbox').attr("checked", setVisible);
+        };
+
+        function toggleFeature(featureIdentifier, setVisible) {
+            var splitString = featureIdentifier.split("-");
+            var layerId = splitString[0];
+            var featureId = splitString[1];
+            
+            var layer = map.getLayer(layerId);
+            for (var key in layer.features) {
+                var feature = layer.features[key];
+                if (feature.id == featureId) {
+                    if (setVisible) {
+                        feature.renderIntent = "default";
+                    }
+                    else {
+                        feature.renderIntent = "temporary";
+                    }
+                    layer.drawFeature(feature);
+                }
+            }
+        }
 
         function polygonFeatureAdded(e) {
             // Polygons must have at least 3 sides.
@@ -116,7 +166,13 @@ function createCleanseMap(div, options) {
                     styleMap: createPointStyleMap(), 
                     eventListeners: {
                         loadend: function (e) {
-                            map.zoomToExtent(e.object.getDataExtent(), false);
+                            jQuery('.select-animal').each(function() {
+                                cleanseMap.toggleAllAnimalFeatures(parseInt(jQuery(this).attr('id').substring('select-animal-'.length)), this.checked); 
+                            });
+                            if (beforeFirstZoom) {
+                                map.zoomToExtent(e.object.getDataExtent(), false);
+                                beforeFirstZoom = false;
+                            }
                         }
                     }
                 }
@@ -174,8 +230,13 @@ function createCleanseMap(div, options) {
                     }
                 }
             );
+            var pointOffStyle = {
+                strokeOpacity: 0.0,
+                fillOpacity: 0.0
+            };
             var pointStyleMap = new OpenLayers.StyleMap({
-                'default': pointsOnStyle
+                'default': pointsOnStyle,
+                'temporary': pointOffStyle
             });
             return pointStyleMap;
         }
