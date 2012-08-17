@@ -10,12 +10,10 @@
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
         <style type="text/css">
             #welcome {
-                margin: 0 0 0 0;
-                float: left;
+                margin: 20px 0 0 0;
                 text-align: justify;
-                z-index: 10000000;
-                padding: 16px 16px 8px 16px;
                 background-color:#e6e6c0;
+                padding: 16px 16px 8px 16px;
                 -khtml-border-radius: 10px;
                 -webkit-border-radius: 10px;
                 -moz-border-radius: 10px;
@@ -65,9 +63,9 @@
         </script>
     </jsp:attribute>
 	<jsp:body>
-        <div id="welcome">
+        <div id="welcome" class="fade in">
+            <button class="close" data-dismiss="alert">×</button>
             ${text}
-            <p style="margin-bottom: 4px;"><a href="javascript:void(0)" onclick="$('#welcome').fadeOut();">Close</a></p>
         </div>
         <div style="clear: both;"></div>
         <div id="homeMap"></div>

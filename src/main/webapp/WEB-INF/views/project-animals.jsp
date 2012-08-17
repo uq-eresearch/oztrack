@@ -26,36 +26,25 @@
 		<h1 id="projectTitle"><c:out value="${project.title}"/></h1>
 		<h2>Animals</h2>
 		
-		<table class="dataTable">
-		
-		    <tr>
-		        <th>ID</th>
-		        <th>Name</th>
-		        <th>Description</th>
-		        <th>Species</th>
-		        <th>Created Date</th>
-		        <th>Transmitter Type</th>
-		        <th>Transmitter ID</th>
-		       <!-- <th>Transmitter Deploy Date</th> -->
-		        <th>Ping Interval (seconds)</th>
-                <sec:authorize access="hasPermission(#project, 'write')">
-		        <th> </th>
-                </sec:authorize>
-		    </tr>
-		
+		<table class="table table-bordered">
+    		<thead>
+    		    <tr>
+    		        <th>ID</th>
+    		        <th>Name</th>
+    		        <th>Description</th>
+    		        <th>Species</th>
+                    <sec:authorize access="hasPermission(#project, 'write')">
+    		        <th> </th>
+                    </sec:authorize>
+    		    </tr>
+    		</thead>
+            <tbody>
 		    <c:forEach items="${projectAnimalsList}" var="animal">
 		        <tr>
 		            <td><c:out value="${animal.projectAnimalId}"/></td>
 		            <td><a href="<c:url value="/animals/${animal.id}"/>"><c:out value="${animal.animalName}"/></a></td>
 		            <td><c:out value="${animal.animalDescription}"/></td>
 		            <td><c:out value="${animal.speciesName}"/></td>
-		            <td><c:out value="${animal.createDate}"/></td>
-		            <td><c:out value="${animal.transmitterTypeCode}"/></td>
-		            <td><c:out value="${animal.transmitterId}"/></td>
-		
-		            <!--<td><c:out value="${animal.transmitterDeployDate}"/></td>-->
-		
-		            <td><c:out value="${animal.pingIntervalSeconds}"/></td>
 		            <sec:authorize access="hasPermission(#project, 'write')">
                     <td>
 				        <a href="<c:url value="/animals/${animal.id}/edit"/>">Edit</a>
@@ -66,6 +55,7 @@
                     </sec:authorize>
 				</tr>
 		    </c:forEach>
+            </tbody>
 		</table>
     </jsp:body>
 </tags:page>

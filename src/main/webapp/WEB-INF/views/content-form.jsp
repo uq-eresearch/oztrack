@@ -19,20 +19,38 @@
     </jsp:attribute>
     <jsp:body>
         <h1>Content</h1>
-        <form:form commandName="settings" method="POST" name="settings" cssStyle="padding: 0; background-color: transparent;">
-            <div>
+        <form:form commandName="settings" method="POST" name="settings" cssStyle="">
+            <fieldset>
+            <div class="control-group">
                 <h2>Home text</h2>
-                <form:textarea path="homeText" id="homeText" cssClass="ckeditor"/>
-                <form:errors path="homeText" cssClass="formErrors"/>
-                <h2>About text</h2>
-                <form:textarea path="aboutText" id="aboutText" cssClass="ckeditor"/>
-                <form:errors path="aboutText" cssClass="formErrors"/>
-                <h2>Contact text</h2>
-                <form:textarea path="contactText" id="contactText" cssClass="ckeditor"/>
-                <form:errors path="contactText" cssClass="formErrors"/>
+                <div class="controls">
+                    <p class="help-block">
+                        <form:errors path="homeText" element="div" cssClass="alert alert-error"/>
+                    </p>
+                    <form:textarea path="homeText" id="homeText" cssClass="ckeditor"/>
+                </div>
             </div>
-            <div>
-                <input type="submit" value="Save" class="oztrackButton" />
+            <div class="control-group">
+                <h2>About text</h2>
+                <div class="controls">
+                    <p class="help-block">
+                        <form:errors path="aboutText" element="div" cssClass="alert alert-error"/>
+                    </p>
+                    <form:textarea path="aboutText" id="aboutText" cssClass="ckeditor"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <h2>Contact text</h2>
+                <div class="controls">
+                    <p class="help-block">
+                        <form:errors path="contactText" element="div" cssClass="alert alert-error"/>
+                    </p>
+                    <form:textarea path="contactText" id="contactText" cssClass="ckeditor"/>
+                </div>
+            </div>
+            </fieldset>
+            <div class="form-actions">
+                <input class="btn btn-primary" type="submit" value="Save" />
             </div>
         </form:form>
     </jsp:body>

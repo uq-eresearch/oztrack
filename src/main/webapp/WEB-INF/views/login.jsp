@@ -23,47 +23,53 @@
 		<h1>Login</h1>
 		
         <c:if test="${not empty sessionScope['SPRING_SECURITY_LAST_EXCEPTION'].message}">
-        <p class="errorMessage">
+        <div class="alert alert-error">
             ${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}
-        </p>
+        </div>
         </c:if>
         
 		<div style="clear: both;"></div>
 
         <c:if test="${aafEnabled}">
-        <form style="width: 600px; margin: 20px 0;">
-        <h2>Login using AAF</h2>
-        <div style="margin: 1em 0;">
-            Click here to authenticate using the <a href="http://www.aaf.edu.au/">Australian Access Federation (AAF)</a>.
-        </div>
-        <div style="margin: 1em 0;">
-            You will be redirected to your home institution's website to login.
-        </div>
-        <div style="margin: 1em 0;">
-        <a class="oztrackButton" href="<c:url value="/login/shibboleth"/>">Login using AAF</a>
-        </div>
+        <form class="form-vertical" style="width: 600px;">
+            <fieldset>
+                <legend>Login using AAF</legend>
+                <div class="control-group">
+                    <p>
+                        Click here to authenticate using the <a href="http://www.aaf.edu.au/">Australian Access Federation (AAF)</a>.
+                    </p>
+                    <p>
+                        You will be redirected to your home institution's website to login.
+                    </p>
+                </div>
+                <div class="form-actions">
+                <a class="btn btn-primary" href="<c:url value="/login/shibboleth"/>">Login using AAF</a>
+                </div>
+            </fieldset>
         </form>
         </c:if>
         
-		<form id="nativeLoginForm" method="POST" action="<c:url value="/j_spring_security_check"/>" style="width: 600px; margin: 20px 0;">
-		
-        <c:if test="${aafEnabled}">
-        <h2>Login using OzTrack</h2>
-        </c:if>
-        
-        <div>
-		<label for="username" style="width: auto; text-align: left;">Username:</label>
-		<input type="text" name="username" id="username"/>
-		</div>
-		
-		<div>
-		<label for="password" style="width: auto; text-align: left;">Password:</label>
-		<input type="password" name="password" id="password"/>
-		</div>
-		
-		<div style="margin: 1em 0;">
-		<input type="submit" value="Login"/>
-		</div>
+		<form id="nativeLoginForm" class="form-vertical" style="width: 600px;" method="POST" action="<c:url value="/j_spring_security_check"/>">
+    		<fieldset>
+                <c:if test="${aafEnabled}">
+                <legend>Login using OzTrack</legend>
+                </c:if>
+                <div class="control-group">
+            		<label class="control-label" for="username">Username</label>
+                    <div class="controls">
+            		    <input type="text" name="username" id="username"/>
+                    </div>
+        		</div>
+        		<div class="control-group">
+            		<label class="control-label" for="password">Password</label>
+                    <div class="controls">
+            		    <input type="password" name="password" id="password"/>
+                    </div>
+        		</div>
+            </fieldset>
+    		<div class="form-actions">
+    		<input class="btn btn-primary" type="submit" value="Login"/>
+    		</div>
 		</form>
 
         <div style="clear: both;"></div>

@@ -8,6 +8,16 @@
 <c:set var="dateTimeFormatPattern" value="dd/MM/yyyy HH:mm:ss"/>
 <tags:page title="${project.title}: View Raw Data">
     <jsp:attribute name="head">
+        <style type="text/css">
+            .dataTableNav {
+                margin: 10px 0;
+                font-weight: bold;
+            }
+            .dataTableNav a {
+                font-weight: bold;
+                text-decoration: none;
+            }
+        </style>
         <script type="text/javascript"> 
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
@@ -27,36 +37,47 @@
     </jsp:attribute>
     <jsp:body>
 		<h1 id="projectTitle"><c:out value="${project.title}"/></h1>
-		<h2>Search Project Data</h2>
-		
-		<form:form commandName="searchQuery" method="POST" name="searchQuery">
-		    <div>
-			    <label for="fromDate">Date From:</label>
-			    <form:input path="fromDate" id="fromDate" cssClass="shortInputBox"/>
-			    <label for="toDate" class="shortInputLabel">Date To:</label>
-			    <form:input path="toDate" id="toDate" cssClass="shortInputBox"/>
-		    </div>
-		    <div>
-			    <label>Animal:</label>
-			    <form:select id="animalListSelect" path="animalList" items="${projectAnimalsList}" itemLabel="animalName" itemValue="id" multiple="true" cssClass="shortInputBox"/>
-			    <form:errors path="animalList"/>
-		    </div>
-		    <div>
-			    <label for="sortField">Sort by:</label>
-			    <form:select path="sortField">
-			        <form:option value="Animal"/>
-			        <form:option value="Detection Time"/>
-			    </form:select>
-		    </div>
-		    <div align="center">
-		        <input type="submit"  value="Search"/>
+
+		<form:form class="form-horizontal" commandName="searchQuery" method="POST" name="searchQuery">
+            <fieldset>
+                <legend>Search Project Data</legend>
+    		    <div class="control-group">
+    			    <label class="control-label" for="fromDate">Date From</label>
+                    <div class="controls">
+    			        <form:input path="fromDate" id="fromDate" cssClass="input-medium"/>
+                    </div>
+    		    </div>
+                <div class="control-group">
+                    <label class="control-label" for="toDate">Date To</label>
+                    <div class="controls">
+                        <form:input path="toDate" id="toDate" cssClass="input-medium"/>
+                    </div>
+                </div>
+    		    <div class="control-group">
+    			    <label class="control-label" for="animalListSelect">Animal</label>
+                    <div class="controls">
+        			    <form:select id="animalListSelect" path="animalList" items="${projectAnimalsList}" itemLabel="animalName" itemValue="id" multiple="true" cssClass="shortInputBox"/>
+                    </div>
+    		    </div>
+    		    <div class="control-group">
+    			    <label class="control-label" for="sortField">Sort by:</label>
+                    <div class="controls">
+        			    <form:select path="sortField">
+        			        <form:option value="Animal"/>
+        			        <form:option value="Detection Time"/>
+        			    </form:select>
+                    </div>
+    		    </div>
+            </fieldset>
+		    <div class="form-actions">
+		        <input class="btn btn-primary" type="submit" value="Search"/>
 		    </div>
 		</form:form>
 		
 		
 		<div class="dataTableNav">
 		<div style="float:left;">
-		    <b>Displaying <c:out value="${offset+1}"/> to <c:out value="${offset+nbrObjectsThisPage}"/> of <c:out value="${totalCount}"/> records.</b>
+		    Displaying <c:out value="${offset+1}"/> to <c:out value="${offset+nbrObjectsThisPage}"/> of <c:out value="${totalCount}"/> records.
 		</div>
 		<div style="float:right">
 		    <c:choose>
@@ -95,43 +116,46 @@
             &nbsp;&nbsp;
             <a href="<c:url value="/projects/${searchQuery.project.id}/export"/>">Export</a>
 		</div>
+        <div style="clear: both;"></div>
 		</div>
-		
-		<br>
 		
 		<c:if test="${positionFixList != null}">
 		
-		    <table class="dataTable" style="width: 92%;">
+	    <table class="table table-bordered table-condensed">
             <col style="width: 110px;" />
             <col style="width: 60px;" />
             <col style="width: 150px;" />
             <col style="width: 70px;" />
             <col style="width: 70px;" />
             <col style="width: 70px;" />
-		    <tr>
-		        <th>Date/Time</th>
-		        <th>Animal Id</th>
-		        <th>Animal Name</th>
-		        <th>Latitude</th>
-		        <th>Longitude</th>
-		        <th>Uploaded</th>
-		    </tr>
-		    <c:forEach items="${positionFixList}" var="detection">
-		    <tr>
-		        <td><fmt:formatDate pattern="${dateTimeFormatPattern}" value="${detection.detectionTime}"/></td>
-		        <td><c:out value="${detection.animal.projectAnimalId}"/></td>
-		        <td><a href="<c:url value="/animals/${detection.animal.id}/edit"/>">
-		                <c:out value="${detection.animal.animalName}"/></a></td>
-		        <td><c:out value="${detection.latitude}"/></td>
-		        <td><c:out value="${detection.longitude}"/></td>
-		        <td>
-		            <a href="<c:url value="/datafiles/${detection.dataFile.id}"/>"
-                    ><fmt:formatDate pattern="${dateFormatPattern}" value="${detection.dataFile.createDate}"/></a>
-		        </td>
-		    </tr>
-		    </c:forEach>
-		    </table>
+            <thead>
+    		    <tr>
+    		        <th>Date/Time</th>
+    		        <th>Animal Id</th>
+    		        <th>Animal Name</th>
+    		        <th>Latitude</th>
+    		        <th>Longitude</th>
+    		        <th>Uploaded</th>
+    		    </tr>
+            </thead>
+		    <tbody>
+                <c:forEach items="${positionFixList}" var="detection">
+    		    <tr>
+    		        <td><fmt:formatDate pattern="${dateTimeFormatPattern}" value="${detection.detectionTime}"/></td>
+    		        <td><c:out value="${detection.animal.projectAnimalId}"/></td>
+    		        <td><a href="<c:url value="/animals/${detection.animal.id}/edit"/>">
+    		                <c:out value="${detection.animal.animalName}"/></a></td>
+    		        <td><c:out value="${detection.latitude}"/></td>
+    		        <td><c:out value="${detection.longitude}"/></td>
+    		        <td>
+    		            <a href="<c:url value="/datafiles/${detection.dataFile.id}"/>"
+                        ><fmt:formatDate pattern="${dateFormatPattern}" value="${detection.dataFile.createDate}"/></a>
+    		        </td>
+    		    </tr>
+    		    </c:forEach>
+            </tbody>
+	    </table>
 		
-		 </c:if>
+		</c:if>
     </jsp:body>
 </tags:page>

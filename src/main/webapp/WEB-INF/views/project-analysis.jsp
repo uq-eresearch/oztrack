@@ -199,75 +199,85 @@
 	        
 		    <div id="homeRangeCalculatorPanel">
 		        
-		        <form method="POST" id="mapToolForm" onsubmit="analysisMap.addProjectMapLayer(); return false;">
+		        <form class="form-vertical" method="POST" id="mapToolForm" onsubmit="analysisMap.addProjectMapLayer(); return false;">
                     <input id="projectId" type="hidden" value="${project.id}"/>
-		            <b>Date Range</b>
-		            <table style="margin-top: 5px; margin-left:5px;">
-			            <tr>
-			                <td style="padding-right: 5px;">From:</td>
-			                <td><input id="fromDatepicker" class="shortInputBox"/></td>
-			            </tr>
-			            <tr>
-			                <td style="padding-right: 5px;">To:</td>
-			                <td><input id="toDatepicker" class="shortInputBox"/></td>
-			            </tr>
-		            </table>
-					<br>
-					<b>Layer Type</b><br>
-					<table class="mapQueryType" style="margin-top:5px;">
-		                <c:forEach items="${mapQueryTypeList}" var="mapQueryType">
-	                        <tr>
-	                        <td style="padding: 0 5px; vertical-align: top;">
-                                <input type="radio"
-                                    name="mapQueryTypeSelect"
-                                    id="mapQueryTypeSelect-${mapQueryType}"
-                                    value="${mapQueryType}"
-                                    onClick="updateParamTable('${mapQueryType}')"
-                                />
-                            </td>
-	                        <td id="${mapQueryType}">
-                                <label for="mapQueryTypeSelect-${mapQueryType}"><c:out value="${mapQueryType.displayName}"/></label>
-                            </td>
-	                        </tr>
-		                </c:forEach>
-	                </table>
-                    <table id="paramTable" style="display: none; margin-left:5px;">
-                        <tr id="percentRow">
-                            <td>percent:</td>
-                            <td><input id="percent" name="percent" class="shortInputBox" style="width: 4em; text-align: right;"/></td>
-                        </tr>
-                        <tr id="hRow">
-                            <td>h value:</td>
-                            <td><input id="h" name="h" class="shortInputBox" style="width: 4em; text-align: right;"/></td>
-                        </tr>
-                        <tr id="alphaRow">
-                            <td>alpha:</td>
-                            <td><input id="alpha" name="alpha" class="shortInputBox" style="width: 4em; text-align: right;"/></td>
-                        </tr>
-                        <tr id="gridSizeRow">
-                            <td>grid size (m):</td>
-                            <td><input id="gridSize" name="gridSize" class="shortInputBox" style="width: 4em; text-align: right;"/></td>
-                        </tr>
-                    </table>
-                    <br>
-					<b>Spatial Reference System (SRS)</b><br>
-					<!--
-                        Defaults to EPSG:3577 (GDA94 / Australian Albers)
-                        Australia-wide geoscience and statistical mapping.
-                        Link: http://spatialreference.org/ref/epsg/3577/
-                    -->
-                    <div>
-                        Code: <input id="projectionCode" class="shortInputBox" value="EPSG:3577"/>
+                    <fieldset>
+                    <div class="control-group">
+        	            <div style="margin-bottom: 9px; font-weight: bold;">Date Range</div>
+                        <div class="controls">
+            	            <table>
+            		            <tr>
+            		                <td style="padding-right: 5px;"><label class="control-label" for="fromDatePicker">From</label></td>
+            		                <td><input id="fromDatepicker" class="input-medium"/></td>
+            		            </tr>
+            		            <tr>
+            		                <td style="padding-right: 5px;"><label class="control-label" for="toDatePicker">To</label></td>
+            		                <td><input id="toDatepicker" class="input-medium"/></td>
+            		            </tr>
+            	            </table>
+                        </div>
+					</div>
+                    <div class="control-group">
+                        <div style="margin-bottom: 9px; font-weight: bold;">Layer Type</div>
+                        <div class="controls">
+        					<table class="mapQueryType" style="margin-top:5px;">
+        		                <c:forEach items="${mapQueryTypeList}" var="mapQueryType">
+        	                        <tr>
+        	                        <td style="padding: 0 5px; vertical-align: top;">
+                                        <input type="radio"
+                                            name="mapQueryTypeSelect"
+                                            id="mapQueryTypeSelect-${mapQueryType}"
+                                            value="${mapQueryType}"
+                                            onClick="updateParamTable('${mapQueryType}')"
+                                        />
+                                    </td>
+        	                        <td id="${mapQueryType}">
+                                        <label for="mapQueryTypeSelect-${mapQueryType}"><c:out value="${mapQueryType.displayName}"/></label>
+                                    </td>
+        	                        </tr>
+        		                </c:forEach>
+        	                </table>
+                            <table id="paramTable" style="display: none; margin-left:5px;">
+                                <tr id="percentRow">
+                                    <td>percent:</td>
+                                    <td><input id="percent" name="percent" class="shortInputBox" style="width: 4em; text-align: right;"/></td>
+                                </tr>
+                                <tr id="hRow">
+                                    <td>h value:</td>
+                                    <td><input id="h" name="h" class="shortInputBox" style="width: 4em; text-align: right;"/></td>
+                                </tr>
+                                <tr id="alphaRow">
+                                    <td>alpha:</td>
+                                    <td><input id="alpha" name="alpha" class="shortInputBox" style="width: 4em; text-align: right;"/></td>
+                                </tr>
+                                <tr id="gridSizeRow">
+                                    <td>grid size (m):</td>
+                                    <td><input id="gridSize" name="gridSize" class="shortInputBox" style="width: 4em; text-align: right;"/></td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
-                    <div>
-                        <a href="javascript:void(0)" onclick="srsSelector.showDialog();">Select Australian SRS</a><br>
-    					<a href="javascript:void(0)" onclick="window.open('http://spatialreference.org/ref/epsg', 'popup', 'width=600,height=400,scrollbars=yes');">Search for international SRS codes</a>
+                    <div class="control-group">
+    					<div style="margin-bottom: 9px; font-weight: bold;">Spatial Reference System (SRS)</div>
+                        <div class="controls">
+        					<!--
+                                Defaults to EPSG:3577 (GDA94 / Australian Albers)
+                                Australia-wide geoscience and statistical mapping.
+                                Link: http://spatialreference.org/ref/epsg/3577/
+                            -->
+                            <div>
+                                <input id="projectionCode" class="shortInputBox" value="EPSG:3577"/>
+                            </div>
+                            <div style="margin-top: 9px;">
+                                <a href="javascript:void(0)" onclick="srsSelector.showDialog();">Select Australian SRS</a><br>
+            					<a href="javascript:void(0)" onclick="window.open('http://spatialreference.org/ref/epsg', 'popup', 'width=600,height=400,scrollbars=yes');">Search for international SRS codes</a>
+                            </div>
+                        </div>
                     </div>
-
-                    <br>
-                    
-                    <div class="formButton"><input type="submit" id="projectMapSubmit" value="Calculate"/></div>
-	
+                    </fieldset>
+                    <div style="margin-top: 18px;">
+                        <input class="btn btn-primary" type="submit" id="projectMapSubmit" value="Calculate"/>
+                    </div>
 		          </form>      
 		        </div>
 	    
@@ -406,7 +416,7 @@
 	    </div>
 		
 		<div id="projectMap"></div>
-		<div class="clearboth">&nbsp;</div>
+		<div style="clear:both;"></div>
 		</div>
     </jsp:body>
 </tags:page>

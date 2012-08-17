@@ -25,49 +25,76 @@
     </jsp:attribute>
     <jsp:body>
 		<h1 id="projectTitle"><c:out value="${project.title}"/></h1>
-		<h2>Update Animal Details</h2>
-		<form:form action="/animals/${animal.id}" commandName="animal" method="PUT" name="animal">
-			<div>
-				<label for="projectAnimalId">Animal Id:</label>
-				<form:input path="projectAnimalId" id="projectAnimalId"/>
-				<form:errors path="projectAnimalId" cssClass="formErrors"/>
+		<form:form cssClass="form-horizontal" action="/animals/${animal.id}" commandName="animal" method="PUT">
+            <fieldset>
+            <legend>Update animal details</legend>
+			<div class="control-group">
+				<label class="control-label" for="projectAnimalId">Animal ID</label>
+                <div class="controls">
+    				<form:input path="projectAnimalId" id="projectAnimalId"/>
+                    <span class="help-inline">
+    				    <form:errors path="projectAnimalId" cssClass="formErrors"/>
+                    </span>
+                </div>
 			</div>
-			<div>
-				<label for="animalName">Name:</label>
-				<form:input path="animalName" id="animalName"/>
-				<form:errors path="animalName" cssClass="formErrors"/>
+			<div class="control-group">
+				<label class="control-label" for="animalName">Name</label>
+                <div class="controls">
+    				<form:input path="animalName" id="animalName"/>
+                    <span class="help-inline">
+    				    <form:errors path="animalName" cssClass="formErrors"/>
+                    </span>
+                </div>
 			</div>
-			<div>
-				<label for="animalDescription">Description:</label>
-				<form:input path="animalDescription" id="animalDescription"/>
-				<form:errors path="animalDescription" cssClass="formErrors"/>
+			<div class="control-group">
+				<label class="control-label" for="animalDescription">Description</label>
+                <div class="controls">
+    				<form:input path="animalDescription" id="animalDescription"/>
+                    <span class="help-inline">
+    				    <form:errors path="animalDescription" cssClass="formErrors"/>
+                    </span>
+                </div>
 			</div>
-			<div>
-				<label for="speciesName">Species:</label>
-				<form:input path="speciesName" id="speciesName"/>
-				<form:errors path="speciesName" cssClass="formErrors"/>
+			<div class="control-group">
+				<label class="control-label" for="speciesName">Species</label>
+                <div class="controls">
+    				<form:input path="speciesName" id="speciesName"/>
+                    <span class="help-inline">
+    				    <form:errors path="speciesName" cssClass="formErrors"/>
+                    </span>
+                </div>
 			</div>
-			<div>
-				<label for="transmitterTypeCode">Transmitter Type Code:</label>
-				<form:input path="transmitterTypeCode" id="transmitterTypeCode"/>
-				<form:errors path="transmitterTypeCode" cssClass="formErrors"/>
+			<div class="control-group">
+				<label class="control-label" for="transmitterTypeCode">Transmitter Type Code</label>
+                <div class="controls">
+    				<form:input path="transmitterTypeCode" id="transmitterTypeCode"/>
+                    <span class="help-inline">
+    				    <form:errors path="transmitterTypeCode" cssClass="formErrors"/>
+                    </span>
+                </div>
 			</div>
-			<div>
-				<label for="transmitterId">transmitterId:</label>
-				<form:input path="transmitterId" id="transmitterId"/>
-				<form:errors path="transmitterId" cssClass="formErrors"/>
+			<div class="control-group">
+				<label class="control-label" for="transmitterId">Transmitter ID</label>
+                <div class="controls">
+    				<form:input path="transmitterId" id="transmitterId"/>
+                    <span class="help-inline">
+    				    <form:errors path="transmitterId" cssClass="formErrors"/>
+                    </span>
+                </div>
 			</div>
-			<div>
-				<label for="pingIntervalSeconds">pingIntervalSeconds:</label>
-				<form:input path="pingIntervalSeconds" id="pingIntervalSeconds"/>
-				<form:errors path="pingIntervalSeconds" cssClass="formErrors"/>
+			<div class="control-group">
+				<label class="control-label" for="pingIntervalSeconds">Ping Interval (seconds)</label>
+                <div class="controls">
+    				<form:input path="pingIntervalSeconds" id="pingIntervalSeconds"/>
+                    <span class="help-inline">
+    				    <form:errors path="pingIntervalSeconds" cssClass="formErrors"/>
+                    </span>
+                </div>
 			</div>
-			<br>
-			<div align="center">
-                <a href="<c:url value="/animals/${animal.id}"/>">Cancel</a>
-                &nbsp;
-                &nbsp;
-                <input type="submit" value="Update"/>
+            </fieldset>
+			<div class="form-actions">
+                <input class="btn btn-primary" type="submit" value="Update"/>
+                <a class="btn" href="<c:url value="/animals/${animal.id}"/>">Cancel</a>
             </div>
 		</form:form>
     </jsp:body>

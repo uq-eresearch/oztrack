@@ -33,75 +33,79 @@
     </jsp:attribute>
     <jsp:body>
 		<h1 id="projectTitle"><c:out value="${project.title}"/></h1>
-		<h2>Add a Data File</h2>
 		
 		<p>
             This form allows you to upload animal tracking data in CSV format.
         </p>
 		
-		<form:form action="/projects/${project.id}/datafiles" commandName="dataFile" method="POST" enctype="multipart/form-data">
-		
-		
-			<div class="help">
-			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
-			<span><b>DataFile Type:</b><br>Determined by the Project Type (specified on the creation of the project).
-			</span></a>
-			</div>
-		
-		<div>
-		<label for="projectType">Datafile Type:</label>
-		<span><c:out value="${project.projectType.displayName}"/></span>
-		</div>
-		
-		<br>
-		
-			<div class="help">
-			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
-			<span><b>File Description:</b><br>A short description to help you identify the contents of the file.<br>
-			</span></a>
-			</div>
-		
-		
-		<div>
-		<label for="fileDescription">File Description:</label>
-		<form:input path="fileDescription" id="fileDescription"/>
-		<br>
-		<form:errors path="fileDescription" cssClass="formErrors"/>
-		</div>
-		
-		<br>
-		
-			<div class="help">
-			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
-			<span><b>Time Conversion:</b><br>Specify a time conversion value to apply to the timestamps in your file.<br>
-			</span></a>
-			</div>
-			
-		<div>
-		<label for="timeConversion">Convert to local time?</label>
-		<form:checkbox path="localTimeConversionRequired" id="localTimeConversionRequired" cssClass="checkbox"/>
-		&nbsp; Local time is GMT + <form:input path="localTimeConversionHours" cssClass="shortInput"/> hours.
-		</div>
-		
-		<br>
-		
-			<div class="help">
-			<a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
-			<span><b>Uploading the File:</b><br>See below for details on the required file format.
-			</span></a>
-			</div>
-		<div>
-		<label for="file">File: </label>
-		<input type="file" name="file"/>
-		<form:errors path="file" cssClass="formErrors"/>
-		</div>
-		
-		<br>
-		<div>
-		<label></label>
-		<div class="formButton"><input type="submit" value="Add File"/></div>
-		</div>
-		
+		<form:form cssClass="form-horizontal" action="/projects/${project.id}/datafiles" commandName="dataFile" method="POST" enctype="multipart/form-data">
+            <fieldset>
+                <legend>Add a Data File</legend>
+        		<div class="control-group">
+            		<label class="control-label" for="projectType">Datafile Type</label>
+                    <div class="controls">
+            		    <input type="text" disabled="disabled" value="<c:out value="${project.projectType.displayName}"/>" />
+                    </div>
+        		</div>
+        		<div class="control-group">
+            		<label class="control-label" for="fileDescription">File Description</label>
+                    <div class="controls">
+                		<form:input path="fileDescription" id="fileDescription" cssClass="input-xlarge"/>
+                        <div class="help-inline">
+                            <a class=info href="#">
+                                <img src="<c:url value="/img/help.png"/>" border="0">
+                                <span>
+                                    <b>File Description</b><br>
+                                    <br>
+                                    A short description to help you identify the contents of the file.
+                                </span>
+                            </a>
+                        </div>
+                        <div class="help-block">
+                		    <form:errors path="fileDescription" cssClass="formErrors"/>
+                        </div>
+                    </div>
+        		</div>
+        		<div class="control-group">
+            		<label class="control-label" for="timeConversion">Convert to local time?</label>
+                    <div class="controls">
+                		<form:checkbox path="localTimeConversionRequired" id="localTimeConversionRequired" cssClass="checkbox"/>
+                		Local time is GMT +<form:input path="localTimeConversionHours" cssClass="shortInput" cssStyle="width: 30px;"/> hours.
+                        <div class="help-inline">
+                            <a class=info href="#">
+                                <img src="<c:url value="/img/help.png"/>" border="0">
+                                <span>
+                                    <b>Time Conversion</b><br>
+                                    <br>
+                                    Specify a time conversion value to apply to the timestamps in your file.
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+    		    </div>
+        		<div class="control-group">
+            		<label class="control-label" for="file">File: </label>
+                    <div class="controls">
+                		<input type="file" name="file"/>
+                        <div class="help-inline">
+                            <a class=info href="#">
+                                <img src="<c:url value="/img/help.png"/>" border="0">
+                                <span>
+                                    <b>Uploading the File:</b><br>
+                                    <br>
+                                    See below for details on the required file format.
+                                </span>
+                            </a>
+                        </div>
+                        <div class="help-block">
+                		    <form:errors path="file" cssClass="formErrors"/>
+                        </div>
+                    </div>
+        		</div>
+    		</fieldset>
+    		<div class="form-actions">
+                <input class="btn btn-primary" type="submit" value="Add File"/>
+            </div>
 		</form:form>
         
         <p style="margin-top: 1.00em; margin-bottom: 0.33em;">
@@ -142,7 +146,7 @@ Bert,12/08/2009 2:55:00,142.10619,-12.32208
 		<c:out value="${fileHeaders}"/>
 		<h3>Date formats</h3>
 		<p>Date formats that can be read:</p>
-		    <ul style="margin: 1em 0;">
+		    <ul>
 		        <li><span>dd/MM/yyyy H:mi:s.S</span></li>
 		        <li><span>dd/MM/yyyy H:mi:s</span></li>
 		        <li><span>dd/MM/yyyy</span></li>
@@ -154,11 +158,13 @@ Bert,12/08/2009 2:55:00,142.10619,-12.32208
 		        <li><span>yyyy.MM.dd</span></li>
 		    </ul>
 			
-			<table class="infoTable">
+			<table class="table table-bordered table-condensed">
+                <thead>
 				<tr><th>Field</th>
 					<th>Description</th>
 					<th>Example</th></tr>
-					
+                </thead>
+				<tbody>
 				<tr><td>dd</td>
 					<td>day in month (number)</td>
 					<td>01, 1, 31, 08</td></tr>
@@ -186,14 +192,14 @@ Bert,12/08/2009 2:55:00,142.10619,-12.32208
 				<tr><td>S</td>
 					<td>millisecond</td>
 					<td>00, 01234, 1234</td></tr>
-			
+			    </tbody>
 			</table>
 		<p>Note: OzTrack will look for the headings specified above to populate the date and time fields. The date fields above (including <tt>ACQUIISITIONTIME</tt>) can contain either 
 		   a date or a date and time stamp. The time stamp can be in a separate field to the date, but the date field must precede it (left to right). </p>
 		<h3>Spatial coordinates</h3>
 		<p>At this stage we only accept Lat/Longs in the WGS 84 coordinate system.</p>
         <p>Coordinate formats that can be read:</p>
-        <ul style="margin: 1em 0;">
+        <ul>
             <li>Degrees (e.g., 153.017433)</li>
             <li>Degrees minutes (e.g., 153 1.046)</li>
             <li>Degrees minutes seconds (e.g., 153 1 2.76)</li>

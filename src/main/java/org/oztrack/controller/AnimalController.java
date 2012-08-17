@@ -59,16 +59,17 @@ public class AnimalController {
     @PreAuthorize("hasPermission(#animal.project, 'write')")
     public String processUpdate(
         RedirectAttributes redirectAttributes,
+        Model model,
         @ModelAttribute(value="animal") Animal animal,
         BindingResult bindingResult
     ) throws Exception {
         new AnimalFormValidator().validate(animal, bindingResult);
         if (bindingResult.hasErrors()) {
+            model.addAttribute("project", animal.getProject());
             return "animal-form";
         }
         animalDao.update(animal);
-        redirectAttributes.addAttribute("projectId", animal.getProject().getId());
-        return "redirect:/projects/{projectId}/animals";
+        return "redirect:/projects/" + animal.getProject().getId() + "/animals";
     }
 
     @RequestMapping(value="/animals/{id}", method=RequestMethod.DELETE)

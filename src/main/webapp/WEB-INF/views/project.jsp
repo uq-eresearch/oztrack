@@ -37,8 +37,7 @@
         <script type="text/javascript" src="<c:url value="/js/coverage.js"/>"></script>
         <script type="text/javascript">
             function addProjectUser() {
-                jQuery('#addProjectUserError').hide();
-                jQuery('#deleteProjectUserError').hide();
+                jQuery('#projectUserError').hide();
                 var userFullName = jQuery('#addProjectUserName').val();
                 var userLabel = jQuery('#addProjectUserLabel').val();
                 var userId = jQuery('#addProjectUserId').val();
@@ -58,7 +57,7 @@
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         var message = jQuery(jqXHR.responseXML).find('error').text() || 'Error processing request';
-                        jQuery('#addProjectUserError').text(message).fadeIn();
+                        jQuery('#projectUserError').text(message).fadeIn();
                     }
                 });
             }
@@ -78,14 +77,13 @@
                         jQuery('<a>')
                             .attr('href', 'javascript:void(0)')
                             .attr('onclick', 'deleteProjectUser(' + userId + ', \'' + role + '\', \'' + userFullName + '\');')
-                            .append(jQuery('<img src="<c:url value="/images/bullet_delete.png"/>" /></a>'))
+                            .append(jQuery('<img src="<c:url value="/img/bullet_delete.png"/>" /></a>'))
                     )
                     </sec:authorize>
                     .hide().appendTo(projectUsersList).fadeIn();
             }
             function deleteProjectUser(userId, role, userFullName) {
-                jQuery('#addProjectUserError').hide();
-                jQuery('#deleteProjectUserError').hide();
+                jQuery('#projectUserError').hide();
                 if (!confirm('Are you sure you want to remove ' + userFullName + ' from this project?')) {
                     return;
                 }
@@ -100,7 +98,7 @@
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         var message = jQuery(jqXHR.responseXML).find('error').text() || 'Error processing request';
-                        jQuery('#deleteProjectUserError').text(message).fadeIn();
+                        jQuery('#projectUserError').text(message).fadeIn();
                     }
                 });
             }
@@ -311,18 +309,18 @@
         
         <sec:authorize access="hasPermission(#project, 'read')">
         <h2>User Roles</h2>
-        <table class="entityTable" style="width: 100%; margin: 0;">
+        <table style="width: 100%; margin: 0;">
         <c:forEach items="${roles}" var="role">
         <col style="width: ${100.0 / fn:length(roles)}%;" />
         </c:forEach>
         <tr>
             <c:forEach items="${roles}" var="role">
-            <th style="border-bottom: 1px solid #e6e6c0;">${role.pluralTitle}</th>
+            <th style="border-bottom: 1px solid #e6e6c0; text-align: center;">${role.pluralTitle}</th>
             </c:forEach>
         </tr>
         <tr>
             <c:forEach items="${roles}" var="role">
-            <td>
+            <td style="text-align: center;">
                 <div id="${role.identifier}ProjectUsersNone" style="font-style: italic; margin: 0.3em 0; display: none;">
                     No users with ${role.title} role
                 </div>
@@ -333,12 +331,11 @@
         </tr>
         </table>
         <sec:authorize access="hasPermission(#project, 'manage')">
-        <div id="deleteProjectUserError" class="errorMessage" style="display: none; text-align: center; font-size: 11px; padding: 5px; background-color: #ffecec;"></div>
         <form
             onsubmit="return false;"
-            style="width: 100%; padding: 0; background-color: #F6F6E6; border: 0px solid #e6e6c0;
+            class="form-inline"
+            style="padding: 10px; background-color: #F6F6E6; border: 0px solid #e6e6c0;
                 -webkit-border-radius: 0px; -moz-border-radius: 0px; -ms-border-radius: 0px; -o-border-radius: 0px; border-radius: 0px;">
-        <div style="margin: 0; padding: 10px;">
             <span style="line-height: 1.8em; margin-right: 10px;">Assign a new user to the project:</span>
             <input id="addProjectUserId" type="hidden" />
             <input id="addProjectUserLabel" type="hidden" />
@@ -348,10 +345,9 @@
                 <option value="${role.identifier}">${role.title}</option>
                 </c:forEach>
             </select>
-            <button id="addProjectUserButton" onclick="addProjectUser();">Add</button>
-            <span id="addProjectUserError" class="errorMessage" style="margin-left: 10px;"></span>
-        </div>
+            <button class="btn" id="addProjectUserButton" onclick="addProjectUser();">Add</button>
         </form>
+        <div id="projectUserError" class="alert alert-error" style="margin-top: -12px; display: none;"></div>
         </sec:authorize>
         </sec:authorize>
         

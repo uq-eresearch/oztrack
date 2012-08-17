@@ -32,29 +32,31 @@
                 This project has no data to work with. You might like to
                 <a href="<c:url value='/projects/${project.id}/datafiles/new'/>">upload a data file.</a>
             </p>
-			<a class="oztrackButton" id="pageRefresh" href="javascript:location.reload(true)">Refresh</a>
+			<a class="btn" id="pageRefresh" href="javascript:location.reload(true)">Refresh</a>
 		 </c:when>
 		 <c:otherwise>
 		    
 		    <p><c:out value="${fn:length(dataFileList)}"/> data file(s) found.</p>
 		
-				<p><a class="oztrackButton" href="<c:url value='/projects/${project.id}/datafiles/new'/>" >Add a Datafile</a>
-				<a class="oztrackButton" id="pageRefresh" href="javascript:location.reload(true)">Refresh</a></p>
+				<p><a class="btn btn-primary" href="<c:url value='/projects/${project.id}/datafiles/new'/>" >Add a Datafile</a>
+				<a class="btn" id="pageRefresh" href="javascript:location.reload(true)">Refresh</a></p>
 				
 				<p><c:out value="${errorStr}"/></p>
 				
-				<table class="dataTable" id="dataFileStatusTable">
+				<table id="dataFileStatusTable" class="table table-bordered">
                     <col style="width: 200px;" />
                     <col style="width: 150px;" />
                     <col style="width: 100px;" />
                     <col style="width: 100px;" />
-				    <tr>
-				        <th>File Name</th>
-				        <th>Detection Date Range</th>
-				        <th>Upload Date</th>
-				        <th>File Status</th>
-				    </tr>
-				
+                    <thead>
+    				    <tr>
+    				        <th>File Name</th>
+    				        <th>Detection Date Range</th>
+    				        <th>Upload Date</th>
+    				        <th>File Status</th>
+    				    </tr>
+                    </thead>
+				    <tbody>
 				    <c:forEach items="${dataFileList}" var="dataFile">
 				        <tr>
 				            <td><c:out value="${dataFile.userGivenFileName}"/></td>
@@ -68,6 +70,7 @@
 				            </td>
 						</tr>
 				    </c:forEach>
+                    </tbody>
 				</table>
 			</c:otherwise>
 		</c:choose>	

@@ -147,44 +147,55 @@
         <div class="mapTool">
         <div id="projectMapOptions">
             <h3 id="projectTitle"><a href="#"><c:out value="${project.title}"/></a></h3>
-            <div style="padding: 0;">
-                <form id="cleanseForm" onsubmit="return false;">
-                <p style="font-weight: bold;">Animals</p>
-                <div id="animalHeader" style="margin: 0;">
-                <c:forEach items="${projectAnimalsList}" var="animal">
-                    <div class="animalCheckbox">
-                        <input
-                            id="select-animal-${animal.id}"
-                            class="select-animal"
-                            name="animal"
-                            type="checkbox"
-                            value="${animal.id}"
-                            style="width: 15px;"
-                            checked="checked" />
+            <div style="padding: 1em 10px;">
+                <form id="cleanseForm" class="form-veritcal" onsubmit="return false;">
+                <fieldset>
+                <div class="control-group">
+                    <div style="margin-bottom: 9px; font-weight: bold;">Animals</div>
+                    <div id="animalHeader" class="controls">
+                    <c:forEach items="${projectAnimalsList}" var="animal">
+                        <div class="animalCheckbox">
+                            <input
+                                id="select-animal-${animal.id}"
+                                class="select-animal"
+                                name="animal"
+                                type="checkbox"
+                                value="${animal.id}"
+                                style="width: 15px;"
+                                checked="checked" />
+                        </div>
+                        <div class="smallSquare" id="legend-colour-${animal.id}"></div>
+                        <div class="animalLabel">${animal.animalName}</div>
+                        <div style="clear: both;"></div>
+                    </c:forEach>
                     </div>
-                    <div class="smallSquare" id="legend-colour-${animal.id}"></div>
-                    <div class="animalLabel">${animal.animalName}</div>
-                </c:forEach>
                 </div>
-                <p style="font-weight: bold;">Selection</p>
-                <p style="font-size: 0.9em; font-style: italic;">
-                    Select points for removal from the project by drawing polygons around them.
-                    Click to start drawing and click again to draw each side of your selected area.
-                    Double-click to finish drawing. You can draw as many polygons as are required.
-                </p>
-                <select id="cleanse-select" name="polygon" multiple="multiple" style="display: none;">
-                </select>
-                <ul id="cleanse-list">
-                </ul>
+                <div class="control-group">
+                    <div style="margin-bottom: 9px; font-weight: bold;">Selection</div>
+                    <p style="font-size: 0.9em; font-style: italic;">
+                        Select points for removal from the project by drawing polygons around them.
+                        Click to start drawing and click again to draw each side of your selected area.
+                        Double-click to finish drawing. You can draw as many polygons as are required.
+                    </p>
+                    <div class="controls">
+                        <select id="cleanse-select" name="polygon" multiple="multiple" style="display: none;">
+                        </select>
+                        <ul id="cleanse-list">
+                        </ul>
+                    </div>
+                </div>
                 <p id="cleanse-response-deleted" class="cleanse-response" style="font-weight: bold; color: red;"></p>
                 <p id="cleanse-response-undeleted" class="cleanse-response" style="font-weight: bold; color: green;"></p>
                 <p id="cleanse-response-error" class="cleanse-response" style="font-weight: bold; color: gray;"></p>
-                <div style="margin: 1em 0; padding: 0;">
-                    <button onclick="submitCleanseForm('delete');">Delete selected</button>
-                    <button onclick="submitCleanseForm('undelete');">Restore selected</button>
-                </div>
-                <div style="margin: 1em 0; padding: 0;">
-                    <button onclick="submitCleanseForm('undelete-all');">Restore all points</button>
+                </fieldset>
+                <div style="margin-top: 18px;">
+                    <div>
+                        <button class="btn btn-primary" onclick="submitCleanseForm('delete');">Delete selected</button>
+                    </div>
+                    <div style="margin-top: 9px;">
+                        <button class="btn" onclick="submitCleanseForm('undelete');">Restore selected</button>
+                        <button class="btn" onclick="submitCleanseForm('undelete-all');">Restore all</button>
+                    </div>
                 </div>
                 </form>
             </div>
@@ -192,7 +203,7 @@
             <tags:project-menu project="${project}"/>
         </div>
         <div id="projectMap"></div>
-        <div class="clearboth">&nbsp;</div>
+        <div style="clear:both;"></div>
         </div>
     </jsp:body>
 </tags:page>

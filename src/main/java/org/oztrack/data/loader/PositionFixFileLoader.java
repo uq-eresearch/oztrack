@@ -308,9 +308,6 @@ public class PositionFixFileLoader extends DataFileLoader {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
 
-//        boolean localTimeConversionRequired = dataFile.getLocalTimeConversionRequired();
-//        long localTimeConversionHours = dataFile.getLocalTimeConversionHours();
-        
         if (dataFile.getLocalTimeConversionRequired()) {
         	calendar.add(Calendar.HOUR, dataFile.getLocalTimeConversionHours().intValue());
         }

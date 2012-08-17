@@ -13,15 +13,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     
-    <link rel="stylesheet" type="text/css" href="<c:url value="/css/formalize.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/css/jquery-ui/jquery-ui-1.8.22.custom.css"/>"/>
-    <link rel="stylesheet" type="text/css" href="<c:url value="/css/oztrack.css"/>"/>
+    <link rel="stylesheet" type="text/css" href="<c:url value="/css/bootstrap.css"/>"/>
     
     <script type="text/javascript" src="<c:url value="/js/jquery/jquery-1.7.2.min.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/js/jquery/jquery.formalize.min.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/js/jquery/jquery-ui-1.8.22.custom.min.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/js/ckeditor/ckeditor.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/js/ckeditor/adapters/jquery.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/js/bootstrap.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/js/oztrack.js"/>"></script>
     
     <title>OzTrack: ${title}</title>
@@ -76,14 +75,14 @@
     </c:if>
 	<div id="content" class="${empty sidebarContent ? 'wide' : 'narrow'}">
 		<jsp:doBody/>
-		<div class="clearboth">&nbsp;</div>
+		<div style="clear:both;"></div>
 	</div> <!-- content -->
 </div> <!-- main -->
 <div id="footer">
     <div id="logos">
-        <a href="http://nectar.org.au/"><img src="<c:url value="/images/nectar-logo.png"/>" width="140px" height="32px"/></a>
-        <a href="http://ands.org.au/"><img src="<c:url value="/images/ands-logo.png"/>" width="90px" height="40px" style="margin-top: -8px;"/></a>
-        <a href="http://itee.uq.edu.au/~eresearch/"><img src="<c:url value="/images/uq_logo.png"/>" width="140px" height="40px"/></a>
+        <a href="http://nectar.org.au/"><img src="<c:url value="/img/nectar-logo.png"/>" width="140px" height="32px"/></a>
+        <a href="http://ands.org.au/"><img src="<c:url value="/img/ands-logo.png"/>" width="90px" height="40px" style="margin-top: -8px;"/></a>
+        <a href="http://itee.uq.edu.au/~eresearch/"><img src="<c:url value="/img/uq_logo.png"/>" width="140px" height="40px"/></a>
     </div>
     <div id="copyright">
         &copy; 2011 The University of Queensland

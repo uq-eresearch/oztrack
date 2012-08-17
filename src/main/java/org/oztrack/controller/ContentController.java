@@ -46,7 +46,7 @@ public class ContentController {
     ) throws Exception {
         new SettingsFormValidator().validate(settings, bindingResult);
         if (bindingResult.hasErrors()) {
-            return "settings";
+            return "content-form";
         }
         settingsDao.update(settings);
         return "content-form";

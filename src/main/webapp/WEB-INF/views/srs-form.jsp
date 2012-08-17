@@ -29,8 +29,7 @@
         &rsaquo; <span class="active">${title}</span>
     </jsp:attribute>
     <jsp:body>
-		<h1>${title}</h1>
-		
+		<h1>Spatial Reference Systems</h1>
         <c:choose>
             <c:when test="${srs.id != null}">
                 <c:set var="method" value="PUT"/>
@@ -41,54 +40,51 @@
                 <c:set var="action" value="/settings/srs"/>
             </c:otherwise>
         </c:choose>
-        <form:form method="${method}" action="${action}" commandName="srs" name="srs">
-		<table class="form">
-        <tr>
-            <th class="form-label">
-		        ID
-            </th>
-            <td class="form-field">
-                <form:input path="identifier" cssStyle="width: 150px;"/>
-                <form:errors path="identifier" cssClass="formErrors"/>
-            </td>
-			<td class="form-help">
-			</td>
-	    </tr>
-        <tr>
-            <th class="form-label">
-                Title
-            </th>
-            <td class="form-field">
-                <form:input path="title" cssStyle="width: 400px;"/>
-                <form:errors path="title" cssClass="formErrors"/>
-            </td>
-            <td class="form-help">
-            </td>
-        </tr>
-        <tr>
-            <th class="form-label">
-                Bounds
-            </th>
-            <td class="form-field">
-                <form:input path="bounds" cssStyle="width: 400px;"/>
-                <form:errors path="bounds" cssClass="formErrors"/>
-            </td>
-            <td class="form-help">
-                <a class=info href="#"><img src="<c:url value="/images/help.png"/>" border="0">
-                <span>
-                    <b>Bounds:</b><br>
-                    <br>
-                    Comma-separated values for the spatial reference system's WGS84 bounding box.<br>
-                    <br>
-                    Example: 144.0000, -54.7500, 150.0000, -1.7100
-                </span>
-                </a>
-            </td>
-        </tr>
-        </table>
-		<div>
-		    <input class="oztrackButton" type="submit" value="${(srs.id != null) ? 'Update SRS' : 'Create SRS'}" />
-		</div>
+        <form:form class="form-horizontal" method="${method}" action="${action}" commandName="srs">
+    		<fieldset>
+                <legend>${title}</legend>
+                <div class="control-group">
+                    <label class="control-label" for="identifier">ID</label>
+                    <div class="controls">
+                        <form:input path="identifier" cssStyle="width: 150px;"/>
+                        <div class="help-block">
+                            <form:errors path="identifier" cssClass="formErrors"/>
+                        </div>
+                    </div>
+        	    </div>
+                <div class="control-group">
+                    <label class="control-label" for="title">Title</label>
+                    <div class="controls">
+                        <form:input path="title" cssClass="input-xxlarge"/>
+                        <div class="help-block">
+                            <form:errors path="title" cssClass="formErrors"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="bounds">Bounds</label>
+                    <div class="controls">
+                        <form:input path="bounds" cssClass="input-xxlarge"/>
+                        <div class="help-inline">
+                            <a class=info href="#"><img src="<c:url value="/img/help.png"/>" border="0">
+                            <span>
+                                <b>Bounds:</b><br>
+                                <br>
+                                Comma-separated values for the spatial reference system's WGS84 bounding box.<br>
+                                <br>
+                                Example: 144.0000, -54.7500, 150.0000, -1.7100
+                            </span>
+                            </a>
+                        </div>
+                        <div class="help-block">
+                            <form:errors path="bounds" cssClass="formErrors"/>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+    		<div class="form-actions">
+    		    <input class="btn btn-primary" type="submit" value="${(srs.id != null) ? 'Update SRS' : 'Create SRS'}" />
+    		</div>
 		</form:form>
     </jsp:body>
 </tags:page>

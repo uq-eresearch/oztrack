@@ -4,4 +4,5 @@
 .settings/
 .swp
 src/main/resources/conf/properties/application.properties
+src/main/webapp/css/bootstrap.css
 target/
