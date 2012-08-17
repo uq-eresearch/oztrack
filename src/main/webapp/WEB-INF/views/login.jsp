@@ -31,7 +31,7 @@
 		<div style="clear: both;"></div>
 
         <c:if test="${aafEnabled}">
-        <form class="form-vertical" style="width: 600px;">
+        <form class="form-vertical form-bordered" style="width: 600px;">
             <fieldset>
                 <legend>Login using AAF</legend>
                 <div class="control-group">
@@ -49,7 +49,7 @@
         </form>
         </c:if>
         
-		<form id="nativeLoginForm" class="form-vertical" style="width: 600px;" method="POST" action="<c:url value="/j_spring_security_check"/>">
+		<form id="nativeLoginForm" class="form-vertical form-bordered" style="width: 600px;" method="POST" action="<c:url value="/j_spring_security_check"/>">
     		<fieldset>
                 <c:if test="${aafEnabled}">
                 <legend>Login using OzTrack</legend>

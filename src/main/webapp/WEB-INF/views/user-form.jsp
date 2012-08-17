@@ -24,7 +24,7 @@
         <h1>${title}</h1>
 
         <c:if test="${aafEnabled && (user.id == null) && (empty user.aafId)}">
-        <form class="form-vertical" style="width: 600px;">
+        <form class="form-vertical form-bordered" style="width: 600px;">
             <fieldset>
                 <legend>Register using AAF</legend>
                 <div class="control-group">
@@ -43,7 +43,7 @@
         </c:if>
 
         <form:form
-            cssClass="form-horizontal"
+            cssClass="form-horizontal form-bordered"
             commandName="user"
             method="${(user.id == null) ? 'POST' : 'PUT'}"
             action="${(user.id == null) ? '/users' : '/users/'}${(user.id == null) ? '' : user.id}"

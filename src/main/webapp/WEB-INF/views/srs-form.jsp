@@ -40,7 +40,7 @@
                 <c:set var="action" value="/settings/srs"/>
             </c:otherwise>
         </c:choose>
-        <form:form class="form-horizontal" method="${method}" action="${action}" commandName="srs">
+        <form:form class="form-horizontal form-bordered" method="${method}" action="${action}" commandName="srs">
     		<fieldset>
                 <legend>${title}</legend>
                 <div class="control-group">

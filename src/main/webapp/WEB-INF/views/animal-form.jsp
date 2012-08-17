@@ -25,7 +25,7 @@
     </jsp:attribute>
     <jsp:body>
 		<h1 id="projectTitle"><c:out value="${project.title}"/></h1>
-		<form:form cssClass="form-horizontal" action="/animals/${animal.id}" commandName="animal" method="PUT">
+		<form:form cssClass="form-horizontal form-bordered" action="/animals/${animal.id}" commandName="animal" method="PUT">
             <fieldset>
             <legend>Update animal details</legend>
 			<div class="control-group">

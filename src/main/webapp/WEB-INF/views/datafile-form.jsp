@@ -38,7 +38,7 @@
             This form allows you to upload animal tracking data in CSV format.
         </p>
 		
-		<form:form cssClass="form-horizontal" action="/projects/${project.id}/datafiles" commandName="dataFile" method="POST" enctype="multipart/form-data">
+		<form:form cssClass="form-horizontal form-bordered" action="/projects/${project.id}/datafiles" commandName="dataFile" method="POST" enctype="multipart/form-data">
             <fieldset>
                 <legend>Add a Data File</legend>
         		<div class="control-group">

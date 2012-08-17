@@ -61,7 +61,7 @@
             </c:otherwise>
         </c:choose>
 		<form:form
-            class="form-horizontal"
+            class="form-horizontal form-bordered"
             method="${method}" action="${action}"
             commandName="project" name="project" enctype="multipart/form-data">
     		<fieldset>

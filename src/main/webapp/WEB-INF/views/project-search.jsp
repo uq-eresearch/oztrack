@@ -38,7 +38,7 @@
     <jsp:body>
 		<h1 id="projectTitle"><c:out value="${project.title}"/></h1>
 
-		<form:form class="form-horizontal" commandName="searchQuery" method="POST" name="searchQuery">
+		<form:form class="form-horizontal form-bordered" commandName="searchQuery" method="POST" name="searchQuery">
             <fieldset>
                 <legend>Search Project Data</legend>
     		    <div class="control-group">

@@ -19,7 +19,7 @@
     </jsp:attribute>
     <jsp:body>
         <h1>Content</h1>
-        <form:form commandName="settings" method="POST" name="settings" cssStyle="">
+        <form:form cssClass="form-vertical" commandName="settings" method="POST" name="settings">
             <fieldset>
             <div class="control-group">
                 <h2>Home text</h2>
