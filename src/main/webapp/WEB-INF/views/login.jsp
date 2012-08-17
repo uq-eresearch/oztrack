@@ -23,7 +23,7 @@
 		<h1>Login</h1>
 		
         <c:if test="${not empty sessionScope['SPRING_SECURITY_LAST_EXCEPTION'].message}">
-        <div class="alert alert-error">
+        <div class="alert alert-error" style="width: 586px;">
             ${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}
         </div>
         </c:if>
