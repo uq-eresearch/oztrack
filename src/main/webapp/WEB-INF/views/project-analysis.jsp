@@ -232,7 +232,7 @@
                                         />
                                     </td>
         	                        <td id="${mapQueryType}">
-                                        <label for="mapQueryTypeSelect-${mapQueryType}"><c:out value="${mapQueryType.displayName}"/></label>
+                                        <label style="margin: 0;" for="mapQueryTypeSelect-${mapQueryType}"><c:out value="${mapQueryType.displayName}"/></label>
                                     </td>
         	                        </tr>
         		                </c:forEach>
