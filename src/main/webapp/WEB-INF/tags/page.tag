@@ -13,11 +13,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     
-    <link rel="stylesheet" type="text/css" href="<c:url value="/css/jquery-ui/jquery-ui-1.8.22.custom.css"/>"/>
+    <link rel="stylesheet" type="text/css" href="<c:url value="/css/jquery-ui/jquery-ui-1.8.23.custom.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/css/bootstrap.css"/>"/>
     
-    <script type="text/javascript" src="<c:url value="/js/jquery/jquery-1.7.2.min.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/js/jquery/jquery-ui-1.8.22.custom.min.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/js/jquery/jquery-1.8.0.min.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/js/jquery/jquery-ui-1.8.23.custom.min.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/js/ckeditor/ckeditor.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/js/ckeditor/adapters/jquery.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/js/bootstrap.js"/>"></script>
