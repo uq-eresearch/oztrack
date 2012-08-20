@@ -6,7 +6,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <c:set var="aafEnabled"><%= OzTrackApplication.getApplicationContext().isAafEnabled() %></c:set>
-<c:set var="title" value="${(user.id != null) ? 'Edit User Profile' : 'Register'}"/>
+<c:set var="title" value="${(user.id != null) ? 'User Profile' : 'Register'}"/>
 <tags:page title="${title}">
     <jsp:attribute name="head">
         <script type="text/javascript"> 
@@ -24,7 +24,7 @@
         <h1>${title}</h1>
 
         <c:if test="${aafEnabled && (user.id == null) && (empty user.aafId)}">
-        <form class="form-vertical form-bordered" style="width: 600px;">
+        <form class="form-vertical form-bordered" style="margin: 18px 0; width: 600px;">
             <fieldset>
                 <legend>Register using AAF</legend>
                 <div class="control-group">
@@ -47,9 +47,9 @@
             commandName="user"
             method="${(user.id == null) ? 'POST' : 'PUT'}"
             action="${(user.id == null) ? '/users' : '/users/'}${(user.id == null) ? '' : user.id}"
-            style="margin: 20px 0; width: 600px;">
+            style="margin: 18px 0; width: 600px;">
             <fieldset>
-                <legend>Register new profile</legend>
+                <legend>${(user.id != null) ? 'Update user profile' : 'Register new profile'}</legend>
                 <c:if test="${aafEnabled && ((not empty user.aafId) || (user.id != null))}">
                 <div class="control-group">
                     <label class="control-label" for="aafId">AAF ID:</label>

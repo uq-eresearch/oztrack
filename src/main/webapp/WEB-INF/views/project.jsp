@@ -315,13 +315,13 @@
         </c:forEach>
         <tr>
             <c:forEach items="${roles}" var="role">
-            <th style="border-bottom: 1px solid #e6e6c0; text-align: center;">${role.pluralTitle}</th>
+            <th style="border-bottom: 1px solid #e6e6c0; text-align: left; padding: 4px;">${role.pluralTitle}</th>
             </c:forEach>
         </tr>
         <tr>
             <c:forEach items="${roles}" var="role">
-            <td style="text-align: center;">
-                <div id="${role.identifier}ProjectUsersNone" style="font-style: italic; margin: 0.3em 0; display: none;">
+            <td>
+                <div id="${role.identifier}ProjectUsersNone" style="margin: 0.3em 4px; color: #999; display: none;">
                     No users with ${role.title} role
                 </div>
                 <ul id="${role.identifier}ProjectUsersList" class="users" style="display: none;">
@@ -334,7 +334,7 @@
         <form
             onsubmit="return false;"
             class="form-inline"
-            style="padding: 10px; background-color: #F6F6E6; border: 0px solid #e6e6c0;
+            style="padding: 10px; background-color: #f6f6e6; border: 0px solid #e6e6c0;
                 -webkit-border-radius: 0px; -moz-border-radius: 0px; -ms-border-radius: 0px; -o-border-radius: 0px; border-radius: 0px;">
             <span style="line-height: 1.8em; margin-right: 10px;">Assign a new user to the project:</span>
             <input id="addProjectUserId" type="hidden" />
