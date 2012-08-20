@@ -187,3 +187,12 @@ To set the `dataDir` property in `application.properties`:
      dataSpaceUsername=
      dataSpacePassword=alternatively,
 
+### Upgrading jQuery UI theme
+
+The jQuery UI theme used on this project is produced using the jQuery UI ThemeRoller
+(http://jqueryui.com/themeroller/). To modify the theme, use the link included in the
+ThemeRoller-generated CSS file to pre-fill settings in the theme creation form.
+
+    grep 'jqueryui\.com\/themeroller\/?' src/main/webapp/css/jquery-ui/jquery-ui-*.custom.css
+
+(The link should look something like this: http://jqueryui.com/themeroller/?ffDefault=Helvetica&fsDefault=13px&cornerRadius=3px&...)
