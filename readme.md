@@ -52,7 +52,13 @@ Install the R packages used by OzTrack, including Rserve:
             "adehabitatMA",
             "maptools",
             "shapefiles",
-            "rgdal"
+            "rgdal",
+            "alphahull",
+            "raster",
+            "plyr",
+            "spatstat",
+            "Grid2Polygons",
+            "RColorBrewer"
         ),
         dependencies=TRUE
     )
@@ -132,13 +138,24 @@ There are further libraries used in this project that are installed by running
 Note that the following command takes a while (eg over 10 minutes) because it
 downloads, compiles, tests, and installs a large number of dependencies.
 
-    install.packages(c("sp"), dependencies=TRUE)
-    install.packages(c("ade4"), dependencies=TRUE)
-    install.packages(c("adehabitatHR"), dependencies=TRUE)
-    install.packages(c("adehabitatMA"), dependencies=TRUE)
-    install.packages(c("maptools"), dependencies=TRUE)
-    install.packages(c("shapefiles"), dependencies=TRUE)
-    install.packages(c("rgdal"), dependencies=TRUE)
+    install.packages(
+        c(
+            "sp",
+            "ade4",
+            "adehabitatHR",
+            "adehabitatMA",
+            "maptools",
+            "shapefiles",
+            "rgdal",
+            "alphahull",
+            "raster",
+            "plyr",
+            "spatstat",
+            "Grid2Polygons",
+            "RColorBrewer"
+        ),
+        dependencies=TRUE
+    )
  
 Note that it may be necessary to add a repos argument (eg `repos="http://cran.cnr.berkeley.edu/"`)
 when executing `install.packages`, but this caused an error when run on CentOS.
