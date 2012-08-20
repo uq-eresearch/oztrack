@@ -47,18 +47,14 @@
                     <label class="control-label" for="identifier">ID</label>
                     <div class="controls">
                         <form:input path="identifier" cssStyle="width: 150px;"/>
-                        <div class="help-block">
-                            <form:errors path="identifier" cssClass="formErrors"/>
-                        </div>
+                        <form:errors path="identifier" element="div" cssClass="help-block formErrors"/>
                     </div>
         	    </div>
                 <div class="control-group">
                     <label class="control-label" for="title">Title</label>
                     <div class="controls">
                         <form:input path="title" cssClass="input-xxlarge"/>
-                        <div class="help-block">
-                            <form:errors path="title" cssClass="formErrors"/>
-                        </div>
+                        <form:errors path="title" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
                 <div class="control-group">
@@ -76,9 +72,7 @@
                             </span>
                             </a>
                         </div>
-                        <div class="help-block">
-                            <form:errors path="bounds" cssClass="formErrors"/>
-                        </div>
+                        <form:errors path="bounds" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
             </fieldset>

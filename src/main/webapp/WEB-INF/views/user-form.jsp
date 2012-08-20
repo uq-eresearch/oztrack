@@ -60,7 +60,7 @@
                             <form:errors element="div" path="aafId" cssClass="formErrors"/>
                         </c:when>
                         <c:otherwise>
-                            <a class="btn btn-primary" style="line-height: 24px;" href="<c:url value="/login/shibboleth"/>">Link profile with AAF ID</a>
+                            <a class="btn" href="<c:url value="/login/shibboleth"/>">Link profile with AAF ID</a>
                         </c:otherwise>
                         </c:choose>
                         <div class="help-inline">
@@ -79,9 +79,7 @@
                             </a>
                         </div>
                         <c:if test="${not empty user.aafId}">
-                        <div class="help-block">
-                            <form:errors path="aafId" cssClass="formErrors"/>
-                        </div>
+                        <form:errors path="aafId" element="div" cssClass="help-block formErrors"/>
                         </c:if>
                     </div>
                 </div>
@@ -99,18 +97,14 @@
                             </span>
                             </a>
                         </div>
-                        <div class="help-block">
-                            <form:errors path="username" cssClass="formErrors"/>
-                        </div>
+                        <form:errors path="username" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="password">Password:</label>
                     <div class="controls">
                         <form:password path="password" id="password"/>
-                        <div class="help-block">
-                            <form:errors path="password" cssClass="formErrors"/>
-                        </div>
+                        <form:errors path="password" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
                 <div class="control-group">
@@ -131,18 +125,14 @@
                     <label class="control-label" for="firstname">First Name:</label>
                     <div class="controls">
                         <form:input path="firstName" id="firstname"/>
-                        <div class="help-block">
-                            <form:errors path="firstName" cssClass="formErrors"/>
-                        </div>
+                        <form:errors path="firstName" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="lastname">Last Name:</label>
                     <div class="controls">
                         <form:input path="lastName" id="lastname"/>
-                        <div class="help-block">
-                            <form:errors element="div" path="lastName" cssClass="formErrors"/>
-                        </div>
+                        <form:errors path="lastName" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
                 <div class="control-group">
@@ -159,18 +149,14 @@
                             </span>
                             </a>
                         </div>
-                        <div class="help-block">
-                            <form:errors element="div" path="organisation" cssClass="formErrors"/>
-                        </div>
+                        <form:errors path="organisation" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="email">Email:</label>
                     <div class="controls">
                         <form:input path="email" id="email"/>
-                        <div class="help-block">
-                            <form:errors element="div" path="email" cssClass="formErrors"/>
-                        </div>
+                        <form:errors path="email" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
                 <div class="control-group">
@@ -187,9 +173,7 @@
                             </span>
                             </a>
                         </div>
-                        <div class="help-block">
-                            <form:errors element="div" path="dataSpaceAgentDescription" cssClass="formErrors"/>
-                        </div>
+                        <form:errors path="dataSpaceAgentDescription" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
             </fieldset>

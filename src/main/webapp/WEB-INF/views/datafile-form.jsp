@@ -61,9 +61,7 @@
                                 </span>
                             </a>
                         </div>
-                        <div class="help-block">
-                		    <form:errors path="fileDescription" cssClass="formErrors"/>
-                        </div>
+            		    <form:errors path="fileDescription" element="div" cssClass="help-block formErrors"/>
                     </div>
         		</div>
         		<div class="control-group">
@@ -97,9 +95,7 @@
                                 </span>
                             </a>
                         </div>
-                        <div class="help-block">
-                		    <form:errors path="file" cssClass="formErrors"/>
-                        </div>
+                        <form:errors path="file" element="div" cssClass="help-block formErrors"/>
                     </div>
         		</div>
     		</fieldset>

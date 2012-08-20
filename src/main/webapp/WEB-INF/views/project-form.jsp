@@ -121,9 +121,7 @@
                     			</span>
                             </a>
             			</div>
-                		<div class="help-block">
-                            <form:errors path="title" cssClass="formErrors"/>
-                        </div>
+                        <form:errors path="title" element="div" cssClass="help-block formErrors"/>
                     </div>
         		</div>
         		<div class="control-group">
@@ -140,9 +138,7 @@
                                 </span>
                             </a>
                         </div>
-                		<div class="help-block">
-                            <form:errors path="description" cssClass="formErrors"/>
-                        </div>
+                        <form:errors path="description" element="div" cssClass="help-block formErrors"/>
                     </div>
         		</div>
 		        <div class="control-group">
@@ -179,9 +175,7 @@
                                 </span>
                             </a>
                         </div>
-                		<div class="help-block">
-                            <form:errors path="spatialCoverageDescr" cssClass="formErrors"/>
-                        </div>
+                        <form:errors path="spatialCoverageDescr" element="div" cssClass="help-block formErrors"/>
                     </div>
         		</div>
             </fieldset>
@@ -191,18 +185,14 @@
             		<label class="control-label" for="speciesCommonName">Common Name</label>
                     <div class="controls">
                 		<form:input path="speciesCommonName" id="speciesCommonName"/>
-            		    <div class="help-block">
-                            <form:errors path="speciesCommonName" cssClass="formErrors"/>
-                        </div>
+                        <form:errors path="speciesCommonName" element="div" cssClass="help-block formErrors"/>
                     </div>
         		</div>
         		<div class="control-group">
             		<label class="control-label" for="speciesScientificName">Scientific Name</label>
                     <div class="controls">
                 		<form:input path="speciesScientificName" id="speciesScientificName"/>
-                		<div class="help-block">
-                            <form:errors path="speciesScientificName" cssClass="formErrors"/>
-                        </div>
+                        <form:errors path="speciesScientificName" element="div" cssClass="help-block formErrors"/>
                     </div>
         		</div>
             </fieldset>
@@ -212,18 +202,14 @@
             		<label class="control-label" for="publicationTitle">Publication Title</label>
                     <div class="controls">
                 		<form:textarea path="publicationTitle" rows="2" cols="40" id="publicationTitle"/>
-                		<div class="help-block">
-                            <form:errors path="publicationTitle" cssClass="formErrors"/>
-                        </div>
+                        <form:errors path="publicationTitle" element="div" cssClass="help-block formErrors"/>
                     </div>
         		</div>
         		<div class="control-group">
             		<label class="control-label" for="publicationUrl">Publication URL</label>
                     <div class="controls">
                 		<form:input path="publicationUrl" id="publicationUrl"/>
-                		<div class="help-block">
-                            <form:errors path="publicationUrl" cssClass="formErrors"/>
-                        </div>
+                        <form:errors path="publicationUrl" element="div" cssClass="help-block formErrors"/>
                     </div>
         		</div>
 		    </fieldset>
@@ -259,9 +245,7 @@
                             <span><b>Rights Statement:</b><br>This should reflect any restrictions around the access rights and use of your data.</span>
                             </a>
                         </div>
-                		<div class="help-block">
-                            <form:errors element="div" path="rightsStatement" cssClass="formErrors"/>
-                        </div>
+                        <form:errors path="rightsStatement" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
         		<c:if test="${project.id != null}">

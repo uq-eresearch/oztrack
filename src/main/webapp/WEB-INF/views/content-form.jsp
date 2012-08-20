@@ -24,27 +24,21 @@
             <div class="control-group">
                 <h2>Home text</h2>
                 <div class="controls">
-                    <p class="help-block">
-                        <form:errors path="homeText" element="div" cssClass="alert alert-error"/>
-                    </p>
+                    <form:errors path="homeText" element="div" cssClass="alert alert-error"/>
                     <form:textarea path="homeText" id="homeText" cssClass="ckeditor"/>
                 </div>
             </div>
             <div class="control-group">
                 <h2>About text</h2>
                 <div class="controls">
-                    <p class="help-block">
-                        <form:errors path="aboutText" element="div" cssClass="alert alert-error"/>
-                    </p>
+                    <form:errors path="aboutText" element="div" cssClass="alert alert-error"/>
                     <form:textarea path="aboutText" id="aboutText" cssClass="ckeditor"/>
                 </div>
             </div>
             <div class="control-group">
                 <h2>Contact text</h2>
                 <div class="controls">
-                    <p class="help-block">
-                        <form:errors path="contactText" element="div" cssClass="alert alert-error"/>
-                    </p>
+                    <form:errors path="contactText" element="div" cssClass="alert alert-error"/>
                     <form:textarea path="contactText" id="contactText" cssClass="ckeditor"/>
                 </div>
             </div>
