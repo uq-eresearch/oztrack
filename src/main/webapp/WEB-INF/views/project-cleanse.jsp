@@ -26,7 +26,6 @@
                 background-image: url(/js/openlayers/theme/default/img/draw_polygon_on.png);
             }
             #animalHeader {
-                font-size: 11px;
             }
             .animalCheckbox {
                 float: left;
@@ -172,10 +171,10 @@
                 </div>
                 <div class="control-group" style="margin-bottom: 9px;">
                     <div style="margin-bottom: 9px; font-weight: bold;">Selection</div>
-                    <p style="font-size: 0.9em; font-style: italic;">
-                        Select points for removal from the project by drawing polygons around them.
+                    <p>
+                        <small style="color: #555;">Select points for removal from the project by drawing polygons around them.
                         Click to start drawing and click again to draw each side of your selected area.
-                        Double-click to finish drawing. You can draw as many polygons as are required.
+                        Double-click to finish drawing. You can draw as many polygons as are required.</small>
                     </p>
                     <div class="controls">
                         <select id="cleanse-select" name="polygon" multiple="multiple" style="display: none;">

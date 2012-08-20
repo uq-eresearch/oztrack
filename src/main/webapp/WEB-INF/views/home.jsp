@@ -9,24 +9,6 @@
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
         <style type="text/css">
-            #welcome {
-                margin: 20px 0 0 0;
-                text-align: justify;
-                background-color:#e6e6c0;
-                padding: 16px 16px 8px 16px;
-                -khtml-border-radius: 10px;
-                -webkit-border-radius: 10px;
-                -moz-border-radius: 10px;
-                -ms-border-radius: 10px;
-                -o-border-radius: 10px;
-                border-radius: 10px;
-            }
-            #welcome h1 {
-                font-size: 16px;
-            }
-            #welcome p {
-                margin: 1em 1em 1em 0;
-            }
             #homeMap {
                 margin: 20px 0 0 0;
                 height: 500px;

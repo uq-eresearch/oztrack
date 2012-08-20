@@ -20,7 +20,6 @@
                 float: left;
                 width: 215px;
                 padding: 0;
-                font-size: 11px;
             }
             #projectMapHelp p {
                 text-align: justify;
@@ -33,7 +32,6 @@
             .animalInfo {
                 float:left;
                 width: 100%;
-                font-size: 11px;
                 margin-left: 8px;
                 margin-right: 8px;
                 margin-top: 0;
@@ -42,10 +40,6 @@
             
             .animalInfo table {
                 margin-top:5px;
-            }
-            
-            .animalInfo .label {
-                width:7em;
             }
             .animalLabel {
                 float: left;
@@ -56,6 +50,9 @@
             }
             .layerInfo {
                 margin: 0.5em 0;
+            }
+            .layerInfoLabel {
+                width: 7em;
             }
             .smallSquare {
                 display:block;
@@ -179,7 +176,7 @@
 		            	</div>
 		            	
 	            		<div class="animalInfoToggle">
-							<a style="" href="#"><span class="ui-icon ui-icon-triangle-1-s"></span></a>
+							<a href="#"><span class="ui-icon ui-icon-triangle-1-s"></span></a>
 	            		</div>
 	
 		            	<div class="zoom">
@@ -220,7 +217,7 @@
                     <div class="control-group" style="margin-bottom: 9px;">
                         <div style="margin-bottom: 9px; font-weight: bold;">Layer Type</div>
                         <div class="controls">
-        					<table class="mapQueryType" style="margin-top:5px;">
+        					<table class="mapQueryType">
         		                <c:forEach items="${mapQueryTypeList}" var="mapQueryType">
         	                        <tr>
         	                        <td style="padding: 0 5px; vertical-align: top;">

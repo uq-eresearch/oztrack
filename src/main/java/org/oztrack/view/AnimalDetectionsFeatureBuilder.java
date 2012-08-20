@@ -27,23 +27,27 @@ public class AnimalDetectionsFeatureBuilder {
     
     private final GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
     private final List<PositionFix> positionFixList;
+    private final boolean includeDeleted;
     
-    public AnimalDetectionsFeatureBuilder(List<PositionFix> positionFixList) {
+    public AnimalDetectionsFeatureBuilder(List<PositionFix> positionFixList, boolean includeDeleted) {
         this.positionFixList = positionFixList;
+        this.includeDeleted = includeDeleted;
     }
     
     public SimpleFeatureCollection buildFeatureCollection() {
-        List<AnimalDetections> animalDetectionsList = buildAnimalDetectionsList(positionFixList);
+        List<AnimalDetections> animalDetectionsList = buildAnimalDetectionsList();
         SimpleFeatureType featureType = buildFeatureType(4326);
         SimpleFeatureCollection featureCollection = FeatureCollections.newCollection();
         for (AnimalDetections animalDetections : animalDetectionsList) {
             featureCollection.add(buildFeature(featureType, animalDetections, false));
-            featureCollection.add(buildFeature(featureType, animalDetections, true));
+            if (includeDeleted) {
+                featureCollection.add(buildFeature(featureType, animalDetections, true));
+            }
         }
         return featureCollection;
     }
 
-    private static List<AnimalDetections> buildAnimalDetectionsList(List<PositionFix> positionFixList) {
+    private List<AnimalDetections> buildAnimalDetectionsList() {
         List<AnimalDetections> animalDetectionsList = new ArrayList<AnimalDetections>();
         AnimalDetections animalDetections = null;
         for (PositionFix positionFix : positionFixList) {

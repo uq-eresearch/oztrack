@@ -419,14 +419,14 @@ function createAnalysisMap(div, options) {
                     
                     if ((layerName.indexOf("Detections") == -1) && (layerName.indexOf("Start and End") == -1)) {
                         tableRowsHtml =
-                            "<table><tr><td class='label'>Date From:</td><td>" + feature.attributes.fromDate + "</td></tr>"
-                            + "<tr><td class='label'>Date To:</td><td>" + feature.attributes.toDate + "</td></tr>";
+                            "<table><tr><td class='layerInfoLabel'>Date From:</td><td>" + feature.attributes.fromDate + "</td></tr>"
+                            + "<tr><td class='layerInfoLabel'>Date To:</td><td>" + feature.attributes.toDate + "</td></tr>";
                     }
                     
                     var distanceRowHtml = "";
                     if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.LineString") {
                         var distance = feature.geometry.getGeodesicLength(map.projection)/1000;
-                        distanceRowHtml = "<tr><td class='label'>Min Distance: </td><td>" + Math.round(distance*1000)/1000 + "km </td></tr>";
+                        distanceRowHtml = "<tr><td class='layerInfoLabel'>Min Distance: </td><td>" + Math.round(distance*1000)/1000 + "km </td></tr>";
                     }
                     
                     var html = layerNameHtml + tableRowsHtml + distanceRowHtml + "</table>";
@@ -521,19 +521,19 @@ function createAnalysisMap(div, options) {
                 var html = "&nbsp;&nbsp;<b>" + layerName + "</b>"; 
                 html += '<table>';
                 if (params.percent) {
-                    html += '<tr><td class="label">Percent: </td><td>' + params.percent + '%</td></tr>';
+                    html += '<tr><td class="layerInfoLabel">Percent: </td><td>' + params.percent + '%</td></tr>';
                 }
                 if (params.h) {
-                    html += '<tr><td class="label">h value: </td><td>' + params.h + '</td></tr>';
+                    html += '<tr><td class="layerInfoLabel">h value: </td><td>' + params.h + '</td></tr>';
                 }
                 if (params.alpha) {
-                    html += '<tr><td class="label">alpha: </td><td>' + params.alpha + '</td></tr>';
+                    html += '<tr><td class="layerInfoLabel">alpha: </td><td>' + params.alpha + '</td></tr>';
                 }
                 if (params.gridSize) {
-                    html += '<tr><td class="label">Grid size (m): </td><td>' + params.gridSize + '</td></tr>';
+                    html += '<tr><td class="layerInfoLabel">Grid size (m): </td><td>' + params.gridSize + '</td></tr>';
                 }
-                html += '<tr><td class="label">SRS: </td><td>' + params.srs + '</td></tr>';
-                html += '<tr><td class="label">Area: </td><td>' + Math.round(area*1000)/1000 + ' km<sup>2</sup></td></tr>';
+                html += '<tr><td class="layerInfoLabel">SRS: </td><td>' + params.srs + '</td></tr>';
+                html += '<tr><td class="layerInfoLabel">Area: </td><td>' + Math.round(area*1000)/1000 + ' km<sup>2</sup></td></tr>';
                 html += '</table>';
                 var urlWithParams = url;
                 var paramString = OpenLayers.Util.getParameterString(params);

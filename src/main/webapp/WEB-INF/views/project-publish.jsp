@@ -195,15 +195,15 @@
 		</table>
 		
 		<div>
-			<a class="btn" href="<c:url value="/projects/${project.id}"/>">Cancel</a>
-            &nbsp;
 			<c:if test="${!empty project.firstDetectionDate}">
 				<a class="btn btn-primary" href="#" onclick="publishToDataSpace(<c:out value="${project.id}"/>, 'publish'); return false;"><c:out value="${publishButtonText}"/></a>
+                &nbsp;
 			</c:if>
-            &nbsp;
 			<c:if test="${!empty project.dataSpaceURI}">
 				<a class="btn btn-primary" href="#" onclick="publishToDataSpace(<c:out value="${project.id}"/>, 'delete'); return false;">Delete from UQ DataSpace</a>
+                &nbsp;
 			</c:if>
+			<a class="btn" href="<c:url value="/projects/${project.id}"/>">Cancel</a>
         </div>
     </jsp:body>
 </tags:page>

@@ -5,13 +5,15 @@
 @btnPrimaryBackground: #899e47;
 
 h1 {
-  color: black;
-  font-size: 1.6em;
+  color: @textColor;
+  font-size: 20px;
+  line-height: @baseLineHeight * 1.8;
 }
 
 h2 {
-  color:#ef9800;
-  font-size: 1.3em;
+  color: #ef9800;
+  font-size: 17px;
+  line-height: @baseLineHeight * 1.6;
 }
 
 a {
@@ -113,17 +115,17 @@ input[type="color"],
   background-image: url('../img/header_logo.gif');
   background-repeat: no-repeat;
   background-position: center center;
-  width:300px;
+  width: 300px;
   height: 140px;
-  float:left;
+  float: left;
 }
 
 #header_right {
   background-image: url('../img/header_croc.jpg');
   background-repeat: no-repeat;
   background-position: left;
-  margin-left:300px;
-  height:140px;
+  margin-left: 300px;
+  height: 140px;
 }   
 
 #login {
@@ -151,9 +153,7 @@ input[type="color"],
 }   
 
 #crumbs {
-  background-color:#fbfee9;
-  font-size: 11px;
-  padding-bottom: 0.8em;
+  padding-bottom: 10px;
   margin: 10px 20px 20px 20px;
   border-bottom: 1px solid #e8e8e8;
 }
@@ -183,6 +183,22 @@ input[type="color"],
 #main {
   margin: 20px 0 20px 0;
   background-color: #fbfee9;
+}
+
+
+#welcome {
+  margin: 20px 0 0 0;
+  text-align: justify;
+  background-color: #e6e6c0;
+  padding: 16px 16px 8px 16px;
+  .border-radius(10px);
+}
+
+#welcome h1 {
+}
+
+#welcome p {
+  margin: 1em 1em 1em 0;
 }
 
 #footer {
@@ -233,12 +249,12 @@ input[type="color"],
 #navMenu a,
 #navMenu a:link,
 #navMenu a:visited {
-  color:#ffffff;
+  color: #ffffff;
 }
 
 #navMenu a:hover,
 #navMenu a:active {
-  color:#f7a700;
+  color: #f7a700;
 }
 
 #navMenu ul {
@@ -262,8 +278,8 @@ input[type="color"],
 #crumbs a,
 #crumbs a:link,
 #crumbs a:visited {
-  color:#263f00;
-  text-decoration:none;
+  color: #263f00;
+  text-decoration: none;
 }
 
 #crumbs a:hover,
@@ -283,15 +299,15 @@ input[type="color"],
 /* sidebar */
 
 .sidebarMenu ul {
-  margin-left:0px;
-  margin-right:0px;
-  margin-top:0px;
-  margin-bottom:30px;
-  padding:0px;
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-top: 0px;
+  margin-bottom: 30px;
+  padding: 0px;
 }
 
 .sidebarMenu ul li ul {
-  padding-left:10px;
+  padding-left: 10px;
 }
 
 .sidebarMenu ul li ul li {
@@ -308,19 +324,18 @@ input[type="color"],
   padding-left: 14px;
   padding-top: 0.4em;
   padding-bottom: 0.4em;
-  border-bottom: dashed 1px black;
+  border-bottom: dashed 1px @grayLight;
 }
 
 .sidebarMenu li a {
-  text-decoration:none;
-//  font-size: 11px;
+  text-decoration: none;
   font-weight: bold;
-  color:black;
+  color: @gray;
 }
 
 .sidebarMenu li a:active,
 .sidebarMenu li a:hover {
-  color:#ef9800;
+  color: #ef9800;
 }
 
 /* forms */
@@ -398,10 +413,9 @@ a.info ul {
 /* action boxes */
 
 div.actions {
-  font-size: 11px;
   margin-top: 1.5em;
   padding: 0px 10px;
-  background-color:#f6f6e6;
+  background-color: #f6f6e6;
   border: 1px solid transparent;
   border-top: 1px solid #e6e6c0;
 }
@@ -463,9 +477,8 @@ ul.users li.reader {
 /* maps */
 
 .mapTool {
-  background-color:#e6e6c0;
-  font-size: 11px;
-  position:relative;
+  background-color: #e6e6c0;
+  position: relative;
   padding: 8px;   
   -khtml-border-radius: 10px;
   -webkit-border-radius: 10px;
@@ -562,10 +575,10 @@ div.olControlPanel {
 
 .zoomButtonItemInactive {
   background-image: url("../img/zoomButton.png") !important;
-  background-position:center !important;
-  background-repeat:no-repeat !important;
-  height:22px !important;
-  float:right !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  height: 22px !important;
+  float: right !important;
 }   
 
 .olControlLoadingPanel {

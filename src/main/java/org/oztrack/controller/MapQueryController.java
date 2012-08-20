@@ -144,7 +144,8 @@ public class MapQueryController {
             }
             case POINTS: {
                 List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-                featureCollection = new AnimalDetectionsFeatureBuilder(positionFixList).buildFeatureCollection();
+                Boolean includeDeleted = (searchQuery.getIncludeDeleted() != null) && searchQuery.getIncludeDeleted().booleanValue();
+                featureCollection = new AnimalDetectionsFeatureBuilder(positionFixList, includeDeleted).buildFeatureCollection();
                 break;
             }
             case LINES: {

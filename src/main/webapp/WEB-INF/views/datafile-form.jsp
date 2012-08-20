@@ -9,9 +9,6 @@
         <style type="text/css">
             pre.datafile {
                 width: 600px;
-                font-size: 11px;
-                border: 1px solid #333;
-                padding: 0.5em;
                 background: white;
             }
         </style>
@@ -113,7 +110,7 @@
 
         <h2>Example data files</h2>
 
-Data file containing a single animal:        
+        <p>Data file containing a single animal:</p>        
 <pre class="datafile">
 date,time,latitude,longitude
 30/03/2010,5:46:35,-17.557141,146.089866
@@ -123,7 +120,7 @@ date,time,latitude,longitude
 2/04/2010,22:17:23,-17.559016,146.087858
 </pre>
 
-Data file containing several animals (note the extra <tt>ANIMALID</tt> column):        
+        <p>Data file containing several animals (note the extra <tt>ANIMALID</tt> column):</p>        
 <pre class="datafile">
 ANIMALID,DATE,LONGITUDE,LATITUDE
 Ernie,5/08/2009 11:16:00,142.17893,-12.38277
