@@ -150,7 +150,7 @@
             <div style="padding: 1em 10px;">
                 <form id="cleanseForm" class="form-veritcal" onsubmit="return false;">
                 <fieldset>
-                <div class="control-group">
+                <div class="control-group" style="margin-bottom: 9px;">
                     <div style="margin-bottom: 9px; font-weight: bold;">Animals</div>
                     <div id="animalHeader" class="controls">
                     <c:forEach items="${projectAnimalsList}" var="animal">
@@ -170,7 +170,7 @@
                     </c:forEach>
                     </div>
                 </div>
-                <div class="control-group">
+                <div class="control-group" style="margin-bottom: 9px;">
                     <div style="margin-bottom: 9px; font-weight: bold;">Selection</div>
                     <p style="font-size: 0.9em; font-style: italic;">
                         Select points for removal from the project by drawing polygons around them.

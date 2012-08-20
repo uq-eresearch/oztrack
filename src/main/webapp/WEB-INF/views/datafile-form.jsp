@@ -68,7 +68,7 @@
             		<label class="control-label" for="timeConversion">Convert to local time?</label>
                     <div class="controls">
                 		<form:checkbox path="localTimeConversionRequired" id="localTimeConversionRequired" cssClass="checkbox"/>
-                		Local time is GMT +<form:input path="localTimeConversionHours" cssClass="shortInput" cssStyle="width: 30px;"/> hours.
+                		Local time is GMT +<form:input path="localTimeConversionHours" cssClass="input-mini" cssStyle="width: 30px;"/> hours.
                         <div class="help-inline">
                             <a class=info href="#">
                                 <img src="<c:url value="/img/help.png"/>" border="0">

@@ -199,25 +199,25 @@
 	        
 		    <div id="homeRangeCalculatorPanel">
 		        
-		        <form class="form-vertical" method="POST" id="mapToolForm" onsubmit="analysisMap.addProjectMapLayer(); return false;">
+		        <form id="mapToolForm" class="form-vertical" method="POST" onsubmit="analysisMap.addProjectMapLayer(); return false;">
                     <input id="projectId" type="hidden" value="${project.id}"/>
                     <fieldset>
-                    <div class="control-group">
+                    <div class="control-group" style="margin-bottom: 9px;">
         	            <div style="margin-bottom: 9px; font-weight: bold;">Date Range</div>
                         <div class="controls">
             	            <table>
             		            <tr>
             		                <td style="padding-right: 5px;"><label class="control-label" for="fromDatePicker">From</label></td>
-            		                <td><input id="fromDatepicker" class="input-medium"/></td>
+            		                <td><input id="fromDatepicker" type="text" class="input-medium" style="margin: 0;"/></td>
             		            </tr>
             		            <tr>
             		                <td style="padding-right: 5px;"><label class="control-label" for="toDatePicker">To</label></td>
-            		                <td><input id="toDatepicker" class="input-medium"/></td>
+            		                <td><input id="toDatepicker" type="text" class="input-medium" style="margin: 0;"/></td>
             		            </tr>
             	            </table>
                         </div>
 					</div>
-                    <div class="control-group">
+                    <div class="control-group" style="margin-bottom: 9px;">
                         <div style="margin-bottom: 9px; font-weight: bold;">Layer Type</div>
                         <div class="controls">
         					<table class="mapQueryType" style="margin-top:5px;">
@@ -240,24 +240,24 @@
                             <table id="paramTable" style="display: none; margin-left:5px;">
                                 <tr id="percentRow">
                                     <td>percent:</td>
-                                    <td><input id="percent" name="percent" class="shortInputBox" style="width: 4em; text-align: right;"/></td>
+                                    <td><input id="percent" name="percent" type="text" class="input-mini" style="text-align: right;"/></td>
                                 </tr>
                                 <tr id="hRow">
                                     <td>h value:</td>
-                                    <td><input id="h" name="h" class="shortInputBox" style="width: 4em; text-align: right;"/></td>
+                                    <td><input id="h" name="h" type="text" class="input-mini" style="text-align: right;"/></td>
                                 </tr>
                                 <tr id="alphaRow">
                                     <td>alpha:</td>
-                                    <td><input id="alpha" name="alpha" class="shortInputBox" style="width: 4em; text-align: right;"/></td>
+                                    <td><input id="alpha" name="alpha" type="text" class="input-mini" style="text-align: right;"/></td>
                                 </tr>
                                 <tr id="gridSizeRow">
                                     <td>grid size (m):</td>
-                                    <td><input id="gridSize" name="gridSize" class="shortInputBox" style="width: 4em; text-align: right;"/></td>
+                                    <td><input id="gridSize" name="gridSize" type="text" class="input-mini" style="text-align: right;"/></td>
                                 </tr>
                             </table>
                         </div>
                     </div>
-                    <div class="control-group">
+                    <div class="control-group" style="margin-bottom: 9px;">
     					<div style="margin-bottom: 9px; font-weight: bold;">Spatial Reference System (SRS)</div>
                         <div class="controls">
         					<!--
@@ -266,9 +266,9 @@
                                 Link: http://spatialreference.org/ref/epsg/3577/
                             -->
                             <div>
-                                <input id="projectionCode" class="shortInputBox" value="EPSG:3577"/>
+                                <input id="projectionCode" type="text" class="input-medium" value="EPSG:3577"/>
                             </div>
-                            <div style="margin-top: 9px;">
+                            <div>
                                 <a href="javascript:void(0)" onclick="srsSelector.showDialog();">Select Australian SRS</a><br>
             					<a href="javascript:void(0)" onclick="window.open('http://spatialreference.org/ref/epsg', 'popup', 'width=600,height=400,scrollbars=yes');">Search for international SRS codes</a>
                             </div>

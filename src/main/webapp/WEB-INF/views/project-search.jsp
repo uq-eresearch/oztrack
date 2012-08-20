@@ -56,7 +56,7 @@
     		    <div class="control-group">
     			    <label class="control-label" for="animalListSelect">Animal</label>
                     <div class="controls">
-        			    <form:select id="animalListSelect" path="animalList" items="${projectAnimalsList}" itemLabel="animalName" itemValue="id" multiple="true" cssClass="shortInputBox"/>
+        			    <form:select id="animalListSelect" path="animalList" items="${projectAnimalsList}" itemLabel="animalName" itemValue="id" multiple="true"/>
                     </div>
     		    </div>
     		    <div class="control-group">
