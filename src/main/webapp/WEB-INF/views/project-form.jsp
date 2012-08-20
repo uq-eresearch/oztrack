@@ -218,15 +218,15 @@
 		        <div class="control-group">
                     <label class="control-label" for="publicationUrl">Access Rights</label>
                     <div class="controls">
-                        <label for="isGlobalTrue" style="font-weight: bold; color: green;">
-                            <form:radiobutton id="isGlobalTrue" cssStyle="margin: 2px 0 5px 0;" path="isGlobal" value="true"/>
+                        <label for="isGlobalTrue" class="radio" style="font-weight: bold; color: green;">
+                            <form:radiobutton id="isGlobalTrue" path="isGlobal" value="true"/>
                             Open Access
                         </label>
                         <div style="margin: 0.5em 0;">
                             Data in this project will be made publicly available via OzTrack.
                         </div>
-                        <label for="isGlobalFalse" style="font-weight: bold; color: red;">
-                            <form:radiobutton id="isGlobalFalse" cssStyle="margin: 2px 0 5px 0;" path="isGlobal" value="false"/>
+                        <label for="isGlobalFalse" class="radio" style="font-weight: bold; color: red;">
+                            <form:radiobutton id="isGlobalFalse" path="isGlobal" value="false"/>
                             Restricted Access
                         </label>
                         <div style="margin: 0.5em 0;">
