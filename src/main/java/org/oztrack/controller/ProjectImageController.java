@@ -127,7 +127,7 @@ public class ProjectImageController {
             switch (mapQueryType) {
                 case POINTS: {
                     List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-                    featureCollection = new AnimalDetectionsFeatureBuilder(positionFixList).buildFeatureCollection();
+                    featureCollection = new AnimalDetectionsFeatureBuilder(positionFixList, true).buildFeatureCollection();
                     style = buildDetectionsStyle(project.getAnimals());
                     break;
                 }
