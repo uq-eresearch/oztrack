@@ -24,7 +24,6 @@
             .home-popup {
                 margin-top: 0;
                 padding: 0 10px;
-                font-size: 11px;
             }
             .home-popup-attr-name {
                 font-weight: bold;

@@ -74,6 +74,6 @@
 
         <div style="clear: both;"></div>
 
-        <p style="font-size: 12px; margin: 1em 0;">Don't have an account yet? <a href="<c:url value="/users/new"/>">Register as a new user</a></p>
+        <p style="margin: 1em 0;">Don't have an account yet? <a href="<c:url value="/users/new"/>">Register as a new user</a></p>
     </jsp:body>
 </tags:page>
