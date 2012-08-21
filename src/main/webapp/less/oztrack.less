@@ -3,7 +3,8 @@
 @tableBackgroundAccent: #eeeec8;
 @tableBackgroundHover: #e6e6c0;
 @btnPrimaryBackground: #899e47;
-@formBorderedBackground: #e6e6c0;
+@formBorderedBorder: #cacaca;
+@formBorderedBackground: #f0f0d0;
 @formActionsBackground: #ddb;
 
 h1 {
@@ -65,6 +66,7 @@ legend {
 }
 
 .form-bordered {
+  border: 1px solid @formBorderedBorder;
   .border-radius(10px);
   padding: 18px 18px 0 18px;
   background-color: @formBorderedBackground;
@@ -75,7 +77,7 @@ legend {
 }
 
 .form-actions {
-  border-top: 1px solid #cacaca;
+  border-top: 1px solid @formBorderedBorder;
 }
 
 textarea,
