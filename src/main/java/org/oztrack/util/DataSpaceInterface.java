@@ -36,9 +36,7 @@ import org.xml.sax.InputSource;
 
 public class DataSpaceInterface {
     protected final Log logger = LogFactory.getLog(getClass());
-    // TODO: DAO should not appear in this layer.
     private ProjectDao projectDao;
-    // TODO: DAO should not appear in this layer.
     private UserDao userDao;
     private String dataSpaceURL;
     private String dataSpaceResponse;

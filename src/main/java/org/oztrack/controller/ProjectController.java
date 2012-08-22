@@ -111,7 +111,8 @@ public class ProjectController {
             DataSpaceInterface dsi = new DataSpaceInterface(projectDao, userDao);
             if (action.equals("publish")) {
                 dsi.updateDataSpace(project);
-            } else if (action.equals("delete")) {
+            }
+            else if (action.equals("delete")) {
                 dsi.deleteFromDataSpace(project);
             }
             project = projectDao.getProjectById(project.getId());
