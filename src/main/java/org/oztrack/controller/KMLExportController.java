@@ -1,6 +1,7 @@
 package org.oztrack.controller;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -8,13 +9,13 @@ import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Animal;
+import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.view.KMLExportView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -47,9 +48,8 @@ public class KMLExportController {
     }
 
     @RequestMapping(value="/exportKML", method=RequestMethod.GET)
-    @PreAuthorize("hasPermission(#project, 'read')")
+    @PreAuthorize("#project.global or hasPermission(#project, 'read')")
     public View handleRequest(
-        Model model,
         @ModelAttribute(value="project") Project project,
         @RequestParam(value="animalId", required=false) String animalId
     ) throws Exception {
@@ -67,7 +67,7 @@ public class KMLExportController {
         else {
             logger.debug("no projectId or queryType");
         }
-        model.addAttribute("searchQuery", searchQuery);
-        return new KMLExportView(positionFixDao);
+        List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
+        return new KMLExportView(project, positionFixList);
     }
 }

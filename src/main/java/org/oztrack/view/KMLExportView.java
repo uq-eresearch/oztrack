@@ -14,19 +14,19 @@ import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.kml.KML;
 import org.geotools.kml.KMLConfiguration;
 import org.geotools.xml.Encoder;
-import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.PositionFix;
-import org.oztrack.data.model.SearchQuery;
+import org.oztrack.data.model.Project;
 import org.springframework.web.servlet.view.AbstractView;
 
 import com.vividsolutions.jts.geom.Point;
 
 public class KMLExportView extends AbstractView{
-    // TODO: DAO should not appear in this layer.
-    private PositionFixDao positionFixDao;
+    private final Project project;
+    private final List<PositionFix> positionFixList;
 
-    public KMLExportView(PositionFixDao positionFixDao) {
-        this.positionFixDao = positionFixDao;
+    public KMLExportView(Project project, List<PositionFix> positionFixList) {
+        this.project = project;
+        this.positionFixList = positionFixList;
     }
 	
 	@Override
@@ -35,7 +35,6 @@ public class KMLExportView extends AbstractView{
 		HttpServletRequest request,
 		HttpServletResponse response
 	) throws Exception {
-		SearchQuery searchQuery;
         SimpleFeatureCollection collection = FeatureCollections.newCollection();
         Encoder encoder = new Encoder(new KMLConfiguration());
         encoder.setIndenting(true);
@@ -45,17 +44,13 @@ public class KMLExportView extends AbstractView{
 		response.setContentType("application/xml");
 		response.setCharacterEncoding("UTF-8");
 				
-        if (model != null) {
-            searchQuery = (SearchQuery) model.get("searchQuery");
-            if (searchQuery.getProject() != null) {
-            	collection = this.buildPointsFeatureCollection(searchQuery);
-            	encoder.encode(collection,KML.kml, response.getOutputStream());
-            }    
-        }	
+        if (project != null) {
+        	collection = this.buildPointsFeatureCollection();
+        	encoder.encode(collection,KML.kml, response.getOutputStream());
+        }    
 	}
 	
-    private SimpleFeatureCollection buildPointsFeatureCollection(SearchQuery searchQuery) {
-        List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
+    private SimpleFeatureCollection buildPointsFeatureCollection() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy H:m:s");
         int count = 1;
 
