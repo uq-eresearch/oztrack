@@ -16,7 +16,6 @@ public interface PositionFixDao {
     Page<PositionFix> getPage(SearchQuery searchQuery, int offset, int nbrObjectsPerPage);
 
     List<PositionFix> getProjectPositionFixList(SearchQuery searchQuery);
-    List<PositionFix> queryProjectPositionFixes(SearchQuery searchQuery);
    
     Date getProjectFirstDetectionDate(Project project); //not used
     Date getProjectLastDetectionDate(Project project); // not used

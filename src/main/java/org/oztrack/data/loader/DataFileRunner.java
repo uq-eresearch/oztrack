@@ -43,7 +43,6 @@ public class DataFileRunner {
 
         PositionFixDaoImpl positionFixDao = new PositionFixDaoImpl();
         positionFixDao.setEntityManger(entityManager);
-        positionFixDao.setDataSource(dataSource);
         
         JdbcAccessImpl jdbcAccess = new JdbcAccessImpl();
         jdbcAccess.setDataSource(dataSource);

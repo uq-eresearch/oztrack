@@ -14,22 +14,20 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
-import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.PositionFix;
-import org.oztrack.data.model.SearchQuery;
+import org.oztrack.data.model.Project;
 import org.oztrack.data.model.types.ProjectType;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
 public class SearchQueryXLSView extends AbstractExcelView {
-    public static final String SEARCH_QUERY_KEY = "searchQuery";
-    
     protected final Log logger = LogFactory.getLog(getClass());
+    
+    private Project project;
+    private List<PositionFix> positionFixes;
 
-    // TODO: DAO should not appear in this layer.
-    private PositionFixDao positionFixDao;
-
-    public SearchQueryXLSView(PositionFixDao positionFixDao) {
-        this.positionFixDao = positionFixDao;
+    public SearchQueryXLSView(Project project, List<PositionFix> positionFixes) {
+        this.project = project;
+        this.positionFixes = positionFixes;
     }
 
     @Override
@@ -39,18 +37,15 @@ public class SearchQueryXLSView extends AbstractExcelView {
         HttpServletRequest request,
         HttpServletResponse response
     ) throws Exception {
-        SearchQuery searchQuery = (SearchQuery) model.get(SEARCH_QUERY_KEY);
-        if (searchQuery.getProject().getProjectType() != ProjectType.GPS) {
+        if (project.getProjectType() != ProjectType.GPS) {
             throw new IllegalArgumentException("Can only export " + ProjectType.GPS.getDisplayName() + " projects");
         }
-        createPositionFixSheet(workbook, searchQuery);
+        createPositionFixSheet(workbook);
         response.setHeader("Content-Disposition", "attachment; filename=\"export.xls\"");
     }
 
 
-    protected void createPositionFixSheet(HSSFWorkbook workbook, SearchQuery searchQuery) {
-        List<PositionFix> positionFixes = positionFixDao.queryProjectPositionFixes(searchQuery);
-
+    protected void createPositionFixSheet(HSSFWorkbook workbook) {
         HSSFSheet sheet = workbook.createSheet("Sheet");
 
         int rowNum = 0;

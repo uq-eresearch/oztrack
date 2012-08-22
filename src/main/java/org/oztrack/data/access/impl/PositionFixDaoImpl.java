@@ -7,7 +7,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,10 +16,6 @@ import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,18 +28,11 @@ public class PositionFixDaoImpl implements PositionFixDao {
 
     private EntityManager em;
     
-    private DataSource dataSource;
-
     @PersistenceContext
     public void setEntityManger(EntityManager em) {
         this.em = em;
     }
     
-    @Autowired
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
     @Override
     public Page<PositionFix> getPage(SearchQuery searchQuery, int offset, int nbrObjectsPerPage) {
        try {
@@ -120,55 +108,6 @@ public class PositionFixDaoImpl implements PositionFixDao {
         return resultList;
     }
     
-    @Override
-    public List<PositionFix> queryProjectPositionFixes(SearchQuery searchQuery) {
-
-        Long projectId = searchQuery.getProject().getId();
-        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-        mapSqlParameterSource.addValue("projectId", projectId);
-
-        String sql = "SELECT o.animal_id "
-                   +  ",o.detectiontime "
-                   +  ",o.latitude "
-                   +  ",o.longitude "
-                   +  "from PositionFix o "
-                   +  ", datafile d "
-                   +  "where o.deleted = false "
-                   +  "and o.datafile_id = d.id "
-                   +  "and d.project_id = :projectId ";
-                     //"limit 20";
-
-        if (searchQuery.getFromDate() != null) {
-            sql = sql + "and o.detectionTime >= :fromDate ";
-            mapSqlParameterSource.addValue("fromDate", searchQuery.getFromDate());
-        }
-        if (searchQuery.getToDate() != null) {
-            sql = sql + "and o.detectionTime <= :toDate ";
-            mapSqlParameterSource.addValue("toDate", searchQuery.getToDate());
-        }
-        if (searchQuery.getAnimalList() != null) {
-            String animalClause = "and o.animal_id in (";
-            for (int i=0; i < searchQuery.getAnimalList().size(); i++) {
-                String thisAnimal = "animalId" + i;
-                animalClause = animalClause + ":" + thisAnimal + ",";
-                mapSqlParameterSource.addValue(thisAnimal,searchQuery.getAnimalList().get(i).getId());
-            }
-            animalClause = animalClause.substring(0,animalClause.length()-1) + ")";
-            sql = sql + animalClause;
-        }
-
-        String orderBy = " order by o.animal.id, o.detectionTime ";
-        sql = sql + orderBy;
-
-        logger.debug("Position fix jdbc query: " + sql);
-
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-        PositionFixRowMapper positionFixRowMapper = new PositionFixRowMapper();
-        List<PositionFix> result = namedParameterJdbcTemplate.query(sql, mapSqlParameterSource, positionFixRowMapper );
-        return result;
-    }
-
     @Override
     public Date getProjectFirstDetectionDate(Project project) {
     	

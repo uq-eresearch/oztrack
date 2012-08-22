@@ -116,8 +116,8 @@ public class SearchController {
     @RequestMapping(value="/projects/{id}/export", method=RequestMethod.GET)
     @PreAuthorize("#searchQuery.project.global or hasPermission(#searchQuery.project, 'read')")
     public View handleRequest(@ModelAttribute(value="searchQuery") SearchQuery searchQuery, Model model) throws Exception {
-        model.addAttribute(SearchQueryXLSView.SEARCH_QUERY_KEY, searchQuery);
-        return new SearchQueryXLSView(positionFixDao);
+        List<PositionFix> positionFixes = positionFixDao.getProjectPositionFixList(searchQuery);
+        return new SearchQueryXLSView(searchQuery.getProject(), positionFixes);
     }
     
     private String showFormInternal(
