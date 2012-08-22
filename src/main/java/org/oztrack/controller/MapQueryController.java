@@ -1,5 +1,6 @@
 package org.oztrack.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -28,6 +29,7 @@ import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.data.model.types.MapQueryType;
+import org.oztrack.util.RServeInterface;
 import org.oztrack.view.AnimalDetectionsFeatureBuilder;
 import org.oztrack.view.AnimalStartEndFeatureBuilder;
 import org.oztrack.view.AnimalTrajectoryFeatureBuilder;
@@ -123,7 +125,9 @@ public class MapQueryController {
     @RequestMapping(value="/mapQueryKML", method=RequestMethod.GET)
     @PreAuthorize("#searchQuery.project.global or hasPermission(#searchQuery.project, 'read')")
     public View handleKMLQuery(@ModelAttribute(value="searchQuery") SearchQuery searchQuery) throws Exception {
-        return new KMLMapQueryView(positionFixDao);
+        RServeInterface rServeInterface = new RServeInterface(searchQuery, positionFixDao);
+        File kmlFile = rServeInterface.createKml();
+        return new KMLMapQueryView(kmlFile, searchQuery);
     }
     
     @RequestMapping(value="/mapQueryWFS", method=RequestMethod.POST)
