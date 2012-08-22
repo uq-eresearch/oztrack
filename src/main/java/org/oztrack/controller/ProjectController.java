@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -21,6 +20,8 @@ import org.oztrack.data.model.Project;
 import org.oztrack.data.model.ProjectUser;
 import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.Role;
+import org.oztrack.error.DataSpaceInterfaceException;
+import org.oztrack.util.DataSpaceInterface;
 import org.oztrack.validator.ProjectFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -105,14 +106,23 @@ public class ProjectController {
         @ModelAttribute(value="project") Project project,
         @RequestParam(value="action", required=false) String action
     ) throws Exception {
-        Map <String, Object> projectActionMap = new HashMap<String, Object>();
-        projectActionMap.put("project", project);
-        projectActionMap.put("action", action);
+        String errorMessage = "";
+        try {
+            DataSpaceInterface dsi = new DataSpaceInterface(projectDao, userDao);
+            if (action.equals("publish")) {
+                dsi.updateDataSpace(project);
+            } else if (action.equals("delete")) {
+                dsi.deleteFromDataSpace(project);
+            }
+            project = projectDao.getProjectById(project.getId());
+
+        }
+        catch (DataSpaceInterfaceException e) {
+            errorMessage = e.getMessage();
+        }
         
-        // TODO: DAOs should not be passed to view layer.
-        model.addAttribute("projectDao", projectDao);
-        model.addAttribute("userDao", userDao);
-        model.addAttribute("projectActionMap", projectActionMap);
+        model.addAttribute("project", project);
+        model.addAttribute("errorMessage", errorMessage);
         return "java_DataSpaceInterface";
     }
 
