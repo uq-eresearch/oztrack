@@ -11,7 +11,6 @@ import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
@@ -34,7 +33,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 public class DataSpaceInterface {
     protected final Log logger = LogFactory.getLog(getClass());
@@ -390,9 +388,7 @@ public class DataSpaceInterface {
         return statusCode;
     }
 
-
     public String getUriFromResponse(String responseType) throws DataSpaceInterfaceException {
-
         DocumentBuilder db;
         Document doc;
         String href = "";
@@ -400,31 +396,20 @@ public class DataSpaceInterface {
         String url = this.dataSpaceURL + responseType + "/";
 
         try {
-
             db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             InputSource is = new InputSource();
             is.setCharacterStream(new StringReader(dataSpaceResponse));
             doc = db.parse(is);
-
             NodeList nodes = doc.getElementsByTagName("link");
-
             for (int i = 0; i < nodes.getLength(); i++) {
-
                 Element element = (Element) nodes.item(i);
                 String rel = element.getAttribute("rel");
                 if ((rel != null) && rel.equals("edit")) {
                     href = element.getAttribute("href");
                 }
             }
-
-        } catch (ParserConfigurationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (SAXException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -433,6 +418,5 @@ public class DataSpaceInterface {
         }
 
         return uri;
-
     }
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.util.RServeInterface;
@@ -35,15 +36,21 @@ public class KMLMapQueryView extends AbstractView {
         RServeInterface rServeInterface = new RServeInterface(searchQuery, positionFixDao);
         File kmlFile = rServeInterface.createKml();
 
-        FileInputStream fin = new FileInputStream(kmlFile);
-        byte kmlContent[] = new byte[(int) kmlFile.length()];
-        fin.read(kmlContent);
-
-        String filename = searchQuery.getMapQueryType().name().toLowerCase(Locale.ENGLISH) + ".kml";
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("application/xml");
-        response.getOutputStream().write(kmlContent);
-        kmlFile.delete();
+        FileInputStream fileInputStream = null;
+        try {
+	        fileInputStream = new FileInputStream(kmlFile);
+	        byte kmlContent[] = new byte[(int) kmlFile.length()];
+	        fileInputStream.read(kmlContent);
+	
+	        String filename = searchQuery.getMapQueryType().name().toLowerCase(Locale.ENGLISH) + ".kml";
+	        response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+	        response.setCharacterEncoding("UTF-8");
+	        response.setContentType("application/xml");
+	        response.getOutputStream().write(kmlContent);
+	        kmlFile.delete();
+        }
+        finally {
+        	IOUtils.closeQuietly(fileInputStream);
+        }
     }
 }

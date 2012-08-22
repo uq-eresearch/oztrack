@@ -35,8 +35,6 @@ public class KMLExportView extends AbstractView{
 		HttpServletRequest request,
 		HttpServletResponse response
 	) throws Exception {
-		// TODO Auto-generated method stub
-        
 		SearchQuery searchQuery;
         SimpleFeatureCollection collection = FeatureCollections.newCollection();
         Encoder encoder = new Encoder(new KMLConfiguration());

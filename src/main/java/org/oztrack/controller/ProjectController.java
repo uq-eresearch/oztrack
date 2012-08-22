@@ -109,7 +109,7 @@ public class ProjectController {
         projectActionMap.put("project", project);
         projectActionMap.put("action", action);
         
-        // TODO: DAO should not be passed to view layer.
+        // TODO: DAOs should not be passed to view layer.
         model.addAttribute("projectDao", projectDao);
         model.addAttribute("userDao", userDao);
         model.addAttribute("projectActionMap", projectActionMap);

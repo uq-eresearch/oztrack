@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
 
+import org.apache.commons.io.IOUtils;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.JdbcAccess;
@@ -56,184 +57,192 @@ public class PositionFixFileLoader extends DataFileLoader {
 
     @Override
     public void createRawObservations() throws FileProcessingException {
-        int lineNumber = 0;
-
-        FileInputStream fileInputStream;
-
+        FileInputStream fileInputStream = null;
+        DataInputStream dataInputStream = null;
+        BufferedReader reader = null;
         try {
-            fileInputStream = new FileInputStream(dataFile.getAbsoluteDataFilePath());
-        } catch (FileNotFoundException e) {
-             throw new FileProcessingException("File not found.", e);
-        }
-
-         DataInputStream in = new DataInputStream(fileInputStream);
-         BufferedReader br = new BufferedReader(new InputStreamReader(in));
-         String strLine;
-
-        try {
-            strLine = br.readLine();
-            lineNumber++;
-        } catch (IOException e) {
-            throw new FileProcessingException("Problem reading file.", e);
-        }
-
-        /* Populate a HashMap containing which columns contains which bits of data
-         eg.   1 DATE
-               2 ANIMALID    */
-
-        HashMap<Integer, PositionFixFileHeader> headerMap = new HashMap<Integer, PositionFixFileHeader>();
-        String[] colHeadings = strLine.split(",");
-        String[] dataRow;
-
-        boolean dateFieldFound = false;
-        boolean latFieldFound = false;
-        boolean longFieldFound = false;
-        boolean animalIdFieldFound = false;
-
-        // determine which columns contain which data
-        for (int i = 0; i < colHeadings.length; i++) {
-            String heading = colHeadings[i].replaceAll("/", "").replaceAll(" ", "").toUpperCase();
-            for (PositionFixFileHeader positionFixFileHeader : PositionFixFileHeader.values()) {
-                if (heading.equals(positionFixFileHeader.toString())) {
-                    headerMap.put(i,positionFixFileHeader);
-                    switch (positionFixFileHeader) {
-                        case ACQUISITIONTIME:
-                        case UTCDATE:
-                        case LOCDATE:
-                        case DATE:
-                            dateFieldFound = true;
-                            break;
-                        case UTCTIME:
-                        case TIME:
-                            break;
-                        case LATITUDE:
-                        case LATT:
-                        case LAT:
-                            latFieldFound = true;
-                            break;
-                        case LONGITUDE:
-                        case LONG:
-                        case LON:
-                            longFieldFound = true;
-                            break;
-                        case ID:
-                        case ANIMALID:
-                            animalIdFieldFound = true;
-                            break;
-                        default:
-                            logger.debug("Unhandled positionFixFileHeader: " + positionFixFileHeader);
-                            break;
-                    }
-                }
-            }
-        }
-
-        if (!dateFieldFound) {
-             throw new FileProcessingException("No DATE field found in file.");
-        }
-        if (!latFieldFound) {
-             throw new FileProcessingException("No LATITUDE field found in file.");
-        }
-        if (!longFieldFound) {
-             throw new FileProcessingException("No LONGITUDE field found in file.");
-        }
-        if (!animalIdFieldFound) {
-        	// if there's not an animalId field, assume that this file contains a single animal.
-        	dataFile.setSingleAnimalInFile(true);
-        	dataFileDao.update(dataFile);
-        }
-
-        logger.debug("File opened + header read.");
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy H:m:s");
-
-        try {
-            while ((strLine = br.readLine()) != null) {
-                lineNumber++;
-                dataRow = strLine.split(",");
-                RawPositionFix rawPositionFix= new RawPositionFix();
-
-                logger.debug("file linenumber: " + lineNumber);
-
-                // loop through the dataRow elements
-                for (int i = 0; i < dataRow.length; i++) {
-
-                    // if data in this cell
-                    if (dataRow[i] != null || !dataRow[i].isEmpty()) {
-
-                        // retrieve the header for this column and use it to determine which field to update
-                        if (headerMap.get(i) != null ) {
-                            PositionFixFileHeader positionFixFileHeader = headerMap.get(i);
-                            switch (positionFixFileHeader) {
-                            	case ACQUISITIONTIME:
-                            	case UTCDATE:
-                            	case LOCDATE:
-                            	case DATE:
-                                       try {
-                                           if (lineNumber == 2) {
-                                        	   simpleDateFormat = findDateFormat(dataRow[i]);
-                                           }
-                                           Calendar calendar = Calendar.getInstance();
-                                           try {
-                                        	   calendar.setTime(simpleDateFormat.parse(dataRow[i]));
-                                           } catch (ParseException e) {
-                                        	   throw new FileProcessingException("Date Parsing error. ");
-                                           }
-                                           rawPositionFix.setDetectionTime(calendar.getTime());
-                                       } catch (FileProcessingException e) {
-                                            throw new FileProcessingException(e.toString() + "Using date: "+ dataRow[i] + " from line : "  + lineNumber);
-                                       }
-                                    break;
-                            	case UTCTIME:
-                                case TIME:
-                                    try {
-                                        rawPositionFix.setDetectionTime(timeHandler(rawPositionFix.getDetectionTime(),dataRow[i]));
-                                    } catch (FileProcessingException e) {
-                                        throw new FileProcessingException("Unable to read time format on line " + lineNumber + ": " + dataRow[i], e);
-                                    }
-                                    break;
-                                case LATITUDE:
-                                case LATT:
-                                case LAT:
-                                    rawPositionFix.setLatitude(dataRow[i]);
-                                    break;
-                                case LONGITUDE:
-                                case LONG:
-                                case LON:
-                                     rawPositionFix.setLongitude(dataRow[i]);
-                                     break;
-                                case ID:
-                                case ANIMALID:
-                                    rawPositionFix.setAnimalId(dataRow[i]);
-                                    break;
-                                default:
-                                    logger.debug("Unhandled positionFixFileHeader: " + positionFixFileHeader);
-                                    break;
-                            }
-                        }
-                    }
-                }
-
-                
-                if ((rawPositionFix.getLatitude() != null) && (rawPositionFix.getLongitude() != null)) {
-	                try {
-		                Point locationGeometry = findLocationGeometry(rawPositionFix.getLatitude(),rawPositionFix.getLongitude());
-		                rawPositionFix.setLocationGeometry(locationGeometry);
+	        try {
+	            fileInputStream = new FileInputStream(dataFile.getAbsoluteDataFilePath());
+	        } catch (FileNotFoundException e) {
+	             throw new FileProcessingException("File not found.", e);
+	        }
+	
+	        dataInputStream = new DataInputStream(fileInputStream);
+	        reader = new BufferedReader(new InputStreamReader(dataInputStream));
+	        
+	        String strLine;
+	        int lineNumber = 0;
+	
+	        try {
+	            strLine = reader.readLine();
+	            lineNumber++;
+	        } catch (IOException e) {
+	            throw new FileProcessingException("Problem reading file.", e);
+	        }
+	
+	        /* Populate a HashMap containing which columns contains which bits of data
+	         eg.   1 DATE
+	               2 ANIMALID    */
+	
+	        HashMap<Integer, PositionFixFileHeader> headerMap = new HashMap<Integer, PositionFixFileHeader>();
+	        String[] colHeadings = strLine.split(",");
+	        String[] dataRow;
+	
+	        boolean dateFieldFound = false;
+	        boolean latFieldFound = false;
+	        boolean longFieldFound = false;
+	        boolean animalIdFieldFound = false;
+	
+	        // determine which columns contain which data
+	        for (int i = 0; i < colHeadings.length; i++) {
+	            String heading = colHeadings[i].replaceAll("/", "").replaceAll(" ", "").toUpperCase();
+	            for (PositionFixFileHeader positionFixFileHeader : PositionFixFileHeader.values()) {
+	                if (heading.equals(positionFixFileHeader.toString())) {
+	                    headerMap.put(i,positionFixFileHeader);
+	                    switch (positionFixFileHeader) {
+	                        case ACQUISITIONTIME:
+	                        case UTCDATE:
+	                        case LOCDATE:
+	                        case DATE:
+	                            dateFieldFound = true;
+	                            break;
+	                        case UTCTIME:
+	                        case TIME:
+	                            break;
+	                        case LATITUDE:
+	                        case LATT:
+	                        case LAT:
+	                            latFieldFound = true;
+	                            break;
+	                        case LONGITUDE:
+	                        case LONG:
+	                        case LON:
+	                            longFieldFound = true;
+	                            break;
+	                        case ID:
+	                        case ANIMALID:
+	                            animalIdFieldFound = true;
+	                            break;
+	                        default:
+	                            logger.debug("Unhandled positionFixFileHeader: " + positionFixFileHeader);
+	                            break;
+	                    }
 	                }
-	                catch (Exception e) {
-	                	throw new FileProcessingException("Problems at line number: " + lineNumber + " parsing these as Latitude/Longitude in WGS84: " + rawPositionFix.getLatitude() + "," + rawPositionFix.getLongitude());
+	            }
+	        }
+	
+	        if (!dateFieldFound) {
+	             throw new FileProcessingException("No DATE field found in file.");
+	        }
+	        if (!latFieldFound) {
+	             throw new FileProcessingException("No LATITUDE field found in file.");
+	        }
+	        if (!longFieldFound) {
+	             throw new FileProcessingException("No LONGITUDE field found in file.");
+	        }
+	        if (!animalIdFieldFound) {
+	        	// if there's not an animalId field, assume that this file contains a single animal.
+	        	dataFile.setSingleAnimalInFile(true);
+	        	dataFileDao.update(dataFile);
+	        }
+	
+	        logger.debug("File opened + header read.");
+	
+	        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy H:m:s");
+	
+	        try {
+	            while ((strLine = reader.readLine()) != null) {
+	                lineNumber++;
+	                dataRow = strLine.split(",");
+	                RawPositionFix rawPositionFix= new RawPositionFix();
+	
+	                logger.debug("file linenumber: " + lineNumber);
+	
+	                // loop through the dataRow elements
+	                for (int i = 0; i < dataRow.length; i++) {
+	
+	                    // if data in this cell
+	                    if (dataRow[i] != null || !dataRow[i].isEmpty()) {
+	
+	                        // retrieve the header for this column and use it to determine which field to update
+	                        if (headerMap.get(i) != null ) {
+	                            PositionFixFileHeader positionFixFileHeader = headerMap.get(i);
+	                            switch (positionFixFileHeader) {
+	                            	case ACQUISITIONTIME:
+	                            	case UTCDATE:
+	                            	case LOCDATE:
+	                            	case DATE:
+	                                       try {
+	                                           if (lineNumber == 2) {
+	                                        	   simpleDateFormat = findDateFormat(dataRow[i]);
+	                                           }
+	                                           Calendar calendar = Calendar.getInstance();
+	                                           try {
+	                                        	   calendar.setTime(simpleDateFormat.parse(dataRow[i]));
+	                                           } catch (ParseException e) {
+	                                        	   throw new FileProcessingException("Date Parsing error. ");
+	                                           }
+	                                           rawPositionFix.setDetectionTime(calendar.getTime());
+	                                       } catch (FileProcessingException e) {
+	                                            throw new FileProcessingException(e.toString() + "Using date: "+ dataRow[i] + " from line : "  + lineNumber);
+	                                       }
+	                                    break;
+	                            	case UTCTIME:
+	                                case TIME:
+	                                    try {
+	                                        rawPositionFix.setDetectionTime(timeHandler(rawPositionFix.getDetectionTime(),dataRow[i]));
+	                                    } catch (FileProcessingException e) {
+	                                        throw new FileProcessingException("Unable to read time format on line " + lineNumber + ": " + dataRow[i], e);
+	                                    }
+	                                    break;
+	                                case LATITUDE:
+	                                case LATT:
+	                                case LAT:
+	                                    rawPositionFix.setLatitude(dataRow[i]);
+	                                    break;
+	                                case LONGITUDE:
+	                                case LONG:
+	                                case LON:
+	                                     rawPositionFix.setLongitude(dataRow[i]);
+	                                     break;
+	                                case ID:
+	                                case ANIMALID:
+	                                    rawPositionFix.setAnimalId(dataRow[i]);
+	                                    break;
+	                                default:
+	                                    logger.debug("Unhandled positionFixFileHeader: " + positionFixFileHeader);
+	                                    break;
+	                            }
+	                        }
+	                    }
 	                }
-                }
-
-                if ((rawPositionFix.getDetectionTime() != null) && (rawPositionFix.getLocationGeometry() != null)) {
-                    entityManager.persist(rawPositionFix);
-                }
-            }
+	
+	                
+	                if ((rawPositionFix.getLatitude() != null) && (rawPositionFix.getLongitude() != null)) {
+		                try {
+			                Point locationGeometry = findLocationGeometry(rawPositionFix.getLatitude(),rawPositionFix.getLongitude());
+			                rawPositionFix.setLocationGeometry(locationGeometry);
+		                }
+		                catch (Exception e) {
+		                	throw new FileProcessingException("Problems at line number: " + lineNumber + " parsing these as Latitude/Longitude in WGS84: " + rawPositionFix.getLatitude() + "," + rawPositionFix.getLongitude());
+		                }
+	                }
+	
+	                if ((rawPositionFix.getDetectionTime() != null) && (rawPositionFix.getLocationGeometry() != null)) {
+	                    entityManager.persist(rawPositionFix);
+	                }
+	            }
+	        }
+	        catch (IOException e) {
+	             throw new FileProcessingException("Problem reading file at line number :" + lineNumber);
+	        }
+	        logger.debug(lineNumber + " rows persisted.");
         }
-        catch (IOException e) {
-             throw new FileProcessingException("Problem reading file at line number :" + lineNumber);
+        finally {
+    		IOUtils.closeQuietly(reader);
+    		IOUtils.closeQuietly(dataInputStream);
+    		IOUtils.closeQuietly(fileInputStream);
         }
-        logger.debug(lineNumber + " rows persisted.");
     }
     
     @Override

@@ -29,8 +29,9 @@ public class DataSpaceInterfaceView extends AbstractView {
 	    HttpServletRequest request,
 	    HttpServletResponse response
     ) throws Exception {
-        // TODO: DAOs should not appear in this layer.
+        // TODO: DAO should not appear in this layer.
         ProjectDao projectDao = (ProjectDao) model.get("projectDao");
+        // TODO: DAO should not appear in this layer.
         UserDao userDao = (UserDao) model.get("userDao");
         
         @SuppressWarnings("unchecked")

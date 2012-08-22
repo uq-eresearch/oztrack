@@ -1,7 +1,9 @@
 package org.oztrack.error;
 
 public class RServeInterfaceException extends Exception {
-    public RServeInterfaceException(String message) {
+	private static final long serialVersionUID = 4210425478239958555L;
+
+	public RServeInterfaceException(String message) {
         super(message);
     }
     
