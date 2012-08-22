@@ -92,25 +92,31 @@
                 $('#alpha').val('');
                 $('#gridSizeRow').hide();
                 $('#gridSize').val('');
+                var showParamTable = true;
                 if (mapQueryType == 'MCP') {
                     $('#percentRow').show();
                     $('#percent').val('100');
                 }
-                if (mapQueryType == 'KUD') {
+                else if (mapQueryType == 'KUD') {
                     $('#percentRow').show();
                     $('#percent').val('95');
                     $('#hRow').show();
                     $('#h').val('href');
                 }
-                if (mapQueryType == 'AHULL') {
+                else if (mapQueryType == 'AHULL') {
                     $('#alphaRow').show();
                     $('#alpha').val('100');
                 }
-                if ((mapQueryType == 'HEATMAP_POINT') || (mapQueryType == 'HEATMAP_LINE')) {
+                else if ((mapQueryType == 'HEATMAP_POINT') || (mapQueryType == 'HEATMAP_LINE')) {
                     $('#gridSizeRow').show();
                     $('#gridSize').val('100');
                 }
-                $('#paramTable').appendTo('#' + mapQueryType).fadeIn('slow');            
+                else {
+                    showParamTable = false;
+                }
+                if (showParamTable) {
+                    $('#paramTable').appendTo('#' + mapQueryType).fadeIn('slow');
+                }
             }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
@@ -161,7 +167,7 @@
 	 		
 					<div id="animalHeader">	            	
 		            	<div class="animalCheckbox">
-		            		<input style="float:left;" type="checkbox" name="animalCheckbox" id="select-animal-${animal.id}" value="${animal.id}">
+		            		<input style="float: left; margin: 0;" type="checkbox" name="animalCheckbox" id="select-animal-${animal.id}" value="${animal.id}">
 		                    <script type="text/javascript">
 		                        $('input[id=select-animal-${animal.id}]').change(function() {
 		                                analysisMap.toggleAllAnimalFeatures("${animal.id}",this.checked);
@@ -205,11 +211,11 @@
             	            <table>
             		            <tr>
             		                <td style="padding-right: 5px;"><label class="control-label" for="fromDatePicker">From</label></td>
-            		                <td><input id="fromDatepicker" type="text" class="input-medium" style="margin: 0;"/></td>
+            		                <td><input id="fromDatepicker" type="text" class="input-medium" style="margin-bottom: 3px;"/></td>
             		            </tr>
             		            <tr>
             		                <td style="padding-right: 5px;"><label class="control-label" for="toDatePicker">To</label></td>
-            		                <td><input id="toDatepicker" type="text" class="input-medium" style="margin: 0;"/></td>
+            		                <td><input id="toDatepicker" type="text" class="input-medium" style="margin-bottom: 3px;"/></td>
             		            </tr>
             	            </table>
                         </div>
@@ -234,22 +240,32 @@
         	                        </tr>
         		                </c:forEach>
         	                </table>
-                            <table id="paramTable" style="display: none; margin-left:5px;">
+                            <table id="paramTable" style="display: none; margin: 6px 0;">
                                 <tr id="percentRow">
-                                    <td>percent:</td>
-                                    <td><input id="percent" name="percent" type="text" class="input-mini" style="text-align: right;"/></td>
+                                    <td style="padding-right: 5px;">Percent</td>
+                                    <td class="input-append">
+                                        <input id="percent" name="percent" type="text" class="input-mini" style="margin-bottom: 3px; text-align: right;"/>
+                                        <span class="add-on">%</span>
+                                    </td>
                                 </tr>
                                 <tr id="hRow">
-                                    <td>h value:</td>
-                                    <td><input id="h" name="h" type="text" class="input-mini" style="text-align: right;"/></td>
+                                    <td style="padding-right: 5px;">h value</td>
+                                    <td>
+                                        <input id="h" name="h" type="text" class="input-mini" style="margin-bottom: 3px; text-align: right;"/>
+                                    </td>
                                 </tr>
                                 <tr id="alphaRow">
-                                    <td>alpha:</td>
-                                    <td><input id="alpha" name="alpha" type="text" class="input-mini" style="text-align: right;"/></td>
+                                    <td style="padding-right: 5px;">Alpha</td>
+                                    <td>
+                                        <input id="alpha" name="alpha" type="text" class="input-mini" style="margin-bottom: 3px; text-align: right;"/>
+                                    </td>
                                 </tr>
                                 <tr id="gridSizeRow">
-                                    <td>grid size (m):</td>
-                                    <td><input id="gridSize" name="gridSize" type="text" class="input-mini" style="text-align: right;"/></td>
+                                    <td style="padding-right: 5px;">Grid size</td>
+                                    <td class="input-append">
+                                        <input id="gridSize" name="gridSize" type="text" class="input-mini" style="margin-bottom: 3px; text-align: right;"/>
+                                        <span class="add-on">m</span>
+                                    </td>
                                 </tr>
                             </table>
                         </div>
