@@ -125,7 +125,8 @@ public class MapQueryController {
     @RequestMapping(value="/mapQueryKML", method=RequestMethod.GET)
     @PreAuthorize("#searchQuery.project.global or hasPermission(#searchQuery.project, 'read')")
     public View handleKMLQuery(@ModelAttribute(value="searchQuery") SearchQuery searchQuery) throws Exception {
-        RServeInterface rServeInterface = new RServeInterface(searchQuery, positionFixDao);
+        List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
+        RServeInterface rServeInterface = new RServeInterface(positionFixList, searchQuery);
         File kmlFile = rServeInterface.createKml();
         return new KMLMapQueryView(kmlFile, searchQuery);
     }

@@ -13,7 +13,6 @@ import java.util.Random;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
@@ -38,13 +37,12 @@ public class RServeInterface {
     private final String srs;
     private String rLog = "";
 
-    // TODO: DAO should not appear in this layer.
-    private PositionFixDao positionFixDao;
+    private List<PositionFix> positionFixList;
 
-    public RServeInterface(SearchQuery searchQuery, PositionFixDao positionFixDao) {
+    public RServeInterface(List<PositionFix> positionFixList, SearchQuery searchQuery) {
+        this.positionFixList = positionFixList;
         this.searchQuery = searchQuery;
         this.srs = (searchQuery.getSrs() != null) ? searchQuery.getSrs().toLowerCase(Locale.ENGLISH) : "epsg:3577";
-        this.positionFixDao = positionFixDao;
     }
 
     public File createKml() throws RServeInterfaceException {
@@ -142,8 +140,6 @@ public class RServeInterface {
     }
 
     protected void createRPositionFixDataFrame() throws RServeInterfaceException {
-        List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(this.searchQuery);
-
         int [] animalIds = new int[positionFixList.size()];
         double [] latitudes= new double[positionFixList.size()];
         double [] longitudes= new double[positionFixList.size()];
