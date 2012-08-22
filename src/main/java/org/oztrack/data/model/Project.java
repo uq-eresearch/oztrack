@@ -3,7 +3,6 @@ package org.oztrack.data.model;
 import static javax.persistence.EnumType.STRING;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,7 +26,7 @@ import org.oztrack.data.model.types.ProjectType;
 import com.vividsolutions.jts.geom.Polygon;
 
 @Entity(name = "Project")
-public class Project extends OztrackBaseEntity implements Serializable {
+public class Project extends OztrackBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "projectid_seq")
     @SequenceGenerator(name = "projectid_seq", sequenceName = "projectid_seq",allocationSize = 1)

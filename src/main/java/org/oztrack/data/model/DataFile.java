@@ -4,7 +4,6 @@ package org.oztrack.data.model;
 import static javax.persistence.EnumType.STRING;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,7 +27,7 @@ import org.oztrack.data.model.types.DataFileStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 @Entity(name = "datafile")
-public class DataFile extends OztrackBaseEntity implements Serializable {
+public class DataFile extends OztrackBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "datafileid_seq")
     @SequenceGenerator(name = "datafileid_seq", sequenceName = "datafileid_seq",allocationSize = 1)

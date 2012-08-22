@@ -1,7 +1,5 @@
 package org.oztrack.data.model;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 
 @Entity(name="settings")
-public class Settings implements Serializable {
+public class Settings {
     @Id
     @Column(name="id")
     @GeneratedValue(generator="settings_id_seq", strategy=GenerationType.IDENTITY)

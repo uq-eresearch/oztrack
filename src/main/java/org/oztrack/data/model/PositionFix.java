@@ -1,6 +1,5 @@
 package org.oztrack.data.model;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -15,7 +14,7 @@ import org.hibernate.annotations.Type;
 import com.vividsolutions.jts.geom.Point;
 
 @Entity(name="PositionFix")
-public class PositionFix implements Serializable{
+public class PositionFix {
     @Id
     @Column(nullable=false)
     private Long id;

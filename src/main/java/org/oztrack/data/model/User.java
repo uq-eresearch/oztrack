@@ -1,6 +1,5 @@
 package org.oztrack.data.model;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,7 +17,7 @@ import javax.persistence.SequenceGenerator;
 import org.hibernate.annotations.Cascade;
 
 @Entity(name = "AppUser")
-public class User implements Serializable {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userid_seq")
     @SequenceGenerator(name = "userid_seq", sequenceName = "userid_seq", allocationSize = 1)

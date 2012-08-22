@@ -1,6 +1,5 @@
 package org.oztrack.data.model;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,7 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity(name = "Animal")
-public class Animal extends OztrackBaseEntity implements Serializable  {
+public class Animal extends OztrackBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "animalid_seq")
     @SequenceGenerator(name = "animalid_seq", sequenceName = "animalid_seq",allocationSize = 1)

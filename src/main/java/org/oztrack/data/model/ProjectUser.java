@@ -2,8 +2,6 @@ package org.oztrack.data.model;
 
 import static javax.persistence.EnumType.STRING;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
@@ -22,7 +20,7 @@ import org.oztrack.data.model.types.Role;
 
 @Entity
 @Table(name="project_user", uniqueConstraints=@UniqueConstraint(columnNames={"project_id", "user_id"}))
-public class ProjectUser implements Serializable {
+public class ProjectUser {
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="project_user_id_seq")
     @SequenceGenerator(name="project_user_id_seq", sequenceName="project_user_id_seq",allocationSize=1)
