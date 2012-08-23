@@ -81,6 +81,7 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/OpenLayers.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/LoadingPanel.js"></script>
         <script type="text/javascript" src="<c:url value="/js/project-analysis.js"/>"></script>
+        <script type="text/javascript" src="<c:url value="/js/srs-selector.js"/>"></script>
         <script type="text/javascript">
             function updateParamTable(mapQueryType) {
                 $('#paramTable').hide();
