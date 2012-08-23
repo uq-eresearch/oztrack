@@ -67,7 +67,6 @@ public class MapQueryController {
         @RequestParam(value="queryType", required=false) String queryType,
         @RequestParam(value="dateFrom", required=false) String dateFrom,
         @RequestParam(value="dateTo", required=false) String dateTo,
-        @RequestParam(value="srs", required=false) String srs,
         @RequestParam(value="percent", required=false) Double percent,
         @RequestParam(value="h", required=false) String h,
         @RequestParam(value="alpha", required=false) Double alpha,
@@ -88,13 +87,6 @@ public class MapQueryController {
         }
         if (dateTo != null) {
             searchQuery.setToDate(sdf.parse(dateTo));
-        }
-        if (srs != null && !srs.isEmpty()) {
-            String regex = "[a-zA-Z_-]+:[0-9]+";
-            if (!srs.matches(regex)) {
-                throw new RuntimeException("Invalid SRS code: must match " + regex);
-            }
-            searchQuery.setSrs(srs);
         }
         if (percent != null && !percent.isNaN()) {
             searchQuery.setPercent(percent);

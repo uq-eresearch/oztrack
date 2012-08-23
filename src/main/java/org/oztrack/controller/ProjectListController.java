@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.access.SrsDao;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.User;
@@ -31,6 +32,9 @@ public class ProjectListController {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private SrsDao srsDao;
+
     @InitBinder("project")
     public void initProjectBinder(WebDataBinder binder) {
         binder.setAllowedFields(
@@ -40,6 +44,7 @@ public class ProjectListController {
             "spatialCoverageDescr",
             "speciesCommonName",
             "speciesScientificName",
+            "srsIdentifier",
             "publicationTitle",
             "publicationUrl",
             "isGlobal",
@@ -62,6 +67,7 @@ public class ProjectListController {
         Project project = new Project();
         project.setIsGlobal(true);
         project.setRightsStatement("The data is the property of the University of Queensland. Permission is required to use this material.");
+        project.setSrsIdentifier("EPSG:3577");
         return project;
     }
 
@@ -83,7 +89,8 @@ public class ProjectListController {
 
     @RequestMapping(value="/projects/new", method=RequestMethod.GET)
     @PreAuthorize("isAuthenticated()")
-    public String getNewView(@ModelAttribute(value="project") Project project) {
+    public String getNewView(Model model, @ModelAttribute(value="project") Project project) {
+        model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
         return "project-form";
     }
 

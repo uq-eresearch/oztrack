@@ -81,7 +81,6 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/OpenLayers.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/LoadingPanel.js"></script>
         <script type="text/javascript" src="<c:url value="/js/project-analysis.js"/>"></script>
-        <script type="text/javascript" src="<c:url value="/js/srs-selector.js"/>"></script>
         <script type="text/javascript">
             function updateParamTable(mapQueryType) {
                 $('#paramTable').hide();
@@ -126,25 +125,6 @@
                 $('#toDatepicker').datepicker();
                 analysisMap = createAnalysisMap('projectMap', {
                     projectId: <c:out value="${project.id}"/>
-                });
-                srsSelector = createSrsSelector({
-                    onSrsSelected: function(id) {
-                        jQuery('#projectionCode').val(id);
-                    },
-                    srsList: [
-                        <c:forEach items= "${srsList}" var="srs" varStatus="status">
-                        {
-                            id: '<c:out value="${srs.identifier}"/>',
-                            title: '<c:out value="${srs.title}"/>',
-                            bounds: [
-                                <c:out value="${srs.bounds.envelopeInternal.minX}"/>,
-                                <c:out value="${srs.bounds.envelopeInternal.minY}"/>,
-                                <c:out value="${srs.bounds.envelopeInternal.maxX}"/>,
-                                <c:out value="${srs.bounds.envelopeInternal.maxY}"/>
-                            ]
-                        }<c:if test="${not status.last}">,</c:if>
-                        </c:forEach>
-                    ]
                 });
             });
         </script>
@@ -269,23 +249,6 @@
                                     </td>
                                 </tr>
                             </table>
-                        </div>
-                    </div>
-                    <div class="control-group" style="margin-bottom: 9px;">
-                        <div style="margin-bottom: 9px; font-weight: bold;">Spatial Reference System (SRS)</div>
-                        <div class="controls">
-                            <!--
-                                Defaults to EPSG:3577 (GDA94 / Australian Albers)
-                                Australia-wide geoscience and statistical mapping.
-                                Link: http://spatialreference.org/ref/epsg/3577/
-                            -->
-                            <div>
-                                <input id="projectionCode" type="text" class="input-medium" value="EPSG:3577"/>
-                            </div>
-                            <div>
-                                <a href="javascript:void(0)" onclick="srsSelector.showDialog();">Select Australian SRS</a><br>
-                                <a href="javascript:void(0)" onclick="window.open('http://spatialreference.org/ref/epsg', 'popup', 'width=600,height=400,scrollbars=yes');">Search for international SRS codes</a>
-                            </div>
                         </div>
                     </div>
                     </fieldset>

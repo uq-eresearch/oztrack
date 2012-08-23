@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.Random;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.model.PositionFix;
@@ -42,7 +43,10 @@ public class RServeInterface {
     public RServeInterface(List<PositionFix> positionFixList, SearchQuery searchQuery) {
         this.positionFixList = positionFixList;
         this.searchQuery = searchQuery;
-        this.srs = (searchQuery.getSrs() != null) ? searchQuery.getSrs().toLowerCase(Locale.ENGLISH) : "epsg:3577";
+        this.srs =
+            StringUtils.isNotBlank(searchQuery.getProject().getSrsIdentifier())
+            ? searchQuery.getProject().getSrsIdentifier().toLowerCase(Locale.ENGLISH)
+            : "epsg:3577";
     }
 
     public File createKml() throws RServeInterfaceException {

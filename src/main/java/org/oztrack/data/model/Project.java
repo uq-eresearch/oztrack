@@ -69,6 +69,9 @@ public class Project extends OztrackBaseEntity {
     private String speciesCommonName;
 
     private String speciesScientificName;
+    
+    @Column(name="srsidentifier")
+    private String srsIdentifier;
 
     @Column(name = "boundingbox", columnDefinition="GEOMETRY")
     @Type(type = "org.hibernatespatial.GeometryUserType")
@@ -207,6 +210,14 @@ public class Project extends OztrackBaseEntity {
 
     public void setSpeciesScientificName(String speciesScientificName) {
         this.speciesScientificName = speciesScientificName;
+    }
+
+    public String getSrsIdentifier() {
+        return srsIdentifier;
+    }
+
+    public void setSrsIdentifier(String srsIdentifier) {
+        this.srsIdentifier = srsIdentifier;
     }
 
     public String getDataDirectoryPath() {

@@ -56,7 +56,6 @@ public class ProjectAnalysisController {
         };
         model.addAttribute("mapQueryTypeList", mapQueryTypeList);
         model.addAttribute("projectAnimalsList", projectAnimalsList);
-        model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
         return "project-analysis";
     }
 }

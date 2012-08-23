@@ -237,6 +237,12 @@
                 </c:choose>
             </td>
         </tr>
+        <c:if test="${not empty project.srsIdentifier}">
+        <tr>
+            <th>Spatial Reference System:</th>
+            <td><a href="http://spatialreference.org/ref/?search=<c:out value="${project.srsIdentifier}"/>"><c:out value="${project.srsIdentifier}"/></a></td>
+        </tr>
+        </c:if>
         <tr>
             <th>Spatial Coverage:</th>
             <td><c:out value="${project.spatialCoverageDescr}"/></td>

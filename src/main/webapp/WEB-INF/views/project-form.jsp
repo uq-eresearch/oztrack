@@ -17,9 +17,35 @@
         </c:choose>
     </jsp:attribute>
     <jsp:attribute name="head">
+        <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
+        <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
+        <script src="http://maps.google.com/maps/api/js?v=3.9&sensor=false"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/proj4js/proj4js-compressed.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/OpenLayers.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/LoadingPanel.js"></script>
+        <script type="text/javascript" src="<c:url value="/js/srs-selector.js"/>"></script>
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
+                srsSelector = createSrsSelector({
+                    onSrsSelected: function(id) {
+                        jQuery('#srsIdentifier').val(id);
+                    },
+                    srsList: [
+                        <c:forEach items= "${srsList}" var="srs" varStatus="status">
+                        {
+                            id: '<c:out value="${srs.identifier}"/>',
+                            title: '<c:out value="${srs.title}"/>',
+                            bounds: [
+                                <c:out value="${srs.bounds.envelopeInternal.minX}"/>,
+                                <c:out value="${srs.bounds.envelopeInternal.minY}"/>,
+                                <c:out value="${srs.bounds.envelopeInternal.maxX}"/>,
+                                <c:out value="${srs.bounds.envelopeInternal.maxY}"/>
+                            ]
+                        }<c:if test="${not status.last}">,</c:if>
+                        </c:forEach>
+                    ]
+                });
             });
         </script>
     </jsp:attribute>
@@ -193,6 +219,20 @@
                     <div class="controls">
                         <form:input path="speciesScientificName" id="speciesScientificName"/>
                         <form:errors path="speciesScientificName" element="div" cssClass="help-block formErrors"/>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Spatial Reference System</legend>
+                <div class="control-group" style="margin-bottom: 9px;">
+                    <label class="control-label" for="srsIdentifier">Code</label>
+                    <div class="controls">
+                        <form:input id="srsIdentifier" path="srsIdentifier" type="text" class="input-medium"/>
+                        <form:errors path="srsIdentifier" element="div" cssClass="help-block formErrors"/>
+                        <div class="help-block">
+                            <a href="javascript:void(0)" onclick="srsSelector.showDialog();">Select Australian SRS</a><br>
+                            <a href="javascript:void(0)" onclick="window.open('http://spatialreference.org/ref/', 'popup', 'width=800,height=600,scrollbars=yes');">Search for international SRS codes</a>
+                        </div>
                     </div>
                 </div>
             </fieldset>

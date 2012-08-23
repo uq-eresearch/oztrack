@@ -13,6 +13,7 @@ import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.access.SrsDao;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.DataFile;
@@ -53,6 +54,9 @@ public class ProjectController {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private SrsDao srsDao;
+
     @InitBinder("project")
     public void initProjectBinder(WebDataBinder binder) {
         binder.setAllowedFields(
@@ -62,6 +66,7 @@ public class ProjectController {
             "spatialCoverageDescr",
             "speciesCommonName",
             "speciesScientificName",
+            "srsIdentifier",
             "publicationTitle",
             "publicationUrl",
             "isGlobal",
@@ -129,7 +134,8 @@ public class ProjectController {
 
     @RequestMapping(value="/projects/{id}/edit", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#project, 'write')")
-    public String getEditView(@ModelAttribute(value="project") Project project) {
+    public String getEditView(Model model, @ModelAttribute(value="project") Project project) {
+        model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
         return "project-form";
     }
 

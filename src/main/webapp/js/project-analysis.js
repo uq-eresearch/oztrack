@@ -282,7 +282,6 @@ function createAnalysisMap(div, options) {
                 var params = {
                     queryType: queryTypeValue,
                     projectId: $('#projectId').val(),
-                    srs: $('input[id=projectionCode]').val(),
                     percent: $('input[id=percent]').val(),
                     h: $('input[id=h]').val(),
                     alpha: $('input[id=alpha]').val(),
@@ -535,7 +534,6 @@ function createAnalysisMap(div, options) {
                 if (params.gridSize) {
                     html += '<tr><td class="layerInfoLabel">Grid size (m): </td><td>' + params.gridSize + '</td></tr>';
                 }
-                html += '<tr><td class="layerInfoLabel">SRS: </td><td>' + params.srs + '</td></tr>';
                 html += '<tr><td class="layerInfoLabel">Area: </td><td>' + Math.round(area*1000)/1000 + ' km<sup>2</sup></td></tr>';
                 html += '</table>';
                 var urlWithParams = url;
