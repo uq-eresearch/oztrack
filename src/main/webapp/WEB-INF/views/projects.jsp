@@ -6,7 +6,7 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <tags:page title="Projects">
     <jsp:attribute name="head">
-        <script type="text/javascript"> 
+        <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
             });

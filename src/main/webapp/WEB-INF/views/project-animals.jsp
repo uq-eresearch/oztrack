@@ -7,7 +7,7 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <tags:page title="${project.title}: Animals">
     <jsp:attribute name="head">
-        <script type="text/javascript"> 
+        <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
             });
@@ -23,39 +23,39 @@
         <tags:project-menu project="${project}"/>
     </jsp:attribute>
     <jsp:body>
-		<h1 id="projectTitle"><c:out value="${project.title}"/></h1>
-		<h2>Animals</h2>
-		
-		<table class="table table-bordered">
-    		<thead>
-    		    <tr>
-    		        <th>ID</th>
-    		        <th>Name</th>
-    		        <th>Description</th>
-    		        <th>Species</th>
+        <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
+        <h2>Animals</h2>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Species</th>
                     <sec:authorize access="hasPermission(#project, 'write')">
-    		        <th> </th>
+                    <th> </th>
                     </sec:authorize>
-    		    </tr>
-    		</thead>
+                </tr>
+            </thead>
             <tbody>
-		    <c:forEach items="${projectAnimalsList}" var="animal">
-		        <tr>
-		            <td><c:out value="${animal.projectAnimalId}"/></td>
-		            <td><a href="<c:url value="/animals/${animal.id}"/>"><c:out value="${animal.animalName}"/></a></td>
-		            <td><c:out value="${animal.animalDescription}"/></td>
-		            <td><c:out value="${animal.speciesName}"/></td>
-		            <sec:authorize access="hasPermission(#project, 'write')">
+            <c:forEach items="${projectAnimalsList}" var="animal">
+                <tr>
+                    <td><c:out value="${animal.projectAnimalId}"/></td>
+                    <td><a href="<c:url value="/animals/${animal.id}"/>"><c:out value="${animal.animalName}"/></a></td>
+                    <td><c:out value="${animal.animalDescription}"/></td>
+                    <td><c:out value="${animal.speciesName}"/></td>
+                    <sec:authorize access="hasPermission(#project, 'write')">
                     <td>
-				        <a href="<c:url value="/animals/${animal.id}/edit"/>">Edit</a>
+                        <a href="<c:url value="/animals/${animal.id}/edit"/>">Edit</a>
                         <c:if test="${empty animal.positionFixes}">
                         <br /><a href="javascript:void(deleteEntity('<c:url value="/animals/${animal.id}"/>', '<c:url value="/projects/${project.id}/animals"/>', 'Are you sure you want to delete this animal?'));">Delete</a>
                         </c:if>
-		            </td>
+                    </td>
                     </sec:authorize>
-				</tr>
-		    </c:forEach>
+                </tr>
+            </c:forEach>
             </tbody>
-		</table>
+        </table>
     </jsp:body>
 </tags:page>

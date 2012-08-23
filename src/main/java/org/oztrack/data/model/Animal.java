@@ -36,7 +36,7 @@ public class Animal extends OztrackBaseEntity {
     private Date transmitterDeployDate;
     @ManyToOne
     private Project project;
-    
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "animal")
     private List<PositionFix> positionFixes = new LinkedList<PositionFix>();
 

@@ -26,15 +26,15 @@ public class ProjectUser {
     @SequenceGenerator(name="project_user_id_seq", sequenceName="project_user_id_seq",allocationSize=1)
     @Column(nullable=false)
     private Long id;
-    
+
     @ManyToOne
     @JoinColumn(name="project_id", nullable=false)
     private Project project;
-    
+
     @ManyToOne
     @JoinColumn(name="user_id", nullable=false)
     private User user;
-	
+
     @Enumerated(STRING)
     @Column(name="role", columnDefinition="text", nullable=false)
     private Role role;
@@ -61,8 +61,8 @@ public class ProjectUser {
 
     public void setUser(User user) {
         this.user = user;
-    }	
-    
+    }
+
     public Role getRole() {
         return role;
     }

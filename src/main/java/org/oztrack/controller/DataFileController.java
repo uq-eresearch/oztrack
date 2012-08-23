@@ -28,7 +28,7 @@ public class DataFileController {
     public DataFile getDataFile(@PathVariable(value="id") Long dataFileId) {
         return dataFileDao.getDataFileById(dataFileId);
     }
-    
+
     @RequestMapping(value="/datafiles/{id}", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#dataFile.project, 'read')")
     public String getView(@ModelAttribute(value="dataFile") DataFile dataFile) throws Exception {

@@ -9,7 +9,7 @@
 <c:set var="title" value="${(user.id != null) ? 'User Profile' : 'Register'}"/>
 <tags:page title="${title}">
     <jsp:attribute name="head">
-        <script type="text/javascript"> 
+        <script type="text/javascript">
             $(document).ready(function() {
                 $('#navHome').addClass('active');
             });

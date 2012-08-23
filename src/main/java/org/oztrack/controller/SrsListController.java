@@ -21,7 +21,7 @@ import com.vividsolutions.jts.geom.Polygon;
 public class SrsListController {
     @Autowired
     private SrsDao srsDao;
-    
+
     @InitBinder("srs")
     public void initSrsBinder(WebDataBinder binder) {
         binder.setAllowedFields(
@@ -31,7 +31,7 @@ public class SrsListController {
         );
         binder.registerCustomEditor(Polygon.class, "bounds", new SrsBoundsPropertyEditor());
     }
-    
+
     @ModelAttribute("srs")
     public Srs getSrs() {
         return new Srs();
@@ -43,13 +43,13 @@ public class SrsListController {
         model.addAttribute("srsList", srsDao.getAll());
         return "srs-list";
     }
-    
+
     @RequestMapping(value="/settings/srs/new", method=RequestMethod.GET)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String getNewView(@ModelAttribute(value="srs") Srs srs) {
         return "srs-form";
     }
-    
+
     @RequestMapping(value="/settings/srs", method=RequestMethod.POST)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String processCreate(

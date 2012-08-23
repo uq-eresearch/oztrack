@@ -36,10 +36,10 @@ import org.springframework.web.servlet.View;
 public class SearchController {
     @Autowired
     private ProjectDao projectDao;
-    
+
     @Autowired
     private PositionFixDao positionFixDao;
-    
+
     @Autowired
     AnimalDao animalDao;
 
@@ -72,7 +72,7 @@ public class SearchController {
     public Project getProject(@PathVariable(value="id") Long projectId) {
         return projectDao.getProjectById(projectId);
     }
-    
+
     @ModelAttribute("searchQuery")
     public SearchQuery getSearchQuery(HttpSession session, @ModelAttribute(value="project") Project project) {
         // If we have a SearchQuery instance in the session from a previously posted form,
@@ -84,7 +84,7 @@ public class SearchController {
         }
         return searchQuery;
     }
-    
+
     @RequestMapping(value="/projects/{id}/search", method=RequestMethod.POST)
     @PreAuthorize("#project.global or hasPermission(#project, 'read')")
     public String onSubmit(
@@ -101,7 +101,7 @@ public class SearchController {
         session.setAttribute("searchQuery", searchQuery);
         return showFormInternal(model, project, searchQuery, 0);
     }
-    
+
     @RequestMapping(value="/projects/{id}/search", method=RequestMethod.GET)
     @PreAuthorize("#project.global or hasPermission(#project, 'read')")
     public String showForm(
@@ -119,7 +119,7 @@ public class SearchController {
         List<PositionFix> positionFixes = positionFixDao.getProjectPositionFixList(searchQuery);
         return new SearchQueryXLSView(searchQuery.getProject(), positionFixes);
     }
-    
+
     private String showFormInternal(
         Model model,
         Project project,

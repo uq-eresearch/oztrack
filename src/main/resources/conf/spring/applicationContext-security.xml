@@ -11,21 +11,21 @@
         http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
     <bean id="authenticationProvider" class="org.oztrack.controller.OzTrackAuthenticationProvider"/>
-    
+
     <bean id="permissionEvaluator" class="org.oztrack.controller.OzTrackPermissionEvaluator"/>
-    
+
     <security:authentication-manager alias="authenticationManager">
         <security:authentication-provider ref="authenticationProvider"/>
     </security:authentication-manager>
-    
+
     <bean id="methodSecurityExpressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
         <property name="permissionEvaluator" ref="permissionEvaluator"/>
     </bean>
-    
+
     <bean id="webSecurityExpressionHandler" class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
         <property name="permissionEvaluator" ref="permissionEvaluator"/>
     </bean>
-    
+
     <security:http use-expressions="true" authentication-manager-ref="authenticationManager">
         <security:intercept-url pattern="/login" access="permitAll"/>
         <security:intercept-url pattern="/**" access="permitAll"/>

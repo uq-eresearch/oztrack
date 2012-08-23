@@ -62,7 +62,7 @@ public class UserController {
         }
         return "user-form";
     }
-    
+
     @RequestMapping(value="/users/{id}", method=RequestMethod.PUT)
     public String processUpdate(
         Model model,

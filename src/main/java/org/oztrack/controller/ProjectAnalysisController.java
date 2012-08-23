@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class ProjectAnalysisController {
     @Autowired
     private ProjectDao projectDao;
-    
+
     @Autowired
     AnimalDao animalDao;
-    
+
     @Autowired
     SrsDao srsDao;
 
@@ -39,7 +39,7 @@ public class ProjectAnalysisController {
     public Project getProject(@PathVariable(value="id") Long projectId) {
         return projectDao.getProjectById(projectId);
     }
-    
+
     @RequestMapping(value="/projects/{id}/analysis", method=RequestMethod.GET)
     @PreAuthorize("#project.global or hasPermission(#project, 'read')")
     public String getView(Model model, @ModelAttribute(value="project") Project project) {

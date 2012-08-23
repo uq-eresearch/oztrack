@@ -21,13 +21,13 @@ public class AnimalStartEndFeatureBuilder {
         private PositionFix startPositionFix;
         private PositionFix endPositionFix;
     }
-    
+
     private final List<PositionFix> positionFixList;
-    
+
     public AnimalStartEndFeatureBuilder(List<PositionFix> positionFixList) {
         this.positionFixList = positionFixList;
     }
-    
+
     public SimpleFeatureCollection buildFeatureCollection() {
         Integer srid = positionFixList.isEmpty() ? null : positionFixList.get(0).getLocationGeometry().getSRID();
         SimpleFeatureType featureType = buildFeatureType(srid);
@@ -66,7 +66,7 @@ public class AnimalStartEndFeatureBuilder {
         SimpleFeatureType featureType = simpleFeatureTypeBuilder.buildFeatureType();
         return featureType;
     }
-    
+
     private SimpleFeature buildFeature(SimpleFeatureType featureType, Animal animal, String identifier, Point point) {
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
         featureBuilder.set("animalId", animal.getId());

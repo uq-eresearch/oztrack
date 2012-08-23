@@ -21,7 +21,7 @@ import org.springframework.web.servlet.view.document.AbstractExcelView;
 
 public class SearchQueryXLSView extends AbstractExcelView {
     protected final Log logger = LogFactory.getLog(getClass());
-    
+
     private Project project;
     private List<PositionFix> positionFixes;
 
@@ -64,23 +64,23 @@ public class SearchQueryXLSView extends AbstractExcelView {
         dateTimeCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("yyyy-mm-dd hh:mm:ss"));
         CellStyle latLngCellStyle = workbook.createCellStyle();
         latLngCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("0.000000"));
-        
+
         for (PositionFix positionFix : positionFixes) {
             try {
                 int colNum = 0;
                 HSSFRow row = sheet.createRow(rowNum++);
-    
+
                 HSSFCell animalIdCell = row.createCell(colNum++);
                 animalIdCell.setCellValue(positionFix.getAnimal().getId());
-    
+
                 HSSFCell detectionTimeCell = row.createCell(colNum++);
                 detectionTimeCell.setCellValue(positionFix.getDetectionTime());
                 detectionTimeCell.setCellStyle(dateTimeCellStyle);
-    
+
                 HSSFCell latCell = row.createCell(colNum++);
                 latCell.setCellValue(Double.parseDouble(positionFix.getLatitude()));
                 latCell.setCellStyle(latLngCellStyle);
-    
+
                 HSSFCell lngCell = row.createCell(colNum++);
                 lngCell.setCellValue(Double.parseDouble(positionFix.getLongitude()));
                 lngCell.setCellStyle(latLngCellStyle);
@@ -89,7 +89,7 @@ public class SearchQueryXLSView extends AbstractExcelView {
                 logger.error("Error writing position fix " + positionFix.getId() + " to XLS", e);
             }
         }
-        
+
         sheet.createFreezePane(0, 1, 0, 1);
         for (short cellNum = headerRow.getFirstCellNum(); cellNum < headerRow.getLastCellNum(); cellNum++) {
             sheet.autoSizeColumn(cellNum);

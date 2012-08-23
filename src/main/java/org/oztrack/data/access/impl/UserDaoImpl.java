@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserDaoImpl implements UserDao {
     @PersistenceContext
     private EntityManager em;
-    
+
     @Override
     public User getByUsername(String username) {
         @SuppressWarnings("unchecked")
@@ -25,7 +25,7 @@ public class UserDaoImpl implements UserDao {
         assert resultList.size() <= 1;
         return resultList.isEmpty() ? null : resultList.get(0);
     }
-    
+
     @Override
     public User getByEmail(String email) {
         @SuppressWarnings("unchecked")
@@ -36,7 +36,7 @@ public class UserDaoImpl implements UserDao {
         assert resultList.size() <= 1;
         return resultList.isEmpty() ? null : resultList.get(0);
     }
-    
+
     @Override
     public User getByAafId(String aafId) {
         @SuppressWarnings("unchecked")
@@ -47,7 +47,7 @@ public class UserDaoImpl implements UserDao {
         assert resultList.size() <= 1;
         return resultList.isEmpty() ? null : resultList.get(0);
     }
-    
+
     @Override
     public User getByPasswordResetToken(String token) {
         @SuppressWarnings("unchecked")
@@ -58,7 +58,7 @@ public class UserDaoImpl implements UserDao {
         assert resultList.size() <= 1;
         return resultList.isEmpty() ? null : resultList.get(0);
     }
-    
+
     @Override
     public User getById(Long id) {
         @SuppressWarnings("unchecked")
@@ -69,7 +69,7 @@ public class UserDaoImpl implements UserDao {
         assert resultList.size() <= 1;
         return resultList.isEmpty() ? null : resultList.get(0);
     }
-    
+
     @Override
     public List<User> search(String term) {
         @SuppressWarnings("unchecked")

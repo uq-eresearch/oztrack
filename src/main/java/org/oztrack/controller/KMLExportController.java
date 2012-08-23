@@ -27,13 +27,13 @@ import org.springframework.web.servlet.View;
 @Controller
 public class KMLExportController {
     protected final Log logger = LogFactory.getLog(getClass());
-    
+
     @Autowired
     private ProjectDao projectDao;
-    
+
     @Autowired
     private AnimalDao animalDao;
-    
+
     @Autowired
     private PositionFixDao positionFixDao;
 
@@ -56,9 +56,9 @@ public class KMLExportController {
         SearchQuery searchQuery = new SearchQuery();
         if ((project != null) && (animalId != null))  {
             logger.debug("for projectId: " + project.getId());
-            
+
             searchQuery.setProject(project);
-            
+
             Animal animal = animalDao.getAnimalById(Long.valueOf(animalId));
             ArrayList<Animal> animalList = new ArrayList<Animal>(1);
             animalList.add(animal);

@@ -26,14 +26,14 @@ public class AnimalTrajectoryFeatureBuilder {
         private Date toDate;
         private List<Coordinate> coordinates;
     }
-    
+
     private final GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
     private final List<PositionFix> positionFixList;
-    
+
     public AnimalTrajectoryFeatureBuilder(List<PositionFix> positionFixList) {
         this.positionFixList = positionFixList;
     }
-    
+
     public SimpleFeatureCollection buildFeatureCollection() {
         List<AnimalTrajectory> animalTrajectories = buildAnimalTrajectories(positionFixList);
         SimpleFeatureType featureType = buildFeatureType(4326);
@@ -73,7 +73,7 @@ public class AnimalTrajectoryFeatureBuilder {
         SimpleFeatureType featureType = simpleFeatureTypeBuilder.buildFeatureType();
         return featureType;
     }
-    
+
     private SimpleFeature buildFeature(SimpleFeatureType featureType, AnimalTrajectory animalTrajectory) {
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
         featureBuilder.set("animalId", animalTrajectory.animal.getId());

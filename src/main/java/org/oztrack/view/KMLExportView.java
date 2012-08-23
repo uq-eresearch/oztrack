@@ -28,28 +28,28 @@ public class KMLExportView extends AbstractView{
         this.project = project;
         this.positionFixList = positionFixList;
     }
-	
-	@Override
-	protected void renderMergedOutputModel(
-	    @SuppressWarnings("rawtypes") Map model,
-		HttpServletRequest request,
-		HttpServletResponse response
-	) throws Exception {
+
+    @Override
+    protected void renderMergedOutputModel(
+        @SuppressWarnings("rawtypes") Map model,
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) throws Exception {
         SimpleFeatureCollection collection = FeatureCollections.newCollection();
         Encoder encoder = new Encoder(new KMLConfiguration());
         encoder.setIndenting(true);
-        
-		String fileName = "animal.kml";
-		response.setHeader("Content-Disposition", "attachment; filename=\""+ fileName + "\"");
-		response.setContentType("application/xml");
-		response.setCharacterEncoding("UTF-8");
-				
+
+        String fileName = "animal.kml";
+        response.setHeader("Content-Disposition", "attachment; filename=\""+ fileName + "\"");
+        response.setContentType("application/xml");
+        response.setCharacterEncoding("UTF-8");
+
         if (project != null) {
-        	collection = this.buildPointsFeatureCollection();
-        	encoder.encode(collection,KML.kml, response.getOutputStream());
-        }    
-	}
-	
+            collection = this.buildPointsFeatureCollection();
+            encoder.encode(collection,KML.kml, response.getOutputStream());
+        }
+    }
+
     private SimpleFeatureCollection buildPointsFeatureCollection() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy H:m:s");
         int count = 1;
@@ -61,17 +61,17 @@ public class KMLExportView extends AbstractView{
         sftb.add("description",String.class);
         sftb.add("location", Point.class);
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(sftb.buildFeatureType());
-        
+
         for(PositionFix positionFix : positionFixList) {
-        	String nameField = sdf.format(positionFix.getDetectionTime());
-        	String descriptionField = "Animal Id: " 
-        							+ positionFix.getAnimal().getProjectAnimalId()
-        							+ "<br> Name: " 
-        							+ positionFix.getAnimal().getAnimalName()
-        							+ "<br> Timestamp: "
-        							+ sdf.format(positionFix.getDetectionTime());
-            
-        	featureBuilder.add(nameField);
+            String nameField = sdf.format(positionFix.getDetectionTime());
+            String descriptionField = "Animal Id: "
+                                    + positionFix.getAnimal().getProjectAnimalId()
+                                    + "<br> Name: "
+                                    + positionFix.getAnimal().getAnimalName()
+                                    + "<br> Timestamp: "
+                                    + sdf.format(positionFix.getDetectionTime());
+
+            featureBuilder.add(nameField);
             featureBuilder.add(descriptionField);
             featureBuilder.add(positionFix.getLocationGeometry());
             collection.add(featureBuilder.buildFeature(Integer.toString(count)));

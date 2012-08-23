@@ -19,7 +19,7 @@ public class ContactController {
     public void initTextBinder(WebDataBinder binder) {
         binder.setAllowedFields();
     }
-    
+
     @ModelAttribute("text")
     public String getText() throws Exception {
         return settingsDao.getSettings().getContactText();

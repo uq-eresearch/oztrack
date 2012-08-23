@@ -11,7 +11,7 @@ public class PositionFixRowMapper implements RowMapper<PositionFix> {
     @Override
     public PositionFix mapRow(ResultSet resultSet, int i) throws SQLException {
         PositionFix positionFix = new PositionFix();
-    
+
         Animal animal = new Animal();
         animal.setId(resultSet.getLong("animal_id"));
         positionFix.setAnimal(animal);

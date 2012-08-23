@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AnimalDaoImpl implements AnimalDao {
     private EntityManager em;
-    
+
     @PersistenceContext
     public void setEntityManger(EntityManager em) {
         this.em = em;
@@ -72,7 +72,7 @@ public class AnimalDaoImpl implements AnimalDao {
         object.setUpdateDate(new java.util.Date());
         return em.merge(object);
     }
-    
+
     @Override
     @Transactional
     public void delete(Animal animal) {

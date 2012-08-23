@@ -32,33 +32,33 @@ public class Project extends OztrackBaseEntity {
     @SequenceGenerator(name = "projectid_seq", sequenceName = "projectid_seq",allocationSize = 1)
     @Column(nullable=false)
     private Long id;
-    
+
     private String title;
-    
+
     @Column(columnDefinition = "TEXT")
     private String description;
-    
+
     private boolean isGlobal;
-    
+
     private String spatialCoverageDescr;
     @ManyToOne
     private User dataSpaceAgent;
-    
+
     @Column(columnDefinition = "TEXT")
     private String publicationTitle;
-    
+
     @Column(columnDefinition = "TEXT")
     private String publicationUrl;
-    
+
     @Column(columnDefinition = "TEXT")
     private String dataDirectoryPath;
-    
+
     @OneToMany(mappedBy = "project", fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<ProjectUser> projectUsers = new LinkedList<ProjectUser>();
-    
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Animal> animals = new LinkedList<Animal>();
-    
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DataFile> dataFiles = new LinkedList<DataFile>();
 
@@ -67,16 +67,16 @@ public class Project extends OztrackBaseEntity {
     private ProjectType projectType;
 
     private String speciesCommonName;
-    
+
     private String speciesScientificName;
-    
+
     @Column(name = "boundingbox", columnDefinition="GEOMETRY")
     @Type(type = "org.hibernatespatial.GeometryUserType")
     private Polygon boundingBox;
-	private Date firstDetectionDate;
+    private Date firstDetectionDate;
     private Date lastDetectionDate;
-    private Integer detectionCount; 
-    
+    private Integer detectionCount;
+
     @Column(columnDefinition = "TEXT")
     private String dataSpaceURI;
     private Date dataSpaceUpdateDate;
@@ -86,7 +86,7 @@ public class Project extends OztrackBaseEntity {
     }
 
     public Project(String title) {
-    	this.title = title;
+        this.title = title;
     }
 
     public Long getId() {
@@ -162,12 +162,12 @@ public class Project extends OztrackBaseEntity {
     }
 
     public User getDataSpaceAgent() {
-		return dataSpaceAgent;
-	}
-	public void setDataSpaceAgent(User dataSpaceAgent) {
-		this.dataSpaceAgent = dataSpaceAgent;
-	}
-	public String getPublicationTitle() {
+        return dataSpaceAgent;
+    }
+    public void setDataSpaceAgent(User dataSpaceAgent) {
+        this.dataSpaceAgent = dataSpaceAgent;
+    }
+    public String getPublicationTitle() {
         return publicationTitle;
     }
 
@@ -216,7 +216,7 @@ public class Project extends OztrackBaseEntity {
     public void setDataDirectoryPath(String dataDirectoryPath) {
         this.dataDirectoryPath = dataDirectoryPath;
     }
-    
+
     public String getAbsoluteDataDirectoryPath() {
         return OzTrackApplication.getApplicationContext().getDataDir() + File.separator + getDataDirectoryPath();
     }
@@ -228,52 +228,52 @@ public class Project extends OztrackBaseEntity {
     public void setBoundingBox(Polygon boundingBox) {
         this.boundingBox = boundingBox;
     }
-    
-	public Date getFirstDetectionDate() {
-		return firstDetectionDate;
-	}
-	public void setFirstDetectionDate(Date firstDetectionDate) {
-		this.firstDetectionDate = firstDetectionDate;
-	}
-	public Date getLastDetectionDate() {
-		return lastDetectionDate;
-	}
-	public void setLastDetectionDate(Date lastDetectionDate) {
-		this.lastDetectionDate = lastDetectionDate;
-	}
 
-	public Integer getDetectionCount() {
-		return detectionCount;
-	}
-	public void setDetectionCount(Integer detectionCount) {
-		this.detectionCount = detectionCount;
-	}
-	
-	public String getDataSpaceURI() {
-		return dataSpaceURI;
-	}
-	
-	public void setDataSpaceURI(String dataSpaceURI) {
-		this.dataSpaceURI = dataSpaceURI;
-	}
-	
-	public Date getDataSpaceUpdateDate() {
-		return dataSpaceUpdateDate;
-	}
-	
-	public void setDataSpaceUpdateDate(Date dataSpaceUpdateDate) {
-		this.dataSpaceUpdateDate = dataSpaceUpdateDate;
-	}
-	
-	public String getRightsStatement() {
-		return rightsStatement;
-	}
-	
-	public void setRightsStatement(String rightsStatement) {
-		this.rightsStatement = rightsStatement;
-	}
-	
-	@Override
+    public Date getFirstDetectionDate() {
+        return firstDetectionDate;
+    }
+    public void setFirstDetectionDate(Date firstDetectionDate) {
+        this.firstDetectionDate = firstDetectionDate;
+    }
+    public Date getLastDetectionDate() {
+        return lastDetectionDate;
+    }
+    public void setLastDetectionDate(Date lastDetectionDate) {
+        this.lastDetectionDate = lastDetectionDate;
+    }
+
+    public Integer getDetectionCount() {
+        return detectionCount;
+    }
+    public void setDetectionCount(Integer detectionCount) {
+        this.detectionCount = detectionCount;
+    }
+
+    public String getDataSpaceURI() {
+        return dataSpaceURI;
+    }
+
+    public void setDataSpaceURI(String dataSpaceURI) {
+        this.dataSpaceURI = dataSpaceURI;
+    }
+
+    public Date getDataSpaceUpdateDate() {
+        return dataSpaceUpdateDate;
+    }
+
+    public void setDataSpaceUpdateDate(Date dataSpaceUpdateDate) {
+        this.dataSpaceUpdateDate = dataSpaceUpdateDate;
+    }
+
+    public String getRightsStatement() {
+        return rightsStatement;
+    }
+
+    public void setRightsStatement(String rightsStatement) {
+        this.rightsStatement = rightsStatement;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
@@ -285,9 +285,9 @@ public class Project extends OztrackBaseEntity {
         Project other = (Project) obj;
         return getId().equals(other.getId());
     }
-	
-	@Override
-	public int hashCode() {
+
+    @Override
+    public int hashCode() {
         if (id != null) {
             return id.hashCode();
         } else {

@@ -21,7 +21,7 @@ public class MapUtils {
         return new Dimension(width, (int) Math.round(width * (bounds.getSpan(1) / bounds.getSpan(0))));
     }
 
-    public static void writePng(MapContext mapContext, Dimension mapDimension, OutputStream out) throws IOException { 
+    public static void writePng(MapContext mapContext, Dimension mapDimension, OutputStream out) throws IOException {
         BufferedImage image = new BufferedImage(mapDimension.width, mapDimension.height, BufferedImage.TYPE_4BYTE_ABGR);
         Map<RenderingHints.Key, Object> renderingHintsMap = new HashMap<RenderingHints.Key, Object>();
         renderingHintsMap.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

@@ -139,7 +139,7 @@ function buildPopup(f) {
         '    <div class="home-popup-attr-name">Date range:</div>' +
         '    <div class="home-popup-attr-value">' + f.attributes.firstDetectionDate + ' to ' + f.attributes.lastDetectionDate + '</div>' +
         '    <div class="home-popup-attr-name">Data access:</div>' +
-        '    <div class="home-popup-attr-value">' + 
+        '    <div class="home-popup-attr-value">' +
         (
             (f.attributes.global == 'true')
             ? '<span style="font-weight: bold; color: green;">Open Access</span>'

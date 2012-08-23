@@ -6,7 +6,7 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <tags:page title="Settings">
     <jsp:attribute name="head">
-        <script type="text/javascript"> 
+        <script type="text/javascript">
             $(document).ready(function() {
                 $('#navSettings').addClass('active');
             });
@@ -14,7 +14,7 @@
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <span class="active">Settings</span> 
+        &rsaquo; <span class="active">Settings</span>
     </jsp:attribute>
     <jsp:body>
         <h1>Settings</h1>

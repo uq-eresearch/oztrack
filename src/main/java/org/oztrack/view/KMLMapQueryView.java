@@ -36,7 +36,7 @@ public class KMLMapQueryView extends AbstractView {
             fileInputStream = new FileInputStream(kmlFile);
             byte kmlContent[] = new byte[(int) kmlFile.length()];
             fileInputStream.read(kmlContent);
-    
+
             String filename = searchQuery.getMapQueryType().name().toLowerCase(Locale.ENGLISH) + ".kml";
             response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
             response.setCharacterEncoding("UTF-8");

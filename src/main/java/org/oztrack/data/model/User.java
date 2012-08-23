@@ -26,10 +26,10 @@ public class User {
 
     @Column(unique=true, nullable=false)
     private String username;
-    
+
     @Column(unique=true, nullable=false)
     private String email;
-    
+
     private String title;
     private String firstName;
     private String lastName;
@@ -100,15 +100,15 @@ public class User {
         this.email = email;
     }
 
-	public String getTitle() {
-		return title;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public String getFirstName() {
+    public String getFirstName() {
         return firstName;
     }
 
@@ -125,14 +125,14 @@ public class User {
     }
 
     public String getOrganisation() {
-		return organisation;
-	}
+        return organisation;
+    }
 
-	public void setOrganisation(String organisation) {
-		this.organisation = organisation;
-	}
+    public void setOrganisation(String organisation) {
+        this.organisation = organisation;
+    }
 
-	public String getFullName() {
+    public String getFullName() {
         return firstName + " " + lastName;
     }
 
@@ -168,29 +168,29 @@ public class User {
         this.projectUsers = projectUsers;
     }
 
-	public String getDataSpaceAgentURI() {
-		return dataSpaceAgentURI;
-	}
+    public String getDataSpaceAgentURI() {
+        return dataSpaceAgentURI;
+    }
 
-	public void setDataSpaceAgentURI(String dataSpaceAgentURI) {
-		this.dataSpaceAgentURI = dataSpaceAgentURI;
-	}
+    public void setDataSpaceAgentURI(String dataSpaceAgentURI) {
+        this.dataSpaceAgentURI = dataSpaceAgentURI;
+    }
 
-	public String getDataSpaceAgentDescription() {
-		return dataSpaceAgentDescription;
-	}
+    public String getDataSpaceAgentDescription() {
+        return dataSpaceAgentDescription;
+    }
 
-	public void setDataSpaceAgentDescription(String dataSpaceAgentDescription) {
-		this.dataSpaceAgentDescription = dataSpaceAgentDescription;
-	}
+    public void setDataSpaceAgentDescription(String dataSpaceAgentDescription) {
+        this.dataSpaceAgentDescription = dataSpaceAgentDescription;
+    }
 
-	public Date getDataSpaceAgentUpdateDate() {
-		return dataSpaceAgentUpdateDate;
-	}
+    public Date getDataSpaceAgentUpdateDate() {
+        return dataSpaceAgentUpdateDate;
+    }
 
-	public void setDataSpaceAgentUpdateDate(Date dataSpaceAgentUpdateDate) {
-		this.dataSpaceAgentUpdateDate = dataSpaceAgentUpdateDate;
-	}
+    public void setDataSpaceAgentUpdateDate(Date dataSpaceAgentUpdateDate) {
+        this.dataSpaceAgentUpdateDate = dataSpaceAgentUpdateDate;
+    }
 
     public String getPasswordResetToken() {
         return passwordResetToken;

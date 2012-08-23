@@ -6,15 +6,15 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <tags:page title="Contacts">
     <jsp:attribute name="head">
-        <script type="text/javascript"> 
+        <script type="text/javascript">
             $(document).ready(function() {
-            	$('#navContact').addClass('active');
+                $('#navContact').addClass('active');
             });
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <span class="active">Contact</span> 
+        &rsaquo; <span class="active">Contact</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar"/>
     <jsp:body>

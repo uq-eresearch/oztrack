@@ -46,18 +46,18 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
         }
         return nbrObservations;
     }
-	
+
     private String getTableName(Project project) {
-    	
-    	String tableName = "foo";
-    	
+
+        String tableName = "foo";
+
         switch (project.getProjectType()) {
         case GPS:
             tableName = "positionfix";
 
             break;
     }
-    	return tableName;
+        return tableName;
     }
 
     public void truncateRawObservations(DataFile dataFile) {
@@ -69,7 +69,7 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
         MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
         mapSqlParameterSource.addValue("projectId", project.getId());
         String tableName = this.getTableName(project);
- 
+
         String sql = "update project "
                    + " set boundingBox = "
                      + "(select (ST_Envelope(ST_Collect(locationgeometry))) "

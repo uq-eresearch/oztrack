@@ -14,36 +14,36 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
 
     @Override
     public String getDataSpaceURL() {
-		return dataSpaceURL;
-	}
+        return dataSpaceURL;
+    }
 
-	public void setDataSpaceURL(String dataSpaceURL) {
-		this.dataSpaceURL = dataSpaceURL;
-	}
+    public void setDataSpaceURL(String dataSpaceURL) {
+        this.dataSpaceURL = dataSpaceURL;
+    }
 
-	@Override
-	public String getDataSpaceUsername() {
-		return dataSpaceUsername;
-	}
+    @Override
+    public String getDataSpaceUsername() {
+        return dataSpaceUsername;
+    }
 
-	public void setDataSpaceUsername(String dataSpaceUsername) {
-		this.dataSpaceUsername = dataSpaceUsername;
-	}
+    public void setDataSpaceUsername(String dataSpaceUsername) {
+        this.dataSpaceUsername = dataSpaceUsername;
+    }
 
-	@Override
-	public String getDataSpacePassword() {
-		return dataSpacePassword;
-	}
+    @Override
+    public String getDataSpacePassword() {
+        return dataSpacePassword;
+    }
 
-	public void setDataSpacePassword(String dataSpacePassword) {
-		this.dataSpacePassword = dataSpacePassword;
-	}
+    public void setDataSpacePassword(String dataSpacePassword) {
+        this.dataSpacePassword = dataSpacePassword;
+    }
 
     @Override
     public String getDataDir() {
         return dataDir;
     }
-    
+
     public void setDataDir(String dataDir) {
         this.dataDir = dataDir;
     }

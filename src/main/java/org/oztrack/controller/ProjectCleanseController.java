@@ -39,13 +39,13 @@ import com.vividsolutions.jts.io.WKTReader;
 @Controller
 public class ProjectCleanseController {
     protected final Log logger = LogFactory.getLog(getClass());
-    
+
     @Autowired
     private ProjectDao projectDao;
-    
+
     @Autowired
     private PositionFixDao positionFixDao;
-    
+
     @Autowired
     AnimalDao animalDao;
 
@@ -53,12 +53,12 @@ public class ProjectCleanseController {
     public void initProjectBinder(WebDataBinder binder) {
         binder.setAllowedFields();
     }
-    
+
     @ModelAttribute("project")
     public Project getProject(@PathVariable(value="id") Long projectId) {
         return projectDao.getProjectById(projectId);
     }
-    
+
     @RequestMapping(value="/projects/{id}/cleanse", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#project, 'write')")
     public String getCleanseView(Model model, @ModelAttribute(value="project") Project project) {
@@ -66,7 +66,7 @@ public class ProjectCleanseController {
         model.addAttribute("projectAnimalsList", projectAnimalsList);
         return "project-cleanse";
     }
-    
+
     @RequestMapping(value="/projects/{id}/cleanse", method=RequestMethod.POST, produces="application/xml")
     @PreAuthorize("hasPermission(#project, 'write')")
     public void processCleanse(

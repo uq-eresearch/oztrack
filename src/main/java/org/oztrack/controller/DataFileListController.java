@@ -32,13 +32,13 @@ import org.springframework.web.multipart.MultipartFile;
 public class DataFileListController {
     @Autowired
     private ProjectDao projectDao;
-    
+
     @Autowired
     private DataFileDao dataFileDao;
-    
+
     @Autowired
     private UserDao userDao;
-    
+
     @InitBinder("project")
     public void initProjectBinder(WebDataBinder binder) {
         binder.setAllowedFields();
@@ -57,14 +57,14 @@ public class DataFileListController {
     public Project getProject(@PathVariable(value="project_id") Long projectId) {
         return projectDao.getProjectById(projectId);
     }
-    
+
     @ModelAttribute("dataFile")
     public DataFile getDataFile() {
         DataFile dataFile = new DataFile();
         dataFile.setLocalTimeConversionHours(10L);
         return dataFile;
     }
-    
+
     @RequestMapping(value="/projects/{project_id}/datafiles", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#project, 'read')")
     public String handleDataFilesRequest(
@@ -75,7 +75,7 @@ public class DataFileListController {
         model.addAttribute("dataFileList", dataFileList);
         return "datafiles";
     }
-    
+
     @RequestMapping(value="/projects/{project_id}/datafiles/new", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#project, 'write')")
     public String getNewView(
@@ -96,7 +96,7 @@ public class DataFileListController {
         model.addAttribute("fileHeaders", fileHeaders);
         return "datafile-form";
     }
-    
+
     @RequestMapping(value="/projects/{project_id}/datafiles", method=RequestMethod.POST)
     @PreAuthorize("hasPermission(#project, 'write')")
     public String processCreate(
@@ -111,7 +111,7 @@ public class DataFileListController {
         if (bindingResult.hasErrors()) {
             return "datafile-form";
         }
-        
+
         MultipartFile file = dataFile.getFile();
         dataFile.setSingleAnimalInFile(false);
         dataFile.setUserGivenFileName(file.getOriginalFilename());
@@ -124,7 +124,7 @@ public class DataFileListController {
         dataFileDao.save(dataFile);
 
         dataFile.setDataFilePath("datafile-" + dataFile.getId().toString() + ".csv");
-        
+
         try {
             File saveFile = new File(dataFile.getAbsoluteDataFilePath());
             saveFile.mkdirs();
@@ -137,7 +137,7 @@ public class DataFileListController {
             dataFile.setStatusMessage("There was a problem with this file upload and it has been discarded. Please try again.");
             return "datafile-form";
         }
-        
+
         // ready to go now; poller will pick the job up
         dataFile.setStatus(DataFileStatus.NEW);
         dataFileDao.update(dataFile);

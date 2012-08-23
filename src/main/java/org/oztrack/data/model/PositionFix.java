@@ -36,7 +36,7 @@ public class PositionFix {
     @Column(name = "locationgeometry", columnDefinition="GEOMETRY")
     @Type(type = "org.hibernatespatial.GeometryUserType")
     private Point locationGeometry;
-    
+
     private Boolean deleted;
 
     public Long getId() {

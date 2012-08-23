@@ -4,14 +4,14 @@ function createSrsSelector(options) {
 
         var mapWidth = 700;
         var mapHeight = 500;
-        
+
         var srsList = options.srsList;
         var onSrsSelected = options.onSrsSelected;
         var dialogDiv = null;
 
         (function() {
         })();
-        
+
         srsSelector.showDialog = function() {
             if (dialogDiv == null) {
                 dialogDiv = jQuery('<div style="display: none; text-align: center;">').appendTo('body');
@@ -23,20 +23,20 @@ function createSrsSelector(options) {
                     zIndex: 20000
                 });
                 var mapDiv = jQuery('<div style="width: ' + mapWidth + 'px; height: ' + mapHeight + 'px;">').appendTo(dialogDiv);
-        
+
                 var projection900913 = new OpenLayers.Projection("EPSG:900913");
                 var projection4326 =  new OpenLayers.Projection("EPSG:4326");
-        
+
                 var map = new OpenLayers.Map(mapDiv[0], {
                     units: 'm',
                     projection: projection900913,
                     displayProjection: projection4326
                 });
                 map.addControl(new OpenLayers.Control.LayerSwitcher());
-        
+
                 var gphy = new OpenLayers.Layer.Google('Google Physical', {type: google.maps.MapTypeId.TERRAIN});
                 map.addLayer(gphy);
-                
+
                 var srsLayer = new OpenLayers.Layer.Vector('Spatial Reference Systems', {
                     styleMap: new OpenLayers.StyleMap({
                         'temporary': {
@@ -57,13 +57,13 @@ function createSrsSelector(options) {
                         bounds.toGeometry(),
                         {
                             id: srs.id,
-                            title: srs.title 
+                            title: srs.title
                         }
                     );
                     srsLayer.addFeatures([srsFeature]);
-                }  
+                }
                 map.addLayer(srsLayer);
-                
+
                 var hoverControl = new OpenLayers.Control.SelectFeature([srsLayer], {
                     hover: true,
                     multiple: false,
@@ -72,7 +72,7 @@ function createSrsSelector(options) {
                 });
                 map.addControl(hoverControl);
                 hoverControl.activate();
-                
+
                 var selectControl = new OpenLayers.Control.SelectFeature([srsLayer], {
                     hover: false,
                     multiple: false,
@@ -84,14 +84,14 @@ function createSrsSelector(options) {
                 });
                 map.addControl(selectControl);
                 selectControl.activate();
-        
+
                 map.setCenter(new OpenLayers.LonLat(133, -28).transform(projection4326, projection900913), 3);
             }
             else {
                 dialogDiv.dialog('open');
             }
         };
-        
+
         return srsSelector;
     }());
 }

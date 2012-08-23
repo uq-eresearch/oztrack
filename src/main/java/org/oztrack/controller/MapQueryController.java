@@ -49,10 +49,10 @@ import org.springframework.web.servlet.View;
 @Controller
 public class MapQueryController {
     protected final Log logger = LogFactory.getLog(getClass());
-    
+
     @Autowired
     private ProjectDao projectDao;
-    
+
     @Autowired
     private PositionFixDao positionFixDao;
 
@@ -60,7 +60,7 @@ public class MapQueryController {
     public void initSearchQueryBinder(WebDataBinder binder) {
         binder.setAllowedFields("includeDeleted");
     }
-    
+
     @ModelAttribute("searchQuery")
     public SearchQuery getSearchQuery(
         @RequestParam(value="projectId", required=false) Long projectId,
@@ -121,7 +121,7 @@ public class MapQueryController {
         }
         return searchQuery;
     }
-    
+
     @RequestMapping(value="/mapQueryKML", method=RequestMethod.GET)
     @PreAuthorize("#searchQuery.project.global or hasPermission(#searchQuery.project, 'read')")
     public View handleKMLQuery(@ModelAttribute(value="searchQuery") SearchQuery searchQuery) throws Exception {
@@ -130,7 +130,7 @@ public class MapQueryController {
         File kmlFile = rServeInterface.createKml();
         return new KMLMapQueryView(kmlFile, searchQuery);
     }
-    
+
     @RequestMapping(value="/mapQueryWFS", method=RequestMethod.POST)
     @PreAuthorize(
         "(#searchQuery.mapQueryType == T(org.oztrack.data.model.types.MapQueryType).PROJECTS) or " +
@@ -166,7 +166,7 @@ public class MapQueryController {
             default:
                 throw new RuntimeException("Unsupported map query type: " + searchQuery.getMapQueryType());
         }
-        
+
         FeatureCollectionType featureCollectionType = WfsFactory.eINSTANCE.createFeatureCollectionType();
         @SuppressWarnings("unchecked")
         EList<SimpleFeatureCollection> featureCollections = featureCollectionType.getFeature();

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface DataFileDao {
-	DataFile getDataFileById(Long id);
+    DataFile getDataFileById(Long id);
     DataFile getNextDataFile();
     ArrayList<String> getAllAnimalIds(DataFile datafile);
     List<DataFile> getDataFilesByProject(Project project);

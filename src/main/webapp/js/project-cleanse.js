@@ -1,7 +1,7 @@
 function createCleanseMap(div, options) {
     return (function() {
         var cleanseMap = {};
-        
+
         var projection900913 = new OpenLayers.Projection('EPSG:900913');
         var projection4326 = new OpenLayers.Projection('EPSG:4326');
 
@@ -16,7 +16,7 @@ function createCleanseMap(div, options) {
         var polygonFeatures;
         var highlightControl;
         var beforeFirstZoom = true;
-        
+
         (function() {
             map = new OpenLayers.Map(div, {
                 units: 'm',
@@ -29,7 +29,7 @@ function createCleanseMap(div, options) {
             map.addControl(new OpenLayers.Control.ScaleLine());
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.addControl(new OpenLayers.Control.LoadingPanel());
-            
+
             var gphy = new OpenLayers.Layer.Google('Google Physical', {type: google.maps.MapTypeId.TERRAIN});
             var gsat = new OpenLayers.Layer.Google('Google Satellite', {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22});
             var gmap = new OpenLayers.Layer.Google('Google Streets', {numZoomLevels: 20});
@@ -38,20 +38,20 @@ function createCleanseMap(div, options) {
             allDetectionsLayer = createAllDetectionsLayer(projectId);
             polygonLayer = new OpenLayers.Layer.Vector('Polygons');
             map.addLayers([gsat, gphy, gmap, ghyb, osmLayer, allDetectionsLayer, polygonLayer]);
-    
+
             polygonFeatures = [];
             var polygonControl = new OpenLayers.Control.DrawFeature(polygonLayer, OpenLayers.Handler.Polygon);
             polygonControl.events.register('featureadded', null, polygonFeatureAdded);
             navToolbar.addControls(polygonControl);
             navToolbar.activateControl(polygonControl);
-            
+
             highlightControl = new OpenLayers.Control.SelectFeature([polygonLayer], {
                 hover: true,
                 highlightOnly: true,
                 renderIntent: 'temporary'
             });
             map.addControl(highlightControl);
-            
+
             map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326, projection900913), 4);
         }());
 
@@ -64,7 +64,7 @@ function createCleanseMap(div, options) {
                 onReset();
             }
         };
-        
+
         cleanseMap.toggleAllAnimalFeatures = function(animalId, setVisible) {
             function getVectorLayers() {
                 var vectorLayers = new Array();
@@ -78,7 +78,7 @@ function createCleanseMap(div, options) {
                 }
                 return vectorLayers;
             }
-            
+
             var vectorLayers = getVectorLayers();
             for (var l in vectorLayers) {
                 var layer = vectorLayers[l];
@@ -98,7 +98,7 @@ function createCleanseMap(div, options) {
             var splitString = featureIdentifier.split("-");
             var layerId = splitString[0];
             var featureId = splitString[1];
-            
+
             var layer = map.getLayer(layerId);
             for (var key in layer.features) {
                 var feature = layer.features[key];
@@ -116,7 +116,7 @@ function createCleanseMap(div, options) {
 
         function polygonFeatureAdded(e) {
             // Polygons must have at least 3 sides.
-            // Discard any geometries that are just points or lines. 
+            // Discard any geometries that are just points or lines.
             if (e.feature.geometry.getVertices().length < 3) {
                 e.feature.destroy();
                 return;
@@ -130,7 +130,7 @@ function createCleanseMap(div, options) {
                 onPolygonFeatureAdded(e.feature.id, 'Selection ' + polygonFeatures.length, wkt);
             }
         }
-        
+
         cleanseMap.selectPolygonFeature = function(id, selected) {
             for (var i = 0; i < polygonFeatures.length; i++) {
                 if (polygonFeatures[i].id == id) {
@@ -164,11 +164,11 @@ function createCleanseMap(div, options) {
                         featureNS: 'http://oztrack.org/xmlns#'
                     }),
                     strategies: [new OpenLayers.Strategy.Fixed()],
-                    styleMap: createPointStyleMap(), 
+                    styleMap: createPointStyleMap(),
                     eventListeners: {
                         loadend: function (e) {
                             jQuery('.select-animal').each(function() {
-                                cleanseMap.toggleAllAnimalFeatures(parseInt(jQuery(this).attr('id').substring('select-animal-'.length)), this.checked); 
+                                cleanseMap.toggleAllAnimalFeatures(parseInt(jQuery(this).attr('id').substring('select-animal-'.length)), this.checked);
                             });
                             if (beforeFirstZoom) {
                                 map.zoomToExtent(e.object.getDataExtent(), false);

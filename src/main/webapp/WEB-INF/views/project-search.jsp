@@ -18,7 +18,7 @@
                 text-decoration: none;
             }
         </style>
-        <script type="text/javascript"> 
+        <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
                 $('#fromDate').datepicker();
@@ -36,92 +36,92 @@
         <tags:project-menu project="${project}"/>
     </jsp:attribute>
     <jsp:body>
-		<h1 id="projectTitle"><c:out value="${project.title}"/></h1>
+        <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
 
-		<form:form class="form-horizontal form-bordered" commandName="searchQuery" method="POST" name="searchQuery">
+        <form:form class="form-horizontal form-bordered" commandName="searchQuery" method="POST" name="searchQuery">
             <fieldset>
                 <legend>Search Project Data</legend>
-    		    <div class="control-group">
-    			    <label class="control-label" for="fromDate">Date From</label>
+                <div class="control-group">
+                    <label class="control-label" for="fromDate">Date From</label>
                     <div class="controls">
-    			        <form:input path="fromDate" id="fromDate" cssClass="input-medium"/>
+                        <form:input path="fromDate" id="fromDate" cssClass="input-medium"/>
                     </div>
-    		    </div>
+                </div>
                 <div class="control-group">
                     <label class="control-label" for="toDate">Date To</label>
                     <div class="controls">
                         <form:input path="toDate" id="toDate" cssClass="input-medium"/>
                     </div>
                 </div>
-    		    <div class="control-group">
-    			    <label class="control-label" for="animalListSelect">Animal</label>
+                <div class="control-group">
+                    <label class="control-label" for="animalListSelect">Animal</label>
                     <div class="controls">
-        			    <form:select id="animalListSelect" path="animalList" items="${projectAnimalsList}" itemLabel="animalName" itemValue="id" multiple="true"/>
+                        <form:select id="animalListSelect" path="animalList" items="${projectAnimalsList}" itemLabel="animalName" itemValue="id" multiple="true"/>
                     </div>
-    		    </div>
-    		    <div class="control-group">
-    			    <label class="control-label" for="sortField">Sort by:</label>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="sortField">Sort by:</label>
                     <div class="controls">
-        			    <form:select path="sortField">
-        			        <form:option value="Animal"/>
-        			        <form:option value="Detection Time"/>
-        			    </form:select>
+                        <form:select path="sortField">
+                            <form:option value="Animal"/>
+                            <form:option value="Detection Time"/>
+                        </form:select>
                     </div>
-    		    </div>
+                </div>
             </fieldset>
-		    <div class="form-actions">
-		        <input class="btn btn-primary" type="submit" value="Search"/>
-		    </div>
-		</form:form>
-		
-		
-		<div class="dataTableNav">
-		<div style="float:left;">
-		    Displaying <c:out value="${offset+1}"/> to <c:out value="${offset+nbrObjectsThisPage}"/> of <c:out value="${totalCount}"/> records.
-		</div>
-		<div style="float:right">
-		    <c:choose>
-		    <c:when test="${offset > 0}">
-		        <a href="<c:url value="/projects/${searchQuery.project.id}/search">
-		            <c:param name="offset" value="${0}"/>
-		        </c:url>">&lt;&lt;</a>
-		        &nbsp;&nbsp;
-		        <a href="<c:url value="/projects/${searchQuery.project.id}/search">
-		            <c:param name="offset" value="${offset-nbrObjectsPerPage}"/>
-		        </c:url>">&lt;</a>
-		    </c:when>
-		    <c:otherwise>
+            <div class="form-actions">
+                <input class="btn btn-primary" type="submit" value="Search"/>
+            </div>
+        </form:form>
+
+
+        <div class="dataTableNav">
+        <div style="float:left;">
+            Displaying <c:out value="${offset+1}"/> to <c:out value="${offset+nbrObjectsThisPage}"/> of <c:out value="${totalCount}"/> records.
+        </div>
+        <div style="float:right">
+            <c:choose>
+            <c:when test="${offset > 0}">
+                <a href="<c:url value="/projects/${searchQuery.project.id}/search">
+                    <c:param name="offset" value="${0}"/>
+                </c:url>">&lt;&lt;</a>
+                &nbsp;&nbsp;
+                <a href="<c:url value="/projects/${searchQuery.project.id}/search">
+                    <c:param name="offset" value="${offset-nbrObjectsPerPage}"/>
+                </c:url>">&lt;</a>
+            </c:when>
+            <c:otherwise>
                 &lt;&lt;
                 &nbsp;&nbsp;
                 &lt;
             </c:otherwise>
-		    </c:choose>
-		    &nbsp;&nbsp;
-		    <c:choose>
-		    <c:when test="${offset < totalCount - (totalCount % nbrObjectsPerPage)}">
-		        <a href="<c:url value="/projects/${searchQuery.project.id}/search">
-		            <c:param name="offset" value="${offset+nbrObjectsThisPage}"/>
-		        </c:url>">&gt;</a>
-		        &nbsp;&nbsp;
-		        <a href="<c:url value="/projects/${searchQuery.project.id}/search">
-		            <c:param name="offset" value="${totalCount - (totalCount % nbrObjectsPerPage)}"/>
-		        </c:url>">&gt;&gt;</a>
-		    </c:when>
-		    <c:otherwise>
+            </c:choose>
+            &nbsp;&nbsp;
+            <c:choose>
+            <c:when test="${offset < totalCount - (totalCount % nbrObjectsPerPage)}">
+                <a href="<c:url value="/projects/${searchQuery.project.id}/search">
+                    <c:param name="offset" value="${offset+nbrObjectsThisPage}"/>
+                </c:url>">&gt;</a>
+                &nbsp;&nbsp;
+                <a href="<c:url value="/projects/${searchQuery.project.id}/search">
+                    <c:param name="offset" value="${totalCount - (totalCount % nbrObjectsPerPage)}"/>
+                </c:url>">&gt;&gt;</a>
+            </c:when>
+            <c:otherwise>
                 &gt;
                 &nbsp;&nbsp;
                 &gt;&gt;
             </c:otherwise>
-		    </c:choose>
+            </c:choose>
             &nbsp;&nbsp;
             <a href="<c:url value="/projects/${searchQuery.project.id}/export"/>">Export</a>
-		</div>
+        </div>
         <div style="clear: both;"></div>
-		</div>
-		
-		<c:if test="${positionFixList != null}">
-		
-	    <table class="table table-bordered table-condensed">
+        </div>
+
+        <c:if test="${positionFixList != null}">
+
+        <table class="table table-bordered table-condensed">
             <col style="width: 110px;" />
             <col style="width: 60px;" />
             <col style="width: 150px;" />
@@ -129,33 +129,33 @@
             <col style="width: 70px;" />
             <col style="width: 70px;" />
             <thead>
-    		    <tr>
-    		        <th>Date/Time</th>
-    		        <th>Animal Id</th>
-    		        <th>Animal Name</th>
-    		        <th>Latitude</th>
-    		        <th>Longitude</th>
-    		        <th>Uploaded</th>
-    		    </tr>
+                <tr>
+                    <th>Date/Time</th>
+                    <th>Animal Id</th>
+                    <th>Animal Name</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>Uploaded</th>
+                </tr>
             </thead>
-		    <tbody>
+            <tbody>
                 <c:forEach items="${positionFixList}" var="detection">
-    		    <tr>
-    		        <td><fmt:formatDate pattern="${dateTimeFormatPattern}" value="${detection.detectionTime}"/></td>
-    		        <td><c:out value="${detection.animal.projectAnimalId}"/></td>
-    		        <td><a href="<c:url value="/animals/${detection.animal.id}/edit"/>">
-    		                <c:out value="${detection.animal.animalName}"/></a></td>
-    		        <td><c:out value="${detection.latitude}"/></td>
-    		        <td><c:out value="${detection.longitude}"/></td>
-    		        <td>
-    		            <a href="<c:url value="/datafiles/${detection.dataFile.id}"/>"
+                <tr>
+                    <td><fmt:formatDate pattern="${dateTimeFormatPattern}" value="${detection.detectionTime}"/></td>
+                    <td><c:out value="${detection.animal.projectAnimalId}"/></td>
+                    <td><a href="<c:url value="/animals/${detection.animal.id}/edit"/>">
+                            <c:out value="${detection.animal.animalName}"/></a></td>
+                    <td><c:out value="${detection.latitude}"/></td>
+                    <td><c:out value="${detection.longitude}"/></td>
+                    <td>
+                        <a href="<c:url value="/datafiles/${detection.dataFile.id}"/>"
                         ><fmt:formatDate pattern="${dateFormatPattern}" value="${detection.dataFile.createDate}"/></a>
-    		        </td>
-    		    </tr>
-    		    </c:forEach>
+                    </td>
+                </tr>
+                </c:forEach>
             </tbody>
-	    </table>
-		
-		</c:if>
+        </table>
+
+        </c:if>
     </jsp:body>
 </tags:page>

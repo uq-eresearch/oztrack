@@ -9,7 +9,7 @@ public class V1__TestPostGIS implements JavaMigration {
     public void migrate(JdbcTemplate jdbcTemplate) throws Exception {
         // Try querying for GDA94 spatial reference system:
         // - tests whether spatial_ref_sys table exists (means postgis.sql has been run);
-        // - tests that row for GDA94 exists (means that spatial_ref_sys.sql has also been run). 
+        // - tests that row for GDA94 exists (means that spatial_ref_sys.sql has also been run).
         int count = jdbcTemplate.queryForInt(
             "select count(*)\n" +
             "from spatial_ref_sys\n" +

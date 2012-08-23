@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class ShibbolethController {
     protected final Log logger = LogFactory.getLog(getClass());
-    
+
     @Autowired
     private UserDao userDao;
-    
+
     @RequestMapping(value="/login/shibboleth", method=RequestMethod.GET)
     @PreAuthorize("permitAll")
     public String handleLogin(@RequestHeader(value="eppn", required=false) String aafId) throws Exception {

@@ -18,17 +18,17 @@ public class Srs {
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="srs_id_seq")
     @SequenceGenerator(name="srs_id_seq", sequenceName="srs_id_seq", allocationSize=1)
     private Long id;
-    
+
     @Column(name="identifier", columnDefinition="text", unique=true, nullable=false)
     private String identifier;
-    
+
     @Column(name="title", columnDefinition="text", unique=true, nullable=false)
     private String title;
-    
+
     @Column(name="bounds", columnDefinition="geometry", nullable=false)
     @Type(type="org.hibernatespatial.GeometryUserType")
     private Polygon bounds;
-    
+
     public Srs() {
     }
 

@@ -15,13 +15,13 @@
         <property name="username" value="oztrack"/>
         <property name="password" value="ozadmin"/>
     </bean>
-    
+
     <bean id="flyway" class="com.googlecode.flyway.core.Flyway" init-method="migrate" depends-on="dataSource">
         <property name="dataSource" ref="dataSource"/>
         <!--
             Disable flyway's init check to avoid the following exception,
             caused by our initial schema containing PostGIS tables.
-            
+
             com.googlecode.flyway.core.validation.ValidationException:
             Found non-empty schema 'public' without metadata table! Use init() first to initialize the metadata table.
                 at com.googlecode.flyway.core.Flyway.doValidate(Flyway.java:646)
@@ -30,7 +30,7 @@
         -->
         <property name="disableInitCheck" value="true"/>
     </bean>
-    
+
     <bean id="jdbcAccess" class="org.oztrack.data.access.impl.JdbcAccessImpl">
          <property name="dataSource" ref="dataSource" />
     </bean>
@@ -42,6 +42,6 @@
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
-    
+
     <tx:annotation-driven transaction-manager="transactionManager"/>
 </beans>

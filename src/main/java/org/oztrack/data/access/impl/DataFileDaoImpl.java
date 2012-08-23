@@ -18,12 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class DataFileDaoImpl implements DataFileDao {
     private EntityManager em;
-    
+
     @PersistenceContext
     public void setEntityManger(EntityManager em) {
         this.em = em;
     }
-    
+
     @Override
     public DataFile getDataFileById(Long id) {
         Query query = em.createQuery("SELECT o FROM datafile o WHERE o.id = :id");
@@ -65,43 +65,43 @@ public class DataFileDaoImpl implements DataFileDao {
 
         Query query = em.createQuery("SELECT animalId from " + entityName);
         try {
-        	
-        	@SuppressWarnings("unchecked")
+
+            @SuppressWarnings("unchecked")
             List<String> animalIdList = query.getResultList();
-        	ArrayList<String> finalList = new ArrayList<String>();
-            
-        	// implement distinct here because hibernate won't play nice 
-        	HashSet<String> hashSet = new HashSet<String>(10000);
-        	for (String animalId : animalIdList) {
-        		if (!hashSet.contains(animalId)) {
-        			hashSet.add(animalId);
-        		}
-        	}
-        	
-        	for (String animalId : hashSet) {
-        		finalList.add(animalId);
-        	}
-        	
-        	return finalList;
-        	
+            ArrayList<String> finalList = new ArrayList<String>();
+
+            // implement distinct here because hibernate won't play nice
+            HashSet<String> hashSet = new HashSet<String>(10000);
+            for (String animalId : animalIdList) {
+                if (!hashSet.contains(animalId)) {
+                    hashSet.add(animalId);
+                }
+            }
+
+            for (String animalId : hashSet) {
+                finalList.add(animalId);
+            }
+
+            return finalList;
+
         } catch (NoResultException ex) {
             return null;
         }
 
     }
-    
+
     @Override
     public List<DataFile> getDataFilesByProject(Project project) {
-    	Query query = em.createQuery("SELECT o from datafile o where o.project = :project order by o.createDate");
-    	query.setParameter("project", project);
-    	//query.setParameter("status", DataFileStatus.COMPLETE);
-    	try {
-    		@SuppressWarnings("unchecked")
+        Query query = em.createQuery("SELECT o from datafile o where o.project = :project order by o.createDate");
+        query.setParameter("project", project);
+        //query.setParameter("status", DataFileStatus.COMPLETE);
+        try {
+            @SuppressWarnings("unchecked")
             List <DataFile> resultList = (List <DataFile>) query.getResultList();
             return resultList;
-    	}catch (NoResultException ex) {
-    		return null;
-    	}
+        }catch (NoResultException ex) {
+            return null;
+        }
     }
 
 
@@ -118,7 +118,7 @@ public class DataFileDaoImpl implements DataFileDao {
         object.setUpdateDate(new java.util.Date());
         return em.merge(object);
     }
-    
+
     @Override
     @Transactional
     public void delete(DataFile dataFile) {

@@ -1,9 +1,9 @@
 package org.oztrack.error;
 
 public class DataSpaceInterfaceException extends Exception {
-	private static final long serialVersionUID = -6224201396104632760L;
+    private static final long serialVersionUID = -6224201396104632760L;
 
-	private String message;
+    private String message;
 
     public DataSpaceInterfaceException(String message) {
         this.message = message;

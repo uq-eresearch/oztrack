@@ -17,9 +17,9 @@
         </c:choose>
     </jsp:attribute>
     <jsp:attribute name="head">
-        <script type="text/javascript"> 
+        <script type="text/javascript">
             $(document).ready(function() {
-            	$('#navTrack').addClass('active');
+                $('#navTrack').addClass('active');
             });
         </script>
     </jsp:attribute>
@@ -36,20 +36,20 @@
         </div>
     </jsp:attribute>
     <jsp:body>
-		<c:choose>
-		<c:when test="${project.id != null}">
-			<h1>Update Project Metadata</h1>
-		</c:when>
-		<c:otherwise>
-			<h1>Create a New Project</h1>
-		</c:otherwise>
-		</c:choose>
-		
-		
-		<p>The information collected here will be syndicated to the University of Queensland's data collection registry, DataSpace, 
-		subsequently to the Australian National Data Service, ANDS. A link will be made available to complete the syndication after 
-		data has been uploaded to OzTrack, and you have the opportunity to edit this information before syndication.</p>
-		
+        <c:choose>
+        <c:when test="${project.id != null}">
+            <h1>Update Project Metadata</h1>
+        </c:when>
+        <c:otherwise>
+            <h1>Create a New Project</h1>
+        </c:otherwise>
+        </c:choose>
+
+
+        <p>The information collected here will be syndicated to the University of Queensland's data collection registry, DataSpace,
+        subsequently to the Australian National Data Service, ANDS. A link will be made available to complete the syndication after
+        data has been uploaded to OzTrack, and you have the opportunity to edit this information before syndication.</p>
+
         <c:choose>
             <c:when test="${project.id != null}">
                 <c:set var="method" value="PUT"/>
@@ -60,162 +60,162 @@
                 <c:set var="action" value="/projects"/>
             </c:otherwise>
         </c:choose>
-		<form:form
+        <form:form
             class="form-horizontal form-bordered"
             method="${method}" action="${action}"
             commandName="project" name="project" enctype="multipart/form-data">
-    		<fieldset>
-    		    <legend>Data Contact</legend>
-        		<c:set var="dataSpaceAgent" value="${currentUser}"/>
-        		<c:if test="${project.id != null}">
-        			<c:set var="dataSpaceAgent" value="${project.dataSpaceAgent}"/>
-        		</c:if>	
-        		<div class="control-group">
-            		<label class="control-label">Name</label>
+            <fieldset>
+                <legend>Data Contact</legend>
+                <c:set var="dataSpaceAgent" value="${currentUser}"/>
+                <c:if test="${project.id != null}">
+                    <c:set var="dataSpaceAgent" value="${project.dataSpaceAgent}"/>
+                </c:if>
+                <div class="control-group">
+                    <label class="control-label">Name</label>
                     <div class="controls">
-            		    <input type="text" disabled="disabled" value="<c:out value="${dataSpaceAgent.fullName}"/>" />
+                        <input type="text" disabled="disabled" value="<c:out value="${dataSpaceAgent.fullName}"/>" />
                         <div class="help-inline">
                             <a class=info href="#">
                                 <img src="<c:url value="/img/help.png"/>" border="0">
                                 <span>
                                     <b>Contact:</b><br>
                                     <br>
-                                    This person is the contact for the data and becomes the Agent specified in the ANDS Collection Registry. 
+                                    This person is the contact for the data and becomes the Agent specified in the ANDS Collection Registry.
                                 </span>
                             </a>
                         </div>
                     </div>
-        		</div>
-        		<div class="control-group">
-            		<label class="control-label">Organisation</label>
-            		<div class="controls">
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Organisation</label>
+                    <div class="controls">
                         <input type="text" disabled="disabled" value="<c:out value="${dataSpaceAgent.organisation}"/>" />
                     </div>
-        		</div>
-        		<div class="control-group">
-            		<label class="control-label">Description</label>
-            		<div class="controls">
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Description</label>
+                    <div class="controls">
                         <input type="text" disabled="disabled" value="<c:out value="${dataSpaceAgent.dataSpaceAgentDescription}"/>" />
                     </div>
-        		</div>
-        		<div class="control-group">
-            		<label class="control-label">Email</label>
-            		<div class="controls">
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Email</label>
+                    <div class="controls">
                         <input type="text" disabled="disabled" value="<c:out value="${dataSpaceAgent.email}"/>" />
                     </div>
-        		</div>
-    		</fieldset>
+                </div>
+            </fieldset>
             <fieldset>
-		        <legend>Project Metadata</legend>
-        		<div class="control-group">
-        		    <label class="control-label" for="title">Title</label>
+                <legend>Project Metadata</legend>
+                <div class="control-group">
+                    <label class="control-label" for="title">Title</label>
                     <div class="controls">
-                		<form:textarea path="title" rows="1" cols="40" id="title"/>
-            			<div class="help-inline">
-                			<a class=info href="#">
+                        <form:textarea path="title" rows="1" cols="40" id="title"/>
+                        <div class="help-inline">
+                            <a class=info href="#">
                                 <img src="<c:url value="/img/help.png"/>" border="0">
-                    			<span>
+                                <span>
                                     <b>Title:</b><br>
                                     <br>
                                     A short title (less than 50 characters if possible) to identify your project in OzTrack.
-                    			</span>
+                                </span>
                             </a>
-            			</div>
+                        </div>
                         <form:errors path="title" element="div" cssClass="help-block formErrors"/>
                     </div>
-        		</div>
-        		<div class="control-group">
-            		<label class="control-label" for="description">Description</label>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="description">Description</label>
                     <div class="controls">
-                		<form:textarea path="description" rows="5" cols="40" id="description"/>
+                        <form:textarea path="description" rows="5" cols="40" id="description"/>
                         <div class="help-inline">
                             <a class=info href="#">
                                 <img src="<c:url value="/img/help.png"/>" border="0">
                                 <span>
                                     <b>Description:</b><br>
                                     <br>
-                                    Required by ANDS. 
+                                    Required by ANDS.
                                 </span>
                             </a>
                         </div>
                         <form:errors path="description" element="div" cssClass="help-block formErrors"/>
                     </div>
-        		</div>
-		        <div class="control-group">
-		            <label class="control-label" for="projectType">Project Type</label>
-		            <div class="controls">
-                		<form:select path="projectType">
-                		    <form:option value="GPS">GPS Based Telemetry</form:option>
-                		</form:select>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="projectType">Project Type</label>
+                    <div class="controls">
+                        <form:select path="projectType">
+                            <form:option value="GPS">GPS Based Telemetry</form:option>
+                        </form:select>
                         <div class="help-inline">
                             <a class=info href="#">
                                 <img src="<c:url value="/img/help.png"/>" border="0">
                                 <span>
                                     <b>Project Type:</b><br>
                                     <br>
-                                    What kind of telemetry device was used to track your animal? This 
-                                    will determine the format of the datafiles you upload, and the 
-                                    types of analysis available to this project's dataset. 
+                                    What kind of telemetry device was used to track your animal? This
+                                    will determine the format of the datafiles you upload, and the
+                                    types of analysis available to this project's dataset.
                                 </span>
                             </a>
                         </div>
                     </div>
-		        </div>
-        		<div class="control-group">
-            		<label class="control-label" for="spatialCoverageDescr">Location</label>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="spatialCoverageDescr">Location</label>
                     <div class="controls">
-                		<form:input path="spatialCoverageDescr" id="spatialCoverageDescr"/>
+                        <form:input path="spatialCoverageDescr" id="spatialCoverageDescr"/>
                         <div class="help-inline">
                             <a class=info href="#">
                                 <img src="<c:url value="/img/help.png"/>" border="0">
                                 <span>
                                     <b>Location Description:</b><br>
                                     <br>
-                                    The general area of the study, eg. country, state, town. 
+                                    The general area of the study, eg. country, state, town.
                                 </span>
                             </a>
                         </div>
                         <form:errors path="spatialCoverageDescr" element="div" cssClass="help-block formErrors"/>
                     </div>
-        		</div>
+                </div>
             </fieldset>
             <fieldset>
-		       <legend>Species</legend>
-        		<div class="control-group">
-            		<label class="control-label" for="speciesCommonName">Common Name</label>
+               <legend>Species</legend>
+                <div class="control-group">
+                    <label class="control-label" for="speciesCommonName">Common Name</label>
                     <div class="controls">
-                		<form:input path="speciesCommonName" id="speciesCommonName"/>
+                        <form:input path="speciesCommonName" id="speciesCommonName"/>
                         <form:errors path="speciesCommonName" element="div" cssClass="help-block formErrors"/>
                     </div>
-        		</div>
-        		<div class="control-group">
-            		<label class="control-label" for="speciesScientificName">Scientific Name</label>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="speciesScientificName">Scientific Name</label>
                     <div class="controls">
-                		<form:input path="speciesScientificName" id="speciesScientificName"/>
+                        <form:input path="speciesScientificName" id="speciesScientificName"/>
                         <form:errors path="speciesScientificName" element="div" cssClass="help-block formErrors"/>
                     </div>
-        		</div>
+                </div>
             </fieldset>
-		    <fieldset>
-		        <legend>Publications</legend>
-        		<div class="control-group">
-            		<label class="control-label" for="publicationTitle">Publication Title</label>
+            <fieldset>
+                <legend>Publications</legend>
+                <div class="control-group">
+                    <label class="control-label" for="publicationTitle">Publication Title</label>
                     <div class="controls">
-                		<form:textarea path="publicationTitle" rows="2" cols="40" id="publicationTitle"/>
+                        <form:textarea path="publicationTitle" rows="2" cols="40" id="publicationTitle"/>
                         <form:errors path="publicationTitle" element="div" cssClass="help-block formErrors"/>
                     </div>
-        		</div>
-        		<div class="control-group">
-            		<label class="control-label" for="publicationUrl">Publication URL</label>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="publicationUrl">Publication URL</label>
                     <div class="controls">
-                		<form:input path="publicationUrl" id="publicationUrl"/>
+                        <form:input path="publicationUrl" id="publicationUrl"/>
                         <form:errors path="publicationUrl" element="div" cssClass="help-block formErrors"/>
                     </div>
-        		</div>
-		    </fieldset>
-		    <fieldset>
-		        <legend>Data Availability</legend>
-		        <div class="control-group">
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Data Availability</legend>
+                <div class="control-group">
                     <label class="control-label" for="publicationUrl">Access Rights</label>
                     <div class="controls">
                         <label for="isGlobalTrue" class="radio" style="font-weight: bold; color: green;">
@@ -235,11 +235,11 @@
                             are made publicly available for all projects in OzTrack.
                         </div>
                     </div>
-	           </div>
+               </div>
                <div class="control-group">
-            		<label class="control-label" for="publicationUrl">Rights Statement</label>
+                    <label class="control-label" for="publicationUrl">Rights Statement</label>
                     <div class="controls">
-                		<form:textarea path="rightsStatement" rows="3" cols="40" />
+                        <form:textarea path="rightsStatement" rows="3" cols="40" />
                         <div class="help-inline">
                             <a class=info href="#"><img src="<c:url value="/img/help.png"/>" border="0">
                             <span><b>Rights Statement:</b><br>This should reflect any restrictions around the access rights and use of your data.</span>
@@ -249,9 +249,9 @@
                     </div>
                 </div>
             </fieldset>
-    		<div class="form-actions">
-    		    <input class="btn btn-primary" type="submit" value="${(project.id != null) ? 'Update Project' : 'Create OzTrack Project'}" />
-    		</div>
-		</form:form>
+            <div class="form-actions">
+                <input class="btn btn-primary" type="submit" value="${(project.id != null) ? 'Update Project' : 'Create OzTrack Project'}" />
+            </div>
+        </form:form>
     </jsp:body>
 </tags:page>

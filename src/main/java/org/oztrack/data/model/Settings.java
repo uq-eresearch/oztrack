@@ -17,7 +17,7 @@ public class Settings {
 
     @Column(columnDefinition = "TEXT")
     private String homeText;
-    
+
     @Column(columnDefinition = "TEXT")
     private String aboutText;
 

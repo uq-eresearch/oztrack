@@ -83,13 +83,13 @@ public class ProjectImageController {
         new Color(0xCCEBC5),
         new Color(0xFFED6F)
     };
-    
+
     private final StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
     private final FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory(null);
-    
+
     @Autowired
     private ProjectDao projectDao;
-    
+
     @Autowired
     private PositionFixDao positionFixDao;
 
@@ -102,7 +102,7 @@ public class ProjectImageController {
     public Project getProject(@PathVariable(value="id") Long projectId) {
         return projectDao.getProjectById(projectId);
     }
-    
+
     @RequestMapping(value="/projects/{id}/image", method=RequestMethod.GET, produces="image/png")
     @PreAuthorize("#project.global or hasPermission(#project, 'read')")
     public void getView(
@@ -152,7 +152,7 @@ public class ProjectImageController {
         MapUtils.writePng(mapContext, mapDimension, response.getOutputStream());
         mapContext.dispose();
     }
-    
+
     private WMSLayer buildBaseLayer(ReferencedEnvelope mapBounds, Dimension mapDimension) throws Exception {
         URL capabilitiesURL = new URL("http://www.ga.gov.au/wms/getmap?dataset=national&request=getCapabilities");
         String owsLayerName = "politicalpl";
@@ -199,7 +199,7 @@ public class ProjectImageController {
         rule.symbolizers().add(symbolizer);
         return rule;
     }
-    
+
     private Style buildTrajectoryStyle(List<Animal> animals) {
         FeatureTypeStyle featureTypeStyle = styleFactory.createFeatureTypeStyle();
         featureTypeStyle.rules().add(buildAnimalTrajectoryBorderRule());

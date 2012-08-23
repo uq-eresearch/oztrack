@@ -27,12 +27,12 @@ public class PositionFixDaoImpl implements PositionFixDao {
     protected final Log logger = LogFactory.getLog(getClass());
 
     private EntityManager em;
-    
+
     @PersistenceContext
     public void setEntityManger(EntityManager em) {
         this.em = em;
     }
-    
+
     @Override
     public Page<PositionFix> getPage(SearchQuery searchQuery, int offset, int nbrObjectsPerPage) {
        try {
@@ -107,67 +107,67 @@ public class PositionFixDaoImpl implements PositionFixDao {
         List<PositionFix> resultList = (List<PositionFix>) query.getResultList();
         return resultList;
     }
-    
+
     @Override
     public Date getProjectFirstDetectionDate(Project project) {
-    	
-    	String projectId =  project.getId().toString();
-        String sql = "select min(o.detectionTime)" 
+
+        String projectId =  project.getId().toString();
+        String sql = "select min(o.detectionTime)"
         + "from PositionFix o "
         + "where o.deleted = false "
         + "and o.dataFile in "
         + "(select d from datafile d where d.project.id = :projectId) ";
-    	
-    	Query query = em.createQuery(sql);
-    	query.setParameter("projectId", projectId);
-    	Date firstDate = (Date)query.getSingleResult();
-    	return firstDate;
+
+        Query query = em.createQuery(sql);
+        query.setParameter("projectId", projectId);
+        Date firstDate = (Date)query.getSingleResult();
+        return firstDate;
     }
-    
+
     @Override
     public Date getProjectLastDetectionDate(Project project) {
-    	
-    	String projectId =  project.getId().toString();
-        String sql = "select max(o.detectionTime)" 
+
+        String projectId =  project.getId().toString();
+        String sql = "select max(o.detectionTime)"
             + "from PositionFix o "
             + "where o.deleted = false "
             + "and o.dataFile in "
             + "(select d from datafile d where d.project.id = :projectId) ";
-    	
-    	Query query = em.createQuery(sql);
-    	query.setParameter("projectId", projectId);
-    	Date lastDate = (Date)query.getSingleResult();
-    	return lastDate;
+
+        Query query = em.createQuery(sql);
+        query.setParameter("projectId", projectId);
+        Date lastDate = (Date)query.getSingleResult();
+        return lastDate;
     }
-    
+
     @Override
     public Date getDataFileFirstDetectionDate(DataFile dataFile) {
-    	
-        String sql = "select min(o.detectionTime)" 
+
+        String sql = "select min(o.detectionTime)"
         + "from PositionFix o "
         + "where o.deleted = false "
         + "and o.dataFile = :dataFile";
-    	
-    	Query query = em.createQuery(sql);
-    	query.setParameter("dataFile", dataFile);
-    	Date firstDate = (Date) query.getSingleResult();
-    	return firstDate;
+
+        Query query = em.createQuery(sql);
+        query.setParameter("dataFile", dataFile);
+        Date firstDate = (Date) query.getSingleResult();
+        return firstDate;
     }
 
     @Override
     public Date getDataFileLastDetectionDate(DataFile dataFile) {
-    	
-        String sql = "select max(o.detectionTime)" 
+
+        String sql = "select max(o.detectionTime)"
         + "from PositionFix o "
         + "where o.deleted = false "
         + "and o.dataFile = :dataFile";
-    	
-    	Query query = em.createQuery(sql);
-    	query.setParameter("dataFile", dataFile);
-    	Date lastDate = (Date) query.getSingleResult();
-    	return lastDate;
+
+        Query query = em.createQuery(sql);
+        query.setParameter("dataFile", dataFile);
+        Date lastDate = (Date) query.getSingleResult();
+        return lastDate;
     }
-    
+
     @Override
     @Transactional
     public int setDeletedOnOverlappingPositionFixes(Project project, List<Long> animalIds, MultiPolygon multiPolygon, boolean deleted) {
@@ -186,7 +186,7 @@ public class PositionFixDaoImpl implements PositionFixDao {
             .setParameter("wkt", new WKTWriter().write(multiPolygon))
             .executeUpdate();
     }
-    
+
     @Override
     @Transactional
     public int setDeletedOnAllPositionFixes(Project project, List<Long> animalIds, boolean deleted) {

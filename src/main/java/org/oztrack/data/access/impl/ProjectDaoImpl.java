@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProjectDaoImpl implements ProjectDao {
     @PersistenceContext
     private EntityManager em;
-    
+
     @Override
     public List<Project> getAll() {
         @SuppressWarnings("unchecked")
@@ -44,20 +44,20 @@ public class ProjectDaoImpl implements ProjectDao {
         object.setUpdateDate(new java.util.Date());
         em.persist(object);
     }
-    
+
     @Override
     @Transactional
     public Project update(Project object) {
         object.setUpdateDate(new java.util.Date());
         return em.merge(object);
     }
-    
+
     @Override
     @Transactional
     public void delete(Project project) {
         em.remove(project);
     }
-    
+
     @Override
     @Transactional
     public void create(Project project, User currentUser) throws Exception {
@@ -65,25 +65,25 @@ public class ProjectDaoImpl implements ProjectDao {
         project.setCreateDate(new java.util.Date());
         project.setCreateUser(currentUser);
         project.setDataSpaceAgent(currentUser);
-        
+
         // set the current user to be an admin for this project
         ProjectUser adminProjectUser = new ProjectUser();
         adminProjectUser.setProject(project);
         adminProjectUser.setUser(currentUser);
         adminProjectUser.setRole(Role.MANAGER);
-        
+
         // add this user to the project's list of users
         List <ProjectUser> projectProjectUsers = project.getProjectUsers();
         projectProjectUsers.add(adminProjectUser);
         project.setProjectUsers(projectProjectUsers);
-        
+
         // save it all - project first
         save(project);
-        
+
         project.setDataDirectoryPath("project-" + project.getId().toString());
         update(project);
     }
-    
+
     @Override
     public List<Project> getProjectsByPublished(boolean published) {
         @SuppressWarnings("unchecked")
@@ -93,7 +93,7 @@ public class ProjectDaoImpl implements ProjectDao {
             .getResultList();
         return resultList;
     }
-    
+
     @Override
     public List<ProjectUser> getProjectUsersWithRole(Project project, Role role) {
         @SuppressWarnings("unchecked")

@@ -35,12 +35,12 @@ public class AnimalController {
             "pingIntervalSeconds"
         );
     }
-    
+
     @ModelAttribute("animal")
     public Animal getAnimal(@PathVariable(value="id") Long animalId) throws Exception {
         return animalDao.getAnimalById(animalId);
     }
-    
+
     @RequestMapping(value="/animals/{id}", method=RequestMethod.GET)
     @PreAuthorize("#animal.project.global or hasPermission(#animal.project, 'read')")
     public String getView(Model model, @ModelAttribute("animal") Animal animal) {
@@ -54,7 +54,7 @@ public class AnimalController {
         model.addAttribute("project", animal.getProject());
         return "animal-form";
     }
-    
+
     @RequestMapping(value="/animals/{id}", method=RequestMethod.PUT)
     @PreAuthorize("hasPermission(#animal.project, 'write')")
     public String processUpdate(

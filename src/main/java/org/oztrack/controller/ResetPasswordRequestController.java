@@ -68,7 +68,7 @@ public class ResetPasswordRequestController {
         passwordResetExpiresAtCalendar.add(Calendar.DAY_OF_MONTH, passwordResetExpiryDays);
         user.setPasswordResetToken(passwordResetToken);
         user.setPasswordResetExpiresAt(passwordResetExpiresAtCalendar.getTime());
-        
+
         SimpleEmail email = new SimpleEmail();
         email.setHostName(OzTrackApplication.getApplicationContext().getMailServerHostName());
         email.setSmtpPort(OzTrackApplication.getApplicationContext().getMailServerPort());
@@ -92,7 +92,7 @@ public class ResetPasswordRequestController {
             "Note: for security reasons, this link will expire in " + passwordResetExpiryDays + " days."
         );
         email.send();
-        
+
         userDao.update(user);
     }
 }

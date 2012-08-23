@@ -13,7 +13,7 @@
         http://www.springframework.org/schema/util/spring-util-3.1.xsd">
 
     <context:property-placeholder location="classpath:conf/properties/application.properties"/>
-    
+
     <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
         <property name="targetObject" value="#{@systemProperties}" />
         <property name="targetMethod" value="putAll" />
@@ -40,7 +40,7 @@
     <import resource="applicationContext-security.xml"/>
     <import resource="applicationContext-data.xml"/>
     <import resource="applicationContext-quartz.xml"/>
-    
+
     <bean id="applicationContext" class="org.oztrack.app.OzTrackConfigurationImpl">
         <property name="dataSpaceURL" value="${application.dataSpaceURL}"/>
         <property name="dataSpaceUsername" value="${application.dataSpaceUsername}"/>

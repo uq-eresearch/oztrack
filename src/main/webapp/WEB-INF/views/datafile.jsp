@@ -8,7 +8,7 @@
 <c:set var="dateTimeFormatPattern" value="dd/MM/yyyy HH:mm:ss"/>
 <tags:page title="${dataFile.project.title}: Data File Detail">
     <jsp:attribute name="head">
-        <script type="text/javascript"> 
+        <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
             });
@@ -25,44 +25,44 @@
         <tags:project-menu project="${dataFile.project}"/>
     </jsp:attribute>
     <jsp:body>
-		<h1 id="projectTitle"><c:out value="${dataFile.project.title}"/></h1>
-		<h2>Data File Detail</h2>
-		
-		<table class="entityTable">
-		<tr>
+        <h1 id="projectTitle"><c:out value="${dataFile.project.title}"/></h1>
+        <h2>Data File Detail</h2>
+
+        <table class="entityTable">
+        <tr>
             <th>File Provided:</th>
             <td><c:out value="${dataFile.userGivenFileName}"/></td>
         </tr>
-		<tr>
+        <tr>
             <th>Description:</th>
             <td><c:out value="${dataFile.fileDescription}"/></td>
         </tr>
-		<tr>
+        <tr>
             <th>Content Type:</th>
             <td><c:out value="${dataFile.contentType}"/></td>
         </tr>
-		<tr>
+        <tr>
             <th>Uploaded:</th>
             <td><fmt:formatDate pattern="${dateTimeFormatPattern}" value="${dataFile.createDate}"/> by <c:out value="${dataFile.createUser.fullName}"/></td>
         </tr>
-		<tr>
+        <tr>
             <th>Detection Count:</th>
             <td><c:out value="${dataFile.detectionCount}"/></td>
         </tr>
-		<tr>
+        <tr>
             <th>Processing Status:</th>
-		    <td>
+            <td>
                 <c:out value="${dataFile.status}"/>
                 <c:if test="${(dataFile.status == 'NEW') || (dataFile.status == 'PROCESSING')}">
                 (<a href="javascript:void(0)" onclick="window.location.reload(true);">refresh</a>)
                 </c:if>
             </td>
-		</tr>
-		<tr>
+        </tr>
+        <tr>
             <th>Processing Messages:</th>
             <td><c:out value="${dataFile.statusMessage}"/></td>
         </tr>
-		</table>
+        </table>
 
         <sec:authorize access="hasPermission(#dataFile.project, 'write')">
         <div class="actions">

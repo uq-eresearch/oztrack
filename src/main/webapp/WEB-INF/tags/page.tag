@@ -12,19 +12,19 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    
+
     <link rel="stylesheet" type="text/css" href="<c:url value="/css/jquery-ui/jquery-ui-1.8.23.custom.css"/>"/>
     <link rel="stylesheet" type="text/css" href="<c:url value="/css/bootstrap.css"/>"/>
-    
+
     <script type="text/javascript" src="<c:url value="/js/jquery/jquery-1.8.0.min.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/js/jquery/jquery-ui-1.8.23.custom.min.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/js/ckeditor/ckeditor.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/js/ckeditor/adapters/jquery.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/js/bootstrap.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/js/oztrack.js"/>"></script>
-    
+
     <title>OzTrack: ${title}</title>
-    
+
     <jsp:invoke fragment="head"/>
 </head>
 <body>
@@ -47,7 +47,7 @@
                   <a href="<c:url value="/users/new"/>">Register</a>
                 </c:otherwise>
             </c:choose>
-        </div>   
+        </div>
     </div>
 </div>
 <div id="nav">
@@ -69,14 +69,14 @@
 <div id="main">
     <jsp:invoke var="sidebarContent" fragment="sidebar"/>
     <c:if test="${!empty sidebarContent}">
-	<div id="leftMenu">
+    <div id="leftMenu">
         ${sidebarContent}
-	</div>
+    </div>
     </c:if>
-	<div id="content" class="${empty sidebarContent ? 'wide' : 'narrow'}">
-		<jsp:doBody/>
-		<div style="clear:both;"></div>
-	</div> <!-- content -->
+    <div id="content" class="${empty sidebarContent ? 'wide' : 'narrow'}">
+        <jsp:doBody/>
+        <div style="clear:both;"></div>
+    </div> <!-- content -->
 </div> <!-- main -->
 <div id="footer">
     <div id="logos">

@@ -19,7 +19,7 @@ import com.vividsolutions.jts.geom.Point;
 public class ProjectsFeatureBuilder {
     private final Log logger = LogFactory.getLog(getClass());
     private final SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy");
-    
+
     private final List<Project> projectList;
 
     public ProjectsFeatureBuilder(List<Project> projectList) {
@@ -68,5 +68,5 @@ public class ProjectsFeatureBuilder {
         featureBuilder.set("speciesCommonName", project.getSpeciesCommonName());
         featureBuilder.set("global", project.isGlobal());
         return featureBuilder.buildFeature(project.getId().toString());
-    }   
+    }
 }

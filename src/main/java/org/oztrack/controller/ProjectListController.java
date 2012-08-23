@@ -24,10 +24,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class ProjectListController {
     protected final Log logger = LogFactory.getLog(getClass());
-    
+
     @Autowired
     private ProjectDao projectDao;
-    
+
     @Autowired
     private UserDao userDao;
 
@@ -56,7 +56,7 @@ public class ProjectListController {
     public void initPrivateProjectsBinder(WebDataBinder binder) {
         binder.setAllowedFields();
     }
-    
+
     @ModelAttribute("project")
     public Project getProject() {
         Project project = new Project();
@@ -69,24 +69,24 @@ public class ProjectListController {
     public List<Project> getPublicProjects() {
         return projectDao.getProjectsByPublished(true);
     }
-    
+
     @ModelAttribute("privateProjects")
     public List<Project> getPrivateProjects() {
         return projectDao.getProjectsByPublished(false);
     }
-    
+
     @RequestMapping(value="/projects", method=RequestMethod.GET)
     @PreAuthorize("permitAll")
     public String getListView(Model model) {
         return "projects";
     }
-    
+
     @RequestMapping(value="/projects/new", method=RequestMethod.GET)
     @PreAuthorize("isAuthenticated()")
     public String getNewView(@ModelAttribute(value="project") Project project) {
         return "project-form";
     }
-    
+
     @RequestMapping(value="/projects", method=RequestMethod.POST)
     @PreAuthorize("isAuthenticated()")
     public String processCreate(

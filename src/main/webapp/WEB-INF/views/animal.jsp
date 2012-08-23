@@ -4,9 +4,9 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <tags:page title="${project.title}: Animal Details">
     <jsp:attribute name="head">
-        <script type="text/javascript"> 
+        <script type="text/javascript">
             $(document).ready(function() {
-            	$('#navTrack').addClass('active');
+                $('#navTrack').addClass('active');
             });
         </script>
     </jsp:attribute>
@@ -15,52 +15,52 @@
         &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
         &rsaquo; <a href="<c:url value="/projects/${project.id}"/>">${project.title}</a>
         &rsaquo; <a href="<c:url value="/projects/${project.id}/animals"/>">Animals</a>
-        &rsaquo; <span class="active">${animal.animalName}</span> 
+        &rsaquo; <span class="active">${animal.animalName}</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
         <tags:project-menu project="${project}"/>
     </jsp:attribute>
     <jsp:body>
-		<h1 id="projectTitle"><c:out value="${project.title}"/></h1>
-		<h2>Animal Details</h2>
-		<table class="entityTable">
-			<tr>
-				<th>Name:</th>
-				<td>${animal.animalName}</td>
-			</tr>
-			<tr>
-				<th>Description:</th>
-				<td>${animal.animalDescription}</td>
-			</tr>
-			<tr>
-				<th>Species:</th>
-				<td>${animal.speciesName}</td>
-			</tr>
+        <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
+        <h2>Animal Details</h2>
+        <table class="entityTable">
+            <tr>
+                <th>Name:</th>
+                <td>${animal.animalName}</td>
+            </tr>
+            <tr>
+                <th>Description:</th>
+                <td>${animal.animalDescription}</td>
+            </tr>
+            <tr>
+                <th>Species:</th>
+                <td>${animal.speciesName}</td>
+            </tr>
             <c:if test="${not empty animal.projectAnimalId}">
             <tr>
                 <th>Animal Id:</th>
                 <td>${animal.projectAnimalId}</td>
             </tr>
             </c:if>
-			<c:if test="${not empty animal.transmitterTypeCode}">
+            <c:if test="${not empty animal.transmitterTypeCode}">
             <tr>
-				<th>Transmitter Type Code:</th>
-				<td>${animal.transmitterTypeCode}</td>
-			</tr>
+                <th>Transmitter Type Code:</th>
+                <td>${animal.transmitterTypeCode}</td>
+            </tr>
             </c:if>
             <c:if test="${not empty animal.transmitterId}">
-			<tr>
-				<th>Transmitter Id:</th>
-				<td>${animal.transmitterId}</td>
-			</tr>
+            <tr>
+                <th>Transmitter Id:</th>
+                <td>${animal.transmitterId}</td>
+            </tr>
             </c:if>
             <c:if test="${not empty animal.pingIntervalSeconds}">
-			<tr>
-				<th>Ping Interval Seconds:</th>
-				<td>${animal.pingIntervalSeconds}</td>
-			</tr>
+            <tr>
+                <th>Ping Interval Seconds:</th>
+                <td>${animal.pingIntervalSeconds}</td>
+            </tr>
             </c:if>
-		</table>
+        </table>
         <sec:authorize access="hasPermission(#animal.project, 'write')">
         <div class="actions">
         <h2>Manage Animal</h2>

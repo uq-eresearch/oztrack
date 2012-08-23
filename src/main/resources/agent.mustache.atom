@@ -10,7 +10,7 @@
     <!--     names -->
     <title
         type="text">{{contactGivenName}} {{contactFamilyName}}</title>
-        
+
     <!--     collection type -->
     <link
         rel="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
@@ -40,7 +40,7 @@
         <title type="text">OzTrack</title>
         <author>
             <name>{{contactGivenName}} {{contactFamilyName}}</name>
-			<email>{{contactEmail}}</email>           
+            <email>{{contactEmail}}</email>
         </author>
         <updated>{{dataSpaceAgentUpdateDate}}</updated>
     </source>

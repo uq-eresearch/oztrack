@@ -88,9 +88,9 @@ public class RServeInterface {
             default:
                 throw new RServeInterfaceException("Unhandled MapQueryType: " + searchQuery.getMapQueryType());
         }
-        
+
         rConnection.close();
-        
+
         return new File(fileName);
     }
 
@@ -106,7 +106,7 @@ public class RServeInterface {
                 this.rConnection.voidEval("library(rgdal)");
                 this.rConnection.voidEval("library(shapefiles)");
                 rLog = rLog + "Libraries Loaded ";
-                
+
                 String[] scriptFiles = new String[] {
                     "to_SPLDF.r",
                     "heatmap.r"
@@ -189,7 +189,7 @@ public class RServeInterface {
         safeEval(queryType + "$area <- mcp(positionFix.proj,percent=" + percent + ",unin=c(\"m\"),unout=c(\"km2\"))$area");
         safeEval("writeOGR(" + queryType +", dsn=\"" + fileName + "\", layer= \"" + queryType + "\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
     }
-    
+
     protected void writeKernelUDKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
         String name = searchQuery.getMapQueryType().toString();
         Double percent = (searchQuery.getPercent() != null) ? searchQuery.getPercent() : 100d;
@@ -200,7 +200,7 @@ public class RServeInterface {
         safeEval(name + "$area <- getverticeshr(KerHRp,percent=" + percent + ", unin=c(\"m\"), unout=c(\"km2\"))$area");
         safeEval("writeOGR(" + name +", dsn=\"" + fileName + "\", layer= \"" + name + "\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
     }
-    
+
     protected void writeAlphahullKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
         String name = searchQuery.getMapQueryType().toString();
         Double alpha = (searchQuery.getAlpha() != null) ? searchQuery.getAlpha() : 0.1;
@@ -208,19 +208,19 @@ public class RServeInterface {
         safeEval("ahull.xy.spldf <- spTransform(ahull.proj.spldf, CRS(\"+init=epsg:4326\"))");
         safeEval("writeOGR(ahull.xy.spldf, dsn=\"" + fileName + "\", layer= \"" + name + "\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
     }
-    
+
     protected void writePointHeatmapKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
         Double gridSize = (searchQuery.getGridSize() != null) ? searchQuery.getGridSize() : 100d;
         safeEval("PPA <- fpdens2kml(sdata=positionFix.xy,igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\",scol=\"Greens\", labsent=FALSE)");
         safeEval("polykml(sw=PPA,filename=\"" + fileName + "\",kmlname=paste(unique(PPA$ID),\"_point_density\",sep=\"\"),namefield=unique(PPA$ID))");
     }
-    
+
     protected void writeLineHeatmapKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
         Double gridSize = (searchQuery.getGridSize() != null) ? searchQuery.getGridSize() : 100d;
         safeEval("LPA <- fldens2kml(sdata=positionFix.xy,igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\",scol=\"Greens\", labsent=FALSE)");
         safeEval("polykml(sw=LPA,filename=\"" + fileName + "\",kmlname=paste(unique(LPA$ID),\"_line_density\",sep=\"\"),namefield=unique(LPA$ID))");
     }
-    
+
     protected void writePositionFixKmlFile(String fileName) throws RServeInterfaceException {
         String rCommand;
         String outFileNameFix = fileName;
@@ -243,17 +243,17 @@ public class RServeInterface {
             throw new RServeInterfaceException(e.toString() + "Log: " + rLog);
         }
     }
-    
+
     // Wraps an R statement inside a try({...}, silent=TRUE) so we can catch any exception
     // that occurs during evaluation. This gives us a much better error message, such as
-    // 
+    //
     //     Error in .kernelUDs(SpatialPoints(x, proj4string = CRS(as.character(pfs1))),  :
     //     h should be numeric or equal to either "href" or "LSCV"
-    // 
+    //
     // instead of just this if we catch exceptions from RConnection.voidEval(...)
-    // 
+    //
     //     org.rosuda.REngine.Rserve.RserveException: voidEval failed
-    // 
+    //
     private void safeEval(String rCommand) throws RServeInterfaceException {
         logger.debug(String.format("Evaluating R: %s", rCommand));
         REXP rExp;

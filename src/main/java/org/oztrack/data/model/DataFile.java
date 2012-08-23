@@ -33,7 +33,7 @@ public class DataFile extends OztrackBaseEntity {
     @SequenceGenerator(name = "datafileid_seq", sequenceName = "datafileid_seq",allocationSize = 1)
     @Column(nullable=false)
     private Long id;
-    
+
     private String dataFilePath;
     private String userGivenFileName;
     @Column(columnDefinition = "TEXT")
@@ -61,7 +61,7 @@ public class DataFile extends OztrackBaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade={}) //persist project yourself
     private Project project;
-    
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "dataFile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PositionFix> positionFixes = new LinkedList<PositionFix>();
 
@@ -70,14 +70,14 @@ public class DataFile extends OztrackBaseEntity {
     public void setFile(MultipartFile file) {this.file = file;}
     public MultipartFile getFile() {return file;}
 
-    
+
     public DataFile() {
     }
-    
+
     public DataFile(String fileName) {
-    	this.userGivenFileName = fileName;
+        this.userGivenFileName = fileName;
     }
-    
+
     public Long getId() {
         return id;
     }
@@ -85,7 +85,7 @@ public class DataFile extends OztrackBaseEntity {
     public void setId(Long id) {
         this.id = id;
     }
-    
+
     public String getDataFilePath() {
         return dataFilePath;
     }
@@ -93,11 +93,11 @@ public class DataFile extends OztrackBaseEntity {
     public void setDataFilePath(String dataFilePath) {
         this.dataFilePath = dataFilePath;
     }
-    
+
     public String getAbsoluteDataFilePath() {
         return project.getAbsoluteDataDirectoryPath() + File.separator + getDataFilePath();
     }
-        
+
     public String getUserGivenFileName() {
         return userGivenFileName;
     }
@@ -105,7 +105,7 @@ public class DataFile extends OztrackBaseEntity {
     public void setUserGivenFileName(String userGivenFileName) {
         this.userGivenFileName = userGivenFileName;
     }
-    
+
     public String getFileDescription() {
         return fileDescription;
     }
@@ -113,7 +113,7 @@ public class DataFile extends OztrackBaseEntity {
     public void setFileDescription(String fileDescription) {
         this.fileDescription = fileDescription;
     }
-    
+
     public Project getProject() {
         return project;
     }
@@ -185,26 +185,26 @@ public class DataFile extends OztrackBaseEntity {
      public void setSingleAnimalInFile(Boolean singleAnimalInFile) {
          this.singleAnimalInFile = singleAnimalInFile;
      }
-	public Integer getDetectionCount() {
-		return detectionCount;
-	}
-	public void setDetectionCount(Integer detectionCount) {
-		this.detectionCount = detectionCount;
-	}
-	public Date getFirstDetectionDate() {
-		return firstDetectionDate;
-	}
-	public void setFirstDetectionDate(Date firstDetectionDate) {
-		this.firstDetectionDate = firstDetectionDate;
-	}
-	public Date getLastDetectionDate() {
-		return lastDetectionDate;
-	}
-	public void setLastDetectionDate(Date lastDetectionDate) {
-		this.lastDetectionDate = lastDetectionDate;
-	}
-	
-	@Override
+    public Integer getDetectionCount() {
+        return detectionCount;
+    }
+    public void setDetectionCount(Integer detectionCount) {
+        this.detectionCount = detectionCount;
+    }
+    public Date getFirstDetectionDate() {
+        return firstDetectionDate;
+    }
+    public void setFirstDetectionDate(Date firstDetectionDate) {
+        this.firstDetectionDate = firstDetectionDate;
+    }
+    public Date getLastDetectionDate() {
+        return lastDetectionDate;
+    }
+    public void setLastDetectionDate(Date lastDetectionDate) {
+        this.lastDetectionDate = lastDetectionDate;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
@@ -216,8 +216,8 @@ public class DataFile extends OztrackBaseEntity {
         DataFile other = (DataFile) obj;
         return getId().equals(other.getId());
     }
-	
-	public int hashCode() {
+
+    public int hashCode() {
         if (id != null) {
             return id.hashCode();
         } else {

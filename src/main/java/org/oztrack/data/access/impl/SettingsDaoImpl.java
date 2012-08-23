@@ -11,15 +11,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class SettingsDaoImpl implements SettingsDao {
     @PersistenceContext
-    private EntityManager em;    
-    
+    private EntityManager em;
+
     @Override
     public Settings getSettings() {
         return (Settings) em
             .createQuery("from org.oztrack.data.model.Settings")
             .getSingleResult();
     }
-    
+
     @Override
     @Transactional
     public Settings update(Settings settings) {

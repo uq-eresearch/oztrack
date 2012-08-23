@@ -4,21 +4,21 @@
     xmlns:rdfa="http://www.w3.org/ns/rdfa#"
     xmlns:georss="http://www.georss.org/georss"
     xmlns:app="http://www.w3.org/2007/app">
-    
+
     <!-- *** metadata about the collection *** -->
     <!--     id for the collection in OzTrack -->
     <id>{{collectionURL}}</id>
 
     <!--     collection type -->
-    <link 
-  		rel="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
-		href="http://purl.org/dc/dcmitype/Dataset"
+    <link
+          rel="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+        href="http://purl.org/dc/dcmitype/Dataset"
         title="Dataset"/>
- 
+
    <!--     collection title -->
-    <title 
-    	type="text">{{collectionTitle}}</title>
-         
+    <title
+        type="text">{{collectionTitle}}</title>
+
     <!--     collection description -->
     <content
         type="text">{{collectionDescription}}</content>
@@ -36,7 +36,7 @@
 
    <!--    collection manager -->
     <link rel="http://purl.org/dc/terms/publisher" href="{{contactDataSpaceURL}}" title="{{contactGivenName}} {{contactFamilyName}}"/>
-        
+
     <!--     temporal coverage -->
     <rdfa:meta
         property="http://purl.org/dc/terms/temporal"
@@ -57,15 +57,15 @@
     <!-- *** metadata about the description *** -->
     <!--     description last updated -->
     <updated>{{dataSpaceUpdateDate}}</updated>
-    
+
     <source>
         <title type="text">OzTrack</title>
         <id>http://oztrack.org/</id>
-        
+
         <!-- description creator -->
         <author>
             <name>{{contactGivenName}} {{contactFamilyName}}</name>
-			<email>{{contactEmail}}</email>           
+            <email>{{contactEmail}}</email>
         </author>
     </source>
     <app:control>

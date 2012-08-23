@@ -8,7 +8,7 @@
 <c:set var="aafEnabled"><%= OzTrackApplication.getApplicationContext().isAafEnabled() %></c:set>
 <tags:page title="Login">
     <jsp:attribute name="head">
-        <script type="text/javascript"> 
+        <script type="text/javascript">
             $(document).ready(function() {
                 $('#navHome').addClass('active');
             });
@@ -20,15 +20,15 @@
     </jsp:attribute>
     <jsp:attribute name="sidebar"/>
     <jsp:body>
-		<h1>Login</h1>
-		
+        <h1>Login</h1>
+
         <c:if test="${not empty sessionScope['SPRING_SECURITY_LAST_EXCEPTION'].message}">
         <div class="alert alert-error" style="width: 586px;">
             ${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}
         </div>
         </c:if>
-        
-		<div style="clear: both;"></div>
+
+        <div style="clear: both;"></div>
 
         <c:if test="${aafEnabled}">
         <form class="form-vertical form-bordered" style="width: 600px;">
@@ -48,29 +48,29 @@
             </fieldset>
         </form>
         </c:if>
-        
-		<form id="nativeLoginForm" class="form-vertical form-bordered" style="width: 600px;" method="POST" action="<c:url value="/j_spring_security_check"/>">
-    		<fieldset>
+
+        <form id="nativeLoginForm" class="form-vertical form-bordered" style="width: 600px;" method="POST" action="<c:url value="/j_spring_security_check"/>">
+            <fieldset>
                 <c:if test="${aafEnabled}">
                 <legend>Login using OzTrack</legend>
                 </c:if>
                 <div class="control-group">
-            		<label class="control-label" for="username">Username</label>
+                    <label class="control-label" for="username">Username</label>
                     <div class="controls">
-            		    <input type="text" name="username" id="username"/>
+                        <input type="text" name="username" id="username"/>
                     </div>
-        		</div>
-        		<div class="control-group">
-            		<label class="control-label" for="password">Password</label>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="password">Password</label>
                     <div class="controls">
-            		    <input type="password" name="password" id="password"/>
+                        <input type="password" name="password" id="password"/>
                     </div>
-        		</div>
+                </div>
             </fieldset>
-    		<div class="form-actions">
-    		    <input class="btn btn-primary" type="submit" value="Login"/>
-    		</div>
-		</form>
+            <div class="form-actions">
+                <input class="btn btn-primary" type="submit" value="Login"/>
+            </div>
+        </form>
 
         <p>
             <a href="<c:url value="/reset-password"/>">Can't access your account?</a>

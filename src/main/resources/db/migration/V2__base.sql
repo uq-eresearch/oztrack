@@ -8,7 +8,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: acousticdetection; Type: TABLE; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: acousticdetection; Type: TABLE; Schema: public; Owner: oztrack; Tablespace:
 --
 
 CREATE TABLE acousticdetection (
@@ -41,7 +41,7 @@ CREATE SEQUENCE acousticdetectionid_seq
 ALTER TABLE public.acousticdetectionid_seq OWNER TO oztrack;
 
 --
--- Name: animal; Type: TABLE; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: animal; Type: TABLE; Schema: public; Owner: oztrack; Tablespace:
 --
 
 CREATE TABLE animal (
@@ -81,7 +81,7 @@ CREATE SEQUENCE animalid_seq
 ALTER TABLE public.animalid_seq OWNER TO oztrack;
 
 --
--- Name: appuser; Type: TABLE; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: appuser; Type: TABLE; Schema: public; Owner: oztrack; Tablespace:
 --
 
 CREATE TABLE appuser (
@@ -102,7 +102,7 @@ CREATE TABLE appuser (
 ALTER TABLE public.appuser OWNER TO oztrack;
 
 --
--- Name: datafile; Type: TABLE; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: datafile; Type: TABLE; Schema: public; Owner: oztrack; Tablespace:
 --
 
 CREATE TABLE datafile (
@@ -146,7 +146,7 @@ ALTER TABLE public.datafileid_seq OWNER TO oztrack;
 
 
 --
--- Name: positionfix; Type: TABLE; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: positionfix; Type: TABLE; Schema: public; Owner: oztrack; Tablespace:
 --
 
 CREATE TABLE positionfix (
@@ -182,7 +182,7 @@ CREATE SEQUENCE positionfixid_seq
 ALTER TABLE public.positionfixid_seq OWNER TO oztrack;
 
 --
--- Name: project; Type: TABLE; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: project; Type: TABLE; Schema: public; Owner: oztrack; Tablespace:
 --
 
 CREATE TABLE project (
@@ -216,7 +216,7 @@ CREATE TABLE project (
 ALTER TABLE public.project OWNER TO oztrack;
 
 --
--- Name: project_user; Type: TABLE; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: project_user; Type: TABLE; Schema: public; Owner: oztrack; Tablespace:
 --
 
 CREATE TABLE project_user (
@@ -243,7 +243,7 @@ CREATE SEQUENCE projectid_seq
 ALTER TABLE public.projectid_seq OWNER TO oztrack;
 
 --
--- Name: rawacousticdetection; Type: TABLE; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: rawacousticdetection; Type: TABLE; Schema: public; Owner: oztrack; Tablespace:
 --
 
 CREATE TABLE rawacousticdetection (
@@ -268,7 +268,7 @@ CREATE TABLE rawacousticdetection (
 ALTER TABLE public.rawacousticdetection OWNER TO oztrack;
 
 --
--- Name: rawpositionfix; Type: TABLE; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: rawpositionfix; Type: TABLE; Schema: public; Owner: oztrack; Tablespace:
 --
 
 CREATE TABLE rawpositionfix (
@@ -303,7 +303,7 @@ CREATE SEQUENCE receiverdeployid_seq
 ALTER TABLE public.receiverdeployid_seq OWNER TO oztrack;
 
 --
--- Name: receiverdeployment; Type: TABLE; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: receiverdeployment; Type: TABLE; Schema: public; Owner: oztrack; Tablespace:
 --
 
 CREATE TABLE receiverdeployment (
@@ -339,7 +339,7 @@ CREATE SEQUENCE receiverlocatid_seq
 ALTER TABLE public.receiverlocatid_seq OWNER TO oztrack;
 
 --
--- Name: receiverlocation; Type: TABLE; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: receiverlocation; Type: TABLE; Schema: public; Owner: oztrack; Tablespace:
 --
 
 CREATE TABLE receiverlocation (
@@ -359,7 +359,7 @@ CREATE TABLE receiverlocation (
 ALTER TABLE public.receiverlocation OWNER TO oztrack;
 
 --
--- Name: sighting; Type: TABLE; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: sighting; Type: TABLE; Schema: public; Owner: oztrack; Tablespace:
 --
 
 CREATE TABLE sighting (
@@ -412,7 +412,7 @@ ALTER TABLE public.userid_seq OWNER TO oztrack;
 
 
 --
--- Name: acousticdetection_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: acousticdetection_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace:
 --
 
 ALTER TABLE ONLY acousticdetection
@@ -420,7 +420,7 @@ ALTER TABLE ONLY acousticdetection
 
 
 --
--- Name: animal_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: animal_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace:
 --
 
 ALTER TABLE ONLY animal
@@ -428,7 +428,7 @@ ALTER TABLE ONLY animal
 
 
 --
--- Name: appuser_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: appuser_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace:
 --
 
 ALTER TABLE ONLY appuser
@@ -436,7 +436,7 @@ ALTER TABLE ONLY appuser
 
 
 --
--- Name: appuser_username_key; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: appuser_username_key; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace:
 --
 
 ALTER TABLE ONLY appuser
@@ -444,14 +444,14 @@ ALTER TABLE ONLY appuser
 
 
 --
--- Name: datafile_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: datafile_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace:
 --
 
 ALTER TABLE ONLY datafile
     ADD CONSTRAINT datafile_pkey PRIMARY KEY (id);
 
 --
--- Name: positionfix_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: positionfix_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace:
 --
 
 ALTER TABLE ONLY positionfix
@@ -459,7 +459,7 @@ ALTER TABLE ONLY positionfix
 
 
 --
--- Name: project_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: project_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace:
 --
 
 ALTER TABLE ONLY project
@@ -467,7 +467,7 @@ ALTER TABLE ONLY project
 
 
 --
--- Name: project_user_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: project_user_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace:
 --
 
 ALTER TABLE ONLY project_user
@@ -475,7 +475,7 @@ ALTER TABLE ONLY project_user
 
 
 --
--- Name: rawacousticdetection_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: rawacousticdetection_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace:
 --
 
 ALTER TABLE ONLY rawacousticdetection
@@ -483,7 +483,7 @@ ALTER TABLE ONLY rawacousticdetection
 
 
 --
--- Name: rawpositionfix_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: rawpositionfix_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace:
 --
 
 ALTER TABLE ONLY rawpositionfix
@@ -491,7 +491,7 @@ ALTER TABLE ONLY rawpositionfix
 
 
 --
--- Name: receiverdeployment_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: receiverdeployment_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace:
 --
 
 ALTER TABLE ONLY receiverdeployment
@@ -499,7 +499,7 @@ ALTER TABLE ONLY receiverdeployment
 
 
 --
--- Name: receiverlocation_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: receiverlocation_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace:
 --
 
 ALTER TABLE ONLY receiverlocation
@@ -507,7 +507,7 @@ ALTER TABLE ONLY receiverlocation
 
 
 --
--- Name: sighting_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace: 
+-- Name: sighting_pkey; Type: CONSTRAINT; Schema: public; Owner: oztrack; Tablespace:
 --
 
 ALTER TABLE ONLY sighting

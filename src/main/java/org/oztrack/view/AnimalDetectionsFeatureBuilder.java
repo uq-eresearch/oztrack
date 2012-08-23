@@ -24,16 +24,16 @@ public class AnimalDetectionsFeatureBuilder {
         private List<Coordinate> nondeletedCoordinates;
         private List<Coordinate> deletedCoordinates;
     }
-    
+
     private final GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
     private final List<PositionFix> positionFixList;
     private final boolean includeDeleted;
-    
+
     public AnimalDetectionsFeatureBuilder(List<PositionFix> positionFixList, boolean includeDeleted) {
         this.positionFixList = positionFixList;
         this.includeDeleted = includeDeleted;
     }
-    
+
     public SimpleFeatureCollection buildFeatureCollection() {
         List<AnimalDetections> animalDetectionsList = buildAnimalDetectionsList();
         SimpleFeatureType featureType = buildFeatureType(4326);
@@ -78,7 +78,7 @@ public class AnimalDetectionsFeatureBuilder {
         SimpleFeatureType featureType = featureTypeBuilder.buildFeatureType();
         return featureType;
     }
-    
+
     private SimpleFeature buildFeature(SimpleFeatureType featureType, AnimalDetections animalDetections, boolean deleted) {
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
         featureBuilder.set("animalId", animalDetections.animal.getId());

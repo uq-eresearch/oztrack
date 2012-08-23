@@ -16,9 +16,9 @@
 </c:set>
 <tags:page title="${title}">
     <jsp:attribute name="head">
-        <script type="text/javascript"> 
+        <script type="text/javascript">
             $(document).ready(function() {
-            	$('#navTrack').addClass('active');
+                $('#navTrack').addClass('active');
             });
         </script>
     </jsp:attribute>
@@ -29,7 +29,7 @@
         &rsaquo; <span class="active">${title}</span>
     </jsp:attribute>
     <jsp:body>
-		<h1>Spatial Reference Systems</h1>
+        <h1>Spatial Reference Systems</h1>
         <c:choose>
             <c:when test="${srs.id != null}">
                 <c:set var="method" value="PUT"/>
@@ -41,7 +41,7 @@
             </c:otherwise>
         </c:choose>
         <form:form class="form-horizontal form-bordered" method="${method}" action="${action}" commandName="srs">
-    		<fieldset>
+            <fieldset>
                 <legend>${title}</legend>
                 <div class="control-group">
                     <label class="control-label" for="identifier">ID</label>
@@ -49,7 +49,7 @@
                         <form:input path="identifier" cssStyle="width: 150px;"/>
                         <form:errors path="identifier" element="div" cssClass="help-block formErrors"/>
                     </div>
-        	    </div>
+                </div>
                 <div class="control-group">
                     <label class="control-label" for="title">Title</label>
                     <div class="controls">
@@ -76,9 +76,9 @@
                     </div>
                 </div>
             </fieldset>
-    		<div class="form-actions">
-    		    <input class="btn btn-primary" type="submit" value="${(srs.id != null) ? 'Update SRS' : 'Create SRS'}" />
-    		</div>
-		</form:form>
+            <div class="form-actions">
+                <input class="btn btn-primary" type="submit" value="${(srs.id != null) ? 'Update SRS' : 'Create SRS'}" />
+            </div>
+        </form:form>
     </jsp:body>
 </tags:page>

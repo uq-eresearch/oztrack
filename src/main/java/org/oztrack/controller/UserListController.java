@@ -83,7 +83,7 @@ public class UserListController {
     public String getFormView(@ModelAttribute(value="user") User user) {
         return "user-form";
     }
-    
+
     @RequestMapping(value="/users", method=RequestMethod.POST)
     @PreAuthorize("permitAll")
     public String onSubmit(
@@ -118,7 +118,7 @@ public class UserListController {
         SecurityContextHolder.getContext().setAuthentication(OzTrackAuthenticationProvider.buildAuthentication(user));
         return "redirect:/";
     }
-    
+
     @RequestMapping(value="/users/search", method=RequestMethod.GET, produces="application/json")
     @PreAuthorize("permitAll")
     public void getSearchJson(@RequestParam(value="term") String term, HttpServletResponse response) throws JSONException, IOException {

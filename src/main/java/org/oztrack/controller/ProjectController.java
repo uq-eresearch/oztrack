@@ -40,16 +40,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class ProjectController {
     protected final Log logger = LogFactory.getLog(getClass());
-    
+
     @Autowired
     private ProjectDao projectDao;
-    
+
     @Autowired
     private DataFileDao dataFileDao;
-    
+
     @Autowired
     private AnimalDao animalDao;
-    
+
     @Autowired
     private UserDao userDao;
 
@@ -68,12 +68,12 @@ public class ProjectController {
             "rightsStatement"
         );
     }
-    
+
     @ModelAttribute("project")
     public Project getProject(@PathVariable(value="id") Long projectId) {
         return projectDao.getProjectById(projectId);
     }
-    
+
     @RequestMapping(value="/projects/{id}", method=RequestMethod.GET)
     @PreAuthorize("permitAll")
     public String getDetailView(Model model, @ModelAttribute(value="project") Project project) {
@@ -86,13 +86,13 @@ public class ProjectController {
         model.addAttribute("projectUsersByRole", projectUsersByRole);
         return getView(model, project, "project");
     }
-    
+
     @RequestMapping(value="/projects/{id}/animals", method=RequestMethod.GET)
     @PreAuthorize("#project.global or hasPermission(#project, 'read')")
     public String getAnimalsView(Model model, @ModelAttribute(value="project") Project project) {
         return getView(model, project, "project-animals");
     }
-    
+
     @RequestMapping(value="/projects/{id}/publish", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#project, 'manage')")
     public String getPublishView(Model model, @ModelAttribute(value="project") Project project) {
@@ -121,7 +121,7 @@ public class ProjectController {
         catch (DataSpaceInterfaceException e) {
             errorMessage = e.getMessage();
         }
-        
+
         model.addAttribute("project", project);
         model.addAttribute("errorMessage", errorMessage);
         return "java_DataSpaceInterface";
@@ -132,7 +132,7 @@ public class ProjectController {
     public String getEditView(@ModelAttribute(value="project") Project project) {
         return "project-form";
     }
-    
+
     @RequestMapping(value="/projects/{id}", method=RequestMethod.PUT)
     @PreAuthorize("hasPermission(#project, 'write')")
     public String processUpdate(
@@ -147,7 +147,7 @@ public class ProjectController {
         projectDao.update(project);
         return "redirect:/projects/" + project.getId();
     }
-    
+
     @RequestMapping(value="/projects/{id}", method=RequestMethod.DELETE)
     @PreAuthorize("hasPermission(#project, 'manage')")
     public void processDelete(@ModelAttribute(value="project") Project project, HttpServletResponse response) {
@@ -206,7 +206,7 @@ public class ProjectController {
         writeAddUserResponse(response.getWriter(), null);
         response.setStatus(204);
     }
-    
+
     private static void writeAddUserResponse(PrintWriter out, String error) {
         out.append("<?xml version=\"1.0\"?>\n");
         out.append("<add-project-user-response xmlns=\"http://oztrack.org/xmlns#\">\n");
@@ -215,7 +215,7 @@ public class ProjectController {
         }
         out.append("</add-project-user-response>\n");
     }
-    
+
     @RequestMapping(value="/projects/{id}/users/{userId}", method=RequestMethod.DELETE)
     @PreAuthorize("hasPermission(#project, 'manage')")
     public void processUserDelete(
@@ -259,7 +259,7 @@ public class ProjectController {
         writeDeleteUserResponse(response.getWriter(), null);
         response.setStatus(204);
     }
-    
+
     private static void writeDeleteUserResponse(PrintWriter out, String error) {
         out.append("<?xml version=\"1.0\"?>\n");
         out.append("<delete-project-user-response xmlns=\"http://oztrack.org/xmlns#\">\n");

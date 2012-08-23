@@ -19,12 +19,12 @@ public class HomeController {
     public void initTextBinder(WebDataBinder binder) {
         binder.setAllowedFields();
     }
-    
+
     @ModelAttribute("text")
     public String getText() throws Exception {
         return settingsDao.getSettings().getHomeText();
     }
-    
+
     @RequestMapping(value="/", method=RequestMethod.GET)
     @PreAuthorize("permitAll")
     public String getHomeView() {

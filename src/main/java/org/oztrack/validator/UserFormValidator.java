@@ -13,31 +13,31 @@ import org.springframework.validation.Validator;
 
 public class UserFormValidator implements Validator {
     private UserDao userDao;
-    
+
     public UserFormValidator(UserDao userDao) {
         this.userDao = userDao;
     }
-    
+
     @Override
     public boolean supports(@SuppressWarnings("rawtypes") Class clazz) {
         return User.class.isAssignableFrom(clazz);
     }
-    
+
     public void validate(Object obj, Errors errors) {
         User loginUser = (User) obj;
-        
+
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "error.empty.field", "Please enter username");
-        
+
         User existingUserByUsername = userDao.getByUsername(loginUser.getUsername());
         if ((existingUserByUsername != null) && (existingUserByUsername != loginUser)) {
             errors.rejectValue("username", "unavailable.user", "This username is unavailable. Please try another.");
         }
-        
+
         User existingUserByEmail = userDao.getByEmail(loginUser.getEmail());
         if ((existingUserByEmail != null) && (existingUserByEmail != loginUser)) {
             errors.rejectValue("email", "unavailable.email", "This email address is already associated with another account.");
         }
-        
+
         if (OzTrackApplication.getApplicationContext().isAafEnabled() && StringUtils.isNotBlank(loginUser.getAafId())) {
             User existingUserByAafId = userDao.getByAafId(loginUser.getAafId());
             if ((existingUserByAafId != null) && (existingUserByAafId != loginUser)) {
@@ -51,7 +51,7 @@ public class UserFormValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "firstName", "error.empty.field", "Please enter first name");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "error.empty.field", "Please enter last name");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "error.empty.field", "Please enter email");
-        
+
         if (!errors.hasFieldErrors("email")) {
             try {
                 InternetAddress emailAddr = new InternetAddress(loginUser.getEmail());

@@ -26,19 +26,19 @@ public class DataSpaceInterfaceView extends AbstractView {
     ) throws Exception {
         Project project = (Project) model.get("project");
         String errorMessage = (String) model.get("errorMessage");
-        
+
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         String dataSpaceURL = OzTrackApplication.getApplicationContext().getDataSpaceURL();
-        
+
         String agentURL = dataSpaceURL + "agents/" + project.getDataSpaceAgent().getDataSpaceAgentURI();
         String collectionURL = dataSpaceURL + "collections/" + project.getDataSpaceURI();
-        
+
         String json = "{ \"dataSpaceAgentURL\" : \"" + agentURL + "\""
                     + ",\"dataSpaceAgentUpdateDate\" : \"" + simpleDateFormat.format(project.getDataSpaceAgent().getDataSpaceAgentUpdateDate()) + "\""
                     + ",\"dataSpaceCollectionURL\" : \"" + collectionURL + "\""
                     + ",\"dataSpaceUpdateDate\" : \"" + simpleDateFormat.format(project.getDataSpaceUpdateDate()) + "\""
                     + ",\"errorMessage\" : \"" + errorMessage + "\""
-                    + "}";    
+                    + "}";
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

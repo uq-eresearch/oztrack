@@ -12,9 +12,9 @@
                 background: white;
             }
         </style>
-        <script type="text/javascript"> 
+        <script type="text/javascript">
             $(document).ready(function() {
-            	$('#navTrack').addClass('active');
+                $('#navTrack').addClass('active');
             });
         </script>
     </jsp:attribute>
@@ -29,25 +29,25 @@
         <tags:project-menu project="${project}"/>
     </jsp:attribute>
     <jsp:body>
-		<h1 id="projectTitle"><c:out value="${project.title}"/></h1>
-		
-		<p>
+        <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
+
+        <p>
             This form allows you to upload animal tracking data in CSV format.
         </p>
-		
-		<form:form cssClass="form-horizontal form-bordered" action="/projects/${project.id}/datafiles" commandName="dataFile" method="POST" enctype="multipart/form-data">
+
+        <form:form cssClass="form-horizontal form-bordered" action="/projects/${project.id}/datafiles" commandName="dataFile" method="POST" enctype="multipart/form-data">
             <fieldset>
                 <legend>Add a Data File</legend>
-        		<div class="control-group">
-            		<label class="control-label" for="projectType">Datafile Type</label>
+                <div class="control-group">
+                    <label class="control-label" for="projectType">Datafile Type</label>
                     <div class="controls">
-            		    <input type="text" disabled="disabled" value="<c:out value="${project.projectType.displayName}"/>" />
+                        <input type="text" disabled="disabled" value="<c:out value="${project.projectType.displayName}"/>" />
                     </div>
-        		</div>
-        		<div class="control-group">
-            		<label class="control-label" for="fileDescription">File Description</label>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="fileDescription">File Description</label>
                     <div class="controls">
-                		<form:input path="fileDescription" id="fileDescription" cssClass="input-xlarge"/>
+                        <form:input path="fileDescription" id="fileDescription" cssClass="input-xlarge"/>
                         <div class="help-inline">
                             <a class=info href="#">
                                 <img src="<c:url value="/img/help.png"/>" border="0">
@@ -58,14 +58,14 @@
                                 </span>
                             </a>
                         </div>
-            		    <form:errors path="fileDescription" element="div" cssClass="help-block formErrors"/>
+                        <form:errors path="fileDescription" element="div" cssClass="help-block formErrors"/>
                     </div>
-        		</div>
-        		<div class="control-group">
-            		<label class="control-label" for="timeConversion">Convert to local time?</label>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="timeConversion">Convert to local time?</label>
                     <div class="controls">
-                		<form:checkbox path="localTimeConversionRequired" id="localTimeConversionRequired" cssClass="checkbox"/>
-                		Local time is GMT +<form:input path="localTimeConversionHours" cssClass="input-mini" cssStyle="width: 30px;"/> hours.
+                        <form:checkbox path="localTimeConversionRequired" id="localTimeConversionRequired" cssClass="checkbox"/>
+                        Local time is GMT +<form:input path="localTimeConversionHours" cssClass="input-mini" cssStyle="width: 30px;"/> hours.
                         <div class="help-inline">
                             <a class=info href="#">
                                 <img src="<c:url value="/img/help.png"/>" border="0">
@@ -77,11 +77,11 @@
                             </a>
                         </div>
                     </div>
-    		    </div>
-        		<div class="control-group">
-            		<label class="control-label" for="file">File: </label>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="file">File: </label>
                     <div class="controls">
-                		<input type="file" name="file"/>
+                        <input type="file" name="file"/>
                         <div class="help-inline">
                             <a class=info href="#">
                                 <img src="<c:url value="/img/help.png"/>" border="0">
@@ -94,13 +94,13 @@
                         </div>
                         <form:errors path="file" element="div" cssClass="help-block formErrors"/>
                     </div>
-        		</div>
-    		</fieldset>
-    		<div class="form-actions">
+                </div>
+            </fieldset>
+            <div class="form-actions">
                 <input class="btn btn-primary" type="submit" value="Add File"/>
             </div>
-		</form:form>
-        
+        </form:form>
+
         <p style="margin-top: 1.00em; margin-bottom: 0.33em;">
             <b>Note: all files must be CSV (comma-separated values) only.</b>
         </p>
@@ -110,7 +110,7 @@
 
         <h2>Example data files</h2>
 
-        <p>Data file containing a single animal:</p>        
+        <p>Data file containing a single animal:</p>
 <pre class="datafile">
 date,time,latitude,longitude
 30/03/2010,5:46:35,-17.557141,146.089866
@@ -120,7 +120,7 @@ date,time,latitude,longitude
 2/04/2010,22:17:23,-17.559016,146.087858
 </pre>
 
-        <p>Data file containing several animals (note the extra <tt>ANIMALID</tt> column):</p>        
+        <p>Data file containing several animals (note the extra <tt>ANIMALID</tt> column):</p>
 <pre class="datafile">
 ANIMALID,DATE,LONGITUDE,LATITUDE
 Ernie,5/08/2009 11:16:00,142.17893,-12.38277
@@ -130,74 +130,74 @@ Bert,5/08/2009 11:16:00,142.17888,-12.38272
 Bert,11/08/2009 20:56:00,142.17881,-12.3824
 Bert,12/08/2009 2:55:00,142.10619,-12.32208
 </pre>
-        
-		<h2>File format</h2>
-		<p>OzTrack expects that files will contain particular headers, depending on the type of project specified when the project was created. 
-		Because this project is for <b><c:out value="${project.projectType.displayName}"/></b>, the headers in the file can be any of the 
-		following:<br>
+
+        <h2>File format</h2>
+        <p>OzTrack expects that files will contain particular headers, depending on the type of project specified when the project was created.
+        Because this project is for <b><c:out value="${project.projectType.displayName}"/></b>, the headers in the file can be any of the
+        following:<br>
         <br>
-		<c:out value="${fileHeaders}"/>
-		<h3>Date formats</h3>
-		<p>Date formats that can be read:</p>
-		    <ul>
-		        <li><span>dd/MM/yyyy H:mi:s.S</span></li>
-		        <li><span>dd/MM/yyyy H:mi:s</span></li>
-		        <li><span>dd/MM/yyyy</span></li>
-		        <li><span>dd.MM.yyyy H:mi:s.S</span></li>
-		        <li><span>dd.MM.yyyy H:mi:s</span></li>
-		        <li><span>dd.MM.yyyy</span></li>
-		        <li><span>yyyy.MM.dd H:mi:s.S</span></li>
-		        <li><span>yyyy.MM.dd H:mi:s</span></li>
-		        <li><span>yyyy.MM.dd</span></li>
-		    </ul>
-			
-			<table class="table table-bordered table-condensed">
+        <c:out value="${fileHeaders}"/>
+        <h3>Date formats</h3>
+        <p>Date formats that can be read:</p>
+            <ul>
+                <li><span>dd/MM/yyyy H:mi:s.S</span></li>
+                <li><span>dd/MM/yyyy H:mi:s</span></li>
+                <li><span>dd/MM/yyyy</span></li>
+                <li><span>dd.MM.yyyy H:mi:s.S</span></li>
+                <li><span>dd.MM.yyyy H:mi:s</span></li>
+                <li><span>dd.MM.yyyy</span></li>
+                <li><span>yyyy.MM.dd H:mi:s.S</span></li>
+                <li><span>yyyy.MM.dd H:mi:s</span></li>
+                <li><span>yyyy.MM.dd</span></li>
+            </ul>
+
+            <table class="table table-bordered table-condensed">
                 <thead>
-				<tr><th>Field</th>
-					<th>Description</th>
-					<th>Example</th></tr>
+                <tr><th>Field</th>
+                    <th>Description</th>
+                    <th>Example</th></tr>
                 </thead>
-				<tbody>
-				<tr><td>dd</td>
-					<td>day in month (number)</td>
-					<td>01, 1, 31, 08</td></tr>
-				
-				<tr><td>MM</td>
-					<td>month (number)</td>
-					<td>01, 1, 12, 6, 06</td></tr>
-	
-				<tr><td>yyyy</td>
-					<td>year (4 digit number)</td>
-					<td>1997, 2011</td></tr>
-	
-				<tr><td>H</td>
-					<td>hour in day (0-23)</td>
-					<td>00, 23, 16</td></tr>
-	
-				<tr><td>mi</td>
-					<td>minute in hour (0-60)</td>
-					<td>00, 01, 1, 58</td></tr>
-				
-				<tr><td>s</td>
-					<td>second in hour (0-60)</td>
-					<td>00, 01, 1, 58</td></tr>
-				
-				<tr><td>S</td>
-					<td>millisecond</td>
-					<td>00, 01234, 1234</td></tr>
-			    </tbody>
-			</table>
-		<p>Note: OzTrack will look for the headings specified above to populate the date and time fields. The date fields above (including <tt>ACQUIISITIONTIME</tt>) can contain either 
-		   a date or a date and time stamp. The time stamp can be in a separate field to the date, but the date field must precede it (left to right). </p>
-		<h3>Spatial coordinates</h3>
-		<p>At this stage we only accept Lat/Longs in the WGS 84 coordinate system.</p>
+                <tbody>
+                <tr><td>dd</td>
+                    <td>day in month (number)</td>
+                    <td>01, 1, 31, 08</td></tr>
+
+                <tr><td>MM</td>
+                    <td>month (number)</td>
+                    <td>01, 1, 12, 6, 06</td></tr>
+
+                <tr><td>yyyy</td>
+                    <td>year (4 digit number)</td>
+                    <td>1997, 2011</td></tr>
+
+                <tr><td>H</td>
+                    <td>hour in day (0-23)</td>
+                    <td>00, 23, 16</td></tr>
+
+                <tr><td>mi</td>
+                    <td>minute in hour (0-60)</td>
+                    <td>00, 01, 1, 58</td></tr>
+
+                <tr><td>s</td>
+                    <td>second in hour (0-60)</td>
+                    <td>00, 01, 1, 58</td></tr>
+
+                <tr><td>S</td>
+                    <td>millisecond</td>
+                    <td>00, 01234, 1234</td></tr>
+                </tbody>
+            </table>
+        <p>Note: OzTrack will look for the headings specified above to populate the date and time fields. The date fields above (including <tt>ACQUIISITIONTIME</tt>) can contain either
+           a date or a date and time stamp. The time stamp can be in a separate field to the date, but the date field must precede it (left to right). </p>
+        <h3>Spatial coordinates</h3>
+        <p>At this stage we only accept Lat/Longs in the WGS 84 coordinate system.</p>
         <p>Coordinate formats that can be read:</p>
         <ul>
             <li>Degrees (e.g., 153.017433)</li>
             <li>Degrees minutes (e.g., 153 1.046)</li>
             <li>Degrees minutes seconds (e.g., 153 1 2.76)</li>
         </ul>
-        <h3>Animal IDs</h3> 
+        <h3>Animal IDs</h3>
             <p>
                 If there is an <tt>ID</tt> or <tt>ANIMALID</tt> field in the file,
                 OzTrack will assume that this field is the identifier of the animals.

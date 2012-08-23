@@ -18,11 +18,11 @@ import org.oztrack.error.FileProcessingException;
 
 public abstract class DataFileLoader {
     protected final Log logger = LogFactory.getLog(getClass());
-    
+
     protected DataFile dataFile;
     protected DataFileDao dataFileDao;
     protected EntityManager entityManager;
-    
+
     private AnimalDao animalDao;
     private JdbcAccess jdbcAccess;
 
@@ -90,18 +90,18 @@ public abstract class DataFileLoader {
             animalDao.update(animal);
         }
         else {
-        	// get a list of the animal IDs in the raw file just loaded
+            // get a list of the animal IDs in the raw file just loaded
             List<String> newAnimalIdList = this.dataFileDao.getAllAnimalIds(this.dataFile);
-            
+
             if (newAnimalIdList.size() > 20) {
-            	
-            	throw new FileProcessingException(
-            	    "OzTrack only allows 20 animals per file. The Id/Animal Id field in the " +
-            		"file contains more than 20. An easy fix may be to rename the Id field to something else. " +
-            		"Fix and retry the upload."
-        		);
+
+                throw new FileProcessingException(
+                    "OzTrack only allows 20 animals per file. The Id/Animal Id field in the " +
+                    "file contains more than 20. An easy fix may be to rename the Id field to something else. " +
+                    "Fix and retry the upload."
+                );
             }
-            
+
             // all the animals for this project
             List<Animal> projectAnimalList = animalDao.getAnimalsByProjectId(this.dataFile.getProject().getId());
             boolean animalFound;
@@ -130,12 +130,12 @@ public abstract class DataFileLoader {
             }
         }
     }
-    
+
     private void createFinalObservations() throws FileProcessingException {
         int nbrObservationsCreated = 0;
         try {
             nbrObservationsCreated = jdbcAccess.loadObservations(dataFile);
-            
+
             dataFile.setDetectionCount(nbrObservationsCreated);
             dataFileDao.update(dataFile);
 
@@ -151,7 +151,7 @@ public abstract class DataFileLoader {
             throw new FileProcessingException(e.getMessage(), e);
         }
     }
-    
+
     protected void updateDataFileMetadata() throws FileProcessingException {
     }
 }

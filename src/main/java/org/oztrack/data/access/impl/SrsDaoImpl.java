@@ -14,21 +14,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class SrsDaoImpl implements SrsDao {
     @PersistenceContext
     private EntityManager em;
-    
+
     @Override
     public List<Srs> getAll() {
         @SuppressWarnings("unchecked")
         List<Srs> resultList = em.createQuery("from org.oztrack.data.model.Srs order by identifier").getResultList();
         return resultList;
     }
-    
+
     @Override
     public List<Srs> getAllOrderedByBoundsAreaDesc() {
         @SuppressWarnings("unchecked")
         List<Srs> resultList = em.createNativeQuery("select * from srs order by ST_Area(bounds) desc", Srs.class).getResultList();
         return resultList;
     }
-    
+
     @Override
     public Srs getById(Long id) {
         return (Srs) em
@@ -48,7 +48,7 @@ public class SrsDaoImpl implements SrsDao {
     public Srs update(Srs srs) {
         return em.merge(srs);
     }
-    
+
     @Override
     @Transactional
     public void delete(Srs srs) {

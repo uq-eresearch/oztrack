@@ -16,13 +16,13 @@ public interface PositionFixDao {
     Page<PositionFix> getPage(SearchQuery searchQuery, int offset, int nbrObjectsPerPage);
 
     List<PositionFix> getProjectPositionFixList(SearchQuery searchQuery);
-   
+
     Date getProjectFirstDetectionDate(Project project); //not used
     Date getProjectLastDetectionDate(Project project); // not used
 
     Date getDataFileFirstDetectionDate(DataFile dataFile);
     Date getDataFileLastDetectionDate(DataFile dataFile);
-    
+
     int setDeletedOnOverlappingPositionFixes(Project project, List<Long> animalIds, MultiPolygon multiPolygon, boolean deleted);
     int setDeletedOnAllPositionFixes(Project project, List<Long> animalIds, boolean deleted);
 }

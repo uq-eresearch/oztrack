@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class ContentController {
     @Autowired
     private SettingsDao settingsDao;
-    
+
     @InitBinder("settings")
     public void initSettingsBinder(WebDataBinder binder) {
         binder.setAllowedFields(
@@ -26,7 +26,7 @@ public class ContentController {
             "contactText"
         );
     }
-    
+
     @ModelAttribute("settings")
     public Settings getSettings() throws Exception {
         return settingsDao.getSettings();
@@ -37,7 +37,7 @@ public class ContentController {
     public String handleRequest() {
         return "content-form";
     }
-    
+
     @RequestMapping(value="/settings/content", method=RequestMethod.POST)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String processSubmit(

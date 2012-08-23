@@ -6,9 +6,9 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <tags:page title="About">
     <jsp:attribute name="head">
-        <script type="text/javascript"> 
+        <script type="text/javascript">
             $(document).ready(function() {
-            	$('#navAbout').addClass('active');
+                $('#navAbout').addClass('active');
             });
         </script>
     </jsp:attribute>
@@ -18,6 +18,6 @@
     </jsp:attribute>
     <jsp:attribute name="sidebar"/>
     <jsp:body>
-		${text}
+        ${text}
     </jsp:body>
 </tags:page>

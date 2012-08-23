@@ -15,7 +15,7 @@ public class RedirectController {
     public RedirectView redirectOldHomeUrl() throws IOException {
         return redirectTo("/");
     }
-    
+
     @RequestMapping(value="/projectdescr", method=RequestMethod.GET)
     public RedirectView redirectProjectDescriptionView(@RequestParam(value="id") Long id) {
         return redirectTo("/projects/" + id);

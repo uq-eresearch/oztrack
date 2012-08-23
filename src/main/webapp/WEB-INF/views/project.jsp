@@ -152,11 +152,11 @@
     </jsp:attribute>
     <jsp:body>
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
-        
+
         <c:if test="${not empty project.boundingBox}">
         <div id="coverageMap"></div>
         </c:if>
-        
+
         <sec:authorize access="#project.global or hasPermission(#project, 'read')">
         <div id="projectData">
         <h2 style="margin-top: 0;">Data Summary</h2>
@@ -169,7 +169,7 @@
                  </sec:authorize>
              </p>
         </c:when>
-        <c:otherwise>              
+        <c:otherwise>
             <table class="entityTable">
             <col style="width: 120px;" />
             <sec:authorize access="hasPermission(#project, 'write')">
@@ -192,7 +192,7 @@
                     <c:forEach items="${projectAnimalsList}" var="animal">
                     <a href="<c:url value="/animals/${animal.id}"/>"><c:out value="${animal.animalName}"/></a>,
                     </c:forEach>
-                    <a href="<c:url value="/projects/${project.id}/animals"/>">View All</a>    
+                    <a href="<c:url value="/projects/${project.id}/animals"/>">View All</a>
                 </td>
             </tr>
             </table>
@@ -200,7 +200,7 @@
         </c:choose>
         </div>
         </sec:authorize>
-        
+
         <div id="projectDetails">
         <h2 style="margin-top: 0;">Project Details</h2>
         <table class="entityTable">
@@ -281,8 +281,8 @@
             </c:choose>
             </td>
         </tr>
-        
-        
+
+
         <sec:authorize access="hasPermission(#project, 'manage')">
         <tr>
             <th>Publication Status:</th>
@@ -292,19 +292,19 @@
                     This project metadata has not yet been published externally.
                 </c:when>
                 <c:otherwise>
-                    This project metadata has been published and was last updated on 
+                    This project metadata has been published and was last updated on
                     <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${project.dataSpaceUpdateDate}"/>.
                 </c:otherwise>
                 </c:choose>
             </td>
         </tr>
         </sec:authorize>
-        
+
         </table>
         </div>
-        
+
         <div style="clear: both;"></div>
-        
+
         <sec:authorize access="hasPermission(#project, 'read')">
         <h2>User Roles</h2>
         <table style="width: 100%; margin: 0;">
@@ -348,7 +348,7 @@
         <div id="projectUserError" class="alert alert-error" style="margin-top: -12px; display: none;"></div>
         </sec:authorize>
         </sec:authorize>
-        
+
         <sec:authorize access="hasPermission(#project, 'write')">
         <div class="actions">
         <h2>Manage Project</h2>
@@ -360,10 +360,10 @@
             </c:if>
             <c:choose>
                 <c:when test ="${empty project.dataSpaceUpdateDate}">
-                    <c:set var="publishButtonText" value="Publish Metadata to UQ DataSpace"/> 
+                    <c:set var="publishButtonText" value="Publish Metadata to UQ DataSpace"/>
                 </c:when>
                 <c:otherwise>
-                    <c:set var="publishButtonText" value="Update UQ DataSpace Collection Registry"/> 
+                    <c:set var="publishButtonText" value="Update UQ DataSpace Collection Registry"/>
                 </c:otherwise>
             </c:choose>
             <li class="publish"><a href="<c:url value="/projects/${project.id}/publish"/>"><c:out value="${publishButtonText}"/></a></li>

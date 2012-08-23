@@ -5,7 +5,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <tags:page title="Home">
-	<jsp:attribute name="head">
+    <jsp:attribute name="head">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
         <style type="text/css">
@@ -43,12 +43,12 @@
             });
         </script>
     </jsp:attribute>
-	<jsp:body>
+    <jsp:body>
         <div id="welcome" class="fade in">
             <button class="close" data-dismiss="alert">×</button>
             ${text}
         </div>
         <div style="clear: both;"></div>
         <div id="homeMap"></div>
-	</jsp:body>
+    </jsp:body>
 </tags:page>
