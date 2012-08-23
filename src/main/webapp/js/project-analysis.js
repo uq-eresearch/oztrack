@@ -48,6 +48,9 @@ function createAnalysisMap(div, options) {
             var ghyb = new OpenLayers.Layer.Google('Google Hybrid', {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20});
             map.addLayers([gsat, gphy, gmap, ghyb]);
             
+            var osmLayer = new OpenLayers.Layer.OSM('OpenStreetMap');
+            map.addLayer(osmLayer);
+            
             map.addControl(createControlPanel());
             
             lineStyleMap = createLineStyleMap();

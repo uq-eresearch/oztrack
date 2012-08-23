@@ -34,9 +34,10 @@ function createCleanseMap(div, options) {
             var gsat = new OpenLayers.Layer.Google('Google Satellite', {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22});
             var gmap = new OpenLayers.Layer.Google('Google Streets', {numZoomLevels: 20});
             var ghyb = new OpenLayers.Layer.Google('Google Hybrid', {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20});
+            var osmLayer = new OpenLayers.Layer.OSM('OpenStreetMap');
             allDetectionsLayer = createAllDetectionsLayer(projectId);
             polygonLayer = new OpenLayers.Layer.Vector('Polygons');
-            map.addLayers([gsat, gphy, gmap, ghyb, allDetectionsLayer, polygonLayer]);
+            map.addLayers([gsat, gphy, gmap, ghyb, osmLayer, allDetectionsLayer, polygonLayer]);
     
             polygonFeatures = [];
             var polygonControl = new OpenLayers.Control.DrawFeature(polygonLayer, OpenLayers.Handler.Polygon);
