@@ -290,12 +290,10 @@
                 <c:choose>
                 <c:when test ="${empty project.dataSpaceUpdateDate}">
                     This project metadata has not yet been published externally.
-                    <c:set var="publishButtonText" value="Publish Metadata to UQ DataSpace"/> 
                 </c:when>
                 <c:otherwise>
                     This project metadata has been published and was last updated on 
                     <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${project.dataSpaceUpdateDate}"/>.
-                    <c:set var="publishButtonText" value="Update UQ DataSpace Collection Registry"/> 
                 </c:otherwise>
                 </c:choose>
             </td>
@@ -360,6 +358,14 @@
             <c:if test="${empty project.dataSpaceURI}">
             <li class="delete"><a href="javascript:void(deleteEntity('<c:url value="/projects/${project.id}"/>', '<c:url value="/projects"/>', 'Are you sure you want to delete this project?'));">Delete project</a></li>
             </c:if>
+            <c:choose>
+                <c:when test ="${empty project.dataSpaceUpdateDate}">
+                    <c:set var="publishButtonText" value="Publish Metadata to UQ DataSpace"/> 
+                </c:when>
+                <c:otherwise>
+                    <c:set var="publishButtonText" value="Update UQ DataSpace Collection Registry"/> 
+                </c:otherwise>
+            </c:choose>
             <li class="publish"><a href="<c:url value="/projects/${project.id}/publish"/>"><c:out value="${publishButtonText}"/></a></li>
             </sec:authorize>
         </ul>

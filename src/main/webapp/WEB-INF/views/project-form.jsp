@@ -248,33 +248,6 @@
                         <form:errors path="rightsStatement" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
-        		<c:if test="${project.id != null}">
-                <div class="control-group">
-                    <label class="control-label">Metadata</label>
-                    <div class="controls">
-        				<c:choose>
-        				<c:when test ="${empty project.dataSpaceUpdateDate}">
-        					<p>Your project metadata has not yet been published to ANDS.</p>
-        					<a href="<c:url value="/projects/${project.id}/publish"/>">Publish to ANDS now</a>.
-        				</c:when>
-        				<c:otherwise>
-        					<p>Your project metadata has been published and was last updated on 
-        					<fmt:formatDate pattern="${dateTimeFormatPattern}" value="${project.dataSpaceUpdateDate}"/>.</p>
-        					You can <a href="#">update the record</a>.
-        				</c:otherwise>
-        				</c:choose>
-            			<div class="help-inline">
-            				<a class=info href="#"><img src="<c:url value="/img/help.png"/>" border="0">
-            				<span>
-                                <b>Metadata to ANDS:</b><br>
-                                Project metadata on OzTrack is publicly available, and users are encouraged to
-                                publish their metadata as a collection record in the Australian National Data Service. 
-            				</span>
-                            </a>
-            			</div>
-                    </div>
-                </div>
-                </c:if>
             </fieldset>
     		<div class="form-actions">
     		    <input class="btn btn-primary" type="submit" value="${(project.id != null) ? 'Update Project' : 'Create OzTrack Project'}" />
