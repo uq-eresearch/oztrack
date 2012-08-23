@@ -5,6 +5,11 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
     private String dataSpaceUsername;
     private String dataSpacePassword;
     private String dataDir;
+    private String mailServerHostName;
+    private Integer mailServerPort;
+    private String mailFromName;
+    private String mailFromEmail;
+    private Integer passwordResetExpiryDays;
     private boolean aafEnabled;
 
     @Override
@@ -41,6 +46,51 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
     
     public void setDataDir(String dataDir) {
         this.dataDir = dataDir;
+    }
+
+    @Override
+    public String getMailServerHostName() {
+        return mailServerHostName;
+    }
+
+    public void setMailServerHostName(String mailServerHostName) {
+        this.mailServerHostName = mailServerHostName;
+    }
+
+    @Override
+    public Integer getMailServerPort() {
+        return mailServerPort;
+    }
+
+    public void setMailServerPort(Integer mailServerPort) {
+        this.mailServerPort = mailServerPort;
+    }
+
+    @Override
+    public String getMailFromName() {
+        return mailFromName;
+    }
+
+    public void setMailFromName(String mailFromName) {
+        this.mailFromName = mailFromName;
+    }
+
+    @Override
+    public String getMailFromEmail() {
+        return mailFromEmail;
+    }
+
+    public void setMailFromEmail(String mailFromEmail) {
+        this.mailFromEmail = mailFromEmail;
+    }
+
+    @Override
+    public Integer getPasswordResetExpiryDays() {
+        return passwordResetExpiryDays;
+    }
+
+    public void setPasswordResetExpiryDays(Integer passwordResetExpiryDays) {
+        this.passwordResetExpiryDays = passwordResetExpiryDays;
     }
 
     @Override

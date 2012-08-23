@@ -49,6 +49,17 @@ public class UserDaoImpl implements UserDao {
     }
     
     @Override
+    public User getByPasswordResetToken(String token) {
+        @SuppressWarnings("unchecked")
+        List<User> resultList = em
+            .createQuery("from org.oztrack.data.model.User where passwordResetToken = :passwordResetToken")
+            .setParameter("passwordResetToken", token)
+            .getResultList();
+        assert resultList.size() <= 1;
+        return resultList.isEmpty() ? null : resultList.get(0);
+    }
+    
+    @Override
     public User getById(Long id) {
         @SuppressWarnings("unchecked")
         List<User> resultList = em

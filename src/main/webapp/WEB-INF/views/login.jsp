@@ -68,12 +68,15 @@
         		</div>
             </fieldset>
     		<div class="form-actions">
-    		<input class="btn btn-primary" type="submit" value="Login"/>
+    		    <input class="btn btn-primary" type="submit" value="Login"/>
     		</div>
 		</form>
 
-        <div style="clear: both;"></div>
-
-        <p style="margin: 1em 0;">Don't have an account yet? <a href="<c:url value="/users/new"/>">Register as a new user</a></p>
+        <p>
+            <a href="<c:url value="/reset-password"/>">Can't access your account?</a>
+        </p>
+        <p>
+            Don't have an account yet? <a href="<c:url value="/users/new"/>">Register as a new user</a>
+        </p>
     </jsp:body>
 </tags:page>

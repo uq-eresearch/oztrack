@@ -5,5 +5,10 @@ public interface OzTrackConfiguration {
     String getDataSpaceUsername();
     String getDataSpacePassword();
     String getDataDir();
+    String getMailServerHostName();
+    Integer getMailServerPort();
+    String getMailFromName();
+    String getMailFromEmail();
+    Integer getPasswordResetExpiryDays();
     boolean isAafEnabled();
 }

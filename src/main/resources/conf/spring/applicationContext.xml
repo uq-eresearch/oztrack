@@ -46,6 +46,11 @@
         <property name="dataSpaceUsername" value="${application.dataSpaceUsername}"/>
         <property name="dataSpacePassword" value="${application.dataSpacePassword}"/>
         <property name="dataDir" value="${application.dataDir}"/>
+        <property name="mailFromName" value="${application.mailFromName}"/>
+        <property name="mailFromEmail" value="${application.mailFromEmail}"/>
+        <property name="mailServerHostName" value="${application.mailServerHostName}"/>
+        <property name="mailServerPort" value="${application.mailServerPort}"/>
+        <property name="passwordResetExpiryDays" value="${application.passwordResetExpiryDays}"/>
         <property name="aafEnabled" value="${application.aafEnabled}"/>
     </bean>
 

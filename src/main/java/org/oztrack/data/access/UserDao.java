@@ -10,6 +10,7 @@ public interface UserDao {
     User getByUsername(String username);
     User getByEmail(String email);
     User getByAafId(String aafId);
+    User getByPasswordResetToken(String token);
     User getById(Long id);
     List<User> search(String term);
     void save(User user);

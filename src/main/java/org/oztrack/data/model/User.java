@@ -41,6 +41,12 @@ public class User {
     private String dataSpaceAgentDescription;
     private Date dataSpaceAgentUpdateDate;
 
+    @Column(name="passwordresettoken", unique=true)
+    private String passwordResetToken;
+
+    @Column(name="passwordresetexpiresat")
+    private Date passwordResetExpiresAt;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true)
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private List<ProjectUser> projectUsers = new LinkedList<ProjectUser>();
@@ -185,4 +191,20 @@ public class User {
 	public void setDataSpaceAgentUpdateDate(Date dataSpaceAgentUpdateDate) {
 		this.dataSpaceAgentUpdateDate = dataSpaceAgentUpdateDate;
 	}
+
+    public String getPasswordResetToken() {
+        return passwordResetToken;
+    }
+
+    public void setPasswordResetToken(String passwordResetToken) {
+        this.passwordResetToken = passwordResetToken;
+    }
+
+    public Date getPasswordResetExpiresAt() {
+        return passwordResetExpiresAt;
+    }
+
+    public void setPasswordResetExpiresAt(Date passwordResetExpiresAt) {
+        this.passwordResetExpiresAt = passwordResetExpiresAt;
+    }
 }
