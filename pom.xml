@@ -107,6 +107,7 @@
                 </executions>
                 <configuration>
                     <targetGroups>bootstrap</targetGroups>
+                    <contextFolder>${basedir}/src/main/webapp/</contextFolder>
                     <destinationFolder>${basedir}/src/main/webapp/</destinationFolder>
                     <cssDestinationFolder>${basedir}/src/main/webapp/css/</cssDestinationFolder>
                     <jsDestinationFolder>${basedir}/src/main/webapp/js/</jsDestinationFolder>
@@ -277,14 +278,14 @@
             <version>3.6</version>
         </dependency>
         <dependency>
-            <groupId>org.oztrack</groupId>
-            <artifactId>Rserve</artifactId>
-            <version>0.6-5</version>
+            <groupId>net.rforge.rserve</groupId>
+            <artifactId>REngine</artifactId>
+            <version>1.7-0</version>
         </dependency>
         <dependency>
-            <groupId>org.oztrack</groupId>
-            <artifactId>REngine</artifactId>
-            <version>0.6-5</version>
+            <groupId>net.rforge.rserve</groupId>
+            <artifactId>RserveEngine</artifactId>
+            <version>1.7-0</version>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>

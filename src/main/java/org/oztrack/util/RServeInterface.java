@@ -1,7 +1,5 @@
 package org.oztrack.util;
 
-import static org.oztrack.util.StartRserve.checkLocalRserve;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -36,7 +34,6 @@ public class RServeInterface {
     private String rWorkingDir;
     private final SearchQuery searchQuery;
     private final String srs;
-    private String rLog = "";
 
     private List<PositionFix> positionFixList;
 
@@ -99,47 +96,72 @@ public class RServeInterface {
     }
 
     protected void startRConnection() throws RServeInterfaceException {
-        try {
-            if (checkLocalRserve()) {
+        if (StartRserve.checkLocalRserve()) {
+            try {
                 this.rConnection = new RConnection();
                 this.rConnection.setSendBufferSize(10485760);
-                this.rConnection.voidEval("library(adehabitatHR)");
-                this.rConnection.voidEval("library(adehabitatMA)");
-                this.rConnection.voidEval("library(alphahull)");
-                this.rConnection.voidEval("library(maptools)");
-                this.rConnection.voidEval("library(rgdal)");
-                this.rConnection.voidEval("library(shapefiles)");
-                rLog = rLog + "Libraries Loaded ";
+            }
+            catch (RserveException e) {
+                throw new RServeInterfaceException("Error starting Rserve.", e);
+            }
 
-                String[] scriptFiles = new String[] {
-                    "to_SPLDF.r",
-                    "heatmap.r"
-                };
-                for (String scriptFile : scriptFiles) {
-                    String script = IOUtils.toString(getClass().getResourceAsStream("/r/" + scriptFile), "UTF-8");
-                    this.rConnection.voidEval(script);
-                }
-                rLog = rLog + "Scripts Loaded ";
-
-                // get the working directory: Java and R have different ideas about windows fileNames
+            try {
                 this.rWorkingDir = rConnection.eval("getwd()").asString() + File.separator;
-                String osname = System.getProperty("os.name");
-                if (osname != null && osname.length() >= 7 && osname.substring(0,7).equals("Windows")) {
-                    this.rWorkingDir = this.rWorkingDir.replace("\\","/");
-                }
             }
-            else {
-                throw new RServeInterfaceException("RServe not started.");
+            catch (Exception e) {
+                throw new RServeInterfaceException("Error getting Rserve working directory.", e);
+            }
+            String osname = System.getProperty("os.name");
+            if (StringUtils.startsWith(osname, "Windows")) {
+                this.rWorkingDir = this.rWorkingDir.replace("\\","/");
+            }
+
+            loadLibraries();
+            loadScripts();
+        }
+        else {
+            throw new RServeInterfaceException("Could not start Rserve.");
+        }
+    }
+
+    private void loadLibraries() throws RServeInterfaceException {
+        String[] libraries = new String[] {
+            "adehabitatHR",
+            "adehabitatMA",
+            "alphahull",
+            "maptools",
+            "rgdal",
+            "shapefiles"
+        };
+        for (String library : libraries) {
+            try {
+                this.rConnection.voidEval("library(" + library + ")");
+            }
+            catch (RserveException e) {
+                throw new RServeInterfaceException("Error loading '" + library + "' library.", e);
             }
         }
-        catch (RserveException e) {
-            throw new RServeInterfaceException(e.toString());
-        }
-        catch (REXPMismatchException e) {
-            throw new RServeInterfaceException(e.toString());
-        }
-        catch (IOException e) {
-            throw new RServeInterfaceException(e.toString());
+    }
+
+    private void loadScripts() throws RServeInterfaceException {
+        String[] scriptFileNames = new String[] {
+            "to_SPLDF.r",
+            "heatmap.r"
+        };
+        for (String scriptFileName : scriptFileNames) {
+            String scriptString = null;
+            try {
+                scriptString = IOUtils.toString(getClass().getResourceAsStream("/r/" + scriptFileName), "UTF-8");
+            }
+            catch (IOException e) {
+                throw new RServeInterfaceException("Error reading '" + scriptFileName + "' script.", e);
+            }
+            try {
+                this.rConnection.voidEval(scriptString);
+            }
+            catch (RserveException e) {
+                throw new RServeInterfaceException("Error running '" + scriptFileName + "' script.", e);
+            }
         }
     }
 
@@ -166,7 +188,6 @@ public class RServeInterface {
             REXP rPosFixDataFrame = REXP.createDataFrame(rPositionFixList);
             this.rConnection.assign("positionFix", new REXPNull());
             this.rConnection.assign("positionFix", rPosFixDataFrame);
-            rLog = rLog + " | PositionFix dataFrame assigned ";
 
             // We use WGS84 for coordinates and project to a user-defined SRS.
             // We assume the user-supplied SRS has units of metres in our area calculations.
@@ -175,13 +196,12 @@ public class RServeInterface {
             safeEval("positionFix.xy <- positionFix[,ncol(positionFix)];");
             safeEval("proj4string(positionFix.xy) <- CRS(\"+init=epsg:4326\");");
             safeEval("positionFix.proj <- spTransform(positionFix.xy,CRS(\"+init=" + srs + "\"));");
-            rLog = rLog + "coordinates + 2 projections defined.";
         }
         catch (REngineException e) {
-            throw new RServeInterfaceException(e.toString() + "Log: " + rLog);
+            throw new RServeInterfaceException(e.toString());
         }
         catch (REXPMismatchException e) {
-            throw new RServeInterfaceException(e.toString() + "Log: " + rLog);
+            throw new RServeInterfaceException(e.toString());
         }
     }
 
@@ -231,7 +251,6 @@ public class RServeInterface {
 
         try {
             rCommand = "coordinates(positionFix) <- c(\"Y\",\"X\");proj4string(positionFix)=CRS(\"+init=epsg:4326\")";
-            rLog = rLog + "coordinates + projection defined for KML";
             logger.debug(rCommand);
             rConnection.eval(rCommand);
 
@@ -241,10 +260,9 @@ public class RServeInterface {
             rCommand = "writeOGR(positionFix, dsn=\"" + outFileNameFix + "\", layer= \"positionFix\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))";
             logger.debug(rCommand);
             rConnection.eval(rCommand);
-            rLog = rLog + "KML written";
         }
         catch (RserveException e) {
-            throw new RServeInterfaceException(e.toString() + "Log: " + rLog);
+            throw new RServeInterfaceException(e.toString());
         }
     }
 

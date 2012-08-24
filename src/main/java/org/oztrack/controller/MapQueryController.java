@@ -3,6 +3,7 @@ package org.oztrack.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
@@ -16,6 +17,7 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.WfsFactory;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.emf.common.util.EList;
@@ -127,8 +129,11 @@ public class MapQueryController {
         try {
             kmlFile = rServeInterface.createKml();
         }
-        catch (RServeInterfaceException rRserveInterfaceException) {
-            throw new RuntimeException(rRserveInterfaceException);
+        catch (RServeInterfaceException e) {
+            logger.error("RServeInterface exception", e);
+            writeKMLQueryErrorResponse(response, e.getMessage());
+            response.setStatus(500);
+            return;
         }
         String filename = searchQuery.getMapQueryType().name().toLowerCase(Locale.ENGLISH) + ".kml";
         response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
@@ -140,12 +145,28 @@ public class MapQueryController {
             IOUtils.copy(kmlInputStream, response.getOutputStream());
             kmlFile.delete();
         }
-        catch (IOException ioException) {
-            throw new RuntimeException(ioException);
+        catch (IOException e) {
+            writeKMLQueryErrorResponse(response, "Error writing KML response.");
+            response.setStatus(500);
+            return;
         }
         finally {
             IOUtils.closeQuietly(kmlInputStream);
         }
+    }
+
+    private static void writeKMLQueryErrorResponse(HttpServletResponse response, String error) {
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        out.append("<?xml version=\"1.0\"?>\n");
+        out.append("<map-query-kml-response xmlns=\"http://oztrack.org/xmlns#\">\n");
+        out.append("    <error>" + StringUtils.trim(error) + "</error>\n");
+        out.append("</map-query-kml-response>\n");
     }
 
     @RequestMapping(value="/mapQueryWFS", method=RequestMethod.POST)
