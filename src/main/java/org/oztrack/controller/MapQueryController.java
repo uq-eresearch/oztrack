@@ -1,9 +1,11 @@
 package org.oztrack.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
@@ -29,11 +31,11 @@ import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.data.model.types.MapQueryType;
+import org.oztrack.error.RServeInterfaceException;
 import org.oztrack.util.RServeInterface;
 import org.oztrack.view.AnimalDetectionsFeatureBuilder;
 import org.oztrack.view.AnimalStartEndFeatureBuilder;
 import org.oztrack.view.AnimalTrajectoryFeatureBuilder;
-import org.oztrack.view.KMLMapQueryView;
 import org.oztrack.view.ProjectsFeatureBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,7 +46,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.View;
 
 @Controller
 public class MapQueryController {
@@ -116,11 +117,35 @@ public class MapQueryController {
 
     @RequestMapping(value="/mapQueryKML", method=RequestMethod.GET)
     @PreAuthorize("#searchQuery.project.global or hasPermission(#searchQuery.project, 'read')")
-    public View handleKMLQuery(@ModelAttribute(value="searchQuery") SearchQuery searchQuery) throws Exception {
+    public void handleKMLQuery(
+        HttpServletResponse response,
+        @ModelAttribute(value="searchQuery") SearchQuery searchQuery
+    ) {
         List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
         RServeInterface rServeInterface = new RServeInterface(positionFixList, searchQuery);
-        File kmlFile = rServeInterface.createKml();
-        return new KMLMapQueryView(kmlFile, searchQuery);
+        File kmlFile = null;
+        try {
+            kmlFile = rServeInterface.createKml();
+        }
+        catch (RServeInterfaceException rRserveInterfaceException) {
+            throw new RuntimeException(rRserveInterfaceException);
+        }
+        String filename = searchQuery.getMapQueryType().name().toLowerCase(Locale.ENGLISH) + ".kml";
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+        response.setContentType("application/vnd.google-earth.kml+xml");
+        response.setCharacterEncoding("UTF-8");
+        FileInputStream kmlInputStream = null;
+        try {
+            kmlInputStream = new FileInputStream(kmlFile);
+            IOUtils.copy(kmlInputStream, response.getOutputStream());
+            kmlFile.delete();
+        }
+        catch (IOException ioException) {
+            throw new RuntimeException(ioException);
+        }
+        finally {
+            IOUtils.closeQuietly(kmlInputStream);
+        }
     }
 
     @RequestMapping(value="/mapQueryWFS", method=RequestMethod.POST)
