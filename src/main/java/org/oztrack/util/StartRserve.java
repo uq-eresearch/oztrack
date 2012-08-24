@@ -26,8 +26,9 @@ class StreamHog extends Thread {
     }
     public void run()
     {
+        BufferedReader br = null;
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            br = new BufferedReader(new InputStreamReader(is));
             String line = null;
             while ( (line = br.readLine()) != null) {
                 if (capture) { // we are supposed to capture the output from REG command
@@ -45,6 +46,13 @@ class StreamHog extends Thread {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        if (br != null) {
+            try {
+                br.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 }
