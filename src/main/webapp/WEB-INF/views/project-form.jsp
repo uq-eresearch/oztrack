@@ -234,11 +234,18 @@
             </fieldset>
             <fieldset>
                 <div class="legend">Spatial Reference System</div>
-                <p style="margin: 18px 0;">
-                    A Spatial Reference System (SRS) defines the 
+                <p class="help-block" style="margin: 18px 0;">
+                    A <strong>Spatial Reference System (SRS)</strong> specifies how the coordinates used to represent
+                    spatial data are interpreted as real-world locations on the Earth's surface.
+                    The system you select here will be used by the analysis features of OzTrack,
+                    such as home range calculators, and will affect the accuracy of results.
+                    Click the link below to select an Australian SRS based on the location of your tracking data.
+                    If in doubt, enter <tt>EPSG:3577</tt> for the
+                    <a href="http://spatialreference.org/ref/epsg/3577/">Australian Albers Equal Area Projection</a>,
+                    an Australia-wide system suitable for geoscience and statistical mapping.
                 </p>
                 <div class="control-group" style="margin-bottom: 9px;">
-                    <label class="control-label" for="srsIdentifier">Code</label>
+                    <label class="control-label" for="srsIdentifier">SRS Code</label>
                     <div class="controls">
                         <form:input id="srsIdentifier" path="srsIdentifier" type="text" class="input-medium"/>
                         <form:errors path="srsIdentifier" element="div" cssClass="help-block formErrors"/>
