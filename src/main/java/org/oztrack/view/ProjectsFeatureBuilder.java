@@ -32,7 +32,7 @@ public class ProjectsFeatureBuilder {
         for (Project project : projectList) {
             if (project.getBoundingBox() == null) {
                 logger.error("No bounding box for project " + project.getId() + " (" + project.getTitle() + ")");
-                break;
+                continue;
             }
             SimpleFeature feature = buildFeature(featureType, project);
             featureCollection.add(feature);
