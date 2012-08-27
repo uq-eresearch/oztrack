@@ -25,6 +25,11 @@
                 margin-top: 0;
                 padding: 0 10px;
             }
+            .home-popup-title {
+                margin-botom: 1em;
+                font-size: 15px;
+                font-weight: bold;
+            }
             .home-popup-attr-name {
                 font-weight: bold;
                 margin-bottom: 0.25em;

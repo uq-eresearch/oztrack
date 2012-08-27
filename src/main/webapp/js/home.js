@@ -131,7 +131,7 @@ function createProjectClickControl(map, projectPointsLayer) {
 function buildPopup(f) {
     var popupHtml =
         '<div class="home-popup">' +
-        '    <h3>' + f.attributes.projectTitle + '</h3>' +
+        '    <div class="home-popup-title">' + f.attributes.projectTitle + '</div>' +
         '    <div class="home-popup-attr-name">Species:</div>' +
         '    <div class="home-popup-attr-value">' + f.attributes.speciesCommonName + '</div>' +
         '    <div class="home-popup-attr-name">Coverage:</div>' +
