@@ -11,4 +11,5 @@ public interface OzTrackConfiguration {
     String getMailFromEmail();
     Integer getPasswordResetExpiryDays();
     boolean isAafEnabled();
+    String getGoogleAnalyticsTrackingID();
 }
