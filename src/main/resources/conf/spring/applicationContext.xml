@@ -53,6 +53,7 @@
         <property name="passwordResetExpiryDays" value="${application.passwordResetExpiryDays}"/>
         <property name="aafEnabled" value="${application.aafEnabled}"/>
         <property name="googleAnalyticsTrackingID" value="${application.googleAnalyticsTrackingID}"/>
+        <property name="googleAnalyticsDomainName" value="${application.googleAnalyticsDomainName}"/>
     </bean>
 
     <bean id="ozTrackApplication" class="org.oztrack.app.OzTrackApplication">

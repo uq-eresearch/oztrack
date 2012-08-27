@@ -10,6 +10,7 @@
 <%@ attribute name="breadcrumbs" required="false" fragment="true" %>
 <%@ attribute name="sidebar" required="false" fragment="true" %>
 <c:set var="googleAnalyticsTrackingID"><%= OzTrackApplication.getApplicationContext().getGoogleAnalyticsTrackingID() %></c:set>
+<c:set var="googleAnalyticsDomainName"><%= OzTrackApplication.getApplicationContext().getGoogleAnalyticsDomainName() %></c:set>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -29,6 +30,10 @@
     <script type="text/javascript">
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', '${googleAnalyticsTrackingID}']);
+        <c:if test="${not empty googleAnalyticsDomainName}">
+        _gaq.push(['_setDomainName', '${googleAnalyticsDomainName}']);
+        _gaq.push(['_setAllowLinker', true]);
+        </c:if>
         _gaq.push(['_trackPageview']);
     
         (function() {

@@ -12,4 +12,5 @@ public interface OzTrackConfiguration {
     Integer getPasswordResetExpiryDays();
     boolean isAafEnabled();
     String getGoogleAnalyticsTrackingID();
+    String getGoogleAnalyticsDomainName();
 }

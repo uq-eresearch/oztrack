@@ -12,6 +12,7 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
     private Integer passwordResetExpiryDays;
     private boolean aafEnabled;
     private String googleAnalyticsTrackingID;
+    private String googleAnalyticsDomainName;
 
     @Override
     public String getDataSpaceURL() {
@@ -110,5 +111,14 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
 
     public void setGoogleAnalyticsTrackingID(String googleAnalyticsTrackingID) {
         this.googleAnalyticsTrackingID = googleAnalyticsTrackingID;
+    }
+
+    @Override
+    public String getGoogleAnalyticsDomainName() {
+        return googleAnalyticsDomainName;
+    }
+
+    public void setGoogleAnalyticsDomainName(String googleAnalyticsDomainName) {
+        this.googleAnalyticsDomainName = googleAnalyticsDomainName;
     }
 }
