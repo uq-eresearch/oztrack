@@ -40,7 +40,7 @@
 
         <form:form class="form-horizontal form-bordered" commandName="searchQuery" method="POST" name="searchQuery">
             <fieldset>
-                <legend>Search Project Data</legend>
+                <div class="legend">Search Project Data</div>
                 <div class="control-group">
                     <label class="control-label" for="fromDate">Date From</label>
                     <div class="controls">

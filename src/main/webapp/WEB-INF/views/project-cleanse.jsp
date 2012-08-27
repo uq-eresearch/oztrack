@@ -191,7 +191,7 @@
                     <div>
                         <button class="btn btn-primary" onclick="submitCleanseForm('delete');">Delete selected</button>
                     </div>
-                    <div style="margin-top: 9px;">
+                    <div class="btn-group" style="margin-top: 9px;">
                         <button class="btn" onclick="submitCleanseForm('undelete');">Restore selected</button>
                         <button class="btn" onclick="submitCleanseForm('undelete-all');">Restore all</button>
                     </div>

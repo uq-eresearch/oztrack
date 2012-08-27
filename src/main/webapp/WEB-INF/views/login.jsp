@@ -31,10 +31,10 @@
         <div style="clear: both;"></div>
 
         <c:if test="${aafEnabled}">
-        <form class="form-vertical form-bordered" style="width: 600px;">
+        <form class="form-vertical form-bordered" style="width: 650px;">
             <fieldset>
-                <legend>Login using AAF</legend>
-                <div class="control-group">
+                <div class="legend">Login using AAF</div>
+                <div style="margin: 18px 0;">
                     <p>
                         Click here to authenticate using the <a href="http://www.aaf.edu.au/">Australian Access Federation (AAF)</a>.
                     </p>
@@ -42,17 +42,17 @@
                         You will be redirected to your home institution's website to login.
                     </p>
                 </div>
-                <div class="form-actions">
-                <a class="btn btn-primary" href="<c:url value="/login/shibboleth"/>">Login using AAF</a>
-                </div>
             </fieldset>
+            <div class="form-actions">
+                <a class="btn btn-primary" href="<c:url value="/login/shibboleth"/>">Login using AAF</a>
+            </div>
         </form>
         </c:if>
 
-        <form id="nativeLoginForm" class="form-vertical form-bordered" style="width: 600px;" method="POST" action="<c:url value="/j_spring_security_check"/>">
+        <form id="nativeLoginForm" class="form-vertical form-bordered" style="width: 650px;" method="POST" action="<c:url value="/j_spring_security_check"/>">
             <fieldset>
                 <c:if test="${aafEnabled}">
-                <legend>Login using OzTrack</legend>
+                <div class="legend">Login using OzTrack</div>
                 </c:if>
                 <div class="control-group">
                     <label class="control-label" for="username">Username</label>

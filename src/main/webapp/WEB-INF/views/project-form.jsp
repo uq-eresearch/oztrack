@@ -52,7 +52,15 @@
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
         &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
+        <c:choose>
+        <c:when test="${project.id != null}">
+        &rsaquo; <a href="<c:url value="/projects/${project.id}"/>">${project.title}</a>
+        &rsaquo; <span class="active">Update Project</span>
+        </c:when>
+        <c:otherwise>
         &rsaquo; <span class="active">Create New Project</span>
+        </c:otherwise>
+        </c:choose>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
         <div class="sidebarMenu">
@@ -64,13 +72,12 @@
     <jsp:body>
         <c:choose>
         <c:when test="${project.id != null}">
-            <h1>Update Project Metadata</h1>
+            <h1>Update Project</h1>
         </c:when>
         <c:otherwise>
             <h1>Create a New Project</h1>
         </c:otherwise>
         </c:choose>
-
 
         <p>The information collected here will be syndicated to the University of Queensland's data collection registry, DataSpace,
         subsequently to the Australian National Data Service, ANDS. A link will be made available to complete the syndication after
@@ -91,7 +98,7 @@
             method="${method}" action="${action}"
             commandName="project" name="project" enctype="multipart/form-data">
             <fieldset>
-                <legend>Data Contact</legend>
+                <div class="legend">Data Contact</div>
                 <c:set var="dataSpaceAgent" value="${currentUser}"/>
                 <c:if test="${project.id != null}">
                     <c:set var="dataSpaceAgent" value="${project.dataSpaceAgent}"/>
@@ -119,24 +126,27 @@
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label">Description</label>
-                    <div class="controls">
-                        <input type="text" disabled="disabled" value="<c:out value="${dataSpaceAgent.dataSpaceAgentDescription}"/>" />
-                    </div>
-                </div>
-                <div class="control-group">
                     <label class="control-label">Email</label>
                     <div class="controls">
                         <input type="text" disabled="disabled" value="<c:out value="${dataSpaceAgent.email}"/>" />
                     </div>
                 </div>
+                <c:if test="${not empty dataSpaceAgent.dataSpaceAgentDescription}">
+                <div class="control-group">
+                    <label class="control-label">Description</label>
+                    <div class="controls">
+                        <textarea style="width: 400px; height: 100px;" disabled="disabled"
+                            ><c:out value="${dataSpaceAgent.dataSpaceAgentDescription}"/></textarea>
+                    </div>
+                </div>
+                </c:if>
             </fieldset>
             <fieldset>
-                <legend>Project Metadata</legend>
+                <div class="legend">Project Metadata</div>
                 <div class="control-group">
                     <label class="control-label" for="title">Title</label>
                     <div class="controls">
-                        <form:textarea path="title" rows="1" cols="40" id="title"/>
+                        <form:input path="title" id="title" cssClass="input-xxlarge"/>
                         <div class="help-inline">
                             <a class=info href="#">
                                 <img src="<c:url value="/img/help.png"/>" border="0">
@@ -153,7 +163,7 @@
                 <div class="control-group">
                     <label class="control-label" for="description">Description</label>
                     <div class="controls">
-                        <form:textarea path="description" rows="5" cols="40" id="description"/>
+                        <form:textarea path="description" id="description" cssStyle="width: 400px; height: 100px;"/>
                         <div class="help-inline">
                             <a class=info href="#">
                                 <img src="<c:url value="/img/help.png"/>" border="0">
@@ -206,7 +216,7 @@
                 </div>
             </fieldset>
             <fieldset>
-               <legend>Species</legend>
+               <div class="legend">Species</div>
                 <div class="control-group">
                     <label class="control-label" for="speciesCommonName">Common Name</label>
                     <div class="controls">
@@ -223,7 +233,10 @@
                 </div>
             </fieldset>
             <fieldset>
-                <legend>Spatial Reference System</legend>
+                <div class="legend">Spatial Reference System</div>
+                <p style="margin: 18px 0;">
+                    A Spatial Reference System (SRS) defines the 
+                </p>
                 <div class="control-group" style="margin-bottom: 9px;">
                     <label class="control-label" for="srsIdentifier">Code</label>
                     <div class="controls">
@@ -237,24 +250,24 @@
                 </div>
             </fieldset>
             <fieldset>
-                <legend>Publications</legend>
+                <div class="legend">Publications</div>
                 <div class="control-group">
                     <label class="control-label" for="publicationTitle">Publication Title</label>
                     <div class="controls">
-                        <form:textarea path="publicationTitle" rows="2" cols="40" id="publicationTitle"/>
+                        <form:input path="publicationTitle" id="publicationTitle" cssClass="input-xxlarge"/>
                         <form:errors path="publicationTitle" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="publicationUrl">Publication URL</label>
                     <div class="controls">
-                        <form:input path="publicationUrl" id="publicationUrl"/>
+                        <form:input path="publicationUrl" id="publicationUrl" cssClass="input-xxlarge"/>
                         <form:errors path="publicationUrl" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
             </fieldset>
             <fieldset>
-                <legend>Data Availability</legend>
+                <div class="legend">Data Availability</div>
                 <div class="control-group">
                     <label class="control-label" for="publicationUrl">Access Rights</label>
                     <div class="controls">
@@ -279,7 +292,7 @@
                <div class="control-group">
                     <label class="control-label" for="publicationUrl">Rights Statement</label>
                     <div class="controls">
-                        <form:textarea path="rightsStatement" rows="3" cols="40" />
+                        <form:textarea path="rightsStatement" cssStyle="width: 400px; height: 100px;"/>
                         <div class="help-inline">
                             <a class=info href="#"><img src="<c:url value="/img/help.png"/>" border="0">
                             <span><b>Rights Statement:</b><br>This should reflect any restrictions around the access rights and use of your data.</span>
@@ -290,7 +303,15 @@
                 </div>
             </fieldset>
             <div class="form-actions">
-                <input class="btn btn-primary" type="submit" value="${(project.id != null) ? 'Update Project' : 'Create OzTrack Project'}" />
+                <input class="btn btn-primary" type="submit" value="${(project.id != null) ? 'Update Project' : 'Create Project'}" />
+                <c:choose>
+                <c:when test="${project.id != null}">
+                <a class="btn" href="<c:url value="/projects/${project.id}"/>">Cancel</a>
+                </c:when>
+                <c:otherwise>
+                <a class="btn" href="<c:url value="/projects"/>">Cancel</a>
+                </c:otherwise>
+                </c:choose>
             </div>
         </form:form>
     </jsp:body>

@@ -27,7 +27,7 @@
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
         <form:form cssClass="form-horizontal form-bordered" action="/animals/${animal.id}" commandName="animal" method="PUT">
             <fieldset>
-            <legend>Update animal details</legend>
+            <div class="legend">Update animal details</div>
             <div class="control-group">
                 <label class="control-label" for="projectAnimalId">Animal ID</label>
                 <div class="controls">

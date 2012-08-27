@@ -24,10 +24,10 @@
         <h1>${title}</h1>
 
         <c:if test="${aafEnabled && (user.id == null) && (empty user.aafId)}">
-        <form class="form-vertical form-bordered" style="margin: 18px 0; width: 600px;">
+        <form class="form-vertical form-bordered" style="margin: 18px 0; width: 650px;">
             <fieldset>
-                <legend>Register using AAF</legend>
-                <div class="control-group">
+                <div class="legend">Register using AAF</div>
+                <div style="margin: 18px 0;">
                     <p>
                         Click here to register using your <a href="http://www.aaf.edu.au/">Australian Access Federation (AAF)</a> profile.
                     </p>
@@ -47,9 +47,9 @@
             commandName="user"
             method="${(user.id == null) ? 'POST' : 'PUT'}"
             action="${(user.id == null) ? '/users' : '/users/'}${(user.id == null) ? '' : user.id}"
-            style="margin: 18px 0; width: 600px;">
+            style="margin: 18px 0; width: 650px;">
             <fieldset>
-                <legend>${(user.id != null) ? 'Update user profile' : 'Register new profile'}</legend>
+                <div class="legend">${(user.id != null) ? 'Update user profile' : 'Register new profile'}</div>
                 <c:if test="${aafEnabled && ((not empty user.aafId) || (user.id != null))}">
                 <div class="control-group">
                     <label class="control-label" for="aafId">AAF ID:</label>
@@ -162,7 +162,7 @@
                 <div class="control-group">
                     <label class="control-label" for="dataSpaceAgentDescription">Description:</label>
                     <div class="controls">
-                        <form:textarea path="dataSpaceAgentDescription" id="dataSpaceAgentDescription" cssStyle="width: 320px; height: 60px;"/>
+                        <form:textarea path="dataSpaceAgentDescription" id="dataSpaceAgentDescription" cssStyle="width: 400px; height: 100px;"/>
                         <div class="help-inline">
                             <a class=info href="#"><img src="<c:url value="/img/help.png"/>" border="0">
                             <span>

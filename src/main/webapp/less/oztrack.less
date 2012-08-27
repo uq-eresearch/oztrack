@@ -5,9 +5,7 @@
 @tableBackgroundAccent: #eeeec8;
 @tableBackgroundHover: #e6e6c0;
 @btnPrimaryBackground: #899e47;
-@formBorderedBorder: #d0d0d0;
-@formBorderedBackground: #f0f0d0;
-@formActionsBackground: #ddb;
+@formBorderedBackground: #e6e6c0;
 
 h1 {
   color: @textColor;
@@ -36,20 +34,49 @@ a.btn {
   text-decoration: none;
 }
 
+.btn {
+  padding: 4px 8px;
+}
+
 .table thead th {
   background-color: #f5ce7c;
 }
 
-legend {
-  margin-bottom: @baseLineHeight * 1.3;
-  border-bottom: 1px solid @formBorderedBorder;
+/*
+ * Use div.legend instead of legend element to overcome webkit bug.
+ *
+ * See discussion on github for more info:
+ *
+ *   - https://github.com/twitter/bootstrap/pull/1623
+ *   - https://github.com/twitter/bootstrap/issues/2311
+ */
+div.legend {
+  display: block;
+  width: 100%;
+  padding: 0 0 5px 0;
+  margin-bottom: 18px;
   font-size: @baseFontSize * 1.3;
   line-height: 1;
-  padding-bottom: 5px;
+  color: @grayDark;
+  border: 0;
+  border-bottom: 1px solid #c7c7c7;
+
+  // Small
+  small {
+    font-size: @baseLineHeight * .75;
+    color: @grayLight;
+  }
 }
 
 .control-group {
   margin-bottom: 0;
+}
+
+.form-actions {
+  border-top: none;
+  background: none;
+  margin: 18px 0 0 0;
+  padding: 0 18px 18px 18px;
 }
 
 .form-horizontal {
@@ -67,19 +94,21 @@ legend {
   }
 }
 
+.form-vertical {
+  .form-actions {
+    margin-top: 9px;
+  }
+}
+
 .form-bordered {
-  border: 1px solid @formBorderedBorder;
   .border-radius(10px);
   padding: 18px 18px 0 18px;
   background-color: @formBorderedBackground;
   .form-actions {
     .border-radius(0 0 9px 9px);
-    margin: 18px -18px 0 -18px;
+    margin-left: -18px;
+    margin-right: -18px;
   }
-}
-
-.form-actions {
-  border-top: 1px solid @formBorderedBorder;
 }
 
 textarea,
@@ -102,6 +131,10 @@ input[type="color"],
     border-color: rgba(94,126,60,.8);
     .box-shadow(~"inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(94,126,60,.6)");
   }
+}
+
+.input-xxlarge {
+  width: 400px;
 }
 
 /* main divs */

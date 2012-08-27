@@ -37,7 +37,7 @@
 
         <form:form cssClass="form-horizontal form-bordered" action="/projects/${project.id}/datafiles" commandName="dataFile" method="POST" enctype="multipart/form-data">
             <fieldset>
-                <legend>Add a Data File</legend>
+                <div class="legend">Add a Data File</div>
                 <div class="control-group">
                     <label class="control-label" for="projectType">Datafile Type</label>
                     <div class="controls">
@@ -98,6 +98,7 @@
             </fieldset>
             <div class="form-actions">
                 <input class="btn btn-primary" type="submit" value="Add File"/>
+                <a class="btn" href="<c:url value="/projects/${project.id}/datafiles"/>">Cancel</a>
             </div>
         </form:form>
 

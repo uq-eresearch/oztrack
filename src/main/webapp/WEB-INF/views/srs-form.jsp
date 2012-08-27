@@ -42,7 +42,7 @@
         </c:choose>
         <form:form class="form-horizontal form-bordered" method="${method}" action="${action}" commandName="srs">
             <fieldset>
-                <legend>${title}</legend>
+                <div class="legend">${title}</div>
                 <div class="control-group">
                     <label class="control-label" for="identifier">ID</label>
                     <div class="controls">
