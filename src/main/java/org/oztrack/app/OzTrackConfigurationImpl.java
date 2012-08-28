@@ -13,6 +13,8 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
     private boolean aafEnabled;
     private String googleAnalyticsTrackingID;
     private String googleAnalyticsDomainName;
+    private String recaptchaPublicKey;
+    private String recaptchaPrivateKey;
 
     @Override
     public String getDataSpaceURL() {
@@ -120,5 +122,23 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
 
     public void setGoogleAnalyticsDomainName(String googleAnalyticsDomainName) {
         this.googleAnalyticsDomainName = googleAnalyticsDomainName;
+    }
+
+    @Override
+    public String getRecaptchaPublicKey() {
+        return recaptchaPublicKey;
+    }
+
+    public void setRecaptchaPublicKey(String recaptchaPublicKey) {
+        this.recaptchaPublicKey = recaptchaPublicKey;
+    }
+
+    @Override
+    public String getRecaptchaPrivateKey() {
+        return recaptchaPrivateKey;
+    }
+
+    public void setRecaptchaPrivateKey(String recaptchaPrivateKey) {
+        this.recaptchaPrivateKey = recaptchaPrivateKey;
     }
 }

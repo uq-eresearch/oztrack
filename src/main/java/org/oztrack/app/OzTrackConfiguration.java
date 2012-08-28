@@ -13,4 +13,6 @@ public interface OzTrackConfiguration {
     boolean isAafEnabled();
     String getGoogleAnalyticsTrackingID();
     String getGoogleAnalyticsDomainName();
+    String getRecaptchaPublicKey();
+    String getRecaptchaPrivateKey();
 }

@@ -176,6 +176,19 @@
                         <form:errors path="dataSpaceAgentDescription" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
+                <c:if test="${not empty recaptchaHtml}">
+                <div class="control-group">
+                    <label class="control-label" for="recaptcha_response_field">Verification:</label>
+                    <div class="controls">
+                        ${recaptchaHtml}
+                        <c:if test="${not empty recaptchaError}">
+                        <div class="help-block formErrors">
+                            ${recaptchaError}
+                        </div>
+                        </c:if>
+                    </div>
+                </div>
+                </c:if>
             </fieldset>
             <div class="form-actions">
                 <input class="btn btn-primary" type="submit" value="${(user.id != null) ? 'Update' : 'Register'}" />

@@ -3,7 +3,13 @@ package org.oztrack.controller;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.tanesha.recaptcha.ReCaptcha;
+import net.tanesha.recaptcha.ReCaptchaFactory;
+import net.tanesha.recaptcha.ReCaptchaImpl;
+import net.tanesha.recaptcha.ReCaptchaResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -78,21 +84,33 @@ public class UserListController {
         return newUser;
     }
 
+    @ModelAttribute("recaptchaHtml")
+    public String getRecaptcha() {
+        String recaptchaPrivateKey = OzTrackApplication.getApplicationContext().getRecaptchaPrivateKey();
+        String recaptchaPublicKey = OzTrackApplication.getApplicationContext().getRecaptchaPublicKey();
+        if ((recaptchaPublicKey != null) && (recaptchaPrivateKey != null)) {
+            ReCaptcha c = ReCaptchaFactory.newReCaptcha(recaptchaPublicKey, recaptchaPrivateKey, false);
+            return c.createRecaptchaHtml(null, null);
+        }
+        return null;
+    }
+
     @RequestMapping(value="/users/new", method=RequestMethod.GET)
     @PreAuthorize("permitAll")
-    public String getFormView(@ModelAttribute(value="user") User user) {
+    public String getFormView() {
         return "user-form";
     }
 
     @RequestMapping(value="/users", method=RequestMethod.POST)
     @PreAuthorize("permitAll")
     public String onSubmit(
+        HttpServletRequest request,
         Model model,
         @ModelAttribute(value="user") User user,
         @RequestHeader(value="eppn", required=false) String aafIdHeader,
         @RequestParam(value="aafId", required=false) String aafIdParam,
         BindingResult bindingResult
-    ) throws Exception {
+    ) {
         if (OzTrackApplication.getApplicationContext().isAafEnabled()) {
             if (StringUtils.isBlank(aafIdParam)) {
                 user.setAafId(null);
@@ -107,6 +125,21 @@ public class UserListController {
         new UserFormValidator(userDao).validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
             return "user-form";
+        }
+        if (user.getAafId() == null) {
+            String recaptchaPrivateKey = OzTrackApplication.getApplicationContext().getRecaptchaPrivateKey();
+            String recaptchaPublicKey = OzTrackApplication.getApplicationContext().getRecaptchaPublicKey();
+            if ((recaptchaPublicKey != null) && (recaptchaPrivateKey != null)) {
+                ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
+                reCaptcha.setPrivateKey(recaptchaPrivateKey);
+                String recaptchaChallenge = request.getParameter("recaptcha_challenge_field");
+                String recaptchaResponse = request.getParameter("recaptcha_response_field");
+                ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(request.getRemoteAddr(), recaptchaChallenge, recaptchaResponse);
+                if (!reCaptchaResponse.isValid()) {
+                    model.addAttribute("recaptchaError", "Verification incorrect - please try again.");
+                    return "user-form";
+                }
+            }
         }
         if (StringUtils.isBlank(user.getPassword())) {
             user.setPassword(null);
