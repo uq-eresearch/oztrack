@@ -124,7 +124,21 @@
                 $('#fromDatepicker').datepicker();
                 $('#toDatepicker').datepicker();
                 analysisMap = createAnalysisMap('projectMap', {
-                    projectId: <c:out value="${project.id}"/>
+                    projectId: <c:out value="${project.id}"/>,
+                    showError: function(message) {
+                        jQuery('#errorDialog')
+                            .text(message)
+                            .dialog({
+                                title: 'Error loading layer',
+                                modal: true,
+                                resizable: false,
+                                buttons: {
+                                    'Close': function() {
+                                        $(this).dialog('close');
+                                    }
+                                }
+                            });
+                    }
                 });
             });
         </script>
@@ -395,5 +409,7 @@
         <div id="projectMap"></div>
         <div style="clear:both;"></div>
         </div>
+        
+        <div id="errorDialog"></div>
     </jsp:body>
 </tags:page>

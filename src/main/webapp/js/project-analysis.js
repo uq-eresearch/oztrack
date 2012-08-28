@@ -20,8 +20,10 @@ function createAnalysisMap(div, options) {
         ];
 
         var projectId = options.projectId;
+        var showError = options.showError;
 
         var map;
+        var loadingPanel;
         var allDetectionsLayer;
         var polygonStyleMap;
         var lineStyleMap;
@@ -40,7 +42,8 @@ function createAnalysisMap(div, options) {
             map.addControl(new OpenLayers.Control.ScaleLine());
             map.addControl(new OpenLayers.Control.NavToolbar());
             map.addControl(new OpenLayers.Control.LayerSwitcher());
-            map.addControl(new OpenLayers.Control.LoadingPanel());
+            loadingPanel = new OpenLayers.Control.LoadingPanel();
+            map.addControl(loadingPanel);
 
             var gphy = new OpenLayers.Layer.Google('Google Physical', {type: google.maps.MapTypeId.TERRAIN});
             var gsat = new OpenLayers.Layer.Google('Google Satellite', {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22});
@@ -318,53 +321,72 @@ function createAnalysisMap(div, options) {
                 alert("Please set a Layer Type.");
             }
         };
-
+        
         function addKMLLayer(layerName, params) {
             var url = "/mapQueryKML";
             var queryOverlay = new OpenLayers.Layer.Vector(
                 layerName,
                 {
-                    strategies: [new OpenLayers.Strategy.Fixed()],
-                    eventListeners: {
-                        loadend: function (e) {updateAnimalInfoFromKML(layerName, url, params, e);}
-                    },
-                    protocol: new OpenLayers.Protocol.HTTP({
-                        url: url,
-                        params: params,
-                        format: new OpenLayers.Format.KML({
-                            extractAttributes: true,
-                            maxDepth: 2,
-                            internalProjection: projection900913,
-                            externalProjection: projection4326,
-                            kmlns: "http://oztrack.org/xmlns#"
-                        })
-                    }),
                     styleMap: polygonStyleMap
                 }
             );
+            var protocol = new OpenLayers.Protocol.HTTP({
+                url: url,
+                params: params,
+                format: new OpenLayers.Format.KML({
+                    extractAttributes: true,
+                    maxDepth: 2,
+                    internalProjection: projection900913,
+                    externalProjection: projection4326,
+                    kmlns: "http://oztrack.org/xmlns#"
+                })
+            });
+            var callback = function(resp) {
+                loadingPanel.decreaseCounter();
+                if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
+                    queryOverlay.addFeatures(resp.features);
+                    updateAnimalInfoFromKML(layerName, url, params, resp.features);
+                }
+                else {
+                    showError(jQuery(resp.priv.responseXML).find('error').text() || 'Error processing request');
+                }
+            };
+            loadingPanel.increaseCounter();
+            protocol.read({
+                callback: callback
+            });
             map.addLayer(queryOverlay);
         }
 
         function addHeatmapKMLLayer(layerName, params) {
             var url = "/mapQueryKML";
-            var queryOverlay = new OpenLayers.Layer.Vector(
-                layerName,
-                {
-                    strategies: [new OpenLayers.Strategy.Fixed()],
-                    protocol: new OpenLayers.Protocol.HTTP({
-                        url: url,
-                        params: params,
-                        format: new OpenLayers.Format.KML({
-                            extractStyles: true,
-                            extractAttributes: true,
-                            maxDepth: 2,
-                            internalProjection: projection900913,
-                            externalProjection: projection4326,
-                            kmlns: "http://oztrack.org/xmlns#"
-                        })
-                    })
+            var queryOverlay = new OpenLayers.Layer.Vector(layerName);
+            var protocol = new OpenLayers.Protocol.HTTP({
+                url: url,
+                params: params,
+                format: new OpenLayers.Format.KML({
+                    extractStyles: true,
+                    extractAttributes: true,
+                    maxDepth: 2,
+                    internalProjection: projection900913,
+                    externalProjection: projection4326,
+                    kmlns: "http://oztrack.org/xmlns#"
+                })
+            });
+            var callback = function(resp) {
+                loadingPanel.decreaseCounter();
+                if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
+                    queryOverlay.addFeatures(resp.features);
+                    updateAnimalInfoFromKML(layerName, url, params, resp.features);
                 }
-            );
+                else {
+                    showError(jQuery(resp.priv.responseXML).find('error').text() || 'Error processing request');
+                }
+            };
+            loadingPanel.increaseCounter();
+            protocol.read({
+                callback: callback
+            });
             map.addLayer(queryOverlay);
         }
 
@@ -508,9 +530,9 @@ function createAnalysisMap(div, options) {
             $("#animalInfo-"+animalId).find(':checkbox').attr("checked",setVisible);
         };
 
-        function updateAnimalInfoFromKML(layerName, url, params, e) {
-            for (var f in e.object.features) {
-                var feature = e.object.features[f];
+        function updateAnimalInfoFromKML(layerName, url, params, features) {
+            for (var f in features) {
+                var feature = features[f];
                 var area = feature.attributes.area.value;
 
                 feature.renderIntent = "default";
