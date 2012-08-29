@@ -302,10 +302,10 @@ function createAnalysisMap(div, options) {
                 }
 
                 if (queryTypeValue == "LINES") {
-                    addWFSLayer(layerName, 'Detections', params, lineStyleMap);
+                    addWFSLayer(layerName, 'Trajectory', params, lineStyleMap);
                 }
                 else if (queryTypeValue == "POINTS") {
-                    addWFSLayer(layerName, 'Trajectories', params, pointStyleMap);
+                    addWFSLayer(layerName, 'Detections', params, pointStyleMap);
                 }
                 else if (queryTypeValue == "START_END") {
                     addWFSLayer(layerName, 'StartEnd', params, startEndStyleMap);
@@ -398,14 +398,14 @@ function createAnalysisMap(div, options) {
                     styleMap:styleMap,
                     eventListeners: {
                         loadend: function (e) {
-                            map.zoomToExtent(newWFSOverlay.getDataExtent(),false);
-                            updateAnimalInfo(newWFSOverlay);
+                            map.zoomToExtent(e.object.getDataExtent(), false);
+                            updateAnimalInfo(e.object);
                         }
                     },
                     projection: projection4326,
                     protocol: new OpenLayers.Protocol.WFS.v1_1_0({
                         url:  "/mapQueryWFS",
-                        params:params,
+                        params: params,
                         featureType: featureType,
                         featureNS: "http://oztrack.org/xmlns#"
                     })
