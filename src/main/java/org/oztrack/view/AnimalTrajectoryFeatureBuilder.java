@@ -1,5 +1,6 @@
 package org.oztrack.view;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,6 +28,7 @@ public class AnimalTrajectoryFeatureBuilder {
         private List<Coordinate> coordinates;
     }
 
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private final GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
     private final List<PositionFix> positionFixList;
 
@@ -67,8 +69,8 @@ public class AnimalTrajectoryFeatureBuilder {
         simpleFeatureTypeBuilder.setName("Trajectory");
         simpleFeatureTypeBuilder.setNamespaceURI(Constants.namespaceURI);
         simpleFeatureTypeBuilder.add("animalId", Long.class);
-        simpleFeatureTypeBuilder.add("fromDate", Date.class);
-        simpleFeatureTypeBuilder.add("toDate", Date.class);
+        simpleFeatureTypeBuilder.add("fromDate", String.class);
+        simpleFeatureTypeBuilder.add("toDate", String.class);
         simpleFeatureTypeBuilder.add("lineString", LineString.class, srid);
         SimpleFeatureType featureType = simpleFeatureTypeBuilder.buildFeatureType();
         return featureType;
@@ -77,8 +79,8 @@ public class AnimalTrajectoryFeatureBuilder {
     private SimpleFeature buildFeature(SimpleFeatureType featureType, AnimalTrajectory animalTrajectory) {
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
         featureBuilder.set("animalId", animalTrajectory.animal.getId());
-        featureBuilder.set("fromDate", animalTrajectory.fromDate);
-        featureBuilder.set("toDate", animalTrajectory.toDate);
+        featureBuilder.set("fromDate", (animalTrajectory.fromDate == null) ? null : dateFormat.format(animalTrajectory.fromDate));
+        featureBuilder.set("toDate", (animalTrajectory.toDate == null) ? null : dateFormat.format(animalTrajectory.toDate));
         LineString lineString = null;
         if (animalTrajectory.coordinates.size() >= 2) {
             lineString = geometryFactory.createLineString(animalTrajectory.coordinates.toArray(new Coordinate[] {}));

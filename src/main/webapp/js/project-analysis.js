@@ -61,10 +61,10 @@ function createAnalysisMap(div, options) {
             startEndStyleMap = createStartEndPointsStyleMap();
             polygonStyleMap = createPolygonStyleMap();
 
-            allDetectionsLayer = createAllDetectionsLayer(projectId);
+            allDetectionsLayer = createWFSLayer('Detections', 'Detections', {projectId: projectId, queryType: 'POINTS'}, pointStyleMap);
             map.addLayer(allDetectionsLayer);
-            map.addLayer(createAllTrajectoriesLayer(projectId));
-            map.addLayer(createAllStartEndPointsLayer(projectId));
+            map.addLayer(createWFSLayer('Trajectory', 'Trajectory', {projectId: projectId, queryType: 'LINES'}, lineStyleMap));
+            map.addLayer(createWFSLayer('Start and End Points', 'StartEnd', {projectId: projectId, queryType: 'START_END'}, startEndStyleMap));
 
             map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326, projection900913), 4);
         }());
@@ -215,66 +215,6 @@ function createAnalysisMap(div, options) {
             return startEndPointsStyleMap;
         }
 
-        function createAllDetectionsLayer(projectId) {
-            return new OpenLayers.Layer.Vector(
-                "Detections",
-                {
-                    projection: projection4326,
-                    protocol: new OpenLayers.Protocol.WFS.v1_1_0({
-                        url:  "/mapQueryWFS?projectId=" + projectId + "&queryType=POINTS",
-                        featureType: "Detections",
-                        featureNS: "http://oztrack.org/xmlns#"
-                    }),
-                    strategies: [new OpenLayers.Strategy.Fixed()],
-                    styleMap: pointStyleMap,
-                    eventListeners: {
-                        loadend: function (e) {
-                            map.zoomToExtent(e.object.getDataExtent(), false);
-                            updateAnimalInfo(e.object);
-                        }
-                    }
-                }
-            );
-        }
-
-        function createAllTrajectoriesLayer(projectId) {
-            return new OpenLayers.Layer.Vector(
-                "Trajectory",
-                {
-                    projection: projection4326,
-                    protocol: new OpenLayers.Protocol.WFS.v1_1_0({
-                        url:  "/mapQueryWFS?projectId=" + projectId + "&queryType=LINES",
-                        featureType: "Trajectory",
-                        featureNS: "http://oztrack.org/xmlns#"
-                    }),
-                    strategies: [new OpenLayers.Strategy.Fixed()],
-                    styleMap: lineStyleMap,
-                    eventListeners: {
-                        loadend: function (e) {
-                            map.zoomToExtent(e.object.getDataExtent(), false);
-                            updateAnimalInfo(e.object);
-                        }
-                    }
-                }
-            );
-        }
-
-        function createAllStartEndPointsLayer(projectId) {
-            return new OpenLayers.Layer.Vector(
-                    "Start and End Points",
-                    {
-                        projection: projection4326,
-                        protocol: new OpenLayers.Protocol.WFS.v1_1_0({
-                            url:  "/mapQueryWFS?projectId=" + projectId + "&queryType=START_END",
-                            featureType: "StartEnd",
-                            featureNS: "http://oztrack.org/xmlns#"
-                        }),
-                        strategies: [new OpenLayers.Strategy.Fixed()],
-                        styleMap: startEndStyleMap
-                    }
-                );
-        }
-
         analysisMap.addProjectMapLayer = function() {
             var queryType = $('input[name=mapQueryTypeSelect]:checked');
             var queryTypeValue = queryType.val();
@@ -302,164 +242,186 @@ function createAnalysisMap(div, options) {
                 }
 
                 if (queryTypeValue == "LINES") {
-                    addWFSLayer(layerName, 'Trajectory', params, lineStyleMap);
+                    map.addLayer(createWFSLayer(layerName, 'Trajectory', params, lineStyleMap));
                 }
                 else if (queryTypeValue == "POINTS") {
-                    addWFSLayer(layerName, 'Detections', params, pointStyleMap);
+                    map.addLayer(createWFSLayer(layerName, 'Detections', params, pointStyleMap));
                 }
                 else if (queryTypeValue == "START_END") {
-                    addWFSLayer(layerName, 'StartEnd', params, startEndStyleMap);
+                    map.addLayer(createWFSLayer(layerName, 'StartEnd', params, startEndStyleMap));
                 }
                 else if ((queryTypeValue == "HEATMAP_POINT") || (queryTypeValue == "HEATMAP_LINE")) {
-                    addHeatmapKMLLayer(layerName, params);
+                    map.addLayer(createKMLLayer(layerName, params, null, true));
                 }
                 else {
-                    addKMLLayer(layerName, params);
+                    map.addLayer(createKMLLayer(layerName, params, polygonStyleMap, null));
                 }
             }
             else {
                 alert("Please set a Layer Type.");
             }
         };
-        
-        function addKMLLayer(layerName, params) {
-            var url = "/mapQueryKML";
-            var queryOverlay = new OpenLayers.Layer.Vector(
+
+        function createWFSLayer(layerName, featureType, params, styleMap) {
+            return new OpenLayers.Layer.Vector(
                 layerName,
                 {
-                    styleMap: polygonStyleMap
-                }
-            );
-            var protocol = new OpenLayers.Protocol.HTTP({
-                url: url,
-                params: params,
-                format: new OpenLayers.Format.KML({
-                    extractAttributes: true,
-                    maxDepth: 2,
-                    internalProjection: projection900913,
-                    externalProjection: projection4326,
-                    kmlns: "http://oztrack.org/xmlns#"
-                })
-            });
-            var callback = function(resp) {
-                loadingPanel.decreaseCounter();
-                if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
-                    queryOverlay.addFeatures(resp.features);
-                    updateAnimalInfoFromKML(layerName, url, params, resp.features);
-                }
-                else {
-                    showError(jQuery(resp.priv.responseXML).find('error').text() || 'Error processing request');
-                }
-            };
-            loadingPanel.increaseCounter();
-            protocol.read({
-                callback: callback
-            });
-            map.addLayer(queryOverlay);
-        }
-
-        function addHeatmapKMLLayer(layerName, params) {
-            var url = "/mapQueryKML";
-            var queryOverlay = new OpenLayers.Layer.Vector(layerName);
-            var protocol = new OpenLayers.Protocol.HTTP({
-                url: url,
-                params: params,
-                format: new OpenLayers.Format.KML({
-                    extractStyles: true,
-                    extractAttributes: true,
-                    maxDepth: 2,
-                    internalProjection: projection900913,
-                    externalProjection: projection4326,
-                    kmlns: "http://oztrack.org/xmlns#"
-                })
-            });
-            var callback = function(resp) {
-                loadingPanel.decreaseCounter();
-                if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
-                    queryOverlay.addFeatures(resp.features);
-                    updateAnimalInfoFromKML(layerName, url, params, resp.features);
-                }
-                else {
-                    showError(jQuery(resp.priv.responseXML).find('error').text() || 'Error processing request');
-                }
-            };
-            loadingPanel.increaseCounter();
-            protocol.read({
-                callback: callback
-            });
-            map.addLayer(queryOverlay);
-        }
-
-        function addWFSLayer(layerName, featureType, params, styleMap) {
-            newWFSOverlay = new OpenLayers.Layer.Vector(
-                layerName,
-                {
-                    strategies: [new OpenLayers.Strategy.Fixed()],
-                    styleMap:styleMap,
-                    eventListeners: {
-                        loadend: function (e) {
-                            map.zoomToExtent(e.object.getDataExtent(), false);
-                            updateAnimalInfo(e.object);
-                        }
-                    },
                     projection: projection4326,
                     protocol: new OpenLayers.Protocol.WFS.v1_1_0({
                         url:  "/mapQueryWFS",
                         params: params,
                         featureType: featureType,
                         featureNS: "http://oztrack.org/xmlns#"
-                    })
+                    }),
+                    strategies: [new OpenLayers.Strategy.Fixed()],
+                    styleMap: styleMap,
+                    eventListeners: {
+                        loadend: function (e) {
+                            map.zoomToExtent(e.object.getDataExtent(), false);
+                            updateAnimalInfoFromWFS(e.object);
+                        }
+                    }
                 }
             );
-            map.addLayer(newWFSOverlay);
+        }
+        
+        function createKMLLayer(layerName, params, styleMap, extractStyles) {
+            var url = "/mapQueryKML";
+            var queryOverlay = new OpenLayers.Layer.Vector(
+                layerName,
+                {
+                    styleMap: styleMap
+                }
+            );
+            var protocol = new OpenLayers.Protocol.HTTP({
+                url: url,
+                params: params,
+                format: new OpenLayers.Format.KML({
+                    extractStyles: extractStyles,
+                    extractAttributes: true,
+                    maxDepth: 2,
+                    internalProjection: projection900913,
+                    externalProjection: projection4326,
+                    kmlns: "http://oztrack.org/xmlns#"
+                })
+            });
+            var callback = function(resp) {
+                loadingPanel.decreaseCounter();
+                if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
+                    queryOverlay.addFeatures(resp.features);
+                    updateAnimalInfoFromKML(layerName, url, params, resp.features);
+                }
+                else {
+                    showError(jQuery(resp.priv.responseXML).find('error').text() || 'Error processing request');
+                }
+            };
+            loadingPanel.increaseCounter();
+            protocol.read({
+                callback: callback
+            });
+            return queryOverlay;
         }
 
-        function updateAnimalInfo(wfsLayer) {
-            var layerName = wfsLayer.name;
-            var layerId = wfsLayer.id;
-            var featureId = "";
-
+        function updateAnimalInfoFromWFS(wfsLayer) {
+            var animalProcessed = {};
             for (var key in wfsLayer.features) {
                 var feature = wfsLayer.features[key];
                 if (feature.attributes && feature.attributes.animalId) {
+                    if (animalProcessed[feature.attributes.animalId]) {
+                        continue;
+                    }
+                    animalProcessed[feature.attributes.animalId] = true;
+                    
                     feature.renderIntent = "default";
 
-                    // set the colour and make sure the show/hide all box is checked
                     var colour = colours[feature.attributes.animalId % colours.length];
                     $('#legend-colour-' + feature.attributes.animalId).attr('style', 'background-color: ' + colour + ';');
-                    $('input[id=select-animal-' + feature.attributes.animalId + ']').attr('checked','checked');
+                    $('input[id=select-animal-' + feature.attributes.animalId + ']').attr('checked', 'checked');
 
-                    // add detail for this layer
+                    var checkboxValue = wfsLayer.id + "-" + feature.attributes.animalId;
+                    var checkboxId = 'select-feature-' + checkboxValue.replace(/\./g, '');
+                    var checkboxHtml = '<input type="checkbox" id="' + checkboxId + '" value="' + checkboxValue + '" checked="checked"/></input>';
 
-                    var checkboxValue = layerId + "-" + feature.id;
-                    var checkboxId = checkboxValue.replace(/\./g,"");
-
-                    var checkboxHtml =
-                        "<input type='checkbox' "
-                        + "id='select-feature-" + checkboxId + "' value='" + checkboxValue + "' checked='true'/></input>";
-
-                    var layerNameHtml = "<b>&nbsp;&nbsp;" + layerName + "</b>";
-                    var tableRowsHtml = "";
-
-                    if ((layerName.indexOf("Detections") == -1) && (layerName.indexOf("Start and End") == -1)) {
-                        tableRowsHtml =
-                            "<table><tr><td class='layerInfoLabel'>Date From:</td><td>" + feature.attributes.fromDate + "</td></tr>"
-                            + "<tr><td class='layerInfoLabel'>Date To:</td><td>" + feature.attributes.toDate + "</td></tr>";
+                    var html = '<b>&nbsp;' + wfsLayer.name + '</b>';
+                    var tableRowsHtml = '';
+                    if (feature.attributes.fromDate) {
+                        tableRowsHtml += '<tr><td class="layerInfoLabel">Date From:</td><td>' + feature.attributes.fromDate + '</td></tr>';
                     }
-
-                    var distanceRowHtml = "";
-                    if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.LineString") {
-                        var distance = feature.geometry.getGeodesicLength(map.projection)/1000;
-                        distanceRowHtml = "<tr><td class='layerInfoLabel'>Min Distance: </td><td>" + Math.round(distance*1000)/1000 + "km </td></tr>";
+                    if (feature.attributes.toDate) {
+                        tableRowsHtml += '<tr><td class="layerInfoLabel">Date To:</td><td>' + feature.attributes.toDate + '</td></tr>';
                     }
-
-                    var html = layerNameHtml + tableRowsHtml + distanceRowHtml + "</table>";
+                    if (feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString') {
+                        var distance = (Math.round(feature.geometry.getGeodesicLength(map.projection)) / 1000);
+                        tableRowsHtml += '<tr><td class="layerInfoLabel">Min Distance: </td><td>' + distance + 'km </td></tr>';
+                    }
+                    if (tableRowsHtml != '') {
+                        html += '<table>' + tableRowsHtml + '</table>';
+                    }
 
                     $('#animalInfo-'+ feature.attributes.animalId).append('<div class="layerInfo">' + checkboxHtml + html + '</div>');
-                    $('input[id=select-feature-' + checkboxId + ']').change(function() {
-                        toggleFeature(this.value,this.checked);
+                    $('input[id=' + checkboxId + ']').change(function() {
+                        var splitString = this.value.split("-");
+                        var layerId = splitString[0];
+                        var animalId = splitString[1];
+                        toggleLayerAnimalFeatures(layerId, animalId, this.checked);
                     });
                 }
+            }
+        }
+
+        function updateAnimalInfoFromKML(layerName, url, params, features) {
+            var animalProcessed = {};
+            for (var f in features) {
+                var feature = features[f];
+                
+                if (animalProcessed[feature.attributes.id.value]) {
+                    continue;
+                }
+                animalProcessed[feature.attributes.id.value] = true;
+                
+                feature.renderIntent = "default";
+                feature.layer.drawFeature(feature);
+
+                var checkboxValue = feature.layer.id + "-" + feature.attributes.id.value;
+                var checkboxId = 'select-feature-' + checkboxValue.replace(/\./g, '');
+                var checkboxHtml = '<input type="checkbox" id="' + checkboxId + '" value="' + checkboxValue + '" checked="checked"/></input>';
+                var html = '&nbsp;<b>' + layerName + '</b>';
+                var tableRowsHtml = '';
+                if (params.percent) {
+                    tableRowsHtml += '<tr><td class="layerInfoLabel">Percent: </td><td>' + params.percent + '%</td></tr>';
+                }
+                if (params.h) {
+                    tableRowsHtml += '<tr><td class="layerInfoLabel">h value: </td><td>' + params.h + '</td></tr>';
+                }
+                if (params.alpha) {
+                    tableRowsHtml += '<tr><td class="layerInfoLabel">alpha: </td><td>' + params.alpha + '</td></tr>';
+                }
+                if (params.gridSize) {
+                    tableRowsHtml += '<tr><td class="layerInfoLabel">Grid size (m): </td><td>' + params.gridSize + '</td></tr>';
+                }
+                if (feature.attributes.area.value) {
+                    var area = Math.round(feature.attributes.area.value * 1000) / 1000;
+                    tableRowsHtml += '<tr><td class="layerInfoLabel">Area: </td><td>' + area + ' km<sup>2</sup></td></tr>';
+                }
+                if (tableRowsHtml) {
+                    html += '<table>' + tableRowsHtml + '</table>';
+                }
+                var urlWithParams = url;
+                var paramString = OpenLayers.Util.getParameterString(params);
+                if (paramString.length > 0) {
+                    var separator = (urlWithParams.indexOf('?') > -1) ? '&' : '?';
+                    urlWithParams += separator + paramString;
+                }
+                $('#animalInfo-'+ feature.attributes.id.value).append(
+                    '<a style="float: right; margin-right: 18px;" href="' + urlWithParams + '">KML</a>' +
+                    '<div class="layerInfo">' + checkboxHtml + html + '</div>'
+                );
+                $('input[id=' + checkboxId + ']').change(function() {
+                    var splitString = this.value.split("-");
+                    var layerId = splitString[0];
+                    var animalId = splitString[1];
+                    toggleLayerAnimalFeatures(layerId, animalId, this.checked);
+                });
             }
         }
 
@@ -472,24 +434,23 @@ function createAnalysisMap(div, options) {
             }
         };
 
-        function toggleFeature(featureIdentifier, setVisible) {
-            var splitString = featureIdentifier.split("-");
-            var layerId = splitString[0];
-            var featureId = splitString[1];
-
+        function toggleLayerAnimalFeatures(layerId, animalId, setVisible) {
             var layer = map.getLayer(layerId);
             for (var key in layer.features) {
                 var feature = layer.features[key];
-                if (feature.id == featureId) {
-                    if (setVisible) {
-                        feature.renderIntent = "default";
-                    }
-                    else {
-                        feature.renderIntent = "temporary";
-                    }
-                    layer.drawFeature(feature);
+                var featureAnimalId =
+                    (feature.attributes.animalId) ? feature.attributes.animalId :
+                    (feature.attributes.id.value) ? feature.attributes.id.value :
+                    null;
+                if (featureAnimalId == animalId) {
+                    toggleFeature(feature, setVisible);
                 }
             }
+        }
+        
+        function toggleFeature(feature, setVisible) {
+            feature.renderIntent = setVisible ? 'default' : 'temporary';
+            feature.layer.drawFeature(feature);
         }
 
         analysisMap.toggleAllAnimalFeatures = function(animalId, setVisible) {
@@ -505,74 +466,23 @@ function createAnalysisMap(div, options) {
                 }
                 return vectorLayers;
             }
-
             var vectorLayers = getVectorLayers();
             for (var l in vectorLayers) {
                 var layer = vectorLayers[l];
                 var layerName = layer.name;
                 for (var f in layer.features) {
                     var feature = layer.features[f];
-                    var featureAnimalId;
-                    if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.LineString" ||
-                        feature.geometry.CLASS_NAME == "OpenLayers.Geometry.MultiPoint" ||
-                        feature.geometry.CLASS_NAME == "OpenLayers.Geometry.Point" ) {
-                        featureAnimalId = feature.attributes.animalId;
-                    }
-                    else {
-                        featureAnimalId = feature.attributes.id.value;
-                    }
+                    var featureAnimalId =
+                        (feature.attributes.animalId) ? feature.attributes.animalId :
+                        (feature.attributes.id.value) ? feature.attributes.id.value :
+                        null;
                     if (featureAnimalId == animalId) {
-                        var featureIdentifier = layer.id + "-" + feature.id;
-                        toggleFeature(featureIdentifier, setVisible);
+                        toggleFeature(feature, setVisible);
                     }
                 }
-             }
+            }
             $("#animalInfo-"+animalId).find(':checkbox').attr("checked",setVisible);
         };
-
-        function updateAnimalInfoFromKML(layerName, url, params, features) {
-            for (var f in features) {
-                var feature = features[f];
-                var area = feature.attributes.area.value;
-
-                feature.renderIntent = "default";
-                feature.layer.drawFeature(feature);
-
-                var checkboxValue = feature.layer.id + "-" + feature.id;
-                var checkboxId = checkboxValue.replace(/\./g,"");
-                var checkboxHtml = "<input type='checkbox' "
-                     + "id='select-feature-" + checkboxId + "' value='" + checkboxValue + "' checked='true'/></input>";
-                var html = "&nbsp;&nbsp;<b>" + layerName + "</b>";
-                html += '<table>';
-                if (params.percent) {
-                    html += '<tr><td class="layerInfoLabel">Percent: </td><td>' + params.percent + '%</td></tr>';
-                }
-                if (params.h) {
-                    html += '<tr><td class="layerInfoLabel">h value: </td><td>' + params.h + '</td></tr>';
-                }
-                if (params.alpha) {
-                    html += '<tr><td class="layerInfoLabel">alpha: </td><td>' + params.alpha + '</td></tr>';
-                }
-                if (params.gridSize) {
-                    html += '<tr><td class="layerInfoLabel">Grid size (m): </td><td>' + params.gridSize + '</td></tr>';
-                }
-                html += '<tr><td class="layerInfoLabel">Area: </td><td>' + Math.round(area*1000)/1000 + ' km<sup>2</sup></td></tr>';
-                html += '</table>';
-                var urlWithParams = url;
-                var paramString = OpenLayers.Util.getParameterString(params);
-                if (paramString.length > 0) {
-                    var separator = (urlWithParams.indexOf('?') > -1) ? '&' : '?';
-                    urlWithParams += separator + paramString;
-                }
-                $('#animalInfo-'+ feature.attributes.id.value).append(
-                    '<a style="float: right; margin-right: 18px;" href="' + urlWithParams + '">KML</a>' +
-                    '<div class="layerInfo">' + checkboxHtml + html + '</div>'
-                );
-                $('input[id=select-feature-' + checkboxId + ']').change(function() {
-                    toggleFeature(this.value,this.checked);
-                });
-            }
-        }
 
         return analysisMap;
     }());
