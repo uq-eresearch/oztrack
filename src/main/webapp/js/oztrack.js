@@ -1,6 +1,18 @@
 $(document).ready(function() {
      $.datepicker.setDefaults({
-         dateFormat: 'dd/mm/yy'
+         dateFormat: 'd/m/yy',
+         altFormat: 'yy-mm-dd',
+         changeMonth: true,
+         changeYear: true
+     });
+     // Fix bug where clearing field doesn't clear alt field
+     // http://bugs.jqueryui.com/ticket/5734
+     // http://stackoverflow.com/questions/3922592/jquery-ui-datepicker-clearing-the-altfield-when-the-primary-field-is-cleared
+     $('.datepicker').change(function() {
+         var altField = $(this).datepicker('option', 'altField');
+         if (altField && !$(this).val()) {
+             $(altField).val('');
+         }
      });
      jQuery(".ckeditor").ckeditor({
          language: 'en-au',

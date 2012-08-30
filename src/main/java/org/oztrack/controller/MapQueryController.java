@@ -84,7 +84,7 @@ public class MapQueryController {
         if (queryType != null) {
             searchQuery.setMapQueryType(MapQueryType.valueOf(queryType));
         }
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         if (dateFrom != null) {
             searchQuery.setFromDate(sdf.parse(dateFrom));
         }

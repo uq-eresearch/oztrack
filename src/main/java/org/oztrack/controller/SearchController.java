@@ -56,7 +56,7 @@ public class SearchController {
             "animalList",
             "sortField"
         );
-        binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("dd/MM/yyyy"), true));
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd"), true));
         binder.registerCustomEditor(List.class, "animalList", new CustomCollectionEditor(List.class) {
             @Override
             protected Object convertElement(Object element) {

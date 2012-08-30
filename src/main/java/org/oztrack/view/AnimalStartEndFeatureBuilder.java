@@ -1,5 +1,6 @@
 package org.oztrack.view;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class AnimalStartEndFeatureBuilder {
         private PositionFix endPositionFix;
     }
 
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private final List<PositionFix> positionFixList;
 
     public AnimalStartEndFeatureBuilder(List<PositionFix> positionFixList) {
@@ -62,17 +64,21 @@ public class AnimalStartEndFeatureBuilder {
         simpleFeatureTypeBuilder.setNamespaceURI(Constants.namespaceURI);
         simpleFeatureTypeBuilder.add("animalId", Long.class);
         simpleFeatureTypeBuilder.add("identifier", String.class);
+        simpleFeatureTypeBuilder.add("fromDate", String.class);
+        simpleFeatureTypeBuilder.add("toDate", String.class);
         simpleFeatureTypeBuilder.add("point", Point.class, srid);
         SimpleFeatureType featureType = simpleFeatureTypeBuilder.buildFeatureType();
         return featureType;
     }
 
-    private SimpleFeature buildFeature(SimpleFeatureType featureType, Animal animal, String identifier, Point point) {
+    private SimpleFeature buildFeature(SimpleFeatureType featureType, AnimalStartEnd startEnd, String identifier) {
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
-        featureBuilder.set("animalId", animal.getId());
+        featureBuilder.set("animalId", startEnd.animal.getId());
         featureBuilder.set("identifier", identifier);
-        featureBuilder.set("point", point);
-        String featureId = animal.getId().toString();
+        featureBuilder.set("fromDate", (startEnd.startPositionFix == null) ? null : dateFormat.format(startEnd.startPositionFix.getDetectionTime()));
+        featureBuilder.set("toDate", (startEnd.endPositionFix == null) ? null : dateFormat.format(startEnd.endPositionFix.getDetectionTime()));
+        featureBuilder.set("point", (identifier.equals("start") ? startEnd.startPositionFix : startEnd.endPositionFix).getLocationGeometry());
+        String featureId = startEnd.animal.getId().toString();
         if (identifier != null) {
             featureId += "-" + identifier;
         }
@@ -82,8 +88,8 @@ public class AnimalStartEndFeatureBuilder {
     private SimpleFeatureCollection buildFeatureCollection(SimpleFeatureType featureType, HashMap<Long, AnimalStartEnd> startEndByAnimal) {
         SimpleFeatureCollection featureCollection = FeatureCollections.newCollection();
         for (AnimalStartEnd startEnd: startEndByAnimal.values()) {
-            featureCollection.add(buildFeature(featureType, startEnd.animal, "start", startEnd.startPositionFix.getLocationGeometry()));
-            featureCollection.add(buildFeature(featureType, startEnd.animal, "end", startEnd.endPositionFix.getLocationGeometry()));
+            featureCollection.add(buildFeature(featureType, startEnd, "start"));
+            featureCollection.add(buildFeature(featureType, startEnd, "end"));
         }
         return featureCollection;
     }

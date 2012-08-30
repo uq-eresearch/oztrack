@@ -121,8 +121,12 @@
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
                 $("#projectMapOptions").accordion({fillSpace: true});
-                $('#fromDatepicker').datepicker();
-                $('#toDatepicker').datepicker();
+                $('#fromDatepickerVisible').datepicker({
+                    altField: "#fromDatepicker"
+                });
+                $('#toDatepickerVisible').datepicker({
+                    altField: "#toDatepicker"
+                });
                 analysisMap = createAnalysisMap('projectMap', {
                     projectId: <c:out value="${project.id}"/>,
                     showError: function(message) {
@@ -205,12 +209,22 @@
                         <div class="controls">
                             <table>
                                 <tr>
-                                    <td style="padding-right: 5px;"><label class="control-label" for="fromDatePicker">From</label></td>
-                                    <td><input id="fromDatepicker" type="text" class="input-medium" style="margin-bottom: 3px;"/></td>
+                                    <td style="padding-right: 5px;">
+                                        <label class="control-label" for="fromDatePickerVisible">From</label>
+                                    </td>
+                                    <td>
+                                        <input id="fromDatepickerVisible" type="text" class="datepicker" style="margin-bottom: 3px;"/>
+                                        <input id="fromDatepicker" type="hidden"/>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding-right: 5px;"><label class="control-label" for="toDatePicker">To</label></td>
-                                    <td><input id="toDatepicker" type="text" class="input-medium" style="margin-bottom: 3px;"/></td>
+                                    <td style="padding-right: 5px;">
+                                        <label class="control-label" for="toDatePickerVisible">To</label>
+                                    </td>
+                                    <td>
+                                        <input id="toDatepickerVisible" type="text" class="datepicker" style="margin-bottom: 3px;"/>
+                                        <input id="toDatepicker" type="hidden"/>
+                                    </td>
                                 </tr>
                             </table>
                         </div>

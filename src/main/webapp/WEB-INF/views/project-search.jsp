@@ -21,8 +21,12 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
-                $('#fromDate').datepicker();
-                $('#toDate').datepicker();
+                $('#fromDateVisible').datepicker({
+                    altField: "#fromDate"
+                });
+                $('#toDateVisible').datepicker({
+                    altField: "#toDate"
+                });
             });
         </script>
     </jsp:attribute>
@@ -42,15 +46,17 @@
             <fieldset>
                 <div class="legend">Search Project Data</div>
                 <div class="control-group">
-                    <label class="control-label" for="fromDate">Date From</label>
+                    <label class="control-label" for="fromDateVisible">Date From</label>
                     <div class="controls">
-                        <form:input path="fromDate" id="fromDate" cssClass="input-medium"/>
+                        <input type="text" id="fromDateVisible" class="datepicker" value="<fmt:formatDate pattern="${dateFormatPattern}" value="${searchQuery.fromDate}"/>"/>
+                        <form:hidden path="fromDate" id="fromDate"/>
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="toDate">Date To</label>
+                    <label class="control-label" for="toDateVisible">Date To</label>
                     <div class="controls">
-                        <form:input path="toDate" id="toDate" cssClass="input-medium"/>
+                        <input type="text" id="toDateVisible" class="datepicker" value="<fmt:formatDate pattern="${dateFormatPattern}" value="${searchQuery.toDate}"/>"/>
+                        <form:hidden path="toDate" id="toDate"/>
                     </div>
                 </div>
                 <div class="control-group">
