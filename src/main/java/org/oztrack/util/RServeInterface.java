@@ -269,10 +269,7 @@ public class RServeInterface {
             rCommand = "coordinates(positionFix) <- c(\"Y\",\"X\");proj4string(positionFix)=CRS(\"+init=epsg:4326\")";
             logger.debug(rCommand);
             rConnection.eval(rCommand);
-
-            @SuppressWarnings("unused")
-            REXP foo = rConnection.eval("positionFix");
-
+            rConnection.eval("positionFix");
             rCommand = "writeOGR(positionFix, dsn=\"" + outFileNameFix + "\", layer= \"positionFix\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))";
             logger.debug(rCommand);
             rConnection.eval(rCommand);
@@ -294,20 +291,19 @@ public class RServeInterface {
     //
     private void safeEval(String rCommand) throws RServeInterfaceException {
         logger.debug(String.format("Evaluating R: %s", rCommand));
-        REXP rExp;
         try {
-            rExp = rConnection.eval("try({" + rCommand + "}, silent=TRUE)");
+            rConnection.eval("e <- tryCatch({" + rCommand + "}, error = function(e) {e})");
         }
         catch (RserveException e) {
             throw new RServeInterfaceException("Error evaluating expression", e);
         }
         String errorMessage = null;
         try {
-            if (rExp.inherits("try-error")) {
-                errorMessage = rExp.asString();
+            if (rConnection.eval("inherits(e, 'error')").asInteger() == 1) {
+                errorMessage = rConnection.eval("conditionMessage(e)").asString();
             }
         }
-        catch (REXPMismatchException e) {
+        catch (Exception e) {
             throw new RServeInterfaceException("Error getting error message", e);
         }
         if (errorMessage != null) {

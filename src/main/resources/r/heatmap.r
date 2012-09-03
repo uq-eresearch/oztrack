@@ -36,7 +36,11 @@ fpdens2kml <- function(sdata,igrid,ssrs,scol,labsent=FALSE)
   Z_ppp_SGDF <- as.SpatialGridDataFrame.im(Z)
   #image(Z_ppp_SGDF,col=rev(heat.colors(10)))
 
-  Z_ppp_SPDF <- Grid2Polygons(Z_ppp_SGDF, "v", level = FALSE)
+  Z_ppp_SPDF <- try({Grid2Polygons(Z_ppp_SGDF, "v", level = FALSE)}, silent=TRUE)
+  if (class(Z_ppp_SPDF) == 'try-error') {
+    stop('Error converting to polygon')
+  }
+  
   z <- Z_ppp_SPDF$z
   proj4string(Z_ppp_SPDF) <- CRS(ssrs)
   Z_ppp_SPDF <- spTransform(Z_ppp_SPDF,CRS("+init=epsg:4326"))
@@ -68,7 +72,10 @@ fldens2kml <- function(sdata,igrid,ssrs,scol,labsent=FALSE)
   Z_psp_SGDF <- as.SpatialGridDataFrame.im(Z)
   Z_psp_SGDF$v2 <- round(Z_psp_SGDF$v) #R doesnt like non integer values here
 
-  Z_psp_SPDF <- Grid2Polygons(Z_psp_SGDF, "v2", level = FALSE)
+  Z_psp_SPDF <- try({Grid2Polygons(Z_psp_SGDF, "v2", level = FALSE)}, silent=TRUE)
+  if (class(Z_psp_SPDF) == 'try-error') {
+    stop('Error converting to polygon')
+  }
   z <- Z_psp_SPDF$z
   proj4string(Z_psp_SPDF) <- CRS(ssrs)
   Z_psp_SPDF <- spTransform(Z_psp_SPDF,CRS("+init=epsg:4326"))
