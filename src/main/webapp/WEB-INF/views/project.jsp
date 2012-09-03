@@ -56,7 +56,7 @@
                         addProjectUserNode(userId, userFullName, userLabel, role);
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
-                        var message = jQuery(jqXHR.responseXML).find('error').text() || 'Error processing request';
+                        var message = jQuery(jqXHR.responseText).find('error').text() || 'Error processing request';
                         jQuery('#projectUserError').text(message).fadeIn();
                     }
                 });
@@ -97,7 +97,7 @@
                         deleteProjectUserNode(userId, role);
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
-                        var message = jQuery(jqXHR.responseXML).find('error').text() || 'Error processing request';
+                        var message = jQuery(jqXHR.responseText).find('error').text() || 'Error processing request';
                         jQuery('#projectUserError').text(message).fadeIn();
                     }
                 });

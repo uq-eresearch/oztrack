@@ -309,7 +309,7 @@ function createAnalysisMap(div, options) {
                     updateAnimalInfoFromKML(layerName, url, params, resp.features);
                 }
                 else {
-                    showError(jQuery(resp.priv.responseXML).find('error').text() || 'Error processing request');
+                    showError(jQuery(resp.priv.responseText).find('error').text() || 'Error processing request');
                 }
             };
             loadingPanel.increaseCounter();
