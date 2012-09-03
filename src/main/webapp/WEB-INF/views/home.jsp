@@ -12,7 +12,7 @@
             #homeMap {
                 margin: 20px 0 0 0;
                 height: 500px;
-                background-color:#e6e6c0;
+                background-color: #e6e6c0;
                 padding: 8px;
                 -khtml-border-radius: 10px;
                 -webkit-border-radius: 10px;
@@ -20,6 +20,27 @@
                 -ms-border-radius: 10px;
                 -o-border-radius: 10px;
                 border-radius: 10px;
+            }
+            .map-instructions-container {
+                position: relative;
+                z-index: 1100;
+            }
+            .map-instructions {
+                position: absolute;
+                top: 12px;
+                left: 316px;
+                width: 318px;
+                background-color: white;
+                opacity: 0.7;
+                text-align: center;
+                font-size: 12px;
+                padding: 5px;
+                -khtml-border-radius: 5px;
+                -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+                -ms-border-radius: 5px;
+                -o-border-radius: 5px;
+                border-radius: 5px;
             }
             .home-popup {
                 margin-top: 0;
@@ -54,6 +75,12 @@
             ${text}
         </div>
         <div style="clear: both;"></div>
-        <div id="homeMap"></div>
+        <div id="homeMap">
+            <div class="map-instructions-container">
+                <div class="map-instructions">
+                    Click the markers to view project details
+                </div>
+            </div>
+        </div>
     </jsp:body>
 </tags:page>
