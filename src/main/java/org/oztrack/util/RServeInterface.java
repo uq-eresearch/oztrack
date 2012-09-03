@@ -10,6 +10,7 @@ import java.util.Random;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.model.PositionFix;
@@ -207,40 +208,55 @@ public class RServeInterface {
 
 
     protected void writeMCPKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
-        String queryType = searchQuery.getMapQueryType().toString();
         Double percent = (searchQuery.getPercent() != null) ? searchQuery.getPercent() : 100d;
-        safeEval(queryType + " <- mcp(positionFix.xy,percent=" + percent + ")");
-        safeEval(queryType + "$area <- mcp(positionFix.proj,percent=" + percent + ",unin=c(\"m\"),unout=c(\"km2\"))$area");
-        safeEval("writeOGR(" + queryType +", dsn=\"" + fileName + "\", layer= \"" + queryType + "\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
+        if (!(percent >= 0d && percent <= 100d)) {
+            throw new RServeInterfaceException("percent must be between 0 and 100.");
+        }
+        safeEval("mcp.obj <- mcp(positionFix.xy,percent=" + percent + ")");
+        safeEval("mcp.obj$area <- mcp(positionFix.proj,percent=" + percent + ",unin=c(\"m\"),unout=c(\"km2\"))$area");
+        safeEval("writeOGR(mcp.obj, dsn=\"" + fileName + "\", layer= \"MCP\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
     }
 
     protected void writeKernelUDKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
-        String name = searchQuery.getMapQueryType().toString();
         Double percent = (searchQuery.getPercent() != null) ? searchQuery.getPercent() : 100d;
+        if (!(percent >= 0d && percent <= 100d)) {
+            throw new RServeInterfaceException("percent must be between 0 and 100.");
+        }
         String h = (searchQuery.getH() != null) ? searchQuery.getH() : "href";
+        if (!(h.equals("href") || h.equals("LSCV") || NumberUtils.isNumber(h))) {
+            throw new RServeInterfaceException("h-value must be \"href\", \"LSCV\", or a numeric value.");
+        }
         safeEval("KerHRp <- kernelUD(positionFix.proj, h = \"" + h + "\")");
         safeEval("KerHR <- kernelUD(positionFix.xy, h = \"" + h + "\")");
-        safeEval(name + " <- getverticeshr(KerHR,percent=" + percent + ")");
-        safeEval(name + "$area <- getverticeshr(KerHRp,percent=" + percent + ", unin=c(\"m\"), unout=c(\"km2\"))$area");
-        safeEval("writeOGR(" + name +", dsn=\"" + fileName + "\", layer= \"" + name + "\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
+        safeEval("hr.obj <- getverticeshr(KerHR,percent=" + percent + ")");
+        safeEval("hr.obj$area <- getverticeshr(KerHRp,percent=" + percent + ", unin=c(\"m\"), unout=c(\"km2\"))$area");
+        safeEval("writeOGR(hr.obj , dsn=\"" + fileName + "\", layer= \"KUD\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
     }
 
     protected void writeAlphahullKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
-        String name = searchQuery.getMapQueryType().toString();
         Double alpha = (searchQuery.getAlpha() != null) ? searchQuery.getAlpha() : 0.1;
+        if (!(alpha > 0d)) {
+            throw new RServeInterfaceException("alpha must be greater than 0.");
+        }
         safeEval("ahull.proj.spldf <- id.alpha(dxy=positionFix.proj, ialpha=" + alpha + ", sCS=\"+init=" + srs + "\")");
         safeEval("ahull.xy.spldf <- spTransform(ahull.proj.spldf, CRS(\"+init=epsg:4326\"))");
-        safeEval("writeOGR(ahull.xy.spldf, dsn=\"" + fileName + "\", layer= \"" + name + "\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
+        safeEval("writeOGR(ahull.xy.spldf, dsn=\"" + fileName + "\", layer= \"AHULL\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
     }
 
     protected void writePointHeatmapKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
         Double gridSize = (searchQuery.getGridSize() != null) ? searchQuery.getGridSize() : 100d;
+        if (!(gridSize > 0d)) {
+            throw new RServeInterfaceException("grid size must be greater than 0.");
+        }
         safeEval("PPA <- fpdens2kml(sdata=positionFix.xy,igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\",scol=\"Greens\", labsent=FALSE)");
         safeEval("polykml(sw=PPA,filename=\"" + fileName + "\",kmlname=paste(unique(PPA$ID),\"_point_density\",sep=\"\"),namefield=unique(PPA$ID))");
     }
 
     protected void writeLineHeatmapKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
         Double gridSize = (searchQuery.getGridSize() != null) ? searchQuery.getGridSize() : 100d;
+        if (!(gridSize > 0d)) {
+            throw new RServeInterfaceException("grid size must be greater than 0.");
+        }
         safeEval("LPA <- fldens2kml(sdata=positionFix.xy,igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\",scol=\"Greens\", labsent=FALSE)");
         safeEval("polykml(sw=LPA,filename=\"" + fileName + "\",kmlname=paste(unique(LPA$ID),\"_line_density\",sep=\"\"),namefield=unique(LPA$ID))");
     }

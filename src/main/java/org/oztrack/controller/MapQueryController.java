@@ -95,17 +95,6 @@ public class MapQueryController {
             searchQuery.setPercent(percent);
         }
         if (h != null && !h.isEmpty()) {
-            boolean validDouble = false;
-            try {
-                Double.parseDouble(h);
-                validDouble = true;
-            }
-            catch (NumberFormatException e) {
-            }
-            String regex = "href|LSCV";
-            if (!h.matches(regex) && !validDouble) {
-                throw new RuntimeException("Invalid h value: must be number or match " + regex);
-            }
             searchQuery.setH(h);
         }
         if (alpha != null && !alpha.isNaN()) {

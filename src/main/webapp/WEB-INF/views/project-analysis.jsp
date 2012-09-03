@@ -133,7 +133,7 @@
                         jQuery('#errorDialog')
                             .text(message)
                             .dialog({
-                                title: 'Error loading layer',
+                                title: 'Error',
                                 modal: true,
                                 resizable: false,
                                 buttons: {
