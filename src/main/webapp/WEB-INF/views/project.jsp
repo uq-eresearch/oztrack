@@ -113,8 +113,8 @@
             }
             jQuery(document).ready(function() {
                 jQuery('#navTrack').addClass('active');
-                <c:if test="${not empty project.boundingBox}">
-                var coverageMap = createCoverageMap('coverageMap', '<c:out value="${project.boundingBox}"/>');
+                <c:if test="${not empty projectBoundingBox}">
+                var coverageMap = createCoverageMap('coverageMap', '<c:out value="${projectBoundingBox}"/>');
                 </c:if>
                 <c:forEach items="${roles}" var="role">
                     <c:choose>
@@ -153,7 +153,7 @@
     <jsp:body>
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
 
-        <c:if test="${not empty project.boundingBox}">
+        <c:if test="${not empty projectBoundingBox}">
         <div id="coverageMap"></div>
         </c:if>
 
@@ -180,11 +180,11 @@
             </sec:authorize>
             <tr>
                 <th>Date Range:</th>
-                <td><fmt:formatDate pattern="${dateFormatPattern}" value="${project.firstDetectionDate}"/> to <fmt:formatDate pattern="${dateFormatPattern}" value="${project.lastDetectionDate}"/></td>
+                <td><fmt:formatDate pattern="${dateFormatPattern}" value="${projectDetectionDateRange.minimum}"/> to <fmt:formatDate pattern="${dateFormatPattern}" value="${projectDetectionDateRange.maximum}"/></td>
             </tr>
             <tr>
                 <th>Detection Count:</th>
-                <td><a href="<c:url value="/projects/${project.id}/search"/>"><c:out value="${project.detectionCount}"/></a></td>
+                <td><a href="<c:url value="/projects/${project.id}/search"/>"><c:out value="${projectDetectionCount}"/></a></td>
             </tr>
             <tr>
                 <th>Animals:</th>
@@ -228,11 +228,11 @@
             <th>Temporal Coverage:</th>
             <td>
                 <c:choose>
-                <c:when test="${empty project.firstDetectionDate}">
+                <c:when test="${empty projectDetectionDateRange}">
                     No data has been uploaded for this project yet.
                 </c:when>
                 <c:otherwise>
-                    <fmt:formatDate pattern="${shortDateFormatPattern}" value="${project.firstDetectionDate}"/> to <fmt:formatDate pattern="${shortDateFormatPattern}" value="${project.lastDetectionDate}"/>
+                    <fmt:formatDate pattern="${shortDateFormatPattern}" value="${projectDetectionDateRange.minimum}"/> to <fmt:formatDate pattern="${shortDateFormatPattern}" value="${projectDetectionDateRange.maximum}"/>
                 </c:otherwise>
                 </c:choose>
             </td>

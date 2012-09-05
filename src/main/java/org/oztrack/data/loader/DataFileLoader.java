@@ -62,8 +62,6 @@ public abstract class DataFileLoader {
         try {
             logger.info("Creating final observations for " + this.dataFile.getAbsoluteDataFilePath());
             createFinalObservations();
-            logger.info("Updating data file metdata for " + this.dataFile.getAbsoluteDataFilePath());
-            updateDataFileMetadata();
             transaction.commit();
         }
         catch (FileProcessingException e) {
@@ -132,26 +130,13 @@ public abstract class DataFileLoader {
     }
 
     private void createFinalObservations() throws FileProcessingException {
-        int nbrObservationsCreated = 0;
         try {
-            nbrObservationsCreated = jdbcAccess.loadObservations(dataFile);
-
-            dataFile.setDetectionCount(nbrObservationsCreated);
             dataFileDao.update(dataFile);
-
-            int projectUpdated = jdbcAccess.updateProjectMetadata(dataFile.getProject());
-            if (projectUpdated != 1) {
-                throw new FileProcessingException("Problem recalculating project metadata - bounding box or start and end dates.");
-            }
-
             jdbcAccess.truncateRawObservations(dataFile);
-
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             jdbcAccess.truncateRawObservations(dataFile);
             throw new FileProcessingException(e.getMessage(), e);
         }
-    }
-
-    protected void updateDataFileMetadata() throws FileProcessingException {
     }
 }

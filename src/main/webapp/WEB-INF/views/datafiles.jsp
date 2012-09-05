@@ -47,13 +47,11 @@
 
             <table id="dataFileStatusTable" class="table table-bordered">
                 <col style="width: 200px;" />
-                <col style="width: 150px;" />
                 <col style="width: 100px;" />
                 <col style="width: 100px;" />
                 <thead>
                     <tr>
                         <th>File Name</th>
-                        <th>Detection Date Range</th>
                         <th>Upload Date</th>
                         <th>File Status</th>
                     </tr>
@@ -62,14 +60,8 @@
                 <c:forEach items="${dataFileList}" var="dataFile">
                     <tr>
                         <td><c:out value="${dataFile.userGivenFileName}"/></td>
-                        <td><c:if test="${fn:contains(dataFile.status,'COMPLETE')}">
-                            <fmt:formatDate pattern="${dateFormatPattern}" value="${dataFile.firstDetectionDate}"/> to <fmt:formatDate pattern="${dateFormatPattern}" value="${dataFile.lastDetectionDate}"/>
-                            </c:if>
-                         </td>
                         <td><fmt:formatDate pattern="${dateFormatPattern}" value="${dataFile.createDate}"/>
-                        <td>
-                            <a href="<c:url value="/datafiles/${dataFile.id}"/>"><c:out value="${dataFile.status}"/></a>
-                        </td>
+                        <td><a href="<c:url value="/datafiles/${dataFile.id}"/>"><c:out value="${dataFile.status}"/></a></td>
                     </tr>
                 </c:forEach>
                 </tbody>

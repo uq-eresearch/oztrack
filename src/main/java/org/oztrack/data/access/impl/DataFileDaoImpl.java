@@ -1,6 +1,7 @@
 package org.oztrack.data.access.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.commons.lang3.Range;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
@@ -41,7 +43,6 @@ public class DataFileDaoImpl implements DataFileDao {
                 " where o.status='NEW'" +
                 " and o.createDate = (select min(d.createDate) from datafile d where d.status='NEW') " +
                 " and not exists (select 1 from datafile e where e.status='PROCESSING')");
-        //query.setParameter("id", id);
         try {
             return (DataFile) query.getSingleResult();
         } catch (NoResultException ex) {
@@ -91,13 +92,42 @@ public class DataFileDaoImpl implements DataFileDao {
     }
 
     @Override
+    public Range<Date> getDetectionDateRange(DataFile dataFile, boolean includeDeleted) {
+        String sql =
+            "select min(o.detectionTime)\n" +
+            "from PositionFix o\n" +
+            "where o.dataFile = :dataFile\n" +
+            "and ((o.deleted = false) or (:includeDeleted = true))";
+        Query query = em.createQuery(sql);
+        query.setParameter("dataFile", dataFile);
+        query.setParameter("includeDeleted", includeDeleted);
+        Object[] result = (Object[]) query.getSingleResult();
+        Date fromDate = (Date) result[0];
+        Date toDate = (Date) result[1];
+        return ((fromDate == null) || (toDate == null)) ? null : Range.between(fromDate, toDate);
+    }
+
+    @Override
+    public int getDetectionCount(DataFile dataFile, boolean includeDeleted) {
+        String sql =
+            "select count(*)\n" +
+            "from PositionFix o\n" +
+            "where o.dataFile = :dataFile\n" +
+            "and ((o.deleted = false) or (:includeDeleted = true))";
+        Query query = em.createQuery(sql);
+        query.setParameter("dataFile", dataFile);
+        query.setParameter("includeDeleted", includeDeleted);
+        return ((Number) query.getSingleResult()).intValue();
+    }
+
+    @Override
     public List<DataFile> getDataFilesByProject(Project project) {
         Query query = em.createQuery("SELECT o from datafile o where o.project = :project order by o.createDate");
         query.setParameter("project", project);
         //query.setParameter("status", DataFileStatus.COMPLETE);
         try {
             @SuppressWarnings("unchecked")
-            List <DataFile> resultList = (List <DataFile>) query.getResultList();
+            List <DataFile> resultList = query.getResultList();
             return resultList;
         }catch (NoResultException ex) {
             return null;

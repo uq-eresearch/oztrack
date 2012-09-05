@@ -46,13 +46,6 @@ public class DataFile extends OztrackBaseEntity {
     private Long localTimeConversionHours;
     private Boolean singleAnimalInFile;
 
-    // metadata for convenience
-    private Integer detectionCount;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date firstDetectionDate;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastDetectionDate;
-
     @Enumerated(STRING)
     @Column(name="datafilestatus")
     private DataFileStatus status;
@@ -179,29 +172,11 @@ public class DataFile extends OztrackBaseEntity {
     }
 
     public Boolean getSingleAnimalInFile() {
-         return singleAnimalInFile;
-     }
+        return singleAnimalInFile;
+    }
 
-     public void setSingleAnimalInFile(Boolean singleAnimalInFile) {
-         this.singleAnimalInFile = singleAnimalInFile;
-     }
-    public Integer getDetectionCount() {
-        return detectionCount;
-    }
-    public void setDetectionCount(Integer detectionCount) {
-        this.detectionCount = detectionCount;
-    }
-    public Date getFirstDetectionDate() {
-        return firstDetectionDate;
-    }
-    public void setFirstDetectionDate(Date firstDetectionDate) {
-        this.firstDetectionDate = firstDetectionDate;
-    }
-    public Date getLastDetectionDate() {
-        return lastDetectionDate;
-    }
-    public void setLastDetectionDate(Date lastDetectionDate) {
-        this.lastDetectionDate = lastDetectionDate;
+    public void setSingleAnimalInFile(Boolean singleAnimalInFile) {
+        this.singleAnimalInFile = singleAnimalInFile;
     }
 
     @Override
@@ -217,6 +192,7 @@ public class DataFile extends OztrackBaseEntity {
         return getId().equals(other.getId());
     }
 
+    @Override
     public int hashCode() {
         if (id != null) {
             return id.hashCode();
@@ -224,5 +200,4 @@ public class DataFile extends OztrackBaseEntity {
             return super.hashCode();
         }
     }
-
 }

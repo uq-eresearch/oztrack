@@ -1,5 +1,6 @@
 package org.oztrack.data.access.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -7,6 +8,8 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.commons.lang3.Range;
+import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.ProjectUser;
@@ -14,6 +17,11 @@ import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.Role;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 
 @Service
 public class ProjectDaoImpl implements ProjectDao {
@@ -82,6 +90,60 @@ public class ProjectDaoImpl implements ProjectDao {
 
         project.setDataDirectoryPath("project-" + project.getId().toString());
         update(project);
+    }
+
+    @Override
+    public Range<Date> getDetectionDateRange(Project project, boolean includeDeleted) {
+        String sql =
+            "select min(o.detectionTime), max(o.detectionTime)\n" +
+            "from PositionFix o\n" +
+            "where ((o.deleted = false) or (:includeDeleted = true))\n" +
+            "and o.dataFile in (select d from datafile d where d.project.id = :projectId)";
+        Query query = em.createQuery(sql);
+        query.setParameter("projectId", project.getId());
+        query.setParameter("includeDeleted", includeDeleted);
+        Object[] result = (Object[]) query.getSingleResult();
+        Date fromDate = (Date) result[0];
+        Date toDate = (Date) result[1];
+        return ((fromDate == null) || (toDate == null)) ? null : Range.between(fromDate, toDate);
+    }
+
+    @Override
+    public int getDetectionCount(Project project, boolean includeDeleted) {
+        String sql =
+            "select count(*)\n" +
+            "from PositionFix o\n" +
+            "where ((o.deleted = false) or (:includeDeleted = true))\n" +
+            "and o.dataFile in (select d from datafile d where d.project.id = :projectId)";
+        Query query = em.createQuery(sql);
+        query.setParameter("projectId", project.getId());
+        query.setParameter("includeDeleted", includeDeleted);
+        return ((Number) query.getSingleResult()).intValue();
+    }
+
+    @Override
+    public Polygon getBoundingBox(Project project) {
+        Query query = em.createNativeQuery(
+            "select ST_AsText(ST_Envelope(ST_Collect(positionfix.locationgeometry)))\n" +
+            "from datafile, positionfix\n" +
+            "where datafile.project_id = :projectId\n" +
+            "and positionfix.datafile_id = datafile.id"
+        );
+        query.setParameter("projectId", project.getId());
+        String wkt = (String) query.getSingleResult();
+        if (wkt == null) {
+            return null;
+        }
+        GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
+        WKTReader reader = new WKTReader(geometryFactory);
+        Polygon polygon;
+        try {
+            polygon = (Polygon) reader.read(wkt);
+        }
+        catch (ParseException e) {
+            return null;
+        }
+        return polygon;
     }
 
     @Override

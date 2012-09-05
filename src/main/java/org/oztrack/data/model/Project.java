@@ -19,11 +19,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 
-import org.hibernate.annotations.Type;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.model.types.ProjectType;
-
-import com.vividsolutions.jts.geom.Polygon;
 
 @Entity(name = "Project")
 public class Project extends OztrackBaseEntity {
@@ -69,16 +66,9 @@ public class Project extends OztrackBaseEntity {
     private String speciesCommonName;
 
     private String speciesScientificName;
-    
+
     @Column(name="srsidentifier")
     private String srsIdentifier;
-
-    @Column(name = "boundingbox", columnDefinition="GEOMETRY")
-    @Type(type = "org.hibernatespatial.GeometryUserType")
-    private Polygon boundingBox;
-    private Date firstDetectionDate;
-    private Date lastDetectionDate;
-    private Integer detectionCount;
 
     @Column(columnDefinition = "TEXT")
     private String dataSpaceURI;
@@ -230,34 +220,6 @@ public class Project extends OztrackBaseEntity {
 
     public String getAbsoluteDataDirectoryPath() {
         return OzTrackApplication.getApplicationContext().getDataDir() + File.separator + getDataDirectoryPath();
-    }
-
-    public Polygon getBoundingBox() {
-        return boundingBox;
-    }
-
-    public void setBoundingBox(Polygon boundingBox) {
-        this.boundingBox = boundingBox;
-    }
-
-    public Date getFirstDetectionDate() {
-        return firstDetectionDate;
-    }
-    public void setFirstDetectionDate(Date firstDetectionDate) {
-        this.firstDetectionDate = firstDetectionDate;
-    }
-    public Date getLastDetectionDate() {
-        return lastDetectionDate;
-    }
-    public void setLastDetectionDate(Date lastDetectionDate) {
-        this.lastDetectionDate = lastDetectionDate;
-    }
-
-    public Integer getDetectionCount() {
-        return detectionCount;
-    }
-    public void setDetectionCount(Integer detectionCount) {
-        this.detectionCount = detectionCount;
     }
 
     public String getDataSpaceURI() {

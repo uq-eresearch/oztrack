@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -17,6 +19,7 @@ import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.WfsFactory;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,6 +51,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.vividsolutions.jts.geom.Polygon;
 
 @Controller
 public class MapQueryController {
@@ -171,7 +176,14 @@ public class MapQueryController {
         SimpleFeatureCollection featureCollection = null;
         switch (searchQuery.getMapQueryType()) {
             case PROJECTS: {
-                featureCollection = new ProjectsFeatureBuilder(projectDao.getAll()).buildFeatureCollection();
+                List<Project> projects = projectDao.getAll();
+                HashMap<Project, Range<Date>> dateRangeMap = new HashMap<Project, Range<Date>>();
+                HashMap<Project, Polygon> boundingBoxMap = new HashMap<Project, Polygon>();
+                for (Project project : projects) {
+                    dateRangeMap.put(project, projectDao.getDetectionDateRange(project, false));
+                    boundingBoxMap.put(project, projectDao.getBoundingBox(project));
+                }
+                featureCollection = new ProjectsFeatureBuilder(projects, dateRangeMap, boundingBoxMap).buildFeatureCollection();
                 break;
             }
             case POINTS: {

@@ -21,6 +21,7 @@ import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
+import org.apache.commons.lang3.Range;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
@@ -33,6 +34,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
+import com.vividsolutions.jts.geom.Polygon;
 
 public class DataSpaceInterface {
     protected final Log logger = LogFactory.getLog(getClass());
@@ -89,9 +92,9 @@ public class DataSpaceInterface {
         String agentURI = project.getDataSpaceAgent().getDataSpaceAgentURI();
         String collectionURI = project.getDataSpaceURI();
 
-        DataSpaceCollection dsi = new DataSpaceCollection(project);
-
-
+        Range<Date> dateRange = projectDao.getDetectionDateRange(project, false);
+        Polygon boundingBox = projectDao.getBoundingBox(project);
+        DataSpaceCollection dsi = new DataSpaceCollection(project, dateRange, boundingBox);
 
         boolean doAgentPost = false;
         boolean doAgentPut = false;

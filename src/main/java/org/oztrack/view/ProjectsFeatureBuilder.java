@@ -1,10 +1,11 @@
 package org.oztrack.view;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang3.Range;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -15,23 +16,30 @@ import org.oztrack.app.Constants;
 import org.oztrack.data.model.Project;
 
 import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 public class ProjectsFeatureBuilder {
-    private final Log logger = LogFactory.getLog(getClass());
     private final SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy");
 
     private final List<Project> projectList;
+    private final HashMap<Project, Range<Date>> projectDetectionDateRangeMap;
+    private final HashMap<Project, Polygon> projectBoundingBoxMap;
 
-    public ProjectsFeatureBuilder(List<Project> projectList) {
+    public ProjectsFeatureBuilder(
+        List<Project> projectList,
+        HashMap<Project, Range<Date>> projectDetectionDateRangeMap,
+        HashMap<Project, Polygon> projectBoundingBoxMap
+    ) {
         this.projectList = projectList;
+        this.projectDetectionDateRangeMap = projectDetectionDateRangeMap;
+        this.projectBoundingBoxMap = projectBoundingBoxMap;
     }
 
     public SimpleFeatureCollection buildFeatureCollection() {
         SimpleFeatureType featureType = buildFeatureType();
         SimpleFeatureCollection featureCollection = FeatureCollections.newCollection();
         for (Project project : projectList) {
-            if (project.getBoundingBox() == null) {
-                logger.error("No bounding box for project " + project.getId() + " (" + project.getTitle() + ")");
+            if (projectBoundingBoxMap.get(project) == null) {
                 continue;
             }
             SimpleFeature feature = buildFeature(featureType, project);
@@ -58,12 +66,13 @@ public class ProjectsFeatureBuilder {
 
     private SimpleFeature buildFeature(SimpleFeatureType featureType, Project project) {
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
-        featureBuilder.set("projectCentroid", project.getBoundingBox().getCentroid());
+        featureBuilder.set("projectCentroid", projectBoundingBoxMap.get(project).getCentroid());
         featureBuilder.set("projectId", project.getId().toString());
         featureBuilder.set("projectTitle", project.getTitle());
         featureBuilder.set("projectDescription", project.getDescription());
-        featureBuilder.set("firstDetectionDate", sdf.format(project.getFirstDetectionDate()));
-        featureBuilder.set("lastDetectionDate", sdf.format(project.getLastDetectionDate()));
+        Range<Date> projectDetectionDateRange = projectDetectionDateRangeMap.get(project);
+        featureBuilder.set("firstDetectionDate", sdf.format(projectDetectionDateRange.getMinimum()));
+        featureBuilder.set("lastDetectionDate", sdf.format(projectDetectionDateRange.getMaximum()));
         featureBuilder.set("spatialCoverageDescr", project.getSpatialCoverageDescr());
         featureBuilder.set("speciesCommonName", project.getSpeciesCommonName());
         featureBuilder.set("global", project.isGlobal());

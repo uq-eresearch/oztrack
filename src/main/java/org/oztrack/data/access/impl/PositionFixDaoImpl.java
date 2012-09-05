@@ -12,7 +12,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.access.Page;
 import org.oztrack.data.access.PositionFixDao;
-import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
@@ -106,66 +105,6 @@ public class PositionFixDaoImpl implements PositionFixDao {
         @SuppressWarnings("unchecked")
         List<PositionFix> resultList = query.getResultList();
         return resultList;
-    }
-
-    @Override
-    public Date getProjectFirstDetectionDate(Project project) {
-
-        String projectId =  project.getId().toString();
-        String sql = "select min(o.detectionTime)"
-        + "from PositionFix o "
-        + "where o.deleted = false "
-        + "and o.dataFile in "
-        + "(select d from datafile d where d.project.id = :projectId) ";
-
-        Query query = em.createQuery(sql);
-        query.setParameter("projectId", projectId);
-        Date firstDate = (Date)query.getSingleResult();
-        return firstDate;
-    }
-
-    @Override
-    public Date getProjectLastDetectionDate(Project project) {
-
-        String projectId =  project.getId().toString();
-        String sql = "select max(o.detectionTime)"
-            + "from PositionFix o "
-            + "where o.deleted = false "
-            + "and o.dataFile in "
-            + "(select d from datafile d where d.project.id = :projectId) ";
-
-        Query query = em.createQuery(sql);
-        query.setParameter("projectId", projectId);
-        Date lastDate = (Date)query.getSingleResult();
-        return lastDate;
-    }
-
-    @Override
-    public Date getDataFileFirstDetectionDate(DataFile dataFile) {
-
-        String sql = "select min(o.detectionTime)"
-        + "from PositionFix o "
-        + "where o.deleted = false "
-        + "and o.dataFile = :dataFile";
-
-        Query query = em.createQuery(sql);
-        query.setParameter("dataFile", dataFile);
-        Date firstDate = (Date) query.getSingleResult();
-        return firstDate;
-    }
-
-    @Override
-    public Date getDataFileLastDetectionDate(DataFile dataFile) {
-
-        String sql = "select max(o.detectionTime)"
-        + "from PositionFix o "
-        + "where o.deleted = false "
-        + "and o.dataFile = :dataFile";
-
-        Query query = em.createQuery(sql);
-        query.setParameter("dataFile", dataFile);
-        Date lastDate = (Date) query.getSingleResult();
-        return lastDate;
     }
 
     @Override

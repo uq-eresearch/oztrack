@@ -7,6 +7,7 @@ import org.oztrack.data.model.DataFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,7 +32,8 @@ public class DataFileController {
 
     @RequestMapping(value="/datafiles/{id}", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#dataFile.project, 'read')")
-    public String getView(@ModelAttribute(value="dataFile") DataFile dataFile) throws Exception {
+    public String getView(Model model, @ModelAttribute(value="dataFile") DataFile dataFile) throws Exception {
+        model.addAttribute("dataFileDetectionCount", dataFileDao.getDetectionCount(dataFile, false));
         return "datafile";
     }
 

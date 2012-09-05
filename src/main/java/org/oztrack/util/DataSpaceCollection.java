@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.lang3.Range;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
@@ -15,6 +16,7 @@ import org.springframework.core.io.ClassPathResource;
 import com.samskivert.mustache.Mustache;
 import com.samskivert.mustache.Template;
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Polygon;
 
 @SuppressWarnings("unused")
 public class DataSpaceCollection {
@@ -23,7 +25,9 @@ public class DataSpaceCollection {
     private static Template atomAgentTemplate;
     private static Template atomCollectionTemplate;
 
-    private Project project;
+    private final Project project;
+    private final Range<Date> dateRange;
+    private final Polygon boundingBox;
     private String dataSpaceURL;
 
     private String collectionTitle;
@@ -45,8 +49,10 @@ public class DataSpaceCollection {
     private String contactDataSpaceURI;
 
 
-    public DataSpaceCollection(Project project) {
+    public DataSpaceCollection(Project project, Range<Date> dateRange, Polygon boundingBox) {
         this.project = project;
+        this.dateRange = dateRange;
+        this.boundingBox = boundingBox;
         buildAtomTemplates();
         this.dataSpaceURL = OzTrackApplication.getApplicationContext().getDataSpaceURL();
     }
@@ -133,11 +139,11 @@ public class DataSpaceCollection {
 
     public String getTemporalCoverage() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
-        return "start=" + sdf.format(project.getFirstDetectionDate()) + "; end=" + sdf.format(project.getLastDetectionDate());
+        return "start=" + sdf.format(dateRange.getMinimum()) + "; end=" + sdf.format(dateRange.getMaximum());
     }
 
     public String getBoundingBoxCoordinatesString() {
-        Coordinate[] coordinates = project.getBoundingBox().getCoordinates();
+        Coordinate[] coordinates = boundingBox.getCoordinates();
         String result = "";
         for (int i = 0; i < coordinates.length; i++) {
             result = result + " " + Double.toString(coordinates[i].y) + " " + Double.toString(coordinates[i].x);

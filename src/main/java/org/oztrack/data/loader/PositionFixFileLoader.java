@@ -20,7 +20,6 @@ import org.apache.commons.io.IOUtils;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.JdbcAccess;
-import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.RawPositionFix;
 import org.oztrack.data.model.types.PositionFixFileHeader;
@@ -32,8 +31,6 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 
 public class PositionFixFileLoader extends DataFileLoader {
-    private PositionFixDao positionFixDao;
-
     private Pattern degPattern = Pattern.compile("^([^\\s]+)$");
     private Pattern degMinPattern = Pattern.compile("^([^\\s]+)\\s+([^\\s]+)$");
     private Pattern degMinSecPattern = Pattern.compile("^([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+)$");
@@ -43,11 +40,9 @@ public class PositionFixFileLoader extends DataFileLoader {
         DataFileDao dataFileDao,
         AnimalDao animalDao,
         EntityManager entityManager,
-        JdbcAccess jdbcAccess,
-        PositionFixDao positionFixDao
+        JdbcAccess jdbcAccess
     ) {
         super(dataFile, dataFileDao, animalDao, entityManager, jdbcAccess);
-        this.positionFixDao = positionFixDao;
     }
 
     @Override
@@ -243,13 +238,6 @@ public class PositionFixFileLoader extends DataFileLoader {
             IOUtils.closeQuietly(dataInputStream);
             IOUtils.closeQuietly(fileInputStream);
         }
-    }
-
-    @Override
-    public void updateDataFileMetadata() throws FileProcessingException {
-        dataFile.setFirstDetectionDate(positionFixDao.getDataFileFirstDetectionDate(dataFile));
-        dataFile.setLastDetectionDate(positionFixDao.getDataFileLastDetectionDate(dataFile));
-        dataFileDao.update(dataFile);
     }
 
     // handles fields that are either just a date OR a date and time

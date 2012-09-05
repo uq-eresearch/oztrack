@@ -89,6 +89,9 @@ public class ProjectController {
         }
         model.addAttribute("roles", roles);
         model.addAttribute("projectUsersByRole", projectUsersByRole);
+        model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project));
+        model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, false));
+        model.addAttribute("projectDetectionCount", projectDao.getDetectionCount(project, false));
         return getView(model, project, "project");
     }
 
@@ -101,6 +104,8 @@ public class ProjectController {
     @RequestMapping(value="/projects/{id}/publish", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#project, 'manage')")
     public String getPublishView(Model model, @ModelAttribute(value="project") Project project) {
+        model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project));
+        model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, false));
         return getView(model, project, "project-publish");
     }
 

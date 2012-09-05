@@ -1,12 +1,16 @@
 package org.oztrack.data.access;
 
+import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.Range;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.ProjectUser;
 import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.Role;
 import org.springframework.stereotype.Service;
+
+import com.vividsolutions.jts.geom.Polygon;
 
 @Service
 public interface ProjectDao {
@@ -16,6 +20,9 @@ public interface ProjectDao {
     Project update(Project object);
     void delete(Project project);
     void create(Project project, User currentUser) throws Exception;
+    Range<Date> getDetectionDateRange(Project project, boolean includeDeleted);
+    int getDetectionCount(Project project, boolean includeDeleted);
+    Polygon getBoundingBox(Project project);
     List<Project> getProjectsByPublished(boolean published);
     List<ProjectUser> getProjectUsersWithRole(Project project, Role role);
 }

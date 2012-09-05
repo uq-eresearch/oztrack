@@ -49,6 +49,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.vividsolutions.jts.geom.Polygon;
+
 @Controller
 public class ProjectImageController {
     private final String detectionMarkName = "Cross";
@@ -113,7 +115,8 @@ public class ProjectImageController {
     ) throws Exception {
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setProject(project);
-        ReferencedEnvelope mapBounds = new ReferencedEnvelope(project.getBoundingBox().getEnvelopeInternal(), CRS.decode("EPSG:4326"));
+        Polygon projectBoundingBox = projectDao.getBoundingBox(project);
+        ReferencedEnvelope mapBounds = new ReferencedEnvelope(projectBoundingBox.getEnvelopeInternal(), CRS.decode("EPSG:4326"));
         Dimension mapDimension = MapUtils.calculateMapDimension(mapBounds, 600);
         MapContext mapContext = new DefaultMapContext();
         mapContext.setAreaOfInterest(mapBounds);

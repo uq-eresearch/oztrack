@@ -3,11 +3,10 @@ package org.oztrack.data.access.impl;
 import org.oztrack.data.access.JdbcAccess;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
+    @Override
     public int loadObservations(DataFile dataFile) {
         String sql = "";
         long dataFileId = dataFile.getId();
@@ -60,44 +59,9 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
         return tableName;
     }
 
+    @Override
     public void truncateRawObservations(DataFile dataFile) {
         String tableName = "raw" + this.getTableName(dataFile.getProject());
         getJdbcTemplate().execute("TRUNCATE TABLE " + tableName);
-    }
-
-    public int updateProjectMetadata(Project project) {
-        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-        mapSqlParameterSource.addValue("projectId", project.getId());
-        String tableName = this.getTableName(project);
-
-        String sql = "update project "
-                   + " set boundingBox = "
-                     + "(select (ST_Envelope(ST_Collect(locationgeometry))) "
-                     + " from " + tableName + " t "
-                     + ", dataFile d "
-                     + " where t.datafile_id=d.id"
-                     + " and d.project_id = :projectId) "
-                     + ", firstdetectiondate = "
-                     + " (select min(t.detectionTime) "
-                     + "  from " + tableName + " t "
-                     + "  ,dataFile d "
-                     + "  where t.datafile_id=d.id"
-                     + "  and d.project_id = :projectId) "
-                     + ", lastdetectiondate = "
-                     + " (select max(t.detectionTime) "
-                     + "  from " + tableName + " t "
-                     + "  ,dataFile d "
-                     + "  where t.datafile_id=d.id"
-                     + "  and d.project_id = :projectId) "
-                     + ", detectionCount = "
-                     + " (select count(t.id) "
-                     + "  from " + tableName + " t "
-                     + "  ,dataFile d "
-                     + "  where t.datafile_id=d.id"
-                     + "  and d.project_id = :projectId) "
-                     + "where id = :projectId";
-
-        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(getJdbcTemplate());
-        return namedParameterJdbcTemplate.update(sql,mapSqlParameterSource);
     }
 }

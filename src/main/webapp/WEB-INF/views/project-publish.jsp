@@ -65,7 +65,7 @@
         <h1>Metadata Publication</h1>
 
         <c:choose>
-        <c:when test="${empty project.firstDetectionDate}">
+        <c:when test="${empty projectDetectionDateRange}">
 
             <p>No data has been uploaded for this project yet, so <b>no metadata record will be syndicated </b>to the <a href="http://dataspace.uq.edu.au">UQ DataSpace</a>
             Collections Registry and subsequently on to the <a href="http://ands.org.au">Australian National Data Service</a>.</p>
@@ -101,12 +101,9 @@
 
         <tr><th>Collection Description:</th>
 
-            <td><c:out value="${project.description}"/>
-            &nbsp;
-            <!-- This collection consists of <c:out value="${fn:length(dataFileList)}"/> datafile(s)
-            containing <c:out value="${project.detectionCount}"/> detections describing the movements of
-            <c:out value="${fn:length(projectAnimalsList)}"/> animals. -->
-            </td></tr>
+        <td>
+            <c:out value="${project.description}"/></td>
+        </tr>
 
         <tr><th>Collection URL:</th>
 
@@ -129,20 +126,20 @@
         <tr><th>Temporal Coverage:</th><td>
 
             <c:choose>
-            <c:when test="${empty project.firstDetectionDate}">
+            <c:when test="${empty projectDetectionDateRange}">
                 No data has been uploaded for this project yet.
             </c:when>
             <c:otherwise>
-                <fmt:formatDate pattern="${shortDateFormatPattern}" value="${project.firstDetectionDate}"/>
+                <fmt:formatDate pattern="${shortDateFormatPattern}" value="${projectDetectionDateRange.minimum}"/>
                 to
-                <fmt:formatDate pattern="${shortDateFormatPattern}" value="${project.lastDetectionDate}"/>
+                <fmt:formatDate pattern="${shortDateFormatPattern}" value="${projectDetectionDateRange.maximum}"/>
             </c:otherwise>
             </c:choose>
             </td></tr>
 
         <tr><th>Spatial Coverage:</th>
 
-            <td><c:out value="${project.spatialCoverageDescr}"/><br/><c:out value="${project.boundingBox}"/>
+            <td><c:out value="${project.spatialCoverageDescr}"/><br/><c:out value="${projectBoundingBox}"/>
             </td></tr>
 
         <tr><th>Rights Statement:</th>
@@ -195,7 +192,7 @@
         </table>
 
         <div>
-            <c:if test="${!empty project.firstDetectionDate}">
+            <c:if test="${!empty projectDetectionDateRange}">
                 <a class="btn btn-primary" href="#" onclick="publishToDataSpace(<c:out value="${project.id}"/>, 'publish'); return false;"><c:out value="${publishButtonText}"/></a>
                 &nbsp;
             </c:if>

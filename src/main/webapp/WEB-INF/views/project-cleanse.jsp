@@ -83,17 +83,17 @@
                 $("#projectMapOptions").accordion({fillSpace: true});
                 $('#fromDateVisible').datepicker({
                     altField: "#fromDate",
-                    minDate: new Date(${project.firstDetectionDate.time}),
-                    maxDate: new Date(${project.lastDetectionDate.time}),
-                    defaultDate: new Date(${project.firstDetectionDate.time})
+                    minDate: new Date(${projectDetectionDateRange.minimum.time}),
+                    maxDate: new Date(${projectDetectionDateRange.maximum.time}),
+                    defaultDate: new Date(${projectDetectionDateRange.minimium.time})
                 }).change(function() {
                     cleanseMap.reset();
                 });
                 $('#toDateVisible').datepicker({
                     altField: "#toDate",
-                    minDate: new Date(${project.firstDetectionDate.time}),
-                    maxDate: new Date(${project.lastDetectionDate.time}),
-                    defaultDate: new Date(${project.lastDetectionDate.time})
+                    minDate: new Date(${projectDetectionDateRange.minimum.time}),
+                    maxDate: new Date(${projectDetectionDateRange.maximum.time}),
+                    defaultDate: new Date(${projectDetectionDateRange.maximium.time})
                 }).change(function() {
                     cleanseMap.reset();
                 });

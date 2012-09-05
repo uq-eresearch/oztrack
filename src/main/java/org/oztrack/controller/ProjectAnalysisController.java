@@ -56,6 +56,7 @@ public class ProjectAnalysisController {
         };
         model.addAttribute("mapQueryTypeList", mapQueryTypeList);
         model.addAttribute("projectAnimalsList", projectAnimalsList);
+        model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, false));
         return "project-analysis";
     }
 }

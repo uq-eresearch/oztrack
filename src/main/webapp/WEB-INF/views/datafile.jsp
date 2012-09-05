@@ -47,7 +47,7 @@
         </tr>
         <tr>
             <th>Detection Count:</th>
-            <td><c:out value="${dataFile.detectionCount}"/></td>
+            <td><c:out value="${dataFileDetectionCount}"/></td>
         </tr>
         <tr>
             <th>Processing Status:</th>
