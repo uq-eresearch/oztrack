@@ -29,6 +29,7 @@ function createCleanseMap(div, options) {
             map.addControl(new OpenLayers.Control.ScaleLine());
             map.addControl(new OpenLayers.Control.LayerSwitcher());
             map.addControl(new OpenLayers.Control.LoadingPanel());
+            map.addControl(createControlPanel());
 
             var gphy = new OpenLayers.Layer.Google('Google Physical', {type: google.maps.MapTypeId.TERRAIN});
             var gsat = new OpenLayers.Layer.Google('Google Satellite', {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22});
@@ -66,6 +67,20 @@ function createCleanseMap(div, options) {
                 onReset();
             }
         };
+        
+        function createControlPanel() {
+            var panel = new OpenLayers.Control.Panel();
+            panel.addControls([
+                new OpenLayers.Control.Button({
+                    title: 'Zoom to Data Extent',
+                    displayClass: "zoomButton",
+                    trigger: function() {
+                        map.zoomToExtent(allDetectionsLayer.getDataExtent(), false);
+                    }
+                })
+            ]);
+            return panel;
+        }
 
         cleanseMap.toggleAllAnimalFeatures = function(animalId, setVisible) {
             function getVectorLayers() {
