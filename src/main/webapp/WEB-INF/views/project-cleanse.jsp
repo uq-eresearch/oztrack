@@ -33,11 +33,14 @@
                 margin: 0;
                 padding: 0;
             }
+            .animalCheckbox input[type="checkbox"] {
+                margin: 0 0 2px 0;
+            }
             .smallSquare {
                 float: left;
                 width: 12px;
                 height: 12px;
-                margin: 0 5px;
+                margin: 2px 5px;
                 padding: 0;
             }
             .animalLabel {
@@ -78,6 +81,22 @@
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
                 $("#projectMapOptions").accordion({fillSpace: true});
+                $('#fromDateVisible').datepicker({
+                    altField: "#fromDate",
+                    minDate: new Date(${project.firstDetectionDate.time}),
+                    maxDate: new Date(${project.lastDetectionDate.time}),
+                    defaultDate: new Date(${project.firstDetectionDate.time})
+                }).change(function() {
+                    cleanseMap.reset();
+                });
+                $('#toDateVisible').datepicker({
+                    altField: "#toDate",
+                    minDate: new Date(${project.firstDetectionDate.time}),
+                    maxDate: new Date(${project.lastDetectionDate.time}),
+                    defaultDate: new Date(${project.lastDetectionDate.time})
+                }).change(function() {
+                    cleanseMap.reset();
+                });
                 var colours = [
                     '#8DD3C7',
                     '#FFFFB3',
@@ -149,6 +168,15 @@
             <div style="padding: 1em 10px;">
                 <form id="cleanseForm" class="form-veritcal" onsubmit="return false;">
                 <fieldset>
+                <div class="control-group" style="margin-bottom: 9px;">
+                    <div style="margin-bottom: 9px; font-weight: bold;">Date Range</div>
+                    <div class="controls">
+                        <input id="fromDate" type="hidden"/>
+                        <input id="toDate" type="hidden"/>
+                        <input id="fromDateVisible" type="text" class="datepicker" placeholder="From" style="margin-bottom: 3px; width: 80px;"/> -
+                        <input id="toDateVisible" type="text" class="datepicker" placeholder="To" style="margin-bottom: 3px;  width: 80px;"/>
+                    </div>
+                </div>
                 <div class="control-group" style="margin-bottom: 9px;">
                     <div style="margin-bottom: 9px; font-weight: bold;">Animals</div>
                     <div id="animalHeader" class="controls">

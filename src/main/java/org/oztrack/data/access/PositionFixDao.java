@@ -23,6 +23,6 @@ public interface PositionFixDao {
     Date getDataFileFirstDetectionDate(DataFile dataFile);
     Date getDataFileLastDetectionDate(DataFile dataFile);
 
-    int setDeletedOnOverlappingPositionFixes(Project project, List<Long> animalIds, MultiPolygon multiPolygon, boolean deleted);
-    int setDeletedOnAllPositionFixes(Project project, List<Long> animalIds, boolean deleted);
+    int setDeletedOnOverlappingPositionFixes(Project project, Date fromDate, Date toDate, List<Long> animalIds, MultiPolygon multiPolygon, boolean deleted);
+    int setDeletedOnAllPositionFixes(Project project, Date fromDate, Date toDate, List<Long> animalIds, boolean deleted);
 }

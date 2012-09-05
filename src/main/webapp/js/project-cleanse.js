@@ -56,6 +56,8 @@ function createCleanseMap(div, options) {
         }());
 
         cleanseMap.reset = function() {
+            allDetectionsLayer.protocol.params['fromDate'] = jQuery('#fromDate').val();
+            allDetectionsLayer.protocol.params['toDate'] = jQuery('#toDate').val();
             allDetectionsLayer.refresh();
             while (polygonFeatures.length > 0) {
                 polygonFeatures.shift().destroy();
@@ -159,7 +161,14 @@ function createCleanseMap(div, options) {
                 {
                     projection: projection4326,
                     protocol: new OpenLayers.Protocol.WFS.v1_1_0({
-                        url:  '/mapQueryWFS?projectId=' + projectId + '&queryType=POINTS&includeDeleted=true',
+                        url:  '/mapQueryWFS',
+                        params: {
+                            projectId: projectId,
+                            fromDate: jQuery('#fromDate').val(),
+                            toDate: jQuery('#fromDate').val(),
+                            queryType: 'POINTS',
+                            includeDeleted: true
+                        },
                         featureType: 'Detections',
                         featureNS: 'http://oztrack.org/xmlns#'
                     }),

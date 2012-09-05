@@ -104,7 +104,7 @@ public class PositionFixDaoImpl implements PositionFixDao {
     public List<PositionFix> getProjectPositionFixList(SearchQuery searchQuery) {
         Query query = buildQuery(searchQuery, false);
         @SuppressWarnings("unchecked")
-        List<PositionFix> resultList = (List<PositionFix>) query.getResultList();
+        List<PositionFix> resultList = query.getResultList();
         return resultList;
     }
 
@@ -170,17 +170,21 @@ public class PositionFixDaoImpl implements PositionFixDao {
 
     @Override
     @Transactional
-    public int setDeletedOnOverlappingPositionFixes(Project project, List<Long> animalIds, MultiPolygon multiPolygon, boolean deleted) {
+    public int setDeletedOnOverlappingPositionFixes(Project project, Date fromDate, Date toDate, List<Long> animalIds, MultiPolygon multiPolygon, boolean deleted) {
         String queryString =
             "update positionfix\n" +
             "set deleted = :deleted\n" +
             "where\n" +
             "    deleted = not(:deleted)\n" +
             "    and datafile_id in (select id from datafile where project_id = :projectId)\n" +
+            "    and detectionTime >= :fromDate\n" +
+            "    and detectionTime <= :toDate\n" +
             "    and animal_id in (:animalIds)\n" +
             "    and ST_Within(locationgeometry, ST_GeomFromText(:wkt, 4326));";
         return em.createNativeQuery(queryString)
             .setParameter("projectId", project.getId())
+            .setParameter("fromDate", (fromDate == null) ? new Date(Integer.MIN_VALUE) : fromDate)
+            .setParameter("toDate", (toDate == null) ? new Date(Integer.MAX_VALUE) : toDate)
             .setParameter("animalIds", animalIds)
             .setParameter("deleted", deleted)
             .setParameter("wkt", new WKTWriter().write(multiPolygon))
@@ -189,16 +193,20 @@ public class PositionFixDaoImpl implements PositionFixDao {
 
     @Override
     @Transactional
-    public int setDeletedOnAllPositionFixes(Project project, List<Long> animalIds, boolean deleted) {
+    public int setDeletedOnAllPositionFixes(Project project, Date fromDate, Date toDate, List<Long> animalIds, boolean deleted) {
         String queryString =
             "update positionfix\n" +
             "set deleted = :deleted\n" +
             "where\n" +
             "    deleted = not(:deleted)\n" +
             "    and datafile_id in (select id from datafile where project_id = :projectId)\n" +
+            "    and detectionTime >= :fromDate\n" +
+            "    and detectionTime <= :toDate\n" +
             "    and animal_id in (:animalIds);";
         return em.createNativeQuery(queryString)
             .setParameter("projectId", project.getId())
+            .setParameter("fromDate", (fromDate == null) ? new Date(Integer.MIN_VALUE) : fromDate)
+            .setParameter("toDate", (toDate == null) ? new Date(Integer.MAX_VALUE) : toDate)
             .setParameter("animalIds", animalIds)
             .setParameter("deleted", deleted)
             .executeUpdate();

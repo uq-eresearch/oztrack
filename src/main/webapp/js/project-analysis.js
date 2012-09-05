@@ -230,13 +230,13 @@ function createAnalysisMap(div, options) {
                     alpha: $('input[id=alpha]').val(),
                     gridSize: $('input[id=gridSize]').val()
                 };
-                var dateFrom = $('#fromDatepicker').val();
-                if (dateFrom) {
-                    params.dateFrom = dateFrom;
+                var fromDate = $('#fromDate').val();
+                if (fromDate) {
+                    params.fromDate = fromDate;
                 }
-                var dateTo = $('#toDatepicker').val();
-                if (dateTo) {
-                    params.dateTo = dateTo;
+                var toDate = $('#toDate').val();
+                if (toDate) {
+                    params.toDate = toDate;
                 }
                 if (queryTypeValue == "LINES") {
                     map.addLayer(createWFSLayer(layerName, 'Trajectory', params, lineStyleMap));

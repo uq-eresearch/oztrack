@@ -2,12 +2,16 @@ package org.oztrack.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.factory.Hints;
@@ -39,6 +43,7 @@ import com.vividsolutions.jts.io.WKTReader;
 @Controller
 public class ProjectCleanseController {
     protected final Log logger = LogFactory.getLog(getClass());
+    private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
     private ProjectDao projectDao;
@@ -71,11 +76,32 @@ public class ProjectCleanseController {
     @PreAuthorize("hasPermission(#project, 'write')")
     public void processCleanse(
         @ModelAttribute(value="project") Project project,
+        @RequestParam(value="fromDate", required=false) String fromDateString,
+        @RequestParam(value="toDate", required=false) String toDateString,
         @RequestParam(value="operation", defaultValue="delete") String operation,
         @RequestParam(value="animal") List<Long> animalIds,
         HttpServletRequest request,
         HttpServletResponse response
     ) throws IOException {
+        Date fromDate = null;
+        Date toDate = null;
+        try {
+            if (StringUtils.isNotBlank(fromDateString)) {
+                fromDate = dateFormat.parse(fromDateString);
+            }
+            if (StringUtils.isNotBlank(toDateString)) {
+                toDate = (toDateString == null) ? null : dateFormat.parse(toDateString);
+            }
+        }
+        catch (java.text.ParseException e1) {
+            PrintWriter out = response.getWriter();
+            out.append("<?xml version=\"1.0\"?>\n");
+            out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");
+            out.append("    <error>Invalid date parameters</error>\n");
+            out.append("</cleanse-response>\n");
+            response.setStatus(200);
+            return;
+        }
         Hints hints = new Hints();
         hints.put(Hints.CRS, DefaultGeographicCRS.WGS84);
         GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(hints);
@@ -96,25 +122,27 @@ public class ProjectCleanseController {
         }
         MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(polygons.toArray(new Polygon[0]));
         if (operation.equals("delete")) {
-            int numDeleted = positionFixDao.setDeletedOnOverlappingPositionFixes(project, animalIds, multiPolygon, true);
+            int numDeleted = positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, multiPolygon, true);
             PrintWriter out = response.getWriter();
             out.append("<?xml version=\"1.0\"?>\n");
             out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");
             out.append("    <num-deleted>" + numDeleted + "</num-deleted>\n");
             out.append("</cleanse-response>\n");
             response.setStatus(200);
+            return;
         }
         else if (operation.equals("undelete") || operation.equals("undelete-all")) {
             int numUndeleted =
                 operation.equals("undelete-all")
-                ? positionFixDao.setDeletedOnAllPositionFixes(project, animalIds, false)
-                : positionFixDao.setDeletedOnOverlappingPositionFixes(project, animalIds, multiPolygon, false);
+                ? positionFixDao.setDeletedOnAllPositionFixes(project, fromDate, toDate, animalIds, false)
+                : positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, multiPolygon, false);
             PrintWriter out = response.getWriter();
             out.append("<?xml version=\"1.0\"?>\n");
             out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");
             out.append("    <num-undeleted>" + numUndeleted + "</num-undeleted>\n");
             out.append("</cleanse-response>\n");
             response.setStatus(200);
+            return;
         }
         else {
             PrintWriter out = response.getWriter();
@@ -123,6 +151,7 @@ public class ProjectCleanseController {
             out.append("    <error>" + "Unknown operation: " + operation + "</error>\n");
             out.append("</cleanse-response>\n");
             response.setStatus(400);
+            return;
         }
     }
 }

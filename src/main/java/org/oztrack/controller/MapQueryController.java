@@ -52,6 +52,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class MapQueryController {
     protected final Log logger = LogFactory.getLog(getClass());
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
     private ProjectDao projectDao;
@@ -68,8 +69,8 @@ public class MapQueryController {
     public SearchQuery getSearchQuery(
         @RequestParam(value="projectId", required=false) Long projectId,
         @RequestParam(value="queryType", required=false) String queryType,
-        @RequestParam(value="dateFrom", required=false) String dateFrom,
-        @RequestParam(value="dateTo", required=false) String dateTo,
+        @RequestParam(value="fromDate", required=false) String fromDate,
+        @RequestParam(value="toDate", required=false) String toDate,
         @RequestParam(value="percent", required=false) Double percent,
         @RequestParam(value="h", required=false) String h,
         @RequestParam(value="alpha", required=false) Double alpha,
@@ -84,12 +85,11 @@ public class MapQueryController {
         if (queryType != null) {
             searchQuery.setMapQueryType(MapQueryType.valueOf(queryType));
         }
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        if (dateFrom != null) {
-            searchQuery.setFromDate(sdf.parse(dateFrom));
+        if (StringUtils.isNotBlank(fromDate)) {
+            searchQuery.setFromDate(dateFormat.parse(fromDate));
         }
-        if (dateTo != null) {
-            searchQuery.setToDate(sdf.parse(dateTo));
+        if (StringUtils.isNotBlank(toDate)) {
+            searchQuery.setToDate(dateFormat.parse(toDate));
         }
         if (percent != null && !percent.isNaN()) {
             searchQuery.setPercent(percent);
