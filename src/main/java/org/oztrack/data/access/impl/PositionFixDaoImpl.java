@@ -116,38 +116,30 @@ public class PositionFixDaoImpl implements PositionFixDao {
             "where\n" +
             "    deleted = not(:deleted)\n" +
             "    and datafile_id in (select id from datafile where project_id = :projectId)\n" +
-            "    and detectionTime >= :fromDate\n" +
-            "    and detectionTime <= :toDate\n" +
-            "    and animal_id in (:animalIds)\n" +
-            "    and ST_Within(locationgeometry, ST_GeomFromText(:wkt, 4326));";
-        return em.createNativeQuery(queryString)
-            .setParameter("projectId", project.getId())
-            .setParameter("fromDate", (fromDate == null) ? new Date(Integer.MIN_VALUE) : fromDate)
-            .setParameter("toDate", (toDate == null) ? new Date(Integer.MAX_VALUE) : toDate)
-            .setParameter("animalIds", animalIds)
-            .setParameter("deleted", deleted)
-            .setParameter("wkt", new WKTWriter().write(multiPolygon))
-            .executeUpdate();
-    }
-
-    @Override
-    @Transactional
-    public int setDeletedOnAllPositionFixes(Project project, Date fromDate, Date toDate, List<Long> animalIds, boolean deleted) {
-        String queryString =
-            "update positionfix\n" +
-            "set deleted = :deleted\n" +
-            "where\n" +
-            "    deleted = not(:deleted)\n" +
-            "    and datafile_id in (select id from datafile where project_id = :projectId)\n" +
-            "    and detectionTime >= :fromDate\n" +
-            "    and detectionTime <= :toDate\n" +
-            "    and animal_id in (:animalIds);";
-        return em.createNativeQuery(queryString)
-            .setParameter("projectId", project.getId())
-            .setParameter("fromDate", (fromDate == null) ? new Date(Integer.MIN_VALUE) : fromDate)
-            .setParameter("toDate", (toDate == null) ? new Date(Integer.MAX_VALUE) : toDate)
-            .setParameter("animalIds", animalIds)
-            .setParameter("deleted", deleted)
-            .executeUpdate();
+            "    and animal_id in (:animalIds)\n";
+        if (fromDate != null) {
+            queryString += "    and detectionTime >= :fromDate\n";
+        }
+        if (toDate != null) {
+            queryString += "    and detectionTime <= :toDate\n";
+        }
+        if (multiPolygon != null) {
+            queryString += "    and ST_Within(locationgeometry, ST_GeomFromText(:wkt, 4326))\n";
+        }
+        queryString += ";";
+        Query query = em.createNativeQuery(queryString);
+        query.setParameter("projectId", project.getId());
+        query.setParameter("animalIds", animalIds);
+        query.setParameter("deleted", deleted);
+        if (fromDate != null) {
+            query.setParameter("fromDate", fromDate);
+        }
+        if (toDate != null) {
+            query.setParameter("toDate", toDate);
+        };
+        if (multiPolygon != null) {
+            query.setParameter("wkt", new WKTWriter().write(multiPolygon));
+        }
+        return query.executeUpdate();
     }
 }

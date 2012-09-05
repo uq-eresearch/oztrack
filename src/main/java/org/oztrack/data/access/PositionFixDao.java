@@ -17,5 +17,4 @@ public interface PositionFixDao {
     List<PositionFix> getProjectPositionFixList(SearchQuery searchQuery);
 
     int setDeletedOnOverlappingPositionFixes(Project project, Date fromDate, Date toDate, List<Long> animalIds, MultiPolygon multiPolygon, boolean deleted);
-    int setDeletedOnAllPositionFixes(Project project, Date fromDate, Date toDate, List<Long> animalIds, boolean deleted);
 }

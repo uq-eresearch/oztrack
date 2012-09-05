@@ -125,7 +125,7 @@ public class ProjectCleanseController {
         if (operation.equals("delete") || operation.equals("delete-all")) {
             int numDeleted =
                 operation.equals("delete-all")
-                ? positionFixDao.setDeletedOnAllPositionFixes(project, fromDate, toDate, animalIds, true)
+                ? positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, null, true)
                 : positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, multiPolygon, true);
             PrintWriter out = response.getWriter();
             out.append("<?xml version=\"1.0\"?>\n");
@@ -138,7 +138,7 @@ public class ProjectCleanseController {
         else if (operation.equals("undelete") || operation.equals("undelete-all")) {
             int numUndeleted =
                 operation.equals("undelete-all")
-                ? positionFixDao.setDeletedOnAllPositionFixes(project, fromDate, toDate, animalIds, false)
+                ? positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, null, false)
                 : positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, multiPolygon, false);
             PrintWriter out = response.getWriter();
             out.append("<?xml version=\"1.0\"?>\n");
