@@ -121,6 +121,10 @@ function createProjectClickControl(map, projectPointsLayer) {
             clickout: true,
             eventListeners: {
                 featurehighlighted: function(e) {
+                    jQuery('#map-instructions').fadeOut();
+                    for (var i = 0; i < map.popups.length; i++) {
+                        map.removePopup(map.popups[i]);
+                    };
                     map.addPopup(buildPopup(e.feature));
                 }
             }

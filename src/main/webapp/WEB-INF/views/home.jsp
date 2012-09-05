@@ -21,11 +21,11 @@
                 -o-border-radius: 10px;
                 border-radius: 10px;
             }
-            .map-instructions-container {
+            #map-instructions-container {
                 position: relative;
                 z-index: 1100;
             }
-            .map-instructions {
+            #map-instructions {
                 position: absolute;
                 top: 12px;
                 left: 316px;
@@ -76,8 +76,8 @@
         </div>
         <div style="clear: both;"></div>
         <div id="homeMap">
-            <div class="map-instructions-container">
-                <div class="map-instructions">
+            <div id="map-instructions-container">
+                <div id="map-instructions">
                     Click the markers to view project details
                 </div>
             </div>
