@@ -30,6 +30,7 @@
             }
             #animalHeader {
                 height: 90px;
+                border: 1px solid #ccc;
                 overflow-y: scroll;
             }
             .animalCheckbox {
