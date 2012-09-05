@@ -235,8 +235,6 @@
                 </div>
                 </form>
             </div>
-            <h3><a href="#">Project Menu</a></h3>
-            <tags:project-menu project="${project}"/>
         </div>
         <div id="projectMap"></div>
         <div style="clear:both;"></div>
