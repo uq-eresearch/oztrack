@@ -85,7 +85,7 @@
                     altField: "#fromDate",
                     minDate: new Date(${projectDetectionDateRange.minimum.time}),
                     maxDate: new Date(${projectDetectionDateRange.maximum.time}),
-                    defaultDate: new Date(${projectDetectionDateRange.minimium.time})
+                    defaultDate: new Date(${projectDetectionDateRange.minimum.time})
                 }).change(function() {
                     cleanseMap.reset();
                 });
@@ -93,7 +93,7 @@
                     altField: "#toDate",
                     minDate: new Date(${projectDetectionDateRange.minimum.time}),
                     maxDate: new Date(${projectDetectionDateRange.maximum.time}),
-                    defaultDate: new Date(${projectDetectionDateRange.maximium.time})
+                    defaultDate: new Date(${projectDetectionDateRange.maximum.time})
                 }).change(function() {
                     cleanseMap.reset();
                 });

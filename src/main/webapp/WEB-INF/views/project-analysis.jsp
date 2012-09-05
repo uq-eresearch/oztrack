@@ -125,13 +125,13 @@
                     altField: "#fromDate",
                     minDate: new Date(${projectDetectionDateRange.minimum.time}),
                     maxDate: new Date(${projectDetectionDateRange.maximum.time}),
-                    defaultDate: new Date(${projectDetectionDateRange.minimium.time})
+                    defaultDate: new Date(${projectDetectionDateRange.minimum.time})
                 });
                 $('#toDateVisible').datepicker({
                     altField: "#toDate",
                     minDate: new Date(${projectDetectionDateRange.minimum.time}),
                     maxDate: new Date(${projectDetectionDateRange.maximum.time}),
-                    defaultDate: new Date(${projectDetectionDateRange.maximium.time})
+                    defaultDate: new Date(${projectDetectionDateRange.maximum.time})
                 });
                 analysisMap = createAnalysisMap('projectMap', {
                     projectId: <c:out value="${project.id}"/>,

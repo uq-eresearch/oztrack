@@ -131,6 +131,7 @@ public abstract class DataFileLoader {
 
     private void createFinalObservations() throws FileProcessingException {
         try {
+            jdbcAccess.loadObservations(dataFile);
             dataFileDao.update(dataFile);
             jdbcAccess.truncateRawObservations(dataFile);
         }
