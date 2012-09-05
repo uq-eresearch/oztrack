@@ -122,8 +122,11 @@ public class ProjectCleanseController {
             }
         }
         MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(polygons.toArray(new Polygon[0]));
-        if (operation.equals("delete")) {
-            int numDeleted = positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, multiPolygon, true);
+        if (operation.equals("delete") || operation.equals("delete-all")) {
+            int numDeleted =
+                operation.equals("delete-all")
+                ? positionFixDao.setDeletedOnAllPositionFixes(project, fromDate, toDate, animalIds, true)
+                : positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, multiPolygon, true);
             PrintWriter out = response.getWriter();
             out.append("<?xml version=\"1.0\"?>\n");
             out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");

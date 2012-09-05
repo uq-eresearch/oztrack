@@ -25,7 +25,12 @@
             ul#cleanse-list li {
                 background-image: url(/js/openlayers/theme/default/img/draw_polygon_on.png);
             }
+            #projectMapOptions {
+                height:350px;
+            }
             #animalHeader {
+                height: 110px;
+                overflow-y: scroll;
             }
             .animalCheckbox {
                 float: left;
@@ -62,7 +67,7 @@
                     data: 'operation=' + operation + '&' + jQuery('#cleanseForm').serialize(),
                     success: function(data, textStatus, jqXHR) {
                         cleanseMap.reset();
-                        if (operation == 'delete') {
+                        if ((operation == 'delete') || (operation == 'delete-all')) {
                             var numDeleted = jQuery(data).find('num-deleted').text();
                             jQuery('#cleanse-response-deleted').text(numDeleted + " points deleted").fadeIn();
                         }
@@ -216,10 +221,13 @@
                 <p id="cleanse-response-error" class="cleanse-response" style="font-weight: bold; color: gray;"></p>
                 </fieldset>
                 <div style="margin-top: 18px;">
-                    <div>
+                    <div class="btn-group">
                         <button class="btn btn-primary" onclick="submitCleanseForm('delete');">Delete selected</button>
+                        <button class="btn" onclick="submitCleanseForm('delete-all');">Delete all</button>
                     </div>
-                    <div class="btn-group" style="margin-top: 9px;">
+                </div>
+                <div style="margin-top: 9px;">
+                    <div class="btn-group">
                         <button class="btn" onclick="submitCleanseForm('undelete');">Restore selected</button>
                         <button class="btn" onclick="submitCleanseForm('undelete-all');">Restore all</button>
                     </div>
