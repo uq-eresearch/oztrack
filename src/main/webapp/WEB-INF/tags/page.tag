@@ -8,6 +8,7 @@
 <%@ attribute name="title" required="true" %>
 <%@ attribute name="head" required="true" fragment="true" %>
 <%@ attribute name="breadcrumbs" required="false" fragment="true" %>
+<%@ attribute name="breadcrumbsRight" required="false" fragment="true" %>
 <%@ attribute name="sidebar" required="false" fragment="true" %>
 <c:set var="googleAnalyticsTrackingID"><%= OzTrackApplication.getApplicationContext().getGoogleAnalyticsTrackingID() %></c:set>
 <c:set var="googleAnalyticsDomainName"><%= OzTrackApplication.getApplicationContext().getGoogleAnalyticsDomainName() %></c:set>
@@ -84,6 +85,11 @@
 </div>
 <c:if test="${!empty breadcrumbs}">
 <div id="crumbs">
+    <c:if test="${!empty breadcrumbsRight}">
+    <div style="float: right; margin-top: -5px; padding-left: 16px; padding-bottom: 10px; background-color: #FBFEE9;">
+        <jsp:invoke fragment="breadcrumbsRight"/>
+    </div>
+    </c:if>
     <jsp:invoke fragment="breadcrumbs"/>
 </div>
 </c:if>

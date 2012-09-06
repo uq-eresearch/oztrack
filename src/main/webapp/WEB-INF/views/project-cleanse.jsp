@@ -167,6 +167,9 @@
         &rsaquo; <a href="<c:url value="/projects/${project.id}"/>">${project.title}</a>
         &rsaquo; <span class="active">Data Cleansing</span>
     </jsp:attribute>
+    <jsp:attribute name="breadcrumbsRight">
+        <a class="btn" href="/projects/2">« Back to project</a>
+    </jsp:attribute>
     <jsp:body>
         <div class="mapTool">
         <div id="projectMapOptions">

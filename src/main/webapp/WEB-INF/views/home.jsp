@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
         <style type="text/css">
             #homeMap {
-                margin: 20px 0 0 0;
+                margin: 20px 0;
                 height: 500px;
                 background-color: #e6e6c0;
                 padding: 8px;
