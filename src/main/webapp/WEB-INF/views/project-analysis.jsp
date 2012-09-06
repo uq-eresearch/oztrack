@@ -20,12 +20,6 @@
             #projectMapHelp {
                 display: none;
             }
-            .animalHeader {
-                padding: 0;
-                height: 24px;
-                line-height: 24px;
-                margin-bottom: 0.5em;
-            }
             #projectMapHelp p {
                 text-align: justify;
                 margin: 1em 0;
@@ -34,8 +28,35 @@
                 padding-left:0px;
                 padding-top:0px;
             }
+            .animalCheckbox {
+                float: left;
+                width: 15px;
+                margin: 5px 0;
+            }
+            .smallSquare {
+                display: block;
+                height: 14px;
+                width: 14px;
+                float: left;
+                margin: 5px;
+            }
+            .animalHeader {
+                padding: 0;
+                height: 24px;
+                line-height: 24px;
+                margin-bottom: 0.5em;
+            }
+            .animalLabel {
+                float: left;
+                width: 100px;
+                overflow: hidden;
+                font-weight: bold;
+                margin-right: 5px;
+            }
+            a.animalInfoToggle {
+                text-decoration: none;
+            }
             .animalInfo {
-                float:left;
                 width: 210px;
                 margin-left: 8px;
                 margin-right: 8px;
@@ -44,15 +65,6 @@
             }
             .animalInfo table {
                 margin-top: 5px;
-            }
-            .animalLabel {
-                float: left;
-                width: 105px;
-                font-weight: bold;
-                margin-right: 5px;
-            }
-            a.animalInfoToggle {
-                text-decoration: none;
             }
             .layerInfo {
                 margin: 0 0 0.5em 0;
@@ -66,21 +78,9 @@
             .layerInfoLabel {
                 width: 7em;
             }
-            .smallSquare {
-                display: block;
-                height: 14px;
-                width: 14px;
-                float: left;
-                margin: 5px;
-            }
             .citation {
                 font-weight: bold;
                 text-align: left;
-            }
-            .animalCheckbox {
-                float: left;
-                width: 15px;
-                margin: 5px 0;
             }
         </style>
         <script src="http://maps.google.com/maps/api/js?v=3.9&sensor=false"></script>
