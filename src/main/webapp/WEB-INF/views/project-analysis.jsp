@@ -12,21 +12,19 @@
         <style type="text/css">
             #projectMapOptions .ui-accordion-content {
                 padding: 1em 10px;
-                height: 403px;
-            }
-            #animalPanel, #homeRangeCalculatorPanel {
-                height: 350px;
+                height: 398px;
             }
             #projectMapHelpLink {
-                margin-top: 1px;
+                margin-top: 6px;
             }
             #projectMapHelp {
                 display: none;
             }
-            #animalHeader {
-                float: left;
-                width: 215px;
+            .animalHeader {
                 padding: 0;
+                height: 24px;
+                line-height: 24px;
+                margin-bottom: 0.5em;
             }
             #projectMapHelp p {
                 text-align: justify;
@@ -38,49 +36,51 @@
             }
             .animalInfo {
                 float:left;
-                width: 100%;
+                width: 210px;
                 margin-left: 8px;
                 margin-right: 8px;
                 margin-top: 0;
                 margin-bottom: 0;
             }
-
             .animalInfo table {
-                margin-top:5px;
+                margin-top: 5px;
             }
             .animalLabel {
                 float: left;
                 width: 105px;
-                margin-bottom: 5px;
                 font-weight: bold;
                 margin-right: 5px;
             }
+            a.animalInfoToggle {
+                text-decoration: none;
+            }
             .layerInfo {
-                margin: 0.5em 0;
+                margin: 0 0 0.5em 0;
+                padding: 5px;
+            }
+            .layerInfoTitle {
+                padding: 2px;
+                border-bottom: 1px solid #ccc;
+                background-color: #D8E0A8;
             }
             .layerInfoLabel {
                 width: 7em;
             }
             .smallSquare {
-                display:block;
-                height:14px;
-                width:14px;
-                float:left;
-                margin-right:5px;
-                margin-left:5px;
+                display: block;
+                height: 14px;
+                width: 14px;
+                float: left;
+                margin: 5px;
             }
             .citation {
                 font-weight: bold;
                 text-align: left;
             }
             .animalCheckbox {
-                float:left; width:15px;
-            }
-            .zoom {
-                float: right;
-            }
-            .animalInfoToggle {
-                float:right;
+                float: left;
+                width: 15px;
+                margin: 5px 0;
             }
         </style>
         <script src="http://maps.google.com/maps/api/js?v=3.9&sensor=false"></script>
@@ -163,7 +163,7 @@
                 });
                 analysisMap = createAnalysisMap('projectMap', {
                     projectId: <c:out value="${project.id}"/>,
-                    showError: function(message) {
+                    onAnalysisError: function(message) {
                         jQuery('#errorDialog')
                             .text(message)
                             .dialog({
@@ -176,6 +176,9 @@
                                     }
                                 }
                             });
+                    },
+                    onAnalysisSuccess: function() {
+                        $("#projectMapOptionsAccordion").accordion('activate', '#animalPanelHeader');
                     }
                 });
             });
@@ -193,18 +196,40 @@
         <div id="projectMapOptions">
         <div id="projectMapOptionsAccordion">
 
-            <h3 id="projectTitle"><a href="#"><c:out value="${project.title}"/></a></h3>
+            <h3 id="animalPanelHeader"><a href="#">Analysis Results</a></h3>
 
             <div id="animalPanel">
 
-                 <c:forEach items="${projectAnimalsList}" var="animal">
+                 <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
+                    <c:set var="showAnimalInfo" value="${animalStatus.index == 0}"/>
+                    <div class="animalHeader">
+                        <div class="btn-group" style="float: right;">
+                            <button
+                                id="buttonShowHide${animal.id}"
+                                class="btn btn-mini"
+                                onclick="var infoElem = $(this).parent().parent().next(); $(this).text(infoElem.is(':visible') ? 'Show' : 'Hide'); infoElem.slideToggle();">
+                                ${showAnimalInfo ? 'Hide' : 'Show'}
+                            </button>
+                            <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu pull-right">
+                                <li><a href="#" onclick="analysisMap.zoomToAnimal(${animal.id});">Zoom to animal</a></li>
+                                <c:set var="animalExportKmlUrl">
+                                    <c:url value="/exportKML">
+                                        <c:param name="projectId" value="${project.id}"/>
+                                        <c:param name="animalId" value="${animal.id}"/>
+                                    </c:url>
+                                </c:set>
+                                <li><a href="${animalExportKmlUrl}">Export as KML</a></li>
+                            </ul>
+                        </div>
 
-                    <div id="animalHeader">
                         <div class="animalCheckbox">
                             <input style="float: left; margin: 0;" type="checkbox" name="animalCheckbox" id="select-animal-${animal.id}" value="${animal.id}">
                             <script type="text/javascript">
                                 $('input[id=select-animal-${animal.id}]').change(function() {
-                                        analysisMap.toggleAllAnimalFeatures("${animal.id}",this.checked);
+                                    analysisMap.toggleAllAnimalFeatures("${animal.id}",this.checked);
                                 });
                             </script>
                         </div>
@@ -212,27 +237,16 @@
                         <div class="smallSquare" id="legend-colour-${animal.id}"></div>
 
                         <div class="animalLabel">
-                            ${animal.animalName}
+                            <a class="animalInfoToggle" href="javascript:void(0);" onclick="$('#buttonShowHide${animal.id}').click();">${animal.animalName}</a>
                         </div>
-
-                        <div class="animalInfoToggle">
-                            <a href="#"><span class="ui-icon ui-icon-triangle-1-s"></span></a>
-                        </div>
-
-                        <div class="zoom">
-                            <a href="#" onclick="analysisMap.zoomToAnimal(${animal.id});">Zoom</a>
-                        </div>
-
                     </div>
-                    <div id="animalInfo-${animal.id}" class="animalInfo">
-                         <a style="float: right; margin-right: 18px; margin-top: 0.5em;" href="<c:url value="/exportKML"><c:param name="projectId" value="${project.id}"/><c:param name="animalId" value="${animal.id}"/></c:url>">KML</a>
+                    <div id="animalInfo-${animal.id}" class="animalInfo" style="display: ${showAnimalInfo ? 'block' : 'none'};">
                     </div>
-
                 </c:forEach>
             </div>
 
 
-            <h3><a href="#">Home Range Calculator</a></h3>
+            <h3><a id="homeRangeCalculatorLink" href="#">Home Range Calculators</a></h3>
 
             <div id="homeRangeCalculatorPanel">
 

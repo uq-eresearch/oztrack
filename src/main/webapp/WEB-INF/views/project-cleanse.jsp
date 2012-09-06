@@ -170,7 +170,7 @@
     <jsp:body>
         <div class="mapTool">
         <div id="projectMapOptions">
-            <h3 id="projectTitle"><a href="#"><c:out value="${project.title}"/></a></h3>
+            <h3><a href="#">Data Cleansing</a></h3>
             <div style="padding: 1em 10px;">
                 <form id="cleanseForm" class="form-veritcal" onsubmit="return false;">
                 <fieldset>
