@@ -79,7 +79,7 @@
         <div id="homeMap">
             <div id="map-instructions-container">
                 <div id="map-instructions">
-                    Click the markers to view project details
+                    Click markers to view project details
                 </div>
             </div>
         </div>
