@@ -28,7 +28,7 @@
             #map-instructions {
                 position: absolute;
                 top: 12px;
-                left: 316px;
+                left: 302px;
                 width: 318px;
                 background-color: white;
                 opacity: 0.7;
