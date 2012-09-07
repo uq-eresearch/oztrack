@@ -72,16 +72,18 @@
         </div>
     </div>
 </div>
-<div id="nav">
-    <ul id="navMenu">
-        <li><a id="navHome" href="<c:url value="/"/>">Home</a></li>
-        <li><a id="navTrack" href="<c:url value="/projects"/>">Animal Tracking</a></li>
-        <li><a id="navAbout" href="<c:url value="/about"/>">About</a></li>
-        <li><a id="navContact" href="<c:url value="/contact"/>">Contact</a></li>
-        <c:if test="${currentUser.admin}">
-        <li><a id="navSettings" href="<c:url value="/settings"/>">Settings</a></li>
-        </c:if>
+<div class="navbar navbar-inverse">
+  <div class="navbar-inner">
+    <ul class="nav">
+      <li id="navHome"><a href="<c:url value="/"/>">Home</a></li>
+      <li id="navTrack"><a href="<c:url value="/projects"/>">Animal Tracking</a></li>
+      <li id="navAbout"><a href="<c:url value="/about"/>">About</a></li>
+      <li id="navContact"><a href="<c:url value="/contact"/>">Contact</a></li>
+      <c:if test="${currentUser.admin}">
+      <li id="navSettings"><a href="<c:url value="/settings"/>">Settings</a></li>
+      </c:if>
     </ul>
+  </div>
 </div>
 <c:if test="${!empty breadcrumbs}">
 <div id="crumbs">
