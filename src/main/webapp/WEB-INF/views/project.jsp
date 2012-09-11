@@ -172,6 +172,7 @@
         <c:otherwise>
             <table class="entityTable">
             <col style="width: 120px;" />
+            <col style="width: 550px;" />
             <sec:authorize access="hasPermission(#project, 'write')">
             <tr>
                 <th>Datafile Count:</th>
@@ -205,6 +206,7 @@
         <h2 style="margin-top: 0;">Project Details</h2>
         <table class="entityTable">
         <col style="width: 120px;" />
+        <col style="width: 550px;" />
         <tr>
             <th>Title:</th>
             <td><c:out value="${project.title}"/></td>
