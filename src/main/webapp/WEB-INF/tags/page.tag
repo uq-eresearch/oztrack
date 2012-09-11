@@ -10,6 +10,7 @@
 <%@ attribute name="breadcrumbs" required="false" fragment="true" %>
 <%@ attribute name="breadcrumbsRight" required="false" fragment="true" %>
 <%@ attribute name="sidebar" required="false" fragment="true" %>
+<%@ attribute name="fluid" required="false" type="java.lang.Boolean" %>
 <c:set var="googleAnalyticsTrackingID"><%= OzTrackApplication.getApplicationContext().getGoogleAnalyticsTrackingID() %></c:set>
 <c:set var="googleAnalyticsDomainName"><%= OzTrackApplication.getApplicationContext().getGoogleAnalyticsDomainName() %></c:set>
 <html lang="en">
@@ -50,63 +51,68 @@
     <jsp:invoke fragment="head"/>
 </head>
 <body>
-<div id="container">
-<div id="top_header">
-    <div id="header_left"></div>
-    <div id="header_right">
-        <div id="login">
-            <c:choose>
-                <c:when test="${currentUser != null}">
-                  Welcome, <c:out value="${currentUser.firstName}"/>
-                  &nbsp;|&nbsp;
-                  <a href="<c:url value="/users/${currentUser.id}/edit"/>">Profile</a>
-                  &nbsp;|&nbsp;
-                  <a href="<c:url value="/logout"/>">Logout</a>
-                </c:when>
-                <c:otherwise>
-                  <a href="<c:url value="/login"/>">Login</a>
-                  or
-                  <a href="<c:url value="/users/new"/>">Register</a>
-                </c:otherwise>
-            </c:choose>
+<div id="header">
+    <div id="banner">
+        <div id="banner-left"></div>
+        <div id="banner-right">
+            <div id="login">
+                <c:choose>
+                    <c:when test="${currentUser != null}">
+                      Welcome, <c:out value="${currentUser.firstName}"/>
+                      &nbsp;|&nbsp;
+                      <a href="<c:url value="/users/${currentUser.id}/edit"/>">Profile</a>
+                      &nbsp;|&nbsp;
+                      <a href="<c:url value="/logout"/>">Logout</a>
+                    </c:when>
+                    <c:otherwise>
+                      <a href="<c:url value="/login"/>">Login</a>
+                      or
+                      <a href="<c:url value="/users/new"/>">Register</a>
+                    </c:otherwise>
+                </c:choose>
+            </div>
         </div>
     </div>
+    <div class="navbar navbar-inverse">
+      <div class="navbar-inner">
+        <ul class="nav">
+          <li id="navHome"><a href="<c:url value="/"/>">Home</a></li>
+          <li id="navTrack"><a href="<c:url value="/projects"/>">Animal Tracking</a></li>
+          <li id="navAbout"><a href="<c:url value="/about"/>">About</a></li>
+          <li id="navContact"><a href="<c:url value="/contact"/>">Contact</a></li>
+          <c:if test="${currentUser.admin}">
+          <li id="navSettings"><a href="<c:url value="/settings"/>">Settings</a></li>
+          </c:if>
+        </ul>
+      </div>
+    </div>
 </div>
-<div class="navbar navbar-inverse">
-  <div class="navbar-inner">
-    <ul class="nav">
-      <li id="navHome"><a href="<c:url value="/"/>">Home</a></li>
-      <li id="navTrack"><a href="<c:url value="/projects"/>">Animal Tracking</a></li>
-      <li id="navAbout"><a href="<c:url value="/about"/>">About</a></li>
-      <li id="navContact"><a href="<c:url value="/contact"/>">Contact</a></li>
-      <c:if test="${currentUser.admin}">
-      <li id="navSettings"><a href="<c:url value="/settings"/>">Settings</a></li>
-      </c:if>
-    </ul>
-  </div>
-</div>
-<c:if test="${!empty breadcrumbs}">
-<div id="crumbs">
-    <c:if test="${!empty breadcrumbsRight}">
-    <div style="float: right; margin-top: -5px; padding-left: 16px; padding-bottom: 10px; background-color: #FBFEE9;">
-        <jsp:invoke fragment="breadcrumbsRight"/>
+<div id="main">
+<div class="container${fluid ? '-fluid' : ''}">
+    <c:if test="${!empty breadcrumbs}">
+    <div id="crumbs">
+        <c:if test="${!empty breadcrumbsRight}">
+        <div id="crumbs-right">
+            <jsp:invoke fragment="breadcrumbsRight"/>
+        </div>
+        </c:if>
+        <jsp:invoke fragment="breadcrumbs"/>
     </div>
     </c:if>
-    <jsp:invoke fragment="breadcrumbs"/>
-</div>
-</c:if>
-<div id="main">
     <jsp:invoke var="sidebarContent" fragment="sidebar"/>
+    <div class="row${fluid ? '-fluid' : ''}">
     <c:if test="${!empty sidebarContent}">
-    <div id="leftMenu">
+    <div id="left-menu" class="span2">
         ${sidebarContent}
     </div>
     </c:if>
-    <div id="content" class="${empty sidebarContent ? 'wide' : 'narrow'}">
+    <div id="content" class="${empty sidebarContent ? 'span12' : 'span10'}">
         <jsp:doBody/>
         <div style="clear:both;"></div>
     </div> <!-- content -->
-</div> <!-- main -->
+    </div>
+</div>
+</div>
 <div id="footer">
     <div id="logos">
         <a href="http://nectar.org.au/"><img src="<c:url value="/img/nectar-logo.png"/>" width="140px" height="32px"/></a>
@@ -117,6 +123,5 @@
         &copy; 2011 The University of Queensland
     </div>
 </div>
-</div> <!-- container -->
 </body>
 </html>

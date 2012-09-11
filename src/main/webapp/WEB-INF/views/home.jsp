@@ -10,7 +10,6 @@
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
         <style type="text/css">
             #homeMap {
-                margin: 20px 0;
                 height: 500px;
                 background-color: #e6e6c0;
                 padding: 8px;
@@ -71,8 +70,7 @@
         </script>
     </jsp:attribute>
     <jsp:body>
-        <div id="welcome" class="fade in">
-            <button class="close" data-dismiss="alert">×</button>
+        <div id="welcome">
             ${text}
         </div>
         <div style="clear: both;"></div>

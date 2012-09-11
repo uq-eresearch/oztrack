@@ -20,7 +20,7 @@
         <c:if test="${currentUser != null}">
         <div class="sidebarMenu">
             <ul>
-                <li><a href="<c:url value="/projects/new"/>">Create New Project</a></li>
+                <li><a href="<c:url value="/projects/new"/>">Create Project</a></li>
             </ul>
         </div>
         </c:if>
