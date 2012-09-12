@@ -79,7 +79,7 @@
                 width: 7em;
             }
             .citation {
-                font-weight: bold;
+                font-style: italic;
                 text-align: left;
             }
         </style>
@@ -331,131 +331,102 @@
         
         <div id="errorDialog"></div>
         <div id="projectMapHelp">
-            <h2>Trajectories</h2>
-            <p>    The trajectory is the animal movement path created from the location fixes in
-                chronological order.  OzTrack plots the trajectory from the first fix in the
-                uploaded file, until the last unless the date range is specified. The trajectory
-                can be viewed on the OzTrack mapping feature and the minimum distance moved by the
-                animal along this trajectory is calculated and displayed in the navigation window.
-                This trajectory information can be downloaded in the animal .csv files.
-                Each feature that has been selected is displayed as an overlapping layer on the web
-                browser. Users have the ability to switch between layers to view data, based on
-                animals, date, type for analysis undertaken.
+            <h2>Trajectory</h2>
+            <p>
+                The trajectory is the animal movement path created from the location fixes (detections)
+                in chronological order. OzTrack plots the trajectory from the first fix in the
+                uploaded file, until the last unless the date range has been specified. The
+                trajectory can be viewed on the OzTrack mapping feature and the minimum distance
+                moved by the animal along this trajectory is calculated and displayed in the
+                Analysis Results window.
             </p>
-
-            <h2>Home Range Calculator</h2>
-            <p>The home range calculator provides a number of home-range analyses tools to define
-            animal space use. Generally, animals utilise areas disproportionately within their
-            home-range, and these can be identified visualised and quantified within OzTtrack.
-             Prior to analysis the uploaded animal location data can be filtered  by date range,
-             study animal or by the precision estimate for each location fix. It returns a
-             visualisation of the generated home range within the OzTrack viewfinder window and
-             returns the area (km2) covered by the home range. This information is displayed in
-             the navigation window or can be downloaded as a .csv file, or the viewfinder can be
-             saved as a . jpg image. OzTrack provides users with the capacity to overlay and assess
-             a multitude of home-range plots within the viewfinder, thus optimising the home-range
-             selection process.
-            </p>
-
-            <p><b>Add a new layer: </b>Select desired home range analysis tool and <i>Calculate</i>
-            to calculate and project  the home range into the OzTrack viewfinder.</p>
-
-            <p><b>Date range: </b>Specify the period of interest for visualisation and home range
-            calculations.</p>
 
             <h2>Minimum Convex polygon</h2>
             <p>
-            The MCP is one of the simplest methods for determining home-range size.  This approach
-            uses the smallest area convex set that contains the data. The MCP home-range  is limited
-            as it may contain areas that the animal does not visit. More sophisticated methods of
-            home-range calculation are available,  it is however, the most popular method used.
-            </p>
-            <h2>Peeled convex hull</h2>
-            <p>
-            Convex hull peeling provides a way of ordering the convex hull to remove location
-            outliers which exclude excursive activity and identifies areas of greater use. These
-            areas are probably more representative of refuges and resources. Oztrack provides
-            peeling at the 95% and at the 50% level (i.e. 50% is core home range and contains
-            at most 50% of the data points).
+                Otherwise known as a convex hull, this approach uses the smallest area convex set
+                that contains the location data. At 100% this will equivalent the area covered by
+                all locations within the dataset. Resetting the computation at a lower % value
+                will remove outliers from the computation, resulting in this % of locations in
+                the final MCP. This calculation is undertaken within R using the adehabitat
+                package (Calenge 2008). For further details about using an MCP home-range
+                estimator see
             </p>
 
-            <span class="citation">
-            Worton, B.J. (1995) A convex hull-based estimator of home-range size.
-            Biometrics, 51, 1206-1215.
-            </span>
-            <br>
+            <p class="citation">
+                Worton, B.J. (1995)
+                A convex hull-based estimator of home-range size.
+                Biometrics, 51, 1206-1215.
+            </p>
 
             <h2>Alpha-hull</h2>
             <p>
-            The alpha hull is an improvement on the mcp technique. The home range calculated
-            by this technique closer represents space use by the animal by objectively cropping low
-            use areas (i.e. areas which are not visited by tracked animals) out of the mcp.
+                The alpha hull home range estimation is a generalisation of the convex hull but
+                objectively crops low use areas from the polygon surface. Alpha hulls are generated
+                by connecting all locations as a Delauney triangulation, then systematically
+                removing vertices until only those vertices that are shorter in length than the
+                chosen parameter value alpha are retained. The smaller the value of alpha, the
+                finer the resolution of the hull and the greater the exposure of non-use areas.
+                As alpha increases, the polygon surface will increase until it is equivalent to a
+                100% minimum convex polygon. For further details about using the alpha hull
+                home-range density estimator see Burgman & Fox (2003).
             </p>
 
-            <span class="citation">
-            Burgman, M.A. &amp; Fox, J.C. (2003) Bias in species range estimates from minimum
-            convex polygons: implications for conservation and options for improved planning.
-            Animal Conservation, 6, 19-28.
-            </span>
-            <br>
-
-            <h2>Kernel UD</h2>
-            <p>
-            The kernel density estimator is a non-parametric method of home-range analysis, which uses the
-            utilization distribution to estimate the probability that an animal will be found at a specific
-            geographical location. The major difference between the MCP and the kernel UD (utilization
-            distribution) is that the kernel UD defines the relative frequency of location fixes over time,
-            which the MCP does not. It has therefore been offered as a more accurate means of estimating home range.
+            <p class="citation">
+                Burgman, M.A. &amp; Fox, J.C. (2003)
+                Bias in species range estimates from minimum convex polygons:
+                implications for conservation and options for improved planning.
+                Animal Conservation, 6, 19-28.
             </p>
+
+            <h2>Kernel Utilization Distribution</h2>
             <p>
-            The kernel UD accurately estimates areas of high use by the tagged animal, providing that the level of
-            smoothing is appropriate.  There are a number of different smoothing parameters that have been adopted
-            in kernel estimates, and no single parameter will perform well in all conditions. OzTrack offers two
-            of the most widely used automatic methods for choosing the smoothing parameter. The first of these is
-            the least-squares cross-validation (LSCV). This is most commonly used but is limited to large sample
-            sizes (&gt; 50), and may result in fragmentation of the home-range. We therefore provide an alternative
-            ad-hoc method where the smoothing parameter value (h) may be set to any given numerical value to alter
-            the home-range size between over-fragmented and the selection of non-use areas.  A large value of h
-            obscures all but the most prominent features, whereas a small h value shows fine detail within the home
-            range.
+                The fixed kernel density estimator is a non-parametric method of home-range analysis,
+                which uses the utilization distribution to estimate the probability that an animal
+                will be found at a specific geographical location. OzTrack provides the capacity to
+                calculate and view the kernel UD at any level between 1 and 100%. 95% and 50% level
+                are those most commonly adopted as the home-range and core-area UD, respectively.
             </p>
             <p>
-            OzTrack provides the capacity to calculate and view the kernel UD at the 95% and 50% level. These
-            levels are those most commonly adopted as the home-range and core-area UD, respectively.
+                <b>H smoothing value</b>: The kernel UD accurately estimates areas of high use by
+                the tagged animal, providing that the level of smoothing is appropriate. There are
+                a number of different smoothing parameters that have been adopted in kernel estimates,
+                and no single parameter will perform well in all conditions. OzTrack offers three
+                options for selecting the kernel smoothing parameter. Two of these are automatically
+                generated using either the href (or ad hoc) method, or the least-squares
+                cross-validation (LSCV) algorithm. The third option is for the user to define a set
+                numerical value (in meters). As h decreases, the kernel will become less continuous
+                and more fragmented revealing increasing detail within the home range. These
+                calculations are undertaken within R using the adehabitat library of functions
+                (Calenge 2008). For further details about using Kernel UD for estimating home-range see;
             </p>
 
-            <span class="citation">
-            Seaman, D.E., Powell, R.A. (1996) An evaluation of the accuracy of kernel
-            density estimators for home range analysis. Ecology, Vol. 77, 2075-2085.
-            </span>
+            <p class="citation">
+                Seaman, D.E., Powell, R.A. (1996)
+                An evaluation of the accuracy of kernel density estimators for home range analysis.
+                Ecology, Vol. 77, 2075-2085.
+            </p>
 
-            <br><br>
+            <p class="citation">
+                Silverman, B.W. (1986) Density estimation for statistics and data analysis. Chapman and Hall, London, UK
+            </p>
 
-            <span class="citation">
-            Silverman, B.W. (1986) Density estimation for statistics and data analysis. Chapman and Hall, London, UK
-            </span>
-
-            <br><br>
-
-            <span class="citation">
-            Worton, B.J. (1989) Kernel methods for estimating the utilization distribution in home-range studies
-            </span>
-
-            <br><br>
-
-            <b>Start and end points</b>
+            <p class="citation">
+                Worton, B.J. (1989) Kernel methods for estimating the utilization distribution in home-range studies
+            </p>
+            
+            <h2>Heat Map</h2>
             <p>
-            This highlights the first fix of a track in green and the last fix in red.
+                This generates a grid over the study area and uses a coloured gradient to visually
+                identify areas of high usage by the tagged animal. These can be applied to either
+                points or connectivity lines between points.  The size of the grid cells (in meters)
+                can be specified. This OzTrack tool utilises the spatstat package in R
+                (Baddeley &amp; Turner, 2005).
             </p>
-
-            <b>To view in GoogleEarth:  </b>
-            <p>
-                To speed up processing time of the web browser we have opted not to show point files within
-                the web-based browser of OZ-track. IF users wish to view there data as a point file we offer
-                the option to create a kml file  which will show the animal tracks as points as animations
-                within Google Earth. Each point will have date and time information.
+            <p class="citation">
+                Baddeley, A. &amp; Turner,  R. (2005)
+                spatstat: An R package for analyzing spatial point patterns.
+                Journal of Statistical Software, 12,6
             </p>
-
         </div>
     </jsp:body>
 </tags:page>
