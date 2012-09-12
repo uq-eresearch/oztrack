@@ -52,6 +52,7 @@
 </head>
 <body>
 <div id="header">
+    <div class="container${fluid ? '-fluid' : ''}">
     <div id="banner">
         <div id="banner-left"></div>
         <div id="banner-right">
@@ -66,12 +67,13 @@
                     </c:when>
                     <c:otherwise>
                       <a href="<c:url value="/login"/>">Login</a>
-                      or
+                      &nbsp;|&nbsp;
                       <a href="<c:url value="/users/new"/>">Register</a>
                     </c:otherwise>
                 </c:choose>
             </div>
         </div>
+    </div>
     </div>
     <div class="navbar navbar-inverse">
       <div class="navbar-inner">

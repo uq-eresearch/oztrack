@@ -4,7 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
-<tags:page title="Projects">
+<tags:page title="Projects" fluid="true">
     <jsp:attribute name="head">
         <script type="text/javascript">
             $(document).ready(function() {

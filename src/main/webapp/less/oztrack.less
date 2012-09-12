@@ -200,6 +200,7 @@ input[type="color"],
 /* main divs */
 
 #header {
+  background-color: white;
 }
 
 @bannerLeftImageWidth: 152px;
@@ -210,7 +211,6 @@ input[type="color"],
 @bannerHeight: @bannerLeftImageHeight + (2 * @bannerLeftVerticalPadding);
 
 #banner {
-  background-color: white;
 }
 
 #banner-left {
@@ -223,8 +223,8 @@ input[type="color"],
 }
 
 #banner-right {
-  height: @bannerHeight;
   margin-left: @bannerLeftWidth;
+  height: @bannerHeight;
   background-image: url('../img/header_croc.jpg');
   background-position: right center;
   background-repeat: no-repeat;
@@ -240,7 +240,7 @@ input[type="color"],
 #login {
   position: relative;
   float: right;
-  top: @bannerHeight - @loginHeight - @loginVerticalPadding * 2;
+  top: @bannerHeight - (@loginHeight + 2 * @loginVerticalPadding);
   height: @loginHeight;
   padding: @loginVerticalPadding 0.9em;
   color: #ffffff;
