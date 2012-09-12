@@ -135,23 +135,26 @@ function createProjectClickControl(map, projectPointsLayer) {
 
 function buildPopup(f) {
     var popupHtml =
-        '<div class="home-popup">' +
-        '    <div class="home-popup-title">' + f.attributes.projectTitle + '</div>' +
-        '    <div class="home-popup-attr-name">Species:</div>' +
-        '    <div class="home-popup-attr-value">' + f.attributes.speciesCommonName + '</div>' +
-        '    <div class="home-popup-attr-name">Coverage:</div>' +
-        '    <div class="home-popup-attr-value">' + f.attributes.spatialCoverageDescr + '</div>' +
-        '    <div class="home-popup-attr-name">Date range:</div>' +
-        '    <div class="home-popup-attr-value">' + f.attributes.firstDetectionDate + ' to ' + f.attributes.lastDetectionDate + '</div>' +
-        '    <div class="home-popup-attr-name">Data access:</div>' +
+        '<div class="home-popup">\n' +
+        '    <div class="home-popup-title">' + f.attributes.projectTitle + '</div>\n' +
+        '    <div class="home-popup-attr-name">Species:</div>\n' +
+        '    <div class="home-popup-attr-value">' + f.attributes.speciesCommonName + '</div>\n' +
+        '    <div class="home-popup-attr-name">Coverage:</div>\n' +
+        '    <div class="home-popup-attr-value">' + f.attributes.spatialCoverageDescr + '</div>\n' +
+        '    <div class="home-popup-attr-name">Date range:</div>\n' +
+        '    <div class="home-popup-attr-value">' + f.attributes.firstDetectionDate + ' to ' + f.attributes.lastDetectionDate + '</div>\n' +
+        '    <div class="home-popup-attr-name">Data access:</div>\n' +
         '    <div class="home-popup-attr-value">' +
         (
             (f.attributes.global == 'true')
             ? '<span style="font-weight: bold; color: green;">Open Access</span>'
             : '<span style="font-weight: bold; color: red;">Restricted Access</span>'
         ) +
-        '    </div>' +
-        '    <div style="margin-top: 1em;"><a href="projects/' + f.attributes.projectId + '">Open project</a></div>' +
+        '    </div>\n' +
+        '    <div style="margin-top: 1em;">\n' +
+        '        <a href="projects/' + f.attributes.projectId + '">View details</a> |\n' +
+        '        <a href="projects/' + f.attributes.projectId + '/analysis">Show tracks</a>\n' +
+        '    </div>\n' +
         '</div>';
     var popup = new OpenLayers.Popup.AnchoredBubble(
         f.attributes.projectId,
