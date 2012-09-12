@@ -46,17 +46,12 @@
             <fieldset>
                 <div class="legend">Search Project Data</div>
                 <div class="control-group">
-                    <label class="control-label" for="fromDateVisible">Date From</label>
+                    <label class="control-label" for="fromDateVisible">Date Range</label>
                     <div class="controls">
-                        <input type="text" id="fromDateVisible" class="datepicker" value="<fmt:formatDate pattern="${dateFormatPattern}" value="${searchQuery.fromDate}"/>"/>
                         <form:hidden path="fromDate" id="fromDate"/>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="toDateVisible">Date To</label>
-                    <div class="controls">
-                        <input type="text" id="toDateVisible" class="datepicker" value="<fmt:formatDate pattern="${dateFormatPattern}" value="${searchQuery.toDate}"/>"/>
                         <form:hidden path="toDate" id="toDate"/>
+                        <input type="text" id="fromDateVisible" class="datepicker" style="width: 80px;" placeholder="From" value="<fmt:formatDate pattern="${dateFormatPattern}" value="${searchQuery.fromDate}"/>"/> -
+                        <input type="text" id="toDateVisible" class="datepicker" style="width: 80px;" placeholder="To" value="<fmt:formatDate pattern="${dateFormatPattern}" value="${searchQuery.toDate}"/>"/>
                     </div>
                 </div>
                 <div class="control-group">
