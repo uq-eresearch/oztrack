@@ -169,7 +169,7 @@
                     setTimeout("cleanseMap.updateSize();", 250);
                 }
             }
-            $(window).resize(onResize());
+            $(window).resize(onResize);
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
