@@ -56,6 +56,36 @@ function createAnalysisMap(div, options) {
             var osmLayer = new OpenLayers.Layer.OSM('OpenStreetMap');
             map.addLayer(osmLayer);
 
+            var bathymetryLayer1 = new OpenLayers.Layer.WMS(
+                'Bathymetry (1 arc-minute)',
+                '/geoserver/gwc/service/wms',
+                {
+                    layers: 'oztrack:gebco_gridone',
+                    styles: 'bathymetry2',
+                    format: 'image/png'
+                },
+                {
+                    isBaseLayer: true,
+                    attribution: '<a href="http://www.gebco.net">The GEBCO One Minute Grid, version 2.0</a>'
+                }
+            );
+            map.addLayer(bathymetryLayer1);
+
+            var bathymetryLayer2 = new OpenLayers.Layer.WMS(
+                'Bathymetry (30 arc-second)',
+                '/geoserver/gwc/service/wms',
+                {
+                    layers: 'oztrack:gebco_08',
+                    styles: 'bathymetry2',
+                    format: 'image/png'
+                },
+                {
+                    isBaseLayer: true,
+                    attribution: '<a href="http://www.gebco.net">The GEBCO_08 Grid, version 20091120</a>'
+                }
+            );
+            map.addLayer(bathymetryLayer2);
+
             map.addControl(createControlPanel());
 
             lineStyleMap = createLineStyleMap();
@@ -88,8 +118,7 @@ function createAnalysisMap(div, options) {
                     title : 'Zoom to Data Extent',
                     displayClass : "zoomButton",
                     trigger : function() {
-                        map.zoomToExtent(allDetectionsLayer.getDataExtent(),
-                                false);
+                        map.zoomToExtent(allDetectionsLayer.getDataExtent(), false);
                     }
                 })
             ]);
@@ -453,11 +482,11 @@ function createAnalysisMap(div, options) {
         }
 
         analysisMap.zoomToAnimal = function(animalId) {
-            for ( var key in allDetectionsLayer.features) {
+            for (var key in allDetectionsLayer.features) {
                 var feature = allDetectionsLayer.features[key];
-                if (feature.attributes
-                        && animalId == feature.attributes.animalId) {
+                if (feature.attributes && animalId == feature.attributes.animalId) {
                     map.zoomToExtent(feature.geometry.getBounds(), false);
+                    return;
                 }
             }
         };
@@ -509,6 +538,10 @@ function createAnalysisMap(div, options) {
             }
             $("#animalInfo-" + animalId).find(':checkbox').attr("checked",
                     setVisible);
+        };
+
+        analysisMap.updateSize = function() {
+            map.updateSize();
         };
 
         return analysisMap;

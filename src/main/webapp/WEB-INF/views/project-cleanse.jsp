@@ -5,7 +5,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
-<tags:page title="${project.title}: Data Cleansing">
+<tags:page title="${project.title}: Data Cleansing" fluid="true">
     <jsp:attribute name="head">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
@@ -26,7 +26,6 @@
                 background-image: url(/js/openlayers/theme/default/img/draw_polygon_on.png);
             }
             #projectMapOptions {
-                height:350px;
             }
             #animalHeader {
                 height: 90px;
@@ -86,7 +85,7 @@
             }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
-                $("#projectMapOptions").accordion({fillSpace: true});
+                $("#projectMapOptionsAccordion").accordion();
                 $('#fromDateVisible').datepicker({
                     altField: "#fromDate",
                     minDate: new Date(${projectDetectionDateRange.minimum.time}),
@@ -123,6 +122,8 @@
                     cleanseMap.toggleAllAnimalFeatures("${animal.id}", this.checked);
                 });
                 </c:forEach>
+                cleanseMap = null;
+                onResize();
                 cleanseMap = createCleanseMap('projectMap', {
                     projectId: <c:out value="${project.id}"/>,
                     onReset: function() {
@@ -159,6 +160,16 @@
                     }
                 });
             });
+            function onResize() {
+                var mainHeight = $(window).height() - $('#header').height() - $('#crumbs').height() - 21;
+                $('#projectMapOptions').height(mainHeight);
+                $('#projectMapOptions .ui-accordion-content').height($('#projectMapOptions').height() - 68);
+                $('#projectMap').height(mainHeight);
+                if (cleanseMap) {
+                    setTimeout("cleanseMap.updateSize();", 250);
+                }
+            }
+            $(window).resize(onResize());
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
@@ -168,11 +179,13 @@
         &rsaquo; <span class="active">Data Cleansing</span>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbsRight">
-        <a class="btn" href="/projects/2">« Back to project</a>
+        <a class="btn" href="/projects/${project.id}">« Back to project</a>
     </jsp:attribute>
     <jsp:body>
         <div class="mapTool">
         <div id="projectMapOptions">
+        <div id="projectMapOptionsInner">
+        <div id="projectMapOptionsAccordion">
             <h3><a href="#">Data Cleansing</a></h3>
             <div style="padding: 1em 10px;">
                 <form id="cleanseForm" class="form-veritcal" onsubmit="return false;">
@@ -238,6 +251,8 @@
                 </div>
                 </form>
             </div>
+        </div>
+        </div>
         </div>
         <div id="projectMap"></div>
         <div style="clear:both;"></div>

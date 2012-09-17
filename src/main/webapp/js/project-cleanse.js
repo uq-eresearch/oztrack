@@ -67,6 +67,10 @@ function createCleanseMap(div, options) {
                 onReset();
             }
         };
+
+        cleanseMap.updateSize = function() {
+            map.updateSize();
+        };
         
         function createControlPanel() {
             var panel = new OpenLayers.Control.Panel();

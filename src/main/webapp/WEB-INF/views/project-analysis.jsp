@@ -5,14 +5,13 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
-<tags:page title="${project.title}: Analysis Tools">
+<tags:page title="${project.title}: Analysis Tools" fluid="true">
     <jsp:attribute name="head">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
         <style type="text/css">
             #projectMapOptions .ui-accordion-content {
-                padding: 1em 10px;
-                height: 398px;
+                padding: 10px;
             }
             #projectMapHelpLink {
                 margin-top: 6px;
@@ -47,17 +46,16 @@
                 margin-bottom: 0.5em;
             }
             .animalLabel {
-                float: left;
-                width: 100px;
-                overflow: hidden;
                 font-weight: bold;
-                margin-right: 5px;
+                margin-left: 40px;
+                margin-right: 65px;
+                white-space: nowrap;
+                overflow: hidden;
             }
             a.animalInfoToggle {
                 text-decoration: none;
             }
             .animalInfo {
-                width: 210px;
                 margin-left: 8px;
                 margin-right: 8px;
                 margin-top: 0;
@@ -161,6 +159,8 @@
                         });
                     }
                 });
+                analysisMap = null;
+                onResize();
                 analysisMap = createAnalysisMap('projectMap', {
                     projectId: <c:out value="${project.id}"/>,
                     onAnalysisError: function(message) {
@@ -182,6 +182,16 @@
                     }
                 });
             });
+            function onResize() {
+                var mainHeight = $(window).height() - $('#header').height() - $('#crumbs').height() - 21;
+                $('#projectMapOptions').height(mainHeight);
+                $('#projectMapOptions .ui-accordion-content').height($('#projectMapOptions').height() - 130);
+                $('#projectMap').height(mainHeight);
+                if (analysisMap) {
+                    analysisMap.updateSize();
+                }
+            }
+            $(window).resize(onResize);
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
@@ -191,12 +201,13 @@
         &rsaquo; <span class="active">Analysis Tools</span>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbsRight">
-        <a class="btn" href="/projects/2">« Back to project</a>
+        <a class="btn" href="/projects/${project.id}">« Back to project</a>
     </jsp:attribute>
     <jsp:body>
         <div id="mapTool" class="mapTool">
 
         <div id="projectMapOptions">
+        <div id="projectMapOptionsInner">
         <div id="projectMapOptionsAccordion">
 
             <h3 id="animalPanelHeader"><a href="#">Analysis Results</a></h3>
@@ -322,11 +333,14 @@
                   </form>
                 </div>
         </div>
+        </div>
         <a id="projectMapHelpLink" class="btn btn-block" href="#">Help</a>
         </div>
 
         <div id="projectMap"></div>
+
         <div style="clear:both;"></div>
+
         </div>
         
         <div id="errorDialog"></div>

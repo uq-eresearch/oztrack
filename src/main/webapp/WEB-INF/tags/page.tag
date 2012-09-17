@@ -115,6 +115,7 @@
     </div>
 </div>
 </div>
+<c:if test="${not fluid}">
 <div id="footer">
     <div id="logos">
         <a href="http://nectar.org.au/"><img src="<c:url value="/img/nectar-logo.png"/>" width="140px" height="32px"/></a>
@@ -125,5 +126,6 @@
         &copy; 2011 The University of Queensland
     </div>
 </div>
+</c:if>
 </body>
 </html>

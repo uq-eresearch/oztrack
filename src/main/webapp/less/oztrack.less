@@ -258,11 +258,22 @@ input[type="color"],
   border-bottom: 1px solid #e8e8e8;
 }
 
+.container-fluid #crumbs {
+  margin: 0;
+  padding: 10px 10px;
+  border-bottom: 1px solid #aaa;
+}
+
 #crumbs-right {
   float: right;
   margin: -5px 0 10px 8px;
   padding-left: 12px;
   background-color: #FBFEEE;
+}
+
+.container-fluid #crumbs-right {
+  margin: -5px -5px 0 0;
+  padding: 0;
 }
 
 #login {
@@ -284,7 +295,8 @@ input[type="color"],
 }
 
 #main .container-fluid {
-  margin: 0px 20px;
+  margin: 0px;
+  padding-bottom: 0px;
 }
 
 #welcome {
@@ -527,23 +539,24 @@ ul.users li.reader {
 /* maps */
 
 .mapTool {
-  background-color: #e6e6c0;
-  position: relative;
-  padding: 8px;
-  .border-radius(10px);
+  background-color: #aaa;
 }
 
 #projectMap {
-  width: 672px;
-  height: 520px;
   float: right;
+  width: 75%;
+  height: 520px;
 }
 
 #projectMapOptions {
-  width: 245px;
   float: left;
+  width: 25%;
+  background-color: #e6e6c0;
 }
 
+#projectMapOptionsInner {
+  margin: 5px;
+}
 
 /* jquery-ui */
 
