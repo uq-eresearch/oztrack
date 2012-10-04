@@ -66,6 +66,7 @@ function createAnalysisMap(div, options) {
                 },
                 {
                     isBaseLayer: true,
+                    wrapDateLine: true,
                     attribution: '<a href="http://www.gebco.net">The GEBCO One Minute Grid, version 2.0</a>'
                 }
             );
@@ -81,6 +82,7 @@ function createAnalysisMap(div, options) {
                 },
                 {
                     isBaseLayer: true,
+                    wrapDateLine: true,
                     attribution: '<a href="http://www.gebco.net">The GEBCO_08 Grid, version 20091120</a>'
                 }
             );
