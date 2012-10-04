@@ -226,10 +226,11 @@ public class RServeInterface {
         if (!(h.equals("href") || h.equals("LSCV") || NumberUtils.isNumber(h))) {
             throw new RServeInterfaceException("h-value must be \"href\", \"LSCV\", or a numeric value.");
         }
-        safeEval("KerHRp <- kernelUD(positionFix.proj, h = \"" + h + "\")");
-        safeEval("KerHR <- kernelUD(positionFix.xy, h = \"" + h + "\")");
-        safeEval("hr.obj <- getverticeshr(KerHR,percent=" + percent + ")");
-        safeEval("hr.obj$area <- getverticeshr(KerHRp,percent=" + percent + ", unin=c(\"m\"), unout=c(\"km2\"))$area");
+        String hExpr = NumberUtils.isNumber(h) ? h : "\"" + h + "\"";
+        safeEval("KerHRp <- kernelUD(positionFix.proj, h=" + hExpr + ")");
+        safeEval("KerHR <- kernelUD(positionFix.xy, h=" + hExpr + ")");
+        safeEval("hr.obj <- getverticeshr(KerHR, percent=" + percent + ")");
+        safeEval("hr.obj$area <- getverticeshr(KerHRp, percent=" + percent + ", unin=c(\"m\"), unout=c(\"km2\"))$area");
         safeEval("writeOGR(hr.obj , dsn=\"" + fileName + "\", layer= \"KUD\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
     }
 
