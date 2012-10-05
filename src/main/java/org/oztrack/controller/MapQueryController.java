@@ -79,7 +79,8 @@ public class MapQueryController {
         @RequestParam(value="percent", required=false) Double percent,
         @RequestParam(value="h", required=false) String h,
         @RequestParam(value="alpha", required=false) Double alpha,
-        @RequestParam(value="gridSize", required=false) Double gridSize
+        @RequestParam(value="gridSize", required=false) Double gridSize,
+        @RequestParam(value="extent", required=false) Double extent
     )
     throws Exception {
         SearchQuery searchQuery = new SearchQuery();
@@ -107,6 +108,9 @@ public class MapQueryController {
         }
         if (gridSize != null && !gridSize.isNaN()) {
             searchQuery.setGridSize(gridSize);
+        }
+        if (extent != null && !extent.isNaN()) {
+            searchQuery.setExtent(extent);
         }
         return searchQuery;
     }

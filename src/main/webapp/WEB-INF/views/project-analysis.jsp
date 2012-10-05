@@ -97,6 +97,8 @@
                 $('#alpha').val('');
                 $('#gridSizeRow').hide();
                 $('#gridSize').val('');
+                $('#extentRow').hide();
+                $('#extent').val('');
                 var showParamTable = true;
                 if (mapQueryType == 'MCP') {
                     $('#percentRow').show();
@@ -107,6 +109,10 @@
                     $('#percent').val('95');
                     $('#hRow').show();
                     $('#h').val('href');
+                    $('#gridSizeRow').show();
+                    $('#gridSize').val('50');
+                    $('#extentRow').show();
+                    $('#extent').val('1');
                 }
                 else if (mapQueryType == 'AHULL') {
                     $('#alphaRow').show();
@@ -321,6 +327,12 @@
                                     <td class="input-append">
                                         <input id="gridSize" name="gridSize" type="text" class="input-mini" style="margin-bottom: 3px; text-align: right;"/>
                                         <span class="add-on">m</span>
+                                    </td>
+                                </tr>
+                                <tr id="extentRow">
+                                    <td style="padding-right: 5px;">Extent</td>
+                                    <td>
+                                        <input id="extent" name="extent" type="text" class="input-mini" style="margin-bottom: 3px; text-align: right;"/>
                                     </td>
                                 </tr>
                             </table>

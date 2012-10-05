@@ -232,11 +232,35 @@ public class RServeInterface {
             throw new RServeInterfaceException("h-value must be \"href\", \"LSCV\", or a numeric value.");
         }
         String hExpr = NumberUtils.isNumber(h) ? h : "\"" + h + "\"";
-        safeEval("KerHRp <- kernelUD(positionFix.proj, h=" + hExpr + ")");
-        safeEval("KerHR <- kernelUD(positionFix.xy, h=" + hExpr + ")");
-        safeEval("hr.obj <- getverticeshr(KerHR, percent=" + percent + ")");
-        safeEval("hr.obj$area <- getverticeshr(KerHRp, percent=" + percent + ", unin=c(\"m\"), unout=c(\"km2\"))$area");
-        safeEval("writeOGR(hr.obj , dsn=\"" + fileName + "\", layer= \"KUD\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
+        Double gridSize = (searchQuery.getGridSize() != null) ? searchQuery.getGridSize() : 50d;
+        Double extent = (searchQuery.getExtent() != null) ? searchQuery.getExtent() : 1d;
+        safeEval("h <- " + hExpr);
+        safeEval("KerHRp <- try({kernelUD(xy=positionFix.proj, h=h, grid=" + gridSize + ", extent=" + extent + ")}, silent=TRUE)");
+        safeEval(
+            "if (class(KerHRp) == 'try-error') {\n" +
+            "  if (h == 'href') {\n" +
+            "    stop('Kernel unable to generate under these parameters. Try increasing the extent.')\n" +
+            "  }\n" +
+            "  if (h == 'LSCV') {\n" +
+            "    stop('Kernel unable to generate under these parameters. Try increasing the extent and the grid size.')\n" +
+            "  }\n" +
+            "  if (class(h) == 'numeric') {\n" +
+            "    stop('Kernel unable to generate under these parameters. Try increasing the h smoothing parameter value.')\n" +
+            "  }\n" +
+            "  stop('Kernel unable to generate due to error: ' + conditionMessage(KerHRp))\n" +
+            "}"
+        );
+        safeEval("allh <- sapply(1:length(KerHRp), function(x) {KerHRp[[x]]@h$h})");
+        safeEval("myKerP <- try({getverticeshr(KerHRp, percent=" + percent + ", unin=c(\"m\"), unout=c(\"km2\"))}, silent=TRUE)");
+        safeEval(
+            "if (class(myKerP) == 'try-error') {\n" +
+            "  stop('Kernel polygon unable to generate under these parameters. Try increasing the grid size or change the percentile.')\n" +
+            "}"
+        );
+        safeEval("myKer <- spTransform(myKerP, CRS(\"+proj=longlat +datum=WGS84\"))");
+        safeEval("myKer$area <- myKerP$area");
+        safeEval("myKer$hval <- allh");
+        safeEval("writeOGR(myKer, dsn=\"" + fileName + "\", layer= \"KUD\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
     }
 
     protected void writeAlphahullKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {

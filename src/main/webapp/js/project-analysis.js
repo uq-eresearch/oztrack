@@ -251,7 +251,8 @@ function createAnalysisMap(div, options) {
                     percent : $('input[id=percent]').val(),
                     h : $('input[id=h]').val(),
                     alpha : $('input[id=alpha]').val(),
-                    gridSize : $('input[id=gridSize]').val()
+                    gridSize : $('input[id=gridSize]').val(),
+                    extent : $('input[id=extent]').val()
                 };
                 var fromDate = $('#fromDate').val();
                 if (fromDate) {
@@ -394,7 +395,7 @@ function createAnalysisMap(div, options) {
                         var distance = (Math.round(feature.geometry
                                 .getGeodesicLength(map.projection)) / 1000);
                         tableRowsHtml += '<tr><td class="layerInfoLabel">Min Distance: </td><td>'
-                                + distance + 'km </td></tr>';
+                                + distance + ' km </td></tr>';
                     }
                     if (tableRowsHtml != '') {
                         html += '<table>' + tableRowsHtml + '</table>';
@@ -454,6 +455,10 @@ function createAnalysisMap(div, options) {
                 if (params.gridSize) {
                     tableRowsHtml += '<tr><td class="layerInfoLabel">Grid size (m): </td><td>'
                             + params.gridSize + '</td></tr>';
+                }
+                if (params.extent) {
+                    tableRowsHtml += '<tr><td class="layerInfoLabel">Extent: </td><td>'
+                            + params.extent + '</td></tr>';
                 }
                 if (feature.attributes.area.value) {
                     var area = Math.round(feature.attributes.area.value * 1000) / 1000;

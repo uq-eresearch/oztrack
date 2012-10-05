@@ -23,6 +23,7 @@ public class SearchQuery {
     private String h;
     private Double alpha;
     private Double gridSize;
+    private Double extent;
 
     public SearchQuery() {
         this.fromDate = null;
@@ -132,5 +133,13 @@ public class SearchQuery {
 
     public void setGridSize(Double gridSize) {
         this.gridSize = gridSize;
+    }
+
+    public Double getExtent() {
+        return extent;
+    }
+
+    public void setExtent(Double extent) {
+        this.extent = extent;
     }
 }
