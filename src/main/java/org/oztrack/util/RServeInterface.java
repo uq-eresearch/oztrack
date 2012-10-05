@@ -212,8 +212,13 @@ public class RServeInterface {
         if (!(percent >= 0d && percent <= 100d)) {
             throw new RServeInterfaceException("percent must be between 0 and 100.");
         }
-        safeEval("mcp.obj <- mcp(positionFix.xy,percent=" + percent + ")");
-        safeEval("mcp.obj$area <- mcp(positionFix.proj,percent=" + percent + ",unin=c(\"m\"),unout=c(\"km2\"))$area");
+        safeEval("mcp.obj <- try({mcp(positionFix.xy, percent=" + percent + ")}, silent=TRUE)");
+        safeEval(
+            "if (class(mcp.obj) == 'try-error') {\n" +
+            "  stop('At least 5 relocations are required to fit a home range. Please ensure all animals have >5 locations.')\n" +
+            "}"
+        );
+        safeEval("mcp.obj$area <- mcp(positionFix.proj, percent=" + percent + ", unin=c(\"m\"), unout=c(\"km2\"))$area");
         safeEval("writeOGR(mcp.obj, dsn=\"" + fileName + "\", layer= \"MCP\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
     }
 
