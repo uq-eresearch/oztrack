@@ -146,7 +146,7 @@ public class RServeInterface {
 
     private void loadScripts() throws RServeInterfaceException {
         String[] scriptFileNames = new String[] {
-            "to_SPLDF.r",
+            "alphahull.r",
             "heatmap.r"
         };
         for (String scriptFileName : scriptFileNames) {
@@ -268,9 +268,8 @@ public class RServeInterface {
         if (!(alpha > 0d)) {
             throw new RServeInterfaceException("alpha must be greater than 0.");
         }
-        safeEval("ahull.proj.spldf <- id.alpha(dxy=positionFix.proj, ialpha=" + alpha + ", sCS=\"+init=" + srs + "\")");
-        safeEval("ahull.xy.spldf <- spTransform(ahull.proj.spldf, CRS(\"+init=epsg:4326\"))");
-        safeEval("writeOGR(ahull.xy.spldf, dsn=\"" + fileName + "\", layer= \"AHULL\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
+        safeEval("myAhull <- myalphahullP(positionFix.proj, sinputssrs=\"+init=" + srs + "\", ialpha=" + alpha + ")");
+        safeEval("writeOGR(myAhull, dsn=\"" + fileName + "\", layer=\"AHULL\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
     }
 
     protected void writePointHeatmapKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
