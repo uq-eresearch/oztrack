@@ -58,7 +58,10 @@ Install the R packages used by OzTrack, including Rserve:
             "plyr",
             "spatstat",
             "Grid2Polygons",
-            "RColorBrewer"
+            "RColorBrewer",
+            "googleVis",
+            "spacetime",
+            "plotKML"
         ),
         dependencies=TRUE
     )
@@ -152,15 +155,20 @@ downloads, compiles, tests, and installs a large number of dependencies.
             "plyr",
             "spatstat",
             "Grid2Polygons",
-            "RColorBrewer"
+            "RColorBrewer",
+            "googleVis",
+            "spacetime",
+            "plotKML"
         ),
         dependencies=TRUE
     )
  
 Note that it may be necessary to add a repos argument (eg `repos="http://cran.cnr.berkeley.edu/"`)
 when executing `install.packages`, but this caused an error when run on CentOS.
+
 You will need the `gdal` Red Hat package installed in order to install the
-`rgdal` R package (ie run `yum install gdal`).
+`rgdal` R package (ie run `yum install gdal`). You'll also need the `libxml2-devel`
+Red Hat package installed before installing the `plotKML` R package.
 
 ## General notes
 
