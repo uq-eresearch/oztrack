@@ -129,10 +129,19 @@ public class RServeInterface {
         String[] libraries = new String[] {
             "adehabitatHR",
             "adehabitatMA",
-            "alphahull",
-            "maptools",
+            "shapefiles",
             "rgdal",
-            "shapefiles"
+            "alphahull",
+            "sp",
+            "raster",
+            "plyr",
+            "spatstat",
+            "maptools",
+            "Grid2Polygons",
+            "RColorBrewer",
+            "googleVis",
+            "spacetime",
+            "plotKML"
         };
         for (String library : libraries) {
             try {
@@ -277,8 +286,13 @@ public class RServeInterface {
         if (!(gridSize > 0d)) {
             throw new RServeInterfaceException("grid size must be greater than 0.");
         }
-        safeEval("PPA <- fpdens2kml(sdata=positionFix.xy,igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\",scol=\"Greens\", labsent=FALSE)");
-        safeEval("polykml(sw=PPA,filename=\"" + fileName + "\",kmlname=paste(unique(PPA$ID),\"_point_density\",sep=\"\"),namefield=unique(PPA$ID))");
+        safeEval("PPA <- try({fpdens2kml(sdata=positionFix.xy, igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\", scol=\"Greens\", labsent=FALSE)}, silent=TRUE)");
+        safeEval(
+            "if (class(PPA) == 'try-error') {\n" +
+            "  stop('Grid size too small. Try increasing grid number.')\n" +
+            "}"
+        );
+        safeEval("polykml(sw=PPA, filename=\"" + fileName + "\", kmlname=paste(unique(PPA$ID), \"_point_density\",sep=\"\"),namefield=unique(PPA$ID))");
     }
 
     protected void writeLineHeatmapKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
@@ -286,8 +300,13 @@ public class RServeInterface {
         if (!(gridSize > 0d)) {
             throw new RServeInterfaceException("grid size must be greater than 0.");
         }
-        safeEval("LPA <- fldens2kml(sdata=positionFix.xy,igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\",scol=\"Greens\", labsent=FALSE)");
-        safeEval("polykml(sw=LPA,filename=\"" + fileName + "\",kmlname=paste(unique(LPA$ID),\"_line_density\",sep=\"\"),namefield=unique(LPA$ID))");
+        safeEval("LPA <- try({fldens2kml(sdata=positionFix.xy, igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\",scol=\"YlOrRd\", labsent=FALSE)}, silent=TRUE)");
+        safeEval(
+            "if (class(LPA) == 'try-error') {\n" +
+            "  stop('Grid size too small. Try increasing grid number.')\n" +
+            "}"
+        );
+        safeEval("polykml(sw=LPA, filename=\"" + fileName + "\", kmlname=paste(unique(LPA$ID), \"_line_density\", sep=\"\"), namefield=unique(LPA$ID))");
     }
 
     protected void writePositionFixKmlFile(String fileName) throws RServeInterfaceException {
