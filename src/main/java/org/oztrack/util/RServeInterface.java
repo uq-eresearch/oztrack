@@ -205,7 +205,12 @@ public class RServeInterface {
             safeEval("coordinates(positionFix) <- ~X+Y;");
             safeEval("positionFix.xy <- positionFix[,ncol(positionFix)];");
             safeEval("proj4string(positionFix.xy) <- CRS(\"+init=epsg:4326\");");
-            safeEval("positionFix.proj <- spTransform(positionFix.xy,CRS(\"+init=" + srs + "\"));");
+            safeEval("positionFix.proj <- try({spTransform(positionFix.xy,CRS(\"+init=" + srs + "\"))}, silent=TRUE);");
+            safeEval(
+                "if (class(positionFix.proj) == 'try-error') {\n" +
+                "  stop(\"Unable to project locations. Please check that coordinates and the project's Spatial Reference System are valid.\")\n" +
+                "}"
+            );
         }
         catch (REngineException e) {
             throw new RServeInterfaceException(e.toString());
