@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
 @Service
@@ -140,7 +139,7 @@ public class ProjectDaoImpl implements ProjectDao {
         try {
             polygon = (Polygon) reader.read(wkt);
         }
-        catch (ParseException e) {
+        catch (Exception e) {
             return null;
         }
         return polygon;
