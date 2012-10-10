@@ -143,7 +143,8 @@ public class PositionFixFileLoader extends DataFileLoader {
 
             logger.debug("File opened + header read.");
 
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy H:m:s");
+            SimpleDateFormat dateFormat = null;
+            Boolean dateIncludesTime = null;
 
             try {
                 while ((strLine = reader.readLine()) != null) {
@@ -167,26 +168,34 @@ public class PositionFixFileLoader extends DataFileLoader {
                                     case UTCDATE:
                                     case LOCDATE:
                                     case DATE:
-                                           try {
-                                               if (lineNumber == 2) {
-                                                   simpleDateFormat = findDateFormat(dataRow[i]);
-                                               }
-                                               Calendar calendar = Calendar.getInstance();
-                                               try {
-                                                   calendar.setTime(simpleDateFormat.parse(dataRow[i]));
-                                               } catch (ParseException e) {
-                                                   throw new FileProcessingException("Date Parsing error. ");
-                                               }
-                                               rawPositionFix.setDetectionTime(calendar.getTime());
-                                           } catch (FileProcessingException e) {
-                                                throw new FileProcessingException(e.toString() + "Using date: "+ dataRow[i] + " from line : "  + lineNumber);
-                                           }
+                                        try {
+                                            if (lineNumber == 2) {
+                                                FindDateFormatResult findDateFormatResult = findDateFormat(dataRow[i]);
+                                                dateFormat = findDateFormatResult.dateFormat;
+                                                dateIncludesTime = findDateFormatResult.includesTime;
+                                            }
+                                            Calendar calendar = Calendar.getInstance();
+                                            try {
+                                                calendar.setTime(dateFormat.parse(dataRow[i]));
+                                                if (dateIncludesTime && dataFile.getLocalTimeConversionRequired()) {
+                                                    calendar.add(Calendar.HOUR, dataFile.getLocalTimeConversionHours().intValue());
+                                                }
+                                            }
+                                            catch (ParseException e) {
+                                                throw new FileProcessingException("Date Parsing error. ");
+                                            }
+                                            rawPositionFix.setDetectionTime(calendar.getTime());
+                                        }
+                                        catch (FileProcessingException e) {
+                                            throw new FileProcessingException(e.toString() + "Using date: "+ dataRow[i] + " from line : "  + lineNumber);
+                                        }
                                         break;
                                     case UTCTIME:
                                     case TIME:
                                         try {
                                             rawPositionFix.setDetectionTime(timeHandler(rawPositionFix.getDetectionTime(),dataRow[i]));
-                                        } catch (FileProcessingException e) {
+                                        }
+                                        catch (FileProcessingException e) {
                                             throw new FileProcessingException("Unable to read time format on line " + lineNumber + ": " + dataRow[i], e);
                                         }
                                         break;
@@ -240,74 +249,58 @@ public class PositionFixFileLoader extends DataFileLoader {
         }
     }
 
+    private static class FindDateFormatResult {
+        public SimpleDateFormat dateFormat;
+        public Boolean includesTime;
+    }
+
     // handles fields that are either just a date OR a date and time
-    private SimpleDateFormat findDateFormat(String dateString) throws FileProcessingException {
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s.S");
-        //Calendar calendar = Calendar.getInstance();
-
-        String DateDotsRegex = "(0[1-9]|[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[012]|[1-9])\\.(19[0-9][0-9]|20[0-9][0-9])";
-        String dateDotsPattern = "dd.MM.yyyy";
-
-        String dateSlashesRegex = "(0[1-9]|[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012]|[1-9])/(19[0-9][0-9]|20[0-9][0-9])";
-        String dateSlashesPattern = "dd/MM/yyyy";
-
-        String backwardsDateDotsRegex = "(19[0-9][0-9]|20[0-9][0-9])\\.(0[1-9]|[1-9]|[12][0-9]|3[01])\\.(0[1-9]|[1-9]|[12][0-9]|3[01])";
-        String backwardsDateDotsPattern = "yyyy.MM.dd";
-
-        String timeRegexHM =   ".(0[0-9]|[0-9]|[1][0-9]|2[0-3]).([0-9]|[0-5][0-9])" ;
-        String timePatternHM = " H:m";
-
-        String timeRegexHMS =   ".(0[0-9]|[0-9]|[1][0-9]|2[0-3]).([0-9]|[0-5][0-9]).([0-9]|[0-5][0-9])" ;
-        String timePatternHMS = " H:m:s";
-
-        String timeRegexHMSMs = ".(0[0-9]|[0-9]|[1][0-9]|2[0-3]).([0-9]|[0-5][0-9]).([0-9]|[0-5][0-9]).([0-9])+" ;
-        String timePatternHMSMs = " H:m:s.S";
-
-        if (dateString.matches(DateDotsRegex)) {
-                simpleDateFormat.applyPattern(dateDotsPattern);
-        } else if (dateString.matches(DateDotsRegex + timeRegexHM)) {
-                simpleDateFormat.applyPattern(dateDotsPattern + timePatternHM);
-        } else if (dateString.matches(DateDotsRegex + timeRegexHMS)) {
-                simpleDateFormat.applyPattern(dateDotsPattern + timePatternHMS);
-        } else if (dateString.matches(DateDotsRegex + timeRegexHMSMs)) {
-                simpleDateFormat.applyPattern(dateDotsPattern + timePatternHMSMs);
-
-        // date with slashes
-        } else if (dateString.matches(dateSlashesRegex)) {
-                simpleDateFormat.applyPattern(dateSlashesPattern);
-        } else if (dateString.matches(dateSlashesRegex + timeRegexHM)) {
-                simpleDateFormat.applyPattern(dateSlashesPattern + timePatternHM);
-        } else if (dateString.matches(dateSlashesRegex + timeRegexHMS)) {
-                simpleDateFormat.applyPattern(dateSlashesPattern + timePatternHMS);
-        } else if (dateString.matches(dateSlashesRegex + timeRegexHMSMs)) {
-                simpleDateFormat.applyPattern(dateSlashesPattern + timePatternHMSMs);
-
-        // year first with dots
-        } else if (dateString.matches(backwardsDateDotsRegex)) {
-            simpleDateFormat.applyPattern(backwardsDateDotsPattern);
-        } else if (dateString.matches(backwardsDateDotsRegex + timeRegexHM)) {
-            simpleDateFormat.applyPattern(backwardsDateDotsPattern + timePatternHM);
-        } else if (dateString.matches(backwardsDateDotsRegex + timeRegexHMS)) {
-            simpleDateFormat.applyPattern(backwardsDateDotsPattern + timePatternHMS);
-        } else if (dateString.matches(backwardsDateDotsRegex + timeRegexHMSMs)) {
-            simpleDateFormat.applyPattern(backwardsDateDotsPattern + timePatternHMSMs);
-        } else {
-            throw new FileProcessingException("Could not handle this date format: " + dateString + ". Please see the help screen.");
+    private FindDateFormatResult findDateFormat(String dateString) throws FileProcessingException {
+        String[] dateRegexes = new String[] {
+            "(0[1-9]|[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[012]|[1-9])\\.(19[0-9][0-9]|20[0-9][0-9])",
+            "(0[1-9]|[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012]|[1-9])/(19[0-9][0-9]|20[0-9][0-9])",
+            "(19[0-9][0-9]|20[0-9][0-9])\\.(0[1-9]|[1-9]|[12][0-9]|3[01])\\.(0[1-9]|[1-9]|[12][0-9]|3[01])"
+        };
+        String[] datePatterns = new String[] {
+            "dd.MM.yyyy",
+            "dd/MM/yyyy",
+            "yyyy.MM.dd"
+        };
+        String[] timeRegexes = new String[] {
+            ".(0[0-9]|[0-9]|[1][0-9]|2[0-3]).([0-9]|[0-5][0-9])",
+            ".(0[0-9]|[0-9]|[1][0-9]|2[0-3]).([0-9]|[0-5][0-9]).([0-9]|[0-5][0-9])",
+            ".(0[0-9]|[0-9]|[1][0-9]|2[0-3]).([0-9]|[0-5][0-9]).([0-9]|[0-5][0-9]).([0-9])+"
+        };
+        String[] timePatterns = new String[] {
+            " H:m",
+            " H:m:s",
+            " H:m:s.S"
+        };
+        for (int dateIndex = 0; dateIndex < dateRegexes.length; dateIndex++) {
+            // Try matching just a date value
+            if (dateString.matches(dateRegexes[dateIndex])) {
+                FindDateFormatResult result = new FindDateFormatResult();
+                result.dateFormat = new SimpleDateFormat(datePatterns[dateIndex]);
+                result.includesTime = false;
+                return result;
+            }
+            // Try matching a date value followed by a time value
+            for (int timeIndex = 0; timeIndex < timeRegexes.length; timeIndex++) {
+                if (dateString.matches(dateRegexes[dateIndex] + timeRegexes[timeIndex])) {
+                    FindDateFormatResult result = new FindDateFormatResult();
+                    result.dateFormat = new SimpleDateFormat(datePatterns[dateIndex] + timePatterns[timeIndex]);
+                    result.includesTime = true;
+                    return result;
+                }
+            }
         }
-
-        return simpleDateFormat;
-
+        throw new FileProcessingException("Could not handle this date format: " + dateString + ". Please see the help screen.");
      }
 
     private Date timeHandler(Date date, String timeString) throws FileProcessingException {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-
-        if (dataFile.getLocalTimeConversionRequired()) {
-            calendar.add(Calendar.HOUR, dataFile.getLocalTimeConversionHours().intValue());
-        }
 
         String [] timeTokens = timeString.split(":");
 
@@ -335,6 +328,10 @@ public class PositionFixFileLoader extends DataFileLoader {
           }
         } catch (Exception e) {
             throw new FileProcessingException("Error in time format.", e);
+        }
+
+        if (dataFile.getLocalTimeConversionRequired()) {
+            calendar.add(Calendar.HOUR, dataFile.getLocalTimeConversionHours().intValue());
         }
 
         return calendar.getTime();

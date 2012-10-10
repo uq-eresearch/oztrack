@@ -49,6 +49,7 @@ public class DataFileListController {
         binder.setAllowedFields(
             "fileDescription",
             "localTimeConversionRequired",
+            "localTimeConversionHours",
             "file"
         );
     }
