@@ -12,12 +12,16 @@ public class ProjectFormValidator implements Validator {
         return Project.class.isAssignableFrom(clazz);
     }
 
+    @Override
     public void validate(Object obj, Errors errors) {
         Project project = (Project) obj;
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "title", "error.empty.field", "Please enter a short project title.");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "error.empty.field", "Please enter a description for the project.");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "spatialCoverageDescr", "error.empty.field", "Please give a location description.");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "rightsStatement", "error.empty.field", "The Rights Statement cannot be left empty.");
+        if (project.isGlobal()) {
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "dataLicence", "error.empty.field", "A Data Licence must be selected for Open Access projects.");
+        }
         try {
             CRS.decode(project.getSrsIdentifier());
         }

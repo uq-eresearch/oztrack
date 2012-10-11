@@ -15,6 +15,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -74,6 +75,10 @@ public class Project extends OztrackBaseEntity {
     private String dataSpaceURI;
     private Date dataSpaceUpdateDate;
     private String rightsStatement;
+
+    @ManyToOne
+    @JoinColumn(name="data_licence_id")
+    private DataLicence dataLicence;
 
     public Project() {
     }
@@ -244,6 +249,14 @@ public class Project extends OztrackBaseEntity {
 
     public void setRightsStatement(String rightsStatement) {
         this.rightsStatement = rightsStatement;
+    }
+
+    public DataLicence getDataLicence() {
+        return dataLicence;
+    }
+
+    public void setDataLicence(DataLicence dataLicence) {
+        this.dataLicence = dataLicence;
     }
 
     @Override
