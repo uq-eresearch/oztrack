@@ -318,10 +318,13 @@
                 <div class="control-group">
                     <label class="control-label" for="publicationUrl">Rights Statement</label>
                     <div class="controls">
-                        <form:textarea path="rightsStatement" cssStyle="width: 400px; height: 100px;"/>
+                        <form:textarea path="rightsStatement" cssStyle="width: 400px; height: 100px;" placeholder="e.g. Copyright ${currentUser.organisation} ${currentYear}"/>
                         <div class="help-inline">
                             <a class=info href="#"><img src="<c:url value="/img/help.png"/>" border="0">
-                            <span><b>Rights Statement:</b><br>This should reflect any restrictions around the access rights and use of your data.</span>
+                            <span>
+                                <b>Rights Statement:</b><br>
+                                A statement about the intellectual property rights held in or over a collection.
+                            </span>
                             </a>
                         </div>
                         <form:errors path="rightsStatement" element="div" cssClass="help-block formErrors"/>

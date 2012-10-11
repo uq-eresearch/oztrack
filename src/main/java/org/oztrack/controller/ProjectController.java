@@ -2,6 +2,8 @@ package org.oztrack.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -146,6 +148,7 @@ public class ProjectController {
     public String getEditView(Model model, @ModelAttribute(value="project") Project project) {
         model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
         model.addAttribute("dataLicences", dataLicenceDao.getAll());
+        model.addAttribute("currentYear", (new GregorianCalendar()).get(Calendar.YEAR));
         return "project-form";
     }
 
@@ -158,11 +161,12 @@ public class ProjectController {
         BindingResult bindingResult,
         @RequestParam(value="dataLicenceId", required=false) Long dataLicenceId
     ) throws Exception {
-        project.setDataLicence((dataLicenceId == null) ? null : dataLicenceDao.getById(dataLicenceId));
+        project.setDataLicence((!project.isGlobal() || (dataLicenceId == null)) ? null : dataLicenceDao.getById(dataLicenceId));
         new ProjectFormValidator().validate(project, bindingResult);
         if (bindingResult.hasErrors()) {
             model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
             model.addAttribute("dataLicences", dataLicenceDao.getAll());
+            model.addAttribute("currentYear", (new GregorianCalendar()).get(Calendar.YEAR));
             return "project-form";
         }
         projectDao.update(project);
