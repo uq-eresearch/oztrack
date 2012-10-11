@@ -278,25 +278,44 @@
                 <div class="control-group">
                     <label class="control-label" for="publicationUrl">Access Rights</label>
                     <div class="controls">
-                        <label for="isGlobalTrue" class="radio" style="font-weight: bold; color: green;">
-                            <form:radiobutton id="isGlobalTrue" path="isGlobal" value="true"/>
-                            Open Access
+                        <label for="isGlobalTrue" class="radio">
+                            <form:radiobutton id="isGlobalTrue" path="isGlobal" value="true" onclick="$('#data-licences-control-group').fadeIn();"/>
+                            <span style="font-weight: bold; color: green;">Open Access</span>
+                            <div style="margin: 0.5em 0;">
+                                Data in this project will be made publicly available via OzTrack.
+                            </div>
                         </label>
-                        <div style="margin: 0.5em 0;">
-                            Data in this project will be made publicly available via OzTrack.
-                        </div>
-                        <label for="isGlobalFalse" class="radio" style="font-weight: bold; color: red;">
-                            <form:radiobutton id="isGlobalFalse" path="isGlobal" value="false"/>
-                            Restricted Access
+                        <label for="isGlobalFalse" class="radio">
+                            <form:radiobutton id="isGlobalFalse" path="isGlobal" value="false" onclick="$('#data-licences-control-group').fadeOut();"/>
+                            <span style="font-weight: bold; color: red;">Restricted Access</span>
+                            <div style="margin: 0.5em 0;">
+                                Data in this project will only be accessible to you.
+                                However, note that metadata including title, description, location, and animal species
+                                are made publicly available for all projects in OzTrack.
+                            </div>
                         </label>
-                        <div style="margin: 0.5em 0;">
-                            Data in this project will only be accessible to you.
-                            However, note that metadata including title, description, location, and animal species
-                            are made publicly available for all projects in OzTrack.
-                        </div>
                     </div>
-               </div>
-               <div class="control-group">
+                </div>
+                <div class="control-group" id="data-licences-control-group" style="<c:if test="${!project.global}">display: none;</c:if>">
+                    <label class="control-label" for="dataLicence">Data Licence</label>
+                    <div class="controls">
+                        <form:errors path="dataLicence" element="div" cssClass="help-block formErrors" cssStyle="margin: 5px 0 1em 0;"/>
+                        <c:forEach var="dataLicence" items="${dataLicences}">
+                        <label class="radio">
+                            <input name="dataLicenceId" type="radio" value="${dataLicence.id}" <c:if test="${project.dataLicence.id == dataLicence.id}">checked="checked"</c:if>/>
+                            <img src="${dataLicence.imageUrl}" />
+                            <div style="margin: 0.5em 0px 0.5em 0px; font-weight: bold; color: #555;">
+                                ${dataLicence.title}
+                            </div>
+                            <div style="margin: 0.5em 0px 1.5em 0px;">
+                                ${dataLicence.description}
+                                <a href="${dataLicence.infoUrl}">More information</a>
+                            </div>
+                        </label>
+                        </c:forEach>
+                    </div>
+                </div>
+                <div class="control-group">
                     <label class="control-label" for="publicationUrl">Rights Statement</label>
                     <div class="controls">
                         <form:textarea path="rightsStatement" cssStyle="width: 400px; height: 100px;"/>

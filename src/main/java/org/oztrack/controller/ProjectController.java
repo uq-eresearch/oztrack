@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
+import org.oztrack.data.access.DataLicenceDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.SrsDao;
 import org.oztrack.data.access.UserDao;
@@ -56,6 +57,9 @@ public class ProjectController {
 
     @Autowired
     private SrsDao srsDao;
+
+    @Autowired
+    private DataLicenceDao dataLicenceDao;
 
     @InitBinder("project")
     public void initProjectBinder(WebDataBinder binder) {
@@ -141,6 +145,7 @@ public class ProjectController {
     @PreAuthorize("hasPermission(#project, 'write')")
     public String getEditView(Model model, @ModelAttribute(value="project") Project project) {
         model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
+        model.addAttribute("dataLicences", dataLicenceDao.getAll());
         return "project-form";
     }
 
@@ -148,11 +153,16 @@ public class ProjectController {
     @PreAuthorize("hasPermission(#project, 'write')")
     public String processUpdate(
         Authentication authentication,
+        Model model,
         @ModelAttribute(value="project") Project project,
-        BindingResult bindingResult
+        BindingResult bindingResult,
+        @RequestParam(value="dataLicenceId", required=false) Long dataLicenceId
     ) throws Exception {
+        project.setDataLicence((dataLicenceId == null) ? null : dataLicenceDao.getById(dataLicenceId));
         new ProjectFormValidator().validate(project, bindingResult);
         if (bindingResult.hasErrors()) {
+            model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
+            model.addAttribute("dataLicences", dataLicenceDao.getAll());
             return "project-form";
         }
         projectDao.update(project);

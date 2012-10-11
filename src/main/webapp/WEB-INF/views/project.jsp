@@ -272,10 +272,8 @@
             </td>
         </tr>
         </c:if>
-        <tr>
-            <th>Rights Statement:</th>
-            <td><c:out value="${project.rightsStatement}"/></td>
-        </tr>
+        
+        <sec:authorize access="!#project.global or hasPermission(#project, 'read')">
         <tr>
             <th>Access Rights:</th>
             <td>
@@ -289,7 +287,30 @@
             </c:choose>
             </td>
         </tr>
+        </sec:authorize>
 
+        <c:if test="${project.global and (project.dataLicence != null)}">
+        <tr>
+            <th>Data Licence:</th>
+            <td>
+                <p>
+                    <a href="${project.dataLicence.infoUrl}"><img src="${project.dataLicence.imageUrl}" /></a>
+                </p>
+                <p>
+                    <span style="font-weight: bold;"><a href="${project.dataLicence.infoUrl}">${project.dataLicence.title}</a></span>
+                </p>
+                <p>
+                    ${project.dataLicence.description}
+                    <a href="${project.dataLicence.infoUrl}">More information</a>
+                </p>
+            </td>
+        </tr>
+        </c:if>
+        
+        <tr>
+            <th>Rights Statement:</th>
+            <td><c:out value="${project.rightsStatement}"/></td>
+        </tr>
 
         <sec:authorize access="hasPermission(#project, 'manage')">
         <tr>
