@@ -372,25 +372,22 @@
                 <div class="control-group" id="data-licences-control-group" style="<c:if test="${!project.global}">display: none;</c:if>">
                     <label class="control-label" for="dataLicenceCopyright">Data Licence</label>
                     <div class="controls">
-                        <div style="margin: 0.5em 0; font-weight: bold;">
-                            Licence selector
-                        </div>
                         <div style="margin: 0.5em 0 1em 0;">
-                            <label><input id="dataLicenceCopyright" type="checkbox" checked="checked" onchange="updateDataLicenceFromLicenceSelector();"/> The data in this project are covered by copyright restrictions (not in the public domain)</label>
-                            <label><input id="dataLicenceAttribution" type="checkbox" checked="checked" onchange="updateDataLicenceFromLicenceSelector();"/> Require others to attribute the author or licence holder of the data in this project</label>
-                            <label><input id="dataLicenceDerivatives" type="checkbox" checked="checked" onchange="updateDataLicenceFromLicenceSelector();"/> Allow others to alter, transform, or build upon data in this project</label>
-                            <label><input id="dataLicenceShareAlike" type="checkbox" checked="checked" onchange="updateDataLicenceFromLicenceSelector();"/> Require others to licence this derivative data under identical licencing terms</label>
-                            <label><input id="dataLicenceCommercial" type="checkbox" checked="checked" onchange="updateDataLicenceFromLicenceSelector();"/> Allow others to use this data for commercial purposes</label>
+                            <label><input id="dataLicenceCopyright" type="checkbox" checked="checked" onchange="updateDataLicenceFromLicenceSelector();" style="margin-top: 0;" /> Data in this project are covered by copyright restrictions (not in the public domain)</label>
+                            <label><input id="dataLicenceAttribution" type="checkbox" checked="checked" onchange="updateDataLicenceFromLicenceSelector();" style="margin-top: 0;" /> Require others to attribute the author or licence holder of the data in this project</label>
+                            <label><input id="dataLicenceDerivatives" type="checkbox" checked="checked" onchange="updateDataLicenceFromLicenceSelector();" style="margin-top: 0;" /> Allow others to alter, transform, or build upon data in this project</label>
+                            <label><input id="dataLicenceShareAlike" type="checkbox" checked="checked" onchange="updateDataLicenceFromLicenceSelector();" style="margin-top: 0;" /> Require others to licence this derivative data under identical licencing terms</label>
+                            <label><input id="dataLicenceCommercial" type="checkbox" checked="checked" onchange="updateDataLicenceFromLicenceSelector();" style="margin-top: 0;" /> Allow others to use this data for commercial purposes</label>
                         </div>
                         <form:errors path="dataLicence" element="div" cssClass="help-block formErrors" cssStyle="margin: 5px 0 1em 0;"/>
                         <input id="dataLicenceIdentifier" name="dataLicenceIdentifier" type="hidden" value="${project.dataLicence.identifier}"/>
                         <c:forEach var="dataLicence" items="${dataLicences}">
                         <div id="dataLicence-${dataLicence.identifier}" class="dataLicence" style="margin: 1.5em 0 0 0; display: none;">
                             <img src="${dataLicence.imageUrl}" />
-                            <div style="margin: 0.5em 0px 0.5em 0px; font-weight: bold; color: #555;">
+                            <div style="margin: 0.5em 0px; font-weight: bold; color: #555;">
                                 ${dataLicence.title}
                             </div>
-                            <div style="margin: 0.5em 0px 1.5em 0px;">
+                            <div style="margin: 0.5em 0 0 0;">
                                 ${dataLicence.description}
                                 <a href="${dataLicence.infoUrl}">More information</a>
                             </div>
