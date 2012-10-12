@@ -307,10 +307,12 @@
         </tr>
         </c:if>
         
+        <c:if test="${not empty project.rightsStatement}">
         <tr>
             <th>Rights Statement:</th>
             <td><c:out value="${project.rightsStatement}"/></td>
         </tr>
+        </c:if>
 
         <sec:authorize access="hasPermission(#project, 'manage')">
         <tr>
