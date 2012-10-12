@@ -28,4 +28,12 @@ public class DataLicenceDaoImpl implements DataLicenceDao {
             .setParameter("id", id)
             .getSingleResult();
     }
+
+    @Override
+    public DataLicence getByIdentifier(String identifier) {
+        return (DataLicence) em
+            .createQuery("from org.oztrack.data.model.DataLicence where identifier = :identifier")
+            .setParameter("identifier", identifier)
+            .getSingleResult();
+    }
 }

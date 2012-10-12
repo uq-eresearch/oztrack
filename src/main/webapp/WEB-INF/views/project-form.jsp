@@ -25,6 +25,78 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/LoadingPanel.js"></script>
         <script type="text/javascript" src="<c:url value="/js/srs-selector.js"/>"></script>
         <script type="text/javascript">
+            function updateLicenceSelectorFromDataLicence() {
+                var dataLicenceIdentifier = $('#dataLicenceIdentifier').val();
+                if (!dataLicenceIdentifier) {
+                    dataLicenceIdentifier = 'CC-BY-SA';
+                }
+                if (dataLicenceIdentifier == 'PDM') {
+                    $('#dataLicenceCopyright').prop('checked', false);
+                    $('#dataLicenceAttribution').prop('disabled', true);
+                    $('#dataLicenceDerivatives').prop('disabled', true);
+                    $('#dataLicenceShareAlike').prop('disabled', true);
+                    $('#dataLicenceCommercial').prop('disabled', true);
+                }
+                else {
+                    $('#dataLicenceCopyright').prop('checked', true);
+                    $('#dataLicenceAttribution').prop('disabled', false);
+                    if (dataLicenceIdentifier == 'CC0') {
+                        $('#dataLicenceAttribution').prop('checked', false);
+                        $('#dataLicenceDerivatives').prop('disabled', true);
+                        $('#dataLicenceShareAlike').prop('disabled', true);
+                        $('#dataLicenceCommercial').prop('disabled', true);
+                    }
+                    else {
+                        $('#dataLicenceAttribution').prop('checked', true);
+                        $('#dataLicenceDerivatives').prop('disabled', false);
+                        if ((dataLicenceIdentifier == 'CC-BY-ND') || (dataLicenceIdentifier == 'CC-BY-NC-ND')) {
+                            $('#dataLicenceDerivatives').prop('checked', false);
+                            $('#dataLicenceShareAlike').prop('disabled', true);
+                        }
+                        else {
+                            $('#dataLicenceDerivatives').prop('checked', true);
+                            $('#dataLicenceShareAlike').prop('disabled', false);
+                        }
+                        if ((dataLicenceIdentifier == 'CC-BY-SA') || (dataLicenceIdentifier == 'CC-BY-NC-SA')) {
+                            $('#dataLicenceShareAlike').prop('checked', true);
+                        }
+                        else {
+                            $('#dataLicenceShareAlike').prop('checked', false);
+                        }
+                        $('#dataLicenceCommercial').prop('disabled', false);
+                        if ((dataLicenceIdentifier == 'CC-BY-NC') || (dataLicenceIdentifier == 'CC-BY-NC-ND') || (dataLicenceIdentifier == 'CC-BY-NC-SA')) {
+                            $('#dataLicenceCommercial').prop('checked', false);
+                        }
+                        else {
+                            $('#dataLicenceCommercial').prop('checked', true);
+                        }
+                    }
+                }
+                $('.dataLicence').hide();
+                $('#dataLicence-' + dataLicenceIdentifier).fadeIn();
+            }
+            function updateDataLicenceFromLicenceSelector() {
+                if (!$('#dataLicenceCopyright').prop('checked')) {
+                    $('#dataLicenceIdentifier').val('PDM');
+                }
+                else if (!$('#dataLicenceAttribution').prop('checked')) {
+                    $('#dataLicenceIdentifier').val('CC0');
+                }
+                else {
+                    var dataLicenceIdentifier = 'CC-BY';
+                    if (!$('#dataLicenceCommercial').prop('checked')) {
+                        dataLicenceIdentifier += '-NC';
+                    }
+                    if (!$('#dataLicenceDerivatives').prop('checked')) {
+                        dataLicenceIdentifier += '-ND';
+                    }
+                    else if ($('#dataLicenceShareAlike').prop('checked')) {
+                        dataLicenceIdentifier += '-SA';
+                    }
+                    $('#dataLicenceIdentifier').val(dataLicenceIdentifier);
+                }
+                updateLicenceSelectorFromDataLicence();
+            }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
                 srsSelector = createSrsSelector({
@@ -46,6 +118,7 @@
                         </c:forEach>
                     ]
                 });
+                updateLicenceSelectorFromDataLicence();
             });
         </script>
     </jsp:attribute>
@@ -297,12 +370,22 @@
                     </div>
                 </div>
                 <div class="control-group" id="data-licences-control-group" style="<c:if test="${!project.global}">display: none;</c:if>">
-                    <label class="control-label" for="dataLicence">Data Licence</label>
+                    <label class="control-label" for="dataLicenceCopyright">Data Licence</label>
                     <div class="controls">
+                        <div style="margin: 0.5em 0; font-weight: bold;">
+                            Licence selector
+                        </div>
+                        <div style="margin: 0.5em 0 1em 0;">
+                            <label><input id="dataLicenceCopyright" type="checkbox" checked="checked" onchange="updateDataLicenceFromLicenceSelector();"/> The data in this project are covered by copyright restrictions (not in the public domain)</label>
+                            <label><input id="dataLicenceAttribution" type="checkbox" checked="checked" onchange="updateDataLicenceFromLicenceSelector();"/> Require others to attribute the author or licence holder of the data in this project</label>
+                            <label><input id="dataLicenceDerivatives" type="checkbox" checked="checked" onchange="updateDataLicenceFromLicenceSelector();"/> Allow others to alter, transform, or build upon data in this project</label>
+                            <label><input id="dataLicenceShareAlike" type="checkbox" checked="checked" onchange="updateDataLicenceFromLicenceSelector();"/> Require others to licence this derivative data under identical licencing terms</label>
+                            <label><input id="dataLicenceCommercial" type="checkbox" checked="checked" onchange="updateDataLicenceFromLicenceSelector();"/> Allow others to use this data for commercial purposes</label>
+                        </div>
                         <form:errors path="dataLicence" element="div" cssClass="help-block formErrors" cssStyle="margin: 5px 0 1em 0;"/>
+                        <input id="dataLicenceIdentifier" name="dataLicenceIdentifier" type="hidden" value="${project.dataLicence.identifier}"/>
                         <c:forEach var="dataLicence" items="${dataLicences}">
-                        <label class="radio">
-                            <input name="dataLicenceId" type="radio" value="${dataLicence.id}" <c:if test="${project.dataLicence.id == dataLicence.id}">checked="checked"</c:if>/>
+                        <div id="dataLicence-${dataLicence.identifier}" class="dataLicence" style="margin: 1.5em 0 0 0; display: none;">
                             <img src="${dataLicence.imageUrl}" />
                             <div style="margin: 0.5em 0px 0.5em 0px; font-weight: bold; color: #555;">
                                 ${dataLicence.title}
@@ -311,7 +394,7 @@
                                 ${dataLicence.description}
                                 <a href="${dataLicence.infoUrl}">More information</a>
                             </div>
-                        </label>
+                        </div>
                         </c:forEach>
                     </div>
                 </div>

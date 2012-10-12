@@ -159,9 +159,14 @@ public class ProjectController {
         Model model,
         @ModelAttribute(value="project") Project project,
         BindingResult bindingResult,
-        @RequestParam(value="dataLicenceId", required=false) Long dataLicenceId
+        @RequestParam(value="dataLicenceIdentifier", required=false) String dataLicenceIdentifier
     ) throws Exception {
-        project.setDataLicence((!project.isGlobal() || (dataLicenceId == null)) ? null : dataLicenceDao.getById(dataLicenceId));
+        if (project.isGlobal() && (dataLicenceIdentifier != null)) {
+            project.setDataLicence(dataLicenceDao.getByIdentifier(dataLicenceIdentifier));
+        }
+        else {
+            project.setDataLicence(null);
+        }
         new ProjectFormValidator().validate(project, bindingResult);
         if (bindingResult.hasErrors()) {
             model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());

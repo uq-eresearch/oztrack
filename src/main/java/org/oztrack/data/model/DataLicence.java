@@ -15,6 +15,9 @@ public class DataLicence {
     @SequenceGenerator(name="data_licence_id_seq", sequenceName="data_licence_id_seq", allocationSize=1)
     private Long id;
 
+    @Column(name="identifier", columnDefinition="text", unique=true, nullable=false)
+    private String identifier;
+
     @Column(name="title", columnDefinition="text", unique=true, nullable=false)
     private String title;
 
@@ -36,6 +39,14 @@ public class DataLicence {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
     }
 
     public String getTitle() {
