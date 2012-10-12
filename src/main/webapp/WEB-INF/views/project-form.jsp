@@ -318,15 +318,13 @@
                 <div class="control-group">
                     <label class="control-label" for="publicationUrl">Rights Statement</label>
                     <div class="controls">
+                        <p class="help-block" style="margin: 5px 0 1em 0;">
+                            If your project requires a statement about the intellectual property rights held in
+                            or over a collection, please enter this here. In particular, if data are the
+                            property of an institution or someone other than yourself, an appropriate
+                            copyright notice should be provided.
+                        </p>
                         <form:textarea path="rightsStatement" cssStyle="width: 400px; height: 100px;" placeholder="e.g. Copyright ${currentUser.organisation} ${currentYear}"/>
-                        <div class="help-inline">
-                            <a class=info href="#"><img src="<c:url value="/img/help.png"/>" border="0">
-                            <span>
-                                <b>Rights Statement:</b><br>
-                                A statement about the intellectual property rights held in or over a collection.
-                            </span>
-                            </a>
-                        </div>
                         <form:errors path="rightsStatement" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
