@@ -126,7 +126,8 @@ public class ProjectDaoImpl implements ProjectDao {
             "select ST_AsText(ST_Envelope(ST_Collect(positionfix.locationgeometry)))\n" +
             "from datafile, positionfix\n" +
             "where datafile.project_id = :projectId\n" +
-            "and positionfix.datafile_id = datafile.id"
+            "and positionfix.datafile_id = datafile.id\n" +
+            "and not(positionfix.deleted)"
         );
         query.setParameter("projectId", project.getId());
         String wkt = (String) query.getSingleResult();
