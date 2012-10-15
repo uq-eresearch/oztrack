@@ -19,12 +19,35 @@
     <jsp:attribute name="head">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
+        <style type="text/css">
+            .dataLicence {
+                padding: 10px;
+                border: 1px solid #bbb;
+                background-color: #f6f6f6;
+                color: #555;
+                -khtml-border-radius: 3px;
+                -webkit-border-radius: 3px;
+                -moz-border-radius: 3px;
+                -ms-border-radius: 3px;
+                -o-border-radius: 3px;
+                border-radius: 3px;
+            }
+            .dataLicenceCheckbox {
+                margin-top: 0;
+            }
+            label.disabled {
+                color: #999;'
+            }
+        </style>
         <script src="http://maps.google.com/maps/api/js?v=3.9&sensor=false"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/proj4js/proj4js-compressed.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/OpenLayers.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/LoadingPanel.js"></script>
         <script type="text/javascript" src="<c:url value="/js/srs-selector.js"/>"></script>
         <script type="text/javascript">
+            function setCheckboxDisabled(selector, disabled) {
+                $(selector).prop('disabled', disabled).parent('label').toggleClass('disabled', disabled);
+            }
             function updateLicenceSelectorFromDataLicence() {
                 var dataLicenceIdentifier = $('#dataLicenceIdentifier').val();
                 if (!dataLicenceIdentifier) {
@@ -32,38 +55,38 @@
                 }
                 if (dataLicenceIdentifier == 'PDM') {
                     $('#dataLicenceCopyright').prop('checked', false);
-                    $('#dataLicenceAttribution').prop('disabled', true);
-                    $('#dataLicenceDerivatives').prop('disabled', true);
-                    $('#dataLicenceShareAlike').prop('disabled', true);
-                    $('#dataLicenceCommercial').prop('disabled', true);
+                    setCheckboxDisabled('#dataLicenceAttribution', true);
+                    setCheckboxDisabled('#dataLicenceDerivatives', true);
+                    setCheckboxDisabled('#dataLicenceShareAlike', true);
+                    setCheckboxDisabled('#dataLicenceCommercial', true);
                 }
                 else {
                     $('#dataLicenceCopyright').prop('checked', true);
-                    $('#dataLicenceAttribution').prop('disabled', false);
+                    setCheckboxDisabled('#dataLicenceAttribution', false);
                     if (dataLicenceIdentifier == 'CC0') {
                         $('#dataLicenceAttribution').prop('checked', false);
-                        $('#dataLicenceDerivatives').prop('disabled', true);
-                        $('#dataLicenceShareAlike').prop('disabled', true);
-                        $('#dataLicenceCommercial').prop('disabled', true);
+                        setCheckboxDisabled('#dataLicenceDerivatives', true);
+                        setCheckboxDisabled('#dataLicenceShareAlike', true);
+                        setCheckboxDisabled('#dataLicenceCommercial', true);
                     }
                     else {
                         $('#dataLicenceAttribution').prop('checked', true);
-                        $('#dataLicenceDerivatives').prop('disabled', false);
+                        setCheckboxDisabled('#dataLicenceDerivatives', false);
+                        setCheckboxDisabled('#dataLicenceCommercial', false);
                         if ((dataLicenceIdentifier == 'CC-BY-ND') || (dataLicenceIdentifier == 'CC-BY-NC-ND')) {
                             $('#dataLicenceDerivatives').prop('checked', false);
-                            $('#dataLicenceShareAlike').prop('disabled', true);
+                            setCheckboxDisabled('#dataLicenceShareAlike', true);
                         }
                         else {
                             $('#dataLicenceDerivatives').prop('checked', true);
-                            $('#dataLicenceShareAlike').prop('disabled', false);
+                            setCheckboxDisabled('#dataLicenceShareAlike', false);
+                            if ((dataLicenceIdentifier == 'CC-BY-SA') || (dataLicenceIdentifier == 'CC-BY-NC-SA')) {
+                                $('#dataLicenceShareAlike').prop('checked', true);
+                            }
+                            else {
+                                $('#dataLicenceShareAlike').prop('checked', false);
+                            }
                         }
-                        if ((dataLicenceIdentifier == 'CC-BY-SA') || (dataLicenceIdentifier == 'CC-BY-NC-SA')) {
-                            $('#dataLicenceShareAlike').prop('checked', true);
-                        }
-                        else {
-                            $('#dataLicenceShareAlike').prop('checked', false);
-                        }
-                        $('#dataLicenceCommercial').prop('disabled', false);
                         if ((dataLicenceIdentifier == 'CC-BY-NC') || (dataLicenceIdentifier == 'CC-BY-NC-ND') || (dataLicenceIdentifier == 'CC-BY-NC-SA')) {
                             $('#dataLicenceCommercial').prop('checked', false);
                         }
@@ -118,6 +141,7 @@
                         </c:forEach>
                     ]
                 });
+                $('.dataLicenceCheckbox').change(updateDataLicenceFromLicenceSelector);
                 updateLicenceSelectorFromDataLicence();
             });
         </script>
@@ -373,18 +397,33 @@
                     <label class="control-label" for="dataLicenceCopyright">Data Licence</label>
                     <div class="controls">
                         <div style="margin: 0.5em 0 1em 0;">
-                            <label><input id="dataLicenceCopyright" type="checkbox" checked="checked" onchange="updateDataLicenceFromLicenceSelector();" style="margin-top: 0;" /> Data in this project are covered by copyright restrictions (not in the public domain)</label>
-                            <label><input id="dataLicenceAttribution" type="checkbox" checked="checked" onchange="updateDataLicenceFromLicenceSelector();" style="margin-top: 0;" /> Require others to attribute the author or licence holder of the data in this project</label>
-                            <label><input id="dataLicenceDerivatives" type="checkbox" checked="checked" onchange="updateDataLicenceFromLicenceSelector();" style="margin-top: 0;" /> Allow others to alter, transform, or build upon data in this project</label>
-                            <label><input id="dataLicenceShareAlike" type="checkbox" checked="checked" onchange="updateDataLicenceFromLicenceSelector();" style="margin-top: 0;" /> Require others to licence this derivative data under identical licencing terms</label>
-                            <label><input id="dataLicenceCommercial" type="checkbox" checked="checked" onchange="updateDataLicenceFromLicenceSelector();" style="margin-top: 0;" /> Allow others to use this data for commercial purposes</label>
+                            <label>
+                                <input id="dataLicenceCopyright" class="dataLicenceCheckbox" type="checkbox" checked="checked" />
+                                Data in this project are covered by copyright (not in the public domain).
+                            </label>
+                            <label>
+                                <input id="dataLicenceAttribution" class="dataLicenceCheckbox" type="checkbox" checked="checked" />
+                                Require others to attribute the author or licence holder of data in this project.
+                            </label>
+                            <label>
+                                <input id="dataLicenceDerivatives" class="dataLicenceCheckbox" type="checkbox" checked="checked" />
+                                Allow others to alter, transform, or build upon data in this project.
+                            </label>
+                            <label>
+                                <input id="dataLicenceShareAlike" class="dataLicenceCheckbox" type="checkbox" checked="checked" />
+                                Require others to licence this derivative data under identical licencing terms.
+                            </label>
+                            <label>
+                                <input id="dataLicenceCommercial" class="dataLicenceCheckbox" type="checkbox" checked="checked" />
+                                Allow others to use this data for commercial purposes.
+                            </label>
                         </div>
                         <form:errors path="dataLicence" element="div" cssClass="help-block formErrors" cssStyle="margin: 5px 0 1em 0;"/>
                         <input id="dataLicenceIdentifier" name="dataLicenceIdentifier" type="hidden" value="${project.dataLicence.identifier}"/>
                         <c:forEach var="dataLicence" items="${dataLicences}">
                         <div id="dataLicence-${dataLicence.identifier}" class="dataLicence" style="margin: 1.5em 0 0 0; display: none;">
                             <img src="${dataLicence.imageUrl}" />
-                            <div style="margin: 0.5em 0px; font-weight: bold; color: #555;">
+                            <div style="margin: 0.5em 0px; font-weight: bold;">
                                 ${dataLicence.title}
                             </div>
                             <div style="margin: 0.5em 0 0 0;">
