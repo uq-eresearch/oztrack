@@ -14,6 +14,7 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.DefaultMapContext;
 import org.geotools.map.FeatureLayer;
+import org.geotools.map.Layer;
 import org.geotools.map.MapContext;
 import org.geotools.map.WMSLayer;
 import org.geotools.referencing.CRS;
@@ -121,7 +122,10 @@ public class ProjectImageController {
         MapContext mapContext = new DefaultMapContext();
         mapContext.setAreaOfInterest(mapBounds);
         if (includeBaseLayer) {
-            mapContext.addLayer(buildBaseLayer(mapBounds, mapDimension));
+            Layer baseLayer = buildBaseLayer(mapBounds, mapDimension);
+            if (baseLayer != null) {
+                mapContext.addLayer(baseLayer);
+            }
         }
         for (String mapQueryTypeString : mapQueryTypes) {
             MapQueryType mapQueryType = MapQueryType.valueOf(mapQueryTypeString);
@@ -156,16 +160,19 @@ public class ProjectImageController {
         mapContext.dispose();
     }
 
-    private WMSLayer buildBaseLayer(ReferencedEnvelope mapBounds, Dimension mapDimension) throws Exception {
-        URL capabilitiesURL = new URL("http://www.ga.gov.au/wms/getmap?dataset=national&request=getCapabilities");
-        String owsLayerName = "politicalpl";
+    private Layer buildBaseLayer(ReferencedEnvelope mapBounds, Dimension mapDimension) throws Exception {
+        URL capabilitiesURL = new URL("http://localhost/geoserver/ows?service=wms&version=1.1.1&request=GetCapabilities");
+        String owsLayerName = "oztrack:gebco_08";
         WebMapServer wms = new WebMapServer(capabilitiesURL);
-        org.geotools.data.ows.Layer owsLayer = new org.geotools.data.ows.Layer(owsLayerName);
+        org.geotools.data.ows.Layer owsLayer = null;
         for (org.geotools.data.ows.Layer layer : wms.getCapabilities().getLayerList()) {
             if (layer.getName() != null && layer.getName().equals(owsLayerName)) {
                 owsLayer = layer;
                 break;
             }
+        }
+        if (owsLayer == null) {
+            return null;
         }
         WMSLayer wmsLayer = new WMSLayer(wms, owsLayer);
         return wmsLayer;
