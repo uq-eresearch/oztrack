@@ -399,23 +399,23 @@
                         <div style="margin: 0.5em 0 1em 0;">
                             <label>
                                 <input id="dataLicenceCopyright" class="dataLicenceCheckbox" type="checkbox" checked="checked" />
-                                Data in this project are covered by copyright (not in the public domain).
+                                Data in this project are covered by copyright (i.e. not in the public domain).
                             </label>
                             <label>
                                 <input id="dataLicenceAttribution" class="dataLicenceCheckbox" type="checkbox" checked="checked" />
-                                Require others to attribute the author or licence holder of data in this project.
+                                Others must acknowledge the author or licence holder of data in this project.
                             </label>
                             <label>
                                 <input id="dataLicenceDerivatives" class="dataLicenceCheckbox" type="checkbox" checked="checked" />
-                                Allow others to alter, transform, or build upon data in this project.
+                                Others may alter, transform, or build upon data in this project.
                             </label>
                             <label>
                                 <input id="dataLicenceShareAlike" class="dataLicenceCheckbox" type="checkbox" checked="checked" />
-                                Require others to licence this derivative data under identical licencing terms.
+                                Others must licence any derivative data under identical licencing terms.
                             </label>
                             <label>
                                 <input id="dataLicenceCommercial" class="dataLicenceCheckbox" type="checkbox" checked="checked" />
-                                Allow others to use this data for commercial purposes.
+                                Others may use this data for commercial purposes.
                             </label>
                         </div>
                         <form:errors path="dataLicence" element="div" cssClass="help-block formErrors" cssStyle="margin: 5px 0 1em 0;"/>
