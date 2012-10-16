@@ -39,7 +39,7 @@
                 color: #999;'
             }
         </style>
-        <script src="http://maps.google.com/maps/api/js?v=3.9&sensor=false"></script>
+        <script src="${pageContext.request.scheme}://maps.google.com/maps/api/js?v=3.9&sensor=false"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/proj4js/proj4js-compressed.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/OpenLayers.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/LoadingPanel.js"></script>
@@ -422,7 +422,7 @@
                         <input id="dataLicenceIdentifier" name="dataLicenceIdentifier" type="hidden" value="${project.dataLicence.identifier}"/>
                         <c:forEach var="dataLicence" items="${dataLicences}">
                         <div id="dataLicence-${dataLicence.identifier}" class="dataLicence" style="margin: 1.5em 0 0 0; display: none;">
-                            <img src="${dataLicence.imageUrl}" />
+                            <img src="${pageContext.request.scheme}://${fn:substringAfter(dataLicence.imageUrl, '://')}" />
                             <div style="margin: 0.5em 0px; font-weight: bold;">
                                 ${dataLicence.title}
                             </div>
