@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.geotools.data.ows.StyleImpl;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.wms.WebMapServer;
 import org.geotools.factory.CommonFactoryFinder;
@@ -161,9 +162,10 @@ public class ProjectImageController {
     }
 
     private Layer buildBaseLayer(ReferencedEnvelope mapBounds, Dimension mapDimension) throws Exception {
-        URL capabilitiesURL = new URL("http://localhost/geoserver/ows?service=wms&version=1.1.1&request=GetCapabilities");
+        String capabilitiesURL = "http://localhost/geoserver/ows?service=wms&version=1.1.1&request=GetCapabilities";
         String owsLayerName = "oztrack:gebco_08";
-        WebMapServer wms = new WebMapServer(capabilitiesURL);
+        String owsStyleName = "bathymetry";
+        WebMapServer wms = new WebMapServer(new URL(capabilitiesURL));
         org.geotools.data.ows.Layer owsLayer = null;
         for (org.geotools.data.ows.Layer layer : wms.getCapabilities().getLayerList()) {
             if (layer.getName() != null && layer.getName().equals(owsLayerName)) {
@@ -172,6 +174,17 @@ public class ProjectImageController {
             }
         }
         if (owsLayer == null) {
+            return null;
+        }
+        StyleImpl owsStyle = null;
+        List<StyleImpl> styles = owsLayer.getStyles();
+        for (StyleImpl style : styles) {
+            if (style.getName().equals(owsStyleName)) {
+                owsStyle = style;
+                break;
+            }
+        }
+        if (owsStyle == null) {
             return null;
         }
         WMSLayer wmsLayer = new WMSLayer(wms, owsLayer);

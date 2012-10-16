@@ -5,19 +5,15 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     version="2.5">
     <context-param>
-        <param-name>org.mortbay.jetty.servlet.SessionURL</param-name>
+        <param-name>org.eclipse.jetty.servlet.SessionIdPathParameterName</param-name>
         <param-value>none</param-value>
-    </context-param>
-    <context-param>
-        <param-name>org.mortbay.jetty.servlet.MaxAge</param-name>
-        <param-value>-1</param-value>
     </context-param>
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
     <servlet>
         <servlet-name>default</servlet-name>
-        <servlet-class>org.mortbay.jetty.servlet.DefaultServlet</servlet-class>
+        <servlet-class>org.eclipse.jetty.servlet.DefaultServlet</servlet-class>
         <init-param>
             <param-name>useFileMappedBuffer</param-name>
             <param-value>false</param-value>
