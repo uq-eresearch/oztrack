@@ -2,22 +2,21 @@ package org.oztrack.controller;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.net.URL;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 
-import org.geotools.data.ows.StyleImpl;
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.wms.WebMapServer;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.DefaultMapContext;
 import org.geotools.map.FeatureLayer;
-import org.geotools.map.Layer;
 import org.geotools.map.MapContext;
-import org.geotools.map.WMSLayer;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Graphic;
@@ -118,16 +117,17 @@ public class ProjectImageController {
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setProject(project);
         Polygon projectBoundingBox = projectDao.getBoundingBox(project);
+
         ReferencedEnvelope mapBounds = new ReferencedEnvelope(projectBoundingBox.getEnvelopeInternal(), CRS.decode("EPSG:4326"));
         Dimension mapDimension = MapUtils.calculateMapDimension(mapBounds, 600);
+
+        ArrayList<BufferedImage> imageLayers = new ArrayList<BufferedImage>();
+        if (includeBaseLayer) {
+            imageLayers.add(buildBaseLayerImage(mapBounds, mapDimension));
+        }
+
         MapContext mapContext = new DefaultMapContext();
         mapContext.setAreaOfInterest(mapBounds);
-        if (includeBaseLayer) {
-            Layer baseLayer = buildBaseLayer(mapBounds, mapDimension);
-            if (baseLayer != null) {
-                mapContext.addLayer(baseLayer);
-            }
-        }
         for (String mapQueryTypeString : mapQueryTypes) {
             MapQueryType mapQueryType = MapQueryType.valueOf(mapQueryTypeString);
             SimpleFeatureCollection featureCollection = null;
@@ -157,38 +157,22 @@ public class ProjectImageController {
             FeatureLayer featureLayer = new FeatureLayer(featureCollection, style);
             mapContext.addLayer(featureLayer);
         }
-        MapUtils.writePng(mapContext, mapDimension, response.getOutputStream());
+        imageLayers.add(MapUtils.getBufferedImage(mapContext, mapDimension));
         mapContext.dispose();
+
+        BufferedImage combinedImage = new BufferedImage(mapDimension.width, mapDimension.height, BufferedImage.TYPE_INT_ARGB);
+        Graphics g = combinedImage.getGraphics();
+        for (BufferedImage image : imageLayers) {
+            g.drawImage(image, 0, 0, null);
+        }
+        ImageIO.write(combinedImage, "PNG", response.getOutputStream());
     }
 
-    private Layer buildBaseLayer(ReferencedEnvelope mapBounds, Dimension mapDimension) throws Exception {
+    private BufferedImage buildBaseLayerImage(ReferencedEnvelope mapBounds, Dimension mapDimension) throws Exception {
         String capabilitiesURL = "http://localhost/geoserver/ows?service=wms&version=1.1.1&request=GetCapabilities";
-        String owsLayerName = "oztrack:gebco_08";
-        String owsStyleName = "bathymetry";
-        WebMapServer wms = new WebMapServer(new URL(capabilitiesURL));
-        org.geotools.data.ows.Layer owsLayer = null;
-        for (org.geotools.data.ows.Layer layer : wms.getCapabilities().getLayerList()) {
-            if (layer.getName() != null && layer.getName().equals(owsLayerName)) {
-                owsLayer = layer;
-                break;
-            }
-        }
-        if (owsLayer == null) {
-            return null;
-        }
-        StyleImpl owsStyle = null;
-        List<StyleImpl> styles = owsLayer.getStyles();
-        for (StyleImpl style : styles) {
-            if (style.getName().equals(owsStyleName)) {
-                owsStyle = style;
-                break;
-            }
-        }
-        if (owsStyle == null) {
-            return null;
-        }
-        WMSLayer wmsLayer = new WMSLayer(wms, owsLayer);
-        return wmsLayer;
+        String layerName = "oztrack:gebco_08";
+        String styleName = "elevation";
+        return MapUtils.getWMSLayerImage(capabilitiesURL, layerName, styleName, mapBounds, mapDimension);
     }
 
     private Style buildDetectionsStyle(List<Animal> animals) {
