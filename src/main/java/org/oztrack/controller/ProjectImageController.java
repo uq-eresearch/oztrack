@@ -129,7 +129,8 @@ public class ProjectImageController {
         }
 
         // Expand bounding box to include margin so points aren't right on edge of image
-        mapBounds.expandBy(0.25d);
+        double padding = 0.05d;
+        mapBounds.expandBy(mapBounds.getWidth() * padding, mapBounds.getHeight() * padding);
 
         ArrayList<BufferedImage> imageLayers = new ArrayList<BufferedImage>();
         if (includeBaseLayer) {
