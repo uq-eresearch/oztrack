@@ -1,6 +1,7 @@
 package org.oztrack.validator;
 
 import org.geotools.referencing.CRS;
+import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.model.Project;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -18,8 +19,10 @@ public class ProjectFormValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "title", "error.empty.field", "Please enter a short project title.");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "error.empty.field", "Please enter a description for the project.");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "spatialCoverageDescr", "error.empty.field", "Please give a location description.");
-        if (project.isGlobal()) {
-            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "dataLicence", "error.empty.field", "A Data Licence must be selected for Open Access projects.");
+        if (OzTrackApplication.getApplicationContext().isDataLicencingEnabled()) {
+            if (project.isGlobal()) {
+                ValidationUtils.rejectIfEmptyOrWhitespace(errors, "dataLicence", "error.empty.field", "A Data Licence must be selected for Open Access projects.");
+            }
         }
         try {
             CRS.decode(project.getSrsIdentifier());

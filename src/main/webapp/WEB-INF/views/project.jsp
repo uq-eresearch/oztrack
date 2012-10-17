@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
+<%@ page import="org.oztrack.app.OzTrackApplication" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -8,6 +9,7 @@
 <c:set var="dateFormatPattern" value="dd/MM/yyyy"/>
 <c:set var="dateTimeFormatPattern" value="dd/MM/yyyy HH:mm:ss"/>
 <c:set var="shortDateFormatPattern" value="MMMM yyyy"/>
+<c:set var="dataLicencingEnabled"><%= OzTrackApplication.getApplicationContext().isDataLicencingEnabled() %></c:set>
 <tags:page title="${project.title}">
     <jsp:attribute name="head">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
@@ -289,6 +291,7 @@
         </tr>
         </sec:authorize>
 
+        <c:if test="${dataLicencingEnabled}">
         <c:if test="${project.global and (project.dataLicence != null)}">
         <tr>
             <th>Data Licence:</th>
@@ -305,6 +308,7 @@
                 </p>
             </td>
         </tr>
+        </c:if>
         </c:if>
         
         <c:if test="${not empty project.rightsStatement}">

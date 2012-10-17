@@ -1,10 +1,12 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
+<%@ page import="org.oztrack.app.OzTrackApplication" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <c:set var="dateTimeFormatPattern" value="dd/MM/yyyy HH:mm:ss"/>
+<c:set var="dataLicencingEnabled"><%= OzTrackApplication.getApplicationContext().isDataLicencingEnabled() %></c:set>
 <tags:page>
     <jsp:attribute name="title">
         <c:choose>
@@ -19,6 +21,7 @@
     <jsp:attribute name="head">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
+        <c:if test="${dataLicencingEnabled}">
         <style type="text/css">
             .dataLicence {
                 padding: 10px;
@@ -39,12 +42,14 @@
                 color: #999;'
             }
         </style>
+        </c:if>
         <script src="${pageContext.request.scheme}://maps.google.com/maps/api/js?v=3.9&sensor=false"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/proj4js/proj4js-compressed.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/OpenLayers.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/LoadingPanel.js"></script>
         <script type="text/javascript" src="<c:url value="/js/srs-selector.js"/>"></script>
         <script type="text/javascript">
+            <c:if test="${dataLicencingEnabled}">
             function setCheckboxDisabled(selector, disabled) {
                 $(selector).prop('disabled', disabled).parent('label').toggleClass('disabled', disabled);
             }
@@ -121,6 +126,7 @@
                 }
                 updateLicenceSelectorFromDataLicence();
             }
+            </c:if>
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
                 srsSelector = createSrsSelector({
@@ -142,8 +148,10 @@
                         </c:forEach>
                     ]
                 });
+                <c:if test="${dataLicencingEnabled}">
                 $('.dataLicenceCheckbox').change(updateDataLicenceFromLicenceSelector);
                 updateLicenceSelectorFromDataLicence();
+                </c:if>
             });
         </script>
     </jsp:attribute>
@@ -394,6 +402,7 @@
                         </label>
                     </div>
                 </div>
+                <c:if test="${dataLicencingEnabled}">
                 <div class="control-group" id="data-licences-control-group" style="<c:if test="${!project.global}">display: none;</c:if>">
                     <label class="control-label" for="dataLicenceCopyright">Data Licence</label>
                     <div class="controls">
@@ -435,6 +444,7 @@
                         </c:forEach>
                     </div>
                 </div>
+                </c:if>
                 <div class="control-group">
                     <label class="control-label" for="publicationUrl">Rights Statement</label>
                     <div class="controls">

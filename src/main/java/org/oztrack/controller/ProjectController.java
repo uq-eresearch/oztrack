@@ -147,7 +147,9 @@ public class ProjectController {
     @PreAuthorize("hasPermission(#project, 'write')")
     public String getEditView(Model model, @ModelAttribute(value="project") Project project) {
         model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
-        model.addAttribute("dataLicences", dataLicenceDao.getAll());
+        if (OzTrackApplication.getApplicationContext().isDataLicencingEnabled()) {
+            model.addAttribute("dataLicences", dataLicenceDao.getAll());
+        }
         model.addAttribute("currentYear", (new GregorianCalendar()).get(Calendar.YEAR));
         return "project-form";
     }
@@ -161,7 +163,7 @@ public class ProjectController {
         BindingResult bindingResult,
         @RequestParam(value="dataLicenceIdentifier", required=false) String dataLicenceIdentifier
     ) throws Exception {
-        if (project.isGlobal() && (dataLicenceIdentifier != null)) {
+        if (OzTrackApplication.getApplicationContext().isDataLicencingEnabled() && project.isGlobal() && (dataLicenceIdentifier != null)) {
             project.setDataLicence(dataLicenceDao.getByIdentifier(dataLicenceIdentifier));
         }
         else {
@@ -170,7 +172,9 @@ public class ProjectController {
         new ProjectFormValidator().validate(project, bindingResult);
         if (bindingResult.hasErrors()) {
             model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
-            model.addAttribute("dataLicences", dataLicenceDao.getAll());
+            if (OzTrackApplication.getApplicationContext().isDataLicencingEnabled()) {
+                model.addAttribute("dataLicences", dataLicenceDao.getAll());
+            }
             model.addAttribute("currentYear", (new GregorianCalendar()).get(Calendar.YEAR));
             return "project-form";
         }

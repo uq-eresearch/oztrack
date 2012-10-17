@@ -11,6 +11,7 @@ public interface OzTrackConfiguration {
     String getMailFromEmail();
     Integer getPasswordResetExpiryDays();
     boolean isAafEnabled();
+    boolean isDataLicencingEnabled();
     String getGoogleAnalyticsTrackingID();
     String getGoogleAnalyticsDomainName();
     String getRecaptchaPublicKey();
