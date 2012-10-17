@@ -50,8 +50,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.vividsolutions.jts.geom.Polygon;
-
 @Controller
 public class ProjectImageController {
     private final String detectionMarkName = "Cross";
@@ -116,10 +114,22 @@ public class ProjectImageController {
     ) throws Exception {
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setProject(project);
-        Polygon projectBoundingBox = projectDao.getBoundingBox(project);
 
-        ReferencedEnvelope mapBounds = new ReferencedEnvelope(projectBoundingBox.getEnvelopeInternal(), CRS.decode("EPSG:4326"));
-        Dimension mapDimension = MapUtils.calculateMapDimension(mapBounds, 600, 600);
+        Dimension mapDimension = new Dimension(800, 600);
+        ReferencedEnvelope mapBounds = new ReferencedEnvelope(projectDao.getBoundingBox(project).getEnvelopeInternal(), CRS.decode("EPSG:4326"));
+
+        // Expand either width or height of bounding box to match aspect ratio of image
+        double mapDimensionWidthToHeightRatio = mapDimension.getWidth() / mapDimension.getHeight();
+        double mapBoundsWidthToHeightRatio = mapBounds.getWidth() / mapBounds.getHeight();
+        if (mapBoundsWidthToHeightRatio < mapDimensionWidthToHeightRatio) {
+            mapBounds.expandBy(((mapBounds.getHeight() * mapDimensionWidthToHeightRatio) - mapBounds.getWidth()) / 2d, 0d);
+        }
+        else {
+            mapBounds.expandBy(0d, ((mapBounds.getWidth() / mapDimensionWidthToHeightRatio) - mapBounds.getHeight()) / 2d);
+        }
+
+        // Expand bounding box to include margin so points aren't right on edge of image
+        mapBounds.expandBy(0.25d);
 
         ArrayList<BufferedImage> imageLayers = new ArrayList<BufferedImage>();
         if (includeBaseLayer) {

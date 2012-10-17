@@ -21,17 +21,8 @@ import org.geotools.ows.ServiceException;
 import org.geotools.referencing.CRS;
 import org.geotools.renderer.GTRenderer;
 import org.geotools.renderer.lite.StreamingRenderer;
-import org.opengis.geometry.Envelope;
 
 public class MapUtils {
-    public static Dimension calculateMapDimension(Envelope bounds, int width, int height) {
-        double heightToWidthRatio = bounds.getSpan(1) / bounds.getSpan(0);
-        return
-            (heightToWidthRatio > 1)
-            ? new Dimension((int) Math.round(height / heightToWidthRatio), height)
-            : new Dimension(width, (int) Math.round(width * heightToWidthRatio));
-    }
-
     public static BufferedImage getBufferedImage(MapContext mapContext, Dimension mapDimension) {
         BufferedImage image = new BufferedImage(mapDimension.width, mapDimension.height, BufferedImage.TYPE_4BYTE_ABGR);
         Map<RenderingHints.Key, Object> renderingHintsMap = new HashMap<RenderingHints.Key, Object>();
