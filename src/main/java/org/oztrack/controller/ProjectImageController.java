@@ -119,7 +119,7 @@ public class ProjectImageController {
         Polygon projectBoundingBox = projectDao.getBoundingBox(project);
 
         ReferencedEnvelope mapBounds = new ReferencedEnvelope(projectBoundingBox.getEnvelopeInternal(), CRS.decode("EPSG:4326"));
-        Dimension mapDimension = MapUtils.calculateMapDimension(mapBounds, 600);
+        Dimension mapDimension = MapUtils.calculateMapDimension(mapBounds, 600, 600);
 
         ArrayList<BufferedImage> imageLayers = new ArrayList<BufferedImage>();
         if (includeBaseLayer) {

@@ -24,8 +24,12 @@ import org.geotools.renderer.lite.StreamingRenderer;
 import org.opengis.geometry.Envelope;
 
 public class MapUtils {
-    public static Dimension calculateMapDimension(Envelope bounds, int width) {
-        return new Dimension(width, (int) Math.round(width * (bounds.getSpan(1) / bounds.getSpan(0))));
+    public static Dimension calculateMapDimension(Envelope bounds, int width, int height) {
+        double heightToWidthRatio = bounds.getSpan(1) / bounds.getSpan(0);
+        return
+            (heightToWidthRatio > 1)
+            ? new Dimension((int) Math.round(height / heightToWidthRatio), height)
+            : new Dimension(width, (int) Math.round(width * heightToWidthRatio));
     }
 
     public static BufferedImage getBufferedImage(MapContext mapContext, Dimension mapDimension) {
