@@ -52,6 +52,7 @@
                 var dataLicenceIdentifier = $('#dataLicenceIdentifier').val();
                 if (!dataLicenceIdentifier) {
                     dataLicenceIdentifier = 'CC-BY-SA';
+                    $('#dataLicenceIdentifier').val(dataLicenceIdentifier);
                 }
                 if (dataLicenceIdentifier == 'PDM') {
                     $('#dataLicenceCopyright').prop('checked', false);
