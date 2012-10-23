@@ -56,6 +56,8 @@ public class ProjectAnalysisController {
         };
         model.addAttribute("mapQueryTypeList", mapQueryTypeList);
         model.addAttribute("projectAnimalsList", projectAnimalsList);
+        model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project));
+        model.addAttribute("animalBoundingBoxes", projectDao.getBoundingBoxes(project, projectAnimalsList));
         model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, false));
         return "project-analysis";
     }

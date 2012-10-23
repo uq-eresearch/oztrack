@@ -165,10 +165,31 @@
                         });
                     }
                 });
+                var projectBounds = new OpenLayers.Bounds(
+                    ${projectBoundingBox.envelopeInternal.minX}, ${projectBoundingBox.envelopeInternal.minY},
+                    ${projectBoundingBox.envelopeInternal.maxX}, ${projectBoundingBox.envelopeInternal.maxY}
+                );
+                var animalBounds = {
+                    <c:forEach items="${animalBoundingBoxes}" var="animalBoundingBoxEntry" varStatus="animalBoundingBoxEntryStatus">
+                    ${animalBoundingBoxEntry.key.id}: new OpenLayers.Bounds(
+                        ${animalBoundingBoxEntry.value.envelopeInternal.minX}, ${animalBoundingBoxEntry.value.envelopeInternal.minY},
+                        ${animalBoundingBoxEntry.value.envelopeInternal.maxX}, ${animalBoundingBoxEntry.value.envelopeInternal.maxY}
+                    )<c:if test="${!animalBoundingBoxEntryStatus.last}">,
+                    </c:if>
+                    </c:forEach>
+                };
                 analysisMap = null;
                 onResize();
                 analysisMap = createAnalysisMap('projectMap', {
                     projectId: <c:out value="${project.id}"/>,
+                    animalIds: [
+                        <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
+                        ${animal.id}<c:if test="${!animalStatus.last}">,
+                        </c:if>
+                        </c:forEach>
+                    ],
+                    projectBounds: projectBounds,
+                    animalBounds: animalBounds,
                     onAnalysisError: function(message) {
                         jQuery('#errorDialog')
                             .text(message)

@@ -1,9 +1,11 @@
 package org.oztrack.data.access;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang3.Range;
+import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.ProjectUser;
 import org.oztrack.data.model.User;
@@ -23,6 +25,7 @@ public interface ProjectDao {
     Range<Date> getDetectionDateRange(Project project, boolean includeDeleted);
     int getDetectionCount(Project project, boolean includeDeleted);
     Polygon getBoundingBox(Project project);
+    HashMap<Animal, Polygon> getBoundingBoxes(Project project, List<Animal> animals);
     List<Project> getProjectsByPublished(boolean published);
     List<ProjectUser> getProjectUsersWithRole(Project project, Role role);
 }

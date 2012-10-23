@@ -1,6 +1,7 @@
 package org.oztrack.data.access.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -11,6 +12,7 @@ import javax.persistence.Query;
 import org.apache.commons.lang3.Range;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.ProjectUser;
 import org.oztrack.data.model.User;
@@ -144,6 +146,37 @@ public class ProjectDaoImpl implements ProjectDao {
             return null;
         }
         return polygon;
+    }
+
+    @Override
+    public HashMap<Animal, Polygon> getBoundingBoxes(Project project, List<Animal> animals) {
+        Query query = em.createNativeQuery(
+            "select positionfix.animal_id, ST_AsText(ST_Envelope(ST_Collect(positionfix.locationgeometry)))\n" +
+            "from datafile, positionfix\n" +
+            "where datafile.project_id = :projectId\n" +
+            "and positionfix.datafile_id = datafile.id\n" +
+            "and not(positionfix.deleted)\n" +
+            "group by positionfix.animal_id"
+        );
+        query.setParameter("projectId", project.getId());
+        GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
+        WKTReader reader = new WKTReader(geometryFactory);
+        HashMap<Animal, Polygon> result = new HashMap<Animal, Polygon>();
+        @SuppressWarnings("unchecked")
+        List<Object[]> resultList = query.getResultList();
+        for (int i = 0; i < animals.size(); i++) {
+            String wkt = (String) resultList.get(i)[1];
+            Polygon polygon = null;
+            if (wkt != null) {
+                try {
+                    polygon = (Polygon) reader.read(wkt);
+                }
+                catch (Exception e) {
+                }
+            }
+            result.put(animals.get(i), polygon);
+        }
+        return result;
     }
 
     @Override

@@ -11,6 +11,16 @@ function createAnalysisMap(div, options) {
         ];
 
         var projectId = options.projectId;
+        var animalIds = options.animalIds;
+        var animalVisible = {};
+        for (var i = 0; i < animalIds.length; i++) {
+            animalVisible[animalIds[i]] = true;
+        }
+        var projectBounds = options.projectBounds.clone().transform(projection4326, projection900913);
+        var animalBounds = {};
+        for (animalId in options.animalBounds) {
+            animalBounds[animalId] = options.animalBounds[animalId].clone().transform(projection4326, projection900913);
+        }
         var onAnalysisError = options.onAnalysisError;
         var onAnalysisSuccess = options.onAnalysisSuccess;
 
@@ -95,10 +105,7 @@ function createAnalysisMap(div, options) {
             startEndStyleMap = createStartEndPointsStyleMap();
             polygonStyleMap = createPolygonStyleMap();
 
-            allDetectionsLayer = createWFSLayer('Detections', 'Detections', {
-                projectId : projectId,
-                queryType : 'POINTS'
-            }, pointStyleMap);
+            allDetectionsLayer = createAllDetectionsLayer();
             map.addLayer(allDetectionsLayer);
             map.addLayer(createWFSLayer('Trajectory', 'Trajectory', {
                 projectId : projectId,
@@ -108,9 +115,8 @@ function createAnalysisMap(div, options) {
                 projectId : projectId,
                 queryType : 'START_END'
             }, startEndStyleMap));
-
-            map.setCenter(new OpenLayers.LonLat(133, -28).transform(
-                    projection4326, projection900913), 4);
+            
+            map.zoomToExtent(projectBounds, false);
         }());
 
         function createControlPanel() {
@@ -120,7 +126,7 @@ function createAnalysisMap(div, options) {
                     title : 'Zoom to Data Extent',
                     displayClass : "zoomButton",
                     trigger : function() {
-                        map.zoomToExtent(allDetectionsLayer.getDataExtent(), false);
+                        map.zoomToExtent(projectBounds, false);
                     }
                 })
             ]);
@@ -287,6 +293,48 @@ function createAnalysisMap(div, options) {
                 alert("Please set a Layer Type.");
             }
         };
+        
+        function buildAllDetectionsFilter() {
+            var visibleAnimalIds = [];
+            for (i = 0; i < animalIds.length; i++) {
+                if (animalVisible[animalIds[i]]) {
+                    visibleAnimalIds.push(animalIds[i]);
+                }
+            }
+            // Include bogus animal ID (e.g. -1) that will never be matched.
+            // This covers the case where no animals are selected to be visible,
+            // preventing the CQL_FILTER parameter from being syntactically invalid.
+            if (visibleAnimalIds.length == 0) {
+                visibleAnimalIds.push(-1);
+            }
+            var cqlFilter =
+                'deleted = false' +
+                ' and project_id = ' + projectId +
+                ' and animal_id in (' + visibleAnimalIds.join(', ') + ')';
+            return cqlFilter;
+        }
+        
+        function createAllDetectionsLayer() {
+            return new OpenLayers.Layer.WMS(
+                'Detections',
+                '/geoserver/wms',
+                {
+                    layers: 'oztrack:positionfixlayer',
+                    styles: 'positionfix',
+                    cql_filter: buildAllDetectionsFilter(),
+                    format: 'image/png',
+                    transparent: true
+                },
+                {
+                    isBaseLayer: false
+                }
+            );
+        }
+        
+        function updateAllDetectionsLayer() {
+            allDetectionsLayer.params['CQL_FILTER'] = buildAllDetectionsFilter();
+            allDetectionsLayer.redraw();
+        }
 
         function createWFSLayer(layerName, featureType, params, styleMap) {
             return new OpenLayers.Layer.Vector(layerName, {
@@ -303,7 +351,6 @@ function createAnalysisMap(div, options) {
                 styleMap : styleMap,
                 eventListeners : {
                     loadend : function(e) {
-                        map.zoomToExtent(e.object.getDataExtent(), false);
                         updateAnimalInfoFromWFS(e.object);
                         onAnalysisSuccess();
                     }
@@ -370,18 +417,7 @@ function createAnalysisMap(div, options) {
                                     + feature.attributes.animalId + ']').attr(
                             'checked', 'checked');
 
-                    var checkboxValue = wfsLayer.id + "-"
-                            + feature.attributes.animalId;
-                    var checkboxId = 'select-feature-'
-                            + checkboxValue.replace(/\./g, '');
-                    var checkboxHtml = '<input type="checkbox" id="'
-                            + checkboxId
-                            + '" value="'
-                            + checkboxValue
-                            + '" checked="checked" style="margin: 0 0 2px 0;"/></input>';
-
-                    var html = '<div class="layerInfoTitle">' + checkboxHtml
-                            + '&nbsp;' + wfsLayer.name + '</div>';
+                    var html = '<div class="layerInfoTitle">' + wfsLayer.name + '</div>';
                     var tableRowsHtml = '';
                     if (feature.attributes.fromDate) {
                         tableRowsHtml += '<tr><td class="layerInfoLabel">Date From:</td><td>'
@@ -403,14 +439,6 @@ function createAnalysisMap(div, options) {
 
                     $('#animalInfo-' + feature.attributes.animalId).append(
                             '<div class="layerInfo">' + html + '</div>');
-                    $('input[id=' + checkboxId + ']').change(
-                            function() {
-                                var splitString = this.value.split("-");
-                                var layerId = splitString[0];
-                                var animalId = splitString[1];
-                                toggleLayerAnimalFeatures(layerId, animalId,
-                                        this.checked);
-                            });
                 }
             }
         }
@@ -428,17 +456,7 @@ function createAnalysisMap(div, options) {
                 feature.renderIntent = "default";
                 feature.layer.drawFeature(feature);
 
-                var checkboxValue = feature.layer.id + "-"
-                        + feature.attributes.id.value;
-                var checkboxId = 'select-feature-'
-                        + checkboxValue.replace(/\./g, '');
-                var checkboxHtml = '<input type="checkbox" id="'
-                        + checkboxId
-                        + '" value="'
-                        + checkboxValue
-                        + '" checked="checked" style="margin: 0 0 2px 0;"/></input>';
-                var html = '<div class="layerInfoTitle">' + checkboxHtml
-                        + '&nbsp;' + layerName + '</div>';
+                var html = '<div class="layerInfoTitle">' + layerName + '</div>';
                 var tableRowsHtml = '';
                 if (params.percent) {
                     tableRowsHtml += '<tr><td class="layerInfoLabel">Percent: </td><td>'
@@ -477,52 +495,28 @@ function createAnalysisMap(div, options) {
                 if (tableRowsHtml) {
                     html += '<table>' + tableRowsHtml + '</table>';
                 }
-                $('#animalInfo-' + feature.attributes.id.value).append(
-                        '<div class="layerInfo">' + html + '</div>');
-                $('input[id=' + checkboxId + ']').change(function() {
-                    var splitString = this.value.split("-");
-                    var layerId = splitString[0];
-                    var animalId = splitString[1];
-                    toggleLayerAnimalFeatures(layerId, animalId, this.checked);
-                });
+                $('#animalInfo-' + feature.attributes.id.value).append('<div class="layerInfo">' + html + '</div>');
             }
         }
 
         analysisMap.zoomToAnimal = function(animalId) {
-            for (var key in allDetectionsLayer.features) {
-                var feature = allDetectionsLayer.features[key];
-                if (feature.attributes && animalId == feature.attributes.animalId) {
-                    map.zoomToExtent(feature.geometry.getBounds(), false);
-                    return;
-                }
-            }
+            map.zoomToExtent(animalBounds[animalId], false);
         };
 
-        function toggleLayerAnimalFeatures(layerId, animalId, setVisible) {
-            var layer = map.getLayer(layerId);
-            for ( var key in layer.features) {
-                var feature = layer.features[key];
-                var featureAnimalId = (feature.attributes.animalId) ? feature.attributes.animalId
-                        : (feature.attributes.id.value) ? feature.attributes.id.value
-                                : null;
-                if (featureAnimalId == animalId) {
-                    toggleFeature(feature, setVisible);
-                }
-            }
-        }
-
-        function toggleFeature(feature, setVisible) {
-            feature.renderIntent = setVisible ? 'default' : 'temporary';
+        function toggleFeature(feature, visible) {
+            feature.renderIntent = visible ? 'default' : 'temporary';
             feature.layer.drawFeature(feature);
         }
 
-        analysisMap.toggleAllAnimalFeatures = function(animalId, setVisible) {
+        analysisMap.toggleAllAnimalFeatures = function(animalId, visible) {
+            animalVisible[animalId] = visible;
+            updateAllDetectionsLayer();
             function getVectorLayers() {
                 var vectorLayers = new Array();
-                for ( var c in map.controls) {
+                for (var c in map.controls) {
                     var control = map.controls[c];
                     if (control.id.indexOf("LayerSwitcher") != -1) {
-                        for ( var i = 0; i < control.dataLayers.length; i++) {
+                        for (var i = 0; i < control.dataLayers.length; i++) {
                             vectorLayers.push(control.dataLayers[i].layer);
                         }
                     }
@@ -530,21 +524,21 @@ function createAnalysisMap(div, options) {
                 return vectorLayers;
             }
             var vectorLayers = getVectorLayers();
-            for ( var l in vectorLayers) {
+            for (var l in vectorLayers) {
                 var layer = vectorLayers[l];
                 var layerName = layer.name;
-                for ( var f in layer.features) {
+                for (var f in layer.features) {
                     var feature = layer.features[f];
-                    var featureAnimalId = (feature.attributes.animalId) ? feature.attributes.animalId
-                            : (feature.attributes.id.value) ? feature.attributes.id.value
-                                    : null;
+                    var featureAnimalId =
+                        (feature.attributes.animalId) ? feature.attributes.animalId :
+                        (feature.attributes.id.value) ? feature.attributes.id.value :
+                        null;
                     if (featureAnimalId == animalId) {
-                        toggleFeature(feature, setVisible);
+                        toggleFeature(feature, visible);
                     }
                 }
             }
-            $("#animalInfo-" + animalId).find(':checkbox').attr("checked",
-                    setVisible);
+            $("#animalInfo-" + animalId).find(':checkbox').attr("checked", visible);
         };
 
         analysisMap.updateSize = function() {
