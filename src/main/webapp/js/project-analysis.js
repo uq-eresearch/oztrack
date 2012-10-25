@@ -27,6 +27,7 @@ function createAnalysisMap(div, options) {
         var map;
         var loadingPanel;
         var allDetectionsLayer;
+        var allTrajectoriesLayer;
         var polygonStyleMap;
         var lineStyleMap;
         var pointStyleMap;
@@ -107,10 +108,8 @@ function createAnalysisMap(div, options) {
 
             allDetectionsLayer = createAllDetectionsLayer();
             map.addLayer(allDetectionsLayer);
-            map.addLayer(createWFSLayer('Trajectory', 'Trajectory', {
-                projectId : projectId,
-                queryType : 'LINES'
-            }, lineStyleMap));
+            allTrajectoriesLayer = createAllTrajectoriesLayer();
+            map.addLayer(allTrajectoriesLayer);
             map.addLayer(createWFSLayer('Start and End Points', 'StartEnd', {
                 projectId : projectId,
                 queryType : 'START_END'
@@ -331,8 +330,49 @@ function createAnalysisMap(div, options) {
             );
         }
         
-        function updateAllDetectionsLayer() {
-            allDetectionsLayer.params['CQL_FILTER'] = buildAllDetectionsFilter();
+        function updateAllTrajectoriesLayer() {
+            allTrajectoriesLayer.params['CQL_FILTER'] = buildAllTrajectoriesFilter();
+            allTrajectoriesLayer.redraw();
+        }
+        
+        function buildAllTrajectoriesFilter() {
+            var visibleAnimalIds = [];
+            for (i = 0; i < animalIds.length; i++) {
+                if (animalVisible[animalIds[i]]) {
+                    visibleAnimalIds.push(animalIds[i]);
+                }
+            }
+            // Include bogus animal ID (e.g. -1) that will never be matched.
+            // This covers the case where no animals are selected to be visible,
+            // preventing the CQL_FILTER parameter from being syntactically invalid.
+            if (visibleAnimalIds.length == 0) {
+                visibleAnimalIds.push(-1);
+            }
+            var cqlFilter =
+                'project_id = ' + projectId +
+                ' and animal_id in (' + visibleAnimalIds.join(', ') + ')';
+            return cqlFilter;
+        }
+        
+        function createAllTrajectoriesLayer() {
+            return new OpenLayers.Layer.WMS(
+                'Detections',
+                '/geoserver/wms',
+                {
+                    layers: 'oztrack:trajectorylayer',
+                    styles: 'trajectorylayer',
+                    cql_filter: buildAllTrajectoriesFilter(),
+                    format: 'image/png',
+                    transparent: true
+                },
+                {
+                    isBaseLayer: false
+                }
+            );
+        }
+        
+        function updateAllTrajectoriesLayer() {
+            allDetectionsLayer.params['CQL_FILTER'] = buildAllTrajectoriesFilter();
             allDetectionsLayer.redraw();
         }
 
@@ -511,6 +551,7 @@ function createAnalysisMap(div, options) {
         analysisMap.toggleAllAnimalFeatures = function(animalId, visible) {
             animalVisible[animalId] = visible;
             updateAllDetectionsLayer();
+            updateAllTrajectoriesLayer();
             function getVectorLayers() {
                 var vectorLayers = new Array();
                 for (var c in map.controls) {
