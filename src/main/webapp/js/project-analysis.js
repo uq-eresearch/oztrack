@@ -540,7 +540,9 @@ function createAnalysisMap(div, options) {
         }
 
         analysisMap.zoomToAnimal = function(animalId) {
-            map.zoomToExtent(animalBounds[animalId], false);
+            if (animalBounds[animalId]) {
+                map.zoomToExtent(animalBounds[animalId], false);
+            }
         };
 
         function toggleFeature(feature, visible) {

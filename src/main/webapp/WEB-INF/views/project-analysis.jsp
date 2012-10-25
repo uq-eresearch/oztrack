@@ -171,7 +171,7 @@
                 );
                 var animalBounds = {
                     <c:forEach items="${animalBoundingBoxes}" var="animalBoundingBoxEntry" varStatus="animalBoundingBoxEntryStatus">
-                    ${animalBoundingBoxEntry.key.id}: new OpenLayers.Bounds(
+                    ${animalBoundingBoxEntry.key}: new OpenLayers.Bounds(
                         ${animalBoundingBoxEntry.value.envelopeInternal.minX}, ${animalBoundingBoxEntry.value.envelopeInternal.minY},
                         ${animalBoundingBoxEntry.value.envelopeInternal.maxX}, ${animalBoundingBoxEntry.value.envelopeInternal.maxY}
                     )<c:if test="${!animalBoundingBoxEntryStatus.last}">,

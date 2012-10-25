@@ -149,23 +149,26 @@ public class ProjectDaoImpl implements ProjectDao {
     }
 
     @Override
-    public HashMap<Animal, Polygon> getBoundingBoxes(Project project, List<Animal> animals) {
+    public HashMap<Long, Polygon> getBoundingBoxes(Project project, List<Animal> animals) {
         Query query = em.createNativeQuery(
-            "select positionfix.animal_id, ST_AsText(ST_Envelope(ST_Collect(positionfix.locationgeometry)))\n" +
-            "from datafile, positionfix\n" +
-            "where datafile.project_id = :projectId\n" +
-            "and positionfix.datafile_id = datafile.id\n" +
-            "and not(positionfix.deleted)\n" +
-            "group by positionfix.animal_id"
+            "select animal.id, ST_AsText(ST_Envelope(ST_Collect(positionfix.locationgeometry)))\n" +
+            "from animal\n" +
+            "inner join positionfix on\n" +
+            "    positionfix.animal_id = animal.id and\n" +
+            "    not(positionfix.deleted)\n" +
+            "where\n" +
+            "    animal.project_id = :projectId\n" +
+            "group by animal.id;"
         );
         query.setParameter("projectId", project.getId());
         GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
         WKTReader reader = new WKTReader(geometryFactory);
-        HashMap<Animal, Polygon> result = new HashMap<Animal, Polygon>();
+        HashMap<Long, Polygon> map = new HashMap<Long, Polygon>();
         @SuppressWarnings("unchecked")
         List<Object[]> resultList = query.getResultList();
-        for (int i = 0; i < animals.size(); i++) {
-            String wkt = (String) resultList.get(i)[1];
+        for (Object[] result : resultList) {
+            Long animalId = ((Number) result[0]).longValue();
+            String wkt = (String) result[1];
             Polygon polygon = null;
             if (wkt != null) {
                 try {
@@ -174,9 +177,9 @@ public class ProjectDaoImpl implements ProjectDao {
                 catch (Exception e) {
                 }
             }
-            result.put(animals.get(i), polygon);
+            map.put(animalId, polygon);
         }
-        return result;
+        return map;
     }
 
     @Override
