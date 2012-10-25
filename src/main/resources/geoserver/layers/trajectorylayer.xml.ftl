@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <layer>
-  <name>positionfixlayer</name>
+  <name>trajectorylayer</name>
   <type>VECTOR</type>
   <defaultStyle>
-    <name>positionfixlayer</name>
+    <name>trajectorylayer</name>
   </defaultStyle>
   <styles>
     <style>
-      <name>positionfixlayer</name>
+      <name>trajectorylayer</name>
     </style>
   </styles>
   <resource class="featureType">
-    <name>positionfixlayer</name>
+    <name>trajectorylayer</name>
   </resource>
   <enabled>true</enabled>
   <attribution>

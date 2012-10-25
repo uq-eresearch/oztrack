@@ -21,6 +21,20 @@ import freemarker.template.TemplateException;
 
 public class GeoServerUploader {
     private final String filesBasePath = "/geoserver";
+    private final String[] colours = new String[] {
+        "#8DD3C7",
+        "#FFFFB3",
+        "#BEBADA",
+        "#FB8072",
+        "#80B1D3",
+        "#FDB462",
+        "#B3DE69",
+        "#FCCDE5",
+        "#D9D9D9",
+        "#BC80BD",
+        "#CCEBC5",
+        "#FFED6F"
+    };
 
     private final String geoServerUsername;
     private final String geoServerPassword;
@@ -104,7 +118,9 @@ public class GeoServerUploader {
             "positionfixlayer",
             createFreemarkerEntity(
                 "styles/positionfixlayer.sld.ftl",
-                new HashMap<String, Object>()
+                new HashMap<String, Object>() {{
+                    put("colours", colours);
+                }}
             )
         );
         client.replace(
@@ -116,6 +132,34 @@ public class GeoServerUploader {
                 new HashMap<String, Object>()
             )
         );
+
+        client.replace(
+                "workspaces/" + workspaceName + "/datastores/" + datastoreName + "/featuretypes",
+                "trajectorylayer",
+                "application/xml",
+                createFreemarkerEntity(
+                    "featuretypes/trajectorylayer.xml.ftl",
+                    new HashMap<String, Object>()
+                )
+            );
+            client.replaceStyle(
+                "trajectorylayer",
+                createFreemarkerEntity(
+                    "styles/trajectorylayer.sld.ftl",
+                    new HashMap<String, Object>() {{
+                        put("colours", colours);
+                    }}
+                )
+            );
+            client.replace(
+                "layers",
+                "trajectorylayer",
+                "application/xml",
+                createFreemarkerEntity(
+                    "layers/trajectorylayer.xml.ftl",
+                    new HashMap<String, Object>()
+                )
+            );
     }
 
     private ContentProducer createFreemarkerContentProvider(String templateName, final Map<String, Object> datamodel) throws Exception {

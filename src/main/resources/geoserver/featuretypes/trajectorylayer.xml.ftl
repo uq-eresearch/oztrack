@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <featureType>
-  <name>positionfixlayer</name>
+  <name>trajectorylayer</name>
   <nativeCRS>GEOGCS[&quot;WGS 84&quot;,
   DATUM[&quot;World Geodetic System 1984&quot;,
     SPHEROID[&quot;WGS 84&quot;, 6378137.0, 298.257223563, AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]],
