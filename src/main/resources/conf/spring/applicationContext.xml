@@ -62,6 +62,17 @@
     <bean id="ozTrackApplication" class="org.oztrack.app.OzTrackApplication">
         <property name="applicationContext" ref="applicationContext"/>
     </bean>
+    
+    <bean id="geoServerUploader" class="org.oztrack.geoserver.GeoServerUploader" init-method="upload">
+        <constructor-arg name="geoServerUsername" value="${application.geoServerUsername}"/>
+        <constructor-arg name="geoServerPassword" value="${application.geoServerPassword}"/>
+        <constructor-arg name="geoServerLocalUri" value="${application.geoServerLocalUri}"/>
+        <constructor-arg name="databaseHost" value="${application.databaseHost}"/>
+        <constructor-arg name="databasePort" value="${application.databasePort}"/>
+        <constructor-arg name="databaseName" value="${application.databaseName}"/>
+        <constructor-arg name="databaseUsername" value="${application.databaseUsername}"/>
+        <constructor-arg name="databasePassword" value="${application.databasePassword}"/>
+    </bean>
 
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <property name="maxUploadSize"><value>100000000</value></property>

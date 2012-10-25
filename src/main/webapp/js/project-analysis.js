@@ -320,7 +320,7 @@ function createAnalysisMap(div, options) {
                 '/geoserver/wms',
                 {
                     layers: 'oztrack:positionfixlayer',
-                    styles: 'positionfix',
+                    styles: 'positionfixlayer',
                     cql_filter: buildAllDetectionsFilter(),
                     format: 'image/png',
                     transparent: true

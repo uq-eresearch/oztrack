@@ -11,9 +11,9 @@
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.postgresql.Driver"/>
-        <property name="url" value="jdbc:postgresql://localhost/oztrack"/>
-        <property name="username" value="oztrack"/>
-        <property name="password" value="ozadmin"/>
+        <property name="url" value="jdbc:postgresql://${application.databaseHost}:${application.databasePort}/${application.databaseName}"/>
+        <property name="username" value="${application.databaseUsername}"/>
+        <property name="password" value="${application.databasePassword}"/>
     </bean>
 
     <bean id="flyway" class="com.googlecode.flyway.core.Flyway" init-method="migrate" depends-on="dataSource">
@@ -37,6 +37,13 @@
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean" depends-on="flyway">
         <property name="persistenceUnitName" value="${application.persistenceUnitName}"/>
+        <property name="jpaProperties">
+            <value>
+                hibernate.connection.url=jdbc:postgresql://${application.databaseHost}:${application.databasePort}/${application.databaseName}
+                hibernate.connection.username=${application.databaseUsername}
+                hibernate.connection.password=${application.databasePassword}
+            </value>
+        </property>
     </bean>
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">

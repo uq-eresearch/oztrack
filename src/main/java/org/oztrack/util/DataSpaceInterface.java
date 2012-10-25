@@ -1,9 +1,7 @@
 package org.oztrack.util;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -12,18 +10,18 @@ import java.util.Date;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpState;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.PutMethod;
-import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.UserDao;
@@ -43,11 +41,13 @@ public class DataSpaceInterface {
     private UserDao userDao;
     private String dataSpaceURL;
     private String dataSpaceResponse;
+    private HttpClient httpClient;
 
     public DataSpaceInterface(ProjectDao projectDao, UserDao userDao) {
         this.projectDao = projectDao;
         this.userDao = userDao;
         this.dataSpaceURL = OzTrackApplication.getApplicationContext().getDataSpaceURL();
+        this.httpClient = new DefaultHttpClient();
     }
 
     public void deleteFromDataSpace(Project project) throws DataSpaceInterfaceException {
@@ -170,9 +170,7 @@ public class DataSpaceInterface {
         logger.info(collectionAtom);
 
         if (doCollectionPost) {
-
             int statusCode = executePostMethod("collections", collectionAtom, project);
-
             if (statusCode == HttpStatus.SC_CONFLICT) {
                 // save the URI and do a put.
                 String collectionURL = createURL("collections").toString();
@@ -190,9 +188,7 @@ public class DataSpaceInterface {
         }
 
         if (doCollectionPut) {
-
             int statusCode = executePutMethod("collections/" + collectionURI, collectionAtom, project);
-
             if (statusCode != HttpStatus.SC_OK) {
                 logger.info("updating dataSpace collection failed");
                 throw new DataSpaceInterfaceException("updating dataSpace collection failed");
@@ -205,103 +201,64 @@ public class DataSpaceInterface {
     }
 
     public URL createURL(String uri) throws DataSpaceInterfaceException {
-
-        URL url;
-
         try {
-            url = new URL(this.dataSpaceURL + uri);
-        } catch (MalformedURLException e) {
+            return new URL(this.dataSpaceURL + uri);
+        }
+        catch (MalformedURLException e) {
             throw new DataSpaceInterfaceException(e.getMessage());
         }
-        return url;
     }
 
-    public HttpState login() throws DataSpaceInterfaceException {
-
-        HttpClient httpClient = new HttpClient();
+    public void login() throws DataSpaceInterfaceException {
         String username = OzTrackApplication.getApplicationContext().getDataSpaceUsername();
         String password = OzTrackApplication.getApplicationContext().getDataSpacePassword();
         URL loginURL = createURL("login");
 
-        PostMethod loginPostMethod = new PostMethod(loginURL.toString());
-        loginPostMethod.addParameter("username", username);
-        loginPostMethod.addParameter("password", password);
+        HttpPost loginRequest = new HttpPost(loginURL.toString());
+        BasicHttpParams params = new BasicHttpParams();
+        params.setParameter("username", username);
+        params.setParameter("password", password);
+        loginRequest.setParams(params);
 
         try {
             logger.info("attempt dataspace login");
-            httpClient.executeMethod(loginPostMethod);
-            if (loginPostMethod.getStatusCode() != HttpStatus.SC_OK) {
-                throw new DataSpaceInterfaceException("dataSpace connection failed: " + loginPostMethod.getStatusLine());
+            HttpResponse loginResponse = httpClient.execute(loginRequest);
+            if (loginResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                throw new DataSpaceInterfaceException("dataSpace connection failed: " + loginResponse.getStatusLine());
             }
             logger.info("login successful");
-
-        } catch (HttpException e) {
-            throw new DataSpaceInterfaceException(e.getMessage());
-        } catch (IOException e) {
+        }
+        catch (Exception e) {
             throw new DataSpaceInterfaceException(e.getMessage());
         }
-        return httpClient.getState();
-
-    }
-
-    public PostMethod buildPostMethod(String uri, String atom) throws DataSpaceInterfaceException {
-
-        final String atomFinal = atom;
-        URL url = createURL(uri);
-        PostMethod postMethod = new PostMethod(url.toString());
-        postMethod.setRequestEntity(new RequestEntity() {
-            @Override
-            public void writeRequest(OutputStream out) throws IOException {
-                out.write(atomFinal.getBytes());
-            }
-
-            @Override
-            public boolean isRepeatable() {
-                return true;
-            }
-
-            @Override
-            public String getContentType() {
-                return "application/atom+xml";
-            }
-
-            @Override
-            public long getContentLength() {
-                return atomFinal.getBytes().length;
-            }
-
-        });
-
-        return postMethod;
     }
 
     public int executePostMethod(String uri, String atom, Project project) throws DataSpaceInterfaceException {
-
-        PostMethod postMethod = buildPostMethod(uri, atom);
-        logger.info("POST " + postMethod.getPath());
-        HttpState authenticatedState = login();
-        HttpClient httpClient = new HttpClient();
-        int statusCode;
+        HttpPost postRequest = new HttpPost(uri);
+        logger.info("POST " + postRequest.getURI());
         try {
-            statusCode = httpClient.executeMethod(HostConfiguration.ANY_HOST_CONFIGURATION, postMethod, authenticatedState);
-            BufferedReader in = new BufferedReader(new InputStreamReader(postMethod.getResponseBodyAsStream()));
+            postRequest.setEntity(new StringEntity(atom, "application/atom+xml"));
+            login();
+            HttpResponse postResponse = httpClient.execute(postRequest);
+            int statusCode = postResponse.getStatusLine().getStatusCode();
+            BufferedReader in = new BufferedReader(new InputStreamReader(postResponse.getEntity().getContent()));
             this.dataSpaceResponse = in.readLine();
             in.close();
             logger.info("dataSpace response: " + this.dataSpaceResponse);
+            return statusCode;
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DataSpaceInterfaceException("dataSpace POST failed");
         } finally {
-            postMethod.releaseConnection();
-            logout(httpClient, authenticatedState);
+            postRequest.releaseConnection();
+            logout();
         }
-        return statusCode;
     }
 
-    public void logout(HttpClient httpClient, HttpState authenticatedState) throws DataSpaceInterfaceException {
+    public void logout() throws DataSpaceInterfaceException {
         try {
-            PostMethod postMethod = new PostMethod(createURL("logout").toString());
-            httpClient.executeMethod(HostConfiguration.ANY_HOST_CONFIGURATION, postMethod, authenticatedState);
+            HttpPost postRequest = new HttpPost(createURL("logout").toString());
+            httpClient.execute(postRequest);
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DataSpaceInterfaceException("dataSpace logout failed");
@@ -309,84 +266,47 @@ public class DataSpaceInterface {
         logger.info("logout");
     }
 
-    public PutMethod buildPutMethod(String uri, String atom) throws DataSpaceInterfaceException {
-
-        final String atomFinal = atom;
-
-        URL putURL = createURL(uri);
-        PutMethod putMethod = new PutMethod(putURL.toString());
-        putMethod.setRequestEntity(new RequestEntity() {
-            @Override
-            public void writeRequest(OutputStream out) throws IOException {
-                out.write(atomFinal.getBytes());
-            }
-
-            @Override
-            public boolean isRepeatable() {
-                return true;
-            }
-
-            @Override
-            public String getContentType() {
-                return "application/atom+xml";
-            }
-
-            @Override
-            public long getContentLength() {
-                return atomFinal.getBytes().length;
-            }
-
-        });
-
-        return putMethod;
-    }
-
     public int executePutMethod(String uri, String atom, Project project) throws DataSpaceInterfaceException {
-
-        PutMethod putMethod = buildPutMethod(uri, atom);
-        logger.info("PUT " + putMethod.getPath().toString());
-        HttpClient httpClient = new HttpClient();
-        HttpState authenticatedState = login();
-        int statusCode;
+        HttpPut putRequest = new HttpPut(uri);
+        logger.info("PUT " + putRequest.getURI().toString());
         try {
-            statusCode = httpClient.executeMethod(HostConfiguration.ANY_HOST_CONFIGURATION, putMethod, authenticatedState);
-            BufferedReader in = new BufferedReader(new InputStreamReader(putMethod.getResponseBodyAsStream()));
+            putRequest.setEntity(new StringEntity(atom, "application/atom+xml"));
+            login();
+            HttpResponse putResponse = httpClient.execute(putRequest);
+            int statusCode = putResponse.getStatusLine().getStatusCode();
+            BufferedReader in = new BufferedReader(new InputStreamReader(putResponse.getEntity().getContent()));
             this.dataSpaceResponse = in.readLine();
             in.close();
             logger.info("dataSpace response: " + this.dataSpaceResponse);
+            return statusCode;
         } catch (Exception e) {
             logger.info(e.getMessage());
             throw new DataSpaceInterfaceException(e.getMessage());
         } finally {
-            putMethod.releaseConnection();
-            logout(httpClient, authenticatedState);
+            putRequest.releaseConnection();
+            logout();
         }
-        return statusCode;
     }
 
     public int executeDeleteMethod(String uri, Project project) throws DataSpaceInterfaceException {
-
-        URL url = createURL(uri);
-        DeleteMethod deleteMethod = new DeleteMethod(url.toString());
-
-        logger.info("DELETE " + deleteMethod.getPath().toString());
-        HttpClient httpClient = new HttpClient();
-        HttpState authenticatedState = login();
-        int statusCode;
+        HttpDelete deleteRequest = new HttpDelete(createURL(uri).toString());
+        logger.info("DELETE " + deleteRequest.getURI().toString());
         try {
-            statusCode = httpClient.executeMethod(HostConfiguration.ANY_HOST_CONFIGURATION, deleteMethod, authenticatedState);
-            BufferedReader in = new BufferedReader(new InputStreamReader(deleteMethod.getResponseBodyAsStream()));
+            login();
+            HttpResponse deleteResponse = httpClient.execute(deleteRequest);
+            int statusCode = deleteResponse.getStatusLine().getStatusCode();
+            BufferedReader in = new BufferedReader(new InputStreamReader(deleteResponse.getEntity().getContent()));
             this.dataSpaceResponse = in.readLine();
             in.close();
             logger.info("dataSpace response: " + this.dataSpaceResponse);
+            return statusCode;
         } catch (Exception e) {
             logger.info("delete failed");
             throw new DataSpaceInterfaceException(e.getMessage());
         } finally {
-            deleteMethod.releaseConnection();
-            logout(httpClient, authenticatedState);
+            deleteRequest.releaseConnection();
+            logout();
         }
-        return statusCode;
     }
 
     public String getUriFromResponse(String responseType) throws DataSpaceInterfaceException {
@@ -395,7 +315,6 @@ public class DataSpaceInterface {
         String href = "";
         String uri = "";
         String url = this.dataSpaceURL + responseType + "/";
-
         try {
             db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             InputSource is = new InputSource();
@@ -413,11 +332,9 @@ public class DataSpaceInterface {
         catch (Exception e) {
             e.printStackTrace();
         }
-
         if (!href.equals("")) {
             uri = href.replace(url, "");
         }
-
         return uri;
     }
 }
