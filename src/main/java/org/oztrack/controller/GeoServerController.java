@@ -28,6 +28,6 @@ public class GeoServerController {
         BindingResult bindingResult
     ) throws Exception {
         geoServerUploader.upload();
-        return "content-form";
+        return "geoserver-form";
     }
 }
