@@ -14,17 +14,18 @@
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <span class="active">Settings</span>
+        &rsaquo; <a href="<c:url value="/settings"/>">Settings</a>
+        &rsaquo; <span class="active">GeoServer</span>
     </jsp:attribute>
     <jsp:body>
-        <h1>Settings</h1>
-        <div class="actions">
-        <h2>Manage Settings</h2>
-        <ul>
-            <li class="edit"><a href="<c:url value="/settings/geoserver"/>">GeoServer</a></li>
-            <li class="edit"><a href="<c:url value="/settings/srs"/>">Spatial reference systems</a></li>
-            <li class="edit"><a href="<c:url value="/settings/content"/>">Website content</a></li>
-        </ul>
-        </div>
+        <h1>GeoServer</h1>
+        <form:form cssClass="form-vertical form-bordered" method="POST">
+            <p>
+                Click to update objects in GeoServer (e.g. workspace, datastore, layers, styles)
+            </p>
+            <div class="form-actions">
+                <input class="btn btn-primary" type="submit" value="Update GeoServer" />
+            </div>
+        </form:form>
     </jsp:body>
 </tags:page>

@@ -14,7 +14,7 @@
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="<c:url value="/"/>">Home</a>
-        <a href="<c:url value="/settings"/>">Settings</a>
+        &rsaquo; <a href="<c:url value="/settings"/>">Settings</a>
         &rsaquo; <span class="active">Spatial Reference Systems</span>
     </jsp:attribute>
     <jsp:body>
