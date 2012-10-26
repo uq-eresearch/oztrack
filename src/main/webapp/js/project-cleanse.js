@@ -6,6 +6,7 @@ function createCleanseMap(div, options) {
         var projection4326 = new OpenLayers.Projection('EPSG:4326');
 
         var projectId = options.projectId;
+        var animalColours = options.animalColours;
         var onReset = options.onReset;
         var onPolygonFeatureAdded = options.onPolygonFeatureAdded;
         var onDeletePolygonFeature = options.onDeletePolygonFeature;
@@ -209,20 +210,6 @@ function createCleanseMap(div, options) {
         }
 
         function createPointStyleMap() {
-            var colours = [
-                '#8DD3C7',
-                '#FFFFB3',
-                '#BEBADA',
-                '#FB8072',
-                '#80B1D3',
-                '#FDB462',
-                '#B3DE69',
-                '#FCCDE5',
-                '#D9D9D9',
-                '#BC80BD',
-                '#CCEBC5',
-                '#FFED6F'
-            ];
             var pointsOnStyle = new OpenLayers.Style(
                 {
                     graphicName: 'cross',
@@ -254,7 +241,7 @@ function createCleanseMap(div, options) {
                     ],
                     context: {
                         getColour: function(feature) {
-                            return colours[feature.attributes.animalId % colours.length];
+                            return animalColours[feature.attributes.animalId];
                         }
                     }
                 }

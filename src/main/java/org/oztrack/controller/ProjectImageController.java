@@ -70,21 +70,6 @@ public class ProjectImageController {
     private final Color endMarkColour = new Color(0xCD0000);
     private final int startEndGraphicSize = 4;
 
-    private final Color[] colours = new Color[] {
-        new Color(0x8DD3C7),
-        new Color(0xFFFFB3),
-        new Color(0xBEBADA),
-        new Color(0xFB8072),
-        new Color(0x80B1D3),
-        new Color(0xFDB462),
-        new Color(0xB3DE69),
-        new Color(0xFCCDE5),
-        new Color(0xD9D9D9),
-        new Color(0xBC80BD),
-        new Color(0xCCEBC5),
-        new Color(0xFFED6F)
-    };
-
     private final StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
     private final FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory(null);
 
@@ -197,10 +182,9 @@ public class ProjectImageController {
     }
 
     private Rule buildAnimalDetectionRule(Animal animal) {
-        Color colour = colours[(int) (animal.getId() % colours.length)];
         GraphicalSymbol mark = styleFactory.mark(
             filterFactory.literal(detectionMarkName),
-            styleFactory.createFill(filterFactory.literal(colour), filterFactory.literal(detectionMarkOpacity)),
+            styleFactory.createFill(filterFactory.literal(animal.getColour()), filterFactory.literal(detectionMarkOpacity)),
             styleFactory.createStroke(filterFactory.literal(borderColour), filterFactory.literal(borderWidth), filterFactory.literal(borderOpacity))
         );
         Graphic graphic = styleFactory.graphic(
@@ -230,8 +214,7 @@ public class ProjectImageController {
     }
 
     private Rule buildAnimalTrajectoryRule(Animal animal) {
-        Color colour = colours[(int) (animal.getId() % colours.length)];
-        Stroke stroke = styleFactory.createStroke(filterFactory.literal(colour), filterFactory.literal(trajectoryLineWidth), filterFactory.literal(trajectoryLineOpacity));
+        Stroke stroke = styleFactory.createStroke(filterFactory.literal(animal.getColour()), filterFactory.literal(trajectoryLineWidth), filterFactory.literal(trajectoryLineOpacity));
         LineSymbolizer symbolizer = styleFactory.createLineSymbolizer(stroke, null);
         Rule rule = styleFactory.createRule();
         rule.setFilter(filterFactory.equals(filterFactory.property("animalId"), filterFactory.literal(animal.getId())));

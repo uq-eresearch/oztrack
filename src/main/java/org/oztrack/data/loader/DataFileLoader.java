@@ -72,6 +72,21 @@ public abstract class DataFileLoader {
 
     public abstract void createRawObservations() throws FileProcessingException;
 
+    private final String[] colours = new String[] {
+        "#8DD3C7",
+        "#FFFFB3",
+        "#BEBADA",
+        "#FB8072",
+        "#80B1D3",
+        "#FDB462",
+        "#B3DE69",
+        "#FCCDE5",
+        "#D9D9D9",
+        "#BC80BD",
+        "#CCEBC5",
+        "#FFED6F"
+    };
+
     private void checkAnimals() throws FileProcessingException {
         if (dataFile.getSingleAnimalInFile()) {
             // only one animal in the file being uploaded. Create it.
@@ -85,6 +100,7 @@ public abstract class DataFileLoader {
             animalDao.save(animal);
             animal.setProjectAnimalId(animal.getId().toString());
             animal.setAnimalName("Animal_" + animal.getId().toString());
+            animal.setColour(colours[(int) (animal.getId() % colours.length)]);
             animalDao.update(animal);
         }
         else {
@@ -124,6 +140,8 @@ public abstract class DataFileLoader {
                      animal.setProject(dataFile.getProject());
                      animal.setCreateDate(new java.util.Date());
                      animalDao.save(animal);
+                     animal.setColour(colours[(int) (animal.getId() % colours.length)]);
+                     animalDao.update(animal);
                  }
             }
         }

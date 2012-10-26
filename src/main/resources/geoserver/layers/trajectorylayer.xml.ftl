@@ -9,6 +9,9 @@
     <style>
       <name>trajectorylayer</name>
     </style>
+    <style>
+      <name>line</name>
+    </style>
   </styles>
   <resource class="featureType">
     <name>trajectorylayer</name>

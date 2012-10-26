@@ -169,15 +169,6 @@
                     ${projectBoundingBox.envelopeInternal.minX}, ${projectBoundingBox.envelopeInternal.minY},
                     ${projectBoundingBox.envelopeInternal.maxX}, ${projectBoundingBox.envelopeInternal.maxY}
                 );
-                var animalBounds = {
-                    <c:forEach items="${animalBoundingBoxes}" var="animalBoundingBoxEntry" varStatus="animalBoundingBoxEntryStatus">
-                    ${animalBoundingBoxEntry.key}: new OpenLayers.Bounds(
-                        ${animalBoundingBoxEntry.value.envelopeInternal.minX}, ${animalBoundingBoxEntry.value.envelopeInternal.minY},
-                        ${animalBoundingBoxEntry.value.envelopeInternal.maxX}, ${animalBoundingBoxEntry.value.envelopeInternal.maxY}
-                    )<c:if test="${!animalBoundingBoxEntryStatus.last}">,
-                    </c:if>
-                    </c:forEach>
-                };
                 analysisMap = null;
                 onResize();
                 analysisMap = createAnalysisMap('projectMap', {
@@ -189,7 +180,21 @@
                         </c:forEach>
                     ],
                     projectBounds: projectBounds,
-                    animalBounds: animalBounds,
+                    animalBounds: {
+                        <c:forEach items="${animalBoundingBoxes}" var="animalBoundingBoxEntry" varStatus="animalBoundingBoxEntryStatus">
+                        ${animalBoundingBoxEntry.key}: new OpenLayers.Bounds(
+                            ${animalBoundingBoxEntry.value.envelopeInternal.minX}, ${animalBoundingBoxEntry.value.envelopeInternal.minY},
+                            ${animalBoundingBoxEntry.value.envelopeInternal.maxX}, ${animalBoundingBoxEntry.value.envelopeInternal.maxY}
+                        )<c:if test="${!animalBoundingBoxEntryStatus.last}">,
+                        </c:if>
+                        </c:forEach>
+                    },
+                    animalColours: {
+                        <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
+                        ${animal.id}: '${animal.colour}'<c:if test="${!animalStatus.last}">,
+                        </c:if>
+                        </c:forEach>
+                    },
                     onAnalysisError: function(message) {
                         jQuery('#errorDialog')
                             .text(message)
@@ -275,7 +280,7 @@
                             </script>
                         </div>
 
-                        <div class="smallSquare" id="legend-colour-${animal.id}"></div>
+                        <div id="legend-colour-${animal.id}" class="smallSquare" style="background-color: ${animal.colour};"></div>
 
                         <div class="animalLabel">
                             <a class="animalInfoToggle" href="javascript:void(0);" onclick="$('#buttonShowHide${animal.id}').click();">${animal.animalName}</a>

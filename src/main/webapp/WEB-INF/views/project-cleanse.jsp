@@ -102,22 +102,8 @@
                 }).change(function() {
                     cleanseMap.reset();
                 });
-                var colours = [
-                    '#8DD3C7',
-                    '#FFFFB3',
-                    '#BEBADA',
-                    '#FB8072',
-                    '#80B1D3',
-                    '#FDB462',
-                    '#B3DE69',
-                    '#FCCDE5',
-                    '#D9D9D9',
-                    '#BC80BD',
-                    '#CCEBC5',
-                    '#FFED6F'
-                ];
                 <c:forEach items="${projectAnimalsList}" var="animal">
-                jQuery('#legend-colour-${animal.id}').attr('style', 'background-color: ' + colours[${animal.id} % colours.length] + ';');
+                jQuery('#legend-colour-${animal.id}').attr('style', 'background-color: ${animal.colour};');
                 jQuery('#select-animal-${animal.id}').change(function() {
                     cleanseMap.toggleAllAnimalFeatures("${animal.id}", this.checked);
                 });
@@ -126,6 +112,12 @@
                 onResize();
                 cleanseMap = createCleanseMap('projectMap', {
                     projectId: <c:out value="${project.id}"/>,
+                    animalColours: {
+                        <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
+                        ${animal.id}: '${animal.colour}'<c:if test="${!animalStatus.last}">,
+                        </c:if>
+                        </c:forEach>
+                    },
                     onReset: function() {
                         jQuery('#cleanse-select').children().remove();
                         jQuery('#cleanse-list').children().remove();

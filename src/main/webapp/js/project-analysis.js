@@ -4,11 +4,6 @@ function createAnalysisMap(div, options) {
 
         var projection900913 = new OpenLayers.Projection("EPSG:900913");
         var projection4326 = new OpenLayers.Projection("EPSG:4326");
-        var colours = [
-                '#8DD3C7', '#FFFFB3', '#BEBADA', '#FB8072', '#80B1D3',
-                '#FDB462', '#B3DE69', '#FCCDE5', '#D9D9D9', '#BC80BD',
-                '#CCEBC5', '#FFED6F'
-        ];
 
         var projectId = options.projectId;
         var animalIds = options.animalIds;
@@ -21,6 +16,7 @@ function createAnalysisMap(div, options) {
         for (animalId in options.animalBounds) {
             animalBounds[animalId] = options.animalBounds[animalId].clone().transform(projection4326, projection900913);
         }
+        var animalColours = options.animalColours;
         var onAnalysisError = options.onAnalysisError;
         var onAnalysisSuccess = options.onAnalysisSuccess;
 
@@ -135,13 +131,13 @@ function createAnalysisMap(div, options) {
         function createLineStyleMap() {
             var styleContext = {
                 getColour : function(feature) {
-                    return colours[feature.attributes.animalId % colours.length];
+                    return animalColours[feature.attributes.animalId];
                 }
             };
             var lineOnStyle = new OpenLayers.Style({
                 strokeColor : "${getColour}",
-                strokeWidth : 1,
-                strokeOpacity : 1.0
+                strokeWidth : 2.0,
+                strokeOpacity : 0.8
             }, {
                 context : styleContext
             });
@@ -159,7 +155,7 @@ function createAnalysisMap(div, options) {
         function createPointStyleMap() {
             var styleContext = {
                 getColour : function(feature) {
-                    return colours[feature.attributes.animalId % colours.length];
+                    return animalColours[feature.attributes.animalId];
                 }
             };
             var pointOnStyle = new OpenLayers.Style({
@@ -186,13 +182,13 @@ function createAnalysisMap(div, options) {
         function createPolygonStyleMap() {
             var styleContext = {
                 getColour : function(feature) {
-                    return colours[feature.attributes.id.value % colours.length];
+                    return animalColours[feature.attributes.id.value];
                 }
             };
             var polygonOnStyle = new OpenLayers.Style({
                 strokeColor : "${getColour}",
-                strokeWidth : 2,
-                strokeOpacity : 1.0,
+                strokeWidth : 2.0,
+                strokeOpacity : 0.8,
                 fillColor : "${getColour}",
                 fillOpacity : 0.5
             }, {
@@ -225,7 +221,7 @@ function createAnalysisMap(div, options) {
                 pointRadius : 2,
                 strokeColor : "${getColour}",
                 strokeWidth : 1.2,
-                strokeOpacity : 1,
+                strokeOpacity : 1.0,
                 fillColor : "${getColour}",
                 fillOpacity : 0
             }, {
@@ -331,9 +327,9 @@ function createAnalysisMap(div, options) {
             );
         }
         
-        function updateAllTrajectoriesLayer() {
-            allTrajectoriesLayer.params['CQL_FILTER'] = buildAllTrajectoriesFilter();
-            allTrajectoriesLayer.redraw();
+        function updateAllDetectionsLayer() {
+            allDetectionsLayer.params['CQL_FILTER'] = buildAllDetectionsFilter();
+            allDetectionsLayer.redraw();
         }
         
         function buildAllTrajectoriesFilter() {
@@ -357,7 +353,7 @@ function createAnalysisMap(div, options) {
         
         function createAllTrajectoriesLayer() {
             return new OpenLayers.Layer.WMS(
-                'Detections',
+                'Trajectories',
                 '/geoserver/wms',
                 {
                     layers: 'oztrack:trajectorylayer',
@@ -374,8 +370,8 @@ function createAnalysisMap(div, options) {
         }
         
         function updateAllTrajectoriesLayer() {
-            allDetectionsLayer.params['CQL_FILTER'] = buildAllTrajectoriesFilter();
-            allDetectionsLayer.redraw();
+            allTrajectoriesLayer.params['CQL_FILTER'] = buildAllTrajectoriesFilter();
+            allTrajectoriesLayer.redraw();
         }
 
         function createWFSLayer(layerName, featureType, params, styleMap) {
@@ -450,10 +446,6 @@ function createAnalysisMap(div, options) {
 
                     feature.renderIntent = "default";
 
-                    var colour = colours[feature.attributes.animalId
-                            % colours.length];
-                    $('#legend-colour-' + feature.attributes.animalId).attr(
-                            'style', 'background-color: ' + colour + ';');
                     $(
                             'input[id=select-animal-'
                                     + feature.attributes.animalId + ']').attr(

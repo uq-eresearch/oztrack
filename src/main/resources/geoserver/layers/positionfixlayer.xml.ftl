@@ -9,6 +9,9 @@
     <style>
       <name>positionfixlayer</name>
     </style>
+    <style>
+      <name>point</name>
+    </style>
   </styles>
   <resource class="featureType">
     <name>positionfixlayer</name>

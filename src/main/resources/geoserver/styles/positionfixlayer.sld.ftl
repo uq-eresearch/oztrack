@@ -7,23 +7,13 @@
       <sld:Title/>
       <sld:FeatureTypeStyle>
         <sld:Name>positionfixlayer</sld:Name>
-        <#list colours as colour>
         <sld:Rule>
-          <ogc:Filter>
-            <ogc:PropertyIsEqualTo>
-              <ogc:Function name="IEEERemainder">
-                <ogc:PropertyName>animal_id</ogc:PropertyName>
-                <ogc:Literal>12</ogc:Literal>
-              </ogc:Function>
-              <ogc:Literal>${colour_index}</ogc:Literal>
-            </ogc:PropertyIsEqualTo>
-          </ogc:Filter>
           <sld:PointSymbolizer>
             <sld:Graphic>
               <sld:Mark>
                 <sld:WellKnownName>cross</sld:WellKnownName>
                 <sld:Fill>
-                  <sld:CssParameter name="fill">${colour}</sld:CssParameter>
+                  <sld:CssParameter name="fill"><ogc:PropertyName>colour</ogc:PropertyName></sld:CssParameter>
                 </sld:Fill>
                 <sld:Stroke>
                   <sld:CssParameter name="stroke">#888888</sld:CssParameter>
@@ -35,7 +25,6 @@
             </sld:Graphic>
           </sld:PointSymbolizer>
         </sld:Rule>
-        </#list>
       </sld:FeatureTypeStyle>
     </sld:UserStyle>
   </sld:NamedLayer>

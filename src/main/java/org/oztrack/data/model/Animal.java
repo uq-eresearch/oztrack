@@ -25,10 +25,10 @@ public class Animal extends OzTrackBaseEntity {
     @Column(nullable=false)
     private Long id;
 
-    @Column(nullable=false)
+    @Column(nullable=true)
     private String projectAnimalId;
 
-    @Column(nullable=false)
+    @Column(nullable=true)
     private String animalName;
 
     private String animalDescription;
@@ -39,6 +39,9 @@ public class Animal extends OzTrackBaseEntity {
     private Long pingIntervalSeconds;
     @Temporal(TemporalType.TIMESTAMP)
     private Date transmitterDeployDate;
+
+    @Column(name="colour", nullable=true)
+    private String colour;
 
     @ManyToOne
     @JoinColumn(nullable=false)
@@ -125,6 +128,14 @@ public class Animal extends OzTrackBaseEntity {
 
     public void setTransmitterDeployDate(Date transmitterDeployDate) {
         this.transmitterDeployDate = transmitterDeployDate;
+    }
+
+    public String getColour() {
+        return colour;
+    }
+
+    public void setColour(String colour) {
+        this.colour = colour;
     }
 
     public Project getProject() {
