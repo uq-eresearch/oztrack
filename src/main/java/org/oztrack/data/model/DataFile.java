@@ -16,6 +16,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -27,7 +28,7 @@ import org.oztrack.data.model.types.DataFileStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 @Entity(name = "datafile")
-public class DataFile extends OztrackBaseEntity {
+public class DataFile extends OzTrackBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "datafileid_seq")
     @SequenceGenerator(name = "datafileid_seq", sequenceName = "datafileid_seq",allocationSize = 1)
@@ -53,6 +54,7 @@ public class DataFile extends OztrackBaseEntity {
     private String statusMessage;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade={}) //persist project yourself
+    @JoinColumn(nullable=false)
     private Project project;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "dataFile", cascade = CascadeType.ALL, orphanRemoval = true)

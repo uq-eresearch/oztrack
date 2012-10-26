@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -23,20 +24,25 @@ public class PositionFix {
     @Column(nullable=false)
     private Date detectionTime;
 
+    @Column(nullable=false)
     private String latitude;
 
+    @Column(nullable=false)
     private String longitude;
 
     @ManyToOne
+    @JoinColumn(nullable=false)
     private Animal animal;
 
     @ManyToOne
+    @JoinColumn(nullable=false)
     private DataFile dataFile;
 
-    @Column(name = "locationgeometry", columnDefinition="GEOMETRY")
+    @Column(name = "locationgeometry", columnDefinition="GEOMETRY", nullable=false)
     @Type(type = "org.hibernatespatial.GeometryUserType")
     private Point locationGeometry;
 
+    @Column(nullable=false)
     private Boolean deleted;
 
     public Long getId() {

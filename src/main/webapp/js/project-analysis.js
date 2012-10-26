@@ -325,7 +325,8 @@ function createAnalysisMap(div, options) {
                     transparent: true
                 },
                 {
-                    isBaseLayer: false
+                    isBaseLayer: false,
+                    tileSize: new OpenLayers.Size(512,512)
                 }
             );
         }
@@ -366,7 +367,8 @@ function createAnalysisMap(div, options) {
                     transparent: true
                 },
                 {
-                    isBaseLayer: false
+                    isBaseLayer: false,
+                    tileSize: new OpenLayers.Size(512,512)
                 }
             );
         }

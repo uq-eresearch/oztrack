@@ -7,15 +7,8 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 15/06/11
- * Time: 4:26 PM
- */
 @MappedSuperclass
-public abstract class OztrackBaseEntity {
-
+public abstract class OzTrackBaseEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
 
@@ -60,5 +53,4 @@ public abstract class OztrackBaseEntity {
     public void setUpdateUser(User updateUser) {
         this.updateUser = updateUser;
     }
-
 }

@@ -24,13 +24,14 @@ import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.model.types.ProjectType;
 
 @Entity(name = "Project")
-public class Project extends OztrackBaseEntity {
+public class Project extends OzTrackBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "projectid_seq")
     @SequenceGenerator(name = "projectid_seq", sequenceName = "projectid_seq",allocationSize = 1)
     @Column(nullable=false)
     private Long id;
 
+    @Column(nullable=false)
     private String title;
 
     @Column(columnDefinition = "TEXT")

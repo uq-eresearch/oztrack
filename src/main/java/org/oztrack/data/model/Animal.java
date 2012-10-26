@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -17,15 +18,19 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity(name = "Animal")
-public class Animal extends OztrackBaseEntity {
+public class Animal extends OzTrackBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "animalid_seq")
     @SequenceGenerator(name = "animalid_seq", sequenceName = "animalid_seq",allocationSize = 1)
     @Column(nullable=false)
     private Long id;
 
+    @Column(nullable=false)
     private String projectAnimalId;
+
+    @Column(nullable=false)
     private String animalName;
+
     private String animalDescription;
     private String speciesName;
     private String verifiedSpeciesName;
@@ -34,7 +39,9 @@ public class Animal extends OztrackBaseEntity {
     private Long pingIntervalSeconds;
     @Temporal(TemporalType.TIMESTAMP)
     private Date transmitterDeployDate;
+
     @ManyToOne
+    @JoinColumn(nullable=false)
     private Project project;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "animal")

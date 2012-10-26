@@ -16,7 +16,7 @@ import javax.persistence.SequenceGenerator;
 
 import org.hibernate.annotations.Cascade;
 
-@Entity(name = "AppUser")
+@Entity(name="appuser")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userid_seq")
