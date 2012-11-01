@@ -18,7 +18,7 @@ Install PostgreSQL and PostGIS:
 
 Setup the OzTrack database, including PostGIS:
 
-    sudo -u postgres psql -c "create user oztrack with password 'ozadmin';"
+    sudo -u postgres psql -c "create user oztrack with password 'changeme';"
     sudo -u postgres psql -c "create database oztrack with owner oztrack;"
     sudo -u postgres psql -d oztrack -f /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql
     sudo -u postgres psql -d oztrack -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql
@@ -75,31 +75,46 @@ To install PostgreSQL, use the following commands:
     yum install postgresql.x86_64
     yum install postgresql-server.x86_64
     yum install postgresql-devel.x86_64
+
+To install PostGIS, you need the EPEL repository. The URL used in the
+following command depends on the version of Red Hat that you're running: see
+instructions on http://fedoraproject.org/wiki/EPEL.
+
+    rpm -Uvh 'http://mirror.iprimus.com.au/epel/6/i386/epel-release-6-7.noarch.rpm'
     yum install postgis
+
+Sort out PostgreSQL authentication:
+
+    $EDITOR /var/lib/pgsql/data/pg_hba.conf
+
+    # TYPE  DATABASE    USER        CIDR-ADDRESS          METHOD
+    local   all         postgres                          ident
+    local   all         all                               md5
+    host    all         all         127.0.0.1/32          md5
+    host    all         all         ::1/128               md5
+
+Initialise PostgreSQL and set up the service:
+
     service postgresql initdb
     chkconfig postgresql on
     service postgresql start
 
-Remember to sort out authentication:
-
-    $EDITOR /var/lib/pgsql/data/pg_hba.conf
-
 Run something like the following commands:
 
     # Create database with PL/pgSQL support
-    psql -U postgres -c "create user oztrack with password 'ozadmin';"
-    psql -U postgres -c "create database oztrack with owner oztrack;"
+    sudo -u postgres psql -c "create user oztrack with password 'changeme';"
+    sudo -u postgres psql -c "create database oztrack with owner oztrack;"
     psql -U oztrack -d oztrack -c "create language plpgsql;"
 
     # Run the PostGIS initialisation scripts: need to run postgis.sql as postgres
     # because only superuser can create c functions; afterwards, we change owner
     # on the resulting tables/views and subsequently connect as normal user.
-    psql -U postgres -d oztrack -f /usr/share/pgsql/contrib/postgis.sql
-    psql -U postgres -d oztrack -f /usr/share/pgsql/contrib/spatial_ref_sys.sql
+    sudo -u postgres psql -d oztrack -f /usr/share/pgsql/contrib/postgis-64.sql
+    sudo -u postgres psql -d oztrack -f /usr/share/pgsql/contrib/spatial_ref_sys.sql
 
-    psql -U postgres -d oztrack -c "alter table geometry_columns owner to oztrack;"
-    psql -U postgres -d oztrack -c "alter table spatial_ref_sys owner to oztrack;"
-    psql -U postgres -d oztrack -c "alter view geography_columns owner to oztrack;"
+    sudo -u postgres psql -d oztrack -c "alter table geometry_columns owner to oztrack;"
+    sudo -u postgres psql -d oztrack -c "alter table spatial_ref_sys owner to oztrack;"
+    sudo -u postgres psql -d oztrack -c "alter view geography_columns owner to oztrack;"
 
     # Our own tables should be created on first run by Hibernate
 
