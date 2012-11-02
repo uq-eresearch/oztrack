@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.JdbcAccess;
+import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.error.FileProcessingException;
@@ -24,12 +25,21 @@ public abstract class DataFileLoader {
     protected EntityManager entityManager;
 
     private AnimalDao animalDao;
+    private PositionFixDao positionFixDao;
     private JdbcAccess jdbcAccess;
 
-    public DataFileLoader(DataFile dataFile, DataFileDao dataFileDao, AnimalDao animalDao, EntityManager entityManager, JdbcAccess jdbcAccess) {
+    public DataFileLoader(
+        DataFile dataFile,
+        DataFileDao dataFileDao,
+        AnimalDao animalDao,
+        PositionFixDao positionFixDao,
+        EntityManager entityManager,
+        JdbcAccess jdbcAccess
+    ) {
         this.dataFile = dataFileDao.getDataFileById(dataFile.getId());
         this.dataFileDao = dataFileDao;
         this.animalDao = animalDao;
+        this.positionFixDao = positionFixDao;
         this.entityManager = entityManager;
         this.jdbcAccess = jdbcAccess;
     }
@@ -152,6 +162,7 @@ public abstract class DataFileLoader {
             jdbcAccess.loadObservations(dataFile);
             dataFileDao.update(dataFile);
             jdbcAccess.truncateRawObservations(dataFile);
+            positionFixDao.renumberPositionFixes(dataFile.getProject());
         }
         catch (Exception e) {
             jdbcAccess.truncateRawObservations(dataFile);

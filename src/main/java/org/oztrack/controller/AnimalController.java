@@ -3,6 +3,7 @@ package org.oztrack.controller;
 import javax.servlet.http.HttpServletResponse;
 
 import org.oztrack.data.access.AnimalDao;
+import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.validator.AnimalFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AnimalController {
     @Autowired
     private AnimalDao animalDao;
+
+    @Autowired
+    private PositionFixDao positionFixDao;
 
     @InitBinder("animal")
     public void initAnimalBinder(WebDataBinder binder) {
@@ -76,6 +80,7 @@ public class AnimalController {
     @PreAuthorize("hasPermission(#animal.project, 'manage')")
     public void processDelete(@ModelAttribute(value="animal") Animal animal, HttpServletResponse response) {
         animalDao.delete(animal);
+        positionFixDao.renumberPositionFixes(animal.getProject());
         response.setStatus(204);
     }
 }

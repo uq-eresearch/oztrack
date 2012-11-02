@@ -80,7 +80,7 @@ public class DataFileRunner {
             try {
                 switch (nextDataFile.getProject().getProjectType()) {
                     case GPS:
-                        PositionFixFileLoader positionFixFileLoader = new PositionFixFileLoader(nextDataFile, dataFileDao, animalDao, entityManager, jdbcAccess);
+                        PositionFixFileLoader positionFixFileLoader = new PositionFixFileLoader(nextDataFile, dataFileDao, animalDao, positionFixDao, entityManager, jdbcAccess);
                         positionFixFileLoader.process();
                         break;
                     default:
