@@ -127,6 +127,7 @@ public class ProjectCleanseController {
                 operation.equals("delete-all")
                 ? positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, null, true)
                 : positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, multiPolygon, true);
+            positionFixDao.renumberPositionFixes(project);
             PrintWriter out = response.getWriter();
             out.append("<?xml version=\"1.0\"?>\n");
             out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");
@@ -140,6 +141,7 @@ public class ProjectCleanseController {
                 operation.equals("undelete-all")
                 ? positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, null, false)
                 : positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, multiPolygon, false);
+            positionFixDao.renumberPositionFixes(project);
             PrintWriter out = response.getWriter();
             out.append("<?xml version=\"1.0\"?>\n");
             out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");

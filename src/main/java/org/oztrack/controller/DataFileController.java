@@ -3,6 +3,7 @@ package org.oztrack.controller;
 import javax.servlet.http.HttpServletResponse;
 
 import org.oztrack.data.access.DataFileDao;
+import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.DataFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class DataFileController {
     @Autowired
     private DataFileDao dataFileDao;
+
+    @Autowired
+    private PositionFixDao positionFixDao;
 
     @InitBinder("dataFile")
     public void initDataFileBinder(WebDataBinder binder) {
@@ -41,6 +45,7 @@ public class DataFileController {
     @PreAuthorize("hasPermission(#dataFile.project, 'write')")
     public void processDelete(@ModelAttribute(value="dataFile") DataFile dataFile, HttpServletResponse response) {
         dataFileDao.delete(dataFile);
+        positionFixDao.renumberPositionFixes(dataFile.getProject());
         response.setStatus(204);
     }
 }
