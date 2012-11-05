@@ -104,16 +104,18 @@ function createAnalysisMap(div, options) {
             startEndStyleMap = createStartEndPointsStyleMap();
             polygonStyleMap = createPolygonStyleMap();
 
-            var allDetectionsLayer = createDetectionLayer({fromDate: dateToISO8601(minDate), toDate: dateToISO8601(maxDate)});
+            var allDetectionsLayer = createDetectionLayer({});
             detectionLayers.push(allDetectionsLayer);
             map.addLayer(allDetectionsLayer.getWMSLayer());
 
-            var allTrajectoriesLayer = createTrajectoryLayer({fromDate: dateToISO8601(minDate), toDate: dateToISO8601(maxDate)});
+            var allTrajectoriesLayer = createTrajectoryLayer({});
             trajectoryLayers.push(allTrajectoriesLayer);
             map.addLayer(allTrajectoriesLayer.getWMSLayer());
 
-            allStartEndLayer = createAllStartEndLayer();
-            map.addLayer(allStartEndLayer);
+            map.addLayer(createWFSLayer('Start and End Points', 'StartEnd', {
+                projectId : projectId,
+                queryType : 'START_END'
+            }, startEndStyleMap));
             
             map.zoomToExtent(projectBounds, false);
         }());
@@ -430,48 +432,6 @@ function createAnalysisMap(div, options) {
                 trajectoryLayers[i].getWMSLayer().redraw();
             }
         }
-        
-        function buildAllStartEndFilter() {
-            var visibleAnimalIds = [];
-            for (i = 0; i < animalIds.length; i++) {
-                if (animalVisible[animalIds[i]]) {
-                    visibleAnimalIds.push(animalIds[i]);
-                }
-            }
-            // Include bogus animal ID (e.g. -1) that will never be matched.
-            // This covers the case where no animals are selected to be visible,
-            // preventing the CQL_FILTER parameter from being syntactically invalid.
-            if (visibleAnimalIds.length == 0) {
-                visibleAnimalIds.push(-1);
-            }
-            var cqlFilter =
-                'project_id = ' + projectId +
-                ' and animal_id in (' + visibleAnimalIds.join(', ') + ')';
-            return cqlFilter;
-        }
-        
-        function createAllStartEndLayer() {
-            return new OpenLayers.Layer.WMS(
-                'Start and End Points',
-                '/geoserver/wms',
-                {
-                    layers: 'oztrack:startendlayer',
-                    styles: 'startendlayer',
-                    cql_filter: buildAllStartEndFilter(),
-                    format: 'image/png',
-                    transparent: true
-                },
-                {
-                    isBaseLayer: false,
-                    tileSize: new OpenLayers.Size(512,512)
-                }
-            );
-        }
-        
-        function updateAllStartEndLayer() {
-            allStartEndLayer.params['CQL_FILTER'] = buildAllStartEndFilter();
-            allStartEndLayer.redraw();
-        }
 
         function createWFSLayer(layerName, featureType, params, styleMap) {
             return new OpenLayers.Layer.Vector(layerName, {
@@ -539,33 +499,33 @@ function createAnalysisMap(div, options) {
                         continue;
                     }
                     animalProcessed[feature.attributes.animalId] = true;
-
                     feature.renderIntent = "default";
-
                     $('input[id=select-animal-' + feature.attributes.animalId + ']').attr('checked', 'checked');
-
                     var html = '<div class="layerInfoTitle">' + wfsLayer.name + '</div>';
                     var tableRowsHtml = '';
                     if (feature.attributes.fromDate) {
-                        tableRowsHtml += '<tr><td class="layerInfoLabel">Date From:</td><td>'
-                                + feature.attributes.fromDate + '</td></tr>';
+                        tableRowsHtml += '<tr>';
+                        tableRowsHtml += '<td class="layerInfoLabel">Date From:</td>';
+                        tableRowsHtml += '<td>' + feature.attributes.fromDate + '</td>';
+                        tableRowsHtml += '</tr>';
                     }
                     if (feature.attributes.toDate) {
-                        tableRowsHtml += '<tr><td class="layerInfoLabel">Date To:</td><td>'
-                                + feature.attributes.toDate + '</td></tr>';
+                        tableRowsHtml += '<tr>';
+                        tableRowsHtml += '<td class="layerInfoLabel">Date To:</td>';
+                        tableRowsHtml += '<td>' + feature.attributes.toDate + '</td>';
+                        tableRowsHtml += '</tr>';
                     }
                     if (feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString') {
-                        var distance = (Math.round(feature.geometry
-                                .getGeodesicLength(map.projection)) / 1000);
-                        tableRowsHtml += '<tr><td class="layerInfoLabel">Min Distance: </td><td>'
-                                + distance + ' km </td></tr>';
+                        var distance = (Math.round(feature.geometry.getGeodesicLength(map.projection)) / 1000);
+                        tableRowsHtml += '<tr>';
+                        tableRowsHtml += '<td class="layerInfoLabel">Min Distance: </td>';
+                        tableRowsHtml += '<td>' + distance + ' km </td>';
+                        tableRowsHtml += '</tr>';
                     }
                     if (tableRowsHtml != '') {
                         html += '<table>' + tableRowsHtml + '</table>';
                     }
-
-                    $('#animalInfo-' + feature.attributes.animalId).append(
-                            '<div class="layerInfo">' + html + '</div>');
+                    $('#animalInfo-' + feature.attributes.animalId).append('<div class="layerInfo">' + html + '</div>');
                 }
             }
         }
@@ -574,18 +534,16 @@ function createAnalysisMap(div, options) {
             for (var i = 0; i < animalIds.length; i++) {
                 var html = '<div class="layerInfoTitle">' + layer.getTitle() + '</div>';
                 var tableRowsHtml = '';
-                if (layer.getParams().fromDate) {
-                    tableRowsHtml += '<tr>';
-                    tableRowsHtml += '<td class="layerInfoLabel">Date From:</td>';
-                    tableRowsHtml += '<td>' + layer.getParams().fromDate + '</td>';
-                    tableRowsHtml += '</tr>';
-                }
-                if (layer.getParams().toDate) {
-                    tableRowsHtml += '<tr>';
-                    tableRowsHtml += '<td class="layerInfoLabel">Date To:</td>';
-                    tableRowsHtml += '<td>' + layer.getParams().toDate + '</td>';
-                    tableRowsHtml += '</tr>';
-                }
+                var fromDate = layer.getParams().fromDate || dateToISO8601(minDate);
+                tableRowsHtml += '<tr>';
+                tableRowsHtml += '<td class="layerInfoLabel">Date From:</td>';
+                tableRowsHtml += '<td>' + fromDate + '</td>';
+                tableRowsHtml += '</tr>';
+                var toDate = layer.getParams().toDate || dateToISO8601(maxDate);
+                tableRowsHtml += '<tr>';
+                tableRowsHtml += '<td class="layerInfoLabel">Date To:</td>';
+                tableRowsHtml += '<td>' + toDate + '</td>';
+                tableRowsHtml += '</tr>';
                 if (tableRowsHtml != '') {
                     html += '<table>' + tableRowsHtml + '</table>';
                 }
@@ -597,41 +555,50 @@ function createAnalysisMap(div, options) {
             var animalProcessed = {};
             for ( var f in features) {
                 var feature = features[f];
-
                 if (animalProcessed[feature.attributes.id.value]) {
                     continue;
                 }
                 animalProcessed[feature.attributes.id.value] = true;
-
                 feature.renderIntent = "default";
                 feature.layer.drawFeature(feature);
-
                 var html = '<div class="layerInfoTitle">' + layerName + '</div>';
                 var tableRowsHtml = '';
                 if (params.percent) {
-                    tableRowsHtml += '<tr><td class="layerInfoLabel">Percent: </td><td>'
-                            + params.percent + '%</td></tr>';
+                    tableRowsHtml += '<tr>';
+                    tableRowsHtml += '<td class="layerInfoLabel">Percent: </td>';
+                    tableRowsHtml += '<td>' + params.percent + '%</td>';
+                    tableRowsHtml += '</tr>';
                 }
                 if (params.h) {
-                    tableRowsHtml += '<tr><td class="layerInfoLabel">h value: </td><td>'
-                            + params.h + '</td></tr>';
+                    tableRowsHtml += '<tr>';
+                    tableRowsHtml += '<td class="layerInfoLabel">h value: </td>';
+                    tableRowsHtml += '<td>' + params.h + '</td>';
+                    tableRowsHtml += '</tr>';
                 }
                 if (params.alpha) {
-                    tableRowsHtml += '<tr><td class="layerInfoLabel">alpha: </td><td>'
-                            + params.alpha + '</td></tr>';
+                    tableRowsHtml += '<tr>';
+                    tableRowsHtml += '<td class="layerInfoLabel">alpha: </td>';
+                    tableRowsHtml += '<td>' + params.alpha + '</td>';
+                    tableRowsHtml += '</tr>';
                 }
                 if (params.gridSize) {
-                    tableRowsHtml += '<tr><td class="layerInfoLabel">Grid size (m): </td><td>'
-                            + params.gridSize + '</td></tr>';
+                    tableRowsHtml += '<tr>';
+                    tableRowsHtml += '<td class="layerInfoLabel">Grid size (m): </td>';
+                    tableRowsHtml += '<td>' + params.gridSize + '</td>';
+                    tableRowsHtml += '</tr>';
                 }
                 if (params.extent) {
-                    tableRowsHtml += '<tr><td class="layerInfoLabel">Extent: </td><td>'
-                            + params.extent + '</td></tr>';
+                    tableRowsHtml += '<tr>';
+                    tableRowsHtml += '<td class="layerInfoLabel">Extent: </td>';
+                    tableRowsHtml += '<td>' + params.extent + '</td>';
+                    tableRowsHtml += '</tr>';
                 }
                 if (feature.attributes.area.value) {
                     var area = Math.round(feature.attributes.area.value * 1000) / 1000;
-                    tableRowsHtml += '<tr><td class="layerInfoLabel">Area: </td><td>'
-                            + area + ' km<sup>2</sup></td></tr>';
+                    tableRowsHtml += '<tr>';
+                    tableRowsHtml += '<td class="layerInfoLabel">Area: </td>';
+                    tableRowsHtml += '<td>' + area + ' km<sup>2</sup></td>';
+                    tableRowsHtml += '</tr>';
                 }
                 var urlWithParams = url;
                 var paramString = OpenLayers.Util.getParameterString(params);
@@ -640,8 +607,7 @@ function createAnalysisMap(div, options) {
                             : '?';
                     urlWithParams += separator + paramString;
                 }
-                tableRowsHtml += '<tr><td class="layerInfoLabel">Export as: </td><td><a href="'
-                        + urlWithParams + '">KML</a></td></tr>';
+                tableRowsHtml += '<tr><td class="layerInfoLabel">Export as: </td><td><a href="' + urlWithParams + '">KML</a></td></tr>';
                 if (tableRowsHtml) {
                     html += '<table>' + tableRowsHtml + '</table>';
                 }
