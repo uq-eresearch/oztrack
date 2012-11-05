@@ -48,3 +48,15 @@ function deleteEntity(url, destUrl, message) {
         }
     });
 }
+//Returns date in ISO8601 format: required by HTML 5 [1]; code taken from [2]; other discussion at [3].
+//[1] http://www.whatwg.org/specs/web-apps/current-work/multipage/common-microsyntaxes.html#dates-and-Elems
+//[2] https://developer.mozilla.org/en/Core_JavaScript_1.5_Reference:Global_Objects:Date
+//[3] http://stackoverflow.com/questions/2573521/how-do-i-output-an-iso-8601-formatted-string-in-javascript
+function dateToISO8601String(d) {
+    function pad(n) {
+        return (n < 10) ? ('0' + n) : n;
+    }
+    var datePart = d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate());
+    var timePart = pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes()) + ':' + pad(d.getUTCSeconds()) + 'Z';
+    return datePart + 'T' + timePart;
+}

@@ -272,7 +272,7 @@
                         </div>
 
                         <div class="animalCheckbox">
-                            <input style="float: left; margin: 0;" type="checkbox" name="animalCheckbox" id="select-animal-${animal.id}" value="${animal.id}">
+                            <input style="float: left; margin: 0;" type="checkbox" name="animalCheckbox" id="select-animal-${animal.id}" value="${animal.id}" checked="checked">
                             <script type="text/javascript">
                                 $('input[id=select-animal-${animal.id}]').change(function() {
                                     analysisMap.toggleAllAnimalFeatures("${animal.id}",this.checked);
