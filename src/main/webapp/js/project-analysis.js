@@ -490,14 +490,11 @@ function createAnalysisMap(div, options) {
                 loadingPanel.decreaseCounter();
                 if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
                     queryOverlay.addFeatures(resp.features);
-                    updateAnimalInfoFromKML(layerName, url, params,
-                            resp.features);
+                    updateAnimalInfoFromKML(layerName, url, params, resp.features);
                     onAnalysisSuccess();
                 }
                 else {
-                    onAnalysisError(jQuery(resp.priv.responseText)
-                            .find('error').text()
-                            || 'Error processing request');
+                    onAnalysisError(jQuery(resp.priv.responseText).find('error').text() || 'Error processing request');
                 }
             };
             loadingPanel.increaseCounter();
