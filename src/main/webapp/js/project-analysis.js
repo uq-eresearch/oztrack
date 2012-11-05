@@ -262,24 +262,19 @@ function createAnalysisMap(div, options) {
                     params.toDate = toDate;
                 }
                 if (queryTypeValue == "LINES") {
-                    map.addLayer(createWFSLayer(layerName, 'Trajectory',
-                            params, lineStyleMap));
+                    map.addLayer(createWFSLayer(layerName, 'Trajectory', params, lineStyleMap));
                 }
                 else if (queryTypeValue == "POINTS") {
-                    map.addLayer(createWFSLayer(layerName, 'Detections',
-                            params, pointStyleMap));
+                    map.addLayer(createWFSLayer(layerName, 'Detections', params, pointStyleMap));
                 }
                 else if (queryTypeValue == "START_END") {
-                    map.addLayer(createWFSLayer(layerName, 'StartEnd', params,
-                            startEndStyleMap));
+                    map.addLayer(createWFSLayer(layerName, 'StartEnd', params, startEndStyleMap));
                 }
-                else if ((queryTypeValue == "HEATMAP_POINT")
-                        || (queryTypeValue == "HEATMAP_LINE")) {
+                else if ((queryTypeValue == "HEATMAP_POINT") || (queryTypeValue == "HEATMAP_LINE")) {
                     map.addLayer(createKMLLayer(layerName, params, null, true));
                 }
                 else {
-                    map.addLayer(createKMLLayer(layerName, params,
-                            polygonStyleMap, null));
+                    map.addLayer(createKMLLayer(layerName, params, polygonStyleMap, null));
                 }
             }
             else {
