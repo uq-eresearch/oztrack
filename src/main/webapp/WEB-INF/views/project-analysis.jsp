@@ -195,6 +195,8 @@
                         </c:if>
                         </c:forEach>
                     },
+                    minDate: new Date(${projectDetectionDateRange.minimum.time}),
+                    maxDate: new Date(${projectDetectionDateRange.maximum.time}),
                     onAnalysisError: function(message) {
                         jQuery('#errorDialog')
                             .text(message)

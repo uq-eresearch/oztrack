@@ -52,11 +52,12 @@ function deleteEntity(url, destUrl, message) {
 //[1] http://www.whatwg.org/specs/web-apps/current-work/multipage/common-microsyntaxes.html#dates-and-Elems
 //[2] https://developer.mozilla.org/en/Core_JavaScript_1.5_Reference:Global_Objects:Date
 //[3] http://stackoverflow.com/questions/2573521/how-do-i-output-an-iso-8601-formatted-string-in-javascript
-function dateToISO8601String(d) {
-    function pad(n) {
-        return (n < 10) ? ('0' + n) : n;
-    }
-    var datePart = d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate());
-    var timePart = pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes()) + ':' + pad(d.getUTCSeconds()) + 'Z';
-    return datePart + 'T' + timePart;
+function padForISO8601(n) {
+    return (n < 10) ? ('0' + n) : n;
+}
+function dateToISO8601(d) {
+    return d.getUTCFullYear() + '-' + padForISO8601(d.getUTCMonth() + 1) + '-' + padForISO8601(d.getUTCDate());
+}
+function dateTimeToISO8601(d) {
+    return dateToISO8601(d) + 'T' + padForISO8601(d.getUTCHours()) + ':' + padForISO8601(d.getUTCMinutes()) + ':' + padForISO8601(d.getUTCSeconds()) + 'Z';
 }

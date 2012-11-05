@@ -17,6 +17,8 @@ function createAnalysisMap(div, options) {
             animalBounds[animalId] = options.animalBounds[animalId].clone().transform(projection4326, projection900913);
         }
         var animalColours = options.animalColours;
+        var minDate = options.minDate;
+        var maxDate = options.maxDate;
         var onAnalysisError = options.onAnalysisError;
         var onAnalysisSuccess = options.onAnalysisSuccess;
 
@@ -102,11 +104,11 @@ function createAnalysisMap(div, options) {
             startEndStyleMap = createStartEndPointsStyleMap();
             polygonStyleMap = createPolygonStyleMap();
 
-            var allDetectionsLayer = createDetectionLayer({});
+            var allDetectionsLayer = createDetectionLayer({fromDate: dateToISO8601(minDate), toDate: dateToISO8601(maxDate)});
             detectionLayers.push(allDetectionsLayer);
             map.addLayer(allDetectionsLayer.getWMSLayer());
 
-            var allTrajectoriesLayer = createTrajectoryLayer({});
+            var allTrajectoriesLayer = createTrajectoryLayer({fromDate: dateToISO8601(minDate), toDate: dateToISO8601(maxDate)});
             trajectoryLayers.push(allTrajectoriesLayer);
             map.addLayer(allTrajectoriesLayer.getWMSLayer());
 
@@ -291,7 +293,7 @@ function createAnalysisMap(div, options) {
         };
         
         function createDetectionLayer(params) {
-            function buildDetectionFilter(params) {
+            function buildFilter(params) {
                 var visibleAnimalIds = [];
                 for (i = 0; i < animalIds.length; i++) {
                     if (animalVisible[animalIds[i]]) {
@@ -309,20 +311,21 @@ function createAnalysisMap(div, options) {
                     ' and project_id = ' + projectId +
                     ' and animal_id in (' + visibleAnimalIds.join(', ') + ')';
                 if (params.fromDate) {
-                    cqlFilter += ' and detectiontime >= \'' + dateToISO8601String(new Date(params.fromDate)) + '\'';
+                    cqlFilter += ' and detectiontime >= \'' + dateTimeToISO8601(new Date(params.fromDate)) + '\'';
                 }
                 if (params.toDate) {
-                    cqlFilter += ' and detectiontime <= \'' + dateToISO8601String(new Date(params.toDate)) + '\'';
+                    cqlFilter += ' and detectiontime <= \'' + dateTimeToISO8601(new Date(params.toDate)) + '\'';
                 }
                 return cqlFilter;
             }
+            var title = 'Detections';
             var wmsLayer = new OpenLayers.Layer.WMS(
-                'Detections',
+                title,
                 '/geoserver/wms',
                 {
                     layers: 'oztrack:positionfixlayer',
                     styles: 'positionfixlayer',
-                    cql_filter: buildDetectionFilter(params),
+                    cql_filter: buildFilter(params),
                     format: 'image/png',
                     transparent: true
                 },
@@ -331,14 +334,25 @@ function createAnalysisMap(div, options) {
                     tileSize: new OpenLayers.Size(512,512)
                 }
             );
-            return {
+            var layer = {
+                getTitle: function() {
+                    return title;
+                },
+                getParams: function() {
+                    return params;
+                },
                 getCQLFilter: function() {
-                    return buildDetectionFilter(params);
+                    return buildFilter(params);
                 },
                 getWMSLayer: function() {
                     return wmsLayer;
                 }
             };
+            wmsLayer.events.register('added', this, function onloadend(evt) {
+                updateAnimalInfoFromLayer(layer);
+                onAnalysisSuccess();
+            });
+            return layer;
         }
         
         function updateDetectionLayers() {
@@ -349,7 +363,7 @@ function createAnalysisMap(div, options) {
         }
         
         function createTrajectoryLayer(params) {
-            function buildTrajectoryFilter(params) {
+            function buildFilter(params) {
                 var visibleAnimalIds = [];
                 for (i = 0; i < animalIds.length; i++) {
                     if (animalVisible[animalIds[i]]) {
@@ -366,20 +380,21 @@ function createAnalysisMap(div, options) {
                     'project_id = ' + projectId +
                     ' and animal_id in (' + visibleAnimalIds.join(', ') + ')';
                 if (params.fromDate) {
-                    cqlFilter += ' and startdetectiontime >= \'' + dateToISO8601String(new Date(params.fromDate)) + '\'';
+                    cqlFilter += ' and startdetectiontime >= \'' + dateTimeToISO8601(new Date(params.fromDate)) + '\'';
                 }
                 if (params.toDate) {
-                    cqlFilter += ' and enddetectiontime <= \'' + dateToISO8601String(new Date(params.toDate)) + '\'';
+                    cqlFilter += ' and enddetectiontime <= \'' + dateTimeToISO8601(new Date(params.toDate)) + '\'';
                 }
                 return cqlFilter;
             }
+            var title = 'Trajectory';
             var wmsLayer = new OpenLayers.Layer.WMS(
-                'Trajectory',
+                title,
                 '/geoserver/wms',
                 {
                     layers: 'oztrack:trajectorylayer',
                     styles: 'trajectorylayer',
-                    cql_filter: buildTrajectoryFilter(params),
+                    cql_filter: buildFilter(params),
                     format: 'image/png',
                     transparent: true
                 },
@@ -388,14 +403,25 @@ function createAnalysisMap(div, options) {
                     tileSize: new OpenLayers.Size(512,512)
                 }
             );
-            return {
+            var layer = {
+                getTitle: function() {
+                    return title;
+                },
+                getParams: function() {
+                    return params;
+                },
                 getCQLFilter: function() {
-                    return buildTrajectoryFilter(params);
+                    return buildFilter(params);
                 },
                 getWMSLayer: function() {
                     return wmsLayer;
                 }
             };
+            wmsLayer.events.register('loadend', this, function onloadend(evt) {
+                updateAnimalInfoFromLayer(layer);
+                onAnalysisSuccess();
+            });
+            return layer;
         }
         
         function updateTrajectoryLayers() {
@@ -541,6 +567,29 @@ function createAnalysisMap(div, options) {
                     $('#animalInfo-' + feature.attributes.animalId).append(
                             '<div class="layerInfo">' + html + '</div>');
                 }
+            }
+        }
+        
+        function updateAnimalInfoFromLayer(layer) {
+            for (var i = 0; i < animalIds.length; i++) {
+                var html = '<div class="layerInfoTitle">' + layer.getTitle() + '</div>';
+                var tableRowsHtml = '';
+                if (layer.getParams().fromDate) {
+                    tableRowsHtml += '<tr>';
+                    tableRowsHtml += '<td class="layerInfoLabel">Date From:</td>';
+                    tableRowsHtml += '<td>' + layer.getParams().fromDate + '</td>';
+                    tableRowsHtml += '</tr>';
+                }
+                if (layer.getParams().toDate) {
+                    tableRowsHtml += '<tr>';
+                    tableRowsHtml += '<td class="layerInfoLabel">Date To:</td>';
+                    tableRowsHtml += '<td>' + layer.getParams().toDate + '</td>';
+                    tableRowsHtml += '</tr>';
+                }
+                if (tableRowsHtml != '') {
+                    html += '<table>' + tableRowsHtml + '</table>';
+                }
+                $('#animalInfo-' + animalIds[i]).append('<div class="layerInfo">' + html + '</div>');
             }
         }
 
