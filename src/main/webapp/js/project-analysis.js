@@ -106,10 +106,8 @@ function createAnalysisMap(div, options) {
             map.addLayer(allDetectionsLayer);
             allTrajectoriesLayer = createAllTrajectoriesLayer();
             map.addLayer(allTrajectoriesLayer);
-            map.addLayer(createWFSLayer('Start and End Points', 'StartEnd', {
-                projectId : projectId,
-                queryType : 'START_END'
-            }, startEndStyleMap));
+            allStartEndLayer = createAllStartEndLayer();
+            map.addLayer(allStartEndLayer);
             
             map.zoomToExtent(projectBounds, false);
         }());
@@ -372,6 +370,48 @@ function createAnalysisMap(div, options) {
         function updateAllTrajectoriesLayer() {
             allTrajectoriesLayer.params['CQL_FILTER'] = buildAllTrajectoriesFilter();
             allTrajectoriesLayer.redraw();
+        }
+        
+        function buildAllStartEndFilter() {
+            var visibleAnimalIds = [];
+            for (i = 0; i < animalIds.length; i++) {
+                if (animalVisible[animalIds[i]]) {
+                    visibleAnimalIds.push(animalIds[i]);
+                }
+            }
+            // Include bogus animal ID (e.g. -1) that will never be matched.
+            // This covers the case where no animals are selected to be visible,
+            // preventing the CQL_FILTER parameter from being syntactically invalid.
+            if (visibleAnimalIds.length == 0) {
+                visibleAnimalIds.push(-1);
+            }
+            var cqlFilter =
+                'project_id = ' + projectId +
+                ' and animal_id in (' + visibleAnimalIds.join(', ') + ')';
+            return cqlFilter;
+        }
+        
+        function createAllStartEndLayer() {
+            return new OpenLayers.Layer.WMS(
+                'Start and End Points',
+                '/geoserver/wms',
+                {
+                    layers: 'oztrack:startendlayer',
+                    styles: 'startendlayer',
+                    cql_filter: buildAllStartEndFilter(),
+                    format: 'image/png',
+                    transparent: true
+                },
+                {
+                    isBaseLayer: false,
+                    tileSize: new OpenLayers.Size(512,512)
+                }
+            );
+        }
+        
+        function updateAllStartEndLayer() {
+            allStartEndLayer.params['CQL_FILTER'] = buildAllStartEndFilter();
+            allStartEndLayer.redraw();
         }
 
         function createWFSLayer(layerName, featureType, params, styleMap) {

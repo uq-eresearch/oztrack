@@ -119,31 +119,58 @@ public class GeoServerUploader {
         );
 
         client.replace(
-                "workspaces/" + workspaceName + "/datastores/" + datastoreName + "/featuretypes",
-                "trajectorylayer",
-                "application/xml",
-                createFreemarkerEntity(
-                    "featuretypes/trajectorylayer.xml.ftl",
-                    new HashMap<String, Object>()
-                )
-            );
-            client.replaceStyle(
-                "trajectorylayer",
-                createFreemarkerEntity(
-                    "styles/trajectorylayer.sld.ftl",
-                    new HashMap<String, Object>() {{
-                    }}
-                )
-            );
-            client.replace(
-                "layers",
-                "trajectorylayer",
-                "application/xml",
-                createFreemarkerEntity(
-                    "layers/trajectorylayer.xml.ftl",
-                    new HashMap<String, Object>()
-                )
-            );
+            "workspaces/" + workspaceName + "/datastores/" + datastoreName + "/featuretypes",
+            "trajectorylayer",
+            "application/xml",
+            createFreemarkerEntity(
+                "featuretypes/trajectorylayer.xml.ftl",
+                new HashMap<String, Object>()
+            )
+        );
+        client.replaceStyle(
+            "trajectorylayer",
+            createFreemarkerEntity(
+                "styles/trajectorylayer.sld.ftl",
+                new HashMap<String, Object>() {{
+                }}
+            )
+        );
+        client.replace(
+            "layers",
+            "trajectorylayer",
+            "application/xml",
+            createFreemarkerEntity(
+                "layers/trajectorylayer.xml.ftl",
+                new HashMap<String, Object>()
+            )
+        );
+
+        client.replace(
+            "workspaces/" + workspaceName + "/datastores/" + datastoreName + "/featuretypes",
+            "startendlayer",
+            "application/xml",
+            createFreemarkerEntity(
+                "featuretypes/startendlayer.xml.ftl",
+                new HashMap<String, Object>()
+            )
+        );
+        client.replaceStyle(
+            "startendlayer",
+            createFreemarkerEntity(
+                "styles/startendlayer.sld.ftl",
+                new HashMap<String, Object>() {{
+                }}
+            )
+        );
+        client.replace(
+            "layers",
+            "startendlayer",
+            "application/xml",
+            createFreemarkerEntity(
+                "layers/startendlayer.xml.ftl",
+                new HashMap<String, Object>()
+            )
+        );
     }
 
     private ContentProducer createFreemarkerContentProvider(String templateName, final Map<String, Object> datamodel) throws Exception {
