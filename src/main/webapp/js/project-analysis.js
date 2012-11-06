@@ -350,10 +350,8 @@ function createAnalysisMap(div, options) {
                     return wmsLayer;
                 }
             };
-            wmsLayer.events.register('added', this, function onloadend(evt) {
-                updateAnimalInfoFromLayer(layer);
-                onAnalysisSuccess();
-            });
+            updateAnimalInfoFromLayer(layer);
+            onAnalysisSuccess();
             return layer;
         }
         
