@@ -5,7 +5,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
-<tags:page title="${project.title}: Analysis Tools" fluid="true">
+<tags:page title="${project.title}: View Tracks" fluid="true">
     <jsp:attribute name="head">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
@@ -232,7 +232,7 @@
         <a href="<c:url value="/"/>">Home</a>
         &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
         &rsaquo; <a href="<c:url value="/projects/${project.id}"/>">${project.title}</a>
-        &rsaquo; <span class="active">Analysis Tools</span>
+        &rsaquo; <span class="active">View Tracks</span>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbsRight">
         <a class="btn" href="/projects/${project.id}">« Back to project</a>
