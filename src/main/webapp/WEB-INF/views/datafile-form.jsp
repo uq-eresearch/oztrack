@@ -143,12 +143,15 @@ Bert,12/08/2009 2:55:00,142.10619,-12.32208
             <ul>
                 <li><span>dd/MM/yyyy H:mi:s.S</span></li>
                 <li><span>dd/MM/yyyy H:mi:s</span></li>
+                <li><span>dd/MM/yyyy H:mi</span></li>
                 <li><span>dd/MM/yyyy</span></li>
                 <li><span>dd.MM.yyyy H:mi:s.S</span></li>
                 <li><span>dd.MM.yyyy H:mi:s</span></li>
+                <li><span>dd.MM.yyyy H:mi</span></li>
                 <li><span>dd.MM.yyyy</span></li>
                 <li><span>yyyy.MM.dd H:mi:s.S</span></li>
                 <li><span>yyyy.MM.dd H:mi:s</span></li>
+                <li><span>yyyy.MM.dd H:mi</span></li>
                 <li><span>yyyy.MM.dd</span></li>
             </ul>
 
