@@ -34,6 +34,7 @@ public class AnimalController {
             "animalName",
             "animalDescription",
             "speciesName",
+            "colour",
             "transmitterTypeCode",
             "transmitterId",
             "pingIntervalSeconds"
@@ -73,6 +74,7 @@ public class AnimalController {
             return "animal-form";
         }
         animalDao.update(animal);
+        positionFixDao.renumberPositionFixes(animal.getProject());
         return "redirect:/projects/" + animal.getProject().getId() + "/animals";
     }
 

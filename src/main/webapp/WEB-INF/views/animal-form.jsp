@@ -6,9 +6,12 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <tags:page title="${project.title}: Update Animal Details">
     <jsp:attribute name="head">
+        <link rel="stylesheet" href="<c:url value="/css/farbtastic/farbtastic.css"/>" type="text/css" />
+        <script type="text/javascript" src="<c:url value="/js/farbtastic/farbtastic.js"/>"></script>
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
+                $('#colorpicker').farbtastic('#colour');
             });
         </script>
     </jsp:attribute>
@@ -27,7 +30,7 @@
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
         <form:form cssClass="form-horizontal form-bordered" action="/animals/${animal.id}" commandName="animal" method="PUT">
             <fieldset>
-            <div class="legend">Update animal details</div>
+            <div class="legend">General information</div>
             <div class="control-group">
                 <label class="control-label" for="projectAnimalId">Animal ID</label>
                 <div class="controls">
@@ -64,6 +67,23 @@
                     </span>
                 </div>
             </div>
+            <div class="control-group">
+                <label class="control-label" for="colour">Colour</label>
+                <div class="controls">
+                    <form:input path="colour" id="colour"
+                        onclick="$('#colorpicker').fadeIn();"
+                        onfocus="$('#colorpicker').fadeIn();"
+                        onblur="$('#colorpicker').fadeOut();"
+                        style="background-color: ${animal.colour};"/>
+                    <div id="colorpicker" style="display: none; position: absolute; padding: 10px 13px 0 13px;"></div>
+                    <span class="help-inline">
+                        <form:errors path="colour" cssClass="formErrors"/>
+                    </span>
+                </div>
+            </div>
+            </fieldset>
+            <fieldset>
+            <div class="legend">Transmitter details</div>
             <div class="control-group">
                 <label class="control-label" for="transmitterTypeCode">Transmitter Type Code</label>
                 <div class="controls">
