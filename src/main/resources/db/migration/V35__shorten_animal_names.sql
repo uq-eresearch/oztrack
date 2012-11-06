@@ -1,0 +1,1 @@
+update animal set animalname = regexp_replace(animalname, '^Animal_', '');

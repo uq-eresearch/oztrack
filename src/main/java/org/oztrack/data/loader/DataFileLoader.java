@@ -109,7 +109,7 @@ public abstract class DataFileLoader {
             animal.setCreateDate(new java.util.Date());
             animalDao.save(animal);
             animal.setProjectAnimalId(animal.getId().toString());
-            animal.setAnimalName("Animal_" + animal.getId().toString());
+            animal.setAnimalName(animal.getId().toString());
             animal.setColour(colours[(int) (animal.getId() % colours.length)]);
             animalDao.update(animal);
         }
@@ -142,7 +142,7 @@ public abstract class DataFileLoader {
 
                  if (!animalFound) {
                      Animal animal = new Animal();
-                     animal.setAnimalName("Animal_" + newAnimalId);
+                     animal.setAnimalName(newAnimalId);
                      animal.setAnimalDescription("Unknown");
                      animal.setSpeciesName("Unknown");
                      animal.setVerifiedSpeciesName("Unknown");
