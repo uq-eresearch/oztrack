@@ -4,14 +4,14 @@
 <%@ attribute name="project" type="org.oztrack.data.model.Project" required="true" %>
 <div class="sidebarMenu">
     <ul>
-        <li><a href="<c:url value="/projects/${project.id}"/>">Project Details</a></li>
+        <li id="projectMenuDetails"><a href="<c:url value="/projects/${project.id}"/>">Project Details</a></li>
         <sec:authorize access="#project.global or hasPermission(#project, 'read')">
-        <li><a href="<c:url value="/projects/${project.id}/analysis"/>">View Tracks</a></li>
-        <li><a href="<c:url value="/projects/${project.id}/search"/>">View Raw Data</a></li>
+        <li id="projectMenuAnalysis"><a href="<c:url value="/projects/${project.id}/analysis"/>">View Tracks</a></li>
+        <li id="projectMenuSearch"><a href="<c:url value="/projects/${project.id}/search"/>">View Raw Data</a></li>
         </sec:authorize>
         <sec:authorize access="hasPermission(#project, 'write')">
-        <li><a href="<c:url value="/projects/${project.id}/datafiles"/>">Data Uploads</a></li>
-        <li><a href="<c:url value="/projects/${project.id}/cleanse"/>">Data Cleansing</a></li>
+        <li id="projectMenuUploads"><a href="<c:url value="/projects/${project.id}/datafiles"/>">Data Uploads</a></li>
+        <li id="projectMenuCleanse"><a href="<c:url value="/projects/${project.id}/cleanse"/>">Data Cleansing</a></li>
         </sec:authorize>
     </ul>
 </div>

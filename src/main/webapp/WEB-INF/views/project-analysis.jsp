@@ -131,6 +131,7 @@
             }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
+                $('#projectMenuAnalysis').addClass('active');
                 $("#projectMapOptionsAccordion").accordion();
                 $('#fromDateVisible').datepicker({
                     altField: "#fromDate",

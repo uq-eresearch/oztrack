@@ -115,6 +115,7 @@
             }
             jQuery(document).ready(function() {
                 jQuery('#navTrack').addClass('active');
+                jQuery('#projectMenuDetails').addClass('active');
                 <c:if test="${not empty projectBoundingBox}">
                 var coverageMap = createCoverageMap('coverageMap', '<c:out value="${projectBoundingBox}"/>');
                 </c:if>

@@ -21,6 +21,7 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
+                $('#projectMenuSearch').addClass('active');
                 $('#fromDateVisible').datepicker({
                     altField: "#fromDate"
                 });

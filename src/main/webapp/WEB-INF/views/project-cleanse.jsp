@@ -85,6 +85,7 @@
             }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
+                $('#projectMenuCleanse').addClass('active');
                 $("#projectMapOptionsAccordion").accordion();
                 $('#fromDateVisible').datepicker({
                     altField: "#fromDate",

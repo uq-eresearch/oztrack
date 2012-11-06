@@ -10,6 +10,7 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
+                $('#projectMenuUploads').addClass('active');
             });
         </script>
     </jsp:attribute>
