@@ -69,6 +69,7 @@ public class ProjectCleanseController {
     public String getCleanseView(Model model, @ModelAttribute(value="project") Project project) {
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
         model.addAttribute("projectAnimalsList", projectAnimalsList);
+        model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project));
         model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, true));
         return "project-cleanse";
     }

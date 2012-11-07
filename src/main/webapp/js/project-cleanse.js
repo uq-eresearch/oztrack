@@ -6,7 +6,14 @@ function createCleanseMap(div, options) {
         var projection4326 = new OpenLayers.Projection('EPSG:4326');
 
         var projectId = options.projectId;
-        var animalColours = options.animalColours;
+        var fromDate = options.fromDate;
+        var toDate = options.toDate;
+        var animalIds = options.animalIds;
+        var animalVisible = {};
+        for (var i = 0; i < animalIds.length; i++) {
+            animalVisible[animalIds[i]] = true;
+        }
+        var projectBounds = options.projectBounds.clone().transform(projection4326, projection900913);
         var onReset = options.onReset;
         var onPolygonFeatureAdded = options.onPolygonFeatureAdded;
         var onDeletePolygonFeature = options.onDeletePolygonFeature;
@@ -16,7 +23,6 @@ function createCleanseMap(div, options) {
         var polygonLayer;
         var polygonFeatures;
         var highlightControl;
-        var beforeFirstZoom = true;
 
         (function() {
             map = new OpenLayers.Map(div, {
@@ -54,13 +60,11 @@ function createCleanseMap(div, options) {
             });
             map.addControl(highlightControl);
 
-            map.setCenter(new OpenLayers.LonLat(133,-28).transform(projection4326, projection900913), 4);
+            map.zoomToExtent(projectBounds);
         }());
 
         cleanseMap.reset = function() {
-            allDetectionsLayer.protocol.params['fromDate'] = jQuery('#fromDate').val();
-            allDetectionsLayer.protocol.params['toDate'] = jQuery('#toDate').val();
-            allDetectionsLayer.refresh();
+            updateFilter();
             while (polygonFeatures.length > 0) {
                 polygonFeatures.shift().destroy();
             }
@@ -69,6 +73,11 @@ function createCleanseMap(div, options) {
             }
         };
 
+        function updateFilter() {
+            allDetectionsLayer.params['CQL_FILTER'] = buildAllDetectionsFilter();
+            allDetectionsLayer.redraw();
+        }
+        
         cleanseMap.updateSize = function() {
             map.updateSize();
         };
@@ -80,61 +89,28 @@ function createCleanseMap(div, options) {
                     title: 'Zoom to Data Extent',
                     displayClass: "zoomButton",
                     trigger: function() {
-                        map.zoomToExtent(allDetectionsLayer.getDataExtent(), false);
+                        map.zoomToExtent(projectBounds, false);
                     }
                 })
             ]);
             return panel;
         }
 
-        cleanseMap.toggleAllAnimalFeatures = function(animalId, setVisible) {
-            function getVectorLayers() {
-                var vectorLayers = new Array();
-                for (var c in map.controls) {
-                    var control = map.controls[c];
-                    if (control.id.indexOf("LayerSwitcher") != -1) {
-                        for (var i=0; i < control.dataLayers.length; i++) {
-                            vectorLayers.push(control.dataLayers[i].layer);
-                        }
-                    }
-                }
-                return vectorLayers;
-            }
-
-            var vectorLayers = getVectorLayers();
-            for (var l in vectorLayers) {
-                var layer = vectorLayers[l];
-                var layerName = layer.name;
-                for (var f in layer.features) {
-                    var feature = layer.features[f];
-                    if (feature.attributes.animalId == animalId) {
-                        var featureIdentifier = layer.id + "-" + feature.id;
-                        toggleFeature(featureIdentifier, setVisible);
-                    }
-                }
-            }
-            $("#animalInfo-"+animalId).find(':checkbox').attr("checked", setVisible);
+        cleanseMap.setFromDate = function(date) {
+            fromDate = date;
+            updateFilter();
         };
 
-        function toggleFeature(featureIdentifier, setVisible) {
-            var splitString = featureIdentifier.split("-");
-            var layerId = splitString[0];
-            var featureId = splitString[1];
+        cleanseMap.setToDate = function(date) {
+            fromDate = date;
+            updateFilter();
+        };
 
-            var layer = map.getLayer(layerId);
-            for (var key in layer.features) {
-                var feature = layer.features[key];
-                if (feature.id == featureId) {
-                    if (setVisible) {
-                        feature.renderIntent = "default";
-                    }
-                    else {
-                        feature.renderIntent = "temporary";
-                    }
-                    layer.drawFeature(feature);
-                }
-            }
-        }
+        cleanseMap.setAnimalVisible = function(animalId, visible) {
+            animalVisible[animalId] = visible;
+            updateFilter();
+            $("#animalInfo-"+animalId).find(':checkbox').attr("checked", setVisible);
+        };
 
         function polygonFeatureAdded(e) {
             // Polygons must have at least 3 sides.
@@ -175,86 +151,49 @@ function createCleanseMap(div, options) {
             }
         };
 
-        function createAllDetectionsLayer(projectId) {
-            return new OpenLayers.Layer.Vector(
-                'Detections',
-                {
-                    projection: projection4326,
-                    protocol: new OpenLayers.Protocol.WFS.v1_1_0({
-                        url:  '/mapQueryWFS',
-                        params: {
-                            projectId: projectId,
-                            fromDate: jQuery('#fromDate').val(),
-                            toDate: jQuery('#fromDate').val(),
-                            queryType: 'POINTS',
-                            includeDeleted: true
-                        },
-                        featureType: 'Detections',
-                        featureNS: 'http://oztrack.org/xmlns#'
-                    }),
-                    strategies: [new OpenLayers.Strategy.Fixed()],
-                    styleMap: createPointStyleMap(),
-                    eventListeners: {
-                        loadend: function (e) {
-                            jQuery('.select-animal').each(function() {
-                                cleanseMap.toggleAllAnimalFeatures(parseInt(jQuery(this).attr('id').substring('select-animal-'.length)), this.checked);
-                            });
-                            if (beforeFirstZoom) {
-                                map.zoomToExtent(e.object.getDataExtent(), false);
-                                beforeFirstZoom = false;
-                            }
-                        }
-                    }
+        function buildAllDetectionsFilter() {
+            var visibleAnimalIds = [];
+            for (i = 0; i < animalIds.length; i++) {
+                if (animalVisible[animalIds[i]]) {
+                    visibleAnimalIds.push(animalIds[i]);
                 }
-            );
+            }
+            // Include bogus animal ID (e.g. -1) that will never be matched.
+            // This covers the case where no animals are selected to be visible,
+            // preventing the CQL_FILTER parameter from being syntactically invalid.
+            if (visibleAnimalIds.length == 0) {
+                visibleAnimalIds.push(-1);
+            }
+            var cqlFilter =
+                'project_id = ' + projectId +
+                ' and animal_id in (' + visibleAnimalIds.join(', ') + ')';
+            var fromDate = jQuery('#fromDate').val();
+            var toDate = jQuery('#toDate').val();
+            if (fromDate) {
+                cqlFilter += ' and detectiontime >= \'' + dateTimeToISO8601(new Date(fromDate)) + '\'';
+            }
+            if (toDate) {
+                cqlFilter += ' and detectiontime <= \'' + dateTimeToISO8601(new Date(toDate)) + '\'';
+            }
+            return cqlFilter;
         }
 
-        function createPointStyleMap() {
-            var pointsOnStyle = new OpenLayers.Style(
+        function createAllDetectionsLayer() {
+            return new OpenLayers.Layer.WMS(
+                'Detections',
+                '/geoserver/wms',
                 {
-                    graphicName: 'cross',
-                    pointRadius: 4,
-                    fillOpacity: 1.0,
-                    strokeOpacity: 0.8,
-                    strokeWidth: 0.2
+                    layers: 'oztrack:positionfixlayer',
+                    styles: 'positionfixlayer',
+                    cql_filter: buildAllDetectionsFilter(),
+                    format: 'image/png',
+                    transparent: true
                 },
                 {
-                    rules: [
-                        new OpenLayers.Rule({
-                            filter: new OpenLayers.Filter.Comparison({
-                                type: OpenLayers.Filter.Comparison.EQUAL_TO,
-                                property: "deleted",
-                                value: 'true',
-                            }),
-                            symbolizer: {
-                                fillColor: '#bc0000',
-                                strokeColor: '#ffffff',
-                            }
-                        }),
-                        new OpenLayers.Rule({
-                            elseFilter: true,
-                            symbolizer: {
-                                fillColor: '${getColour}',
-                                strokeColor: '${getColour}',
-                            }
-                        })
-                    ],
-                    context: {
-                        getColour: function(feature) {
-                            return animalColours[feature.attributes.animalId];
-                        }
-                    }
+                    isBaseLayer: false,
+                    tileSize: new OpenLayers.Size(512,512)
                 }
             );
-            var pointOffStyle = {
-                strokeOpacity: 0.0,
-                fillOpacity: 0.0
-            };
-            var pointStyleMap = new OpenLayers.StyleMap({
-                'default': pointsOnStyle,
-                'temporary': pointOffStyle
-            });
-            return pointStyleMap;
         }
 
         return cleanseMap;

@@ -92,8 +92,9 @@
                     minDate: new Date(${projectDetectionDateRange.minimum.time}),
                     maxDate: new Date(${projectDetectionDateRange.maximum.time}),
                     defaultDate: new Date(${projectDetectionDateRange.minimum.time})
-                }).change(function() {
-                    cleanseMap.reset();
+                }).change(function(e) {
+                    cleanseMap.setFromDate($('#fromDate').val());
+                    $('#toDateVisible').datepicker('hide');
                 });
                 $('#toDateVisible').datepicker({
                     altField: "#toDate",
@@ -101,24 +102,31 @@
                     maxDate: new Date(${projectDetectionDateRange.maximum.time}),
                     defaultDate: new Date(${projectDetectionDateRange.maximum.time})
                 }).change(function() {
-                    cleanseMap.reset();
+                    cleanseMap.setToDate($('#toDate').val());
+                    $('#toDateVisible').datepicker('hide');
                 });
                 <c:forEach items="${projectAnimalsList}" var="animal">
                 jQuery('#legend-colour-${animal.id}').attr('style', 'background-color: ${animal.colour};');
                 jQuery('#select-animal-${animal.id}').change(function() {
-                    cleanseMap.toggleAllAnimalFeatures("${animal.id}", this.checked);
+                    cleanseMap.setAnimalVisible("${animal.id}", this.checked);
                 });
                 </c:forEach>
                 cleanseMap = null;
                 onResize();
                 cleanseMap = createCleanseMap('projectMap', {
                     projectId: <c:out value="${project.id}"/>,
-                    animalColours: {
+                    fromDate: new Date(${projectDetectionDateRange.minimum.time}),
+                    toDate: new Date(${projectDetectionDateRange.maximum.time}),
+                    animalIds: [
                         <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
-                        ${animal.id}: '${animal.colour}'<c:if test="${!animalStatus.last}">,
+                        ${animal.id}<c:if test="${!animalStatus.last}">,
                         </c:if>
                         </c:forEach>
-                    },
+                    ],
+                    projectBounds: new OpenLayers.Bounds(
+                        ${projectBoundingBox.envelopeInternal.minX}, ${projectBoundingBox.envelopeInternal.minY},
+                        ${projectBoundingBox.envelopeInternal.maxX}, ${projectBoundingBox.envelopeInternal.maxY}
+                    ),
                     onReset: function() {
                         jQuery('#cleanse-select').children().remove();
                         jQuery('#cleanse-list').children().remove();
