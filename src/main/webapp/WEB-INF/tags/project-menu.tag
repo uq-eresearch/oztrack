@@ -7,11 +7,11 @@
         <li id="projectMenuDetails"><a href="<c:url value="/projects/${project.id}"/>">Project Details</a></li>
         <sec:authorize access="#project.global or hasPermission(#project, 'read')">
         <li id="projectMenuAnalysis"><a href="<c:url value="/projects/${project.id}/analysis"/>">View Tracks</a></li>
-        <li id="projectMenuSearch"><a href="<c:url value="/projects/${project.id}/search"/>">View Raw Data</a></li>
+        <li id="projectMenuSearch"><a href="<c:url value="/projects/${project.id}/search"/>">View Data</a></li>
         </sec:authorize>
         <sec:authorize access="hasPermission(#project, 'write')">
-        <li id="projectMenuUploads"><a href="<c:url value="/projects/${project.id}/datafiles"/>">Data Uploads</a></li>
-        <li id="projectMenuCleanse"><a href="<c:url value="/projects/${project.id}/cleanse"/>">Data Cleansing</a></li>
+        <li id="projectMenuUploads"><a href="<c:url value="/projects/${project.id}/datafiles"/>">Add Data</a></li>
+        <li id="projectMenuCleanse"><a href="<c:url value="/projects/${project.id}/cleanse"/>">Edit Data</a></li>
         </sec:authorize>
     </ul>
 </div>
