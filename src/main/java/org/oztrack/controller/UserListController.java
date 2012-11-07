@@ -88,7 +88,7 @@ public class UserListController {
     public String getRecaptcha() {
         String recaptchaPrivateKey = OzTrackApplication.getApplicationContext().getRecaptchaPrivateKey();
         String recaptchaPublicKey = OzTrackApplication.getApplicationContext().getRecaptchaPublicKey();
-        if ((recaptchaPublicKey != null) && (recaptchaPrivateKey != null)) {
+        if (StringUtils.isNotBlank(recaptchaPublicKey) && StringUtils.isNotBlank(recaptchaPrivateKey)) {
             ReCaptcha c = ReCaptchaFactory.newReCaptcha(recaptchaPublicKey, recaptchaPrivateKey, false);
             return c.createRecaptchaHtml(null, null);
         }
@@ -129,7 +129,7 @@ public class UserListController {
         if (user.getAafId() == null) {
             String recaptchaPrivateKey = OzTrackApplication.getApplicationContext().getRecaptchaPrivateKey();
             String recaptchaPublicKey = OzTrackApplication.getApplicationContext().getRecaptchaPublicKey();
-            if ((recaptchaPublicKey != null) && (recaptchaPrivateKey != null)) {
+            if (StringUtils.isNotBlank(recaptchaPublicKey) && StringUtils.isNotBlank(recaptchaPrivateKey)) {
                 ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
                 reCaptcha.setPrivateKey(recaptchaPrivateKey);
                 String recaptchaChallenge = request.getParameter("recaptcha_challenge_field");
