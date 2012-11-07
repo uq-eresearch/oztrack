@@ -7,6 +7,7 @@
         <li id="projectMenuDetails"><a href="<c:url value="/projects/${project.id}"/>">Project Details</a></li>
         <sec:authorize access="#project.global or hasPermission(#project, 'read')">
         <li id="projectMenuAnalysis"><a href="<c:url value="/projects/${project.id}/analysis"/>">View Tracks</a></li>
+        <li id="projectMenuAnimals"><a href="<c:url value="/projects/${project.id}/animals"/>">View Animals</a></li>
         <li id="projectMenuSearch"><a href="<c:url value="/projects/${project.id}/search"/>">View Data</a></li>
         </sec:authorize>
         <sec:authorize access="hasPermission(#project, 'write')">

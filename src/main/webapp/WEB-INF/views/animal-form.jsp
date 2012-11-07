@@ -11,7 +11,7 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
-                $('#projectMenuDetails').addClass('active');
+                $('#projectMenuAnimals').addClass('active');
                 $('#colorpicker').farbtastic('#colour');
             });
         </script>
