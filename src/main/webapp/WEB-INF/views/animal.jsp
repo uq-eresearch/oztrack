@@ -25,6 +25,12 @@
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
         <h2>Animal Details</h2>
         <table class="entityTable">
+            <c:if test="${not empty animal.projectAnimalId}">
+            <tr>
+                <th>Animal ID:</th>
+                <td>${animal.projectAnimalId}</td>
+            </tr>
+            </c:if>
             <tr>
                 <th>Name:</th>
                 <td>${animal.animalName}</td>
@@ -37,12 +43,10 @@
                 <th>Species:</th>
                 <td>${animal.speciesName}</td>
             </tr>
-            <c:if test="${not empty animal.projectAnimalId}">
             <tr>
-                <th>Animal Id:</th>
-                <td>${animal.projectAnimalId}</td>
+                <th>Colour:</th>
+                <td><div style="width: 18px; height: 18px; background-color: ${animal.colour};"></div></td>
             </tr>
-            </c:if>
             <c:if test="${not empty animal.transmitterTypeCode}">
             <tr>
                 <th>Transmitter Type Code:</th>
@@ -51,13 +55,13 @@
             </c:if>
             <c:if test="${not empty animal.transmitterId}">
             <tr>
-                <th>Transmitter Id:</th>
+                <th>Transmitter ID:</th>
                 <td>${animal.transmitterId}</td>
             </tr>
             </c:if>
             <c:if test="${not empty animal.pingIntervalSeconds}">
             <tr>
-                <th>Ping Interval Seconds:</th>
+                <th>Ping Interval (seconds):</th>
                 <td>${animal.pingIntervalSeconds}</td>
             </tr>
             </c:if>

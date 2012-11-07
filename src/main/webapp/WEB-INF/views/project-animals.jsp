@@ -33,9 +33,8 @@
                     <th>ID</th>
                     <th>Name</th>
                     <th>Description</th>
-                    <th>Species</th>
                     <sec:authorize access="hasPermission(#project, 'write')">
-                    <th> </th>
+                    <th>Actions</th>
                     </sec:authorize>
                 </tr>
             </thead>
@@ -45,12 +44,15 @@
                     <td><c:out value="${animal.projectAnimalId}"/></td>
                     <td><a href="<c:url value="/animals/${animal.id}"/>"><c:out value="${animal.animalName}"/></a></td>
                     <td><c:out value="${animal.animalDescription}"/></td>
-                    <td><c:out value="${animal.speciesName}"/></td>
                     <sec:authorize access="hasPermission(#project, 'write')">
                     <td>
-                        <a href="<c:url value="/animals/${animal.id}/edit"/>">Edit</a>
+                        <a href="<c:url value="/animals/${animal.id}/edit"/>"><img src="<c:url value="/img/page_white_edit.png"/>" /></a>
                         <c:if test="${empty animal.positionFixes}">
-                        <br /><a href="javascript:void(deleteEntity('<c:url value="/animals/${animal.id}"/>', '<c:url value="/projects/${project.id}/animals"/>', 'Are you sure you want to delete this animal?'));">Delete</a>
+                        <a href="javascript:void(0);" onclick="deleteEntity(
+                            '<c:url value="/animals/${animal.id}"/>',
+                            '<c:url value="/projects/${project.id}/animals"/>',
+                            'Are you sure you want to delete this animal?'
+                            );"><img src="<c:url value="/img/page_white_delete.png"/>" /></a>
                         </c:if>
                     </td>
                     </sec:authorize>
