@@ -13,9 +13,6 @@
             #projectMapOptions .ui-accordion-content {
                 padding: 10px;
             }
-            #projectMapHelpLink {
-                margin-top: 6px;
-            }
             #projectMapHelp {
                 display: none;
             }
@@ -153,8 +150,8 @@
                     else {
                         elem.dialog({
                             title: 'Analysis Tools Help',
-                            width: $('#projectMap').width() - 2,
-                            height: $('#projectMap').height() - 2,
+                            width: $('#projectMap').width() - 5,
+                            height: $('#projectMap').height() - 5,
                             modal: false,
                             resizable: true,
                             zIndex: 9999999,
@@ -375,7 +372,9 @@
                 </div>
         </div>
         </div>
+        <div style="padding: 2px 5px 5px 5px;">
         <a id="projectMapHelpLink" class="btn btn-block" href="#">Help</a>
+        </div>
         </div>
 
         <div id="projectMap"></div>
