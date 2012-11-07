@@ -34,10 +34,7 @@ public class AnimalController {
             "animalName",
             "animalDescription",
             "speciesName",
-            "colour",
-            "transmitterTypeCode",
-            "transmitterId",
-            "pingIntervalSeconds"
+            "colour"
         );
     }
 

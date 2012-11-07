@@ -31,7 +31,7 @@
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
         <form:form cssClass="form-horizontal form-bordered" action="/animals/${animal.id}" commandName="animal" method="PUT">
             <fieldset>
-            <div class="legend">General information</div>
+            <div class="legend">Animal details</div>
             <div class="control-group">
                 <label class="control-label" for="projectAnimalId">Animal ID</label>
                 <div class="controls">
@@ -79,36 +79,6 @@
                     <div id="colorpicker" style="display: none; position: absolute; padding: 10px 13px 0 13px;"></div>
                     <span class="help-inline">
                         <form:errors path="colour" cssClass="formErrors"/>
-                    </span>
-                </div>
-            </div>
-            </fieldset>
-            <fieldset>
-            <div class="legend">Transmitter details</div>
-            <div class="control-group">
-                <label class="control-label" for="transmitterTypeCode">Transmitter Type Code</label>
-                <div class="controls">
-                    <form:input path="transmitterTypeCode" id="transmitterTypeCode"/>
-                    <span class="help-inline">
-                        <form:errors path="transmitterTypeCode" cssClass="formErrors"/>
-                    </span>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="transmitterId">Transmitter ID</label>
-                <div class="controls">
-                    <form:input path="transmitterId" id="transmitterId"/>
-                    <span class="help-inline">
-                        <form:errors path="transmitterId" cssClass="formErrors"/>
-                    </span>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="pingIntervalSeconds">Ping Interval (seconds)</label>
-                <div class="controls">
-                    <form:input path="pingIntervalSeconds" id="pingIntervalSeconds"/>
-                    <span class="help-inline">
-                        <form:errors path="pingIntervalSeconds" cssClass="formErrors"/>
                     </span>
                 </div>
             </div>

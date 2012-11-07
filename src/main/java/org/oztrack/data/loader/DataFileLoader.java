@@ -145,7 +145,6 @@ public abstract class DataFileLoader {
                      animal.setAnimalName(newAnimalId);
                      animal.setAnimalDescription("Unknown");
                      animal.setSpeciesName("Unknown");
-                     animal.setVerifiedSpeciesName("Unknown");
                      animal.setProjectAnimalId(newAnimalId);
                      animal.setProject(dataFile.getProject());
                      animal.setCreateDate(new java.util.Date());

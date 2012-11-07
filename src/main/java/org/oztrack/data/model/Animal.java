@@ -1,6 +1,5 @@
 package org.oztrack.data.model;
 
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,8 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 @Entity(name = "Animal")
 public class Animal extends OzTrackBaseEntity {
@@ -33,12 +30,6 @@ public class Animal extends OzTrackBaseEntity {
 
     private String animalDescription;
     private String speciesName;
-    private String verifiedSpeciesName;
-    private String transmitterTypeCode;
-    private String transmitterId;
-    private Long pingIntervalSeconds;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date transmitterDeployDate;
 
     @Column(name="colour", nullable=true)
     private String colour;
@@ -88,46 +79,6 @@ public class Animal extends OzTrackBaseEntity {
 
     public void setSpeciesName(String speciesName) {
         this.speciesName = speciesName;
-    }
-
-    public String getVerifiedSpeciesName() {
-        return verifiedSpeciesName;
-    }
-
-    public void setVerifiedSpeciesName(String verifiedSpeciesName) {
-        this.verifiedSpeciesName = verifiedSpeciesName;
-    }
-
-    public String getTransmitterTypeCode() {
-        return transmitterTypeCode;
-    }
-
-    public void setTransmitterTypeCode(String transmitterTypeCode) {
-        this.transmitterTypeCode = transmitterTypeCode;
-    }
-
-    public String getTransmitterId() {
-        return transmitterId;
-    }
-
-    public void setTransmitterId(String transmitterId) {
-        this.transmitterId = transmitterId;
-    }
-
-    public Long getPingIntervalSeconds() {
-        return pingIntervalSeconds;
-    }
-
-    public void setPingIntervalSeconds(Long pingIntervalSeconds) {
-        this.pingIntervalSeconds = pingIntervalSeconds;
-    }
-
-    public Date getTransmitterDeployDate() {
-        return transmitterDeployDate;
-    }
-
-    public void setTransmitterDeployDate(Date transmitterDeployDate) {
-        this.transmitterDeployDate = transmitterDeployDate;
     }
 
     public String getColour() {
