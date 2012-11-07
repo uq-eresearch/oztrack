@@ -85,7 +85,7 @@ function createSrsSelector(options) {
                 map.addControl(selectControl);
                 selectControl.activate();
 
-                map.setCenter(new OpenLayers.LonLat(133, -28).transform(projection4326, projection900913), 3);
+                map.zoomToExtent(srsLayer.getDataExtent());
             }
             else {
                 dialogDiv.dialog('open');
