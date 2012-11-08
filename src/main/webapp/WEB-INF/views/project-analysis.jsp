@@ -27,6 +27,31 @@
                 padding-left:0px;
                 padding-top:0px;
             }
+            #animalsFilter {
+                height: 90px;
+                border: 1px solid #ccc;
+                overflow-y: scroll;
+            }
+            .animalsFilterCheckbox {
+                float: left;
+                width: 15px;
+                margin: 0;
+                padding: 0;
+            }
+            .animalsFilterCheckbox input[type="checkbox"] {
+                margin: 0 0 2px 0;
+            }
+            .animalsFilterSmallSquare {
+                float: left;
+                width: 12px;
+                height: 12px;
+                margin: 2px 5px;
+                padding: 0;
+            }
+            .animalsFilterLabel {
+                margin: 2px 0 2px 40px;
+                padding: 0;
+            }
             .animalCheckbox {
                 float: left;
                 width: 15px;
@@ -283,7 +308,7 @@
                             </script>
                         </div>
 
-                        <div id="legend-colour-${animal.id}" class="smallSquare" style="background-color: ${animal.colour};"></div>
+                        <div class="smallSquare" style="background-color: ${animal.colour};"></div>
 
                         <div class="animalLabel">
                             <a class="animalInfoToggle" href="javascript:void(0);" onclick="$('#buttonShowHide${animal.id}').click();">${animal.animalName}</a>
@@ -309,6 +334,26 @@
                             <input id="toDate" type="hidden"/>
                             <input id="fromDateVisible" type="text" class="datepicker" placeholder="From" style="margin-bottom: 3px; width: 80px;"/> -
                             <input id="toDateVisible" type="text" class="datepicker" placeholder="To" style="margin-bottom: 3px; width: 80px;"/>
+                        </div>
+                    </div>
+                    <div class="control-group" style="margin-bottom: 9px;">
+                    <div style="margin-bottom: 9px; font-weight: bold;">Animals</div>
+                        <div id="animalsFilter" class="controls">
+                        <c:forEach items="${projectAnimalsList}" var="animal">
+                            <div class="animalsFilterCheckbox">
+                                <input
+                                    id="select-animal-${animal.id}"
+                                    class="select-animal"
+                                    name="animal"
+                                    type="checkbox"
+                                    value="${animal.id}"
+                                    style="width: 15px;"
+                                    checked="checked" />
+                            </div>
+                            <div class="animalsFilterSmallSquare" style="background-color: ${animal.colour};"></div>
+                            <div class="animalsFilterLabel">${animal.animalName}</div>
+                            <div style="clear: both;"></div>
+                        </c:forEach>
                         </div>
                     </div>
                     <div class="control-group" style="margin-bottom: 9px;">

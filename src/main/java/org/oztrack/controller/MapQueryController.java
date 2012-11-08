@@ -80,7 +80,8 @@ public class MapQueryController {
         @RequestParam(value="h", required=false) String h,
         @RequestParam(value="alpha", required=false) Double alpha,
         @RequestParam(value="gridSize", required=false) Double gridSize,
-        @RequestParam(value="extent", required=false) Double extent
+        @RequestParam(value="extent", required=false) Double extent,
+        @RequestParam(value="animals", required=false) List<Long> animalIds
     )
     throws Exception {
         SearchQuery searchQuery = new SearchQuery();
@@ -112,6 +113,7 @@ public class MapQueryController {
         if (extent != null && !extent.isNaN()) {
             searchQuery.setExtent(extent);
         }
+        searchQuery.setAnimalIds(animalIds);
         return searchQuery;
     }
 

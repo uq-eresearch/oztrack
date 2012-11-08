@@ -8,7 +8,6 @@ import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
-import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
@@ -59,10 +58,9 @@ public class KMLExportController {
 
             searchQuery.setProject(project);
 
-            Animal animal = animalDao.getAnimalById(Long.valueOf(animalId));
-            ArrayList<Animal> animalList = new ArrayList<Animal>(1);
-            animalList.add(animal);
-            searchQuery.setAnimalList(animalList);
+            ArrayList<Long> animalIds = new ArrayList<Long>(1);
+            animalIds.add(Long.valueOf(animalId));
+            searchQuery.setAnimalIds(animalIds);
         }
         else {
             logger.debug("no projectId or queryType");

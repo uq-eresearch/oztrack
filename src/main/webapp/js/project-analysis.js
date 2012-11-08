@@ -255,6 +255,7 @@ function createAnalysisMap(div, options) {
                 if (toDate) {
                     params.toDate = toDate;
                 }
+                params.animals = $('input[name=animal]:checked').map(function() {return $(this).val();}).toArray();
                 if (queryTypeValue == "LINES") {
                     var trajectoryLayer = createTrajectoryLayer(params);
                     trajectoryLayers.push(trajectoryLayer);

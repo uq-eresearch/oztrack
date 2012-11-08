@@ -14,7 +14,7 @@ public class SearchQuery {
     private Date toDate;
     private String projectAnimalId;
     private String sortField;
-    private List<Animal> animalList;
+    private List<Long> animalIds;
     private String [] speciesList;
     private Project project;
     private Boolean includeDeleted;
@@ -63,12 +63,12 @@ public class SearchQuery {
         this.sortField = sortField;
     }
 
-    public List<Animal> getAnimalList() {
-        return animalList;
+    public List<Long> getAnimalIds() {
+        return animalIds;
     }
 
-    public void setAnimalList(List<Animal> animalList) {
-        this.animalList = animalList;
+    public void setAnimalIds(List<Long> animalIds) {
+        this.animalIds = animalIds;
     }
 
     public String[] getSpeciesList() {

@@ -69,12 +69,12 @@ public class PositionFixDaoImpl implements PositionFixDao {
         if (searchQuery.getToDate() != null) {
             sql = sql + "and o.detectionTime <= :toDate ";
         }
-        if (searchQuery.getAnimalList() != null) {
-            String animalClause = "and o.animal in (";
-            for (int i=0; i < searchQuery.getAnimalList().size(); i++) {
+        if (searchQuery.getAnimalIds() != null) {
+            String animalClause = "and o.animal.id in (";
+            for (int i = 0; i < searchQuery.getAnimalIds().size(); i++) {
                 animalClause = animalClause + ":animal" + i + ",";
             }
-            animalClause = animalClause.substring(0,animalClause.length()-1) + ")";
+            animalClause = animalClause.substring(0, animalClause.length() - 1) + ")";
             sql = sql + animalClause;
         }
 
@@ -89,10 +89,10 @@ public class PositionFixDaoImpl implements PositionFixDao {
         if (searchQuery.getToDate() != null) {
             query.setParameter("toDate", searchQuery.getToDate());
         }
-        if (searchQuery.getAnimalList() != null) {
-            for (int i=0; i < searchQuery.getAnimalList().size(); i++) {
+        if (searchQuery.getAnimalIds() != null) {
+            for (int i=0; i < searchQuery.getAnimalIds().size(); i++) {
                 String paramName = "animal" + i;
-                query.setParameter(paramName, searchQuery.getAnimalList().get(i));
+                query.setParameter(paramName, searchQuery.getAnimalIds().get(i));
             }
         }
 

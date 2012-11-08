@@ -109,7 +109,6 @@
                     $('#toDateVisible').datepicker('hide');
                 });
                 <c:forEach items="${projectAnimalsList}" var="animal">
-                jQuery('#legend-colour-${animal.id}').attr('style', 'background-color: ${animal.colour};');
                 jQuery('#select-animal-${animal.id}').change(function() {
                     cleanseMap.setAnimalVisible("${animal.id}", this.checked);
                 });
@@ -217,7 +216,7 @@
                                 style="width: 15px;"
                                 checked="checked" />
                         </div>
-                        <div class="smallSquare" id="legend-colour-${animal.id}"></div>
+                        <div class="smallSquare" style="background-color: ${animal.colour};"></div>
                         <div class="animalLabel">${animal.animalName}</div>
                         <div style="clear: both;"></div>
                     </c:forEach>
