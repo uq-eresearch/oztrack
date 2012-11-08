@@ -25,29 +25,36 @@
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
         <h2>Animal Details</h2>
         <table class="entityTable">
-            <c:if test="${not empty animal.projectAnimalId}">
+            <sec:authorize access="hasPermission(#animal.project, 'write')">
             <tr>
                 <th>Animal ID:</th>
                 <td>${animal.projectAnimalId}</td>
             </tr>
-            </c:if>
+            </sec:authorize>
             <tr>
                 <th>Name:</th>
                 <td>${animal.animalName}</td>
-            </tr>
-            <tr>
-                <th>Description:</th>
-                <td>${animal.animalDescription}</td>
             </tr>
             <tr>
                 <th>Species:</th>
                 <td>${animal.speciesName}</td>
             </tr>
             <tr>
+                <th>Description:</th>
+                <td>${animal.animalDescription}</td>
+            </tr>
+            <tr>
                 <th>Colour:</th>
                 <td><div style="width: 18px; height: 18px; background-color: ${animal.colour};"></div></td>
             </tr>
         </table>
+        <sec:authorize access="hasPermission(#animal.project, 'write')">
+        <c:if test="${not empty animal.createDescription}">
+        <p style="color: #666;">
+            ${animal.createDescription}
+        </p>
+        </c:if>
+        </sec:authorize>
         <sec:authorize access="hasPermission(#animal.project, 'write')">
         <div class="actions">
         <h2>Manage Animal</h2>

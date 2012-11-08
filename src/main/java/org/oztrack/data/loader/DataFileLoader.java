@@ -102,10 +102,7 @@ public abstract class DataFileLoader {
             // only one animal in the file being uploaded. Create it.
             Animal animal = new Animal();
             animal.setProject(dataFile.getProject());
-            animal.setAnimalDescription("created in datafile upload: "
-                                        + dataFile.getUserGivenFileName()
-                                        + " on " + dataFile.getCreateDate());
-
+            animal.setCreateDescription("Created from data file " + dataFile.getUserGivenFileName() + " on " + dataFile.getCreateDate());
             animal.setCreateDate(new java.util.Date());
             animalDao.save(animal);
             animal.setProjectAnimalId(animal.getId().toString());
@@ -142,10 +139,10 @@ public abstract class DataFileLoader {
 
                  if (!animalFound) {
                      Animal animal = new Animal();
-                     animal.setAnimalName(newAnimalId);
-                     animal.setAnimalDescription("Unknown");
-                     animal.setSpeciesName("Unknown");
                      animal.setProjectAnimalId(newAnimalId);
+                     animal.setAnimalName(newAnimalId);
+                     animal.setAnimalDescription(null);
+                     animal.setSpeciesName(null);
                      animal.setProject(dataFile.getProject());
                      animal.setCreateDate(new java.util.Date());
                      animalDao.save(animal);
