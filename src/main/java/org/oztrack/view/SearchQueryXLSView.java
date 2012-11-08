@@ -54,7 +54,7 @@ public class SearchQueryXLSView extends AbstractExcelView {
         {
             int colNum = 0;
             headerRow.createCell(colNum++).setCellValue("Animal ID");
-            headerRow.createCell(colNum++).setCellValue("Detection Time");
+            headerRow.createCell(colNum++).setCellValue("Date");
             headerRow.createCell(colNum++).setCellValue("Latitude");
             headerRow.createCell(colNum++).setCellValue("Longitude");
         }
