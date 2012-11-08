@@ -212,10 +212,6 @@ Bert,12/08/2009 2:55:00,142.10619,-12.32208
                 OzTrack will assume that the file pertains to a single animal and will automatically generate an ID for it.
                 You can add the details for the animal later.
             </p>
-            <p>
-                Note that OzTrack only allows a maximum of 20 animals in a file upload.
-                If there are more, the file upload will be rejected.
-            </p>
         </p>
     </jsp:body>
 </tags:page>
