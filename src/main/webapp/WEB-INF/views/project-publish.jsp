@@ -68,7 +68,7 @@
         <c:choose>
         <c:when test="${empty projectDetectionDateRange}">
 
-            <p>No data has been uploaded for this project yet, so <b>no metadata record will be syndicated </b>to the <a href="http://dataspace.uq.edu.au">UQ DataSpace</a>
+            <p>No data have been uploaded for this project yet, so <b>no metadata record will be syndicated </b>to the <a href="http://dataspace.uq.edu.au">UQ DataSpace</a>
             Collections Registry and subsequently on to the <a href="http://ands.org.au">Australian National Data Service</a>.</p>
 
         </c:when>
@@ -77,7 +77,7 @@
             <c:choose>
             <c:when test ="${empty project.dataSpaceUpdateDate}">
 
-                <p>When you click 'Publish', your project metadata shown below is syndicated across to the <a href="http://dataspace.uq.edu.au">UQ DataSpace</a>
+                <p>When you click 'Publish', your project metadata shown below are syndicated across to the <a href="http://dataspace.uq.edu.au">UQ DataSpace</a>
                 Collections Registry and subsequently on to the <a href="http://ands.org.au">Australian National Data Service</a>.</p>
                 <p>Click 'Publish DataSpace Collection' to submit the data shown below.</p>
 
@@ -128,7 +128,7 @@
 
             <c:choose>
             <c:when test="${empty projectDetectionDateRange}">
-                No data has been uploaded for this project yet.
+                No data have been uploaded for this project yet.
             </c:when>
             <c:otherwise>
                 <fmt:formatDate pattern="${shortDateFormatPattern}" value="${projectDetectionDateRange.minimum}"/>
@@ -151,10 +151,10 @@
         <tr><th>Access:</th><td>
 
             <c:choose><c:when test="${project.isGlobal}">
-                The data in the project is available in OzTrack for the public to use.
+                The data in the project are available in OzTrack for the public to use.
             </c:when>
             <c:otherwise>
-                The data in this project is only available to users on the OzTrack system whom have been granted access. Contact
+                The data in this project are only available to users on the OzTrack system whom have been granted access. Contact
                 the Collection Manager regarding permission and procedures for accessing the data.
             </c:otherwise>
             </c:choose>

@@ -40,7 +40,7 @@
             <fieldset>
                 <div class="legend">Add a Data File</div>
                 <div class="control-group">
-                    <label class="control-label" for="projectType">Datafile Type</label>
+                    <label class="control-label" for="projectType">Data File Type</label>
                     <div class="controls">
                         <input type="text" disabled="disabled" value="<c:out value="${project.projectType.displayName}"/>" />
                     </div>

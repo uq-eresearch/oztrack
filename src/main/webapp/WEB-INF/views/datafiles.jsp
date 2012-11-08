@@ -27,20 +27,11 @@
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
         <h2>Data Uploads</h2>
 
-        <c:choose>
-        <c:when test="${(empty dataFileList)}">
-            <p>
-                This project has no data to work with.
-            </p>
-        </c:when>
-        <c:otherwise>
-            <p>
-                <c:out value="${fn:length(dataFileList)}"/> data file(s) found.
-            </p>
-        </c:otherwise>
-        </c:choose>
         <p>
-            <a class="btn btn-primary" href="<c:url value='/projects/${project.id}/datafiles/new'/>" >Add a Datafile</a>
+            <c:out value="${fn:length(dataFileList)}"/> data file(s) found.
+        </p>
+        <p>
+            <a class="btn btn-primary" href="<c:url value='/projects/${project.id}/datafiles/new'/>" >Add a data file</a>
             <a class="btn" id="pageRefresh" href="javascript:location.reload(true)">Refresh</a>
         </p>
         <c:if test="${not empty dataFileList}">

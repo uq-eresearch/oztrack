@@ -3,6 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <c:set var="dateFormatPattern" value="dd/MM/yyyy"/>
 <c:set var="dateTimeFormatPattern" value="dd/MM/yyyy HH:mm:ss"/>
@@ -129,7 +130,9 @@
             <col style="width: 150px;" />
             <col style="width: 70px;" />
             <col style="width: 70px;" />
+            <sec:authorize access="hasPermission(#project, 'read')">
             <col style="width: 70px;" />
+            </sec:authorize>
             <thead>
                 <tr>
                     <th>Date/Time</th>
@@ -137,7 +140,9 @@
                     <th>Animal Name</th>
                     <th>Latitude</th>
                     <th>Longitude</th>
+                    <sec:authorize access="hasPermission(#project, 'read')">
                     <th>Uploaded</th>
+                    </sec:authorize>
                 </tr>
             </thead>
             <tbody>
@@ -149,10 +154,12 @@
                             <c:out value="${detection.animal.animalName}"/></a></td>
                     <td><c:out value="${detection.latitude}"/></td>
                     <td><c:out value="${detection.longitude}"/></td>
+                    <sec:authorize access="hasPermission(#project, 'read')">
                     <td>
                         <a href="<c:url value="/datafiles/${detection.dataFile.id}"/>"
                         ><fmt:formatDate pattern="${dateFormatPattern}" value="${detection.dataFile.createDate}"/></a>
                     </td>
+                    </sec:authorize>
                 </tr>
                 </c:forEach>
             </tbody>

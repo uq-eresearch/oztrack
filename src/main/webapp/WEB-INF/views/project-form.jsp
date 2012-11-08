@@ -296,8 +296,8 @@
                                     <b>Project Type:</b><br>
                                     <br>
                                     What kind of telemetry device was used to track your animal? This
-                                    will determine the format of the datafiles you upload, and the
-                                    types of analysis available to this project's dataset.
+                                    will determine the format of the data files you upload, and the
+                                    types of analysis available to this project's data set.
                                 </span>
                             </a>
                         </div>
@@ -425,7 +425,7 @@
                             </label>
                             <label>
                                 <input id="dataLicenceCommercial" class="dataLicenceCheckbox" type="checkbox" checked="checked" />
-                                Others may use this data for commercial purposes.
+                                Others may use these data for commercial purposes.
                             </label>
                         </div>
                         <form:errors path="dataLicence" element="div" cssClass="help-block formErrors" cssStyle="margin: 5px 0 1em 0;"/>

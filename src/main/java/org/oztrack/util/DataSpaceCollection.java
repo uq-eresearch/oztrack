@@ -161,11 +161,11 @@ public class DataSpaceCollection {
 
     public String getAccessRights() {
         if (project.getIsGlobal()) {
-            return "The data in the project is available in OzTrack for the public to use.";
+            return "The data in this project are available in OzTrack for the public to use.";
         }
         else {
             return
-                "The data in this project is only available to users on the OzTrack system whom have " +
+                "The data in this project are only available to users on the OzTrack system whom have " +
                 "been granted access. Contact the Collection Manager regarding permission and procedures for accessing the data.";
         }
     }

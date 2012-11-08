@@ -59,8 +59,8 @@ public class DataSpaceInterface {
         // do the collection first
         int statusCode = executeDeleteMethod("collections/" + collectionURI, project);
         if ((statusCode != HttpStatus.SC_OK) && (statusCode != HttpStatus.SC_ACCEPTED) && (statusCode != HttpStatus.SC_NO_CONTENT)) {
-            logger.info("deleting dataSpace collection failed");
-            throw new DataSpaceInterfaceException("deleting dataSpace agent failed.");
+            logger.info("deleting DataSpace collection failed");
+            throw new DataSpaceInterfaceException("deleting DataSpace agent failed.");
         } else {
             // don't delete agents, other records might point to them
             // deleteAgent = true;
@@ -76,8 +76,8 @@ public class DataSpaceInterface {
             statusCode = executeDeleteMethod("agents/" + agentURI, project);
 
             if ((statusCode != HttpStatus.SC_OK) && (statusCode != HttpStatus.SC_ACCEPTED) && (statusCode != HttpStatus.SC_NO_CONTENT)) {
-                logger.info("deleting dataSpace agent failed");
-                throw new DataSpaceInterfaceException("deleting dataSpace agent failed.");
+                logger.info("deleting DataSpace agent failed");
+                throw new DataSpaceInterfaceException("deleting DataSpace agent failed.");
             } else {
                 dataSpaceAgent.setDataSpaceAgentURI(null);
                 dataSpaceAgent.setDataSpaceAgentUpdateDate(new Date());
@@ -132,7 +132,7 @@ public class DataSpaceInterface {
                 logger.info("non conflict error statusCode" + statusCode);
                 doCollectionPost = false;
                 doCollectionPut = false;
-                throw new DataSpaceInterfaceException("creating dataSpace agent failed.");
+                throw new DataSpaceInterfaceException("creating DataSpace agent failed.");
             } else {
                 agentURI = this.getUriFromResponse("agents");
                 dataSpaceAgent.setDataSpaceAgentURI(agentURI);
@@ -149,8 +149,8 @@ public class DataSpaceInterface {
             if (statusCode != HttpStatus.SC_OK) {
                 doCollectionPost = false;
                 doCollectionPut = false;
-                logger.info("updating dataSpace agent failed");
-                throw new DataSpaceInterfaceException("updating dataSpace agent failed");
+                logger.info("updating DataSpace agent failed");
+                throw new DataSpaceInterfaceException("updating DataSpace agent failed");
             } else {
                 dataSpaceAgent.setDataSpaceAgentUpdateDate(new Date());
             }
@@ -179,7 +179,7 @@ public class DataSpaceInterface {
                 //doCollectionPut = true;
             } else if (statusCode != HttpStatus.SC_CREATED) {
                 logger.info("post error statusCode " + statusCode);
-                throw new DataSpaceInterfaceException("creating dataSpace collection failed.");
+                throw new DataSpaceInterfaceException("creating DataSpace collection failed.");
             } else {
                 collectionURI = this.getUriFromResponse("collections");
                 project.setDataSpaceURI(collectionURI);
@@ -191,7 +191,7 @@ public class DataSpaceInterface {
             int statusCode = executePutMethod("collections/" + collectionURI, collectionAtom, project);
             if (statusCode != HttpStatus.SC_OK) {
                 logger.info("updating dataSpace collection failed");
-                throw new DataSpaceInterfaceException("updating dataSpace collection failed");
+                throw new DataSpaceInterfaceException("updating DataSpace collection failed");
             } else {
                 project.setDataSpaceUpdateDate(new Date());
             }
@@ -221,10 +221,10 @@ public class DataSpaceInterface {
         loginRequest.setParams(params);
 
         try {
-            logger.info("attempt dataspace login");
+            logger.info("attempt DataSpace login");
             HttpResponse loginResponse = httpClient.execute(loginRequest);
             if (loginResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                throw new DataSpaceInterfaceException("dataSpace connection failed: " + loginResponse.getStatusLine());
+                throw new DataSpaceInterfaceException("DataSpace connection failed: " + loginResponse.getStatusLine());
             }
             logger.info("login successful");
         }
@@ -244,11 +244,11 @@ public class DataSpaceInterface {
             BufferedReader in = new BufferedReader(new InputStreamReader(postResponse.getEntity().getContent()));
             this.dataSpaceResponse = in.readLine();
             in.close();
-            logger.info("dataSpace response: " + this.dataSpaceResponse);
+            logger.info("DataSpace response: " + this.dataSpaceResponse);
             return statusCode;
         } catch (Exception e) {
             logger.error(e.getMessage());
-            throw new DataSpaceInterfaceException("dataSpace POST failed");
+            throw new DataSpaceInterfaceException("DataSpace POST failed");
         } finally {
             postRequest.releaseConnection();
             logout();
@@ -261,7 +261,7 @@ public class DataSpaceInterface {
             httpClient.execute(postRequest);
         } catch (Exception e) {
             logger.error(e.getMessage());
-            throw new DataSpaceInterfaceException("dataSpace logout failed");
+            throw new DataSpaceInterfaceException("DataSpace logout failed");
         }
         logger.info("logout");
     }
@@ -277,7 +277,7 @@ public class DataSpaceInterface {
             BufferedReader in = new BufferedReader(new InputStreamReader(putResponse.getEntity().getContent()));
             this.dataSpaceResponse = in.readLine();
             in.close();
-            logger.info("dataSpace response: " + this.dataSpaceResponse);
+            logger.info("DataSpace response: " + this.dataSpaceResponse);
             return statusCode;
         } catch (Exception e) {
             logger.info(e.getMessage());
@@ -298,7 +298,7 @@ public class DataSpaceInterface {
             BufferedReader in = new BufferedReader(new InputStreamReader(deleteResponse.getEntity().getContent()));
             this.dataSpaceResponse = in.readLine();
             in.close();
-            logger.info("dataSpace response: " + this.dataSpaceResponse);
+            logger.info("DataSpace response: " + this.dataSpaceResponse);
             return statusCode;
         } catch (Exception e) {
             logger.info("delete failed");

@@ -166,9 +166,9 @@
         <c:choose>
         <c:when test="${(empty dataFileList)}">
              <p>
-                 There is no data uploaded for this project yet.
+                 There are no data uploaded for this project yet.
                  <sec:authorize access="hasPermission(#project, 'write')">
-                 <a href="<c:url value='/projects/${project.id}/datafiles/new'/>">Upload a datafile</a>.
+                 <a href="<c:url value='/projects/${project.id}/datafiles/new'/>">Upload a data file</a>.
                  </sec:authorize>
              </p>
         </c:when>
@@ -178,7 +178,7 @@
             <col style="width: 550px;" />
             <sec:authorize access="hasPermission(#project, 'write')">
             <tr>
-                <th>Datafile Count:</th>
+                <th>Data File Count:</th>
                 <td><a href="<c:url value="/projects/${project.id}/datafiles"/>"><c:out value="${fn:length(dataFileList)}"/></a></td>
             </tr>
             </sec:authorize>
@@ -234,7 +234,7 @@
             <td>
                 <c:choose>
                 <c:when test="${empty projectDetectionDateRange}">
-                    No data has been uploaded for this project yet.
+                    No data have been uploaded for this project yet.
                 </c:when>
                 <c:otherwise>
                     <fmt:formatDate pattern="${shortDateFormatPattern}" value="${projectDetectionDateRange.minimum}"/> to <fmt:formatDate pattern="${shortDateFormatPattern}" value="${projectDetectionDateRange.maximum}"/>
@@ -282,10 +282,10 @@
             <td>
             <c:choose>
             <c:when test="${project.isGlobal}">
-                The data in the project is available in OzTrack for the public to use.
+                The data in the project are available in OzTrack for the public to use.
             </c:when>
             <c:otherwise>
-                The data in this project is only available to users on the OzTrack system whom have been granted access.
+                The data in this project are only available to users on the OzTrack system whom have been granted access.
             </c:otherwise>
             </c:choose>
             </td>

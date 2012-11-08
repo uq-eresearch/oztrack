@@ -168,7 +168,7 @@
                             <span>
                                 <b>Description:</b><br>
                                 <br>
-                                This field is important when project metadata is syndicated to DataSpace and ANDS.
+                                This field is important when project metadata are syndicated to DataSpace and ANDS.
                                 See examples at http://dataspace.uq.edu.au/agents.
                             </span>
                             </a>
