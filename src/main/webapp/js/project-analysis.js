@@ -40,7 +40,9 @@ function createAnalysisMap(div, options) {
             map.addControl(new OpenLayers.Control.MousePosition());
             map.addControl(new OpenLayers.Control.ScaleLine());
             map.addControl(new OpenLayers.Control.NavToolbar());
-            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
+            map.addControl(layerSwitcher);
+            layerSwitcher.maximizeControl();
             loadingPanel = new OpenLayers.Control.LoadingPanel();
             map.addControl(loadingPanel);
 

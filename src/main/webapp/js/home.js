@@ -7,7 +7,6 @@ function createHomeMap(div) {
         projection: projection900913,
         displayProjection: projection4326
     });
-    map.addControl(new OpenLayers.Control.LayerSwitcher());
     map.addControl(new OpenLayers.Control.LoadingPanel());
 
     var gphy = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.TERRAIN});

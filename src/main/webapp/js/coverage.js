@@ -3,8 +3,6 @@ function createCoverageMap(id, wkt) {
     var projection4326 =  new OpenLayers.Projection("EPSG:4326");
 
     var map = new OpenLayers.Map(id);
-    var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
-    map.addControl(layerSwitcher);
 
     var gphy = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.TERRAIN});
     var gsat = new OpenLayers.Layer.Google("Google Satellite", {type: google.maps.MapTypeId.SATELLITE});

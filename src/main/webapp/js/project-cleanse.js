@@ -34,7 +34,9 @@ function createCleanseMap(div, options) {
             map.addControl(navToolbar);
             map.addControl(new OpenLayers.Control.MousePosition());
             map.addControl(new OpenLayers.Control.ScaleLine());
-            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
+            map.addControl(layerSwitcher);
+            layerSwitcher.maximizeControl();
             map.addControl(new OpenLayers.Control.LoadingPanel());
             map.addControl(createControlPanel());
 
@@ -60,7 +62,7 @@ function createCleanseMap(div, options) {
             map.addLayers([gsat, gphy, gmap, ghyb, osmLayer, bathymetryLayer]);
 
             allDetectionsLayer = createAllDetectionsLayer(projectId);
-            polygonLayer = new OpenLayers.Layer.Vector('Polygons');
+            polygonLayer = new OpenLayers.Layer.Vector('Selections');
             map.addLayers([allDetectionsLayer, polygonLayer]);
 
             polygonFeatures = [];
