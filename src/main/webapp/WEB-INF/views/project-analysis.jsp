@@ -10,6 +10,9 @@
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
         <style type="text/css">
+            #main {
+                padding-bottom: 0;
+            }
             #projectMapOptions .ui-accordion-content {
                 padding: 10px;
             }

@@ -10,6 +10,9 @@
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
         <style type="text/css">
+            #main {
+                padding-bottom: 0;
+            }
             ul#cleanse-list {
                 margin: 10px 0;
                 padding-left: 0;
