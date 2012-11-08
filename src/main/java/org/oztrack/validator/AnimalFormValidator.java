@@ -11,8 +11,10 @@ public class AnimalFormValidator implements Validator {
         return Animal.class.isAssignableFrom(clazz);
     }
 
+    @Override
     public void validate(Object obj, Errors errors) {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "projectAnimalId", "error.empty.field", "Please enter animal ID");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "animalName", "error.empty.field", "Please enter animal name");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "colour", "error.empty.field", "Please enter animal colour");
     }
 }
