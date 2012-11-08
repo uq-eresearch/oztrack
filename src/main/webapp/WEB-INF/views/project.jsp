@@ -75,12 +75,15 @@
                             .append(userFullName)
                     )
                     <sec:authorize access="hasPermission(#project, 'manage')">
+                    .append(' [')
                     .append(
                         jQuery('<a>')
                             .attr('href', 'javascript:void(0)')
+                            .attr('style', 'font-size: 0.85em;')
                             .attr('onclick', 'deleteProjectUser(' + userId + ', \'' + role + '\', \'' + userFullName + '\');')
-                            .append(jQuery('<img src="<c:url value="/img/bullet_delete.png"/>" /></a>'))
+                            .append('remove')
                     )
+                    .append(']')
                     </sec:authorize>
                     .hide().appendTo(projectUsersList).fadeIn();
             }
@@ -349,7 +352,17 @@
         </c:forEach>
         <tr>
             <c:forEach items="${roles}" var="role">
-            <th style="border-bottom: 1px solid #e6e6c0; text-align: left; padding: 4px;">${role.pluralTitle}</th>
+            <th style="border-bottom: 1px solid #e6e6c0; text-align: left; padding: 4px;">
+                ${role.pluralTitle}
+                <a class=info href="#">
+                    <img src="<c:url value="/img/help.png"/>" border="0">
+                    <span>
+                        <b>${role.pluralTitle}:</b><br>
+                        <br>
+                        ${role.explanation}
+                    </span>
+                </a>
+            </th>
             </c:forEach>
         </tr>
         <tr>
