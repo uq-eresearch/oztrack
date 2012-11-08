@@ -152,8 +152,12 @@ function buildPopup(f) {
         ) +
         '    </div>\n' +
         '    <div style="margin-top: 1em;">\n' +
-        '        <a href="projects/' + f.attributes.projectId + '">View details</a> |\n' +
-        '        <a href="projects/' + f.attributes.projectId + '/analysis">Show tracks</a>\n' +
+        '        <a href="projects/' + f.attributes.projectId + '">View details</a>\n' +
+        (
+            (f.attributes.global == 'true')
+            ? '        | <a href="projects/' + f.attributes.projectId + '/analysis">View tracks</a>\n'
+            : ''
+        ) +
         '    </div>\n' +
         '</div>';
     var popup = new OpenLayers.Popup.AnchoredBubble(
