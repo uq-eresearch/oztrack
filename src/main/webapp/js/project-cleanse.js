@@ -43,9 +43,25 @@ function createCleanseMap(div, options) {
             var gmap = new OpenLayers.Layer.Google('Google Streets', {numZoomLevels: 20});
             var ghyb = new OpenLayers.Layer.Google('Google Hybrid', {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20});
             var osmLayer = new OpenLayers.Layer.OSM('OpenStreetMap');
+            var bathymetryLayer = new OpenLayers.Layer.WMS(
+                    'Bathymetry',
+                    '/geoserver/gwc/service/wms',
+                    {
+                        layers: 'oztrack:gebco_08',
+                        styles: 'bathymetry',
+                        format: 'image/png'
+                    },
+                    {
+                        isBaseLayer: true,
+                        wrapDateLine: true,
+                        attribution: '<a href="http://www.gebco.net">The GEBCO_08 Grid, version 20091120</a>'
+                    }
+                );
+            map.addLayers([gsat, gphy, gmap, ghyb, osmLayer, bathymetryLayer]);
+
             allDetectionsLayer = createAllDetectionsLayer(projectId);
             polygonLayer = new OpenLayers.Layer.Vector('Polygons');
-            map.addLayers([gsat, gphy, gmap, ghyb, osmLayer, allDetectionsLayer, polygonLayer]);
+            map.addLayers([allDetectionsLayer, polygonLayer]);
 
             polygonFeatures = [];
             var polygonControl = new OpenLayers.Control.DrawFeature(polygonLayer, OpenLayers.Handler.Polygon);

@@ -65,24 +65,8 @@ function createAnalysisMap(div, options) {
             var osmLayer = new OpenLayers.Layer.OSM('OpenStreetMap');
             map.addLayer(osmLayer);
 
-            var gebcoGridoneLayer = new OpenLayers.Layer.WMS(
-                'Bathymetry (1 arc-minute)',
-                '/geoserver/gwc/service/wms',
-                {
-                    layers: 'oztrack:gebco_gridone',
-                    styles: 'bathymetry',
-                    format: 'image/png'
-                },
-                {
-                    isBaseLayer: true,
-                    wrapDateLine: true,
-                    attribution: '<a href="http://www.gebco.net">The GEBCO One Minute Grid, version 2.0</a>'
-                }
-            );
-            map.addLayer(gebcoGridoneLayer);
-
-            var gebco08Layer = new OpenLayers.Layer.WMS(
-                'Bathymetry (30 arc-second)',
+            var bathymetryLayer = new OpenLayers.Layer.WMS(
+                'Bathymetry',
                 '/geoserver/gwc/service/wms',
                 {
                     layers: 'oztrack:gebco_08',
@@ -95,7 +79,7 @@ function createAnalysisMap(div, options) {
                     attribution: '<a href="http://www.gebco.net">The GEBCO_08 Grid, version 20091120</a>'
                 }
             );
-            map.addLayer(gebco08Layer);
+            map.addLayer(bathymetryLayer);
 
             map.addControl(createControlPanel());
 
