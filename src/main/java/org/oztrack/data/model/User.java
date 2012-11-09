@@ -19,8 +19,8 @@ import org.hibernate.annotations.Cascade;
 @Entity(name="appuser")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userid_seq")
-    @SequenceGenerator(name = "userid_seq", sequenceName = "userid_seq", allocationSize = 1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="userid_seq")
+    @SequenceGenerator(name="userid_seq", sequenceName="userid_seq", allocationSize=1)
     @Column(nullable=false)
     private Long id;
 
@@ -47,7 +47,7 @@ public class User {
     @Column(name="passwordresetexpiresat")
     private Date passwordResetExpiresAt;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true)
+    @OneToMany(mappedBy="user", fetch=FetchType.LAZY, cascade={CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true)
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private List<ProjectUser> projectUsers = new LinkedList<ProjectUser>();
 

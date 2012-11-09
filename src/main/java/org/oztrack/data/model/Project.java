@@ -23,18 +23,18 @@ import javax.persistence.SequenceGenerator;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.model.types.ProjectType;
 
-@Entity(name = "Project")
+@Entity(name="Project")
 public class Project extends OzTrackBaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "projectid_seq")
-    @SequenceGenerator(name = "projectid_seq", sequenceName = "projectid_seq",allocationSize = 1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="projectid_seq")
+    @SequenceGenerator(name="projectid_seq", sequenceName="projectid_seq",allocationSize=1)
     @Column(nullable=false)
     private Long id;
 
     @Column(nullable=false)
     private String title;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition="TEXT")
     private String description;
 
     private boolean isGlobal;
@@ -43,22 +43,22 @@ public class Project extends OzTrackBaseEntity {
     @ManyToOne
     private User dataSpaceAgent;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition="TEXT")
     private String publicationTitle;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition="TEXT")
     private String publicationUrl;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition="TEXT")
     private String dataDirectoryPath;
 
-    @OneToMany(mappedBy = "project", fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(mappedBy="project", fetch=FetchType.EAGER, cascade={CascadeType.ALL}, orphanRemoval=true)
     private List<ProjectUser> projectUsers = new LinkedList<ProjectUser>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="project", cascade=CascadeType.ALL, orphanRemoval=true)
     private List<Animal> animals = new LinkedList<Animal>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="project", cascade=CascadeType.ALL, orphanRemoval=true)
     private List<DataFile> dataFiles = new LinkedList<DataFile>();
 
     @Enumerated(STRING)
@@ -72,7 +72,7 @@ public class Project extends OzTrackBaseEntity {
     @Column(name="srsidentifier")
     private String srsIdentifier;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition="TEXT")
     private String dataSpaceURI;
     private Date dataSpaceUpdateDate;
     private String rightsStatement;

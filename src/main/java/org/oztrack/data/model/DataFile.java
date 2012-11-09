@@ -27,17 +27,17 @@ import javax.persistence.Transient;
 import org.oztrack.data.model.types.DataFileStatus;
 import org.springframework.web.multipart.MultipartFile;
 
-@Entity(name = "datafile")
+@Entity(name="datafile")
 public class DataFile extends OzTrackBaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "datafileid_seq")
-    @SequenceGenerator(name = "datafileid_seq", sequenceName = "datafileid_seq",allocationSize = 1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="datafileid_seq")
+    @SequenceGenerator(name="datafileid_seq", sequenceName="datafileid_seq",allocationSize=1)
     @Column(nullable=false)
     private Long id;
 
     private String dataFilePath;
     private String userGivenFileName;
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition="TEXT")
     private String fileDescription;
     private String contentType;
 
@@ -50,14 +50,14 @@ public class DataFile extends OzTrackBaseEntity {
     @Enumerated(STRING)
     @Column(name="datafilestatus")
     private DataFileStatus status;
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition="TEXT")
     private String statusMessage;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade={}) //persist project yourself
+    @ManyToOne(fetch=FetchType.LAZY, cascade={}) //persist project yourself
     @JoinColumn(nullable=false)
     private Project project;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "dataFile", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="dataFile", cascade=CascadeType.ALL, orphanRemoval=true)
     private List<PositionFix> positionFixes = new LinkedList<PositionFix>();
 
     @Transient

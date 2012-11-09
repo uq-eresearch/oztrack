@@ -3,6 +3,7 @@ package org.oztrack.data.model;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,11 +15,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 
-@Entity(name = "Animal")
+@Entity(name="Animal")
 public class Animal extends OzTrackBaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "animalid_seq")
-    @SequenceGenerator(name = "animalid_seq", sequenceName = "animalid_seq",allocationSize = 1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="animalid_seq")
+    @SequenceGenerator(name="animalid_seq", sequenceName="animalid_seq",allocationSize=1)
     @Column(nullable=false)
     private Long id;
 
@@ -41,7 +42,7 @@ public class Animal extends OzTrackBaseEntity {
     @JoinColumn(nullable=false)
     private Project project;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "animal")
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="animal", cascade=CascadeType.ALL, orphanRemoval=true)
     private List<PositionFix> positionFixes = new LinkedList<PositionFix>();
 
     public Long getId() {
