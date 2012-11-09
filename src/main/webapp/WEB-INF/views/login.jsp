@@ -28,7 +28,9 @@
         </div>
         </c:if>
 
-        <div style="clear: both;"></div>
+        <p style="margin-bottom: 14px;">
+            Don't have an account yet? <a href="<c:url value="/users/new"/>">Register as a new user</a>
+        </p>
 
         <c:if test="${aafEnabled}">
         <form class="form-vertical form-bordered">
@@ -72,9 +74,5 @@
                 <a style="margin-left: 10px;" href="<c:url value="/reset-password"/>">Can't access your account?</a>
             </div>
         </form>
-
-        <p>
-            Don't have an account yet? <a href="<c:url value="/users/new"/>">Register as a new user</a>
-        </p>
     </jsp:body>
 </tags:page>
