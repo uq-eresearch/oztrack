@@ -14,7 +14,9 @@
         </sec:authorize>
         <sec:authorize access="hasPermission(#project, 'write')">
         <li id="projectMenuUploads"><a href="<c:url value="/projects/${project.id}/datafiles"/>">Add Data</a></li>
+        <c:if test="${not empty project.dataFiles}">
         <li id="projectMenuCleanse"><a href="<c:url value="/projects/${project.id}/cleanse"/>">Edit Data</a></li>
+        </c:if>
         </sec:authorize>
     </ul>
 </div>
