@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface DataFileDao {
+    int getNumDataFiles();
     DataFile getDataFileById(Long id);
     DataFile getNextDataFile();
     ArrayList<String> getAllAnimalIds(DataFile datafile);

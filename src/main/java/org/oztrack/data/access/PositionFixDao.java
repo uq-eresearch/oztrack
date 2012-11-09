@@ -12,6 +12,7 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 
 @Service
 public interface PositionFixDao {
+    int getNumPositionFixes();
     Page<PositionFix> getPage(SearchQuery searchQuery, int offset, int nbrObjectsPerPage);
     List<PositionFix> getProjectPositionFixList(SearchQuery searchQuery);
     int setDeletedOnOverlappingPositionFixes(Project project, Date fromDate, Date toDate, List<Long> animalIds, MultiPolygon multiPolygon, boolean deleted);

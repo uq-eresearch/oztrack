@@ -18,7 +18,7 @@
     <jsp:attribute name="head">
         <script type="text/javascript">
             $(document).ready(function() {
-                $('#navTrack').addClass('active');
+                $('#navSettings').addClass('active');
             });
         </script>
     </jsp:attribute>

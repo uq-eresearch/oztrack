@@ -18,13 +18,12 @@
     </jsp:attribute>
     <jsp:body>
         <h1>Settings</h1>
-        <div class="actions">
         <h2>Manage Settings</h2>
-        <ul>
+        <ul class="actions">
             <li class="edit"><a href="<c:url value="/settings/geoserver"/>">GeoServer</a></li>
-            <li class="edit"><a href="<c:url value="/settings/srs"/>">Spatial reference systems</a></li>
-            <li class="edit"><a href="<c:url value="/settings/content"/>">Website content</a></li>
+            <li class="edit"><a href="<c:url value="/settings/srs"/>">Spatial Reference Systems</a></li>
+            <li class="edit"><a href="<c:url value="/settings/content"/>">Website Content</a></li>
+            <li class="edit"><a href="<c:url value="/settings/usage"/>">Usage Summary</a></li>
         </ul>
-        </div>
     </jsp:body>
 </tags:page>

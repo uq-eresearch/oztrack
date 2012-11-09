@@ -22,12 +22,18 @@ public class AnimalDaoImpl implements AnimalDao {
     }
 
     @Override
+    public int getNumAnimals() {
+        Query query = em.createQuery("select count(o) from org.oztrack.data.model.Animal o");
+        return ((Number) query.getSingleResult()).intValue();
+    }
+
+    @Override
     public List<Animal> getAnimalsByProjectId(Long projectId) {
         Query query = em.createQuery("select o from Animal o where o.project.id = :projectId order by o.projectAnimalId");
         query.setParameter("projectId", projectId);
         try {
             @SuppressWarnings("unchecked")
-            List <Animal> resultList = (List <Animal>) query.getResultList();
+            List <Animal> resultList = query.getResultList();
             return resultList;
         } catch (NoResultException ex) {
             return null;

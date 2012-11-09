@@ -16,6 +16,15 @@ public class UserDaoImpl implements UserDao {
     private EntityManager em;
 
     @Override
+    public List<User> getAll() {
+        @SuppressWarnings("unchecked")
+        List<User> resultList = em
+            .createQuery("from org.oztrack.data.model.User")
+            .getResultList();
+        return resultList;
+    }
+
+    @Override
     public User getByUsername(String username) {
         @SuppressWarnings("unchecked")
         List<User> resultList = em

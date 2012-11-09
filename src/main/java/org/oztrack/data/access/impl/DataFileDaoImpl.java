@@ -27,6 +27,12 @@ public class DataFileDaoImpl implements DataFileDao {
     }
 
     @Override
+    public int getNumDataFiles() {
+        Query query = em.createQuery("select count(o) from org.oztrack.data.model.DataFile o");
+        return ((Number) query.getSingleResult()).intValue();
+    }
+
+    @Override
     public DataFile getDataFileById(Long id) {
         Query query = em.createQuery("SELECT o FROM datafile o WHERE o.id = :id");
         query.setParameter("id", id);

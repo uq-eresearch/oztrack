@@ -33,6 +33,12 @@ public class PositionFixDaoImpl implements PositionFixDao {
     }
 
     @Override
+    public int getNumPositionFixes() {
+        Query query = em.createQuery("select count(o) from org.oztrack.data.model.PositionFix o");
+        return ((Number) query.getSingleResult()).intValue();
+    }
+
+    @Override
     public Page<PositionFix> getPage(SearchQuery searchQuery, int offset, int nbrObjectsPerPage) {
        try {
             Query query = buildQuery(searchQuery, false);

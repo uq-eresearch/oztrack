@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface UserDao {
+    List<User> getAll();
     User getByUsername(String username);
     User getByEmail(String email);
     User getByAafId(String aafId);

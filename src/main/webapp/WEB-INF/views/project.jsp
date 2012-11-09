@@ -401,7 +401,7 @@
         <sec:authorize access="hasPermission(#project, 'write')">
         <div class="actions">
         <h2>Manage Project</h2>
-        <ul>
+        <ul class="actions">
             <li class="edit"><a href="<c:url value="/projects/${project.id}/edit"/>">Edit project</a></li>
             <sec:authorize access="hasPermission(#project, 'manage')">
             <c:if test="${empty project.dataSpaceURI}">
