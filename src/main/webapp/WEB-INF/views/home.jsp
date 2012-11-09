@@ -70,8 +70,18 @@
         </script>
     </jsp:attribute>
     <jsp:body>
-        <div id="welcome">
-            ${text}
+        <div class="row">
+            <div class="span9">
+                <div id="welcome">
+                    ${text}
+                </div>
+            </div>
+            <div class="span3">
+                <div id="welcome-buttons">
+                    <a class="btn btn-large btn-block btn-primary" href="<c:url value="/projects/new"/>">Create Project</a>
+                    <a class="btn btn-large btn-block" href="<c:url value="/projects"/>">View Projects</a>
+                </div>
+            </div>
         </div>
         <div style="clear: both;"></div>
         <div id="homeMap">
