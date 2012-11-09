@@ -69,12 +69,10 @@
             </fieldset>
             <div class="form-actions">
                 <input class="btn btn-primary" type="submit" value="Login"/>
+                <a style="margin-left: 10px;" href="<c:url value="/reset-password"/>">Can't access your account?</a>
             </div>
         </form>
 
-        <p>
-            <a href="<c:url value="/reset-password"/>">Can't access your account?</a>
-        </p>
         <p>
             Don't have an account yet? <a href="<c:url value="/users/new"/>">Register as a new user</a>
         </p>
