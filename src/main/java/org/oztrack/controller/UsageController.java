@@ -34,6 +34,7 @@ public class UsageController {
     public String getView(Model model) {
         model.addAttribute("users", userDao.getAll());
         model.addAttribute("projects", projectDao.getAll());
+        model.addAttribute("projectDao", projectDao);
         model.addAttribute("numAnimals", animalDao.getNumAnimals());
         model.addAttribute("numDataFiles", dataFileDao.getNumDataFiles());
         model.addAttribute("numPositionFixes", positionFixDao.getNumPositionFixes());

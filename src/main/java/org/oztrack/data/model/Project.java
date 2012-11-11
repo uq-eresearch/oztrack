@@ -260,14 +260,6 @@ public class Project extends OzTrackBaseEntity {
         this.dataLicence = dataLicence;
     }
 
-    public int getNumPositionFixes() {
-        int numPositionFixes = 0;
-        for (DataFile dataFile : dataFiles) {
-            numPositionFixes += dataFile.getPositionFixes().size();
-        }
-        return numPositionFixes;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

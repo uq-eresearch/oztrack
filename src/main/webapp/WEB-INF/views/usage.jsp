@@ -71,7 +71,7 @@
                     <p>${project.description}</p>
                 </td>
                 <td>
-                    <p>${fn:length(project.animals)} animals (${project.numPositionFixes} position fixes)</p>
+                    <p>${fn:length(project.animals)} animals (${projectDao.getDetectionCount(project, false)} position fixes)</p>
                     <p style="font-style: italic;">Species: ${project.speciesCommonName} (${project.speciesScientificName})</p>
                 </td>
                 <td>
