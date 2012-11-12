@@ -56,7 +56,7 @@
         </table>
         <div class="actions">
         <h2>Manage Spatial Reference Systems</h2>
-        <ul class="actions">
+        <ul class="icons">
             <li class="create"><a href="<c:url value="/settings/srs/new"/>">Create new SRS</a></li>
         </ul>
         </div>

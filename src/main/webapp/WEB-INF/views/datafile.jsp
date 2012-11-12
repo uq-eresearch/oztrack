@@ -68,7 +68,7 @@
         <sec:authorize access="hasPermission(#dataFile.project, 'write')">
         <div class="actions">
         <h2>Manage Data File</h2>
-        <ul class="actions">
+        <ul class="icons">
             <li class="delete"><a href="javascript:void(deleteEntity('<c:url value="/datafiles/${dataFile.id}"/>', '<c:url value="/projects/${dataFile.project.id}/datafiles"/>', 'Are you sure you want to delete this data file?'));">Delete data file</a></li>
         </ul>
         </div>

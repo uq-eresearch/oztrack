@@ -281,6 +281,15 @@ function createAnalysisMap(div, options) {
             }
         };
         
+        analysisMap.addKMLLayer = function(layerName, params) {
+            if ((params.queryType == "HEATMAP_POINT") || (params.queryType == "HEATMAP_LINE")) {
+                map.addLayer(createKMLLayer(layerName, params, null, true));
+            }
+            else {
+                map.addLayer(createKMLLayer(layerName, params, polygonStyleMap, null));
+            }
+        };
+        
         function createDetectionLayer(params) {
             function buildFilter(params) {
                 var visibleAnimalIds = [];

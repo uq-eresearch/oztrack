@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -30,11 +31,18 @@ import org.geotools.wfs.WFS;
 import org.geotools.wfs.v1_1.WFSConfiguration;
 import org.geotools.xml.Encoder;
 import org.oztrack.app.Constants;
+import org.oztrack.data.access.AnalysisDao;
+import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.access.UserDao;
+import org.oztrack.data.model.Analysis;
+import org.oztrack.data.model.AnalysisParameter;
+import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
+import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.MapQueryType;
 import org.oztrack.error.RServeInterfaceException;
 import org.oztrack.util.RServeInterface;
@@ -44,6 +52,7 @@ import org.oztrack.view.AnimalTrajectoryFeatureBuilder;
 import org.oztrack.view.ProjectsFeatureBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -64,6 +73,18 @@ public class MapQueryController {
 
     @Autowired
     private PositionFixDao positionFixDao;
+
+    @Autowired
+    private AnalysisDao analysisDao;
+
+    @Autowired
+    private AnimalDao animalDao;
+
+    @Autowired
+    private UserDao userDao;
+
+    @Autowired
+    private OzTrackPermissionEvaluator permissionEvaluator;
 
     @InitBinder("searchQuery")
     public void initSearchQueryBinder(WebDataBinder binder) {
@@ -120,9 +141,74 @@ public class MapQueryController {
     @RequestMapping(value="/mapQueryKML", method=RequestMethod.GET)
     @PreAuthorize("#searchQuery.project.global or hasPermission(#searchQuery.project, 'read')")
     public void handleKMLQuery(
+        Authentication authentication,
         HttpServletResponse response,
         @ModelAttribute(value="searchQuery") SearchQuery searchQuery
     ) {
+        if (permissionEvaluator.hasPermission(authentication, searchQuery.getProject(), "write")) {
+            User currentUser = userDao.getByUsername((String) authentication.getPrincipal());
+            saveAnalysis(searchQuery, currentUser);
+        }
+        writeKMLResponse(response, searchQuery);
+    }
+
+    private void saveAnalysis(SearchQuery searchQuery, User currentUser) {
+        Analysis analysis = new Analysis();
+        java.util.Date createDate = new java.util.Date();
+        analysis.setCreateDate(createDate);
+        analysis.setCreateUser(currentUser);
+        analysis.setUpdateDate(createDate);
+        analysis.setUpdateUser(currentUser);
+        analysis.setProject(searchQuery.getProject());
+        analysis.setAnalysisType(searchQuery.getMapQueryType());
+        analysis.setFromDate(searchQuery.getFromDate());
+        analysis.setToDate(searchQuery.getToDate());
+        Set<Animal> animals = new HashSet<Animal>();
+        for (Long animalId : searchQuery.getAnimalIds()) {
+            animals.add(animalDao.getAnimalById(animalId));
+        }
+        analysis.setAnimals(animals);
+        Set<AnalysisParameter> parameters = new HashSet<AnalysisParameter>();
+        if (searchQuery.getAlpha() != null) {
+            AnalysisParameter parameter = new AnalysisParameter();
+            parameter.setAnalysis(analysis);
+            parameter.setName("alpha");
+            parameter.setValue(String.valueOf(searchQuery.getAlpha()));
+            parameters.add(parameter);
+        }
+        if (searchQuery.getExtent() != null) {
+            AnalysisParameter parameter = new AnalysisParameter();
+            parameter.setAnalysis(analysis);
+            parameter.setName("extent");
+            parameter.setValue(String.valueOf(searchQuery.getExtent()));
+            parameters.add(parameter);
+        }
+        if (searchQuery.getGridSize() != null) {
+            AnalysisParameter parameter = new AnalysisParameter();
+            parameter.setAnalysis(analysis);
+            parameter.setName("gridSize");
+            parameter.setValue(String.valueOf(searchQuery.getGridSize()));
+            parameters.add(parameter);
+        }
+        if (searchQuery.getH() != null) {
+            AnalysisParameter parameter = new AnalysisParameter();
+            parameter.setAnalysis(analysis);
+            parameter.setName("h");
+            parameter.setValue(String.valueOf(searchQuery.getH()));
+            parameters.add(parameter);
+        }
+        if (searchQuery.getPercent() != null) {
+            AnalysisParameter parameter = new AnalysisParameter();
+            parameter.setAnalysis(analysis);
+            parameter.setName("percent");
+            parameter.setValue(String.valueOf(searchQuery.getPercent()));
+            parameters.add(parameter);
+        }
+        analysis.setParameters(parameters);
+        analysisDao.save(analysis);
+    }
+
+    private void writeKMLResponse(HttpServletResponse response, SearchQuery searchQuery) {
         List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
         RServeInterface rServeInterface = new RServeInterface(positionFixList, searchQuery);
         File kmlFile = null;

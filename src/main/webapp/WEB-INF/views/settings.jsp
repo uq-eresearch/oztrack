@@ -19,7 +19,7 @@
     <jsp:body>
         <h1>Settings</h1>
         <h2>Manage Settings</h2>
-        <ul class="actions">
+        <ul class="icons">
             <li class="edit"><a href="<c:url value="/settings/geoserver"/>">GeoServer</a></li>
             <li class="edit"><a href="<c:url value="/settings/srs"/>">Spatial Reference Systems</a></li>
             <li class="edit"><a href="<c:url value="/settings/content"/>">Website Content</a></li>

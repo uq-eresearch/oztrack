@@ -58,7 +58,7 @@
         <sec:authorize access="hasPermission(#animal.project, 'write')">
         <div class="actions">
         <h2>Manage Animal</h2>
-        <ul class="actions">
+        <ul class="icons">
             <li class="edit"><a href="<c:url value="/animals/${animal.id}/edit"/>">Edit animal</a></li>
             <c:if test="${empty animal.positionFixes}">
             <li class="delete"><a href="javascript:void(deleteEntity('<c:url value="/animals/${animal.id}"/>', '<c:url value="/projects/${project.id}/animals"/>', 'Are you sure you want to delete this animal?'));">Delete animal</a></li>

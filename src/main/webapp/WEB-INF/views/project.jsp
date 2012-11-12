@@ -371,7 +371,7 @@
                 <div id="${role.identifier}ProjectUsersNone" style="margin: 0.3em 4px; color: #999; display: none;">
                     No users with ${role.title} role
                 </div>
-                <ul id="${role.identifier}ProjectUsersList" class="users" style="display: none;">
+                <ul id="${role.identifier}ProjectUsersList" class="icons" style="display: none;">
                 </ul>
             </td>
             </c:forEach>
@@ -401,7 +401,7 @@
         <sec:authorize access="hasPermission(#project, 'write')">
         <div class="actions">
         <h2>Manage Project</h2>
-        <ul class="actions">
+        <ul class="icons">
             <li class="edit"><a href="<c:url value="/projects/${project.id}/edit"/>">Edit project</a></li>
             <sec:authorize access="hasPermission(#project, 'manage')">
             <c:if test="${empty project.dataSpaceURI}">

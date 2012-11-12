@@ -4,7 +4,10 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
+<c:set var="isoDateFormatPattern" value="yyyy-MM-dd"/>
+<c:set var="dateTimeFormatPattern" value="dd/MM/yyyy' at 'HH:mm"/>
 <tags:page title="${project.title}: View Tracks" fluid="true">
     <jsp:attribute name="head">
         <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
@@ -245,7 +248,7 @@
             function onResize() {
                 var mainHeight = $(window).height() - $('#header').height() - $('#crumbs').height() - 21;
                 $('#projectMapOptions').height(mainHeight);
-                $('#projectMapOptions .ui-accordion-content').height($('#projectMapOptions').height() - 130);
+                $('#projectMapOptions .ui-accordion-content').height($('#projectMapOptions').height() - (70 + $('#projectMapOptionsAccordion > h3').length * 30));
                 $('#projectMap').height(mainHeight);
                 if (analysisMap) {
                     analysisMap.updateSize();
@@ -320,7 +323,7 @@
             </div>
 
 
-            <h3><a id="homeRangeCalculatorLink" href="#">Home Range Calculators</a></h3>
+            <h3><a id="homeRangeCalculatorLink" href="#">Run New Analysis</a></h3>
 
             <div id="homeRangeCalculatorPanel">
 
@@ -416,8 +419,41 @@
                     <div style="margin-top: 18px;">
                         <input class="btn btn-primary" type="submit" id="projectMapSubmit" value="Calculate"/>
                     </div>
-                  </form>
-                </div>
+                </form>
+            </div>
+
+            <sec:authorize access="hasPermission(#project, 'read')">
+            <c:if test="${not empty project.analyses}">
+            <h3><a id="savedAnalysesLink" href="#">Previous Analyses</a></h3>
+            <div id="savedAnalysesPanel">
+                <ul class="icons">
+                    <c:forEach items="${project.analyses}" var="analysis">
+                    <li class="analysis">
+                        <a href="javascript:void(0);" onclick="
+                            analysisMap.addKMLLayer(
+                                '${analysis.analysisType.displayName}',
+                                {
+                                    queryType : '${analysis.analysisType}'
+                                    , projectId : '${analysis.project.id}'
+                                    <c:if test="${not empty analysis.fromDate}">
+                                    , fromDate: '<fmt:formatDate pattern="${isoDateFormatPattern}" value="${analysis.fromDate}"/>'
+                                    </c:if>
+                                    <c:if test="${not empty analysis.toDate}">
+                                    , toDate: '<fmt:formatDate pattern="${isoDateFormatPattern}" value="${analysis.toDate}"/>'
+                                    </c:if>
+                                    , animals: '<c:forEach items="${analysis.animals}" var="animal" varStatus="animalStatus">${animal.id}<c:if test="${!animalStatus.last}">,</c:if></c:forEach>'
+                                    <c:forEach items="${analysis.parameters}" var="parameter">
+                                    , '${parameter.name}': '${parameter.value}'
+                                    </c:forEach>
+                                }
+                            );
+                        ">${analysis.analysisType.displayName}</a> (<fmt:formatDate pattern="${dateTimeFormatPattern}" value="${analysis.createDate}"/>)
+                    </li>
+                    </c:forEach>
+                </ul>
+            </div>
+            </c:if>
+            </sec:authorize>
         </div>
         </div>
         <div style="padding: 2px 5px 5px 5px;">

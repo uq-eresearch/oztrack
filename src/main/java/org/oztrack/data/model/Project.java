@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 
 import org.oztrack.app.OzTrackApplication;
@@ -52,13 +53,13 @@ public class Project extends OzTrackBaseEntity {
     @Column(columnDefinition="TEXT")
     private String dataDirectoryPath;
 
-    @OneToMany(mappedBy="project", fetch=FetchType.EAGER, cascade={CascadeType.ALL}, orphanRemoval=true)
+    @OneToMany(mappedBy="project", cascade={CascadeType.ALL}, orphanRemoval=true, fetch=FetchType.EAGER)
     private List<ProjectUser> projectUsers = new LinkedList<ProjectUser>();
 
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="project", cascade=CascadeType.ALL, orphanRemoval=true)
+    @OneToMany(mappedBy="project", cascade=CascadeType.ALL, orphanRemoval=true, fetch=FetchType.LAZY)
     private List<Animal> animals = new LinkedList<Animal>();
 
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="project", cascade=CascadeType.ALL, orphanRemoval=true)
+    @OneToMany(mappedBy="project", cascade=CascadeType.ALL, orphanRemoval=true, fetch=FetchType.LAZY)
     private List<DataFile> dataFiles = new LinkedList<DataFile>();
 
     @Enumerated(STRING)
@@ -80,6 +81,10 @@ public class Project extends OzTrackBaseEntity {
     @ManyToOne
     @JoinColumn(name="data_licence_id")
     private DataLicence dataLicence;
+
+    @OneToMany(mappedBy="project", cascade=CascadeType.ALL, orphanRemoval=true)
+    @OrderBy("createDate")
+    private List<Analysis> analyses;
 
     public Project() {
     }
@@ -258,6 +263,14 @@ public class Project extends OzTrackBaseEntity {
 
     public void setDataLicence(DataLicence dataLicence) {
         this.dataLicence = dataLicence;
+    }
+
+    public List<Analysis> getAnalyses() {
+        return analyses;
+    }
+
+    public void setAnalyses(List<Analysis> analyses) {
+        this.analyses = analyses;
     }
 
     @Override
