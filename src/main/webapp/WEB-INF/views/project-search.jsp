@@ -57,9 +57,9 @@
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="animalListSelect">Animal</label>
+                    <label class="control-label" for="animalIds">Animal</label>
                     <div class="controls">
-                        <form:select id="animalListSelect" path="animalList" items="${projectAnimalsList}" itemLabel="animalName" itemValue="id" multiple="true"/>
+                        <form:select id="animalIds" path="animalIds" items="${projectAnimalsList}" itemLabel="animalName" itemValue="id" multiple="true"/>
                     </div>
                 </div>
                 <div class="control-group">

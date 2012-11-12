@@ -17,7 +17,6 @@ import org.oztrack.data.model.SearchQuery;
 import org.oztrack.validator.SearchFormValidator;
 import org.oztrack.view.SearchQueryXLSView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomCollectionEditor;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -53,19 +52,10 @@ public class SearchController {
         binder.setAllowedFields(
             "fromDate",
             "toDate",
-            "animalList",
+            "animalIds",
             "sortField"
         );
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd"), true));
-        binder.registerCustomEditor(List.class, "animalList", new CustomCollectionEditor(List.class) {
-            @Override
-            protected Object convertElement(Object element) {
-                String animalId = (String) element;
-                Animal animal = new Animal();
-                animal.setId(Long.valueOf(animalId));
-                return animal;
-            }
-        });
     }
 
     @ModelAttribute("project")
