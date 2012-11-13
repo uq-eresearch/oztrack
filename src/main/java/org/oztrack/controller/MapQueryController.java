@@ -51,6 +51,7 @@ import org.oztrack.view.AnimalStartEndFeatureBuilder;
 import org.oztrack.view.AnimalTrajectoryFeatureBuilder;
 import org.oztrack.view.ProjectsFeatureBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -66,7 +67,6 @@ import com.vividsolutions.jts.geom.Polygon;
 @Controller
 public class MapQueryController {
     protected final Log logger = LogFactory.getLog(getClass());
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
     private ProjectDao projectDao;
@@ -88,21 +88,24 @@ public class MapQueryController {
 
     @InitBinder("searchQuery")
     public void initSearchQueryBinder(WebDataBinder binder) {
-        binder.setAllowedFields("includeDeleted");
+        binder.setAllowedFields(
+            "fromDate",
+            "toDate",
+            "animalIds",
+            "includeDeleted"
+        );
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd"), true));
     }
 
     @ModelAttribute("searchQuery")
     public SearchQuery getSearchQuery(
         @RequestParam(value="projectId", required=false) Long projectId,
         @RequestParam(value="queryType", required=false) String queryType,
-        @RequestParam(value="fromDate", required=false) String fromDate,
-        @RequestParam(value="toDate", required=false) String toDate,
         @RequestParam(value="percent", required=false) Double percent,
         @RequestParam(value="h", required=false) String h,
         @RequestParam(value="alpha", required=false) Double alpha,
         @RequestParam(value="gridSize", required=false) Double gridSize,
-        @RequestParam(value="extent", required=false) Double extent,
-        @RequestParam(value="animals", required=false) List<Long> animalIds
+        @RequestParam(value="extent", required=false) Double extent
     )
     throws Exception {
         SearchQuery searchQuery = new SearchQuery();
@@ -112,12 +115,6 @@ public class MapQueryController {
         }
         if (queryType != null) {
             searchQuery.setMapQueryType(MapQueryType.valueOf(queryType));
-        }
-        if (StringUtils.isNotBlank(fromDate)) {
-            searchQuery.setFromDate(dateFormat.parse(fromDate));
-        }
-        if (StringUtils.isNotBlank(toDate)) {
-            searchQuery.setToDate(dateFormat.parse(toDate));
         }
         if (percent != null && !percent.isNaN()) {
             searchQuery.setPercent(percent);
@@ -134,7 +131,6 @@ public class MapQueryController {
         if (extent != null && !extent.isNaN()) {
             searchQuery.setExtent(extent);
         }
-        searchQuery.setAnimalIds(animalIds);
         return searchQuery;
     }
 

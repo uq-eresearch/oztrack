@@ -441,7 +441,7 @@
                                     <c:if test="${not empty analysis.toDate}">
                                     , toDate: '<fmt:formatDate pattern="${isoDateFormatPattern}" value="${analysis.toDate}"/>'
                                     </c:if>
-                                    , animals: '<c:forEach items="${analysis.animals}" var="animal" varStatus="animalStatus">${animal.id}<c:if test="${!animalStatus.last}">,</c:if></c:forEach>'
+                                    , animalIds: '<c:forEach items="${analysis.animals}" var="animal" varStatus="animalStatus">${animal.id}<c:if test="${!animalStatus.last}">,</c:if></c:forEach>'
                                     <c:forEach items="${analysis.parameters}" var="parameter">
                                     , '${parameter.name}': '${parameter.value}'
                                     </c:forEach>
