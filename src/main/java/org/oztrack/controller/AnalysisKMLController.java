@@ -109,6 +109,7 @@ public class AnalysisKMLController {
             String[] requestParameterValues = requestParameterMap.get(analysisParameterType.getIdentifier());
             String requestParameterValue = (requestParameterValues != null) ? requestParameterValues[0] : null;
             AnalysisParameter analysisParameter = new AnalysisParameter();
+            analysisParameter.setAnalysis(analysis);
             analysisParameter.setName(analysisParameterType.getIdentifier());
             analysisParameter.setValue(requestParameterValue);
             analysisParameters.add(analysisParameter);
