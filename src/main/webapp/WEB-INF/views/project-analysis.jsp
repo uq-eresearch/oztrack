@@ -180,6 +180,7 @@
                 $('#filter-animal-all').change(function (e) {
                     $('.filter-animal').prop('checked', $(this).prop('checked'));
                 });
+                $('#queryTypeSelect-MCP').trigger('click');
                 $('#projectMapHelpLink').click(function() {
                     var elem = $('#projectMapHelp');
                     if (elem.dialog('isOpen') === true) {
@@ -360,7 +361,7 @@
                             <div class="animalsFilterLabel">Select all</div>
                             </div>
                             <div style="clear: both;"></div>
-                            <c:forEach items="${projectAnimalsList}" var="animal">
+                            <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
                             <div class="animalsFilterCheckbox">
                                 <input
                                     id="filter-animal-${animal.id}"
@@ -369,7 +370,7 @@
                                     type="checkbox"
                                     value="${animal.id}"
                                     style="width: 15px;"
-                                    checked="checked" />
+                                    <c:if test="${animalStatus.first}">checked="checked"</c:if> />
                             </div>
                             <div class="animalsFilterSmallSquare" style="background-color: ${animal.colour};"></div>
                             <div class="animalsFilterLabel">${animal.animalName}</div>
