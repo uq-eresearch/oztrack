@@ -20,11 +20,15 @@
     <jsp:attribute name="sidebar"/>
     <jsp:body>
         <h1>Usage Summary</h1>
+        <p>
+            <jsp:useBean id="now" class="java.util.Date" />
+            <fmt:formatDate value="${now}" type="both" pattern="MM/dd/yyyy HH:mm:ss" />
+        </p>
         <h2>Users</h2>
         <p>
             Total of ${fn:length(users)} users.
         </p>
-        <table class="table table-bordered">
+        <table class="table table-bordered table-striped">
             <thead>
             <tr>
                 <th>User</th>
@@ -55,7 +59,7 @@
         <p>
             Total of ${fn:length(projects)} projects.
         </p>
-        <table class="table table-bordered">
+        <table class="table table-bordered table-striped">
             <thead>
             <tr>
                 <th>Project</th>
@@ -72,7 +76,9 @@
                 </td>
                 <td>
                     <p>${fn:length(project.animals)} animals (${projectDao.getDetectionCount(project, false)} position fixes)</p>
-                    <p style="font-style: italic;">Species: ${project.speciesCommonName} (${project.speciesScientificName})</p>
+                    <c:if test="${not empty project.speciesCommonName or not empty project.speciesScientificName}">
+                    <p>${project.speciesCommonName} <i>${project.speciesScientificName}</i></p>
+                    </c:if>
                 </td>
                 <td>
                     <p>
