@@ -3,7 +3,6 @@ package org.oztrack.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -15,10 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.access.AnalysisDao;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.Analysis;
-import org.oztrack.data.model.AnalysisParameter;
-import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
-import org.oztrack.data.model.SearchQuery;
 import org.oztrack.error.RServeInterfaceException;
 import org.oztrack.util.RServeInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,19 +55,18 @@ public class AnalysisController {
         HttpServletResponse response,
         @ModelAttribute("analysis") Analysis analysis
     ) {
-        SearchQuery searchQuery = createSearchQuery(analysis);
-        List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-        RServeInterface rServeInterface = new RServeInterface(positionFixList, searchQuery);
+        List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(analysis.toSearchQuery());
+        RServeInterface rServeInterface = new RServeInterface();
         File kmlFile = null;
         try {
-            kmlFile = rServeInterface.createKml();
+            kmlFile = rServeInterface.createKml(analysis, positionFixList);
         }
         catch (RServeInterfaceException e) {
             logger.error("RServeInterface exception", e);
             response.setStatus(500);
             return;
         }
-        String filename = searchQuery.getMapQueryType().name().toLowerCase(Locale.ENGLISH) + ".kml";
+        String filename = analysis.getAnalysisType().name().toLowerCase(Locale.ENGLISH) + ".kml";
         response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
         response.setContentType("application/vnd.google-earth.kml+xml");
         response.setCharacterEncoding("UTF-8");
@@ -88,36 +83,5 @@ public class AnalysisController {
         finally {
             IOUtils.closeQuietly(kmlInputStream);
         }
-    }
-
-    private SearchQuery createSearchQuery(Analysis analysis) {
-        SearchQuery searchQuery = new SearchQuery();
-        searchQuery.setProject(analysis.getProject());
-        searchQuery.setMapQueryType(analysis.getAnalysisType());
-        searchQuery.setFromDate(analysis.getFromDate());
-        searchQuery.setToDate(analysis.getToDate());
-        List<Long> animalIds = new ArrayList<Long>();
-        for (Animal animal : analysis.getAnimals()) {
-            animalIds.add(animal.getId());
-        }
-        searchQuery.setAnimalIds(animalIds);
-        for (AnalysisParameter parameter : analysis.getParameters()) {
-            if (parameter.getName().equals("alpha")) {
-                searchQuery.setAlpha(Double.valueOf(parameter.getValue()));
-            }
-            else if (parameter.getName().equals("extent")) {
-                searchQuery.setExtent(Double.valueOf(parameter.getValue()));
-            }
-            else if (parameter.getName().equals("gridSize")) {
-                searchQuery.setGridSize(Double.valueOf(parameter.getValue()));
-            }
-            else if (parameter.getName().equals("h")) {
-                searchQuery.setH(String.valueOf(parameter.getValue()));
-            }
-            else if (parameter.getName().equals("percent")) {
-                searchQuery.setPercent(Double.valueOf(parameter.getValue()));
-            }
-        }
-        return searchQuery;
     }
 }

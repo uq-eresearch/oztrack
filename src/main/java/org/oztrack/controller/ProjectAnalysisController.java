@@ -7,7 +7,8 @@ import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.SrsDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
-import org.oztrack.data.model.types.MapQueryType;
+import org.oztrack.data.model.types.AnalysisType;
+import org.oztrack.data.model.types.MapLayerType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -44,17 +45,18 @@ public class ProjectAnalysisController {
     @PreAuthorize("#project.global or hasPermission(#project, 'read')")
     public String getView(Model model, @ModelAttribute(value="project") Project project) {
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
-        MapQueryType [] mapQueryTypeList = new MapQueryType[] {
-            MapQueryType.LINES,
-            MapQueryType.POINTS,
-            MapQueryType.START_END,
-            MapQueryType.MCP,
-            MapQueryType.KUD,
-            MapQueryType.AHULL,
-            MapQueryType.HEATMAP_POINT,
-            MapQueryType.HEATMAP_LINE
-        };
-        model.addAttribute("mapQueryTypeList", mapQueryTypeList);
+        model.addAttribute("mapLayerTypeList", new MapLayerType[] {
+            MapLayerType.LINES,
+            MapLayerType.POINTS,
+            MapLayerType.START_END
+        });
+        model.addAttribute("analysisTypeList", new AnalysisType[] {
+            AnalysisType.MCP,
+            AnalysisType.KUD,
+            AnalysisType.AHULL,
+            AnalysisType.HEATMAP_POINT,
+            AnalysisType.HEATMAP_LINE
+        });
         model.addAttribute("projectAnimalsList", projectAnimalsList);
         model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project));
         model.addAttribute("animalBoundingBoxes", projectDao.getBoundingBoxes(project, projectAnimalsList));

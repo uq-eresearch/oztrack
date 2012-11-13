@@ -13,10 +13,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.oztrack.data.model.Analysis;
+import org.oztrack.data.model.AnalysisParameter;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
-import org.oztrack.data.model.SearchQuery;
-import org.oztrack.data.model.types.MapQueryType;
 import org.oztrack.error.RServeInterfaceException;
 import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.REXPDouble;
@@ -33,70 +33,53 @@ public class RServeInterface {
 
     private RConnection rConnection;
     private String rWorkingDir;
-    private final SearchQuery searchQuery;
-    private final String srs;
 
-    private List<PositionFix> positionFixList;
-
-    public RServeInterface(List<PositionFix> positionFixList, SearchQuery searchQuery) {
-        this.positionFixList = positionFixList;
-        this.searchQuery = searchQuery;
-        this.srs =
-            StringUtils.isNotBlank(searchQuery.getProject().getSrsIdentifier())
-            ? searchQuery.getProject().getSrsIdentifier().toLowerCase(Locale.ENGLISH)
-            : "epsg:3577";
+    public RServeInterface() {
     }
 
-    public File createKml() throws RServeInterfaceException {
+    public File createKml(Analysis analysis, List<PositionFix> positionFixList) throws RServeInterfaceException {
         startRConnection();
+        String fileName = createTempFileName("project-" + analysis.getProject().getId() + "-" + analysis.getAnalysisType() + "-");
+        Project project = analysis.getProject();
 
-        // create a temporary file name
-        Project project = this.searchQuery.getProject();
-        String filePrefix = "project-" + project.getId() + "-" + searchQuery.getMapQueryType() + "-";
-        Long uniqueId = new Random().nextLong();
-        SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyhhmmssSSS");
-        String fileName = this.rWorkingDir + filePrefix + sdf.format(new Date()) + uniqueId.toString() + ".kml";
+        String srs =
+            StringUtils.isNotBlank(project.getSrsIdentifier())
+            ? project.getSrsIdentifier().toLowerCase(Locale.ENGLISH)
+            : "epsg:3577";
+        createRPositionFixDataFrame(positionFixList, srs);
 
-        // project type determines what sort of dataframe to build
-        switch (this.searchQuery.getProject().getProjectType()) {
-            case GPS:
-                createRPositionFixDataFrame();
-                break;
-            default:
-                throw new RServeInterfaceException("Unhandled Project Type: " + project.getProjectType().toString());
-        }
-
-        // mapQueryType tells us what R function to call
-        MapQueryType mapQueryType = this.searchQuery.getMapQueryType();
-        switch (mapQueryType) {
-            case POINTS:
-                writePositionFixKmlFile(fileName);
-                break;
+        switch (analysis.getAnalysisType()) {
             case MCP:
-                writeMCPKmlFile(fileName, searchQuery);
+                writeMCPKmlFile(analysis, srs, fileName);
                 break;
             case KUD:
-                writeKernelUDKmlFile(fileName, searchQuery);
+                writeKernelUDKmlFile(analysis, srs, fileName);
                 break;
             case AHULL:
-                writeAlphahullKmlFile(fileName, searchQuery);
+                writeAlphahullKmlFile(analysis, srs, fileName);
                 break;
             case HEATMAP_POINT:
-                writePointHeatmapKmlFile(fileName, searchQuery);
+                writePointHeatmapKmlFile(analysis, srs, fileName);
                 break;
             case HEATMAP_LINE:
-                writeLineHeatmapKmlFile(fileName, searchQuery);
+                writeLineHeatmapKmlFile(analysis, srs, fileName);
                 break;
             default:
-                throw new RServeInterfaceException("Unhandled MapQueryType: " + searchQuery.getMapQueryType());
+                throw new RServeInterfaceException("Unhandled AnalysisType: " + analysis.getAnalysisType());
         }
 
         rConnection.close();
-
         return new File(fileName);
     }
 
-    protected void startRConnection() throws RServeInterfaceException {
+    private String createTempFileName(String fileNamePrefix) {
+        Long uniqueId = new Random().nextLong();
+        SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyhhmmssSSS");
+        String fileName = this.rWorkingDir + fileNamePrefix + sdf.format(new Date()) + uniqueId.toString() + ".kml";
+        return fileName;
+    }
+
+    private void startRConnection() throws RServeInterfaceException {
         if (StartRserve.checkLocalRserve()) {
             try {
                 this.rConnection = new RConnection();
@@ -175,7 +158,7 @@ public class RServeInterface {
         }
     }
 
-    protected void createRPositionFixDataFrame() throws RServeInterfaceException {
+    private void createRPositionFixDataFrame(List<PositionFix> positionFixList, String srs) throws RServeInterfaceException {
         int [] animalIds = new int[positionFixList.size()];
         double [] latitudes= new double[positionFixList.size()];
         double [] longitudes= new double[positionFixList.size()];
@@ -221,8 +204,9 @@ public class RServeInterface {
     }
 
 
-    protected void writeMCPKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
-        Double percent = (searchQuery.getPercent() != null) ? searchQuery.getPercent() : 100d;
+    private void writeMCPKmlFile(Analysis analysis, String srs, String fileName) throws RServeInterfaceException {
+        AnalysisParameter percentParameter = analysis.getParamater("percent");
+        Double percent = (percentParameter.getValue() != null) ? Double.valueOf(percentParameter.getValue()) : 100d;
         if (!(percent >= 0d && percent <= 100d)) {
             throw new RServeInterfaceException("percent must be between 0 and 100.");
         }
@@ -236,18 +220,22 @@ public class RServeInterface {
         safeEval("writeOGR(mcp.obj, dsn=\"" + fileName + "\", layer= \"MCP\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
     }
 
-    protected void writeKernelUDKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
-        Double percent = (searchQuery.getPercent() != null) ? searchQuery.getPercent() : 100d;
+    private void writeKernelUDKmlFile(Analysis analysis, String srs, String fileName) throws RServeInterfaceException {
+        AnalysisParameter percentParameter = analysis.getParamater("percent");
+        Double percent = (percentParameter.getValue() != null) ? Double.valueOf(percentParameter.getValue()) : 100d;
         if (!(percent >= 0d && percent <= 100d)) {
             throw new RServeInterfaceException("percent must be between 0 and 100.");
         }
-        String h = (searchQuery.getH() != null) ? searchQuery.getH() : "href";
+        AnalysisParameter hParameter = analysis.getParamater("h");
+        String h = (hParameter.getValue() != null) ? hParameter.getValue() : "href";
         if (!(h.equals("href") || h.equals("LSCV") || NumberUtils.isNumber(h))) {
             throw new RServeInterfaceException("h-value must be \"href\", \"LSCV\", or a numeric value.");
         }
         String hExpr = NumberUtils.isNumber(h) ? h : "\"" + h + "\"";
-        Double gridSize = (searchQuery.getGridSize() != null) ? searchQuery.getGridSize() : 50d;
-        Double extent = (searchQuery.getExtent() != null) ? searchQuery.getExtent() : 1d;
+        AnalysisParameter gridSizeParameter = analysis.getParamater("gridSize");
+        Double gridSize = (gridSizeParameter.getValue() != null) ? Double.valueOf(gridSizeParameter.getValue()) : 50d;
+        AnalysisParameter extentParameter = analysis.getParamater("extent");
+        Double extent = (extentParameter.getValue() != null) ? Double.valueOf(extentParameter.getValue()) : 1d;
         safeEval("h <- " + hExpr);
         safeEval("KerHRp <- try({kernelUD(xy=positionFix.proj, h=h, grid=" + gridSize + ", extent=" + extent + ")}, silent=TRUE)");
         safeEval(
@@ -277,8 +265,9 @@ public class RServeInterface {
         safeEval("writeOGR(myKer, dsn=\"" + fileName + "\", layer= \"KUD\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
     }
 
-    protected void writeAlphahullKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
-        Double alpha = (searchQuery.getAlpha() != null) ? searchQuery.getAlpha() : 0.1;
+    private void writeAlphahullKmlFile(Analysis analysis, String srs, String fileName) throws RServeInterfaceException {
+        AnalysisParameter alphaParameter = analysis.getParamater("alpha");
+        Double alpha = (alphaParameter.getValue() != null) ? Double.valueOf(alphaParameter.getValue()) : 0.1d;
         if (!(alpha > 0d)) {
             throw new RServeInterfaceException("alpha must be greater than 0.");
         }
@@ -286,8 +275,9 @@ public class RServeInterface {
         safeEval("writeOGR(myAhull, dsn=\"" + fileName + "\", layer=\"AHULL\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
     }
 
-    protected void writePointHeatmapKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
-        Double gridSize = (searchQuery.getGridSize() != null) ? searchQuery.getGridSize() : 100d;
+    private void writePointHeatmapKmlFile(Analysis analysis, String srs, String fileName) throws RServeInterfaceException {
+        AnalysisParameter gridSizeParameter = analysis.getParamater("gridSize");
+        Double gridSize = (gridSizeParameter.getValue() != null) ? Double.valueOf(gridSizeParameter.getValue()) : 100d;
         if (!(gridSize > 0d)) {
             throw new RServeInterfaceException("grid size must be greater than 0.");
         }
@@ -300,8 +290,9 @@ public class RServeInterface {
         safeEval("polykml(sw=PPA, filename=\"" + fileName + "\", kmlname=paste(unique(PPA$ID), \"_point_density\",sep=\"\"),namefield=unique(PPA$ID))");
     }
 
-    protected void writeLineHeatmapKmlFile(String fileName, SearchQuery searchQuery) throws RServeInterfaceException {
-        Double gridSize = (searchQuery.getGridSize() != null) ? searchQuery.getGridSize() : 100d;
+    private void writeLineHeatmapKmlFile(Analysis analysis, String srs, String fileName) throws RServeInterfaceException {
+        AnalysisParameter gridSizeParameter = analysis.getParamater("gridSize");
+        Double gridSize = (gridSizeParameter.getValue() != null) ? Double.valueOf(gridSizeParameter.getValue()) : 100d;
         if (!(gridSize > 0d)) {
             throw new RServeInterfaceException("grid size must be greater than 0.");
         }
@@ -312,24 +303,6 @@ public class RServeInterface {
             "}"
         );
         safeEval("polykml(sw=LPA, filename=\"" + fileName + "\", kmlname=paste(unique(LPA$ID), \"_line_density\", sep=\"\"), namefield=unique(LPA$ID))");
-    }
-
-    protected void writePositionFixKmlFile(String fileName) throws RServeInterfaceException {
-        String rCommand;
-        String outFileNameFix = fileName;
-
-        try {
-            rCommand = "coordinates(positionFix) <- c(\"Y\",\"X\");proj4string(positionFix)=CRS(\"+init=epsg:4326\")";
-            logger.debug(rCommand);
-            rConnection.eval(rCommand);
-            rConnection.eval("positionFix");
-            rCommand = "writeOGR(positionFix, dsn=\"" + outFileNameFix + "\", layer= \"positionFix\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))";
-            logger.debug(rCommand);
-            rConnection.eval(rCommand);
-        }
-        catch (RserveException e) {
-            throw new RServeInterfaceException(e.toString());
-        }
     }
 
     // Wraps an R statement inside a try({...}, silent=TRUE) so we can catch any exception

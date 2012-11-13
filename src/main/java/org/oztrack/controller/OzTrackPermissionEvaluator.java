@@ -21,14 +21,10 @@ public class OzTrackPermissionEvaluator implements PermissionEvaluator {
 
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
-        if (
-            (authentication == null) ||
-            !authentication.isAuthenticated() ||
-            !authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))
-        ) {
+        User currentUser = getAuthenticatedUser(authentication);
+        if (currentUser == null) {
             return false;
         }
-        User currentUser = userDao.getByUsername((String) authentication.getPrincipal());
         if ((currentUser.getAdmin() != null) && currentUser.getAdmin()) {
             return true;
         }
@@ -36,6 +32,17 @@ public class OzTrackPermissionEvaluator implements PermissionEvaluator {
             return hasProjectPermission(currentUser, (Project) targetDomainObject, permission);
         }
         return false;
+    }
+
+    public User getAuthenticatedUser(Authentication authentication) {
+        if (
+            (authentication == null) ||
+            !authentication.isAuthenticated() ||
+            !authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))
+        ) {
+            return null;
+        }
+        return userDao.getByUsername((String) authentication.getPrincipal());
     }
 
     private boolean hasProjectPermission(User currentUser, Project project, Object permission) {

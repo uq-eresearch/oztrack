@@ -231,53 +231,49 @@ function createAnalysisMap(div, options) {
         }
 
         analysisMap.addProjectMapLayer = function() {
-            var queryType = $('input[name=mapQueryTypeSelect]:checked');
+            var queryType = $('input[name=queryTypeSelect]:checked');
             var queryTypeValue = queryType.val();
-            var queryTypeLabel = $('label[for="' + queryType.attr('id') + '"]')
-                    .text();
-
-            if (queryTypeValue != null) {
-                var layerName = queryTypeLabel;
-                var params = {
-                    queryType : queryTypeValue,
-                    projectId : $('#projectId').val(),
-                    percent : $('input[id=percent]').val(),
-                    h : $('input[id=h]').val(),
-                    alpha : $('input[id=alpha]').val(),
-                    gridSize : $('input[id=gridSize]').val(),
-                    extent : $('input[id=extent]').val()
-                };
-                var fromDate = $('#fromDate').val();
-                if (fromDate) {
-                    params.fromDate = fromDate;
-                }
-                var toDate = $('#toDate').val();
-                if (toDate) {
-                    params.toDate = toDate;
-                }
-                params.animalIds = $('input[name=animal]:checked').map(function() {return $(this).val();}).toArray();
-                if (queryTypeValue == "LINES") {
-                    var trajectoryLayer = createTrajectoryLayer(params);
-                    trajectoryLayers.push(trajectoryLayer);
-                    map.addLayer(trajectoryLayer.getWMSLayer());
-                }
-                else if (queryTypeValue == "POINTS") {
-                    var detectionLayer = createDetectionLayer(params);
-                    detectionLayers.push(detectionLayer);
-                    map.addLayer(detectionLayer.getWMSLayer());
-                }
-                else if (queryTypeValue == "START_END") {
-                    map.addLayer(createWFSLayer(layerName, 'StartEnd', params, startEndStyleMap));
-                }
-                else if ((queryTypeValue == "HEATMAP_POINT") || (queryTypeValue == "HEATMAP_LINE")) {
-                    map.addLayer(createKMLLayer(layerName, params, null, true));
-                }
-                else {
-                    map.addLayer(createKMLLayer(layerName, params, polygonStyleMap, null));
-                }
+            var queryTypeLabel = $('label[for="' + queryType.attr('id') + '"]').text();
+            if (queryTypeValue == null) {
+                alert("Please set a Layer Type.");
+            }
+            var layerName = queryTypeLabel;
+            var params = {
+                queryType : queryTypeValue,
+                projectId : $('#projectId').val(),
+                percent : $('input[id=percent]').val(),
+                h : $('input[id=h]').val(),
+                alpha : $('input[id=alpha]').val(),
+                gridSize : $('input[id=gridSize]').val(),
+                extent : $('input[id=extent]').val()
+            };
+            var fromDate = $('#fromDate').val();
+            if (fromDate) {
+                params.fromDate = fromDate;
+            }
+            var toDate = $('#toDate').val();
+            if (toDate) {
+                params.toDate = toDate;
+            }
+            params.animalIds = $('input[name=animal]:checked').map(function() {return $(this).val();}).toArray();
+            if (queryTypeValue == "LINES") {
+                var trajectoryLayer = createTrajectoryLayer(params);
+                trajectoryLayers.push(trajectoryLayer);
+                map.addLayer(trajectoryLayer.getWMSLayer());
+            }
+            else if (queryTypeValue == "POINTS") {
+                var detectionLayer = createDetectionLayer(params);
+                detectionLayers.push(detectionLayer);
+                map.addLayer(detectionLayer.getWMSLayer());
+            }
+            else if (queryTypeValue == "START_END") {
+                map.addLayer(createWFSLayer(layerName, 'StartEnd', params, startEndStyleMap));
+            }
+            else if ((queryTypeValue == "HEATMAP_POINT") || (queryTypeValue == "HEATMAP_LINE")) {
+                map.addLayer(createKMLLayer(layerName, params, null, true));
             }
             else {
-                alert("Please set a Layer Type.");
+                map.addLayer(createKMLLayer(layerName, params, polygonStyleMap, null));
             }
         };
         
@@ -448,7 +444,7 @@ function createAnalysisMap(div, options) {
         }
 
         function createKMLLayer(layerName, params, styleMap, extractStyles) {
-            var url = "/mapQueryKML";
+            var url = "/analysisKML";
             var queryOverlay = new OpenLayers.Layer.Vector(layerName, {
                 styleMap : styleMap
             });

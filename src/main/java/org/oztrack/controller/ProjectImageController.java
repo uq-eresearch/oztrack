@@ -34,7 +34,7 @@ import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
-import org.oztrack.data.model.types.MapQueryType;
+import org.oztrack.data.model.types.MapLayerType;
 import org.oztrack.util.MapUtils;
 import org.oztrack.view.AnimalDetectionsFeatureBuilder;
 import org.oztrack.view.AnimalStartEndFeatureBuilder;
@@ -93,7 +93,7 @@ public class ProjectImageController {
     @PreAuthorize("#project.global or hasPermission(#project, 'read')")
     public void getView(
         @ModelAttribute(value="project") Project project,
-        @RequestParam(value="mapQueryType", required=false) List<String> mapQueryTypes,
+        @RequestParam(value="mapLayerType", required=false) List<String> mapLayerTypeStrings,
         @RequestParam(value="includeBaseLayer", defaultValue="false") Boolean includeBaseLayer,
         HttpServletResponse response
     ) throws Exception {
@@ -124,11 +124,11 @@ public class ProjectImageController {
 
         MapContext mapContext = new DefaultMapContext();
         mapContext.setAreaOfInterest(mapBounds);
-        for (String mapQueryTypeString : mapQueryTypes) {
-            MapQueryType mapQueryType = MapQueryType.valueOf(mapQueryTypeString);
+        for (String mapLayerTypeString : mapLayerTypeStrings) {
+            MapLayerType mapLayerType = MapLayerType.valueOf(mapLayerTypeString);
             SimpleFeatureCollection featureCollection = null;
             Style style = null;
-            switch (mapQueryType) {
+            switch (mapLayerType) {
                 case POINTS: {
                     List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
                     featureCollection = new AnimalDetectionsFeatureBuilder(positionFixList, true).buildFeatureCollection();
@@ -148,7 +148,7 @@ public class ProjectImageController {
                     break;
                 }
                 default:
-                    throw new RuntimeException("Unsupported map query type: " + searchQuery.getMapQueryType());
+                    throw new RuntimeException("Unsupported map layer type: " + mapLayerType);
             }
             FeatureLayer featureLayer = new FeatureLayer(featureCollection, style);
             mapContext.addLayer(featureLayer);

@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
-<%@ page import="org.oztrack.data.model.types.MapQueryType" %>
+<%@ page import="org.oztrack.data.model.types.MapLayerType" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -115,7 +115,7 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/LoadingPanel.js"></script>
         <script type="text/javascript" src="<c:url value="/js/project-analysis.js"/>"></script>
         <script type="text/javascript">
-            function updateParamTable(mapQueryType) {
+            function updateParamTable(queryType) {
                 $('#paramTable').hide();
                 $('#percentRow').hide();
                 $('#percent').val('');
@@ -128,11 +128,11 @@
                 $('#extentRow').hide();
                 $('#extent').val('');
                 var showParamTable = true;
-                if (mapQueryType == 'MCP') {
+                if (queryType == 'MCP') {
                     $('#percentRow').show();
                     $('#percent').val('100');
                 }
-                else if (mapQueryType == 'KUD') {
+                else if (queryType == 'KUD') {
                     $('#percentRow').show();
                     $('#percent').val('95');
                     $('#hRow').show();
@@ -142,11 +142,11 @@
                     $('#extentRow').show();
                     $('#extent').val('1');
                 }
-                else if (mapQueryType == 'AHULL') {
+                else if (queryType == 'AHULL') {
                     $('#alphaRow').show();
                     $('#alpha').val('100');
                 }
-                else if ((mapQueryType == 'HEATMAP_POINT') || (mapQueryType == 'HEATMAP_LINE')) {
+                else if ((queryType == 'HEATMAP_POINT') || (queryType == 'HEATMAP_LINE')) {
                     $('#gridSizeRow').show();
                     $('#gridSize').val('100');
                 }
@@ -154,7 +154,7 @@
                     showParamTable = false;
                 }
                 if (showParamTable) {
-                    $('#paramTable').appendTo('#' + mapQueryType).fadeIn('slow');
+                    $('#paramTable').appendTo('#' + queryType).fadeIn('slow');
                 }
             }
             $(document).ready(function() {
@@ -362,21 +362,36 @@
                     <div class="control-group" style="margin-bottom: 9px;">
                         <div style="margin-bottom: 9px; font-weight: bold;">Layer Type</div>
                         <div class="controls">
-                            <table class="mapQueryType">
-                                <c:forEach items="${mapQueryTypeList}" var="mapQueryType">
-                                    <tr>
+                            <table class="queryType">
+                                <c:forEach items="${mapLayerTypeList}" var="mapLayerType">
+                                <tr>
                                     <td style="padding: 0 5px; vertical-align: top;">
                                         <input type="radio"
-                                            name="mapQueryTypeSelect"
-                                            id="mapQueryTypeSelect-${mapQueryType}"
-                                            value="${mapQueryType}"
-                                            onClick="updateParamTable('${mapQueryType}')"
+                                            name="queryTypeSelect"
+                                            id="queryTypeSelect-${mapLayerType}"
+                                            value="${mapLayerType}"
+                                            onClick="updateParamTable('${mapLayerType}')"
                                         />
                                     </td>
-                                    <td id="${mapQueryType}">
-                                        <label style="margin: 2px 0 0 0;" for="mapQueryTypeSelect-${mapQueryType}"><c:out value="${mapQueryType.displayName}"/></label>
+                                    <td id="${mapLayerType}">
+                                        <label style="margin: 2px 0 0 0;" for="queryTypeSelect-${mapLayerType}"><c:out value="${mapLayerType.displayName}"/></label>
                                     </td>
-                                    </tr>
+                                </tr>
+                                </c:forEach>
+                                <c:forEach items="${analysisTypeList}" var="analysisType">
+                                <tr>
+                                    <td style="padding: 0 5px; vertical-align: top;">
+                                        <input type="radio"
+                                            name="queryTypeSelect"
+                                            id="queryTypeSelect-${analysisType}"
+                                            value="${analysisType}"
+                                            onClick="updateParamTable('${analysisType}')"
+                                        />
+                                    </td>
+                                    <td id="${analysisType}">
+                                        <label style="margin: 2px 0 0 0;" for="queryTypeSelect-${analysisType}"><c:out value="${analysisType.displayName}"/></label>
+                                    </td>
+                                </tr>
                                 </c:forEach>
                             </table>
                             <table id="paramTable" style="display: none; margin: 6px 0;">

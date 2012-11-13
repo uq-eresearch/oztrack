@@ -2,7 +2,9 @@ package org.oztrack.data.model;
 
 import static javax.persistence.EnumType.STRING;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -23,7 +25,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.oztrack.data.model.types.MapQueryType;
+import org.oztrack.data.model.types.AnalysisType;
 
 @Entity
 @Table(name="analysis")
@@ -40,7 +42,7 @@ public class Analysis extends OzTrackBaseEntity {
 
     @Enumerated(STRING)
     @Column(name="analysistype", columnDefinition="text", nullable=false)
-    private MapQueryType analysisType;
+    private AnalysisType analysisType;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name="fromdate", nullable=true)
@@ -77,11 +79,11 @@ public class Analysis extends OzTrackBaseEntity {
         this.project = project;
     }
 
-    public MapQueryType getAnalysisType() {
+    public AnalysisType getAnalysisType() {
         return analysisType;
     }
 
-    public void setAnalysisType(MapQueryType analysisType) {
+    public void setAnalysisType(AnalysisType analysisType) {
         this.analysisType = analysisType;
     }
 
@@ -115,5 +117,27 @@ public class Analysis extends OzTrackBaseEntity {
 
     public void setParameters(Set<AnalysisParameter> parameters) {
         this.parameters = parameters;
+    }
+
+    public AnalysisParameter getParamater(String name) {
+        for (AnalysisParameter parameter : parameters) {
+            if (parameter.getName().equals(name)) {
+                return parameter;
+            }
+        }
+        return null;
+    }
+
+    public SearchQuery toSearchQuery() {
+        SearchQuery searchQuery = new SearchQuery();
+        searchQuery.setProject(this.getProject());
+        searchQuery.setFromDate(this.getFromDate());
+        searchQuery.setToDate(this.getToDate());
+        List<Long> animalIds = new ArrayList<Long>();
+        for (Animal animal : this.getAnimals()) {
+            animalIds.add(animal.getId());
+        }
+        searchQuery.setAnimalIds(animalIds);
+        return searchQuery;
     }
 }
