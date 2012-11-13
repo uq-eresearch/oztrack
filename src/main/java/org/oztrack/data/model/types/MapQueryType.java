@@ -1,7 +1,6 @@
 package org.oztrack.data.model.types;
 
 public enum MapQueryType {
-    PROJECTS("All OzTrack Projects"),
     POINTS("Detections"),
     START_END("Start and End Points"),
     LINES("Trajectory"),

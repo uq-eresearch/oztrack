@@ -35,7 +35,7 @@ function createProjectPointsLayer() {
             styleMap: createProjectPointsStyleMap(),
             strategies: [new OpenLayers.Strategy.Fixed()],
             protocol: new OpenLayers.Protocol.WFS.v1_1_0({
-                url:  "/mapQueryWFS?queryType=PROJECTS",
+                url:  "/projectsWFS",
                 featureNS: "http://oztrack.org/xmlns#",
                 featureType: "Project",
                 geometryName: "projectCentroid"

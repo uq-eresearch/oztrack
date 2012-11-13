@@ -255,29 +255,26 @@ public class MapQueryController {
         out.append("</map-query-kml-response>\n");
     }
 
+    @RequestMapping(value="/projectsWFS", method=RequestMethod.POST)
+    @PreAuthorize("permitAll")
+    public void handleProjectsWFS(HttpServletResponse response) {
+        List<Project> projects = projectDao.getAll();
+        HashMap<Project, Range<Date>> dateRangeMap = new HashMap<Project, Range<Date>>();
+        HashMap<Project, Polygon> boundingBoxMap = new HashMap<Project, Polygon>();
+        for (Project project : projects) {
+            dateRangeMap.put(project, projectDao.getDetectionDateRange(project, false));
+            boundingBoxMap.put(project, projectDao.getBoundingBox(project));
+        }
+        SimpleFeatureCollection featureCollection =
+            new ProjectsFeatureBuilder(projects, dateRangeMap, boundingBoxMap).buildFeatureCollection();
+        writeWFSResponse(response, featureCollection);
+    }
+
     @RequestMapping(value="/mapQueryWFS", method=RequestMethod.POST)
-    @PreAuthorize(
-        "(#searchQuery.mapQueryType == T(org.oztrack.data.model.types.MapQueryType).PROJECTS) or " +
-        "#searchQuery.project.global or " +
-        "hasPermission(#searchQuery.project, 'read')"
-    )
-    public void handleWFSQuery(
-        @ModelAttribute(value="searchQuery") SearchQuery searchQuery,
-        HttpServletResponse response
-    ) throws Exception {
+    @PreAuthorize("#searchQuery.project.global or hasPermission(#searchQuery.project, 'read')")
+    public void handleQueryWFS(@ModelAttribute(value="searchQuery") SearchQuery searchQuery, HttpServletResponse response) {
         SimpleFeatureCollection featureCollection = null;
         switch (searchQuery.getMapQueryType()) {
-            case PROJECTS: {
-                List<Project> projects = projectDao.getAll();
-                HashMap<Project, Range<Date>> dateRangeMap = new HashMap<Project, Range<Date>>();
-                HashMap<Project, Polygon> boundingBoxMap = new HashMap<Project, Polygon>();
-                for (Project project : projects) {
-                    dateRangeMap.put(project, projectDao.getDetectionDateRange(project, false));
-                    boundingBoxMap.put(project, projectDao.getBoundingBox(project));
-                }
-                featureCollection = new ProjectsFeatureBuilder(projects, dateRangeMap, boundingBoxMap).buildFeatureCollection();
-                break;
-            }
             case POINTS: {
                 List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
                 Boolean includeDeleted = (searchQuery.getIncludeDeleted() != null) && searchQuery.getIncludeDeleted().booleanValue();
@@ -294,10 +291,14 @@ public class MapQueryController {
                 featureCollection = new AnimalStartEndFeatureBuilder(positionFixList).buildFeatureCollection();
                 break;
             }
-            default:
+            default: {
                 throw new RuntimeException("Unsupported map query type: " + searchQuery.getMapQueryType());
+            }
         }
+        writeWFSResponse(response, featureCollection);
+    }
 
+    private void writeWFSResponse(HttpServletResponse response, SimpleFeatureCollection featureCollection) {
         FeatureCollectionType featureCollectionType = WfsFactory.eINSTANCE.createFeatureCollectionType();
         @SuppressWarnings("unchecked")
         EList<SimpleFeatureCollection> featureCollections = featureCollectionType.getFeature();
