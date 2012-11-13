@@ -127,7 +127,6 @@ function createCleanseMap(div, options) {
         cleanseMap.setAnimalVisible = function(animalId, visible) {
             animalVisible[animalId] = visible;
             updateFilter();
-            $("#animalInfo-"+animalId).find(':checkbox').attr("checked", setVisible);
         };
 
         function polygonFeatureAdded(e) {

@@ -52,7 +52,7 @@
                 padding: 0;
             }
             .animalLabel {
-                margin: 2px 0 2px 40px;
+                margin-left: 40px;
                 padding: 0;
             }
         </style>
@@ -109,10 +109,19 @@
                     $('#toDateVisible').datepicker('hide');
                 });
                 <c:forEach items="${projectAnimalsList}" var="animal">
-                jQuery('#select-animal-${animal.id}').change(function() {
+                $('#select-animal-${animal.id}').change(function() {
+                    $('#select-animal-all').prop('checked', $('.select-animal:not(:checked)').length == 0);
                     cleanseMap.setAnimalVisible("${animal.id}", this.checked);
                 });
                 </c:forEach>
+                $('#select-animal-all').prop('checked', $('.select-animal:not(:checked)').length == 0);
+                $('#select-animal-all').change(function (e) {
+                    var checked = $(this).prop('checked');
+                    $('.select-animal').prop('checked', checked);
+                    <c:forEach items="${projectAnimalsList}" var="animal">
+                    cleanseMap.setAnimalVisible("${animal.id}", checked);
+                    </c:forEach>
+                });
                 cleanseMap = null;
                 onResize();
                 cleanseMap = createCleanseMap('projectMap', {
@@ -205,7 +214,18 @@
                 <div class="control-group" style="margin-bottom: 9px;">
                     <div style="margin-bottom: 9px; font-weight: bold;">Animals</div>
                     <div id="animalHeader" class="controls">
-                    <c:forEach items="${projectAnimalsList}" var="animal">
+                        <div style="background-color: #d6d6d6;">
+                        <div class="animalCheckbox">
+                            <input
+                                id="select-animal-all"
+                                type="checkbox"
+                                style="width: 15px;" />
+                        </div>
+                        <div class="smallSquare" style="background-color: transparent;"></div>
+                        <div class="animalLabel">Select all</div>
+                        </div>
+                        <div style="clear: both;"></div>
+                        <c:forEach items="${projectAnimalsList}" var="animal">
                         <div class="animalCheckbox">
                             <input
                                 id="select-animal-${animal.id}"
@@ -219,7 +239,7 @@
                         <div class="smallSquare" style="background-color: ${animal.colour};"></div>
                         <div class="animalLabel">${animal.animalName}</div>
                         <div style="clear: both;"></div>
-                    </c:forEach>
+                        </c:forEach>
                     </div>
                 </div>
                 <div class="control-group" style="margin-bottom: 9px;">
