@@ -214,7 +214,7 @@
                 <div class="control-group" style="margin-bottom: 9px;">
                     <div style="margin-bottom: 9px; font-weight: bold;">Animals</div>
                     <div id="animalHeader" class="controls">
-                        <div style="background-color: #d6d6d6;">
+                        <div style="background-color: #d8e0a8;">
                         <div class="animalCheckbox">
                             <input
                                 id="select-animal-all"
