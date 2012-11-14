@@ -239,7 +239,7 @@
                 </c:forEach>
             });
             function addPreviousAnalysis(layerName, params, createDate) {
-                $('#previousAnalysesList').append($('<li>')
+                $('#previousAnalysesList').prepend($('<li>')
                     .addClass('previousAnalysesListItem analysis')
                     .append($('<a>')
                         .attr('href', 'javascript:void(0);')
