@@ -21,6 +21,7 @@ function createAnalysisMap(div, options) {
         var animalColours = options.animalColours;
         var minDate = options.minDate;
         var maxDate = options.maxDate;
+        var onAnalysisStart = options.onAnalysisStart;
         var onAnalysisError = options.onAnalysisError;
         var onAnalysisSuccess = options.onAnalysisSuccess;
 
@@ -442,6 +443,7 @@ function createAnalysisMap(div, options) {
         }
 
         function createKMLLayer(layerName, params, styleMap, extractStyles) {
+            onAnalysisStart(layerName, params);
             var url = "/analysisKML";
             var queryOverlay = new OpenLayers.Layer.Vector(layerName, {
                 styleMap : styleMap

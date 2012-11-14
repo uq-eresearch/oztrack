@@ -195,6 +195,9 @@
                     },
                     minDate: new Date(${projectDetectionDateRange.minimum.time}),
                     maxDate: new Date(${projectDetectionDateRange.maximum.time}),
+                    onAnalysisStart: function(layerName, params) {
+                        addPreviousAnalysis(layerName, params, new Date());
+                    },
                     onAnalysisError: function(message) {
                         jQuery('#errorDialog')
                             .text(message)
@@ -213,7 +216,41 @@
                         $("#projectMapOptionsAccordion").accordion('activate', '#animalPanelHeader');
                     }
                 });
+
+                <c:forEach items="${project.analyses}" var="analysis">
+                addPreviousAnalysis(
+                    '${analysis.analysisType.displayName}',
+                    {
+                        queryType : '${analysis.analysisType}'
+                        , projectId : '${analysis.project.id}'
+                        <c:if test="${not empty analysis.fromDate}">
+                        , fromDate: '<fmt:formatDate pattern="${isoDateFormatPattern}" value="${analysis.fromDate}"/>'
+                        </c:if>
+                        <c:if test="${not empty analysis.toDate}">
+                        , toDate: '<fmt:formatDate pattern="${isoDateFormatPattern}" value="${analysis.toDate}"/>'
+                        </c:if>
+                        , animalIds: '<c:forEach items="${analysis.animals}" var="animal" varStatus="animalStatus">${animal.id}<c:if test="${!animalStatus.last}">,</c:if></c:forEach>'
+                        <c:forEach items="${analysis.parameters}" var="parameter">
+                        , '${parameter.name}': '${parameter.value}'
+                        </c:forEach>
+                    },
+                    new Date(${analysis.createDate.time})
+                );
+                </c:forEach>
             });
+            function addPreviousAnalysis(layerName, params, createDate) {
+                $('#previousAnalysesList').append($('<li>')
+                    .addClass('previousAnalysesListItem analysis')
+                    .append($('<a>')
+                        .attr('href', 'javascript:void(0);')
+                        .text(layerName)
+                        .click(function(e) {
+                            analysisMap.addKMLLayer(layerName, params);
+                        })
+                    )
+                    .append(' (' + dateToISO8601(createDate) + ' at ' + createDate.toLocaleTimeString() + ')')
+                );
+            }
             function onResize() {
                 var mainHeight = $(window).height() - $('#header').height() - $('#crumbs').height() - 21;
                 $('#projectMapOptions').height(mainHeight);
@@ -242,7 +279,7 @@
         <div id="projectMapOptionsInner">
         <div id="projectMapOptionsAccordion">
 
-            <h3 id="animalPanelHeader"><a href="#">Analysis Results</a></h3>
+            <h3 id="animalPanelHeader"><a href="javascript:void(0);">Analysis Results</a></h3>
 
             <div id="animalPanel">
 
@@ -260,7 +297,7 @@
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu pull-right">
-                                <li><a href="#" onclick="analysisMap.zoomToAnimal(${animal.id});">Zoom to animal</a></li>
+                                <li><a href="javascript:void(0);" onclick="analysisMap.zoomToAnimal(${animal.id});">Zoom to animal</a></li>
                                 <c:set var="animalExportKmlUrl">
                                     <c:url value="/exportKML">
                                         <c:param name="projectId" value="${project.id}"/>
@@ -292,7 +329,7 @@
             </div>
 
 
-            <h3><a id="homeRangeCalculatorLink" href="#">Run New Analysis</a></h3>
+            <h3><a id="homeRangeCalculatorLink" href="javascript:void(0);">Run New Analysis</a></h3>
 
             <div id="homeRangeCalculatorPanel">
 
@@ -406,32 +443,9 @@
 
             <sec:authorize access="hasPermission(#project, 'read')">
             <c:if test="${not empty project.analyses}">
-            <h3><a id="savedAnalysesLink" href="#">Previous Analyses</a></h3>
-            <div id="savedAnalysesPanel">
-                <ul class="icons">
-                    <c:forEach items="${project.analyses}" var="analysis">
-                    <li class="analysis">
-                        <a href="javascript:void(0);" onclick="
-                            analysisMap.addKMLLayer(
-                                '${analysis.analysisType.displayName}',
-                                {
-                                    queryType : '${analysis.analysisType}'
-                                    , projectId : '${analysis.project.id}'
-                                    <c:if test="${not empty analysis.fromDate}">
-                                    , fromDate: '<fmt:formatDate pattern="${isoDateFormatPattern}" value="${analysis.fromDate}"/>'
-                                    </c:if>
-                                    <c:if test="${not empty analysis.toDate}">
-                                    , toDate: '<fmt:formatDate pattern="${isoDateFormatPattern}" value="${analysis.toDate}"/>'
-                                    </c:if>
-                                    , animalIds: '<c:forEach items="${analysis.animals}" var="animal" varStatus="animalStatus">${animal.id}<c:if test="${!animalStatus.last}">,</c:if></c:forEach>'
-                                    <c:forEach items="${analysis.parameters}" var="parameter">
-                                    , '${parameter.name}': '${parameter.value}'
-                                    </c:forEach>
-                                }
-                            );
-                        ">${analysis.analysisType.displayName}</a> (<fmt:formatDate pattern="${dateTimeFormatPattern}" value="${analysis.createDate}"/>)
-                    </li>
-                    </c:forEach>
+            <h3><a href="javascript:void(0);">Previous Analyses</a></h3>
+            <div id="previousAnalysesPanel">
+                <ul id="previousAnalysesList" class="icons">
                 </ul>
             </div>
             </c:if>
@@ -439,7 +453,7 @@
         </div>
         </div>
         <div style="padding: 2px 5px 5px 5px;">
-        <a id="projectMapHelpLink" class="btn btn-block" href="#">Help</a>
+        <a id="projectMapHelpLink" class="btn btn-block" href="javascript:void(0);">Help</a>
         </div>
         </div>
 
