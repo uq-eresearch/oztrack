@@ -563,7 +563,7 @@ function createAnalysisMap(div, options) {
                     </c:forEach>
                 }
                 </c:forEach>
-                if (feature.attributes.area.value) {
+                if (feature.attributes.area && feature.attributes.area.value) {
                     var area = Math.round(feature.attributes.area.value * 1000) / 1000;
                     tableRowsHtml += '<tr>';
                     tableRowsHtml += '<td class="layerInfoLabel">Area: </td>';

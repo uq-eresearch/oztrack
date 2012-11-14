@@ -77,12 +77,12 @@ ah2sp <- function(x, increment=360, rnd=10, proj4string=CRS(as.character(NA))){
     sppolys <- SpatialPolygons(list(Polygons(lapply(list_of_Lines, function(x) { Polygon(slot(slot(x, "Lines")[[1]], "coords")) }), ID = "1")), proj4string=proj4string) 
     # Create a set of ids in a dataframe, then promote to SpatialPolygonsDataFrame 
     hid <- sapply(slot(sppolys, "polygons"), function(x) slot(x, "ID")) 
-    areas <- sapply(slot(sppolys, "polygons"), function(x) slot(x, "area")) 
+    areas <- sapply(slot(sppolys, "polygons"), function(x) {slot(x, "area") / (1000.0  * 1000.0)}) 
     df <- data.frame(hid,areas) 
-    names(df) <- c("HID","Area") 
+    names(df) <- c("HID","area") 
     rownames(df) <- df$HID 
     res <- SpatialPolygonsDataFrame(sppolys, data=df) 
-    res <- res[which(res@data$Area > 0),] 
+    res <- res[which(res@data$area > 0),] 
   }   
   return(res) 
 } 
