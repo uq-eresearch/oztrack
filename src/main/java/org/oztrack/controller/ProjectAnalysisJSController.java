@@ -13,6 +13,6 @@ public class ProjectAnalysisJSController {
     @PreAuthorize("permitAll")
     public String getView(Model model) {
         model.addAttribute("analysisTypeList", AnalysisType.values());
-        return "project-analysis-js";
+        return "project-analysis.js";
     }
 }
