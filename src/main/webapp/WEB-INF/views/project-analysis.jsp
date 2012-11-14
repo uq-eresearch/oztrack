@@ -195,9 +195,11 @@
                     },
                     minDate: new Date(${projectDetectionDateRange.minimum.time}),
                     maxDate: new Date(${projectDetectionDateRange.maximum.time}),
+                    <sec:authorize access="hasPermission(#project, 'read')">
                     onAnalysisStart: function(layerName, params) {
                         addPreviousAnalysis(layerName, params, new Date());
                     },
+                    </sec:authorize>
                     onAnalysisError: function(message) {
                         jQuery('#errorDialog')
                             .text(message)
@@ -216,7 +218,7 @@
                         $("#projectMapOptionsAccordion").accordion('activate', '#animalPanelHeader');
                     }
                 });
-
+                <sec:authorize access="hasPermission(#project, 'read')">
                 <c:forEach items="${project.analyses}" var="analysis">
                 addPreviousAnalysis(
                     '${analysis.analysisType.displayName}',
@@ -237,7 +239,9 @@
                     new Date(${analysis.createDate.time})
                 );
                 </c:forEach>
+                </sec:authorize>
             });
+            <sec:authorize access="hasPermission(#project, 'read')">
             function addPreviousAnalysis(layerName, params, createDate) {
                 $('#previousAnalysesList').prepend($('<li>')
                     .addClass('previousAnalysesListItem analysis')
@@ -251,6 +255,7 @@
                     .append(' (' + dateToISO8601(createDate) + ' at ' + createDate.toLocaleTimeString() + ')')
                 );
             }
+            </sec:authorize>
             function onResize() {
                 var mainHeight = $(window).height() - $('#header').height() - $('#crumbs').height() - 21;
                 $('#projectMapOptions').height(mainHeight);
