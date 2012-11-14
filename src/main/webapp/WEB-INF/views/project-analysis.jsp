@@ -1,5 +1,4 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
-<%@ page import="org.oztrack.data.model.types.MapLayerType" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -115,47 +114,9 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/LoadingPanel.js"></script>
         <script type="text/javascript" src="<c:url value="/js/project-analysis.js"/>"></script>
         <script type="text/javascript">
-            function updateParamTable(queryType) {
-                $('#paramTable').hide();
-                $('#percentRow').hide();
-                $('#percent').val('');
-                $('#hRow').hide();
-                $('#h').val('');
-                $('#alphaRow').hide();
-                $('#alpha').val('');
-                $('#gridSizeRow').hide();
-                $('#gridSize').val('');
-                $('#extentRow').hide();
-                $('#extent').val('');
-                var showParamTable = true;
-                if (queryType == 'MCP') {
-                    $('#percentRow').show();
-                    $('#percent').val('100');
-                }
-                else if (queryType == 'KUD') {
-                    $('#percentRow').show();
-                    $('#percent').val('95');
-                    $('#hRow').show();
-                    $('#h').val('href');
-                    $('#gridSizeRow').show();
-                    $('#gridSize').val('50');
-                    $('#extentRow').show();
-                    $('#extent').val('1');
-                }
-                else if (queryType == 'AHULL') {
-                    $('#alphaRow').show();
-                    $('#alpha').val('100');
-                }
-                else if ((queryType == 'HEATMAP_POINT') || (queryType == 'HEATMAP_LINE')) {
-                    $('#gridSizeRow').show();
-                    $('#gridSize').val('100');
-                }
-                else {
-                    showParamTable = false;
-                }
-                if (showParamTable) {
-                    $('#paramTable').appendTo('#' + queryType).fadeIn('slow');
-                }
+            function showParamTable(queryType) {
+                $('.paramTable').hide();
+                $('#paramTable-' + queryType).fadeIn('slow');
             }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
@@ -404,48 +365,35 @@
                                             name="queryTypeSelect"
                                             id="queryTypeSelect-${analysisType}"
                                             value="${analysisType}"
-                                            onClick="updateParamTable('${analysisType}')"
+                                            onClick="showParamTable('${analysisType}')"
                                         />
                                     </td>
                                     <td id="${analysisType}">
                                         <label style="margin: 2px 0 0 0;" for="queryTypeSelect-${analysisType}"><c:out value="${analysisType.displayName}"/></label>
+                                        <table id="paramTable-${analysisType}" class="paramTable" style="display: none; margin: 6px 0;">
+                                            <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
+                                            <tr>
+                                                <td style="padding-right: 5px;">${parameterType.displayName}</td>
+                                                <td class="${(not empty parameterType.units) ? 'input-append' : ''}">
+                                                    <input
+                                                        id="paramField-${analysisType}-${parameterType.identifier}"
+                                                        class="paramField-${analysisType} input-mini"
+                                                        name="${parameterType.identifier}"
+                                                        type="text"
+                                                        <c:if test="${not empty parameterType.defaultValue}">
+                                                        value="${parameterType.defaultValue}"
+                                                        </c:if>
+                                                        style="margin-bottom: 3px; text-align: right;"/>
+                                                    <c:if test="${not empty parameterType.units}">
+                                                    <span class="add-on">${parameterType.units}</span>
+                                                    </c:if>
+                                                </td>
+                                            </tr>
+                                            </c:forEach>
+                                        </table>
                                     </td>
                                 </tr>
                                 </c:forEach>
-                            </table>
-                            <table id="paramTable" style="display: none; margin: 6px 0;">
-                                <tr id="percentRow">
-                                    <td style="padding-right: 5px;">Percent</td>
-                                    <td class="input-append">
-                                        <input id="percent" name="percent" type="text" class="input-mini" style="margin-bottom: 3px; text-align: right;"/>
-                                        <span class="add-on">%</span>
-                                    </td>
-                                </tr>
-                                <tr id="hRow">
-                                    <td style="padding-right: 5px;">h value</td>
-                                    <td>
-                                        <input id="h" name="h" type="text" class="input-mini" style="margin-bottom: 3px; text-align: right;"/>
-                                    </td>
-                                </tr>
-                                <tr id="alphaRow">
-                                    <td style="padding-right: 5px;">Alpha</td>
-                                    <td>
-                                        <input id="alpha" name="alpha" type="text" class="input-mini" style="margin-bottom: 3px; text-align: right;"/>
-                                    </td>
-                                </tr>
-                                <tr id="gridSizeRow">
-                                    <td style="padding-right: 5px;">Grid size</td>
-                                    <td class="input-append">
-                                        <input id="gridSize" name="gridSize" type="text" class="input-mini" style="margin-bottom: 3px; text-align: right;"/>
-                                        <span class="add-on">m</span>
-                                    </td>
-                                </tr>
-                                <tr id="extentRow">
-                                    <td style="padding-right: 5px;">Extent</td>
-                                    <td>
-                                        <input id="extent" name="extent" type="text" class="input-mini" style="margin-bottom: 3px; text-align: right;"/>
-                                    </td>
-                                </tr>
                             </table>
                         </div>
                     </div>

@@ -1,3 +1,5 @@
+<%@ page contentType="text/javascript; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 function createAnalysisMap(div, options) {
     return (function() {
         var analysisMap = {};
@@ -60,9 +62,7 @@ function createAnalysisMap(div, options) {
                 type : google.maps.MapTypeId.HYBRID,
                 numZoomLevels : 20
             });
-            map.addLayers([
-                    gsat, gphy, gmap, ghyb
-            ]);
+            map.addLayers([gsat, gphy, gmap, ghyb]);
 
             var osmLayer = new OpenLayers.Layer.OSM('OpenStreetMap');
             map.addLayer(osmLayer);
@@ -127,7 +127,7 @@ function createAnalysisMap(div, options) {
                 }
             };
             var lineOnStyle = new OpenLayers.Style({
-                strokeColor : "${getColour}",
+                strokeColor : "\${getColour}",
                 strokeWidth : 2.0,
                 strokeOpacity : 0.8
             }, {
@@ -151,8 +151,8 @@ function createAnalysisMap(div, options) {
                 }
             };
             var pointOnStyle = new OpenLayers.Style({
-                fillColor : "${getColour}",
-                strokeColor : "${getColour}",
+                fillColor : "\${getColour}",
+                strokeColor : "\${getColour}",
                 strokeOpacity : 0.8,
                 strokeWidth : 0.2,
                 graphicName : "cross",
@@ -178,10 +178,10 @@ function createAnalysisMap(div, options) {
                 }
             };
             var polygonOnStyle = new OpenLayers.Style({
-                strokeColor : "${getColour}",
+                strokeColor : "\${getColour}",
                 strokeWidth : 2.0,
                 strokeOpacity : 0.8,
-                fillColor : "${getColour}",
+                fillColor : "\${getColour}",
                 fillOpacity : 0.5
             }, {
                 context : styleContext
@@ -211,10 +211,10 @@ function createAnalysisMap(div, options) {
             };
             var startEndPointsOnStyle = new OpenLayers.Style({
                 pointRadius : 2,
-                strokeColor : "${getColour}",
+                strokeColor : "\${getColour}",
                 strokeWidth : 1.2,
                 strokeOpacity : 1.0,
-                fillColor : "${getColour}",
+                fillColor : "\${getColour}",
                 fillOpacity : 0
             }, {
                 context : styleContext
@@ -240,12 +240,7 @@ function createAnalysisMap(div, options) {
             var layerName = queryTypeLabel;
             var params = {
                 queryType : queryTypeValue,
-                projectId : $('#projectId').val(),
-                percent : $('input[id=percent]').val(),
-                h : $('input[id=h]').val(),
-                alpha : $('input[id=alpha]').val(),
-                gridSize : $('input[id=gridSize]').val(),
-                extent : $('input[id=extent]').val()
+                projectId : $('#projectId').val()
             };
             var fromDate = $('#fromDate').val();
             if (fromDate) {
@@ -256,6 +251,9 @@ function createAnalysisMap(div, options) {
                 params.toDate = toDate;
             }
             params.animalIds = $('input[name=animal]:checked').map(function() {return $(this).val();}).toArray();
+            $('.paramField-' + queryTypeValue).each(function() {
+                params[$(this).attr('name')] = $(this).val();
+            });
             if (queryTypeValue == "LINES") {
                 var trajectoryLayer = createTrajectoryLayer(params);
                 trajectoryLayers.push(trajectoryLayer);
@@ -551,36 +549,18 @@ function createAnalysisMap(div, options) {
                 feature.layer.drawFeature(feature);
                 var html = '<div class="layerInfoTitle">' + layerName + '</div>';
                 var tableRowsHtml = '';
-                if (params.percent) {
-                    tableRowsHtml += '<tr>';
-                    tableRowsHtml += '<td class="layerInfoLabel">Percent: </td>';
-                    tableRowsHtml += '<td>' + params.percent + '%</td>';
-                    tableRowsHtml += '</tr>';
+                <c:forEach items="${analysisTypeList}" var="analysisType">
+                if (params.queryType == '${analysisType}') {
+                    <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
+                    if (params.${parameterType.identifier}) {
+                        tableRowsHtml += '<tr>';
+                        tableRowsHtml += '<td class="layerInfoLabel">${parameterType.displayName}: </td>';
+                        tableRowsHtml += '<td>' + params.${parameterType.identifier} + ' ${parameterType.units}</td>';
+                        tableRowsHtml += '</tr>';
+                    }
+                    </c:forEach>
                 }
-                if (params.h) {
-                    tableRowsHtml += '<tr>';
-                    tableRowsHtml += '<td class="layerInfoLabel">h value: </td>';
-                    tableRowsHtml += '<td>' + params.h + '</td>';
-                    tableRowsHtml += '</tr>';
-                }
-                if (params.alpha) {
-                    tableRowsHtml += '<tr>';
-                    tableRowsHtml += '<td class="layerInfoLabel">alpha: </td>';
-                    tableRowsHtml += '<td>' + params.alpha + '</td>';
-                    tableRowsHtml += '</tr>';
-                }
-                if (params.gridSize) {
-                    tableRowsHtml += '<tr>';
-                    tableRowsHtml += '<td class="layerInfoLabel">Grid size (m): </td>';
-                    tableRowsHtml += '<td>' + params.gridSize + '</td>';
-                    tableRowsHtml += '</tr>';
-                }
-                if (params.extent) {
-                    tableRowsHtml += '<tr>';
-                    tableRowsHtml += '<td class="layerInfoLabel">Extent: </td>';
-                    tableRowsHtml += '<td>' + params.extent + '</td>';
-                    tableRowsHtml += '</tr>';
-                }
+                </c:forEach>
                 if (feature.attributes.area.value) {
                     var area = Math.round(feature.attributes.area.value * 1000) / 1000;
                     tableRowsHtml += '<tr>';
