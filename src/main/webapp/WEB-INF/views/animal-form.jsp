@@ -4,7 +4,10 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
-<tags:page title="${project.title}: Update Animal Details">
+<tags:page title="${project.title}: Update '${animal.animalName}'">
+    <jsp:attribute name="description">
+        Update animal '${animal.animalName}' in the ${project.title} project.
+    </jsp:attribute>
     <jsp:attribute name="head">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/farbtastic/farbtastic.css" type="text/css" />
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/farbtastic/farbtastic.js"></script>
@@ -18,7 +21,7 @@
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="${pageContext.request.contextPath}/">Home</a>
-        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Projects</a>
         &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
         &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}/animals">Animals</a>
         &rsaquo; <a href="${pageContext.request.contextPath}/animals/${animal.id}">${animal.animalName}</a>

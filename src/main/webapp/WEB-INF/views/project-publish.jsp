@@ -6,7 +6,10 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <c:set var="dateTimeFormatPattern" value="dd/MM/yyyy HH:mm:ss"/>
 <c:set var="shortDateFormatPattern" value="MMMM yyyy"/>
-<tags:page title="${project.title}: Metadata Publication">
+<tags:page title="${project.title}: Publish Metadata">
+    <jsp:attribute name="description">
+        Publish metadata for the ${project.title} project.
+    </jsp:attribute>
     <jsp:attribute name="head">
         <script type="text/javascript">
             function publishToDataSpace(id, action) {
@@ -55,9 +58,9 @@
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="${pageContext.request.contextPath}/">Home</a>
-        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Projects</a>
         &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
-        &rsaquo; <span class="active">Metadata Publication</span>
+        &rsaquo; <span class="active">Publish Metadata</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
         <tags:project-menu project="${project}"/>

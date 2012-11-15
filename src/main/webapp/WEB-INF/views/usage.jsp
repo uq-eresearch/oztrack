@@ -5,6 +5,9 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <tags:page title="Usage">
+    <jsp:attribute name="description">
+        Summary of OzTrack usage statistics.
+    </jsp:attribute>
     <jsp:attribute name="head">
         <script type="text/javascript">
             $(document).ready(function() {

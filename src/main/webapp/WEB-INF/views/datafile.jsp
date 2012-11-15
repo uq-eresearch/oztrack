@@ -6,7 +6,10 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <c:set var="dateTimeFormatPattern" value="dd/MM/yyyy HH:mm:ss"/>
-<tags:page title="${dataFile.project.title}: Data File Detail">
+<tags:page title="${dataFile.project.title}: Data File ${dataFile.userGivenFileName}">
+    <jsp:attribute name="description">
+        Data file ${dataFile.userGivenFileName} uploaded to the ${dataFile.project.title} project.
+    </jsp:attribute>
     <jsp:attribute name="head">
         <script type="text/javascript">
             $(document).ready(function() {
@@ -17,10 +20,10 @@
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="${pageContext.request.contextPath}/">Home</a>
-        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Projects</a>
         &rsaquo; <a href="${pageContext.request.contextPath}/projects/${dataFile.project.id}">${dataFile.project.title}</a>
-        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${dataFile.project.id}/datafiles">Data Uploads</a>
-        &rsaquo; <span class="active">Data File Detail</span>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${dataFile.project.id}/datafiles">Data Files</a>
+        &rsaquo; <span class="active">${dataFile.userGivenFileName}</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
         <tags:project-menu project="${dataFile.project}"/>

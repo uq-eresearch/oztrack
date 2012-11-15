@@ -8,6 +8,9 @@
 <c:set var="isoDateFormatPattern" value="yyyy-MM-dd"/>
 <c:set var="dateTimeFormatPattern" value="dd/MM/yyyy' at 'HH:mm"/>
 <tags:page title="${project.title}: View Tracks" fluid="true">
+    <jsp:attribute name="description">
+        View and analyse animal tracking data in the ${project.title} project.
+    </jsp:attribute>
     <jsp:attribute name="head">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/js/openlayers/theme/default/style.css" type="text/css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/js/openlayers/theme/default/google.css" type="text/css">
@@ -270,7 +273,7 @@
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="${pageContext.request.contextPath}/">Home</a>
-        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Projects</a>
         &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
         &rsaquo; <span class="active">View Tracks</span>
     </jsp:attribute>

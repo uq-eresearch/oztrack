@@ -11,10 +11,20 @@
     <jsp:attribute name="title">
         <c:choose>
         <c:when test="${project.id != null}">
-            Update Project Metadata
+            Update Project
         </c:when>
         <c:otherwise>
-            Create a New Project
+            Create Project
+        </c:otherwise>
+        </c:choose>
+    </jsp:attribute>
+    <jsp:attribute name="description">
+        <c:choose>
+        <c:when test="${project.id != null}">
+            Update details for the ${project.title} project.
+        </c:when>
+        <c:otherwise>
+            Create a new OzTrack project.
         </c:otherwise>
         </c:choose>
     </jsp:attribute>
@@ -157,14 +167,14 @@
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="${pageContext.request.contextPath}/">Home</a>
-        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Projects</a>
         <c:choose>
         <c:when test="${project.id != null}">
         &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
         &rsaquo; <span class="active">Update Project</span>
         </c:when>
         <c:otherwise>
-        &rsaquo; <span class="active">Create New Project</span>
+        &rsaquo; <span class="active">Create Project</span>
         </c:otherwise>
         </c:choose>
     </jsp:attribute>

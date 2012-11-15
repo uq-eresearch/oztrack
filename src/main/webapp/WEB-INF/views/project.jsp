@@ -11,6 +11,16 @@
 <c:set var="shortDateFormatPattern" value="MMMM yyyy"/>
 <c:set var="dataLicencingEnabled"><%= OzTrackApplication.getApplicationContext().isDataLicencingEnabled() %></c:set>
 <tags:page title="${project.title}">
+    <jsp:attribute name="description">
+        <c:choose>
+        <c:when test="${not empty project.description}">
+            ${project.description}
+        </c:when>
+        <c:otherwise>
+            View details for the ${project.title} project.
+        </c:otherwise>
+        </c:choose>
+    </jsp:attribute>
     <jsp:attribute name="head">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/js/openlayers/theme/default/style.css" type="text/css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/js/openlayers/theme/default/google.css" type="text/css">
@@ -148,7 +158,7 @@
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="${pageContext.request.contextPath}/">Home</a>
-        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Projects</a>
         &rsaquo; <span class="active">${project.title}</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">

@@ -6,6 +6,9 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <tags:page title="${project.title}: Animals">
+    <jsp:attribute name="description">
+        Listing of animals tracked in the ${project.title} project.
+    </jsp:attribute>
     <jsp:attribute name="head">
         <script type="text/javascript">
             $(document).ready(function() {
@@ -16,7 +19,7 @@
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="${pageContext.request.contextPath}/">Home</a>
-        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Projects</a>
         &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
         &rsaquo; <span class="active">Animals</span>
     </jsp:attribute>

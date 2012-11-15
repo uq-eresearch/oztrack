@@ -7,7 +7,10 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <c:set var="dateFormatPattern" value="dd/MM/yyyy"/>
 <c:set var="dateTimeFormatPattern" value="dd/MM/yyyy HH:mm:ss"/>
-<tags:page title="${project.title}: View Raw Data">
+<tags:page title="${project.title}: View Data">
+    <jsp:attribute name="description">
+        View data in the ${project.title} project.
+    </jsp:attribute>
     <jsp:attribute name="head">
         <style type="text/css">
             .dataTableNav {
@@ -34,9 +37,9 @@
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="${pageContext.request.contextPath}/">Home</a>
-        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Projects</a>
         &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
-        &rsaquo; <span class="active">View Raw Data</span>
+        &rsaquo; <span class="active">View Data</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
         <tags:project-menu project="${project}"/>

@@ -8,6 +8,16 @@
 <c:set var="aafEnabled"><%= OzTrackApplication.getApplicationContext().isAafEnabled() %></c:set>
 <c:set var="title" value="${(user.id != null) ? 'User Profile' : 'Register'}"/>
 <tags:page title="${title}">
+    <jsp:attribute name="description">
+        <c:choose>
+        <c:when test="${user.id != null}">
+            Update your OzTrack account.
+        </c:when>
+        <c:otherwise>
+            Register a new OzTrack account.
+        </c:otherwise>
+        </c:choose>
+    </jsp:attribute>
     <jsp:attribute name="head">
         <script type="text/javascript">
             $(document).ready(function() {

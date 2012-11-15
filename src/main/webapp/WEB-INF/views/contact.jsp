@@ -5,6 +5,10 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <tags:page title="Contacts">
+    <jsp:attribute name="description">
+        Contact OzTrack staff. OzTrack is a free-to-use web-based platform
+        for analysing and visualising individual-based animal location data.
+    </jsp:attribute>
     <jsp:attribute name="head">
         <script type="text/javascript">
             $(document).ready(function() {

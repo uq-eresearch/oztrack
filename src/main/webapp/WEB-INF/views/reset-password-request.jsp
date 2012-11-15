@@ -7,6 +7,9 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <c:set var="aafEnabled"><%= OzTrackApplication.getApplicationContext().isAafEnabled() %></c:set>
 <tags:page title="Reset Password">
+    <jsp:attribute name="description">
+        Reset a forgotten password in OzTrack.
+    </jsp:attribute>
     <jsp:attribute name="head">
         <script type="text/javascript">
             $(document).ready(function() {

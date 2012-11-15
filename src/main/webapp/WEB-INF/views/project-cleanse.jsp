@@ -5,7 +5,10 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
-<tags:page title="${project.title}: Data Cleansing" fluid="true">
+<tags:page title="${project.title}: Edit Data" fluid="true">
+    <jsp:attribute name="description">
+        Edit data in the ${project.title} project.
+    </jsp:attribute>
     <jsp:attribute name="head">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/js/openlayers/theme/default/style.css" type="text/css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/js/openlayers/theme/default/google.css" type="text/css">
@@ -186,9 +189,9 @@
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="${pageContext.request.contextPath}/">Home</a>
-        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Projects</a>
         &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
-        &rsaquo; <span class="active">Data Cleansing</span>
+        &rsaquo; <span class="active">Edit Data</span>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbsRight">
         <a class="btn" href="/projects/${project.id}">« Back to project</a>

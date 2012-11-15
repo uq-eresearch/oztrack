@@ -4,7 +4,10 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
-<tags:page title="${project.title}: Add a Data File">
+<tags:page title="${project.title}: Add Data File">
+    <jsp:attribute name="description">
+        Upload a new data file to the ${project.title} project.
+    </jsp:attribute>
     <jsp:attribute name="head">
         <style type="text/css">
             pre.datafile {
@@ -21,10 +24,10 @@
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
         <a href="${pageContext.request.contextPath}/">Home</a>
-        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Projects</a>
         &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
         &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}/datafiles">Data Uploads</a>
-        &rsaquo; <span class="active">Add a Data File</span>
+        &rsaquo; <span class="active">Add Data File</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
         <tags:project-menu project="${project}"/>

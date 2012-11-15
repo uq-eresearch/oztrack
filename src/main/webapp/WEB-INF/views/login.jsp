@@ -7,6 +7,10 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <c:set var="aafEnabled"><%= OzTrackApplication.getApplicationContext().isAafEnabled() %></c:set>
 <tags:page title="Login">
+    <jsp:attribute name="description">
+        Log in to OzTrack. OzTrack is a free-to-use web-based platform for
+        analysing and visualising individual-based animal location data.
+    </jsp:attribute>
     <jsp:attribute name="head">
         <script type="text/javascript">
             $(document).ready(function() {

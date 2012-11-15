@@ -83,7 +83,7 @@
       <div class="navbar-inner">
         <ul class="nav">
           <li id="navHome"><a href="${pageContext.request.contextPath}/">Home</a></li>
-          <li id="navTrack"><a href="${pageContext.request.contextPath}/projects">Animal Tracking</a></li>
+          <li id="navTrack"><a href="${pageContext.request.contextPath}/projects">Projects</a></li>
           <li id="navAbout"><a href="${pageContext.request.contextPath}/about">About</a></li>
           <li id="navContact"><a href="${pageContext.request.contextPath}/contact">Contact</a></li>
           <c:if test="${currentUser.admin}">
