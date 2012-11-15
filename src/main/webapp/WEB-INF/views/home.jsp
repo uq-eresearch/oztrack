@@ -6,8 +6,8 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <tags:page title="Home">
     <jsp:attribute name="head">
-        <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
-        <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/js/openlayers/theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/js/openlayers/theme/default/google.css" type="text/css">
         <style type="text/css">
             #homeMap {
                 height: 500px;
@@ -61,7 +61,7 @@
         <script src="${pageContext.request.scheme}://maps.google.com/maps/api/js?v=3.9&sensor=false"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/OpenLayers.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/LoadingPanel.js"></script>
-        <script type="text/javascript" src="<c:url value="/js/home.js"/>"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/home.js"></script>
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navHome').addClass('active');
@@ -78,8 +78,8 @@
             </div>
             <div class="span3">
                 <div id="welcome-buttons">
-                    <a class="btn btn-large btn-block btn-primary" href="<c:url value="/projects/new"/>">Create Project</a>
-                    <a class="btn btn-large btn-block" href="<c:url value="/projects"/>">View Projects</a>
+                    <a class="btn btn-large btn-block btn-primary" href="${pageContext.request.contextPath}/projects/new">Create Project</a>
+                    <a class="btn btn-large btn-block" href="${pageContext.request.contextPath}/projects">View Projects</a>
                 </div>
             </div>
         </div>

@@ -12,8 +12,8 @@
 <c:set var="dataLicencingEnabled"><%= OzTrackApplication.getApplicationContext().isDataLicencingEnabled() %></c:set>
 <tags:page title="${project.title}">
     <jsp:attribute name="head">
-        <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
-        <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/js/openlayers/theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/js/openlayers/theme/default/google.css" type="text/css">
         <style type="text/css">
             #coverageMap {
                 float: right;
@@ -36,7 +36,7 @@
         </style>
         <script src="${pageContext.request.scheme}://maps.google.com/maps/api/js?v=3.9&sensor=false"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/OpenLayers.js"></script>
-        <script type="text/javascript" src="<c:url value="/js/coverage.js"/>"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/coverage.js"></script>
         <script type="text/javascript">
             function addProjectUser() {
                 jQuery('#projectUserError').hide();
@@ -45,7 +45,7 @@
                 var userId = jQuery('#addProjectUserId').val();
                 var role = jQuery('#addProjectUserRole').val();
                 jQuery.ajax({
-                    url: '<c:url value="/projects/${project.id}/users"/>',
+                    url: '${pageContext.request.contextPath}/projects/${project.id}/users',
                     type: 'POST',
                     data: {
                         'user-id': userId,
@@ -93,7 +93,7 @@
                     return;
                 }
                 jQuery.ajax({
-                    url: '<c:url value="/projects/${project.id}/users/"/>' + userId,
+                    url: '${pageContext.request.contextPath}/projects/${project.id}/users/' + userId,
                     type: 'POST',
                     data: {
                         '_method': 'DELETE'
@@ -136,7 +136,7 @@
                     </c:choose>
                 </c:forEach>
                 jQuery('#addProjectUserName').autocomplete({
-                    source: '<c:url value="/users/search"/>',
+                    source: '${pageContext.request.contextPath}/users/search',
                     minLength: 2,
                     select: function(event, ui) {
                         jQuery('#addProjectUserId').val(ui.item ? ui.item.id : '');
@@ -147,8 +147,8 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
-        <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
+        <a href="${pageContext.request.contextPath}/">Home</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
         &rsaquo; <span class="active">${project.title}</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
@@ -171,7 +171,7 @@
              <p>
                  There are no data uploaded for this project yet.
                  <sec:authorize access="hasPermission(#project, 'write')">
-                 <a href="<c:url value='/projects/${project.id}/datafiles/new'/>">Upload a data file</a>.
+                 <a href="${pageContext.request.contextPath}/projects/${project.id}/datafiles/new">Upload a data file</a>.
                  </sec:authorize>
              </p>
         </c:when>
@@ -182,7 +182,7 @@
             <sec:authorize access="hasPermission(#project, 'write')">
             <tr>
                 <th>Data File Count:</th>
-                <td><a href="<c:url value="/projects/${project.id}/datafiles"/>"><c:out value="${fn:length(dataFileList)}"/></a></td>
+                <td><a href="${pageContext.request.contextPath}/projects/${project.id}/datafiles"><c:out value="${fn:length(dataFileList)}"/></a></td>
             </tr>
             </sec:authorize>
             <tr>
@@ -191,15 +191,15 @@
             </tr>
             <tr>
                 <th>Detection Count:</th>
-                <td><a href="<c:url value="/projects/${project.id}/search"/>"><c:out value="${projectDetectionCount}"/></a></td>
+                <td><a href="${pageContext.request.contextPath}/projects/${project.id}/search"><c:out value="${projectDetectionCount}"/></a></td>
             </tr>
             <tr>
                 <th>Animals:</th>
                 <td>
                     <c:forEach items="${projectAnimalsList}" var="animal">
-                    <a href="<c:url value="/animals/${animal.id}"/>"><c:out value="${animal.animalName}"/></a>,
+                    <a href="${pageContext.request.contextPath}/animals/${animal.id}"><c:out value="${animal.animalName}"/></a>,
                     </c:forEach>
-                    <a href="<c:url value="/projects/${project.id}/animals"/>">View All</a>
+                    <a href="${pageContext.request.contextPath}/projects/${project.id}/animals">View All</a>
                 </td>
             </tr>
             </table>
@@ -355,7 +355,7 @@
             <th style="border-bottom: 1px solid #e6e6c0; text-align: left; padding: 4px;">
                 ${role.pluralTitle}
                 <a class=info href="#">
-                    <img src="<c:url value="/img/help.png"/>" border="0">
+                    <img src="${pageContext.request.contextPath}/img/help.png" border="0">
                     <span>
                         <b>${role.pluralTitle}:</b><br>
                         <br>
@@ -402,10 +402,10 @@
         <div class="actions">
         <h2>Manage Project</h2>
         <ul class="icons">
-            <li class="edit"><a href="<c:url value="/projects/${project.id}/edit"/>">Edit project</a></li>
+            <li class="edit"><a href="${pageContext.request.contextPath}/projects/${project.id}/edit">Edit project</a></li>
             <sec:authorize access="hasPermission(#project, 'manage')">
             <c:if test="${empty project.dataSpaceURI}">
-            <li class="delete"><a href="javascript:void(deleteEntity('<c:url value="/projects/${project.id}"/>', '<c:url value="/projects"/>', 'Are you sure you want to delete this project?'));">Delete project</a></li>
+            <li class="delete"><a href="javascript:void(deleteEntity('${pageContext.request.contextPath}/projects/${project.id}', '${pageContext.request.contextPath}/projects', 'Are you sure you want to delete this project?'));">Delete project</a></li>
             </c:if>
             <c:choose>
                 <c:when test ="${empty project.dataSpaceUpdateDate}">
@@ -415,7 +415,7 @@
                     <c:set var="publishButtonText" value="Update UQ DataSpace Collection Registry"/>
                 </c:otherwise>
             </c:choose>
-            <li class="publish"><a href="<c:url value="/projects/${project.id}/publish"/>"><c:out value="${publishButtonText}"/></a></li>
+            <li class="publish"><a href="${pageContext.request.contextPath}/projects/${project.id}/publish"><c:out value="${publishButtonText}"/></a></li>
             </sec:authorize>
         </ul>
         </div>

@@ -13,8 +13,8 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
-        <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="<c:url value="/settings"/>">Settings</a>
+        <a href="${pageContext.request.contextPath}/">Home</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/settings">Settings</a>
         &rsaquo; <span class="active">Spatial Reference Systems</span>
     </jsp:attribute>
     <jsp:body>
@@ -44,11 +44,11 @@
                         ${srs.bounds.envelopeInternal.maxY}
                     </td>
                     <td>
-                        <a href="<c:url value="/settings/srs/${srs.id}/edit"/>"><img src="<c:url value="/img/page_white_edit.png"/>" /></a>
+                        <a href="${pageContext.request.contextPath}/settings/srs/${srs.id}/edit"><img src="${pageContext.request.contextPath}/img/page_white_edit.png" /></a>
                         <a href="javascript:void(deleteEntity(
-                            '<c:url value="/settings/srs/${srs.id}"/>',
-                            '<c:url value="/settings/srs"/>', 'Are you sure you want to delete this spatial reference system?'
-                            ));"><img src="<c:url value="/img/page_white_delete.png"/>" /></a>
+                            '${pageContext.request.contextPath}/settings/srs/${srs.id}',
+                            '${pageContext.request.contextPath}/settings/srs', 'Are you sure you want to delete this spatial reference system?'
+                            ));"><img src="${pageContext.request.contextPath}/img/page_white_delete.png" /></a>
                     </td>
                 </tr>
                 </c:forEach>
@@ -57,7 +57,7 @@
         <div class="actions">
         <h2>Manage Spatial Reference Systems</h2>
         <ul class="icons">
-            <li class="create"><a href="<c:url value="/settings/srs/new"/>">Create new SRS</a></li>
+            <li class="create"><a href="${pageContext.request.contextPath}/settings/srs/new">Create new SRS</a></li>
         </ul>
         </div>
     </jsp:body>

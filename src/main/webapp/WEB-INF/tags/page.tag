@@ -19,15 +19,15 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-    <link rel="stylesheet" type="text/css" href="<c:url value="/css/jquery-ui/jquery-ui-1.8.23.custom.css"/>"/>
-    <link rel="stylesheet" type="text/css" href="<c:url value="/css/bootstrap.css"/>"/>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/jquery-ui/jquery-ui-1.8.23.custom.css"/>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/bootstrap.css"/>
 
-    <script type="text/javascript" src="<c:url value="/js/jquery/jquery-1.8.0.min.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/js/jquery/jquery-ui-1.8.23.custom.min.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/js/ckeditor/ckeditor.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/js/ckeditor/adapters/jquery.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/js/bootstrap.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/js/oztrack.js"/>"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery/jquery-ui-1.8.23.custom.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/js/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/js/ckeditor/adapters/jquery.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/js/oztrack.js"></script>
     <c:if test="${not empty googleAnalyticsTrackingID}">
     <script type="text/javascript">
         var _gaq = _gaq || [];
@@ -61,14 +61,14 @@
                     <c:when test="${currentUser != null}">
                       Welcome, <c:out value="${currentUser.firstName}"/>
                       &nbsp;|&nbsp;
-                      <a href="<c:url value="/users/${currentUser.id}/edit"/>">Profile</a>
+                      <a href="${pageContext.request.contextPath}/users/${currentUser.id}/edit">Profile</a>
                       &nbsp;|&nbsp;
-                      <a href="<c:url value="/logout"/>">Logout</a>
+                      <a href="${pageContext.request.contextPath}/logout">Logout</a>
                     </c:when>
                     <c:otherwise>
-                      <a href="<c:url value="/login"/>">Login</a>
+                      <a href="${pageContext.request.contextPath}/login">Login</a>
                       &nbsp;|&nbsp;
-                      <a href="<c:url value="/users/new"/>">Register</a>
+                      <a href="${pageContext.request.contextPath}/users/new">Register</a>
                     </c:otherwise>
                 </c:choose>
             </div>
@@ -78,12 +78,12 @@
     <div class="navbar navbar-inverse">
       <div class="navbar-inner">
         <ul class="nav">
-          <li id="navHome"><a href="<c:url value="/"/>">Home</a></li>
-          <li id="navTrack"><a href="<c:url value="/projects"/>">Animal Tracking</a></li>
-          <li id="navAbout"><a href="<c:url value="/about"/>">About</a></li>
-          <li id="navContact"><a href="<c:url value="/contact"/>">Contact</a></li>
+          <li id="navHome"><a href="${pageContext.request.contextPath}/">Home</a></li>
+          <li id="navTrack"><a href="${pageContext.request.contextPath}/projects">Animal Tracking</a></li>
+          <li id="navAbout"><a href="${pageContext.request.contextPath}/about">About</a></li>
+          <li id="navContact"><a href="${pageContext.request.contextPath}/contact">Contact</a></li>
           <c:if test="${currentUser.admin}">
-          <li id="navSettings"><a href="<c:url value="/settings"/>">Settings</a></li>
+          <li id="navSettings"><a href="${pageContext.request.contextPath}/settings">Settings</a></li>
           </c:if>
         </ul>
       </div>
@@ -118,9 +118,9 @@
 <c:if test="${not fluid}">
 <div id="footer">
     <div id="logos">
-        <a href="http://nectar.org.au/"><img src="<c:url value="/img/nectar-logo.png"/>" width="140px" height="32px"/></a>
-        <a href="http://ands.org.au/"><img src="<c:url value="/img/ands-logo.png"/>" width="90px" height="40px" style="margin-top: -8px;"/></a>
-        <a href="http://itee.uq.edu.au/~eresearch/"><img src="<c:url value="/img/uq_logo.png"/>" width="140px" height="40px"/></a>
+        <a href="http://nectar.org.au/"><img src="${pageContext.request.contextPath}/img/nectar-logo.png" width="140px" height="32px"/></a>
+        <a href="http://ands.org.au/"><img src="${pageContext.request.contextPath}/img/ands-logo.png" width="90px" height="40px" style="margin-top: -8px;"/></a>
+        <a href="http://itee.uq.edu.au/~eresearch/"><img src="${pageContext.request.contextPath}/img/uq_logo.png" width="140px" height="40px"/></a>
     </div>
     <div id="copyright">
         &copy; 2011 The University of Queensland

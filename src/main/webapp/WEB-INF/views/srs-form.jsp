@@ -23,9 +23,9 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
-        <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="<c:url value="/settings"/>">Settings</a>
-        &rsaquo; <a href="<c:url value="/settings/srs"/>">Spatial Reference Systems</a>
+        <a href="${pageContext.request.contextPath}/">Home</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/settings">Settings</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/settings/srs">Spatial Reference Systems</a>
         &rsaquo; <span class="active">${title}</span>
     </jsp:attribute>
     <jsp:body>
@@ -62,7 +62,7 @@
                     <div class="controls">
                         <form:input path="bounds" cssClass="input-xxlarge"/>
                         <div class="help-inline">
-                            <a class=info href="#"><img src="<c:url value="/img/help.png"/>" border="0">
+                            <a class=info href="#"><img src="${pageContext.request.contextPath}/img/help.png" border="0">
                             <span>
                                 <b>Bounds:</b><br>
                                 <br>

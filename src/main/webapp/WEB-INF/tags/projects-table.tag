@@ -31,7 +31,7 @@
         <tbody>
             <c:forEach items="${projects}" var="project">
             <tr>
-                <td><a href="<c:url value="/projects/${project.id}"/>"><c:out value="${project.title}"/></a></td>
+                <td><a href="${pageContext.request.contextPath}/projects/${project.id}"><c:out value="${project.title}"/></a></td>
                 <td><c:out value="${project.spatialCoverageDescr}"/></td>
                 <td><c:out value="${project.projectType.displayName}"/></td>
                 <td><fmt:formatDate value="${project.createDate}" type="date" dateStyle="long"/></td>

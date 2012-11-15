@@ -15,7 +15,7 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
-        <a href="<c:url value="/"/>">Home</a>
+        <a href="${pageContext.request.contextPath}/">Home</a>
         &rsaquo; <span class="active">Login</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar"/>
@@ -29,7 +29,7 @@
         </c:if>
 
         <p style="margin-bottom: 14px;">
-            Don't have an account yet? <a href="<c:url value="/users/new"/>">Register as a new user</a>
+            Don't have an account yet? <a href="${pageContext.request.contextPath}/users/new">Register as a new user</a>
         </p>
 
         <c:if test="${aafEnabled}">
@@ -46,12 +46,12 @@
                 </div>
             </fieldset>
             <div class="form-actions">
-                <a class="btn btn-primary" href="<c:url value="/login/shibboleth"/>">Login using AAF</a>
+                <a class="btn btn-primary" href="${pageContext.request.contextPath}/login/shibboleth">Login using AAF</a>
             </div>
         </form>
         </c:if>
 
-        <form id="nativeLoginForm" class="form-vertical form-bordered" method="POST" action="<c:url value="/j_spring_security_check"/>">
+        <form id="nativeLoginForm" class="form-vertical form-bordered" method="POST" action="${pageContext.request.contextPath}/j_spring_security_check">
             <fieldset>
                 <c:if test="${aafEnabled}">
                 <div class="legend">Login using OzTrack</div>
@@ -71,7 +71,7 @@
             </fieldset>
             <div class="form-actions">
                 <input class="btn btn-primary" type="submit" value="Login"/>
-                <a style="margin-left: 10px;" href="<c:url value="/reset-password"/>">Can't access your account?</a>
+                <a style="margin-left: 10px;" href="${pageContext.request.contextPath}/reset-password">Can't access your account?</a>
             </div>
         </form>
     </jsp:body>

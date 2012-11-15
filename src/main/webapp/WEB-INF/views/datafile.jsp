@@ -16,10 +16,10 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
-        <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
-        &rsaquo; <a href="<c:url value="/projects/${dataFile.project.id}"/>">${dataFile.project.title}</a>
-        &rsaquo; <a href="<c:url value="/projects/${dataFile.project.id}/datafiles"/>">Data Uploads</a>
+        <a href="${pageContext.request.contextPath}/">Home</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${dataFile.project.id}">${dataFile.project.title}</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${dataFile.project.id}/datafiles">Data Uploads</a>
         &rsaquo; <span class="active">Data File Detail</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
@@ -69,7 +69,7 @@
         <div class="actions">
         <h2>Manage Data File</h2>
         <ul class="icons">
-            <li class="delete"><a href="javascript:void(deleteEntity('<c:url value="/datafiles/${dataFile.id}"/>', '<c:url value="/projects/${dataFile.project.id}/datafiles"/>', 'Are you sure you want to delete this data file?'));">Delete data file</a></li>
+            <li class="delete"><a href="javascript:void(deleteEntity('${pageContext.request.contextPath}/datafiles/${dataFile.id}', '${pageContext.request.contextPath}/projects/${dataFile.project.id}/datafiles', 'Are you sure you want to delete this data file?'));">Delete data file</a></li>
         </ul>
         </div>
         </sec:authorize>

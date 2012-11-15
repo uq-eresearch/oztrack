@@ -33,9 +33,9 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
-        <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
-        &rsaquo; <a href="<c:url value="/projects/${project.id}"/>">${project.title}</a>
+        <a href="${pageContext.request.contextPath}/">Home</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
         &rsaquo; <span class="active">View Raw Data</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
@@ -85,13 +85,9 @@
         <div style="float:right">
             <c:choose>
             <c:when test="${offset > 0}">
-                <a href="<c:url value="/projects/${searchQuery.project.id}/search">
-                    <c:param name="offset" value="${0}"/>
-                </c:url>">&lt;&lt;</a>
+                <a href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${0}">&lt;&lt;</a>
                 &nbsp;&nbsp;
-                <a href="<c:url value="/projects/${searchQuery.project.id}/search">
-                    <c:param name="offset" value="${offset-nbrObjectsPerPage}"/>
-                </c:url>">&lt;</a>
+                <a href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${offset-nbrObjectsPerPage}">&lt;</a>
             </c:when>
             <c:otherwise>
                 &lt;&lt;
@@ -102,13 +98,9 @@
             &nbsp;&nbsp;
             <c:choose>
             <c:when test="${offset < totalCount - (totalCount % nbrObjectsPerPage)}">
-                <a href="<c:url value="/projects/${searchQuery.project.id}/search">
-                    <c:param name="offset" value="${offset+nbrObjectsThisPage}"/>
-                </c:url>">&gt;</a>
+                <a href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${offset+nbrObjectsThisPage}">&gt;</a>
                 &nbsp;&nbsp;
-                <a href="<c:url value="/projects/${searchQuery.project.id}/search">
-                    <c:param name="offset" value="${totalCount - (totalCount % nbrObjectsPerPage)}"/>
-                </c:url>">&gt;&gt;</a>
+                <a href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${totalCount - (totalCount % nbrObjectsPerPage)}">&gt;&gt;</a>
             </c:when>
             <c:otherwise>
                 &gt;
@@ -117,7 +109,7 @@
             </c:otherwise>
             </c:choose>
             &nbsp;&nbsp;
-            <a href="<c:url value="/projects/${searchQuery.project.id}/export"/>">Export</a>
+            <a href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/export">Export</a>
         </div>
         <div style="clear: both;"></div>
         </div>
@@ -150,13 +142,12 @@
                 <tr>
                     <td><fmt:formatDate pattern="${dateTimeFormatPattern}" value="${detection.detectionTime}"/></td>
                     <td><c:out value="${detection.animal.projectAnimalId}"/></td>
-                    <td><a href="<c:url value="/animals/${detection.animal.id}/edit"/>">
-                            <c:out value="${detection.animal.animalName}"/></a></td>
+                    <td><a href="${pageContext.request.contextPath}/animals/${detection.animal.id}/edit"><c:out value="${detection.animal.animalName}"/></a></td>
                     <td><c:out value="${detection.latitude}"/></td>
                     <td><c:out value="${detection.longitude}"/></td>
                     <sec:authorize access="hasPermission(#project, 'read')">
                     <td>
-                        <a href="<c:url value="/datafiles/${detection.dataFile.id}"/>"
+                        <a href="${pageContext.request.contextPath}/datafiles/${detection.dataFile.id}"
                         ><fmt:formatDate pattern="${dateFormatPattern}" value="${detection.dataFile.createDate}"/></a>
                     </td>
                     </sec:authorize>

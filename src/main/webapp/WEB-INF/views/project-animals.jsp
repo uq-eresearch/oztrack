@@ -15,9 +15,9 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
-        <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
-        &rsaquo; <a href="<c:url value="/projects/${project.id}"/>">${project.title}</a>
+        <a href="${pageContext.request.contextPath}/">Home</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
         &rsaquo; <span class="active">Animals</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
@@ -36,7 +36,7 @@
                     </td>
                     <td style="padding: 5px 5px 0 5px; vertical-align: top;">
                         <p>
-                            <a href="<c:url value="/animals/${animal.id}"/>" style="text-decoration: none; font-weight: bold; color: #333;"><c:out value="${animal.animalName}"/></a>
+                            <a href="${pageContext.request.contextPath}/animals/${animal.id}" style="text-decoration: none; font-weight: bold; color: #333;"><c:out value="${animal.animalName}"/></a>
                             <c:if test="${not empty animal.speciesName}">
                             <span style="padding-left: 10px; font-style: italic;">
                                 <c:out value="${animal.speciesName}"/>
@@ -44,13 +44,13 @@
                             </c:if>
                             <sec:authorize access="hasPermission(#project, 'write')">
                             <span style="padding-left: 10px; font-style: italic;">
-                                <a href="<c:url value="/animals/${animal.id}/edit"/>"><img src="<c:url value="/img/page_white_edit.png"/>" /></a>
+                                <a href="${pageContext.request.contextPath}/animals/${animal.id}/edit"><img src="${pageContext.request.contextPath}/img/page_white_edit.png" /></a>
                                 <c:if test="${empty animal.positionFixes}">
                                 <a href="javascript:void(0);" onclick="deleteEntity(
-                                    '<c:url value="/animals/${animal.id}"/>',
-                                    '<c:url value="/projects/${project.id}/animals"/>',
+                                    '${pageContext.request.contextPath}/animals/${animal.id}',
+                                    '${pageContext.request.contextPath}/projects/${project.id}/animals',
                                     'Are you sure you want to delete this animal?'
-                                    );"><img src="<c:url value="/img/page_white_delete.png"/>" /></a>
+                                    );"><img src="${pageContext.request.contextPath}/img/page_white_delete.png" /></a>
                                 </c:if>
                             </span>
                             </sec:authorize>

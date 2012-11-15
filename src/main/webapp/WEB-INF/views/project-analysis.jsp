@@ -9,8 +9,8 @@
 <c:set var="dateTimeFormatPattern" value="dd/MM/yyyy' at 'HH:mm"/>
 <tags:page title="${project.title}: View Tracks" fluid="true">
     <jsp:attribute name="head">
-        <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
-        <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/js/openlayers/theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/js/openlayers/theme/default/google.css" type="text/css">
         <style type="text/css">
             #main {
                 padding-bottom: 0;
@@ -112,7 +112,7 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/proj4js/proj4js-compressed.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/OpenLayers.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/LoadingPanel.js"></script>
-        <script type="text/javascript" src="<c:url value="/js/project-analysis.js"/>"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/project-analysis.js"></script>
         <script type="text/javascript">
             function showParamTable(queryType) {
                 $('.paramTable').hide();
@@ -269,9 +269,9 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
-        <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
-        &rsaquo; <a href="<c:url value="/projects/${project.id}"/>">${project.title}</a>
+        <a href="${pageContext.request.contextPath}/">Home</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
         &rsaquo; <span class="active">View Tracks</span>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbsRight">
@@ -303,13 +303,7 @@
                             </button>
                             <ul class="dropdown-menu pull-right">
                                 <li><a href="javascript:void(0);" onclick="analysisMap.zoomToAnimal(${animal.id});">Zoom to animal</a></li>
-                                <c:set var="animalExportKmlUrl">
-                                    <c:url value="/exportKML">
-                                        <c:param name="projectId" value="${project.id}"/>
-                                        <c:param name="animalId" value="${animal.id}"/>
-                                    </c:url>
-                                </c:set>
-                                <li><a href="${animalExportKmlUrl}">Export as KML</a></li>
+                                <li><a href="${pageContext.request.contextPath}/exportKML?projectId=${project.id}&animalId=${animal.id}">Export as KML</a></li>
                             </ul>
                         </div>
 

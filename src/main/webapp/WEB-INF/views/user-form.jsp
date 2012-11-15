@@ -16,7 +16,7 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
-        <a href="<c:url value="/"/>">Home</a>
+        <a href="${pageContext.request.contextPath}/">Home</a>
         &rsaquo; <span class="active">${title}</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar"/>
@@ -37,7 +37,7 @@
                 </div>
             </fieldset>
             <div class="form-actions">
-                <a class="btn btn-primary" href="<c:url value="/login/shibboleth"/>">Register using AAF</a>
+                <a class="btn btn-primary" href="${pageContext.request.contextPath}/login/shibboleth">Register using AAF</a>
             </div>
         </form>
         </c:if>
@@ -60,11 +60,11 @@
                             <form:errors element="div" path="aafId" cssClass="formErrors"/>
                         </c:when>
                         <c:otherwise>
-                            <a class="btn" href="<c:url value="/login/shibboleth"/>">Link profile with AAF ID</a>
+                            <a class="btn" href="${pageContext.request.contextPath}/login/shibboleth">Link profile with AAF ID</a>
                         </c:otherwise>
                         </c:choose>
                         <div class="help-inline">
-                            <a class=info href="#"><img src="<c:url value="/img/help.png"/>" border="0">
+                            <a class=info href="#"><img src="${pageContext.request.contextPath}/img/help.png" border="0">
                             <span>
                                 <b>AAF ID:</b><br>
                                 <br>
@@ -89,7 +89,7 @@
                     <div class="controls">
                         <form:input path="username" id="username"/>
                         <div class="help-inline">
-                            <a class=info href="#"><img src="<c:url value="/img/help.png"/>" border="0">
+                            <a class=info href="#"><img src="${pageContext.request.contextPath}/img/help.png" border="0">
                             <span>
                                 <b>Username:</b><br>
                                 <br>
@@ -140,7 +140,7 @@
                     <div class="controls">
                         <form:input path="organisation" id="organisation"/>
                         <div class="help-inline">
-                            <a class=info href="#"><img src="<c:url value="/img/help.png"/>" border="0">
+                            <a class=info href="#"><img src="${pageContext.request.contextPath}/img/help.png" border="0">
                             <span>
                                 <b>Organisation:</b><br>
                                 <br>
@@ -164,7 +164,7 @@
                     <div class="controls">
                         <form:textarea path="dataSpaceAgentDescription" id="dataSpaceAgentDescription" cssStyle="width: 400px; height: 100px;"/>
                         <div class="help-inline">
-                            <a class=info href="#"><img src="<c:url value="/img/help.png"/>" border="0">
+                            <a class=info href="#"><img src="${pageContext.request.contextPath}/img/help.png" border="0">
                             <span>
                                 <b>Description:</b><br>
                                 <br>

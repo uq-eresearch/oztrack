@@ -13,17 +13,17 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
-        <a href="<c:url value="/"/>">Home</a>
+        <a href="${pageContext.request.contextPath}/">Home</a>
         &rsaquo; <span class="active">Settings</span>
     </jsp:attribute>
     <jsp:body>
         <h1>Settings</h1>
         <h2>Manage Settings</h2>
         <ul class="icons">
-            <li class="edit"><a href="<c:url value="/settings/geoserver"/>">GeoServer</a></li>
-            <li class="edit"><a href="<c:url value="/settings/srs"/>">Spatial Reference Systems</a></li>
-            <li class="edit"><a href="<c:url value="/settings/content"/>">Website Content</a></li>
-            <li class="edit"><a href="<c:url value="/settings/usage"/>">Usage Summary</a></li>
+            <li class="edit"><a href="${pageContext.request.contextPath}/settings/geoserver">GeoServer</a></li>
+            <li class="edit"><a href="${pageContext.request.contextPath}/settings/srs">Spatial Reference Systems</a></li>
+            <li class="edit"><a href="${pageContext.request.contextPath}/settings/content">Website Content</a></li>
+            <li class="edit"><a href="${pageContext.request.contextPath}/settings/usage">Usage Summary</a></li>
         </ul>
     </jsp:body>
 </tags:page>

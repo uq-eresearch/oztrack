@@ -54,9 +54,9 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
-        <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
-        &rsaquo; <a href="<c:url value="/projects/${project.id}"/>">${project.title}</a>
+        <a href="${pageContext.request.contextPath}/">Home</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
         &rsaquo; <span class="active">Metadata Publication</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
@@ -201,7 +201,7 @@
                 <a class="btn btn-primary" href="#" onclick="publishToDataSpace(<c:out value="${project.id}"/>, 'delete'); return false;">Delete from UQ DataSpace</a>
                 &nbsp;
             </c:if>
-            <a class="btn" href="<c:url value="/projects/${project.id}"/>">Cancel</a>
+            <a class="btn" href="${pageContext.request.contextPath}/projects/${project.id}">Cancel</a>
         </div>
     </jsp:body>
 </tags:page>

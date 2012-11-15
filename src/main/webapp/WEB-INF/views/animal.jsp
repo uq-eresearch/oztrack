@@ -12,10 +12,10 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
-        <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
-        &rsaquo; <a href="<c:url value="/projects/${project.id}"/>">${project.title}</a>
-        &rsaquo; <a href="<c:url value="/projects/${project.id}/animals"/>">Animals</a>
+        <a href="${pageContext.request.contextPath}/">Home</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}/animals">Animals</a>
         &rsaquo; <span class="active">${animal.animalName}</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
@@ -59,9 +59,9 @@
         <div class="actions">
         <h2>Manage Animal</h2>
         <ul class="icons">
-            <li class="edit"><a href="<c:url value="/animals/${animal.id}/edit"/>">Edit animal</a></li>
+            <li class="edit"><a href="${pageContext.request.contextPath}/animals/${animal.id}/edit">Edit animal</a></li>
             <c:if test="${empty animal.positionFixes}">
-            <li class="delete"><a href="javascript:void(deleteEntity('<c:url value="/animals/${animal.id}"/>', '<c:url value="/projects/${project.id}/animals"/>', 'Are you sure you want to delete this animal?'));">Delete animal</a></li>
+            <li class="delete"><a href="javascript:void(deleteEntity('${pageContext.request.contextPath}/animals/${animal.id}', '${pageContext.request.contextPath}/projects/${project.id}/animals', 'Are you sure you want to delete this animal?'));">Delete animal</a></li>
             </c:if>
         </ul>
         </div>

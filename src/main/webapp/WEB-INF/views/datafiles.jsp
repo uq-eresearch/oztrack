@@ -15,9 +15,9 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
-        <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
-        &rsaquo; <a href="<c:url value="/projects/${project.id}"/>">${project.title}</a>
+        <a href="${pageContext.request.contextPath}/">Home</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
         &rsaquo; <span class="active">Data Uploads</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
@@ -31,7 +31,7 @@
             <c:out value="${fn:length(dataFileList)}"/> data file(s) found.
         </p>
         <p>
-            <a class="btn btn-primary" href="<c:url value='/projects/${project.id}/datafiles/new'/>" >Add a data file</a>
+            <a class="btn btn-primary" href="${pageContext.request.contextPath}/projects/${project.id}/datafiles/new" >Add a data file</a>
             <a class="btn" id="pageRefresh" href="javascript:location.reload(true)">Refresh</a>
         </p>
         <c:if test="${not empty dataFileList}">
@@ -53,7 +53,7 @@
                     <tr>
                         <td><c:out value="${dataFile.userGivenFileName}"/></td>
                         <td><fmt:formatDate pattern="${dateFormatPattern}" value="${dataFile.createDate}"/>
-                        <td><a href="<c:url value="/datafiles/${dataFile.id}"/>"><c:out value="${dataFile.status}"/></a></td>
+                        <td><a href="${pageContext.request.contextPath}/datafiles/${dataFile.id}"><c:out value="${dataFile.status}"/></a></td>
                     </tr>
                 </c:forEach>
                 </tbody>

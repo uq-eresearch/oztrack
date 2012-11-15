@@ -20,10 +20,10 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
-        <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
-        &rsaquo; <a href="<c:url value="/projects/${project.id}"/>">${project.title}</a>
-        &rsaquo; <a href="<c:url value="/projects/${project.id}/datafiles"/>">Data Uploads</a>
+        <a href="${pageContext.request.contextPath}/">Home</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}/datafiles">Data Uploads</a>
         &rsaquo; <span class="active">Add a Data File</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
@@ -51,7 +51,7 @@
                         <form:input path="fileDescription" id="fileDescription" cssClass="input-xlarge"/>
                         <div class="help-inline">
                             <a class=info href="#">
-                                <img src="<c:url value="/img/help.png"/>" border="0">
+                                <img src="${pageContext.request.contextPath}/img/help.png" border="0">
                                 <span>
                                     <b>File Description</b><br>
                                     <br>
@@ -69,7 +69,7 @@
                         Local time is GMT +<form:input path="localTimeConversionHours" cssClass="input-mini" cssStyle="width: 30px;"/> hours.
                         <div class="help-inline">
                             <a class=info href="#">
-                                <img src="<c:url value="/img/help.png"/>" border="0">
+                                <img src="${pageContext.request.contextPath}/img/help.png" border="0">
                                 <span>
                                     <b>Time Conversion</b><br>
                                     <br>
@@ -85,7 +85,7 @@
                         <input type="file" name="file"/>
                         <div class="help-inline">
                             <a class=info href="#">
-                                <img src="<c:url value="/img/help.png"/>" border="0">
+                                <img src="${pageContext.request.contextPath}/img/help.png" border="0">
                                 <span>
                                     <b>Uploading the File:</b><br>
                                     <br>
@@ -99,7 +99,7 @@
             </fieldset>
             <div class="form-actions">
                 <input class="btn btn-primary" type="submit" value="Add File"/>
-                <a class="btn" href="<c:url value="/projects/${project.id}/datafiles"/>">Cancel</a>
+                <a class="btn" href="${pageContext.request.contextPath}/projects/${project.id}/datafiles">Cancel</a>
             </div>
         </form:form>
 

@@ -15,7 +15,7 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
-        <a href="<c:url value="/"/>">Home</a>
+        <a href="${pageContext.request.contextPath}/">Home</a>
         &rsaquo; <span class="active">Reset Password</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar"/>
@@ -55,7 +55,7 @@
             </div>
         </form>
         <p>
-            Don't have an account yet? <a href="<c:url value="/users/new"/>">Register as a new user</a>
+            Don't have an account yet? <a href="${pageContext.request.contextPath}/users/new">Register as a new user</a>
         </p>
     </jsp:body>
 </tags:page>

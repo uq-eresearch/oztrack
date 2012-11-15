@@ -19,8 +19,8 @@
         </c:choose>
     </jsp:attribute>
     <jsp:attribute name="head">
-        <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
-        <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/js/openlayers/theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/js/openlayers/theme/default/google.css" type="text/css">
         <c:if test="${dataLicencingEnabled}">
         <style type="text/css">
             .dataLicence {
@@ -47,7 +47,7 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/proj4js/proj4js-compressed.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/OpenLayers.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/LoadingPanel.js"></script>
-        <script type="text/javascript" src="<c:url value="/js/srs-selector.js"/>"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/srs-selector.js"></script>
         <script type="text/javascript">
             <c:if test="${dataLicencingEnabled}">
             function setCheckboxDisabled(selector, disabled) {
@@ -156,11 +156,11 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
-        <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
+        <a href="${pageContext.request.contextPath}/">Home</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
         <c:choose>
         <c:when test="${project.id != null}">
-        &rsaquo; <a href="<c:url value="/projects/${project.id}"/>">${project.title}</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
         &rsaquo; <span class="active">Update Project</span>
         </c:when>
         <c:otherwise>
@@ -171,7 +171,7 @@
     <jsp:attribute name="sidebar">
         <div class="sidebarMenu">
             <ul>
-                <li><a href="<c:url value="/projects"/>">Project List</a></li>
+                <li><a href="${pageContext.request.contextPath}/projects">Project List</a></li>
             </ul>
         </div>
     </jsp:attribute>
@@ -215,7 +215,7 @@
                         <input type="text" disabled="disabled" value="<c:out value="${dataSpaceAgent.fullName}"/>" />
                         <div class="help-inline">
                             <a class=info href="#">
-                                <img src="<c:url value="/img/help.png"/>" border="0">
+                                <img src="${pageContext.request.contextPath}/img/help.png" border="0">
                                 <span>
                                     <b>Contact:</b><br>
                                     <br>
@@ -255,7 +255,7 @@
                         <form:input path="title" id="title" cssClass="input-xxlarge"/>
                         <div class="help-inline">
                             <a class=info href="#">
-                                <img src="<c:url value="/img/help.png"/>" border="0">
+                                <img src="${pageContext.request.contextPath}/img/help.png" border="0">
                                 <span>
                                     <b>Title:</b><br>
                                     <br>
@@ -272,7 +272,7 @@
                         <form:textarea path="description" id="description" cssStyle="width: 400px; height: 100px;"/>
                         <div class="help-inline">
                             <a class=info href="#">
-                                <img src="<c:url value="/img/help.png"/>" border="0">
+                                <img src="${pageContext.request.contextPath}/img/help.png" border="0">
                                 <span>
                                     <b>Description:</b><br>
                                     <br>
@@ -291,7 +291,7 @@
                         </form:select>
                         <div class="help-inline">
                             <a class=info href="#">
-                                <img src="<c:url value="/img/help.png"/>" border="0">
+                                <img src="${pageContext.request.contextPath}/img/help.png" border="0">
                                 <span>
                                     <b>Project Type:</b><br>
                                     <br>
@@ -309,7 +309,7 @@
                         <form:input path="spatialCoverageDescr" id="spatialCoverageDescr"/>
                         <div class="help-inline">
                             <a class=info href="#">
-                                <img src="<c:url value="/img/help.png"/>" border="0">
+                                <img src="${pageContext.request.contextPath}/img/help.png" border="0">
                                 <span>
                                     <b>Location Description:</b><br>
                                     <br>
@@ -463,10 +463,10 @@
                 <input class="btn btn-primary" type="submit" value="${(project.id != null) ? 'Update Project' : 'Create Project'}" />
                 <c:choose>
                 <c:when test="${project.id != null}">
-                <a class="btn" href="<c:url value="/projects/${project.id}"/>">Cancel</a>
+                <a class="btn" href="${pageContext.request.contextPath}/projects/${project.id}">Cancel</a>
                 </c:when>
                 <c:otherwise>
-                <a class="btn" href="<c:url value="/projects"/>">Cancel</a>
+                <a class="btn" href="${pageContext.request.contextPath}/projects">Cancel</a>
                 </c:otherwise>
                 </c:choose>
             </div>

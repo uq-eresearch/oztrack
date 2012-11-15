@@ -6,8 +6,8 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <tags:page title="${project.title}: Update Animal Details">
     <jsp:attribute name="head">
-        <link rel="stylesheet" href="<c:url value="/css/farbtastic/farbtastic.css"/>" type="text/css" />
-        <script type="text/javascript" src="<c:url value="/js/farbtastic/farbtastic.js"/>"></script>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/farbtastic/farbtastic.css" type="text/css" />
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/farbtastic/farbtastic.js"></script>
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
@@ -17,11 +17,11 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
-        <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
-        &rsaquo; <a href="<c:url value="/projects/${project.id}"/>">${project.title}</a>
-        &rsaquo; <a href="<c:url value="/projects/${project.id}/animals"/>">Animals</a>
-        &rsaquo; <a href="<c:url value="/animals/${animal.id}"/>">${animal.animalName}</a>
+        <a href="${pageContext.request.contextPath}/">Home</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}/animals">Animals</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/animals/${animal.id}">${animal.animalName}</a>
         &rsaquo; <span class="active">Edit</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
@@ -85,7 +85,7 @@
             </fieldset>
             <div class="form-actions">
                 <input class="btn btn-primary" type="submit" value="Update"/>
-                <a class="btn" href="<c:url value="/animals/${animal.id}"/>">Cancel</a>
+                <a class="btn" href="${pageContext.request.contextPath}/animals/${animal.id}">Cancel</a>
             </div>
         </form:form>
     </jsp:body>

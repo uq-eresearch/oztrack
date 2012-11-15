@@ -13,7 +13,7 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
-        <a href="<c:url value="/"/>">Home</a>
+        <a href="${pageContext.request.contextPath}/">Home</a>
         &rsaquo; <span class="active">Contact</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar"/>

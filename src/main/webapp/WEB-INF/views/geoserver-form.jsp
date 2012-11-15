@@ -13,8 +13,8 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
-        <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="<c:url value="/settings"/>">Settings</a>
+        <a href="${pageContext.request.contextPath}/">Home</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/settings">Settings</a>
         &rsaquo; <span class="active">GeoServer</span>
     </jsp:attribute>
     <jsp:body>

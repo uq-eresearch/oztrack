@@ -7,8 +7,8 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <tags:page title="${project.title}: Data Cleansing" fluid="true">
     <jsp:attribute name="head">
-        <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/style.css"/>" type="text/css">
-        <link rel="stylesheet" href="<c:url value="/js/openlayers/theme/default/google.css"/>" type="text/css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/js/openlayers/theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/js/openlayers/theme/default/google.css" type="text/css">
         <style type="text/css">
             #main {
                 padding-bottom: 0;
@@ -60,12 +60,12 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/proj4js/proj4js-compressed.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/OpenLayers.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/openlayers/LoadingPanel.js"></script>
-        <script type="text/javascript" src="<c:url value="/js/project-cleanse.js"/>"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/project-cleanse.js"></script>
         <script type="text/javascript">
             function submitCleanseForm(operation) {
                 jQuery('.cleanse-response').hide();
                 jQuery.ajax({
-                    url: '<c:url value="/projects/${project.id}/cleanse"/>',
+                    url: '${pageContext.request.contextPath}/projects/${project.id}/cleanse',
                     type: 'POST',
                     data: 'operation=' + operation + '&' + jQuery('#cleanseForm').serialize(),
                     success: function(data, textStatus, jqXHR) {
@@ -185,9 +185,9 @@
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
-        <a href="<c:url value="/"/>">Home</a>
-        &rsaquo; <a href="<c:url value="/projects"/>">Animal Tracking</a>
-        &rsaquo; <a href="<c:url value="/projects/${project.id}"/>">${project.title}</a>
+        <a href="${pageContext.request.contextPath}/">Home</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Animal Tracking</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
         &rsaquo; <span class="active">Data Cleansing</span>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbsRight">
