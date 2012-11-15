@@ -5,7 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ attribute name="title" required="true" %>
+<%@ attribute name="title" required="false" %>
 <%@ attribute name="description" required="false" %>
 <%@ attribute name="head" required="true" fragment="true" %>
 <%@ attribute name="breadcrumbs" required="false" fragment="true" %>
@@ -50,7 +50,7 @@
     </script>
     </c:if>
 
-    <title>OzTrack: ${title}</title>
+    <title>OzTrack${(not empty title) ? ': ' : ' - '}${(not empty title) ? title : 'Free Animal Tracking Software'}</title>
 
     <jsp:invoke fragment="head"/>
 </head>

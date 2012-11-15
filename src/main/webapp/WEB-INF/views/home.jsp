@@ -4,7 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
-<tags:page title="Home">
+<tags:page>
     <jsp:attribute name="description">
         OzTrack is a free-to-use web-based platform for analysing and visualising
         individual-based animal location data. Upload your tracking data now.
