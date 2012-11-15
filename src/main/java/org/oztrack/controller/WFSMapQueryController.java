@@ -68,7 +68,7 @@ public class WFSMapQueryController {
 
     @ModelAttribute("searchQuery")
     public SearchQuery getSearchQuery(
-        @RequestParam(value="projectId", required=true) Long projectId,
+        @RequestParam(value="projectId", required=false) Long projectId,
         @RequestParam(value="fromDate", required=false) String fromDateString,
         @RequestParam(value="toDate", required=false) String toDateString,
         @RequestParam(value="animalIds", required=false) List<Long> animalIds,
