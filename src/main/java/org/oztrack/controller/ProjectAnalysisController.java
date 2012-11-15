@@ -2,15 +2,21 @@ package org.oztrack.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.oztrack.data.access.AnalysisDao;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.SrsDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
+import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.AnalysisType;
 import org.oztrack.data.model.types.MapLayerType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
@@ -26,10 +32,16 @@ public class ProjectAnalysisController {
     private ProjectDao projectDao;
 
     @Autowired
-    AnimalDao animalDao;
+    private AnalysisDao analysisDao;
 
     @Autowired
-    SrsDao srsDao;
+    private AnimalDao animalDao;
+
+    @Autowired
+    private SrsDao srsDao;
+
+    @Autowired
+    private OzTrackPermissionEvaluator permissionEvaluator;
 
     @InitBinder("project")
     public void initProjectBinder(WebDataBinder binder) {
@@ -43,7 +55,12 @@ public class ProjectAnalysisController {
 
     @RequestMapping(value="/projects/{id}/analysis", method=RequestMethod.GET)
     @PreAuthorize("#project.global or hasPermission(#project, 'read')")
-    public String getView(Model model, @ModelAttribute(value="project") Project project) {
+    public String getView(
+        Authentication authentication,
+        HttpServletRequest request,
+        Model model,
+        @ModelAttribute(value="project") Project project
+    ) {
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
         model.addAttribute("mapLayerTypeList", new MapLayerType[] {
             MapLayerType.LINES,
@@ -61,6 +78,10 @@ public class ProjectAnalysisController {
         model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project));
         model.addAttribute("animalBoundingBoxes", projectDao.getBoundingBoxes(project, projectAnimalsList));
         model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, false));
+        User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
+        HttpSession currentSession = request.getSession(false);
+        String currentSessionId = (currentSession != null) ? currentSession.getId() : null;
+        model.addAttribute("previousAnalyses", analysisDao.getPreviousAnalyses(currentUser, currentSessionId));
         return "project-analysis";
     }
 }

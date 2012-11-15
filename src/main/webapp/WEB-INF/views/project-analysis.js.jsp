@@ -251,7 +251,7 @@ function createAnalysisMap(div, options) {
             if (toDate) {
                 params.toDate = toDate;
             }
-            params.animalIds = $('input[name=animal]:checked').map(function() {return $(this).val();}).toArray();
+            params.animalIds = $('input[name=animal]:checked').map(function() {return $(this).val();}).toArray().join(',');
             $('.paramField-' + queryTypeValue).each(function() {
                 params[$(this).attr('name')] = $(this).val();
             });
@@ -269,19 +269,19 @@ function createAnalysisMap(div, options) {
                 map.addLayer(createWFSLayer(layerName, 'StartEnd', params, startEndStyleMap));
             }
             else if ((queryTypeValue == "HEATMAP_POINT") || (queryTypeValue == "HEATMAP_LINE")) {
-                map.addLayer(createKMLLayer(layerName, params, null, true));
+                createKMLLayer(null, map, layerName, params, null, true);
             }
             else {
-                map.addLayer(createKMLLayer(layerName, params, polygonStyleMap, null));
+                createKMLLayer(null, map, layerName, params, polygonStyleMap, null);
             }
         };
         
-        analysisMap.addKMLLayer = function(layerName, params) {
+        analysisMap.addKMLLayer = function(analysisUrl, layerName, params) {
             if ((params.queryType == "HEATMAP_POINT") || (params.queryType == "HEATMAP_LINE")) {
-                map.addLayer(createKMLLayer(layerName, params, null, true));
+                createKMLLayer(analysisUrl, map, layerName, params, null, true);
             }
             else {
-                map.addLayer(createKMLLayer(layerName, params, polygonStyleMap, null));
+                createKMLLayer(analysisUrl, map, layerName, params, polygonStyleMap, null);
             }
         };
         
@@ -442,15 +442,36 @@ function createAnalysisMap(div, options) {
             });
         }
 
-        function createKMLLayer(layerName, params, styleMap, extractStyles) {
-            onAnalysisStart(layerName, params);
-            var url = "/analysisKML";
+        function createKMLLayer(analysisUrl, map, layerName, params, styleMap, extractStyles) {
+            if (analysisUrl) {
+                createAnalysisKMLLayer(analysisUrl, map, layerName, params, styleMap, extractStyles);
+            }
+            else {
+                $.ajax({
+                    url: '/projects/' + projectId + '/analyses',
+                    type: 'POST',
+                    data: params,
+                    error: function(xhr, textStatus, errorThrown) {
+                        onAnalysisError($(xhr.responseText).find('error').text() || 'Error processing request');
+                    },
+                    complete: function (xhr, textStatus) {
+                        if (textStatus == 'success') {
+                            var newAnalysisUrl = xhr.getResponseHeader('Location');
+                            onAnalysisStart(newAnalysisUrl, layerName, params);
+                            createAnalysisKMLLayer(newAnalysisUrl, map, layerName, params, styleMap, extractStyles);
+                        }
+                    }
+                });
+            }
+        }
+        
+        function createAnalysisKMLLayer(analysisUrl, map, layerName, params, styleMap, extractStyles) {
+            var analysisResultUrl = analysisUrl + "/result";
             var queryOverlay = new OpenLayers.Layer.Vector(layerName, {
                 styleMap : styleMap
             });
             var protocol = new OpenLayers.Protocol.HTTP({
-                url : url,
-                params : params,
+                url : analysisResultUrl,
                 format : new OpenLayers.Format.KML({
                     extractStyles : extractStyles,
                     extractAttributes : true,
@@ -464,7 +485,7 @@ function createAnalysisMap(div, options) {
                 loadingPanel.decreaseCounter();
                 if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
                     queryOverlay.addFeatures(resp.features);
-                    updateAnimalInfoFromKML(layerName, url, params, resp.features);
+                    updateAnimalInfoFromKML(layerName, analysisResultUrl, params, resp.features);
                     onAnalysisSuccess();
                 }
                 else {
@@ -475,7 +496,7 @@ function createAnalysisMap(div, options) {
             protocol.read({
                 callback : callback
             });
-            return queryOverlay;
+            map.addLayer(queryOverlay);
         }
 
         function updateAnimalInfoFromWFS(wfsLayer) {

@@ -36,6 +36,9 @@ public class Analysis extends OzTrackBaseEntity {
     @Column(name="id", nullable=false)
     private Long id;
 
+    @Column(name="createsession", columnDefinition="text")
+    private String createSession;
+
     @ManyToOne
     @JoinColumn(name="project_id", nullable=false)
     private Project project;
@@ -69,6 +72,14 @@ public class Analysis extends OzTrackBaseEntity {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getCreateSession() {
+        return createSession;
+    }
+
+    public void setCreateSession(String createSession) {
+        this.createSession = createSession;
     }
 
     public Project getProject() {

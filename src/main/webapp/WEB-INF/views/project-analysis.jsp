@@ -3,7 +3,6 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <c:set var="isoDateFormatPattern" value="yyyy-MM-dd"/>
 <c:set var="dateTimeFormatPattern" value="dd/MM/yyyy' at 'HH:mm"/>
@@ -198,11 +197,9 @@
                     },
                     minDate: new Date(${projectDetectionDateRange.minimum.time}),
                     maxDate: new Date(${projectDetectionDateRange.maximum.time}),
-                    <sec:authorize access="hasPermission(#project, 'read')">
-                    onAnalysisStart: function(layerName, params) {
-                        addPreviousAnalysis(layerName, params, new Date());
+                    onAnalysisStart: function(analysisUrl, layerName, params) {
+                        addPreviousAnalysis(analysisUrl, layerName, params, new Date());
                     },
-                    </sec:authorize>
                     onAnalysisError: function(message) {
                         jQuery('#errorDialog')
                             .text(message)
@@ -221,9 +218,9 @@
                         $("#projectMapOptionsAccordion").accordion('activate', '#animalPanelHeader');
                     }
                 });
-                <sec:authorize access="hasPermission(#project, 'read')">
-                <c:forEach items="${project.analyses}" var="analysis">
+                <c:forEach items="${previousAnalyses}" var="analysis">
                 addPreviousAnalysis(
+                    '${pageContext.request.contextPath}/projects/${analysis.project.id}/analyses/${analysis.id}',
                     '${analysis.analysisType.displayName}',
                     {
                         queryType : '${analysis.analysisType}'
@@ -242,23 +239,20 @@
                     new Date(${analysis.createDate.time})
                 );
                 </c:forEach>
-                </sec:authorize>
             });
-            <sec:authorize access="hasPermission(#project, 'read')">
-            function addPreviousAnalysis(layerName, params, createDate) {
+            function addPreviousAnalysis(analysisUrl, layerName, params, createDate) {
                 $('#previousAnalysesList').prepend($('<li>')
                     .addClass('previousAnalysesListItem analysis')
                     .append($('<a>')
                         .attr('href', 'javascript:void(0);')
                         .text(layerName)
                         .click(function(e) {
-                            analysisMap.addKMLLayer(layerName, params);
+                            analysisMap.addKMLLayer(analysisUrl, layerName, params);
                         })
                     )
                     .append(' (' + dateToISO8601(createDate) + ' at ' + createDate.toLocaleTimeString() + ')')
                 );
             }
-            </sec:authorize>
             function onResize() {
                 var mainHeight = $(window).height() - $('#header').height() - $('#crumbs').height() - 21;
                 $('#projectMapOptions').height(mainHeight);
@@ -335,7 +329,7 @@
 
             <div id="homeRangeCalculatorPanel">
 
-                <form id="mapToolForm" class="form-vertical" method="POST" onsubmit="analysisMap.addProjectMapLayer(); return false;">
+                <form id="mapToolForm" class="form-vertical" method="POST" onsubmit="return false;">
                     <input id="projectId" type="hidden" value="${project.id}"/>
                     <fieldset>
                     <div class="control-group" style="margin-bottom: 9px;">
@@ -438,12 +432,11 @@
                     </div>
                     </fieldset>
                     <div style="margin-top: 18px;">
-                        <input class="btn btn-primary" type="submit" id="projectMapSubmit" value="Calculate"/>
+                        <input id="projectMapSubmit" class="btn btn-primary" type="button" value="Calculate" onclick="analysisMap.addProjectMapLayer();" />
                     </div>
                 </form>
             </div>
 
-            <sec:authorize access="hasPermission(#project, 'read')">
             <c:if test="${not empty project.analyses}">
             <h3><a href="javascript:void(0);">Previous Analyses</a></h3>
             <div id="previousAnalysesPanel">
@@ -451,7 +444,6 @@
                 </ul>
             </div>
             </c:if>
-            </sec:authorize>
         </div>
         </div>
         <div style="padding: 2px 5px 5px 5px;">

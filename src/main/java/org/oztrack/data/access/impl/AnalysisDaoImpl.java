@@ -7,6 +7,7 @@ import javax.persistence.PersistenceContext;
 
 import org.oztrack.data.access.AnalysisDao;
 import org.oztrack.data.model.Analysis;
+import org.oztrack.data.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,5 +34,20 @@ public class AnalysisDaoImpl implements AnalysisDao {
     public void save(Analysis analysis) {
         analysis.setUpdateDate(new java.util.Date());
         em.persist(analysis);
+    }
+
+    @Override
+    public List<Analysis> getPreviousAnalyses(User createUser, String createSession) {
+        @SuppressWarnings("unchecked")
+        List<Analysis> resultList = em
+            .createQuery(
+                "from org.oztrack.data.model.Analysis\n" +
+                "where createUser = :createUser or createSession = :createSession\n" +
+                "order by createDate")
+            .setParameter("createUser", createUser)
+            .setParameter("createSession", createSession)
+            .setMaxResults(20)
+            .getResultList();
+        return resultList;
     }
 }

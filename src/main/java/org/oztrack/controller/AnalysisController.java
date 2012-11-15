@@ -3,18 +3,23 @@ package org.oztrack.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Locale;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.access.AnalysisDao;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.Analysis;
 import org.oztrack.data.model.PositionFix;
+import org.oztrack.data.model.User;
 import org.oztrack.error.RServeInterfaceException;
 import org.oztrack.util.RServeInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +43,9 @@ public class AnalysisController {
     @Autowired
     private PositionFixDao positionFixDao;
 
+    @Autowired
+    private OzTrackPermissionEvaluator permissionEvaluator;
+
     @InitBinder("analysis")
     public void initAnalysisBinder(WebDataBinder binder) {
         binder.setAllowedFields();
@@ -48,13 +56,59 @@ public class AnalysisController {
         return analysisDao.getAnalysisById(analysisId);
     }
 
-    @RequestMapping(value="/projects/{projectId}/analysis/{analysisId}", method=RequestMethod.GET, produces="application/vnd.google-earth.kml+xml")
-    @PreAuthorize("#analysis.project.global or hasPermission(#analysis.project, 'read')")
-    public void handleKMLQuery(
+    private boolean canRead(Authentication authentication, HttpServletRequest request, Analysis analysis) {
+        if (permissionEvaluator.hasPermission(authentication, analysis.getProject(), "read")) {
+            return true;
+        }
+        User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
+        if ((currentUser != null) && currentUser.equals(analysis.getCreateUser())) {
+            return true;
+        }
+        HttpSession currentSession = request.getSession(false);
+        if ((currentSession != null) && currentSession.getId().equals(analysis.getCreateSession())) {
+            return true;
+        }
+        return false;
+    }
+
+    @RequestMapping(value="/projects/{projectId}/analyses/{analysisId}", method=RequestMethod.GET, produces="application/xml")
+    @PreAuthorize("permitAll")
+    public void handleXML(
         Authentication authentication,
+        HttpServletRequest request,
         HttpServletResponse response,
-        @ModelAttribute("analysis") Analysis analysis
+        @ModelAttribute(value="analysis") Analysis analysis
     ) {
+        if (!canRead(authentication, request, analysis)) {
+            response.setStatus(403);
+            return;
+        }
+        String resultUrl = String.format("%s/projects/%d/analyses/%d/result", request.getContextPath(), analysis.getProject().getId(), analysis.getId());
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        out.append("<?xml version=\"1.0\"?>\n");
+        out.append("<analysis xmlns=\"http://oztrack.org/xmlns#\">\n");
+        out.append("    <result>" + resultUrl + "</result>\n");
+        out.append("</analysis>\n");
+    }
+
+    @RequestMapping(value="/projects/{projectId}/analyses/{analysisId}/result", method=RequestMethod.GET, produces="application/vnd.google-earth.kml+xml")
+    @PreAuthorize("permitAll")
+    public void handleResultKML(
+        Authentication authentication,
+        HttpServletRequest request,
+        HttpServletResponse response,
+        @ModelAttribute(value="analysis") Analysis analysis
+    ) {
+        if (!canRead(authentication, request, analysis)) {
+            response.setStatus(403);
+            return;
+        }
         List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(analysis.toSearchQuery());
         RServeInterface rServeInterface = new RServeInterface();
         File kmlFile = null;
@@ -64,6 +118,7 @@ public class AnalysisController {
         catch (RServeInterfaceException e) {
             logger.error("RServeInterface exception", e);
             response.setStatus(500);
+            writeResultError(response, e.getMessage());
             return;
         }
         String filename = analysis.getAnalysisType().name().toLowerCase(Locale.ENGLISH) + ".kml";
@@ -78,10 +133,25 @@ public class AnalysisController {
         }
         catch (IOException e) {
             response.setStatus(500);
+            writeResultError(response, "Error writing KML response.");
             return;
         }
         finally {
             IOUtils.closeQuietly(kmlInputStream);
         }
+    }
+
+    private static void writeResultError(HttpServletResponse response, String error) {
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        out.append("<?xml version=\"1.0\"?>\n");
+        out.append("<analysis-result-response xmlns=\"http://oztrack.org/xmlns#\">\n");
+        out.append("    <error>" + StringUtils.trim(error) + "</error>\n");
+        out.append("</analysis-result-response>\n");
     }
 }
