@@ -6,6 +6,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ attribute name="title" required="true" %>
+<%@ attribute name="description" required="false" %>
 <%@ attribute name="head" required="true" fragment="true" %>
 <%@ attribute name="breadcrumbs" required="false" fragment="true" %>
 <%@ attribute name="breadcrumbsRight" required="false" fragment="true" %>
@@ -18,6 +19,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <c:if test="${not empty description}">
+    <meta name="description" content="${description}" />
+    </c:if>
 
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/jquery-ui/jquery-ui-1.8.23.custom.css"/>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/bootstrap.css"/>
