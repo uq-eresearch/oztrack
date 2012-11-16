@@ -156,6 +156,8 @@ public class UserListController {
     @PreAuthorize("permitAll")
     public void getSearchJson(@RequestParam(value="term") String term, HttpServletResponse response) throws JSONException, IOException {
         List<User> users = userDao.search(term);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         JSONWriter out = new JSONWriter(response.getWriter());
         out.array();
         for (User user : users) {
