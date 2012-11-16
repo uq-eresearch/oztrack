@@ -197,8 +197,8 @@
                     },
                     minDate: new Date(${projectDetectionDateRange.minimum.time}),
                     maxDate: new Date(${projectDetectionDateRange.maximum.time}),
-                    onAnalysisCreate: function(analysisUrl, layerName, params) {
-                        addPreviousAnalysis(analysisUrl, layerName, params, new Date());
+                    onAnalysisCreate: function(layerName, analysisUrl) {
+                        addPreviousAnalysis(layerName, analysisUrl, new Date());
                     },
                     onAnalysisError: function(message) {
                         jQuery('#errorDialog')
@@ -220,37 +220,23 @@
                 });
                 <c:forEach items="${previousAnalyses}" var="analysis">
                 addPreviousAnalysis(
-                    '${pageContext.request.contextPath}/projects/${analysis.project.id}/analyses/${analysis.id}',
                     '${analysis.analysisType.displayName}',
-                    {
-                        queryType : '${analysis.analysisType}'
-                        , projectId : '${analysis.project.id}'
-                        <c:if test="${not empty analysis.fromDate}">
-                        , fromDate: '<fmt:formatDate pattern="${isoDateFormatPattern}" value="${analysis.fromDate}"/>'
-                        </c:if>
-                        <c:if test="${not empty analysis.toDate}">
-                        , toDate: '<fmt:formatDate pattern="${isoDateFormatPattern}" value="${analysis.toDate}"/>'
-                        </c:if>
-                        , animalIds: '<c:forEach items="${analysis.animals}" var="animal" varStatus="animalStatus">${animal.id}<c:if test="${!animalStatus.last}">,</c:if></c:forEach>'
-                        <c:forEach items="${analysis.parameters}" var="parameter">
-                        , '${parameter.name}': '${parameter.value}'
-                        </c:forEach>
-                    },
+                    '${pageContext.request.contextPath}/projects/${analysis.project.id}/analyses/${analysis.id}',
                     new Date(${analysis.createDate.time})
                 );
                 </c:forEach>
             });
-            function addPreviousAnalysis(analysisUrl, layerName, params, createDate) {
+            function addPreviousAnalysis(layerName, analysisUrl, analysisCreateDate) {
                 $('#previousAnalysesList').prepend($('<li>')
                     .addClass('previousAnalysesListItem analysis')
                     .append($('<a>')
                         .attr('href', 'javascript:void(0);')
                         .text(layerName)
                         .click(function(e) {
-                            analysisMap.addKMLLayer(analysisUrl, layerName, params);
+                            analysisMap.addAnalysisLayer(analysisUrl, layerName);
                         })
                     )
-                    .append(' (' + dateToISO8601(createDate) + ' at ' + createDate.toLocaleTimeString() + ')')
+                    .append(' (' + dateToISO8601(analysisCreateDate) + ' at ' + analysisCreateDate.toLocaleTimeString() + ')')
                 );
             }
             function onResize() {

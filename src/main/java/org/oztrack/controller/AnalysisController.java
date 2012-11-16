@@ -97,7 +97,7 @@ public class AnalysisController {
         out.object();
         out.key("id").value(analysis.getId());
         out.key("params").object();
-        out.key("analysisType").value(analysis.getAnalysisType());
+        out.key("queryType").value(analysis.getAnalysisType());
         if (analysis.getFromDate() != null) {
             out.key("fromDate").value(dateFormat.format(analysis.getFromDate()));
         }

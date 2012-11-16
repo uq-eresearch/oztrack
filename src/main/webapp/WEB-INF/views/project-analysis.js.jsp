@@ -268,21 +268,79 @@ function createAnalysisMap(div, options) {
             else if (queryTypeValue == "START_END") {
                 map.addLayer(createWFSLayer(layerName, 'StartEnd', params, startEndStyleMap));
             }
-            else if ((queryTypeValue == "HEATMAP_POINT") || (queryTypeValue == "HEATMAP_LINE")) {
-                createKMLLayer(null, map, layerName, params, null, true);
-            }
             else {
-                createKMLLayer(null, map, layerName, params, polygonStyleMap, null);
+                createAnalysisLayer(params, layerName);
             }
         };
-        
-        analysisMap.addKMLLayer = function(analysisUrl, layerName, params) {
-            if ((params.queryType == "HEATMAP_POINT") || (params.queryType == "HEATMAP_LINE")) {
-                createKMLLayer(analysisUrl, map, layerName, params, null, true);
-            }
-            else {
-                createKMLLayer(analysisUrl, map, layerName, params, polygonStyleMap, null);
-            }
+
+        function createAnalysisLayer(params, layerName) {
+            $.ajax({
+                url: '/projects/' + projectId + '/analyses',
+                type: 'POST',
+                data: params,
+                error: function(xhr, textStatus, errorThrown) {
+                    onAnalysisError($(xhr.responseText).find('error').text() || 'Error processing request');
+                },
+                complete: function (xhr, textStatus) {
+                    if (textStatus == 'success') {
+                        var analysisUrl = xhr.getResponseHeader('Location');
+                        onAnalysisCreate(layerName, analysisUrl);
+                        analysisMap.addAnalysisLayer(analysisUrl, layerName);
+                    }
+                }
+            });
+        }
+
+        analysisMap.addAnalysisLayer = function(analysisUrl, layerName) {
+            $.ajax({
+                url: analysisUrl,
+                type: 'GET',
+                error: function(xhr, textStatus, errorThrown) {
+                    onAnalysisError($(xhr.responseText).find('error').text() || 'Error getting analysis');
+                },
+                complete: function (xhr, textStatus) {
+                    if (textStatus == 'success') {
+                        var analysis = $.parseJSON(xhr.responseText);
+                        updateAnimalInfoForAnalysis(layerName, analysis);
+                        var styleMap = polygonStyleMap;
+                        var extractStyles = false;
+                        if ((analysis.params.queryType == "HEATMAP_POINT") || (analysis.params.queryType == "HEATMAP_LINE")) {
+                            styleMap = null;
+                            extractStyles = true;
+                        }
+                        var queryOverlay = new OpenLayers.Layer.Vector(layerName, {
+                            styleMap : styleMap
+                        });
+                        var protocol = new OpenLayers.Protocol.HTTP({
+                            url : analysis.resultUrl,
+                            format : new OpenLayers.Format.KML({
+                                extractStyles: extractStyles,
+                                extractAttributes: true,
+                                maxDepth: 2,
+                                internalProjection: projection900913,
+                                externalProjection: projection4326,
+                                kmlns: "http://oztrack.org/xmlns#"
+                            })
+                        });
+                        var callback = function(resp) {
+                            loadingPanel.decreaseCounter();
+                            if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
+                                queryOverlay.addFeatures(resp.features);
+                                updateAnimalInfoFromKML(analysis, resp.features);
+                                onAnalysisSuccess();
+                            }
+                            else {
+                                onAnalysisError(jQuery(resp.priv.responseText).find('error').text() || 'Error processing request');
+                            }
+                        };
+                        loadingPanel.increaseCounter();
+                        protocol.read({
+                            callback : callback
+                        });
+                        map.addLayer(queryOverlay);
+                    }
+                }
+            });
         };
         
         function createDetectionLayer(params) {
@@ -442,75 +500,6 @@ function createAnalysisMap(div, options) {
             });
         }
 
-        function createKMLLayer(analysisUrl, map, layerName, params, styleMap, extractStyles) {
-            if (analysisUrl) {
-                createAnalysisKMLLayer(analysisUrl, map, layerName, params, styleMap, extractStyles);
-            }
-            else {
-                $.ajax({
-                    url: '/projects/' + projectId + '/analyses',
-                    type: 'POST',
-                    data: params,
-                    error: function(xhr, textStatus, errorThrown) {
-                        onAnalysisError($(xhr.responseText).find('error').text() || 'Error processing request');
-                    },
-                    complete: function (xhr, textStatus) {
-                        if (textStatus == 'success') {
-                            var newAnalysisUrl = xhr.getResponseHeader('Location');
-                            onAnalysisCreate(newAnalysisUrl, layerName, params);
-                            createAnalysisKMLLayer(newAnalysisUrl, map, layerName, params, styleMap, extractStyles);
-                        }
-                    }
-                });
-            }
-        }
-        
-        function createAnalysisKMLLayer(analysisUrl, map, layerName, params, styleMap, extractStyles) {
-            $.ajax({
-                url: analysisUrl,
-                type: 'GET',
-                error: function(xhr, textStatus, errorThrown) {
-                    onAnalysisError($(xhr.responseText).find('error').text() || 'Error getting analysis');
-                },
-                complete: function (xhr, textStatus) {
-                    if (textStatus == 'success') {
-                        var analysis = $.parseJSON(xhr.responseText);
-                        updateAnimalInfoForAnalysis(layerName, analysis);
-                        var queryOverlay = new OpenLayers.Layer.Vector(layerName, {
-                            styleMap : styleMap
-                        });
-                        var protocol = new OpenLayers.Protocol.HTTP({
-                            url : analysis.resultUrl,
-                            format : new OpenLayers.Format.KML({
-                                extractStyles : extractStyles,
-                                extractAttributes : true,
-                                maxDepth : 2,
-                                internalProjection : projection900913,
-                                externalProjection : projection4326,
-                                kmlns : "http://oztrack.org/xmlns#"
-                            })
-                        });
-                        var callback = function(resp) {
-                            loadingPanel.decreaseCounter();
-                            if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
-                                queryOverlay.addFeatures(resp.features);
-                                updateAnimalInfoFromKML(analysis, resp.features);
-                                onAnalysisSuccess();
-                            }
-                            else {
-                                onAnalysisError(jQuery(resp.priv.responseText).find('error').text() || 'Error processing request');
-                            }
-                        };
-                        loadingPanel.increaseCounter();
-                        protocol.read({
-                            callback : callback
-                        });
-                        map.addLayer(queryOverlay);
-                    }
-                }
-            });
-        }
-
         function updateAnimalInfoFromWFS(wfsLayer) {
             var animalProcessed = {};
             for ( var key in wfsLayer.features) {
@@ -577,7 +566,7 @@ function createAnalysisMap(div, options) {
                 var html = '<div class="layerInfoTitle">' + layerName + '</div>';
                 var tableRowsHtml = '';
                 <c:forEach items="${analysisTypeList}" var="analysisType">
-                if (analysis.params.analysisType == '${analysisType}') {
+                if (analysis.params.queryType == '${analysisType}') {
                     <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
                     if (analysis.params.${parameterType.identifier}) {
                         tableRowsHtml += '<tr>';
