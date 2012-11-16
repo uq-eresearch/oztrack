@@ -30,7 +30,7 @@
     </jsp:attribute>
     <jsp:body>
         <h1 id="projectTitle"><c:out value="${dataFile.project.title}"/></h1>
-        <h2>Data File Detail</h2>
+        <h2>Data File</h2>
 
         <table class="entityTable">
         <tr>

@@ -29,7 +29,16 @@
     <jsp:body>
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
         <h2>Animals</h2>
-
+        <c:if test="${empty projectAnimalsList}">
+        <p>
+            There are currently no animals in this project.
+        </p>
+        <sec:authorize access="hasPermission(#project, 'write')">
+        <p>
+            Animals are created by <a href="${pageContext.request.contextPath}/projects/${project.id}/datafiles/new">uploading a data file</a>.
+        </p>
+        </sec:authorize>
+        </c:if>
         <table>
             <tbody>
             <c:forEach items="${projectAnimalsList}" var="animal">

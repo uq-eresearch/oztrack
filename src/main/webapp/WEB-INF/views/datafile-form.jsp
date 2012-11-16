@@ -26,14 +26,15 @@
         <a href="${pageContext.request.contextPath}/">Home</a>
         &rsaquo; <a href="${pageContext.request.contextPath}/projects">Projects</a>
         &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
-        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}/datafiles">Data Uploads</a>
-        &rsaquo; <span class="active">Add Data File</span>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}/datafiles">Data Files</a>
+        &rsaquo; <span class="active">Upload Data File</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
         <tags:project-menu project="${project}"/>
     </jsp:attribute>
     <jsp:body>
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
+        <h2>Upload Data File</h2>
 
         <p>
             This form allows you to upload animal tracking data in CSV format.

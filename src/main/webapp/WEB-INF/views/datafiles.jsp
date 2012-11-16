@@ -28,7 +28,7 @@
     </jsp:attribute>
     <jsp:body>
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
-        <h2>Data Uploads</h2>
+        <h2>Data Files</h2>
 
         <p>
             <c:out value="${fn:length(dataFileList)}"/> data file(s) found.
