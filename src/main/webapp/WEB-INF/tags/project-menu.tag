@@ -8,7 +8,11 @@
         <sec:authorize access="#project.global or hasPermission(#project, 'read')">
         <c:if test="${not empty project.dataFiles}">
         <li id="projectMenuAnalysis"><a href="${pageContext.request.contextPath}/projects/${project.id}/analysis">View Tracks</a></li>
+        </c:if>
+        <c:if test="${not empty project.animals}">
         <li id="projectMenuAnimals"><a href="${pageContext.request.contextPath}/projects/${project.id}/animals">View Animals</a></li>
+        </c:if>
+        <c:if test="${not empty project.dataFiles}">
         <li id="projectMenuSearch"><a href="${pageContext.request.contextPath}/projects/${project.id}/search">View Data</a></li>
         </c:if>
         </sec:authorize>
