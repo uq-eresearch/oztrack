@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
@@ -20,6 +21,8 @@ import org.json.JSONWriter;
 import org.oztrack.data.access.AnalysisDao;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.Analysis;
+import org.oztrack.data.model.AnalysisParameter;
+import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.User;
 import org.oztrack.error.RServeInterfaceException;
@@ -38,6 +41,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class AnalysisController {
     protected final Log logger = LogFactory.getLog(getClass());
+
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
     private AnalysisDao analysisDao;
@@ -90,7 +95,25 @@ public class AnalysisController {
         response.setCharacterEncoding("UTF-8");
         JSONWriter out = new JSONWriter(response.getWriter());
         out.object();
-        out.key("result").value(resultUrl);
+        out.key("id").value(analysis.getId());
+        out.key("params").object();
+        out.key("analysisType").value(analysis.getAnalysisType());
+        if (analysis.getFromDate() != null) {
+            out.key("fromDate").value(dateFormat.format(analysis.getFromDate()));
+        }
+        if (analysis.getFromDate() != null) {
+            out.key("toDate").value(dateFormat.format(analysis.getFromDate()));
+        }
+        out.key("animalIds").array();
+        for (Animal animal : analysis.getAnimals()) {
+            out.value(animal.getId());
+        }
+        out.endArray();
+        for (AnalysisParameter parameter : analysis.getParameters()) {
+            out.key(parameter.getName()).value(parameter.getValue());
+        }
+        out.endObject();
+        out.key("resultUrl").value(resultUrl);
         out.endObject();
     }
 

@@ -475,12 +475,12 @@ function createAnalysisMap(div, options) {
                 complete: function (xhr, textStatus) {
                     if (textStatus == 'success') {
                         var analysis = $.parseJSON(xhr.responseText);
-                        var analysisResultUrl = analysis.result;
+                        updateAnimalInfoForAnalysis(layerName, analysis);
                         var queryOverlay = new OpenLayers.Layer.Vector(layerName, {
                             styleMap : styleMap
                         });
                         var protocol = new OpenLayers.Protocol.HTTP({
-                            url : analysisResultUrl,
+                            url : analysis.resultUrl,
                             format : new OpenLayers.Format.KML({
                                 extractStyles : extractStyles,
                                 extractAttributes : true,
@@ -494,7 +494,7 @@ function createAnalysisMap(div, options) {
                             loadingPanel.decreaseCounter();
                             if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
                                 queryOverlay.addFeatures(resp.features);
-                                updateAnimalInfoFromKML(layerName, analysisResultUrl, params, resp.features);
+                                updateAnimalInfoFromKML(analysis, resp.features);
                                 onAnalysisSuccess();
                             }
                             else {
@@ -572,9 +572,30 @@ function createAnalysisMap(div, options) {
             }
         }
 
-        function updateAnimalInfoFromKML(layerName, url, params, features) {
+        function updateAnimalInfoForAnalysis(layerName, analysis) {
+            for (var i = 0; i < analysis.params.animalIds.length; i++) {
+                var html = '<div class="layerInfoTitle">' + layerName + '</div>';
+                var tableRowsHtml = '';
+                <c:forEach items="${analysisTypeList}" var="analysisType">
+                if (analysis.params.analysisType == '${analysisType}') {
+                    <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
+                    if (analysis.params.${parameterType.identifier}) {
+                        tableRowsHtml += '<tr>';
+                        tableRowsHtml += '<td class="layerInfoLabel">${parameterType.displayName}: </td>';
+                        tableRowsHtml += '<td>' + analysis.params.${parameterType.identifier} + ' ${parameterType.units}</td>';
+                        tableRowsHtml += '</tr>';
+                    }
+                    </c:forEach>
+                }
+                </c:forEach>
+                html += '<table id="analysis-table-' + analysis.params.animalIds[i] + '-' + analysis.id + '" style="' + (tableRowsHtml ? '' : 'display: none;') + '">' + tableRowsHtml + '</table>';
+                $('#animalInfo-' + analysis.params.animalIds[i]).append('<div class="layerInfo">' + html + '</div>');
+            }
+        }
+
+        function updateAnimalInfoFromKML(analysis, features) {
             var animalProcessed = {};
-            for ( var f in features) {
+            for (var f in features) {
                 var feature = features[f];
                 if (animalProcessed[feature.attributes.id.value]) {
                     continue;
@@ -582,20 +603,7 @@ function createAnalysisMap(div, options) {
                 animalProcessed[feature.attributes.id.value] = true;
                 feature.renderIntent = "default";
                 feature.layer.drawFeature(feature);
-                var html = '<div class="layerInfoTitle">' + layerName + '</div>';
                 var tableRowsHtml = '';
-                <c:forEach items="${analysisTypeList}" var="analysisType">
-                if (params.queryType == '${analysisType}') {
-                    <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
-                    if (params.${parameterType.identifier}) {
-                        tableRowsHtml += '<tr>';
-                        tableRowsHtml += '<td class="layerInfoLabel">${parameterType.displayName}: </td>';
-                        tableRowsHtml += '<td>' + params.${parameterType.identifier} + ' ${parameterType.units}</td>';
-                        tableRowsHtml += '</tr>';
-                    }
-                    </c:forEach>
-                }
-                </c:forEach>
                 if (feature.attributes.area && feature.attributes.area.value) {
                     var area = Math.round(feature.attributes.area.value * 1000) / 1000;
                     tableRowsHtml += '<tr>';
@@ -605,12 +613,11 @@ function createAnalysisMap(div, options) {
                 }
                 tableRowsHtml += '<tr>';
                 tableRowsHtml += '<td class="layerInfoLabel">Export as: </td>';
-                tableRowsHtml += '<td><a href="' + url + '">KML</a></td>';
+                tableRowsHtml += '<td><a href="' + analysis.resultUrl + '">KML</a></td>';
                 tableRowsHtml += '</tr>';
                 if (tableRowsHtml) {
-                    html += '<table>' + tableRowsHtml + '</table>';
+                    $('#analysis-table-' + feature.attributes.id.value + '-' + analysis.id).show().append(tableRowsHtml);
                 }
-                $('#animalInfo-' + feature.attributes.id.value).append('<div class="layerInfo">' + html + '</div>');
             }
         }
 
