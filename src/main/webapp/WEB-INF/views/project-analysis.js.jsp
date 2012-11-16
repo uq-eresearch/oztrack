@@ -591,14 +591,10 @@ function createAnalysisMap(div, options) {
                     tableRowsHtml += '<td>' + area + ' km<sup>2</sup></td>';
                     tableRowsHtml += '</tr>';
                 }
-                var urlWithParams = url;
-                var paramString = OpenLayers.Util.getParameterString(params);
-                if (paramString.length > 0) {
-                    var separator = (urlWithParams.indexOf('?') > -1) ? '&'
-                            : '?';
-                    urlWithParams += separator + paramString;
-                }
-                tableRowsHtml += '<tr><td class="layerInfoLabel">Export as: </td><td><a href="' + urlWithParams + '">KML</a></td></tr>';
+                tableRowsHtml += '<tr>';
+                tableRowsHtml += '<td class="layerInfoLabel">Export as: </td>';
+                tableRowsHtml += '<td><a href="' + url + '">KML</a></td>';
+                tableRowsHtml += '</tr>';
                 if (tableRowsHtml) {
                     html += '<table>' + tableRowsHtml + '</table>';
                 }
