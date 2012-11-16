@@ -197,7 +197,7 @@
                     },
                     minDate: new Date(${projectDetectionDateRange.minimum.time}),
                     maxDate: new Date(${projectDetectionDateRange.maximum.time}),
-                    onAnalysisStart: function(analysisUrl, layerName, params) {
+                    onAnalysisCreate: function(analysisUrl, layerName, params) {
                         addPreviousAnalysis(analysisUrl, layerName, params, new Date());
                     },
                     onAnalysisError: function(message) {

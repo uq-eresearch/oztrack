@@ -21,7 +21,7 @@ function createAnalysisMap(div, options) {
         var animalColours = options.animalColours;
         var minDate = options.minDate;
         var maxDate = options.maxDate;
-        var onAnalysisStart = options.onAnalysisStart;
+        var onAnalysisCreate = options.onAnalysisCreate;
         var onAnalysisError = options.onAnalysisError;
         var onAnalysisSuccess = options.onAnalysisSuccess;
 
@@ -457,7 +457,7 @@ function createAnalysisMap(div, options) {
                     complete: function (xhr, textStatus) {
                         if (textStatus == 'success') {
                             var newAnalysisUrl = xhr.getResponseHeader('Location');
-                            onAnalysisStart(newAnalysisUrl, layerName, params);
+                            onAnalysisCreate(newAnalysisUrl, layerName, params);
                             createAnalysisKMLLayer(newAnalysisUrl, map, layerName, params, styleMap, extractStyles);
                         }
                     }
