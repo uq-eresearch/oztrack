@@ -15,6 +15,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONException;
+import org.json.JSONWriter;
 import org.oztrack.data.access.AnalysisDao;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.Analysis;
@@ -71,30 +73,25 @@ public class AnalysisController {
         return false;
     }
 
-    @RequestMapping(value="/projects/{projectId}/analyses/{analysisId}", method=RequestMethod.GET, produces="application/xml")
+    @RequestMapping(value="/projects/{projectId}/analyses/{analysisId}", method=RequestMethod.GET, produces="application/json")
     @PreAuthorize("permitAll")
-    public void handleXML(
+    public void handleJSON(
         Authentication authentication,
         HttpServletRequest request,
         HttpServletResponse response,
         @ModelAttribute(value="analysis") Analysis analysis
-    ) {
+    ) throws IOException, JSONException {
         if (!canRead(authentication, request, analysis)) {
             response.setStatus(403);
             return;
         }
         String resultUrl = String.format("%s/projects/%d/analyses/%d/result", request.getContextPath(), analysis.getProject().getId(), analysis.getId());
-        PrintWriter out = null;
-        try {
-            out = response.getWriter();
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        out.append("<?xml version=\"1.0\"?>\n");
-        out.append("<analysis xmlns=\"http://oztrack.org/xmlns#\">\n");
-        out.append("    <result>" + resultUrl + "</result>\n");
-        out.append("</analysis>\n");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        JSONWriter out = new JSONWriter(response.getWriter());
+        out.object();
+        out.key("result").value(resultUrl);
+        out.endObject();
     }
 
     @RequestMapping(value="/projects/{projectId}/analyses/{analysisId}/result", method=RequestMethod.GET, produces="application/vnd.google-earth.kml+xml")

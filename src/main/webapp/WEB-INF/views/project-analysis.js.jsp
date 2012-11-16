@@ -466,37 +466,49 @@ function createAnalysisMap(div, options) {
         }
         
         function createAnalysisKMLLayer(analysisUrl, map, layerName, params, styleMap, extractStyles) {
-            var analysisResultUrl = analysisUrl + "/result";
-            var queryOverlay = new OpenLayers.Layer.Vector(layerName, {
-                styleMap : styleMap
-            });
-            var protocol = new OpenLayers.Protocol.HTTP({
-                url : analysisResultUrl,
-                format : new OpenLayers.Format.KML({
-                    extractStyles : extractStyles,
-                    extractAttributes : true,
-                    maxDepth : 2,
-                    internalProjection : projection900913,
-                    externalProjection : projection4326,
-                    kmlns : "http://oztrack.org/xmlns#"
-                })
-            });
-            var callback = function(resp) {
-                loadingPanel.decreaseCounter();
-                if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
-                    queryOverlay.addFeatures(resp.features);
-                    updateAnimalInfoFromKML(layerName, analysisResultUrl, params, resp.features);
-                    onAnalysisSuccess();
+            $.ajax({
+                url: analysisUrl,
+                type: 'GET',
+                error: function(xhr, textStatus, errorThrown) {
+                    onAnalysisError($(xhr.responseText).find('error').text() || 'Error getting analysis');
+                },
+                complete: function (xhr, textStatus) {
+                    if (textStatus == 'success') {
+                        var analysis = $.parseJSON(xhr.responseText);
+                        var analysisResultUrl = analysis.result;
+                        var queryOverlay = new OpenLayers.Layer.Vector(layerName, {
+                            styleMap : styleMap
+                        });
+                        var protocol = new OpenLayers.Protocol.HTTP({
+                            url : analysisResultUrl,
+                            format : new OpenLayers.Format.KML({
+                                extractStyles : extractStyles,
+                                extractAttributes : true,
+                                maxDepth : 2,
+                                internalProjection : projection900913,
+                                externalProjection : projection4326,
+                                kmlns : "http://oztrack.org/xmlns#"
+                            })
+                        });
+                        var callback = function(resp) {
+                            loadingPanel.decreaseCounter();
+                            if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
+                                queryOverlay.addFeatures(resp.features);
+                                updateAnimalInfoFromKML(layerName, analysisResultUrl, params, resp.features);
+                                onAnalysisSuccess();
+                            }
+                            else {
+                                onAnalysisError(jQuery(resp.priv.responseText).find('error').text() || 'Error processing request');
+                            }
+                        };
+                        loadingPanel.increaseCounter();
+                        protocol.read({
+                            callback : callback
+                        });
+                        map.addLayer(queryOverlay);
+                    }
                 }
-                else {
-                    onAnalysisError(jQuery(resp.priv.responseText).find('error').text() || 'Error processing request');
-                }
-            };
-            loadingPanel.increaseCounter();
-            protocol.read({
-                callback : callback
             });
-            map.addLayer(queryOverlay);
         }
 
         function updateAnimalInfoFromWFS(wfsLayer) {
