@@ -48,11 +48,6 @@ public class PositionFixFileLoader extends DataFileLoader {
     }
 
     @Override
-    public void process() throws FileProcessingException {
-        super.process();
-    }
-
-    @Override
     public void createRawObservations() throws FileProcessingException {
         FileInputStream fileInputStream = null;
         DataInputStream dataInputStream = null;

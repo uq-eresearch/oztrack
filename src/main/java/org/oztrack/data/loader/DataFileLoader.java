@@ -44,13 +44,13 @@ public abstract class DataFileLoader {
         this.jdbcAccess = jdbcAccess;
     }
 
-    public void process() throws FileProcessingException {
+    public void process() throws Exception {
         removeDuplicateLinesFromFile(this.dataFile.getAbsoluteDataFilePath());
         processRawObservations();
         processFinalObservations();
     }
 
-    private void processRawObservations() throws FileProcessingException {
+    private void processRawObservations() throws Exception {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         try {
@@ -60,13 +60,17 @@ public abstract class DataFileLoader {
             checkAnimals();
             transaction.commit();
         }
-        catch (FileProcessingException e) {
-            transaction.rollback();
+        catch (Exception e) {
+            try {
+                transaction.rollback();
+            }
+            catch (Exception e2) {
+            }
             throw e;
         }
     }
 
-    private void processFinalObservations() throws FileProcessingException {
+    private void processFinalObservations() throws Exception {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         try {
@@ -74,8 +78,12 @@ public abstract class DataFileLoader {
             createFinalObservations();
             transaction.commit();
         }
-        catch (FileProcessingException e) {
-            transaction.rollback();
+        catch (Exception e) {
+            try {
+                transaction.rollback();
+            }
+            catch (Exception e2) {
+            }
             throw e;
         }
     }

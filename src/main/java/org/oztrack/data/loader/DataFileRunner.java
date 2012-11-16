@@ -1,6 +1,5 @@
 package org.oztrack.data.loader;
 
-import java.io.File;
 import java.util.Date;
 
 import javax.persistence.EntityManager;
@@ -17,7 +16,6 @@ import org.oztrack.data.access.impl.JdbcAccessImpl;
 import org.oztrack.data.access.impl.PositionFixDaoImpl;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.types.DataFileStatus;
-import org.oztrack.error.FileProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class DataFileRunner {
@@ -32,7 +30,7 @@ public class DataFileRunner {
     public DataFileRunner() {
     }
 
-    public void processNext() {        // Initialise our entity manager and DAOs (no Spring injection here)
+    public void processNext() throws Exception {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         DataFileDaoImpl dataFileDao = new DataFileDaoImpl();
@@ -73,22 +71,27 @@ public class DataFileRunner {
         }
         catch (Exception e) {
             logger.error("Exception processing data file " + dataFileId, e);
-            startTransaction.rollback();
+            try {
+                startTransaction.rollback();
+            }
+            catch (Exception e2) {
+            }
+            throw e;
         }
 
         try {
-            try {
-                switch (nextDataFile.getProject().getProjectType()) {
-                    case GPS:
-                        PositionFixFileLoader positionFixFileLoader = new PositionFixFileLoader(nextDataFile, dataFileDao, animalDao, positionFixDao, entityManager, jdbcAccess);
-                        positionFixFileLoader.process();
-                        break;
-                    default:
-                        break;
-                }
+            switch (nextDataFile.getProject().getProjectType()) {
+                case GPS:
+                    PositionFixFileLoader positionFixFileLoader = new PositionFixFileLoader(nextDataFile, dataFileDao, animalDao, positionFixDao, entityManager, jdbcAccess);
+                    positionFixFileLoader.process();
+                    break;
+                default:
+                    break;
+            }
 
-                EntityTransaction finishTransaction = entityManager.getTransaction();
-                finishTransaction.begin();
+            EntityTransaction finishTransaction = entityManager.getTransaction();
+            finishTransaction.begin();
+            try {
                 DataFile completeDataFile = dataFileDao.getDataFileById(dataFileId);
                 completeDataFile.setStatus(DataFileStatus.COMPLETE);
                 String statusMessage = "File processing successfully completed on " + (new Date()).toString() + ".";
@@ -98,31 +101,42 @@ public class DataFileRunner {
                 completeDataFile.setStatusMessage(statusMessage);
                 dataFileDao.update(completeDataFile);
                 finishTransaction.commit();
-
-                logger.info("Completed processing file " + dataFileId);
             }
-            catch (FileProcessingException e) {
-                logger.info("File processing exception", e);
+            catch (Exception e1) {
+                try {
+                    finishTransaction.rollback();
+                }
+                catch (Exception e2) {
+                }
+                throw e1;
+            }
 
-                EntityTransaction failureTransaction = entityManager.getTransaction();
-                failureTransaction.begin();
+            logger.info("Completed processing file " + dataFileId);
+        }
+        catch (Exception e) {
+            logger.info("Exception processing data file " + dataFileId, e);
+
+            entityManager.clear();
+            EntityTransaction failureTransaction = entityManager.getTransaction();
+            failureTransaction.begin();
+            try {
                 DataFile failureDataFile = dataFileDao.getDataFileById(dataFileId);
                 failureDataFile.setStatus(DataFileStatus.FAILED);
                 failureDataFile.setStatusMessage(e.getMessage());
                 dataFileDao.update(failureDataFile);
                 failureTransaction.commit();
-
-                File file = new File(failureDataFile.getAbsoluteDataFilePath());
-                File origFile = new File(failureDataFile.getAbsoluteDataFilePath().replace(".csv",".orig"));
-                file.delete();
-                origFile.delete();
-
-                //JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
-                //jdbcAccess.truncateRawObservations(dataFile);
             }
-        }
-        catch (Exception e) {
-            logger.error("Exception processing data file " + dataFileId, e);
+            catch (Exception e1) {
+                try {
+                    failureTransaction.rollback();
+                }
+                catch (Exception e2) {
+                }
+                throw e1;
+            }
+
+            //JdbcAccess jdbcAccess = OzTrackApplication.getApplicationContext().getDaoManager().getJdbcAccess();
+            //jdbcAccess.truncateRawObservations(dataFile);
         }
     }
 }
