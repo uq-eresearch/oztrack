@@ -24,6 +24,7 @@ import org.oztrack.data.model.AnalysisParameter;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.AnalysisParameterType;
+import org.oztrack.data.model.types.AnalysisStatus;
 import org.oztrack.data.model.types.AnalysisType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -77,6 +78,8 @@ public class AnalysisListController {
         @RequestParam(value="animalIds", required=false) List<Long> animalIds
     ) {
         Analysis analysis = new Analysis();
+        analysis.setStatus(AnalysisStatus.NEW);
+        analysis.setMessage(null);
         analysis.setProject((projectId != null) ? projectDao.getProjectById(projectId) : null);
         try {
             analysis.setFromDate(StringUtils.isNotBlank(fromDateString) ? dateFormat.parse(fromDateString) : null);

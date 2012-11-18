@@ -2,6 +2,7 @@ package org.oztrack.data.model;
 
 import static javax.persistence.EnumType.STRING;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +26,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.oztrack.data.model.types.AnalysisStatus;
 import org.oztrack.data.model.types.AnalysisType;
 
 @Entity
@@ -38,6 +40,13 @@ public class Analysis extends OzTrackBaseEntity {
 
     @Column(name="createsession", columnDefinition="text")
     private String createSession;
+
+    @Enumerated(STRING)
+    @Column(name="status", columnDefinition="text", nullable=false)
+    private AnalysisStatus status;
+
+    @Column(name="message", columnDefinition="text")
+    private String message;
 
     @ManyToOne
     @JoinColumn(name="project_id", nullable=false)
@@ -66,12 +75,31 @@ public class Analysis extends OzTrackBaseEntity {
     @OneToMany(mappedBy="analysis", cascade=CascadeType.ALL, orphanRemoval=true, fetch=FetchType.EAGER)
     private Set<AnalysisParameter> parameters;
 
+    @Column(name="resultfilepath", columnDefinition="text")
+    private String resultFilePath;
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public AnalysisStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AnalysisStatus status) {
+        this.status = status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public String getCreateSession() {
@@ -137,6 +165,18 @@ public class Analysis extends OzTrackBaseEntity {
             }
         }
         return null;
+    }
+
+    public String getResultFilePath() {
+        return resultFilePath;
+    }
+
+    public void setResultFilePath(String resultFilePath) {
+        this.resultFilePath = resultFilePath;
+    }
+
+    public String getAbsoluteResultFilePath() {
+        return project.getAbsoluteDataDirectoryPath() + File.separator + getResultFilePath();
     }
 
     public SearchQuery toSearchQuery() {

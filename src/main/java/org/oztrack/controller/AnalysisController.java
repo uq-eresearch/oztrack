@@ -1,6 +1,5 @@
 package org.oztrack.controller;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -25,6 +24,7 @@ import org.oztrack.data.model.AnalysisParameter;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.User;
+import org.oztrack.data.model.types.AnalysisStatus;
 import org.oztrack.error.RServeInterfaceException;
 import org.oztrack.util.RServeInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +90,6 @@ public class AnalysisController {
             response.setStatus(403);
             return;
         }
-        String resultUrl = String.format("%s/projects/%d/analyses/%d/result", request.getContextPath(), analysis.getProject().getId(), analysis.getId());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         JSONWriter out = new JSONWriter(response.getWriter());
@@ -113,7 +112,12 @@ public class AnalysisController {
             out.key(parameter.getName()).value(parameter.getValue());
         }
         out.endObject();
-        out.key("resultUrl").value(resultUrl);
+        out.key("status").value(analysis.getStatus().name());
+        out.key("message").value(analysis.getMessage());
+        if (analysis.getStatus() == AnalysisStatus.COMPLETE) {
+            String resultUrl = String.format("%s/projects/%d/analyses/%d/result", request.getContextPath(), analysis.getProject().getId(), analysis.getId());
+            out.key("resultUrl").value(resultUrl);
+        }
         out.endObject();
     }
 
@@ -131,15 +135,34 @@ public class AnalysisController {
         }
         List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(analysis.toSearchQuery());
         RServeInterface rServeInterface = new RServeInterface();
-        File kmlFile = null;
-        try {
-            kmlFile = rServeInterface.createKml(analysis, positionFixList);
-        }
-        catch (RServeInterfaceException e) {
-            logger.error("RServeInterface exception", e);
+        if (analysis.getStatus() == AnalysisStatus.FAILED) {
             response.setStatus(500);
-            writeResultError(response, e.getMessage());
+            writeResultError(response, analysis.getMessage());
             return;
+        }
+        if (analysis.getStatus() == AnalysisStatus.PROCESSING) {
+            response.setStatus(404);
+            writeResultError(response, "Processing");
+            return;
+        }
+        if (analysis.getStatus() == AnalysisStatus.NEW) {
+            analysis.setStatus(AnalysisStatus.PROCESSING);
+            analysisDao.save(analysis);
+            analysis.setResultFilePath("analysis-" + analysis.getId().toString() + ".kml");
+            try {
+                rServeInterface.createKml(analysis, positionFixList);
+                analysis.setStatus(AnalysisStatus.COMPLETE);
+                analysisDao.save(analysis);
+            }
+            catch (RServeInterfaceException e) {
+                logger.error("RServeInterface exception", e);
+                analysis.setStatus(AnalysisStatus.FAILED);
+                analysis.setMessage(e.getMessage());
+                analysisDao.save(analysis);
+                response.setStatus(500);
+                writeResultError(response, analysis.getMessage());
+                return;
+            }
         }
         String filename = analysis.getAnalysisType().name().toLowerCase(Locale.ENGLISH) + ".kml";
         response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
@@ -147,9 +170,8 @@ public class AnalysisController {
         response.setCharacterEncoding("UTF-8");
         FileInputStream kmlInputStream = null;
         try {
-            kmlInputStream = new FileInputStream(kmlFile);
+            kmlInputStream = new FileInputStream(analysis.getAbsoluteResultFilePath());
             IOUtils.copy(kmlInputStream, response.getOutputStream());
-            kmlFile.delete();
         }
         catch (IOException e) {
             response.setStatus(500);

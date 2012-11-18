@@ -2,11 +2,8 @@ package org.oztrack.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -37,9 +34,8 @@ public class RServeInterface {
     public RServeInterface() {
     }
 
-    public File createKml(Analysis analysis, List<PositionFix> positionFixList) throws RServeInterfaceException {
+    public void createKml(Analysis analysis, List<PositionFix> positionFixList) throws RServeInterfaceException {
         startRConnection();
-        String fileName = createTempFileName("project-" + analysis.getProject().getId() + "-" + analysis.getAnalysisType() + "-");
         Project project = analysis.getProject();
 
         String srs =
@@ -50,33 +46,25 @@ public class RServeInterface {
 
         switch (analysis.getAnalysisType()) {
             case MCP:
-                writeMCPKmlFile(analysis, srs, fileName);
+                writeMCPKmlFile(analysis, srs);
                 break;
             case KUD:
-                writeKernelUDKmlFile(analysis, srs, fileName);
+                writeKernelUDKmlFile(analysis, srs);
                 break;
             case AHULL:
-                writeAlphahullKmlFile(analysis, srs, fileName);
+                writeAlphahullKmlFile(analysis, srs);
                 break;
             case HEATMAP_POINT:
-                writePointHeatmapKmlFile(analysis, srs, fileName);
+                writePointHeatmapKmlFile(analysis, srs);
                 break;
             case HEATMAP_LINE:
-                writeLineHeatmapKmlFile(analysis, srs, fileName);
+                writeLineHeatmapKmlFile(analysis, srs);
                 break;
             default:
                 throw new RServeInterfaceException("Unhandled AnalysisType: " + analysis.getAnalysisType());
         }
 
         rConnection.close();
-        return new File(fileName);
-    }
-
-    private String createTempFileName(String fileNamePrefix) {
-        Long uniqueId = new Random().nextLong();
-        SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyhhmmssSSS");
-        String fileName = this.rWorkingDir + fileNamePrefix + sdf.format(new Date()) + uniqueId.toString() + ".kml";
-        return fileName;
     }
 
     private void startRConnection() throws RServeInterfaceException {
@@ -204,7 +192,7 @@ public class RServeInterface {
     }
 
 
-    private void writeMCPKmlFile(Analysis analysis, String srs, String fileName) throws RServeInterfaceException {
+    private void writeMCPKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
         AnalysisParameter percentParameter = analysis.getParamater("percent");
         Double percent = (percentParameter.getValue() != null) ? Double.valueOf(percentParameter.getValue()) : 100d;
         if (!(percent >= 0d && percent <= 100d)) {
@@ -217,10 +205,10 @@ public class RServeInterface {
             "}"
         );
         safeEval("mcp.obj$area <- mcp(positionFix.proj, percent=" + percent + ", unin=c(\"m\"), unout=c(\"km2\"))$area");
-        safeEval("writeOGR(mcp.obj, dsn=\"" + fileName + "\", layer= \"MCP\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
+        safeEval("writeOGR(mcp.obj, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer= \"MCP\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
     }
 
-    private void writeKernelUDKmlFile(Analysis analysis, String srs, String fileName) throws RServeInterfaceException {
+    private void writeKernelUDKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
         AnalysisParameter percentParameter = analysis.getParamater("percent");
         Double percent = (percentParameter.getValue() != null) ? Double.valueOf(percentParameter.getValue()) : 100d;
         if (!(percent >= 0d && percent <= 100d)) {
@@ -262,20 +250,20 @@ public class RServeInterface {
         safeEval("myKer <- spTransform(myKerP, CRS(\"+proj=longlat +datum=WGS84\"))");
         safeEval("myKer$area <- myKerP$area");
         safeEval("myKer$hval <- allh");
-        safeEval("writeOGR(myKer, dsn=\"" + fileName + "\", layer= \"KUD\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
+        safeEval("writeOGR(myKer, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer= \"KUD\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
     }
 
-    private void writeAlphahullKmlFile(Analysis analysis, String srs, String fileName) throws RServeInterfaceException {
+    private void writeAlphahullKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
         AnalysisParameter alphaParameter = analysis.getParamater("alpha");
         Double alpha = (alphaParameter.getValue() != null) ? Double.valueOf(alphaParameter.getValue()) : 0.1d;
         if (!(alpha > 0d)) {
             throw new RServeInterfaceException("alpha must be greater than 0.");
         }
         safeEval("myAhull <- myalphahullP(positionFix.proj, sinputssrs=\"+init=" + srs + "\", ialpha=" + alpha + ")");
-        safeEval("writeOGR(myAhull, dsn=\"" + fileName + "\", layer=\"AHULL\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
+        safeEval("writeOGR(myAhull, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer=\"AHULL\", driver=\"KML\", dataset_options=c(\"NameField=Id\"))");
     }
 
-    private void writePointHeatmapKmlFile(Analysis analysis, String srs, String fileName) throws RServeInterfaceException {
+    private void writePointHeatmapKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
         AnalysisParameter gridSizeParameter = analysis.getParamater("gridSize");
         Double gridSize = (gridSizeParameter.getValue() != null) ? Double.valueOf(gridSizeParameter.getValue()) : 100d;
         if (!(gridSize > 0d)) {
@@ -287,10 +275,10 @@ public class RServeInterface {
             "  stop('Grid size too small. Try increasing grid number.')\n" +
             "}"
         );
-        safeEval("polykml(sw=PPA, filename=\"" + fileName + "\", kmlname=paste(unique(PPA$ID), \"_point_density\",sep=\"\"),namefield=unique(PPA$ID))");
+        safeEval("polykml(sw=PPA, filename=\"" + analysis.getAbsoluteResultFilePath() + "\", kmlname=paste(unique(PPA$ID), \"_point_density\",sep=\"\"),namefield=unique(PPA$ID))");
     }
 
-    private void writeLineHeatmapKmlFile(Analysis analysis, String srs, String fileName) throws RServeInterfaceException {
+    private void writeLineHeatmapKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
         AnalysisParameter gridSizeParameter = analysis.getParamater("gridSize");
         Double gridSize = (gridSizeParameter.getValue() != null) ? Double.valueOf(gridSizeParameter.getValue()) : 100d;
         if (!(gridSize > 0d)) {
@@ -302,7 +290,7 @@ public class RServeInterface {
             "  stop('Grid size too small. Try increasing grid number.')\n" +
             "}"
         );
-        safeEval("polykml(sw=LPA, filename=\"" + fileName + "\", kmlname=paste(unique(LPA$ID), \"_line_density\", sep=\"\"), namefield=unique(LPA$ID))");
+        safeEval("polykml(sw=LPA, filename=\"" + analysis.getAbsoluteResultFilePath() + "\", kmlname=paste(unique(LPA$ID), \"_line_density\", sep=\"\"), namefield=unique(LPA$ID))");
     }
 
     // Wraps an R statement inside a try({...}, silent=TRUE) so we can catch any exception
