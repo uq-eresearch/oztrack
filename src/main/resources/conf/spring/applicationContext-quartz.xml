@@ -7,28 +7,26 @@
         http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
 
     <bean id="dataFileRunner" class="org.oztrack.data.loader.DataFileRunner"/>
-
-    <bean id="dataFilePoller" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    <bean id="dataFileJobDetailFactory" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
       <property name="targetObject" ref="dataFileRunner" />
       <property name="targetMethod" value="processNext" />
       <property name="concurrent" value="false" />
     </bean>
-
-    <bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
-        <property name="jobDetail" ref="dataFilePoller" />
+    <bean id="dataFileTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="dataFileJobDetailFactory" />
         <property name="repeatInterval" value="5000" />
         <property name="startDelay" value="10000" />
     </bean>
 
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="jobDetails">
-           <list>
-              <ref bean="dataFilePoller" />
-           </list>
+            <list>
+                <ref bean="dataFileJobDetailFactory" />
+            </list>
         </property>
         <property name="triggers">
             <list>
-                <ref bean="simpleTrigger" />
+                <ref bean="dataFileTrigger" />
             </list>
         </property>
     </bean>
