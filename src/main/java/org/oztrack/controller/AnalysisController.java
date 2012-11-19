@@ -84,6 +84,8 @@ public class AnalysisController {
         }
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setHeader("Expires", "Thu, 01 Jan 1970 00:00:00 GMT");
         JSONWriter out = new JSONWriter(response.getWriter());
         out.object();
         out.key("id").value(analysis.getId());
