@@ -26,6 +26,7 @@ import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.AnalysisParameterType;
 import org.oztrack.data.model.types.AnalysisStatus;
 import org.oztrack.data.model.types.AnalysisType;
+import org.oztrack.util.AnalysisRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -58,6 +59,9 @@ public class AnalysisListController {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private AnalysisRunner analysisRunner;
 
     @Autowired
     private OzTrackPermissionEvaluator permissionEvaluator;
@@ -130,6 +134,7 @@ public class AnalysisListController {
         @ModelAttribute(value="analysis") Analysis analysis
     ) {
         analysisDao.save(analysis);
+        analysisRunner.run(analysis.getId());
         String analysisUrl = String.format("%s/projects/%d/analyses/%d", request.getContextPath(), analysis.getProject().getId(), analysis.getId());
         response.setStatus(201);
         response.setHeader("Location", analysisUrl);

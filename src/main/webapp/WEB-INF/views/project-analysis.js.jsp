@@ -302,47 +302,77 @@ function createAnalysisMap(div, options) {
                     if (textStatus == 'success') {
                         var analysis = $.parseJSON(xhr.responseText);
                         updateAnimalInfoForAnalysis(layerName, analysis);
-                        var styleMap = polygonStyleMap;
-                        var extractStyles = false;
-                        if ((analysis.params.queryType == "HEATMAP_POINT") || (analysis.params.queryType == "HEATMAP_LINE")) {
-                            styleMap = null;
-                            extractStyles = true;
-                        }
-                        var queryOverlay = new OpenLayers.Layer.Vector(layerName, {
-                            styleMap : styleMap
-                        });
-                        var protocol = new OpenLayers.Protocol.HTTP({
-                            url : analysis.resultUrl,
-                            format : new OpenLayers.Format.KML({
-                                extractStyles: extractStyles,
-                                extractAttributes: true,
-                                maxDepth: 2,
-                                internalProjection: projection900913,
-                                externalProjection: projection4326,
-                                kmlns: "http://oztrack.org/xmlns#"
-                            })
-                        });
-                        var callback = function(resp) {
-                            loadingPanel.decreaseCounter();
-                            if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
-                                queryOverlay.addFeatures(resp.features);
-                                updateAnimalInfoFromKML(analysis, resp.features);
-                                onAnalysisSuccess();
-                            }
-                            else {
-                                onAnalysisError(jQuery(resp.priv.responseText).find('error').text() || 'Error processing request');
-                            }
-                        };
                         loadingPanel.increaseCounter();
-                        protocol.read({
-                            callback : callback
-                        });
-                        map.addLayer(queryOverlay);
+                        pollAnalysisLayer(analysisUrl, layerName);
                     }
                 }
             });
         };
-        
+
+        function pollAnalysisLayer(analysisUrl, layerName) {
+            $.ajax({
+                url: analysisUrl,
+                type: 'GET',
+                error: function(xhr, textStatus, errorThrown) {
+                    loadingPanel.decreaseCounter();
+                    onAnalysisError($(xhr.responseText).find('error').text() || 'Error getting analysis');
+                },
+                complete: function (xhr, textStatus) {
+                    if (textStatus == 'success') {
+                        var analysis = $.parseJSON(xhr.responseText);
+                        if (analysis.status == 'COMPLETE') {
+                            addAnalysisResultLayer(analysis, layerName);
+                        }
+                        else if ((analysis.status == 'NEW') || (analysis.status == 'PROCESSING')) {
+                            setTimeout(function () {pollAnalysisLayer(analysisUrl, layerName);}, 1000);
+                        }
+                        else {
+                            loadingPanel.decreaseCounter();
+                            onAnalysisError(analysis.message || 'Error running analysis');
+                        }
+                    }
+                }
+            });
+        }
+
+        function addAnalysisResultLayer(analysis, layerName) {
+            var styleMap = polygonStyleMap;
+            var extractStyles = false;
+            if ((analysis.params.queryType == "HEATMAP_POINT") || (analysis.params.queryType == "HEATMAP_LINE")) {
+                styleMap = null;
+                extractStyles = true;
+            }
+            var queryOverlay = new OpenLayers.Layer.Vector(layerName, {
+                styleMap : styleMap
+            });
+            var protocol = new OpenLayers.Protocol.HTTP({
+                url : analysis.resultUrl,
+                format : new OpenLayers.Format.KML({
+                    extractStyles: extractStyles,
+                    extractAttributes: true,
+                    maxDepth: 2,
+                    internalProjection: projection900913,
+                    externalProjection: projection4326,
+                    kmlns: "http://oztrack.org/xmlns#"
+                })
+            });
+            var callback = function(resp) {
+                loadingPanel.decreaseCounter();
+                if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
+                    queryOverlay.addFeatures(resp.features);
+                    updateAnimalInfoFromKML(analysis, resp.features);
+                    onAnalysisSuccess();
+                }
+                else {
+                    onAnalysisError(jQuery(resp.priv.responseText).find('error').text() || 'Error processing request');
+                }
+            };
+            protocol.read({
+                callback : callback
+            });
+            map.addLayer(queryOverlay);
+        }
+
         function createDetectionLayer(params) {
             function buildFilter(params) {
                 var visibleAnimalIds = [];

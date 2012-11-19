@@ -30,7 +30,7 @@
         <property name="targetMethod" value="initLogging"/>
         <property name="arguments">
             <list>
-                <value>classpath:conf/properties/log4j.properties</value>
+                <value>classpath:log4j.properties</value>
             </list>
         </property>
     </bean>
@@ -40,6 +40,7 @@
     <import resource="applicationContext-security.xml"/>
     <import resource="applicationContext-data.xml"/>
     <import resource="applicationContext-quartz.xml"/>
+    <import resource="applicationContext-task.xml"/>
 
     <bean id="applicationContext" class="org.oztrack.app.OzTrackConfigurationImpl">
         <property name="dataSpaceURL" value="${application.dataSpaceURL}"/>

@@ -4,7 +4,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,15 +17,11 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONWriter;
 import org.oztrack.data.access.AnalysisDao;
-import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.Analysis;
 import org.oztrack.data.model.AnalysisParameter;
 import org.oztrack.data.model.Animal;
-import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.AnalysisStatus;
-import org.oztrack.error.RServeInterfaceException;
-import org.oztrack.util.RServeInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -46,9 +41,6 @@ public class AnalysisController {
 
     @Autowired
     private AnalysisDao analysisDao;
-
-    @Autowired
-    private PositionFixDao positionFixDao;
 
     @Autowired
     private OzTrackPermissionEvaluator permissionEvaluator;
@@ -113,7 +105,9 @@ public class AnalysisController {
         }
         out.endObject();
         out.key("status").value(analysis.getStatus().name());
-        out.key("message").value(analysis.getMessage());
+        if (analysis.getMessage() != null) {
+            out.key("message").value(analysis.getMessage());
+        }
         if (analysis.getStatus() == AnalysisStatus.COMPLETE) {
             String resultUrl = String.format("%s/projects/%d/analyses/%d/result", request.getContextPath(), analysis.getProject().getId(), analysis.getId());
             out.key("resultUrl").value(resultUrl);
@@ -133,36 +127,15 @@ public class AnalysisController {
             response.setStatus(403);
             return;
         }
-        List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(analysis.toSearchQuery());
-        RServeInterface rServeInterface = new RServeInterface();
         if (analysis.getStatus() == AnalysisStatus.FAILED) {
             response.setStatus(500);
             writeResultError(response, analysis.getMessage());
             return;
         }
-        if (analysis.getStatus() == AnalysisStatus.PROCESSING) {
+        if ((analysis.getStatus() == AnalysisStatus.NEW) || (analysis.getStatus() == AnalysisStatus.PROCESSING)) {
             response.setStatus(404);
             writeResultError(response, "Processing");
             return;
-        }
-        if (analysis.getStatus() == AnalysisStatus.NEW) {
-            analysis.setStatus(AnalysisStatus.PROCESSING);
-            analysisDao.save(analysis);
-            analysis.setResultFilePath("analysis-" + analysis.getId().toString() + ".kml");
-            try {
-                rServeInterface.createKml(analysis, positionFixList);
-                analysis.setStatus(AnalysisStatus.COMPLETE);
-                analysisDao.save(analysis);
-            }
-            catch (RServeInterfaceException e) {
-                logger.error("RServeInterface exception", e);
-                analysis.setStatus(AnalysisStatus.FAILED);
-                analysis.setMessage(e.getMessage());
-                analysisDao.save(analysis);
-                response.setStatus(500);
-                writeResultError(response, analysis.getMessage());
-                return;
-            }
         }
         String filename = analysis.getAnalysisType().name().toLowerCase(Locale.ENGLISH) + ".kml";
         response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
