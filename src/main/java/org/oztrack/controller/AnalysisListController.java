@@ -69,6 +69,9 @@ public class AnalysisListController {
     @InitBinder("analysis")
     public void initAnalysisBinder(WebDataBinder binder) {
         binder.setAllowedFields();
+        // Disallowing fields shouldn't be needed given say none are allowed above.
+        // However, we get BeanPropertyBindingResult errors without this line:
+        binder.setDisallowedFields("fromDate", "toDate");
     }
 
     @ModelAttribute("analysis")

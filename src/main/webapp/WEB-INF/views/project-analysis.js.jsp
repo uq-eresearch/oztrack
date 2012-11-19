@@ -595,6 +595,18 @@ function createAnalysisMap(div, options) {
             for (var i = 0; i < analysis.params.animalIds.length; i++) {
                 var html = '<div class="layerInfoTitle">' + layerName + '</div>';
                 var tableRowsHtml = '';
+                if (analysis.params.fromDate) {
+                    tableRowsHtml += '<tr>';
+                    tableRowsHtml += '<td class="layerInfoLabel">Date From:</td>';
+                    tableRowsHtml += '<td>' + analysis.params.fromDate + '</td>';
+                    tableRowsHtml += '</tr>';
+                }
+                if (analysis.params.toDate) {
+                    tableRowsHtml += '<tr>';
+                    tableRowsHtml += '<td class="layerInfoLabel">Date To:</td>';
+                    tableRowsHtml += '<td>' + analysis.params.toDate + '</td>';
+                    tableRowsHtml += '</tr>';
+                }
                 <c:forEach items="${analysisTypeList}" var="analysisType">
                 if (analysis.params.queryType == '${analysisType}') {
                     <c:forEach items="${analysisType.parameterTypes}" var="parameterType">

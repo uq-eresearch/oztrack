@@ -94,12 +94,17 @@ public class AnalysisController {
         if (analysis.getFromDate() != null) {
             out.key("fromDate").value(dateFormat.format(analysis.getFromDate()));
         }
-        if (analysis.getFromDate() != null) {
-            out.key("toDate").value(dateFormat.format(analysis.getFromDate()));
+        if (analysis.getToDate() != null) {
+            out.key("toDate").value(dateFormat.format(analysis.getToDate()));
         }
         out.key("animalIds").array();
         for (Animal animal : analysis.getAnimals()) {
             out.value(animal.getId());
+        }
+        out.endArray();
+        out.key("animalNames").array();
+        for (Animal animal : analysis.getAnimals()) {
+            out.value(animal.getAnimalName());
         }
         out.endArray();
         for (AnalysisParameter parameter : analysis.getParameters()) {

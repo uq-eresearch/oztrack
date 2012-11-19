@@ -232,6 +232,65 @@
                     .append($('<a>')
                         .attr('href', 'javascript:void(0);')
                         .text(layerName)
+                        .popover({
+                            placement: 'bottom',
+                            trigger: 'hover',
+                            title: layerName,
+                            content: function() {
+                                var div = $('<div>').append('<img src="${pageContext.request.contextPath}/img/ui-anim_basic_16x16.gif" />');
+                                $.ajax({
+                                    url: analysisUrl,
+                                    type: 'GET',
+                                    error: function(xhr, textStatus, errorThrown) {
+                                    },
+                                    complete: function (xhr, textStatus) {
+                                        if (textStatus == 'success') {
+                                            var analysis = $.parseJSON(xhr.responseText);
+                                            div.empty();
+                                            var table = $('<table>');
+                                            if (analysis.params.fromDate) {
+                                                table.append(
+                                                    '<tr>' +
+                                                    '<td class="layerInfoLabel">Date From:</td>' +
+                                                    '<td>' + analysis.params.fromDate + '</td>' +
+                                                    '</tr>'
+                                                );
+                                            }
+                                            if (analysis.params.toDate) {
+                                                table.append(
+                                                    '<tr>' +
+                                                    '<td class="layerInfoLabel">Date To:</td>' +
+                                                    '<td>' + analysis.params.toDate + '</td>' +
+                                                    '</tr>'
+                                                );
+                                            }
+                                            table.append(
+                                                '<tr>' +
+                                                '<td class="layerInfoLabel">Animals: </td>' +
+                                                '<td>' + analysis.params.animalNames.join(', ') + '</td>' +
+                                                '</tr>'
+                                            );
+                                            <c:forEach items="${analysisTypeList}" var="analysisType">
+                                            if (analysis.params.queryType == '${analysisType}') {
+                                                <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
+                                                if (analysis.params.${parameterType.identifier}) {
+                                                    table.append(
+                                                        '<tr>' +
+                                                        '<td class="layerInfoLabel">${parameterType.displayName}: </td>' +
+                                                        '<td>' + analysis.params.${parameterType.identifier} + ' ${parameterType.units}</td>' +
+                                                        '</tr>'
+                                                    );
+                                                }
+                                                </c:forEach>
+                                            }
+                                            </c:forEach>
+                                            div.append(table);
+                                        }
+                                    }
+                                });
+                                return div;
+                            }
+                        })
                         .click(function(e) {
                             analysisMap.addAnalysisLayer(analysisUrl, layerName);
                         })
