@@ -81,7 +81,7 @@ public class ProjectAnalysisController {
         User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
         HttpSession currentSession = request.getSession(false);
         String currentSessionId = (currentSession != null) ? currentSession.getId() : null;
-        model.addAttribute("previousAnalyses", analysisDao.getPreviousAnalyses(currentUser, currentSessionId));
+        model.addAttribute("previousAnalyses", analysisDao.getPreviousAnalyses(project, currentUser, currentSessionId));
         return "project-analysis";
     }
 }
