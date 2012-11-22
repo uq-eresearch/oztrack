@@ -53,9 +53,9 @@
 
 /* Component containers
 ----------------------------------*/
-.ui-widget { font-family: \\\"Helvetica Neue\\\", Helvetica, Arial, sans-serif; font-size: 13px; }
+.ui-widget { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px; }
 .ui-widget .ui-widget { font-size: 1em; }
-.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: \\\"Helvetica Neue\\\", Helvetica, Arial, sans-serif; font-size: 1em; }
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 1em; }
 .ui-widget-content { border: 1px solid #aaa; background: #e6e6c0 url(images/ui-bg_flat_50_e6e6c0_40x100.png) 50% 50% repeat-x; color: #333333; }
 .ui-widget-content a { color: #333333; }
 .ui-widget-header { border: 1px solid #d4ccb0; background: #e89b17 url(images/ui-bg_highlight-soft_75_e89b17_1x100.png) 50% 50% repeat-x; color: #333333; font-weight: bold; }
