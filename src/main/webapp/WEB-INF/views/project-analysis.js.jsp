@@ -36,6 +36,7 @@ function createAnalysisMap(div, options) {
 
         (function() {
             map = new OpenLayers.Map(div, {
+                theme: null,
                 units : 'm',
                 projection : projection900913,
                 displayProjection : projection4326

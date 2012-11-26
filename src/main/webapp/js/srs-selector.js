@@ -28,6 +28,7 @@ function createSrsSelector(options) {
                 var projection4326 =  new OpenLayers.Projection("EPSG:4326");
 
                 var map = new OpenLayers.Map(mapDiv[0], {
+                    theme: null,
                     units: 'm',
                     projection: projection900913,
                     displayProjection: projection4326

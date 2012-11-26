@@ -2,7 +2,7 @@ function createCoverageMap(id, wkt) {
     var projection900913 = new OpenLayers.Projection('EPSG:900913');
     var projection4326 =  new OpenLayers.Projection("EPSG:4326");
 
-    var map = new OpenLayers.Map(id);
+    var map = new OpenLayers.Map(id, {theme: null});
 
     var gphy = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.TERRAIN});
     var gsat = new OpenLayers.Layer.Google("Google Satellite", {type: google.maps.MapTypeId.SATELLITE});

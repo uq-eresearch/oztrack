@@ -3,6 +3,7 @@ function createHomeMap(div) {
     var projection4326 =  new OpenLayers.Projection("EPSG:4326");
 
     var map = new OpenLayers.Map(div, {
+        theme: null,
         units: 'm',
         projection: projection900913,
         displayProjection: projection4326
