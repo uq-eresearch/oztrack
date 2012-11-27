@@ -1,6 +1,31 @@
-<groups xmlns="http://www.isdc.ro/wro">
-  <group name="bootstrap">
+<groups
+  xmlns="http://www.isdc.ro/wro"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.isdc.ro/wro wro.xsd">
+  <group name="core">
+    <css>/css/jquery-ui/jquery-ui-1.8.23.custom.css</css>
     <css>/less/bootstrap.less</css>
+    <js>/js/jquery/jquery-1.8.0.min.js</js>
+    <js>/js/jquery/jquery-ui-1.8.23.custom.min.js</js>
     <js>/js/bootstrap.js</js>
+    <js>/js/oztrack.js</js>
+  </group>
+  <group name="openlayers">
+    <css>/js/openlayers/theme/default/style.css</css>
+    <css>/js/openlayers/theme/default/google.css</css>
+    <js>/js/proj4js/proj4js-compressed.js</js>
+    <js>/js/openlayers/OpenLayers.js</js>
+    <js>/js/openlayers/LoadingPanel.js</js>
+    <js>/js/oztrack-openlayers-post.js</js>
+  </group>
+  <group name="ckeditor">
+    <js>/js/oztrack-ckeditor-pre.js</js>
+    <js>/js/ckeditor/ckeditor.js</js>
+    <js>/js/ckeditor/adapters/jquery.js</js>
+    <js>/js/oztrack-ckeditor-post.js</js>
+  </group>
+  <group name="farbtastic">
+    <css>/css/farbtastic/farbtastic.css</css>
+    <js>/js/farbtastic/farbtastic.js</js>
   </group>
 </groups>

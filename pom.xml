@@ -72,7 +72,13 @@
                         <fileset>
                             <directory>${basedir}/src/main/webapp/css</directory>
                             <includes>
-                                <include>bootstrap.css</include>
+                                <include>optimised</include>
+                            </includes>
+                        </fileset>
+                        <fileset>
+                            <directory>${basedir}/src/main/webapp/js</directory>
+                            <includes>
+                                <include>optimised</include>
                             </includes>
                         </fileset>
                     </filesets>
@@ -135,8 +141,8 @@
                 </executions>
                 <configuration>
                     <contextFolder>${basedir}/src/main/webapp/</contextFolder>
-                    <cssDestinationFolder>${basedir}/src/main/webapp/css/</cssDestinationFolder>
-                    <jsDestinationFolder>${basedir}/src/main/webapp/js/</jsDestinationFolder>
+                    <cssDestinationFolder>${basedir}/src/main/webapp/css/optimised/</cssDestinationFolder>
+                    <jsDestinationFolder>${basedir}/src/main/webapp/js/optimised/</jsDestinationFolder>
                     <wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory</wroManagerFactory>
                 </configuration>
             </plugin>

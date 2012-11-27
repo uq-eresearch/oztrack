@@ -9,6 +9,7 @@
         Update content settings.
     </jsp:attribute>
     <jsp:attribute name="head">
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/optimised/ckeditor.js"></script>
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navSettings').addClass('active');
@@ -28,21 +29,21 @@
                 <h2>Home text</h2>
                 <div class="controls">
                     <form:errors path="homeText" element="div" cssClass="alert alert-error"/>
-                    <form:textarea path="homeText" id="homeText" cssClass="ckeditor"/>
+                    <form:textarea path="homeText" id="homeText" cssClass="oztrack-ckeditor"/>
                 </div>
             </div>
             <div class="control-group">
                 <h2>About text</h2>
                 <div class="controls">
                     <form:errors path="aboutText" element="div" cssClass="alert alert-error"/>
-                    <form:textarea path="aboutText" id="aboutText" cssClass="ckeditor"/>
+                    <form:textarea path="aboutText" id="aboutText" cssClass="oztrack-ckeditor"/>
                 </div>
             </div>
             <div class="control-group">
                 <h2>Contact text</h2>
                 <div class="controls">
                     <form:errors path="contactText" element="div" cssClass="alert alert-error"/>
-                    <form:textarea path="contactText" id="contactText" cssClass="ckeditor"/>
+                    <form:textarea path="contactText" id="contactText" cssClass="oztrack-ckeditor"/>
                 </div>
             </div>
             </fieldset>

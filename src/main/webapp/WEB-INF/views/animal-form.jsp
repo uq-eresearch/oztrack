@@ -9,8 +9,8 @@
         Update animal '${animal.animalName}' in the ${project.title} project.
     </jsp:attribute>
     <jsp:attribute name="head">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/farbtastic/farbtastic.css" type="text/css" />
-        <script type="text/javascript" src="${pageContext.request.contextPath}/js/farbtastic/farbtastic.js"></script>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/optimised/farbtastic.css" type="text/css" />
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/optimised/farbtastic.js"></script>
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
