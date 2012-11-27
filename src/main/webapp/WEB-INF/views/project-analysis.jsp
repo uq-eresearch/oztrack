@@ -133,6 +133,11 @@
                     maxDate: new Date(${projectDetectionDateRange.maximum.time}),
                     defaultDate: new Date(${projectDetectionDateRange.maximum.time})
                 });
+                <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
+                $('input[id=select-animal-${animal.id}]').change(function() {
+                    analysisMap.toggleAllAnimalFeatures("${animal.id}", this.checked);
+                });
+                </c:forEach>
                 $('#filter-animal-all').prop('checked', $('.filter-animal:not(:checked)').length == 0);
                 $('.filter-animal').change(function (e) {
                     $('#filter-animal-all').prop('checked', $('.filter-animal:not(:checked)').length == 0);
@@ -327,7 +332,7 @@
 
             <div id="animalPanel">
 
-                 <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
+                <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
                     <c:set var="showAnimalInfo" value="${animalStatus.index == 0}"/>
                     <div class="animalHeader">
                         <div class="btn-group" style="float: right;">
@@ -348,11 +353,6 @@
 
                         <div class="animalCheckbox">
                             <input style="float: left; margin: 0;" type="checkbox" name="animalCheckbox" id="select-animal-${animal.id}" value="${animal.id}" checked="checked">
-                            <script type="text/javascript">
-                                $('input[id=select-animal-${animal.id}]').change(function() {
-                                    analysisMap.toggleAllAnimalFeatures("${animal.id}",this.checked);
-                                });
-                            </script>
                         </div>
 
                         <div class="smallSquare" style="background-color: ${animal.colour};"></div>
