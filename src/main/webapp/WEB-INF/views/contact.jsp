@@ -9,7 +9,7 @@
         Contact OzTrack staff. OzTrack is a free-to-use web-based platform
         for analysing and visualising individual-based animal location data.
     </jsp:attribute>
-    <jsp:attribute name="head">
+    <jsp:attribute name="tail">
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navContact').addClass('active');

@@ -10,7 +10,7 @@
         individual-based animal location data. The OzTrack project is supported
         by the NeCTAR e-Research Tools program.
     </jsp:attribute>
-    <jsp:attribute name="head">
+    <jsp:attribute name="tail">
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navAbout').addClass('active');

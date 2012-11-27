@@ -9,7 +9,7 @@
     <jsp:attribute name="description">
         Listing of animals tracked in the ${project.title} project.
     </jsp:attribute>
-    <jsp:attribute name="head">
+    <jsp:attribute name="tail">
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');

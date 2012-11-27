@@ -9,7 +9,7 @@
     <jsp:attribute name="description">
         Upload data files to the ${project.title} project.
     </jsp:attribute>
-    <jsp:attribute name="head">
+    <jsp:attribute name="tail">
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');

@@ -10,6 +10,8 @@
     </jsp:attribute>
     <jsp:attribute name="head">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/optimised/farbtastic.css" type="text/css" />
+    </jsp:attribute>
+    <jsp:attribute name="tail">
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/optimised/farbtastic.js"></script>
         <script type="text/javascript">
             $(document).ready(function() {

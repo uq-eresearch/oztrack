@@ -25,7 +25,7 @@
         </c:otherwise>
         </c:choose>
     </jsp:attribute>
-    <jsp:attribute name="head">
+    <jsp:attribute name="tail">
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navSettings').addClass('active');

@@ -58,6 +58,8 @@
                 padding: 0;
             }
         </style>
+    </jsp:attribute>
+    <jsp:attribute name="tail">
         <script src="${pageContext.request.scheme}://maps.google.com/maps/api/js?v=3.9&sensor=false"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/optimised/openlayers.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/project-cleanse.js"></script>

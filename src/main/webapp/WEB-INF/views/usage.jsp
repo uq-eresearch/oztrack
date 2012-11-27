@@ -8,7 +8,7 @@
     <jsp:attribute name="description">
         Summary of OzTrack usage statistics.
     </jsp:attribute>
-    <jsp:attribute name="head">
+    <jsp:attribute name="tail">
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navSettings').addClass('active');

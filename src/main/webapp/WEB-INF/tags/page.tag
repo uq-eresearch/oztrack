@@ -7,7 +7,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ attribute name="title" required="false" %>
 <%@ attribute name="description" required="false" %>
-<%@ attribute name="head" required="true" fragment="true" %>
+<%@ attribute name="head" required="false" fragment="true" %>
+<%@ attribute name="tail" required="false" fragment="true" %>
 <%@ attribute name="breadcrumbs" required="false" fragment="true" %>
 <%@ attribute name="breadcrumbsRight" required="false" fragment="true" %>
 <%@ attribute name="sidebar" required="false" fragment="true" %>
@@ -24,7 +25,6 @@
     </c:if>
     <title>OzTrack${(not empty title) ? ': ' : ' - '}${(not empty title) ? title : 'Free Animal Tracking Software'}</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/optimised/core.css"/>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/js/optimised/core.js"></script>
     <jsp:invoke fragment="head"/>
 </head>
 <body>
@@ -104,6 +104,8 @@
     </div>
 </div>
 </c:if>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/optimised/core.js"></script>
+<jsp:invoke fragment="tail"/>
 <c:if test="${not empty googleAnalyticsTrackingID}">
 <script type="text/javascript">
     var _gaq = _gaq || [];

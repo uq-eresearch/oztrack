@@ -15,6 +15,8 @@
                 background: white;
             }
         </style>
+    </jsp:attribute>
+    <jsp:attribute name="tail">
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');

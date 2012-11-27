@@ -8,7 +8,7 @@
     <jsp:attribute name="description">
         View all projects in the OzTrack animal tracking database.
     </jsp:attribute>
-    <jsp:attribute name="head">
+    <jsp:attribute name="tail">
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');

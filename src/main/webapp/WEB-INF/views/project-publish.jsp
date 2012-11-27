@@ -10,7 +10,7 @@
     <jsp:attribute name="description">
         Publish metadata for the ${project.title} project.
     </jsp:attribute>
-    <jsp:attribute name="head">
+    <jsp:attribute name="tail">
         <script type="text/javascript">
             function publishToDataSpace(id, action) {
                 var loadingGraphicHtml = "Sending request ...";

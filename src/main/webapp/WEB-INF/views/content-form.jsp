@@ -8,7 +8,7 @@
     <jsp:attribute name="description">
         Update content settings.
     </jsp:attribute>
-    <jsp:attribute name="head">
+    <jsp:attribute name="tail">
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/optimised/ckeditor.js"></script>
         <script type="text/javascript">
             $(document).ready(function() {

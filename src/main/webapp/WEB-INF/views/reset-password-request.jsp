@@ -10,7 +10,7 @@
     <jsp:attribute name="description">
         Reset a forgotten password in OzTrack.
     </jsp:attribute>
-    <jsp:attribute name="head">
+    <jsp:attribute name="tail">
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navHome').addClass('active');
