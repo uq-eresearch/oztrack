@@ -72,15 +72,11 @@
                     <div class="controls">
                         <form:input path="bounds" cssClass="input-xxlarge"/>
                         <div class="help-inline">
-                            <a class=info href="#"><img src="${pageContext.request.contextPath}/img/help.png" border="0">
-                            <span>
-                                <b>Bounds:</b><br>
-                                <br>
+                            <div class="help-popover" title="Bounds">
                                 Comma-separated values for the spatial reference system's WGS84 bounding box.<br>
                                 <br>
                                 Example: 144.0000, -54.7500, 150.0000, -1.7100
-                            </span>
-                            </a>
+                            </div>
                         </div>
                         <form:errors path="bounds" element="div" cssClass="help-block formErrors"/>
                     </div>

@@ -49,4 +49,20 @@ $(document).ready(function() {
             $(altField).val('');
         }
     });
+    $('.help-popover').each(function() {
+        $('<a class="help-popover-icon" href="javascript:void(0);">')
+            .insertBefore($(this))
+            .popover({
+                placement: 'right',
+                trigger: 'click',
+                html: true,
+                title: $(this).attr('title'),
+                content: $(this).html()
+            });
+    });
+});
+$(document).click(function (e) {
+    if ($(e.target).parents().andSelf().filter('.help-popover-icon, .popover').length == 0) {
+        $('.help-popover-icon').popover('hide');
+    }
 });

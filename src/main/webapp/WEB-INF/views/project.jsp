@@ -365,14 +365,9 @@
             <c:forEach items="${roles}" var="role">
             <th style="border-bottom: 1px solid #e6e6c0; text-align: left; padding: 4px;">
                 ${role.pluralTitle}
-                <a class=info href="#">
-                    <img src="${pageContext.request.contextPath}/img/help.png" border="0">
-                    <span>
-                        <b>${role.pluralTitle}:</b><br>
-                        <br>
-                        ${role.explanation}
-                    </span>
-                </a>
+                <div class="help-popover" title="${role.pluralTitle}">
+                    ${role.explanation}
+                </div>
             </th>
             </c:forEach>
         </tr>

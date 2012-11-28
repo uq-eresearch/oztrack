@@ -223,14 +223,9 @@
                     <div class="controls">
                         <input type="text" disabled="disabled" value="<c:out value="${dataSpaceAgent.fullName}"/>" />
                         <div class="help-inline">
-                            <a class=info href="#">
-                                <img src="${pageContext.request.contextPath}/img/help.png" border="0">
-                                <span>
-                                    <b>Contact:</b><br>
-                                    <br>
-                                    This person is the contact for the data and becomes the Agent specified in the ANDS Collection Registry.
-                                </span>
-                            </a>
+                            <div class="help-popover" title="Contact">
+                                This person is the contact for the data and becomes the Agent specified in the ANDS Collection Registry.
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -263,14 +258,9 @@
                     <div class="controls">
                         <form:input path="title" id="title" cssClass="input-xxlarge"/>
                         <div class="help-inline">
-                            <a class=info href="#">
-                                <img src="${pageContext.request.contextPath}/img/help.png" border="0">
-                                <span>
-                                    <b>Title:</b><br>
-                                    <br>
-                                    A short title (less than 50 characters if possible) to identify your project in OzTrack.
-                                </span>
-                            </a>
+                            <div class="help-popover" title="Title">
+                                A short title (less than 50 characters if possible) to identify your project in OzTrack.
+                            </div>
                         </div>
                         <form:errors path="title" element="div" cssClass="help-block formErrors"/>
                     </div>
@@ -280,14 +270,9 @@
                     <div class="controls">
                         <form:textarea path="description" id="description" cssStyle="width: 400px; height: 100px;"/>
                         <div class="help-inline">
-                            <a class=info href="#">
-                                <img src="${pageContext.request.contextPath}/img/help.png" border="0">
-                                <span>
-                                    <b>Description:</b><br>
-                                    <br>
-                                    Required by ANDS.
-                                </span>
-                            </a>
+                            <div class="help-popover" title="Description">
+                                Required by ANDS.
+                            </div>
                         </div>
                         <form:errors path="description" element="div" cssClass="help-block formErrors"/>
                     </div>
@@ -299,16 +284,11 @@
                             <form:option value="GPS">GPS Based Telemetry</form:option>
                         </form:select>
                         <div class="help-inline">
-                            <a class=info href="#">
-                                <img src="${pageContext.request.contextPath}/img/help.png" border="0">
-                                <span>
-                                    <b>Project Type:</b><br>
-                                    <br>
-                                    What kind of telemetry device was used to track your animal? This
-                                    will determine the format of the data files you upload, and the
-                                    types of analysis available to this project's data set.
-                                </span>
-                            </a>
+                            <div class="help-popover" title="Project Type">
+                                What kind of telemetry device was used to track your animal? This
+                                will determine the format of the data files you upload, and the
+                                types of analysis available to this project's data set.
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -317,14 +297,9 @@
                     <div class="controls">
                         <form:input path="spatialCoverageDescr" id="spatialCoverageDescr"/>
                         <div class="help-inline">
-                            <a class=info href="#">
-                                <img src="${pageContext.request.contextPath}/img/help.png" border="0">
-                                <span>
-                                    <b>Location Description:</b><br>
-                                    <br>
-                                    The general area of the study, eg. country, state, town.
-                                </span>
-                            </a>
+                            <div class="help-popover" title="Location Description">
+                                The general area of the study, eg. country, state, town.
+                            </div>
                         </div>
                         <form:errors path="spatialCoverageDescr" element="div" cssClass="help-block formErrors"/>
                     </div>

@@ -56,14 +56,9 @@
                     <div class="controls">
                         <form:input path="fileDescription" id="fileDescription" cssClass="input-xlarge"/>
                         <div class="help-inline">
-                            <a class=info href="#">
-                                <img src="${pageContext.request.contextPath}/img/help.png" border="0">
-                                <span>
-                                    <b>File Description</b><br>
-                                    <br>
-                                    A short description to help you identify the contents of the file.
-                                </span>
-                            </a>
+                            <div class="help-popover" title="File Description">
+                                A short description to help you identify the contents of the file.
+                            </div>
                         </div>
                         <form:errors path="fileDescription" element="div" cssClass="help-block formErrors"/>
                     </div>
@@ -74,14 +69,9 @@
                         <form:checkbox path="localTimeConversionRequired" id="localTimeConversionRequired" cssClass="checkbox"/>
                         Local time is GMT +<form:input path="localTimeConversionHours" cssClass="input-mini" cssStyle="width: 30px;"/> hours.
                         <div class="help-inline">
-                            <a class=info href="#">
-                                <img src="${pageContext.request.contextPath}/img/help.png" border="0">
-                                <span>
-                                    <b>Time Conversion</b><br>
-                                    <br>
-                                    Specify a time conversion value to apply to the timestamps in your file.
-                                </span>
-                            </a>
+                            <div class="help-popover" title="Time Conversion">
+                                Specify a time conversion value to apply to the timestamps in your file.
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -90,14 +80,9 @@
                     <div class="controls">
                         <input type="file" name="file"/>
                         <div class="help-inline">
-                            <a class=info href="#">
-                                <img src="${pageContext.request.contextPath}/img/help.png" border="0">
-                                <span>
-                                    <b>Uploading the File:</b><br>
-                                    <br>
-                                    See below for details on the required file format.
-                                </span>
-                            </a>
+                            <div class="help-popover" title="Uploading the File">
+                                See below for details on the required file format.
+                            </div>
                         </div>
                         <form:errors path="file" element="div" cssClass="help-block formErrors"/>
                     </div>

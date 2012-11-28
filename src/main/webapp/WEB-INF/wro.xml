@@ -5,7 +5,6 @@
   <group name="core">
     <css>/css/jquery-ui/jquery-ui-1.8.23.custom.css</css>
     <css>/less/bootstrap/bootstrap.less</css>
-    <css>/less/oztrack.less</css>
     <js>/js/jquery/jquery-1.8.0.min.js</js>
     <js>/js/jquery/jquery-ui-1.8.23.custom.min.js</js>
     <js>/js/bootstrap/bootstrap-transition.js</js>

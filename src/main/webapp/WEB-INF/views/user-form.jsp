@@ -74,10 +74,7 @@
                         </c:otherwise>
                         </c:choose>
                         <div class="help-inline">
-                            <a class=info href="#"><img src="${pageContext.request.contextPath}/img/help.png" border="0">
-                            <span>
-                                <b>AAF ID:</b><br>
-                                <br>
+                            <div class="help-popover" title="AAF ID">
                                 Providing your Australian Access Federation (AAF) ID allows you to login
                                 through your home institution as an alternative to using your OzTrack
                                 username and password.<br>
@@ -85,8 +82,7 @@
                                 Your AAF ID is made up of your username and the domain name for your
                                 institution separated by '@'. For example, if you are a UQ staff member
                                 with username 'uqjsmith', your ID is 'uqjsmith@uq.edu.au'.
-                            </span>
-                            </a>
+                            </div>
                         </div>
                         <c:if test="${not empty user.aafId}">
                         <form:errors path="aafId" element="div" cssClass="help-block formErrors"/>
@@ -99,13 +95,9 @@
                     <div class="controls">
                         <form:input path="username" id="username"/>
                         <div class="help-inline">
-                            <a class=info href="#"><img src="${pageContext.request.contextPath}/img/help.png" border="0">
-                            <span>
-                                <b>Username:</b><br>
-                                <br>
+                            <div class="help-popover" title="Username">
                                 This will be the name that you log on to OzTrack with.
-                            </span>
-                            </a>
+                            </div>
                         </div>
                         <form:errors path="username" element="div" cssClass="help-block formErrors"/>
                     </div>
@@ -150,14 +142,10 @@
                     <div class="controls">
                         <form:input path="organisation" id="organisation"/>
                         <div class="help-inline">
-                            <a class=info href="#"><img src="${pageContext.request.contextPath}/img/help.png" border="0">
-                            <span>
-                                <b>Organisation:</b><br>
-                                <br>
+                            <div class="help-popover" title="Organisation">
                                 Please give the name of the organisation in full.
                                 This field is important when project metadata is syndicated to DataSpace and ANDS.
-                            </span>
-                            </a>
+                            </div>
                         </div>
                         <form:errors path="organisation" element="div" cssClass="help-block formErrors"/>
                     </div>
@@ -174,14 +162,10 @@
                     <div class="controls">
                         <form:textarea path="dataSpaceAgentDescription" id="dataSpaceAgentDescription" cssStyle="width: 400px; height: 100px;"/>
                         <div class="help-inline">
-                            <a class=info href="#"><img src="${pageContext.request.contextPath}/img/help.png" border="0">
-                            <span>
-                                <b>Description:</b><br>
-                                <br>
-                                This field is important when project metadata are syndicated to DataSpace and ANDS.
-                                See examples at http://dataspace.uq.edu.au/agents.
-                            </span>
-                            </a>
+                            <div class="help-popover" title="Description">
+                              This field is important when project metadata are syndicated to DataSpace and ANDS.
+                              See examples at <a href="http://dataspace.uq.edu.au/agents">http://dataspace.uq.edu.au/agents</a>.
+                            </div>
                         </div>
                         <form:errors path="dataSpaceAgentDescription" element="div" cssClass="help-block formErrors"/>
                     </div>
