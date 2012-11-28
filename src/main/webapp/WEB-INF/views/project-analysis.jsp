@@ -464,6 +464,16 @@
                                                 <td style="padding-right: 5px;">${parameterType.displayName}</td>
                                                 <td class="${(not empty parameterType.units) ? 'input-append' : ''}">
                                                     <c:choose>
+                                                    <c:when test="${parameterType.options != null}">
+                                                    <select class="paramField-${analysisType}" style="width: auto;" name="${parameterType.identifier}">
+                                                    <c:forEach items="${parameterType.options}" var="option">
+                                                    <option
+                                                        value="${option.value}"
+                                                        <c:if test="${parameterType.defaultValue == option.value}">selected="selected"</c:if>
+                                                        >${option.title}</option>
+                                                    </c:forEach>
+                                                    </select>
+                                                    </c:when>
                                                     <c:when test="${parameterType.dataType == 'boolean'}">
                                                     <input
                                                         class="paramField-${analysisType}"

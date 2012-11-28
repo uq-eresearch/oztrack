@@ -14,6 +14,8 @@ import org.oztrack.data.model.Analysis;
 import org.oztrack.data.model.AnalysisParameter;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
+import org.oztrack.data.model.types.AnalysisParameterType;
+import org.oztrack.data.model.types.AnalysisType;
 import org.oztrack.error.RServeInterfaceException;
 import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.REXPDouble;
@@ -271,7 +273,10 @@ public class RServeInterface {
         }
         AnalysisParameter showAbsenceParameter = analysis.getParamater("showAbsence");
         String labsent = ((showAbsenceParameter.getValue() != null) && Boolean.parseBoolean(showAbsenceParameter.getValue())) ? "TRUE" : "FALSE";
-        safeEval("PPA <- try({fpdens2kml(sdata=positionFix.xy, igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\", scol=\"Greens\", labsent=" + labsent + ")}, silent=TRUE)");
+        AnalysisParameter coloursParameter = analysis.getParamater("colours");
+        AnalysisParameterType coloursParameterType = AnalysisType.HEATMAP_POINT.getParameterType("colours");
+        String scol = ((coloursParameter.getValue() != null) && coloursParameterType.isValid(coloursParameter.getValue())) ? coloursParameter.getValue() : coloursParameterType.getDefaultValue();
+        safeEval("PPA <- try({fpdens2kml(sdata=positionFix.xy, igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\", scol=\"" + scol + "\", labsent=" + labsent + ")}, silent=TRUE)");
         safeEval(
             "if (class(PPA) == 'try-error') {\n" +
             "  stop('Grid size too small. Try increasing grid number.')\n" +
@@ -288,7 +293,10 @@ public class RServeInterface {
         }
         AnalysisParameter showAbsenceParameter = analysis.getParamater("showAbsence");
         String labsent = ((showAbsenceParameter.getValue() != null) && Boolean.parseBoolean(showAbsenceParameter.getValue())) ? "TRUE" : "FALSE";
-        safeEval("LPA <- try({fldens2kml(sdata=positionFix.xy, igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\",scol=\"YlOrRd\", labsent=" + labsent + ")}, silent=TRUE)");
+        AnalysisParameter coloursParameter = analysis.getParamater("colours");
+        AnalysisParameterType coloursParameterType = AnalysisType.HEATMAP_LINE.getParameterType(coloursParameter.getName());
+        String scol = ((coloursParameter.getValue() != null) && coloursParameterType.isValid(coloursParameter.getValue())) ? coloursParameter.getValue() : coloursParameterType.getDefaultValue();
+        safeEval("LPA <- try({fldens2kml(sdata=positionFix.xy, igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\",scol=\"" + scol + "\", labsent=" + labsent + ")}, silent=TRUE)");
         safeEval(
             "if (class(LPA) == 'try-error') {\n" +
             "  stop('Grid size too small. Try increasing grid number.')\n" +

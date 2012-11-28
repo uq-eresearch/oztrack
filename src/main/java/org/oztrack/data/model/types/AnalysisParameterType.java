@@ -1,5 +1,7 @@
 package org.oztrack.data.model.types;
 
+import java.util.List;
+
 public class AnalysisParameterType {
     private final String identifier;
     private final String displayName;
@@ -7,6 +9,7 @@ public class AnalysisParameterType {
     private final String units;
     private final String defaultValue;
     private final boolean advanced;
+    private final List<AnalysisParameterOption> options;
 
     public AnalysisParameterType(
         String identifier,
@@ -14,7 +17,8 @@ public class AnalysisParameterType {
         String dataType,
         String units,
         String defaultValue,
-        boolean advanced
+        boolean advanced,
+        List<AnalysisParameterOption> options
     ) {
         this.identifier = identifier;
         this.displayName = displayName;
@@ -22,6 +26,7 @@ public class AnalysisParameterType {
         this.units = units;
         this.defaultValue = defaultValue;
         this.advanced = advanced;
+        this.options = options;
     }
 
     public String getIdentifier() {
@@ -46,5 +51,39 @@ public class AnalysisParameterType {
 
     public boolean isAdvanced() {
         return advanced;
+    }
+
+    public List<AnalysisParameterOption> getOptions() {
+        return options;
+    }
+
+    public boolean isValid(String value) {
+        if (value == null) {
+            return true;
+        }
+        if (options != null) {
+            for (AnalysisParameterOption option : options) {
+                if (option.getValue().equals(value)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if (dataType.equals("double")) {
+            try {
+                double doubleValue = Double.parseDouble(value);
+                return !Double.isNaN(doubleValue) && !Double.isInfinite(doubleValue);
+            }
+            catch (NumberFormatException e) {
+                return false;
+            }
+        }
+        if (dataType.equals("boolean")) {
+            return value.equals("false") || value.equals("true");
+        }
+        if (dataType.equals("string")) {
+            return true;
+        }
+        return false;
     }
 }
