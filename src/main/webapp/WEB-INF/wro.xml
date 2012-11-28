@@ -4,10 +4,23 @@
   xsi:schemaLocation="http://www.isdc.ro/wro wro.xsd">
   <group name="core">
     <css>/css/jquery-ui/jquery-ui-1.8.23.custom.css</css>
-    <css>/less/bootstrap.less</css>
+    <css>/less/bootstrap/bootstrap.less</css>
+    <css>/less/oztrack.less</css>
     <js>/js/jquery/jquery-1.8.0.min.js</js>
     <js>/js/jquery/jquery-ui-1.8.23.custom.min.js</js>
-    <js>/js/bootstrap.js</js>
+    <js>/js/bootstrap/bootstrap-transition.js</js>
+    <js>/js/bootstrap/bootstrap-alert.js</js>
+    <js>/js/bootstrap/bootstrap-button.js</js>
+    <js>/js/bootstrap/bootstrap-carousel.js</js>
+    <js>/js/bootstrap/bootstrap-collapse.js</js>
+    <js>/js/bootstrap/bootstrap-dropdown.js</js>
+    <js>/js/bootstrap/bootstrap-modal.js</js>
+    <js>/js/bootstrap/bootstrap-tooltip.js</js>
+    <js>/js/bootstrap/bootstrap-popover.js</js>
+    <js>/js/bootstrap/bootstrap-scrollspy.js</js>
+    <js>/js/bootstrap/bootstrap-tab.js</js>
+    <js>/js/bootstrap/bootstrap-typeahead.js</js>
+    <js>/js/bootstrap/bootstrap-affix.js</js>
     <js>/js/oztrack.js</js>
   </group>
   <group name="openlayers">
