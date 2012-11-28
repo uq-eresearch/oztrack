@@ -254,7 +254,12 @@ function createAnalysisMap(div, options) {
             }
             params.animalIds = $('input[name=animal]:checked').map(function() {return $(this).val();}).toArray().join(',');
             $('.paramField-' + queryTypeValue).each(function() {
-                params[$(this).attr('name')] = $(this).val();
+                if ($(this).attr('type') == 'checkbox') {
+                    params[$(this).attr('name')] = $(this).is(':checked') ? 'true' : 'false';
+                }
+                else {
+                    params[$(this).attr('name')] = $(this).val();
+                }
             });
             if (queryTypeValue == "LINES") {
                 var trajectoryLayer = createTrajectoryLayer(params);
