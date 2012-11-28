@@ -143,8 +143,9 @@
                         <form:input path="organisation" id="organisation"/>
                         <div class="help-inline">
                             <div class="help-popover" title="Organisation">
-                                Please give the name of the organisation in full.
-                                This field is important when project metadata is syndicated to DataSpace and ANDS.
+                                Please give the name of the organisation in full.<br />
+                                <br />
+                                This field is used when project metadata are syndicated to UQ DataSpace and ANDS.
                             </div>
                         </div>
                         <form:errors path="organisation" element="div" cssClass="help-block formErrors"/>
@@ -158,13 +159,15 @@
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="dataSpaceAgentDescription">Description:</label>
+                    <label class="control-label" for="dataSpaceAgentDescription">Short Bio:</label>
                     <div class="controls">
                         <form:textarea path="dataSpaceAgentDescription" id="dataSpaceAgentDescription" cssStyle="width: 400px; height: 100px;"/>
                         <div class="help-inline">
-                            <div class="help-popover" title="Description">
-                              This field is important when project metadata are syndicated to DataSpace and ANDS.
-                              See examples at <a href="http://dataspace.uq.edu.au/agents">http://dataspace.uq.edu.au/agents</a>.
+                            <div class="help-popover" title="Short Bio">
+                                Briefly describe yourself and your research interests.<br />
+                                <br />
+                                This field is used when project metadata are syndicated to UQ DataSpace and ANDS.
+                                See examples at <a href="http://dataspace.uq.edu.au/agents">http://dataspace.uq.edu.au/agents</a>.
                             </div>
                         </div>
                         <form:errors path="dataSpaceAgentDescription" element="div" cssClass="help-block formErrors"/>
