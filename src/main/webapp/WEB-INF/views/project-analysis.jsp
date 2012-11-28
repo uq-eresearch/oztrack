@@ -460,7 +460,7 @@
                                                 </td>
                                             </tr>
                                             </c:if>
-                                            <tr>
+                                            <tr <c:if test="${parameterType.advanced}">style="display: none;"</c:if>>
                                                 <td style="padding-right: 5px;">${parameterType.displayName}</td>
                                                 <td class="${(not empty parameterType.units) ? 'input-append' : ''}">
                                                     <c:choose>
