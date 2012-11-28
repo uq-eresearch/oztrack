@@ -7,34 +7,34 @@ public enum AnalysisType {
     MCP(
         "Minimum Convex Polygon",
         Arrays.asList(
-            new AnalysisParameterType("percent", "Percent", "%", "100")
+            new AnalysisParameterType("percent", "Percent", "%", "100", false)
         )
     ),
     KUD(
         "Kernel Utilization Distribution",
         Arrays.asList(
-            new AnalysisParameterType("percent", "Percent", "%", "95"),
-            new AnalysisParameterType("h", "h value", null, "href"),
-            new AnalysisParameterType("gridSize", "Grid size", "m", "50"),
-            new AnalysisParameterType("extent", "Extent", null, "1")
+            new AnalysisParameterType("percent", "Percent", "%", "95", false),
+            new AnalysisParameterType("h", "h value", null, "href", false),
+            new AnalysisParameterType("gridSize", "Grid size", "m", "50", true),
+            new AnalysisParameterType("extent", "Extent", null, "1", true)
         )
     ),
     AHULL(
         "Alpha Hull",
         Arrays.asList(
-            new AnalysisParameterType("alpha", "Alpha", null, "100")
+            new AnalysisParameterType("alpha", "Alpha", null, "100", false)
         )
     ),
     HEATMAP_POINT(
         "Heat Map (Point Intensity)",
         Arrays.asList(
-            new AnalysisParameterType("gridSize", "Grid size", "m", "100")
+            new AnalysisParameterType("gridSize", "Grid size", "m", "100", false)
         )
     ),
     HEATMAP_LINE(
         "Heat Map (Line Intensity)",
         Arrays.asList(
-            new AnalysisParameterType("gridSize", "Grid size", "m", "100")
+            new AnalysisParameterType("gridSize", "Grid size", "m", "100", false)
         )
     );
 

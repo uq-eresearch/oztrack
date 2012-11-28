@@ -449,6 +449,7 @@
                                         <label style="margin: 2px 0 0 0;" for="queryTypeSelect-${analysisType}"><c:out value="${analysisType.displayName}"/></label>
                                         <table id="paramTable-${analysisType}" class="paramTable" style="display: none; margin: 6px 0;">
                                             <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
+                                            <c:if test="${!parameterType.advanced}">
                                             <tr>
                                                 <td style="padding-right: 5px;">${parameterType.displayName}</td>
                                                 <td class="${(not empty parameterType.units) ? 'input-append' : ''}">
@@ -466,6 +467,39 @@
                                                     </c:if>
                                                 </td>
                                             </tr>
+                                            </c:if>
+                                            </c:forEach>
+                                            <c:set var="foundAdvancedParameterType" value="false"/>
+                                            <c:forEach items="${analysisType.parameterTypes}" var="parameterType" varStatus="parameterTypeStatus">
+                                            <c:if test="${parameterType.advanced}">
+                                            <c:if test="${!foundAdvancedParameterType}">
+                                            <tr>
+                                                <td colspan="2">
+                                                    <div style="margin-bottom: 3px;">
+                                                        <a href="javascript:void(0);" onclick="$(this).closest('tr').nextAll().fadeToggle();">Advanced parameters</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </c:if>
+                                            <c:set var="foundAdvancedParameterType" value="true"/>
+                                            <tr style="display: none;">
+                                                <td style="padding-right: 5px;">${parameterType.displayName}</td>
+                                                <td class="${(not empty parameterType.units) ? 'input-append' : ''}">
+                                                    <input
+                                                        id="paramField-${analysisType}-${parameterType.identifier}"
+                                                        class="paramField-${analysisType} input-mini"
+                                                        name="${parameterType.identifier}"
+                                                        type="text"
+                                                        <c:if test="${not empty parameterType.defaultValue}">
+                                                        value="${parameterType.defaultValue}"
+                                                        </c:if>
+                                                        style="margin-bottom: 3px; text-align: right;"/>
+                                                    <c:if test="${not empty parameterType.units}">
+                                                    <span class="add-on">${parameterType.units}</span>
+                                                    </c:if>
+                                                </td>
+                                            </tr>
+                                            </c:if>
                                             </c:forEach>
                                         </table>
                                     </td>
