@@ -648,6 +648,13 @@ function createAnalysisMap(div, options) {
                     tableRowsHtml += '<td>' + area + ' km<sup>2</sup></td>';
                     tableRowsHtml += '</tr>';
                 }
+                if (!analysis.params.hValue && feature.attributes.hval && feature.attributes.hval.value) {
+                    var hval = Math.round(feature.attributes.hval.value * 1000) / 1000;
+                    tableRowsHtml += '<tr>';
+                    tableRowsHtml += '<td class="layerInfoLabel">h value: </td>';
+                    tableRowsHtml += '<td>' + hval + '</td>';
+                    tableRowsHtml += '</tr>';
+                }
                 tableRowsHtml += '<tr>';
                 tableRowsHtml += '<td class="layerInfoLabel">Export as: </td>';
                 tableRowsHtml += '<td><a href="' + analysis.resultUrl + '">KML</a></td>';
