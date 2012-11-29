@@ -461,7 +461,7 @@
                                             </tr>
                                             </c:if>
                                             <tr <c:if test="${parameterType.advanced}">style="display: none;"</c:if>>
-                                                <td style="padding-right: 5px;">${parameterType.displayName}</td>
+                                                <td style="padding-right: 10px;">${parameterType.displayName}</td>
                                                 <td class="${(not empty parameterType.units) ? 'input-append' : ''}">
                                                     <c:choose>
                                                     <c:when test="${parameterType.options != null}">
@@ -476,12 +476,12 @@
                                                     </c:when>
                                                     <c:when test="${parameterType.dataType == 'boolean'}">
                                                     <input
-                                                        class="paramField-${analysisType}"
+                                                        class="paramField-${analysisType} checkbox"
                                                         name="${parameterType.identifier}"
                                                         type="checkbox"
                                                         <c:if test="${parameterType.defaultValue == 'true'}">checked="checked"</c:if>
                                                         value="true"
-                                                        style="margin-bottom: 3px;" />
+                                                        style="margin: 4px 1px;" />
                                                     </c:when>
                                                     <c:otherwise>
                                                     <input

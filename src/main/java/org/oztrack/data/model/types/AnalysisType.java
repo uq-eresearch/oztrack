@@ -61,8 +61,8 @@ public enum AnalysisType {
 
     private static List<AnalysisParameterType> buildHeatmapParameterTypes() {
         return Arrays.asList(
-            new AnalysisParameterType("gridSize", "Grid size", "double", "m", "100", false, null),
             new AnalysisParameterType("showAbsence", "Show absence", "boolean", null, "false", false, null),
+            new AnalysisParameterType("gridSize", "Grid size", "double", "m", "100", false, null),
             new AnalysisParameterType("colours", "Colours", "string", null, "YlOrRed", false, Arrays.asList(
                 new AnalysisParameterOption("YlOrRd", "Yellow-Orange-Red"),
                 new AnalysisParameterOption("YlOrBr", "Yellow-Orange-Brown"),
