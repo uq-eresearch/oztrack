@@ -239,6 +239,7 @@
                         .popover({
                             placement: 'bottom',
                             trigger: 'hover',
+                            html: true,
                             title: layerName,
                             content: function() {
                                 var div = $('<div>').append('<img src="${pageContext.request.contextPath}/img/ui-anim_basic_16x16.gif" />');
