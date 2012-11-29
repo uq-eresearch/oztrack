@@ -111,11 +111,13 @@ public class AnalysisListController {
         for (AnalysisParameterType analysisParameterType : analysisType.getParameterTypes()) {
             String[] requestParameterValues = requestParameterMap.get(analysisParameterType.getIdentifier());
             String requestParameterValue = (requestParameterValues != null) ? requestParameterValues[0] : null;
-            AnalysisParameter analysisParameter = new AnalysisParameter();
-            analysisParameter.setAnalysis(analysis);
-            analysisParameter.setName(analysisParameterType.getIdentifier());
-            analysisParameter.setValue(requestParameterValue);
-            analysisParameters.add(analysisParameter);
+            if (requestParameterValue != null) {
+                AnalysisParameter analysisParameter = new AnalysisParameter();
+                analysisParameter.setAnalysis(analysis);
+                analysisParameter.setName(analysisParameterType.getIdentifier());
+                analysisParameter.setValue(requestParameterValue);
+                analysisParameters.add(analysisParameter);
+            }
         }
         analysis.setParameters(analysisParameters);
         User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);

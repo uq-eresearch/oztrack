@@ -14,7 +14,12 @@ public enum AnalysisType {
         "Kernel Utilization Distribution",
         Arrays.asList(
             new AnalysisParameterType("percent", "Percent", "double", "%", "95", false, null),
-            new AnalysisParameterType("h", "h value", "string", null, "href", false, null),
+            new AnalysisParameterType("hEstimator", "h estimator", "string", null, "href", false, Arrays.asList(
+                new AnalysisParameterOption("href", "Ad hoc method (href)"),
+                new AnalysisParameterOption("LSCV", "Least-square cross validation (LSCV)"),
+                new AnalysisParameterOption(null, "None (enter h value) [advanced]")
+            )),
+            new AnalysisParameterType("hValue", "h value", "double", null, null, true, null),
             new AnalysisParameterType("gridSize", "Grid size", "double", "m", "50", true, null),
             new AnalysisParameterType("extent", "Extent", "double", null, "1", true, null)
         )

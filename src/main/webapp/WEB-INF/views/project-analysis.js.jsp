@@ -257,7 +257,7 @@ function createAnalysisMap(div, options) {
                 if ($(this).attr('type') == 'checkbox') {
                     params[$(this).attr('name')] = $(this).is(':checked') ? 'true' : 'false';
                 }
-                else {
+                else if ($(this).val()) {
                     params[$(this).attr('name')] = $(this).val();
                 }
             });

@@ -7,7 +7,6 @@ import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.model.Analysis;
@@ -196,7 +195,7 @@ public class RServeInterface {
 
     private void writeMCPKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
         AnalysisParameter percentParameter = analysis.getParamater("percent");
-        Double percent = (percentParameter.getValue() != null) ? Double.valueOf(percentParameter.getValue()) : 100d;
+        Double percent = ((percentParameter != null) && (percentParameter.getValue() != null)) ? Double.valueOf(percentParameter.getValue()) : 100d;
         if (!(percent >= 0d && percent <= 100d)) {
             throw new RServeInterfaceException("percent must be between 0 and 100.");
         }
@@ -212,20 +211,30 @@ public class RServeInterface {
 
     private void writeKernelUDKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
         AnalysisParameter percentParameter = analysis.getParamater("percent");
-        Double percent = (percentParameter.getValue() != null) ? Double.valueOf(percentParameter.getValue()) : 100d;
+        Double percent = ((percentParameter != null) && (percentParameter.getValue() != null)) ? Double.valueOf(percentParameter.getValue()) : 100d;
         if (!(percent >= 0d && percent <= 100d)) {
             throw new RServeInterfaceException("percent must be between 0 and 100.");
         }
-        AnalysisParameter hParameter = analysis.getParamater("h");
-        String h = (hParameter.getValue() != null) ? hParameter.getValue() : "href";
-        if (!(h.equals("href") || h.equals("LSCV") || NumberUtils.isNumber(h))) {
-            throw new RServeInterfaceException("h-value must be \"href\", \"LSCV\", or a numeric value.");
+        AnalysisParameterType hEstimatorParameterType = AnalysisType.KUD.getParameterType("hEstimator");
+        AnalysisParameter hEstimatorParameter = analysis.getParamater(hEstimatorParameterType.getIdentifier());
+        String hEstimator =
+            ((hEstimatorParameter != null) && (hEstimatorParameter.getValue() != null) && hEstimatorParameterType.isValid(hEstimatorParameter.getValue()))
+            ? hEstimatorParameter.getValue()
+            : null;
+        AnalysisParameterType hValueParameterType = AnalysisType.KUD.getParameterType("hValue");
+        AnalysisParameter hValueParameter = analysis.getParamater(hValueParameterType.getIdentifier());
+        Double hValue =
+            ((hValueParameter != null) && (hValueParameter.getValue() != null) && hValueParameterType.isValid(hValueParameter.getValue()))
+            ? Double.valueOf(hValueParameter.getValue())
+            : null;
+        if ((hEstimator == null) && (hValue == null)) {
+            throw new RServeInterfaceException("h estimator or h value must be entered.");
         }
-        String hExpr = NumberUtils.isNumber(h) ? h : "\"" + h + "\"";
+        String hExpr = (hValue != null) ? hValue.toString() : "\"" + hEstimator + "\"";
         AnalysisParameter gridSizeParameter = analysis.getParamater("gridSize");
-        Double gridSize = (gridSizeParameter.getValue() != null) ? Double.valueOf(gridSizeParameter.getValue()) : 50d;
+        Double gridSize = ((gridSizeParameter != null) && (gridSizeParameter.getValue() != null)) ? Double.valueOf(gridSizeParameter.getValue()) : 50d;
         AnalysisParameter extentParameter = analysis.getParamater("extent");
-        Double extent = (extentParameter.getValue() != null) ? Double.valueOf(extentParameter.getValue()) : 1d;
+        Double extent = ((extentParameter != null) && (extentParameter.getValue() != null)) ? Double.valueOf(extentParameter.getValue()) : 1d;
         safeEval("h <- " + hExpr);
         safeEval("KerHRp <- try({kernelUD(xy=positionFix.proj, h=h, grid=" + gridSize + ", extent=" + extent + ")}, silent=TRUE)");
         safeEval(
@@ -257,7 +266,7 @@ public class RServeInterface {
 
     private void writeAlphahullKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
         AnalysisParameter alphaParameter = analysis.getParamater("alpha");
-        Double alpha = (alphaParameter.getValue() != null) ? Double.valueOf(alphaParameter.getValue()) : 0.1d;
+        Double alpha = ((alphaParameter != null) && (alphaParameter.getValue() != null)) ? Double.valueOf(alphaParameter.getValue()) : 0.1d;
         if (!(alpha > 0d)) {
             throw new RServeInterfaceException("alpha must be greater than 0.");
         }
@@ -267,15 +276,15 @@ public class RServeInterface {
 
     private void writePointHeatmapKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
         AnalysisParameter gridSizeParameter = analysis.getParamater("gridSize");
-        Double gridSize = (gridSizeParameter.getValue() != null) ? Double.valueOf(gridSizeParameter.getValue()) : 100d;
+        Double gridSize = ((gridSizeParameter != null) && (gridSizeParameter.getValue() != null)) ? Double.valueOf(gridSizeParameter.getValue()) : 100d;
         if (!(gridSize > 0d)) {
             throw new RServeInterfaceException("grid size must be greater than 0.");
         }
         AnalysisParameter showAbsenceParameter = analysis.getParamater("showAbsence");
-        String labsent = ((showAbsenceParameter.getValue() != null) && Boolean.parseBoolean(showAbsenceParameter.getValue())) ? "TRUE" : "FALSE";
-        AnalysisParameter coloursParameter = analysis.getParamater("colours");
+        String labsent = ((showAbsenceParameter != null) && (showAbsenceParameter.getValue() != null) && Boolean.parseBoolean(showAbsenceParameter.getValue())) ? "TRUE" : "FALSE";
         AnalysisParameterType coloursParameterType = AnalysisType.HEATMAP_POINT.getParameterType("colours");
-        String scol = ((coloursParameter.getValue() != null) && coloursParameterType.isValid(coloursParameter.getValue())) ? coloursParameter.getValue() : coloursParameterType.getDefaultValue();
+        AnalysisParameter coloursParameter = analysis.getParamater(coloursParameterType.getIdentifier());
+        String scol = ((coloursParameter != null) && (coloursParameter.getValue() != null) && coloursParameterType.isValid(coloursParameter.getValue())) ? coloursParameter.getValue() : coloursParameterType.getDefaultValue();
         safeEval("PPA <- try({fpdens2kml(sdata=positionFix.xy, igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\", scol=\"" + scol + "\", labsent=" + labsent + ")}, silent=TRUE)");
         safeEval(
             "if (class(PPA) == 'try-error') {\n" +
@@ -287,14 +296,14 @@ public class RServeInterface {
 
     private void writeLineHeatmapKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
         AnalysisParameter gridSizeParameter = analysis.getParamater("gridSize");
-        Double gridSize = (gridSizeParameter.getValue() != null) ? Double.valueOf(gridSizeParameter.getValue()) : 100d;
+        Double gridSize = ((gridSizeParameter != null) && (gridSizeParameter.getValue() != null)) ? Double.valueOf(gridSizeParameter.getValue()) : 100d;
         if (!(gridSize > 0d)) {
             throw new RServeInterfaceException("grid size must be greater than 0.");
         }
         AnalysisParameter showAbsenceParameter = analysis.getParamater("showAbsence");
-        String labsent = ((showAbsenceParameter.getValue() != null) && Boolean.parseBoolean(showAbsenceParameter.getValue())) ? "TRUE" : "FALSE";
-        AnalysisParameter coloursParameter = analysis.getParamater("colours");
-        AnalysisParameterType coloursParameterType = AnalysisType.HEATMAP_LINE.getParameterType(coloursParameter.getName());
+        String labsent = ((showAbsenceParameter != null) && (showAbsenceParameter.getValue() != null) && Boolean.parseBoolean(showAbsenceParameter.getValue())) ? "TRUE" : "FALSE";
+        AnalysisParameterType coloursParameterType = AnalysisType.HEATMAP_LINE.getParameterType("colours");
+        AnalysisParameter coloursParameter = analysis.getParamater(coloursParameterType.getIdentifier());
         String scol = ((coloursParameter.getValue() != null) && coloursParameterType.isValid(coloursParameter.getValue())) ? coloursParameter.getValue() : coloursParameterType.getDefaultValue();
         safeEval("LPA <- try({fldens2kml(sdata=positionFix.xy, igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\",scol=\"" + scol + "\", labsent=" + labsent + ")}, silent=TRUE)");
         safeEval(
