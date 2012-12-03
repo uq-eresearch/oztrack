@@ -30,7 +30,38 @@
         <p>
             <img src="${pageContext.request.contextPath}/img/architecture.png" style="border: 1px solid #D0D0BB;"/>
         </p>
-        <p>The OzTrack analysis tools use the following open-source R packages:</p>
+        <h3>Server components</h3>
+        <p>OzTrack uses the following server components:</p>
+        <ul class="icons">
+            <li class="software"><a href="http://www.oracle.com/technetwork/java/index.html">Java</a>: general-purpose, object-oriented language</li>
+            <li class="software"><a href="http://tomcat.apache.org/">Tomcat</a> or <a href="http://www.eclipse.org/jetty/">Jetty</a>: HTTP server and Java Servlet container</li>
+            <li class="software"><a href="http://httpd.apache.org/">Apache HTTP Server</a>: open-source HTTP server</li>
+            <li class="software"><a href="http://shibboleth.net/products/service-provider.html">Shibboleth Service Provider</a>: integrates with Apache HTTP Server to provide single-sign-on</li>
+            <li class="software"><a href="http://www.postgresql.org/">PostgreSQL</a>: object-relational database management system</li>
+            <li class="software"><a href="http://postgis.refractions.net/">PostGIS</a>: adds support for geographic objects to the PostgreSQL</li>
+            <li class="software"><a href="http://www.r-project.org/">R</a>: language and environment for statistical computing and graphics</li>
+            <li class="software"><a href="http://www.rforge.net/Rserve/">Rserve (Server, REngine Java client)</a>: TCP/IP server allowing other programs (e.g. Java) to use facilities of R</li>
+        </ul>
+        <h3>Java technologies</h3>
+        <p>The OzTrack web application uses these Java technologies:</p>
+        <ul class="icons">
+            <li class="software"><a href="http://www.oracle.com/technetwork/java/javaee/servlet/index.html">Java Servlets, JSP, JSTL</a>: Java technologies for building Web-based applications</li>
+            <li class="software"><a href="http://www.springsource.org/">Spring Framework (Context, Web MVC), Spring Security</a>: application development framework for Java</li>
+            <li class="software"><a href="http://www.hibernate.org/">Hibernate</a>: Java persistence framework</li>
+            <li class="software"><a href="http://www.hibernatespatial.org/">Hibernate Spatial</a>: extension to Hibernate for handling geographic data</li>
+            <li class="software"><a href="http://www.geotools.org/">GeoTools (Main, XML, EPSG-HSQL, XSD-KML, Swing)</a>: Java library providing tools for geospatial data</li>
+            <li class="software"><a href="http://quartz-scheduler.org/">Quartz</a>: Java job scheduling service</li>
+            <li class="software"><a href="http://hc.apache.org/httpcomponents-client-ga/">Apache HttpComponents HttpClient</a>: Java implementation of client side of HTTP protocol</li>
+            <li class="software"><a href="http://commons.apache.org/">Apache Commons (Lang, IO, Email, FileUpload)</a>: reusable Java components</li>
+            <li class="software"><a href="http://poi.apache.org/">Apache POI</a>: Java API for Microsoft Documents</li>
+            <li class="software"><a href="http://freemarker.sourceforge.net/">FreeMarker</a>: Java template engine</li>
+            <li class="software"><a href="https://github.com/samskivert/jmustache">JMustache</a>: Java implementation of the Mustache template language</li>
+            <li class="software"><a href="http://www.json.org/java/index.html">JSON in Java</a>: Java implementaiton of the JSON data interchange format</li>
+            <li class="software"><a href="http://www.google.com/recaptcha">reCAPCHA</a>: prevents website abuse from bots</li>
+            <li class="software"><a href="http://flywaydb.org/">Flyway</a>: database migration framework for Java</li>
+        </ul>
+        <h3>R packages</h3>
+        <p>The OzTrack analysis tools use these R packages:</p>
         <ul class="icons">
             <li class="software">
                 <a href="http://cran.r-project.org/web/packages/adehabitatHR/index.html">adehabitatHR</a>: Home range Estimation
