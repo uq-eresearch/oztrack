@@ -109,6 +109,16 @@
                 <a href="http://cran.r-project.org/web/packages/plyr/index.html">plyr</a>: Tools for splitting, applying and combining data
             </li>
         </ul>
+        <h3>Web client technologies</h3>
+        <ul class="icons">
+            <li class="software"><a href="http://jquery.com/">jQuery</a>: JavaScript Library for rapid web development</li>
+            <li class="software"><a href="http://ckeditor.com/">CKEditor</a>: HTML text editor for web content creation</li>
+            <li class="software"><a href="http://acko.net/blog/farbtastic-jquery-color-picker-plug-in/">Farbtastic</a>: JavaScript colour picker</li>
+            <li class="software"><a href="http://openlayers.org/">OpenLayers</a>: JavaScript library for displaying map data in the Web browser</li>
+            <li class="software"><a href="http://trac.osgeo.org/proj4js/">Proj4js</a>: JavaScript library to transform point coordinates from one coordinate system to another</li>
+            <li class="software"><a href="http://twitter.github.com/bootstrap/">Bootstrap</a>: front-end framework for web development</li>
+            <li class="software"><a href="http://lesscss.org/">LESS</a>: extends CSS with dynamic behavior such as variables, mixins, operations, and functions</li>
+        </ul>
         <h2>Artwork credits</h2>
         <ul class="icons">
             <li class="artwork">This website uses the <a href="http://www.famfamfam.com/lab/icons/silk/">Silk icon set</a> by Mark James.</li>
