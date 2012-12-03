@@ -1,0 +1,1 @@
+alter table appuser add column createdate timestamp;

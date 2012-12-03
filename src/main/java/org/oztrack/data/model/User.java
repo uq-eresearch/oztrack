@@ -3,18 +3,26 @@ package org.oztrack.data.model;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.SortedSet;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
 
 @Entity(name="appuser")
 public class User {
@@ -37,9 +45,13 @@ public class User {
     private String password;
     private Boolean admin;
     private String aafId;
+
     private String dataSpaceAgentURI;
     private String dataSpaceAgentDescription;
     private Date dataSpaceAgentUpdateDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createDate;
 
     @Column(name="passwordresettoken", unique=true)
     private String passwordResetToken;
@@ -50,6 +62,12 @@ public class User {
     @OneToMany(mappedBy="user", fetch=FetchType.LAZY, cascade={CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true)
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private List<ProjectUser> projectUsers = new LinkedList<ProjectUser>();
+
+    @ElementCollection(fetch=FetchType.LAZY)
+    @CollectionTable(name="appuser_logindate", joinColumns=@JoinColumn(name="user_id"))
+    @Column(name="logindate")
+    @Sort(type=SortType.NATURAL)
+    private SortedSet<Date> loginDates;
 
     public User() {
     }
@@ -192,6 +210,14 @@ public class User {
         this.dataSpaceAgentUpdateDate = dataSpaceAgentUpdateDate;
     }
 
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
     public String getPasswordResetToken() {
         return passwordResetToken;
     }
@@ -206,5 +232,13 @@ public class User {
 
     public void setPasswordResetExpiresAt(Date passwordResetExpiresAt) {
         this.passwordResetExpiresAt = passwordResetExpiresAt;
+    }
+
+    public SortedSet<Date> getLoginDates() {
+        return loginDates;
+    }
+
+    public void setLoginDates(SortedSet<Date> loginDates) {
+        this.loginDates = loginDates;
     }
 }

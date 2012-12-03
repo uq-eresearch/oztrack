@@ -1,6 +1,7 @@
 package org.oztrack.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.oztrack.data.access.UserDao;
@@ -13,17 +14,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.transaction.annotation.Transactional;
 
 public class OzTrackAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     private UserDao userDao;
 
     @Override
+    @Transactional
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         User user = userDao.getByUsername((String) authentication.getPrincipal());
         if ((user == null) || !BCrypt.checkpw((String) authentication.getCredentials(), user.getPassword())) {
             throw new BadCredentialsException("Invalid username or password.");
         }
+        user.getLoginDates().add(new Date());
+        userDao.save(user);
         return buildAuthentication(user);
     }
 

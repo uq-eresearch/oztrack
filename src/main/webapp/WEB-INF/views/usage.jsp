@@ -4,6 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
+<c:set var="dateTimeFormatPattern" value="dd/MM/yyyy' at 'HH:mm"/>
 <tags:page title="Usage">
     <jsp:attribute name="description">
         Summary of OzTrack usage statistics.
@@ -42,7 +43,15 @@
             <tbody>
             <c:forEach items="${users}" var="user">
             <tr>
-                <td>${user.fullName} (${user.username})</td>
+                <td>
+                    <p>${user.fullName} (${user.username})</p>
+                    <p>
+                        Logged in ${fn:length(user.loginDates)} times.
+                        <c:if test="${not empty user.loginDates}">
+                        Last login <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${user.loginDates.last()}"/>.
+                        </c:if>
+                    </p>
+                </td>
                 <td>${user.organisation}</td>
                 <td>
                     <p>

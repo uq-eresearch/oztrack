@@ -1,6 +1,7 @@
 package org.oztrack.controller;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -147,6 +148,7 @@ public class UserListController {
         else {
             user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
         }
+        user.setCreateDate(new Date());
         userDao.save(user);
         SecurityContextHolder.getContext().setAuthentication(OzTrackAuthenticationProvider.buildAuthentication(user));
         return "redirect:/";
