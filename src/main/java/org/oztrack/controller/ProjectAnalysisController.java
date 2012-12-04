@@ -70,6 +70,7 @@ public class ProjectAnalysisController {
         model.addAttribute("analysisTypeList", new AnalysisType[] {
             AnalysisType.MCP,
             AnalysisType.KUD,
+            AnalysisType.KBB,
             AnalysisType.AHULL,
             AnalysisType.HEATMAP_POINT,
             AnalysisType.HEATMAP_LINE

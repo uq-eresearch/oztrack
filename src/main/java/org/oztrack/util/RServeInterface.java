@@ -2,6 +2,7 @@ package org.oztrack.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
@@ -10,17 +11,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.model.Analysis;
-import org.oztrack.data.model.AnalysisParameter;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
-import org.oztrack.data.model.types.AnalysisParameterType;
-import org.oztrack.data.model.types.AnalysisType;
 import org.oztrack.error.RServeInterfaceException;
 import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.REXPDouble;
-import org.rosuda.REngine.REXPInteger;
 import org.rosuda.REngine.REXPMismatchException;
-import org.rosuda.REngine.REXPNull;
+import org.rosuda.REngine.REXPString;
 import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.RList;
 import org.rosuda.REngine.Rserve.RConnection;
@@ -51,6 +48,9 @@ public class RServeInterface {
                 break;
             case KUD:
                 writeKernelUDKmlFile(analysis, srs);
+                break;
+            case KBB:
+                writeKernelBBKmlFile(analysis, srs);
                 break;
             case AHULL:
                 writeAlphahullKmlFile(analysis, srs);
@@ -148,34 +148,43 @@ public class RServeInterface {
     }
 
     private void createRPositionFixDataFrame(List<PositionFix> positionFixList, String srs) throws RServeInterfaceException {
-        int [] animalIds = new int[positionFixList.size()];
-        double [] latitudes= new double[positionFixList.size()];
-        double [] longitudes= new double[positionFixList.size()];
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        String[] animalIds = new String[positionFixList.size()];
+        String[] dates = new String[positionFixList.size()];
+        double[] latitudes = new double[positionFixList.size()];
+        double[] longitudes = new double[positionFixList.size()];
 
         /* load up the arrays from the database result set*/
         for (int i=0; i < positionFixList.size(); i++) {
             PositionFix positionFix = positionFixList.get(i);
-            animalIds[i] = Integer.parseInt(positionFix.getAnimal().getId().toString());
+            animalIds[i] = positionFix.getAnimal().getId().toString();
+            dates[i] = dateFormat.format(positionFix.getDetectionTime());
             longitudes[i] = positionFix.getLocationGeometry().getX();
             latitudes[i] = positionFix.getLocationGeometry().getY();
         }
 
         /* create the RList to become the dataFrame (add the name+array) */
         RList rPositionFixList = new RList();
-        rPositionFixList.put("Name", new REXPInteger(animalIds));
+        rPositionFixList.put("Name", new REXPString(animalIds));
+        rPositionFixList.put("Date", new REXPString(dates));
         rPositionFixList.put("X", new REXPDouble(longitudes));
         rPositionFixList.put("Y", new REXPDouble(latitudes));
 
         try {
             REXP rPosFixDataFrame = REXP.createDataFrame(rPositionFixList);
-            this.rConnection.assign("positionFix", new REXPNull());
             this.rConnection.assign("positionFix", rPosFixDataFrame);
 
-            // We use WGS84 for coordinates and project to a user-defined SRS.
-            // We assume the user-supplied SRS has units of metres in our area calculations.
-            safeEval("coordinates(positionFix) <- ~X+Y;");
-            safeEval("positionFix.xy <- positionFix[, 'Name'];");
+            // Convert date strings into POSIXct instances
+            safeEval("positionFix$Date <- as.POSIXct(strptime(positionFix$Date, '%Y-%m-%d %H:%M:%S'));");
+
+            // Create SpatialPointsDataFrame in WGS84
+            safeEval("positionFix.xy <- positionFix[, c('Name', 'X', 'Y')];");
+            safeEval("coordinates(positionFix.xy) <- ~X+Y;");
             safeEval("proj4string(positionFix.xy) <- CRS(\"+init=epsg:4326\");");
+
+            // Create SpatialPointsDataFrame projected to SRS
+            // Note: we assume the user-supplied SRS has units of metres in our area calculations.
             safeEval("positionFix.proj <- try({spTransform(positionFix.xy,CRS(\"+init=" + srs + "\"))}, silent=TRUE);");
             safeEval(
                 "if (class(positionFix.proj) == 'try-error') {\n" +
@@ -193,8 +202,7 @@ public class RServeInterface {
 
 
     private void writeMCPKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
-        AnalysisParameter percentParameter = analysis.getParamater("percent");
-        Double percent = ((percentParameter != null) && (percentParameter.getValue() != null)) ? Double.valueOf(percentParameter.getValue()) : 100d;
+        Double percent = (Double) analysis.getParameterValue("percent", true);
         if (!(percent >= 0d && percent <= 100d)) {
             throw new RServeInterfaceException("percent must be between 0 and 100.");
         }
@@ -209,31 +217,18 @@ public class RServeInterface {
     }
 
     private void writeKernelUDKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
-        AnalysisParameter percentParameter = analysis.getParamater("percent");
-        Double percent = ((percentParameter != null) && (percentParameter.getValue() != null)) ? Double.valueOf(percentParameter.getValue()) : 100d;
+        Double percent = (Double) analysis.getParameterValue("percent", true);
+        String hEstimator = (String) analysis.getParameterValue("hEstimator", false);
+        Double hValue = (Double) analysis.getParameterValue("hValue", false);
+        Double gridSize = (Double) analysis.getParameterValue("gridSize", true);
+        Double extent = (Double) analysis.getParameterValue("extent", true);
         if (!(percent >= 0d && percent <= 100d)) {
             throw new RServeInterfaceException("percent must be between 0 and 100.");
         }
-        AnalysisParameterType hEstimatorParameterType = AnalysisType.KUD.getParameterType("hEstimator");
-        AnalysisParameter hEstimatorParameter = analysis.getParamater(hEstimatorParameterType.getIdentifier());
-        String hEstimator =
-            ((hEstimatorParameter != null) && (hEstimatorParameter.getValue() != null) && hEstimatorParameterType.isValid(hEstimatorParameter.getValue()))
-            ? hEstimatorParameter.getValue()
-            : null;
-        AnalysisParameterType hValueParameterType = AnalysisType.KUD.getParameterType("hValue");
-        AnalysisParameter hValueParameter = analysis.getParamater(hValueParameterType.getIdentifier());
-        Double hValue =
-            ((hValueParameter != null) && (hValueParameter.getValue() != null) && hValueParameterType.isValid(hValueParameter.getValue()))
-            ? Double.valueOf(hValueParameter.getValue())
-            : null;
         if ((hEstimator == null) && (hValue == null)) {
             throw new RServeInterfaceException("h estimator or h value must be entered.");
         }
         String hExpr = (hValue != null) ? hValue.toString() : "\"" + hEstimator + "\"";
-        AnalysisParameter gridSizeParameter = analysis.getParamater("gridSize");
-        Double gridSize = ((gridSizeParameter != null) && (gridSizeParameter.getValue() != null)) ? Double.valueOf(gridSizeParameter.getValue()) : 50d;
-        AnalysisParameter extentParameter = analysis.getParamater("extent");
-        Double extent = ((extentParameter != null) && (extentParameter.getValue() != null)) ? Double.valueOf(extentParameter.getValue()) : 1d;
         safeEval("h <- " + hExpr);
         safeEval("KerHRp <- try({kernelUD(xy=positionFix.proj, h=h, grid=" + gridSize + ", extent=" + extent + ")}, silent=TRUE)");
         safeEval(
@@ -263,9 +258,29 @@ public class RServeInterface {
         safeEval("writeOGR(myKer, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer= \"KUD\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
     }
 
+    private void writeKernelBBKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
+        Double percent = (Double) analysis.getParameterValue("percent", true);
+        Double sig1 = (Double) analysis.getParameterValue("sig1", false);
+        Double sig2 = (Double) analysis.getParameterValue("sig2", false);
+        Double gridSize = (Double) analysis.getParameterValue("gridSize", true);
+        Double extent = (Double) analysis.getParameterValue("extent", true);
+        if (!(percent >= 0d && percent <= 100d)) {
+            throw new RServeInterfaceException("percent must be between 0 and 100.");
+        }
+        if ((sig1 == null) || (sig2 == null)) {
+            throw new RServeInterfaceException("sig1 and sig2 must both be entered.");
+        }
+        safeEval("ltraj.obj <- as.ltraj(xy=coordinates(positionFix.proj), date=positionFix$Date, id=positionFix$Name, typeII=TRUE);");
+        safeEval("kernelbb.obj <- kernelbb(ltraj.obj, sig1=" + sig1 + ", sig2=" + sig2 + ", grid=" + gridSize + ", extent=" + extent + ");");
+        safeEval("hr.proj <- getverticeshr(kernelbb.obj, percent=" + percent + ", unin=c('m'), unout=c('km2'));");
+        safeEval("if (nrow(hr.proj) == 1) {hr.proj$id <- positionFix[1,'Name']};"); // Puts "homerange" instead of animal ID when only one animal
+        safeEval("proj4string(hr.proj) <- proj4string(positionFix.proj);");
+        safeEval("hr.xy <- spTransform(hr.proj, CRS('+proj=longlat +datum=WGS84'));");
+        safeEval("writeOGR(hr.xy, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer= \"KBB\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
+    }
+
     private void writeAlphahullKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
-        AnalysisParameter alphaParameter = analysis.getParamater("alpha");
-        Double alpha = ((alphaParameter != null) && (alphaParameter.getValue() != null)) ? Double.valueOf(alphaParameter.getValue()) : 0.1d;
+        Double alpha = (Double) analysis.getParameterValue("alpha", true);
         if (!(alpha > 0d)) {
             throw new RServeInterfaceException("alpha must be greater than 0.");
         }
@@ -274,17 +289,14 @@ public class RServeInterface {
     }
 
     private void writePointHeatmapKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
-        AnalysisParameter gridSizeParameter = analysis.getParamater("gridSize");
-        Double gridSize = ((gridSizeParameter != null) && (gridSizeParameter.getValue() != null)) ? Double.valueOf(gridSizeParameter.getValue()) : 100d;
+        Boolean showAbsence = (Boolean) analysis.getParameterValue("showAbsence", true);
+        Double gridSize = (Double) analysis.getParameterValue("gridSize", true);
+        String colours = (String) analysis.getParameterValue("colours", true);
         if (!(gridSize > 0d)) {
             throw new RServeInterfaceException("grid size must be greater than 0.");
         }
-        AnalysisParameter showAbsenceParameter = analysis.getParamater("showAbsence");
-        String labsent = ((showAbsenceParameter != null) && (showAbsenceParameter.getValue() != null) && Boolean.parseBoolean(showAbsenceParameter.getValue())) ? "TRUE" : "FALSE";
-        AnalysisParameterType coloursParameterType = AnalysisType.HEATMAP_POINT.getParameterType("colours");
-        AnalysisParameter coloursParameter = analysis.getParamater(coloursParameterType.getIdentifier());
-        String scol = ((coloursParameter != null) && (coloursParameter.getValue() != null) && coloursParameterType.isValid(coloursParameter.getValue())) ? coloursParameter.getValue() : coloursParameterType.getDefaultValue();
-        safeEval("PPA <- try({fpdens2kml(sdata=positionFix.xy, igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\", scol=\"" + scol + "\", labsent=" + labsent + ")}, silent=TRUE)");
+        String labsent = showAbsence ? "TRUE" : "FALSE";
+        safeEval("PPA <- try({fpdens2kml(sdata=positionFix.xy, igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\", scol=\"" + colours + "\", labsent=" + labsent + ")}, silent=TRUE)");
         safeEval(
             "if (class(PPA) == 'try-error') {\n" +
             "  stop('Grid size too small. Try increasing grid number.')\n" +
@@ -294,17 +306,14 @@ public class RServeInterface {
     }
 
     private void writeLineHeatmapKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
-        AnalysisParameter gridSizeParameter = analysis.getParamater("gridSize");
-        Double gridSize = ((gridSizeParameter != null) && (gridSizeParameter.getValue() != null)) ? Double.valueOf(gridSizeParameter.getValue()) : 100d;
+        Boolean showAbsence = (Boolean) analysis.getParameterValue("showAbsence", true);
+        Double gridSize = (Double) analysis.getParameterValue("gridSize", true);
+        String colours = (String) analysis.getParameterValue("colours", true);
         if (!(gridSize > 0d)) {
             throw new RServeInterfaceException("grid size must be greater than 0.");
         }
-        AnalysisParameter showAbsenceParameter = analysis.getParamater("showAbsence");
-        String labsent = ((showAbsenceParameter != null) && (showAbsenceParameter.getValue() != null) && Boolean.parseBoolean(showAbsenceParameter.getValue())) ? "TRUE" : "FALSE";
-        AnalysisParameterType coloursParameterType = AnalysisType.HEATMAP_LINE.getParameterType("colours");
-        AnalysisParameter coloursParameter = analysis.getParamater(coloursParameterType.getIdentifier());
-        String scol = ((coloursParameter.getValue() != null) && coloursParameterType.isValid(coloursParameter.getValue())) ? coloursParameter.getValue() : coloursParameterType.getDefaultValue();
-        safeEval("LPA <- try({fldens2kml(sdata=positionFix.xy, igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\",scol=\"" + scol + "\", labsent=" + labsent + ")}, silent=TRUE)");
+        String labsent = showAbsence ? "TRUE" : "FALSE";
+        safeEval("LPA <- try({fldens2kml(sdata=positionFix.xy, igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\",scol=\"" + colours + "\", labsent=" + labsent + ")}, silent=TRUE)");
         safeEval(
             "if (class(LPA) == 'try-error') {\n" +
             "  stop('Grid size too small. Try increasing grid number.')\n" +

@@ -24,6 +24,16 @@ public enum AnalysisType {
             new AnalysisParameterType("extent", "Extent", "double", null, "1", true, null)
         )
     ),
+    KBB(
+        "Kernel Brownian Bridge",
+        Arrays.asList(
+            new AnalysisParameterType("percent", "Percent", "double", "%", "95", false, null),
+            new AnalysisParameterType("sig1", "sig1", "double", null, null, false, null),
+            new AnalysisParameterType("sig2", "sig2", "double", null, null, false, null),
+            new AnalysisParameterType("gridSize", "Grid size", "double", "m", "50", true, null),
+            new AnalysisParameterType("extent", "Extent", "double", null, "1", true, null)
+        )
+    ),
     AHULL(
         "Alpha Hull",
         Arrays.asList(

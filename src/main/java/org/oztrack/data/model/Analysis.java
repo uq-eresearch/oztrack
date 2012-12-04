@@ -26,6 +26,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.lang3.StringUtils;
+import org.oztrack.data.model.types.AnalysisParameterType;
 import org.oztrack.data.model.types.AnalysisStatus;
 import org.oztrack.data.model.types.AnalysisType;
 
@@ -158,13 +160,30 @@ public class Analysis extends OzTrackBaseEntity {
         this.parameters = parameters;
     }
 
-    public AnalysisParameter getParamater(String name) {
+    public AnalysisParameter getParameter(String name) {
         for (AnalysisParameter parameter : parameters) {
             if (parameter.getName().equals(name)) {
                 return parameter;
             }
         }
         return null;
+    }
+
+    public Object getParameterValue(String name, boolean useDefault) {
+        AnalysisParameterType parameterType = analysisType.getParameterType(name);
+        AnalysisParameter parameter = getParameter(parameterType.getIdentifier());
+        if ((parameter == null) || !parameterType.isValid(parameter.getValue())) {
+            return null;
+        }
+        String stringValue =
+            StringUtils.isNotBlank(parameter.getValue()) ? parameter.getValue()
+            : useDefault ? parameterType.getDefaultValue()
+            : null;
+        return
+            (stringValue == null) ? null
+            : parameterType.getDataType().equals("double") ? Double.valueOf(stringValue)
+            : parameterType.getDataType().equals("boolean") ?  Boolean.valueOf(stringValue)
+            : stringValue;
     }
 
     public String getResultFilePath() {
