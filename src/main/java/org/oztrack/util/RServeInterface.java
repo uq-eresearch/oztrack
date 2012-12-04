@@ -175,7 +175,7 @@ public class RServeInterface {
             // We assume the user-supplied SRS has units of metres in our area calculations.
             safeEval("positionFix$Name <- positionFix$Id;");
             safeEval("coordinates(positionFix) <- ~X+Y;");
-            safeEval("positionFix.xy <- positionFix[,ncol(positionFix)];");
+            safeEval("positionFix.xy <- positionFix[, 'Name'];");
             safeEval("proj4string(positionFix.xy) <- CRS(\"+init=epsg:4326\");");
             safeEval("positionFix.proj <- try({spTransform(positionFix.xy,CRS(\"+init=" + srs + "\"))}, silent=TRUE);");
             safeEval(
