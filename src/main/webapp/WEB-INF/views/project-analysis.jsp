@@ -455,7 +455,7 @@
                                             name="queryTypeSelect"
                                             id="queryTypeSelect-${mapLayerType}"
                                             value="${mapLayerType}"
-                                            onClick="updateParamTable('${mapLayerType}')"
+                                            onClick="showParamTable('${mapLayerType}')"
                                         />
                                     </td>
                                     <td id="${mapLayerType}">
