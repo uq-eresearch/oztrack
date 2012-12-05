@@ -140,6 +140,15 @@
                     analysisMap.toggleAllAnimalFeatures("${animal.id}", this.checked);
                 });
                 </c:forEach>
+
+                $('#select-animal-all').prop('checked', $('.select-animal:not(:checked)').length == 0);
+                $('.select-animal').change(function (e) {
+                    $('#select-animal-all').prop('checked', $('.select-animal:not(:checked)').length == 0);
+                });
+                $('#select-animal-all').change(function (e) {
+                    $('.select-animal').prop('checked', $(this).prop('checked')).trigger('change');
+                });
+
                 $('#filter-animal-all').prop('checked', $('.filter-animal:not(:checked)').length == 0);
                 $('.filter-animal').change(function (e) {
                     $('#filter-animal-all').prop('checked', $('.filter-animal:not(:checked)').length == 0);
@@ -147,6 +156,7 @@
                 $('#filter-animal-all').change(function (e) {
                     $('.filter-animal').prop('checked', $(this).prop('checked'));
                 });
+
                 $('#queryTypeSelect-MCP').trigger('click');
                 $('#projectMapHelpLink').click(function() {
                     var elem = $('#projectMapHelp');
@@ -335,6 +345,17 @@
 
             <div id="animalPanel">
 
+                <div class="animalHeader" style="margin-bottom: 10px; border-bottom: 1px solid #ccc;">
+                <div class="animalCheckbox">
+                    <input
+                        id="select-animal-all"
+                        type="checkbox"
+                        style="float: left; margin: 0;" />
+                </div>
+                <div class="smallSquare" style="background-color: transparent;"></div>
+                <div>Select all</div>
+                </div>
+
                 <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
                     <c:set var="showAnimalInfo" value="${animalStatus.index == 0}"/>
                     <div class="animalHeader">
@@ -355,7 +376,7 @@
                         </div>
 
                         <div class="animalCheckbox">
-                            <input style="float: left; margin: 0;" type="checkbox" name="animalCheckbox" id="select-animal-${animal.id}" value="${animal.id}" checked="checked">
+                            <input id="select-animal-${animal.id}" class="select-animal" style="float: left; margin: 0;" type="checkbox" name="animalCheckbox" value="${animal.id}" checked="checked">
                         </div>
 
                         <div class="smallSquare" style="background-color: ${animal.colour};"></div>
