@@ -369,8 +369,8 @@
                             <button
                                 id="buttonShowHide${animal.id}"
                                 class="btn btn-mini"
-                                onclick="var infoElem = $(this).parent().parent().next(); $(this).text(infoElem.is(':visible') ? 'Show' : 'Hide'); infoElem.slideToggle();">
-                                ${showAnimalInfo ? 'Hide' : 'Show'}
+                                onclick="var infoElem = $(this).parent().parent().next(); $(this).text(infoElem.is(':visible') ? 'Expand' : 'Shrink'); infoElem.slideToggle();">
+                                ${showAnimalInfo ? 'Shrink' : 'Expand'}
                             </button>
                             <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
                                 <span class="caret"></span>
