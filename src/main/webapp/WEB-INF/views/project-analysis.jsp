@@ -108,7 +108,7 @@
                 font-style: italic;
                 text-align: left;
             }
-            a.analysis-delete {
+            a.layer-delete {
                 float: right;
                 margin-right: 3px;
                 font-size: 0.9em;

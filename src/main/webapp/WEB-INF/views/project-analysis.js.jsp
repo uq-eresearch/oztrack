@@ -29,11 +29,13 @@ function createAnalysisMap(div, options) {
         var loadingPanel;
         var detectionLayers = [];
         var trajectoryLayers = [];
-        var analyses = [];
+        var projectMapLayers = {};
+        var analyses = {};
         var polygonStyleMap;
         var lineStyleMap;
         var pointStyleMap;
         var startEndStyleMap;
+        var projectMapLayerIdSeq = 0;
 
         (function() {
             map = new OpenLayers.Map(div, {
@@ -400,7 +402,18 @@ function createAnalysisMap(div, options) {
                 delete analyses[id];
             }
             $('.analysisInfo-' + id).fadeOut().remove();
-        }
+        };
+        
+        analysisMap.deleteProjectMapLayer = function(id) {
+            if (!confirm('This will delete the layer for all animals. Do you wish to continue?')) {
+                return;
+            }
+            if (projectMapLayers[id]) {
+                projectMapLayers[id].getWMSLayer().destroy();
+                delete projectMapLayers[id];
+            }
+            $('.projectMapLayerInfo-' + id).fadeOut().remove();
+        };
 
         function createDetectionLayer(params) {
             function buildFilter(params) {
@@ -445,6 +458,7 @@ function createAnalysisMap(div, options) {
                 }
             );
             var layer = {
+                id: projectMapLayerIdSeq++,
                 getTitle: function() {
                     return title;
                 },
@@ -458,6 +472,7 @@ function createAnalysisMap(div, options) {
                     return wmsLayer;
                 }
             };
+            projectMapLayers[layer.id] = layer;
             updateAnimalInfoFromLayer(layer);
             onAnalysisSuccess();
             return layer;
@@ -512,6 +527,7 @@ function createAnalysisMap(div, options) {
                 }
             );
             var layer = {
+                id: projectMapLayerIdSeq++,
                 getTitle: function() {
                     return title;
                 },
@@ -525,6 +541,7 @@ function createAnalysisMap(div, options) {
                     return wmsLayer;
                 }
             };
+            projectMapLayers[layer.id] = layer;
             updateAnimalInfoFromLayer(layer);
             onAnalysisSuccess();
             return layer;
@@ -601,7 +618,10 @@ function createAnalysisMap(div, options) {
         
         function updateAnimalInfoFromLayer(layer) {
             for (var i = 0; i < animalIds.length; i++) {
-                var html = '<div class="layerInfoTitle">' + layer.getTitle() + '</div>';
+                var html = '<div class="layerInfoTitle">';
+                html += '<a class="layer-delete" href="javascript:analysisMap.deleteProjectMapLayer(' + layer.id + ');">delete</a></span>';
+                html += layer.getTitle();
+                html += '</div>';
                 var tableRowsHtml = '';
                 var fromDate = layer.getParams().fromDate || dateToISO8601(minDate);
                 tableRowsHtml += '<tr>';
@@ -616,14 +636,14 @@ function createAnalysisMap(div, options) {
                 if (tableRowsHtml != '') {
                     html += '<table>' + tableRowsHtml + '</table>';
                 }
-                $('#animalInfo-' + animalIds[i]).append('<div class="layerInfo">' + html + '</div>');
+                $('#animalInfo-' + animalIds[i]).append('<div class="layerInfo projectMapLayerInfo-' + layer.id + '">' + html + '</div>');
             }
         }
 
         function updateAnimalInfoForAnalysis(layerName, analysis) {
             for (var i = 0; i < analysis.params.animalIds.length; i++) {
                 var html = '<div class="layerInfoTitle">';
-                html += '<a class="analysis-delete" href="javascript:analysisMap.deleteAnalysis(' + analysis.id + ');">delete</a></span>';
+                html += '<a class="layer-delete" href="javascript:analysisMap.deleteAnalysis(' + analysis.id + ');">delete</a></span>';
                 html += layerName;
                 html += '</div>';
                 var tableRowsHtml = '';
