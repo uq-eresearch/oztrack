@@ -94,7 +94,7 @@ function createCleanseMap(div, options) {
 
         function updateFilter() {
             allDetectionsLayer.params['CQL_FILTER'] = buildAllDetectionsFilter();
-            allDetectionsLayer.redraw();
+            allDetectionsLayer.redraw(true);
         }
         
         cleanseMap.updateSize = function() {
