@@ -30,12 +30,14 @@ function createAnalysisMap(div, options) {
         var detectionLayers = [];
         var trajectoryLayers = [];
         var projectMapLayers = {};
+        var wfsLayers = {};
         var analyses = {};
         var polygonStyleMap;
         var lineStyleMap;
         var pointStyleMap;
         var startEndStyleMap;
         var projectMapLayerIdSeq = 0;
+        var wfsLayerIdSeq = 0;
 
         (function() {
             map = new OpenLayers.Map(div, {
@@ -415,6 +417,17 @@ function createAnalysisMap(div, options) {
             $('.projectMapLayerInfo-' + id).fadeOut().remove();
         };
 
+        analysisMap.deleteWFSLayer = function(id) {
+            if (!confirm('This will delete the layer for all animals. Do you wish to continue?')) {
+                return;
+            }
+            if (wfsLayers[id]) {
+                wfsLayers[id].destroy();
+                delete wfsLayers[id];
+            }
+            $('.wfsLayerInfo-' + id).fadeOut().remove();
+        };
+
         function createDetectionLayer(params) {
             function buildFilter(params) {
                 var visibleAnimalIds = [];
@@ -555,7 +568,8 @@ function createAnalysisMap(div, options) {
         }
 
         function createWFSLayer(layerName, featureType, params, styleMap) {
-            return new OpenLayers.Layer.Vector(layerName, {
+            var wfsLayerId = wfsLayerIdSeq++;
+            var wfsLayer = new OpenLayers.Layer.Vector(layerName, {
                 projection : projection4326,
                 protocol : new OpenLayers.Protocol.WFS.v1_1_0({
                     url : "/mapQueryWFS",
@@ -569,14 +583,16 @@ function createAnalysisMap(div, options) {
                 styleMap : styleMap,
                 eventListeners : {
                     loadend : function(e) {
-                        updateAnimalInfoFromWFS(e.object);
+                        updateAnimalInfoFromWFS(e.object, wfsLayerId);
                         onAnalysisSuccess();
                     }
                 }
             });
+            wfsLayers[wfsLayerId] = wfsLayer;
+            return wfsLayer;
         }
 
-        function updateAnimalInfoFromWFS(wfsLayer) {
+        function updateAnimalInfoFromWFS(wfsLayer, wfsLayerId) {
             var animalProcessed = {};
             for ( var key in wfsLayer.features) {
                 var feature = wfsLayer.features[key];
@@ -587,7 +603,10 @@ function createAnalysisMap(div, options) {
                     animalProcessed[feature.attributes.animalId] = true;
                     feature.renderIntent = "default";
                     $('input[id=select-animal-' + feature.attributes.animalId + ']').attr('checked', 'checked');
-                    var html = '<div class="layerInfoTitle">' + wfsLayer.name + '</div>';
+                    var html = '<div class="layerInfoTitle">';
+                    html += '<a class="layer-delete" href="javascript:analysisMap.deleteWFSLayer(' + wfsLayerId + ');">delete</a></span>';
+                    html += wfsLayer.name;
+                    html += '</div>';
                     var tableRowsHtml = '';
                     if (feature.attributes.fromDate) {
                         tableRowsHtml += '<tr>';
@@ -611,7 +630,7 @@ function createAnalysisMap(div, options) {
                     if (tableRowsHtml != '') {
                         html += '<table>' + tableRowsHtml + '</table>';
                     }
-                    $('#animalInfo-' + feature.attributes.animalId).append('<div class="layerInfo">' + html + '</div>');
+                    $('#animalInfo-' + feature.attributes.animalId).append('<div class="layerInfo wfsLayerInfo-' + wfsLayerId + '">' + html + '</div>');
                 }
             }
         }
