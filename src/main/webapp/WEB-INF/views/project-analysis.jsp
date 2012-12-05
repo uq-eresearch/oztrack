@@ -108,6 +108,12 @@
                 font-style: italic;
                 text-align: left;
             }
+            a.analysis-delete {
+                float: right;
+                margin-right: 3px;
+                font-size: 0.9em;
+                color: #666;
+            }
         </style>
     </jsp:attribute>
     <jsp:attribute name="tail">

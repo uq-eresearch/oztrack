@@ -29,6 +29,7 @@ function createAnalysisMap(div, options) {
         var loadingPanel;
         var detectionLayers = [];
         var trajectoryLayers = [];
+        var analyses = [];
         var polygonStyleMap;
         var lineStyleMap;
         var pointStyleMap;
@@ -307,6 +308,7 @@ function createAnalysisMap(div, options) {
                 complete: function (xhr, textStatus) {
                     if (textStatus == 'success') {
                         var analysis = $.parseJSON(xhr.responseText);
+                        analyses[analysis.id] = analysis;
                         updateAnimalInfoForAnalysis(layerName, analysis);
                         loadingPanel.increaseCounter();
                         pollAnalysisLayer(analysisUrl, layerName);
@@ -326,6 +328,11 @@ function createAnalysisMap(div, options) {
                 complete: function (xhr, textStatus) {
                     if (textStatus == 'success') {
                         var analysis = $.parseJSON(xhr.responseText);
+                        if (!analyses[analysis.id]) {
+                            loadingPanel.decreaseCounter();
+                            return;
+                        }
+                        analyses[analysis.id] = analysis;
                         if (analysis.status == 'COMPLETE') {
                             addAnalysisResultLayer(analysis, layerName);
                         }
@@ -351,6 +358,9 @@ function createAnalysisMap(div, options) {
             var queryOverlay = new OpenLayers.Layer.Vector(layerName, {
                 styleMap : styleMap
             });
+            if (analyses[analysis.id]) {
+                analyses[analysis.id].layer = queryOverlay;
+            }
             var protocol = new OpenLayers.Protocol.HTTP({
                 url : analysis.resultUrl,
                 format : new OpenLayers.Format.KML({
@@ -377,6 +387,19 @@ function createAnalysisMap(div, options) {
                 callback : callback
             });
             map.addLayer(queryOverlay);
+        }
+        
+        analysisMap.deleteAnalysis = function(id) {
+            if (!confirm('This will delete the analysis for all animals. Do you wish to continue?')) {
+                return;
+            }
+            if (analyses[id]) {
+                if (analyses[id].layer) {
+                    analyses[id].layer.destroy();
+                }
+                delete analyses[id];
+            }
+            $('.analysisInfo-' + id).fadeOut().remove();
         }
 
         function createDetectionLayer(params) {
@@ -599,7 +622,10 @@ function createAnalysisMap(div, options) {
 
         function updateAnimalInfoForAnalysis(layerName, analysis) {
             for (var i = 0; i < analysis.params.animalIds.length; i++) {
-                var html = '<div class="layerInfoTitle">' + layerName + '</div>';
+                var html = '<div class="layerInfoTitle">';
+                html += '<a class="analysis-delete" href="javascript:analysisMap.deleteAnalysis(' + analysis.id + ');">delete</a></span>';
+                html += layerName;
+                html += '</div>';
                 var tableRowsHtml = '';
                 if (analysis.params.fromDate) {
                     tableRowsHtml += '<tr>';
@@ -626,7 +652,7 @@ function createAnalysisMap(div, options) {
                 }
                 </c:forEach>
                 html += '<table id="analysis-table-' + analysis.params.animalIds[i] + '-' + analysis.id + '" style="' + (tableRowsHtml ? '' : 'display: none;') + '">' + tableRowsHtml + '</table>';
-                $('#animalInfo-' + analysis.params.animalIds[i]).append('<div class="layerInfo">' + html + '</div>');
+                $('#animalInfo-' + analysis.params.animalIds[i]).append('<div class="layerInfo analysisInfo-' + analysis.id + '">' + html + '</div>');
             }
         }
 
