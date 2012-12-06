@@ -394,7 +394,11 @@ function createAnalysisMap(div, options) {
         }
         
         analysisMap.deleteAnalysis = function(id) {
-            if (!confirm('This will delete the analysis for all animals. Do you wish to continue?')) {
+            var confirmMessage =
+                (analyses[id] && (analyses[id].params.animalIds.length > 1))
+                ? 'This will delete the analysis for all animals. Do you wish to continue?'
+                : 'Are you sure you wish to delete this analysis?';
+            if (!confirm(confirmMessage)) {
                 return;
             }
             if (analyses[id]) {
