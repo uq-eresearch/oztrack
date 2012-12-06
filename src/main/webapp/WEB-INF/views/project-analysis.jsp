@@ -316,7 +316,10 @@
                             analysisMap.addAnalysisLayer(analysisUrl, layerName);
                         })
                     )
-                    .append(' (' + dateToISO8601(analysisCreateDate) + ' at ' + analysisCreateDate.toLocaleTimeString() + ')')
+                    .append($('<span>')
+                        .attr('style', 'font-size: 11px; color: #666;')
+                        .text(' (' + dateToISO8601(analysisCreateDate) + ' ' + analysisCreateDate.toLocaleTimeString() + ')')
+                    )
                 );
             }
             function onResize() {
