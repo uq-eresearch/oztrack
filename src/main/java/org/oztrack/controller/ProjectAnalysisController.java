@@ -62,19 +62,8 @@ public class ProjectAnalysisController {
         @ModelAttribute(value="project") Project project
     ) {
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
-        model.addAttribute("mapLayerTypeList", new MapLayerType[] {
-            MapLayerType.LINES,
-            MapLayerType.POINTS,
-            MapLayerType.START_END
-        });
-        model.addAttribute("analysisTypeList", new AnalysisType[] {
-            AnalysisType.MCP,
-            AnalysisType.KUD,
-            AnalysisType.KBB,
-            AnalysisType.AHULL,
-            AnalysisType.HEATMAP_POINT,
-            AnalysisType.HEATMAP_LINE
-        });
+        model.addAttribute("mapLayerTypeList", MapLayerType.values());
+        model.addAttribute("analysisTypeList", AnalysisType.values());
         model.addAttribute("projectAnimalsList", projectAnimalsList);
         model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project));
         model.addAttribute("animalBoundingBoxes", projectDao.getBoundingBoxes(project, projectAnimalsList));

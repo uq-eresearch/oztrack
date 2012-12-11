@@ -55,6 +55,9 @@ public class RServeInterface {
             case AHULL:
                 writeAlphahullKmlFile(analysis, srs);
                 break;
+            case LOCOH:
+                writeLocohKmlFile(analysis, srs);
+                break;
             case HEATMAP_POINT:
                 writePointHeatmapKmlFile(analysis, srs);
                 break;
@@ -286,6 +289,27 @@ public class RServeInterface {
         }
         safeEval("myAhull <- myalphahullP(positionFix.proj, sinputssrs=\"+init=" + srs + "\", ialpha=" + alpha + ")");
         safeEval("writeOGR(myAhull, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer=\"AHULL\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
+    }
+
+    private void writeLocohKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
+        Double percent = (Double) analysis.getParameterValue("percent", true);
+        Double k = (Double) analysis.getParameterValue("k", false);
+        Double r = (Double) analysis.getParameterValue("r", false);
+        if (!(percent >= 0d && percent <= 100d)) {
+            throw new RServeInterfaceException("percent must be between 0 and 100.");
+        }
+        if ((k == null) == (r == null)) {
+            throw new RServeInterfaceException("either Neighbours or Radius must be entered.");
+        }
+        if (k != null) {
+            safeEval("locoh.obj <- LoCoH.k(positionFix.proj, k=" + k + ");");
+        }
+        else if (r != null) {
+            safeEval("locoh.obj <- LoCoH.r(positionFix.proj, r=" + r + ");");
+        }
+        safeEval("hr.proj <- getverticeshr(locoh.obj, percent=" + percent + ", unin=c('m'), unout=c('km2'));");
+                safeEval("hr.xy <- spTransform(hr.proj, CRS('+proj=longlat +datum=WGS84'));");
+        safeEval("writeOGR(hr.xy, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer= \"KBB\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
     }
 
     private void writePointHeatmapKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {

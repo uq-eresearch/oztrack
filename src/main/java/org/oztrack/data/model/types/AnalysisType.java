@@ -40,6 +40,14 @@ public enum AnalysisType {
             new AnalysisParameterType("alpha", "Alpha", "double", null, "100", false, null)
         )
     ),
+    LOCOH(
+        "Local Convex Hull",
+        Arrays.asList(
+            new AnalysisParameterType("percent", "Percent", "double", "%", "95", false, null),
+            new AnalysisParameterType("k", "Neighbours", "double", null, "30", false, null),
+            new AnalysisParameterType("r", "Radius", "double", "m", null, false, null)
+        )
+    ),
     HEATMAP_POINT(
         "Heat Map (Point Intensity)",
         buildHeatmapParameterTypes()
