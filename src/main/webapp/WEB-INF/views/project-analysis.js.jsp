@@ -700,36 +700,40 @@ function createAnalysisMap(div, options) {
         }
 
         function updateAnimalInfoFromKML(analysis, features) {
-            var animalProcessed = {};
-            for (var f in features) {
-                var feature = features[f];
-                if (animalProcessed[feature.attributes.id.value]) {
-                    continue;
+            for (i = 0; i < analysis.params.animalIds.length; i++) {
+                var animalId = analysis.params.animalIds[i];
+                var animalFeature = null;
+                for (j = 0; j < features.length; j++) {
+                    if (features[j].attributes.id && features[j].attributes.id.value == animalId) {
+                        animalFeature = features[j];
+                        break;
+                    }
                 }
-                animalProcessed[feature.attributes.id.value] = true;
-                feature.renderIntent = "default";
-                feature.layer.drawFeature(feature);
                 var tableRowsHtml = '';
-                if (feature.attributes.area && feature.attributes.area.value) {
-                    var area = Math.round(feature.attributes.area.value * 1000) / 1000;
-                    tableRowsHtml += '<tr>';
-                    tableRowsHtml += '<td class="layerInfoLabel">Area: </td>';
-                    tableRowsHtml += '<td>' + area + ' km<sup>2</sup></td>';
-                    tableRowsHtml += '</tr>';
-                }
-                if (!analysis.params.hValue && feature.attributes.hval && feature.attributes.hval.value) {
-                    var hval = Math.round(feature.attributes.hval.value * 1000) / 1000;
-                    tableRowsHtml += '<tr>';
-                    tableRowsHtml += '<td class="layerInfoLabel">h value: </td>';
-                    tableRowsHtml += '<td>' + hval + '</td>';
-                    tableRowsHtml += '</tr>';
+                if (animalFeature) {
+                    animalFeature.renderIntent = "default";
+                    animalFeature.layer.drawFeature(animalFeature);
+                    if (animalFeature.attributes.area && animalFeature.attributes.area.value) {
+                        var area = Math.round(animalFeature.attributes.area.value * 1000) / 1000;
+                        tableRowsHtml += '<tr>';
+                        tableRowsHtml += '<td class="layerInfoLabel">Area: </td>';
+                        tableRowsHtml += '<td>' + area + ' km<sup>2</sup></td>';
+                        tableRowsHtml += '</tr>';
+                    }
+                    if (!analysis.params.hValue && animalFeature.attributes.hval && animalFeature.attributes.hval.value) {
+                        var hval = Math.round(animalFeature.attributes.hval.value * 1000) / 1000;
+                        tableRowsHtml += '<tr>';
+                        tableRowsHtml += '<td class="layerInfoLabel">h value: </td>';
+                        tableRowsHtml += '<td>' + hval + '</td>';
+                        tableRowsHtml += '</tr>';
+                    }
                 }
                 tableRowsHtml += '<tr>';
                 tableRowsHtml += '<td class="layerInfoLabel">Export as: </td>';
                 tableRowsHtml += '<td><a href="' + analysis.resultUrl + '">KML</a></td>';
                 tableRowsHtml += '</tr>';
                 if (tableRowsHtml) {
-                    $('#analysis-table-' + feature.attributes.id.value + '-' + analysis.id).show().append(tableRowsHtml);
+                    $('#analysis-table-' + animalId + '-' + analysis.id).show().append(tableRowsHtml);
                 }
             }
         }
