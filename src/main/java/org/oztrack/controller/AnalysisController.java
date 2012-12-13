@@ -215,7 +215,7 @@ public class AnalysisController {
         xslBuilder.append("    </xsl:copy>");
         xslBuilder.append("  </xsl:template>");
         // Remove default styles from animals
-        xslBuilder.append("  <xsl:template match=\"//kml:Placemark/kml:Style\">");
+        xslBuilder.append("  <xsl:template match=\"//kml:Placemark[.//kml:SimpleData[@name='id']]/kml:Style\">");
         xslBuilder.append("    <!-- remove default styles -->");
         xslBuilder.append("  </xsl:template>");
         // Insert styleUrl elements referring to Style for each animal
