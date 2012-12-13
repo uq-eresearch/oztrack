@@ -216,7 +216,7 @@ public class RServeInterface {
             "}"
         );
         safeEval("mcp.obj$area <- mcp(positionFix.proj, percent=" + percent + ", unin=c(\"m\"), unout=c(\"km2\"))$area");
-        safeEval("writeOGR(mcp.obj, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer= \"MCP\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
+        safeEval("writeOGR(mcp.obj, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer= \"MCP\", driver=\"KML\", dataset_options=c(\"NameField=id\"))");
     }
 
     private void writeKernelUDKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
@@ -258,7 +258,7 @@ public class RServeInterface {
         safeEval("myKer <- spTransform(myKerP, CRS(\"+proj=longlat +datum=WGS84\"))");
         safeEval("myKer$area <- myKerP$area");
         safeEval("myKer$hval <- allh");
-        safeEval("writeOGR(myKer, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer= \"KUD\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
+        safeEval("writeOGR(myKer, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer= \"KUD\", driver=\"KML\", dataset_options=c(\"NameField=id\"))");
     }
 
     private void writeKernelBBKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
@@ -279,7 +279,7 @@ public class RServeInterface {
         safeEval("if (nrow(hr.proj) == 1) {hr.proj$id <- positionFix[1,'Name']};"); // Puts "homerange" instead of animal ID when only one animal
         safeEval("proj4string(hr.proj) <- proj4string(positionFix.proj);");
         safeEval("hr.xy <- spTransform(hr.proj, CRS('+proj=longlat +datum=WGS84'));");
-        safeEval("writeOGR(hr.xy, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer= \"KBB\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
+        safeEval("writeOGR(hr.xy, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer= \"KBB\", driver=\"KML\", dataset_options=c(\"NameField=id\"))");
     }
 
     private void writeAlphahullKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
@@ -288,7 +288,7 @@ public class RServeInterface {
             throw new RServeInterfaceException("alpha must be greater than 0.");
         }
         safeEval("myAhull <- myalphahullP(positionFix.proj, sinputssrs=\"+init=" + srs + "\", ialpha=" + alpha + ")");
-        safeEval("writeOGR(myAhull, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer=\"AHULL\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
+        safeEval("writeOGR(myAhull, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer=\"AHULL\", driver=\"KML\", dataset_options=c(\"NameField=id\"))");
     }
 
     private void writeLocohKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
@@ -309,7 +309,7 @@ public class RServeInterface {
         }
         safeEval("hr.proj <- getverticeshr(locoh.obj, percent=" + percent + ", unin=c('m'), unout=c('km2'));");
                 safeEval("hr.xy <- spTransform(hr.proj, CRS('+proj=longlat +datum=WGS84'));");
-        safeEval("writeOGR(hr.xy, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer= \"KBB\", driver=\"KML\", dataset_options=c(\"NameField=Name\"))");
+        safeEval("writeOGR(hr.xy, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer= \"KBB\", driver=\"KML\", dataset_options=c(\"NameField=id\"))");
     }
 
     private void writePointHeatmapKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
