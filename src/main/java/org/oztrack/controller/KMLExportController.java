@@ -1,6 +1,6 @@
 package org.oztrack.controller;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
@@ -46,26 +47,26 @@ public class KMLExportController {
         return projectDao.getProjectById(projectId);
     }
 
+    @InitBinder("animal")
+    public void initAnimalBinder(WebDataBinder binder) {
+        binder.setAllowedFields();
+    }
+
+    @ModelAttribute("animal")
+    public Animal getAnimal(@RequestParam(value="animalId") Long animalId) {
+        return animalDao.getAnimalById(animalId);
+    }
+
     @RequestMapping(value="/exportKML", method=RequestMethod.GET)
     @PreAuthorize("#project.global or hasPermission(#project, 'read')")
     public View handleRequest(
         @ModelAttribute(value="project") Project project,
-        @RequestParam(value="animalId", required=false) String animalId
+        @ModelAttribute(value="animal") Animal animal
     ) throws Exception {
         SearchQuery searchQuery = new SearchQuery();
-        if ((project != null) && (animalId != null))  {
-            logger.debug("for projectId: " + project.getId());
-
-            searchQuery.setProject(project);
-
-            ArrayList<Long> animalIds = new ArrayList<Long>(1);
-            animalIds.add(Long.valueOf(animalId));
-            searchQuery.setAnimalIds(animalIds);
-        }
-        else {
-            logger.debug("no projectId or queryType");
-        }
+        searchQuery.setProject(project);
+        searchQuery.setAnimalIds(Arrays.asList(animal.getId()));
         List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-        return new KMLExportView(project, positionFixList);
+        return new KMLExportView(project, animal, positionFixList);
     }
 }

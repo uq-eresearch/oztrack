@@ -1,31 +1,26 @@
 package org.oztrack.view;
 
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.feature.FeatureCollections;
-import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.kml.KML;
-import org.geotools.kml.KMLConfiguration;
-import org.geotools.xml.Encoder;
+import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.springframework.web.servlet.view.AbstractView;
 
-import com.vividsolutions.jts.geom.Point;
-
 public class KMLExportView extends AbstractView{
-    private final Project project;
+    private final Animal animal;
     private final List<PositionFix> positionFixList;
 
-    public KMLExportView(Project project, List<PositionFix> positionFixList) {
-        this.project = project;
+    public KMLExportView(Project project, Animal animal, List<PositionFix> positionFixList) {
+        this.animal = animal;
         this.positionFixList = positionFixList;
     }
 
@@ -35,48 +30,47 @@ public class KMLExportView extends AbstractView{
         HttpServletRequest request,
         HttpServletResponse response
     ) throws Exception {
-        SimpleFeatureCollection collection = FeatureCollections.newCollection();
-        Encoder encoder = new Encoder(new KMLConfiguration());
-        encoder.setIndenting(true);
-
         String fileName = "animal.kml";
         response.setHeader("Content-Disposition", "attachment; filename=\""+ fileName + "\"");
         response.setContentType("application/xml");
         response.setCharacterEncoding("UTF-8");
 
-        if (project != null) {
-            collection = this.buildPointsFeatureCollection();
-            encoder.encode(collection,KML.kml, response.getOutputStream());
+        PrintWriter writer = response.getWriter();
+        writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        writer.append("<kml xmlns=\"http://earth.google.com/kml/2.2\">");
+        writer.append("<Document>");
+        Matcher matcher = Pattern.compile("^#(..)(..)(..)$").matcher(animal.getColour());
+        if (matcher.matches()) {
+            String kmlBaseColour = matcher.group(3) + matcher.group(2) + matcher.group(1);
+            String kmlIconColour = "cc" + kmlBaseColour; // 80% opacity
+            writer.append("<Style id=\"animal-" + animal.getId() + "\">");
+            writer.append("  <IconStyle>");
+            writer.append("    <color>" + kmlIconColour + "</color>");
+            writer.append("    <scale>0.8</scale>");
+            writer.append("    <Icon>");
+            writer.append("        <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>");
+            writer.append("    </Icon>");
+            writer.append("  </IconStyle>");
+            writer.append("</Style>");
         }
-    }
-
-    private SimpleFeatureCollection buildPointsFeatureCollection() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy H:m:s");
-        int count = 1;
-
-        SimpleFeatureCollection collection = FeatureCollections.newCollection();
-        SimpleFeatureTypeBuilder sftb = new SimpleFeatureTypeBuilder();
-        sftb.setName("PositionFix");
-        sftb.add("name",String.class);
-        sftb.add("description",String.class);
-        sftb.add("location", Point.class);
-        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(sftb.buildFeatureType());
-
+        writer.append("<Folder>");
+        writer.append("<name>" + animal.getId() + "</name>");
+        SimpleDateFormat timestampDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        SimpleDateFormat descriptionDateFormat = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
         for(PositionFix positionFix : positionFixList) {
-            String nameField = sdf.format(positionFix.getDetectionTime());
-            String descriptionField = "Animal Id: "
-                                    + positionFix.getAnimal().getProjectAnimalId()
-                                    + "<br> Name: "
-                                    + positionFix.getAnimal().getAnimalName()
-                                    + "<br> Timestamp: "
-                                    + sdf.format(positionFix.getDetectionTime());
-
-            featureBuilder.add(nameField);
-            featureBuilder.add(descriptionField);
-            featureBuilder.add(positionFix.getLocationGeometry());
-            collection.add(featureBuilder.buildFeature(Integer.toString(count)));
-            count++;
+            writer.append("<Placemark>");
+            writer.append("  <styleUrl>#animal-" + animal.getId() + "</styleUrl>");
+            writer.append("  <description>" + descriptionDateFormat.format(positionFix.getDetectionTime()) + "</description>");
+            writer.append("  <Point>");
+            writer.append("    <coordinates>" + positionFix.getLocationGeometry().getX() + "," + positionFix.getLocationGeometry().getY() + "</coordinates>");
+            writer.append("  </Point>");
+            writer.append("  <TimeStamp>");
+            writer.append("    <when>" + timestampDateFormat.format(positionFix.getDetectionTime()) + "</when>");
+            writer.append("  </TimeStamp>");
+            writer.append("</Placemark>");
         }
-        return collection;
+        writer.append("</Folder>");
+        writer.append("</Document>");
+        writer.append("</kml>");
     }
 }
