@@ -161,7 +161,7 @@ public class RServeInterface {
         /* load up the arrays from the database result set*/
         for (int i=0; i < positionFixList.size(); i++) {
             PositionFix positionFix = positionFixList.get(i);
-            animalIds[i] = positionFix.getAnimal().getId().toString();
+            animalIds[i] = positionFix.getAnimal().getProjectAnimalId();
             dates[i] = dateFormat.format(positionFix.getDetectionTime());
             longitudes[i] = positionFix.getLocationGeometry().getX();
             latitudes[i] = positionFix.getLocationGeometry().getY();
