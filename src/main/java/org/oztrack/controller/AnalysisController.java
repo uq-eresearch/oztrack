@@ -1,14 +1,22 @@
 package org.oztrack.controller;
 
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -148,19 +156,77 @@ public class AnalysisController {
         response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
         response.setContentType("application/vnd.google-earth.kml+xml");
         response.setCharacterEncoding("UTF-8");
-        FileInputStream kmlInputStream = null;
+        Reader kmlReader = null;
+        Reader xslReader = null;
         try {
-            kmlInputStream = new FileInputStream(analysis.getAbsoluteResultFilePath());
-            IOUtils.copy(kmlInputStream, response.getOutputStream());
+            kmlReader = new FileReader(analysis.getAbsoluteResultFilePath());
+            xslReader = buildXslReader(analysis);
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer(new StreamSource(xslReader));
+            transformer.transform(new StreamSource(kmlReader), new StreamResult(response.getOutputStream()));
         }
-        catch (IOException e) {
+        catch (Exception e) {
             response.setStatus(500);
             writeResultError(response, "Error writing KML response.");
             return;
         }
         finally {
-            IOUtils.closeQuietly(kmlInputStream);
+            IOUtils.closeQuietly(kmlReader);
+            IOUtils.closeQuietly(xslReader);
         }
+    }
+
+    private Reader buildXslReader(Analysis analysis) {
+        StringBuilder xslBuilder = new StringBuilder();
+        xslBuilder.append("<?xml version=\"1.0\" ?>");
+        xslBuilder.append("<xsl:stylesheet");
+        xslBuilder.append("  xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\"");
+        xslBuilder.append("  xmlns:kml=\"http://www.opengis.net/kml/2.2\"");
+        xslBuilder.append("  xmlns=\"http://www.opengis.net/kml/2.2\"");
+        xslBuilder.append("  version=\"1.0\">");
+        // Wwe're only making small changes to the KML, so copy elements through by default
+        xslBuilder.append("  <xsl:template match=\"@*|node()\">");
+        xslBuilder.append("    <xsl:copy>");
+        xslBuilder.append("      <xsl:apply-templates select=\"@*|node()\"/>");
+        xslBuilder.append("    </xsl:copy>");
+        xslBuilder.append("  </xsl:template>");
+        // Insert Style elements for each animal as the start of the Document
+        xslBuilder.append("  <xsl:template match=\"//kml:Document\">");
+        xslBuilder.append("    <xsl:copy>");
+        for (Animal animal : analysis.getAnimals()) {
+            // Convert CSS colour (RRGGBB) to KML colour (AABBGGRR)
+            Matcher matcher = Pattern.compile("^#(..)(..)(..)$").matcher(animal.getColour());
+            if (matcher.matches()) {
+                String kmlBaseColour = matcher.group(3) + matcher.group(2) + matcher.group(1);
+                String kmlLineColour = "cc" + kmlBaseColour; // 80% opacity
+                String kmlPolyColour = "7f" + kmlBaseColour; // 50% opacity
+                xslBuilder.append("      <Style id=\"animal-" + animal.getId() + "\">");
+                xslBuilder.append("        <LineStyle>");
+                xslBuilder.append("          <color>" + kmlLineColour + "</color>");
+                xslBuilder.append("          <width>2</width>");
+                xslBuilder.append("        </LineStyle>");
+                xslBuilder.append("        <PolyStyle>");
+                xslBuilder.append("          <color>" + kmlPolyColour + "</color>");
+                xslBuilder.append("        </PolyStyle>");
+                xslBuilder.append("      </Style>");
+            }
+        }
+        xslBuilder.append("      <xsl:apply-templates select=\"@*|node()\"/>");
+        xslBuilder.append("    </xsl:copy>");
+        xslBuilder.append("  </xsl:template>");
+        // Remove default styles from animals
+        xslBuilder.append("  <xsl:template match=\"//kml:Placemark/kml:Style\">");
+        xslBuilder.append("    <!-- remove default styles -->");
+        xslBuilder.append("  </xsl:template>");
+        // Insert styleUrl elements referring to Style for each animal
+        xslBuilder.append("  <xsl:template match=\"//kml:Placemark[.//kml:SimpleData[@name='id']]\">");
+        xslBuilder.append("    <xsl:copy>");
+        xslBuilder.append("      <styleUrl>#animal-<xsl:apply-templates select=\".//kml:SimpleData[@name='id']/text()\"/></styleUrl>");
+        xslBuilder.append("      <xsl:apply-templates select=\"@*|node()\"/>");
+        xslBuilder.append("    </xsl:copy>");
+        xslBuilder.append("  </xsl:template>");
+        xslBuilder.append("</xsl:stylesheet>");
+        return new StringReader(xslBuilder.toString());
     }
 
     private static void writeResultError(HttpServletResponse response, String error) {
