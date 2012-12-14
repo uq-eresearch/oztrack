@@ -80,6 +80,9 @@ public class Analysis extends OzTrackBaseEntity {
     @Column(name="resultfilepath", columnDefinition="text")
     private String resultFilePath;
 
+    @Column(name="saved", nullable=false)
+    private boolean saved;
+
     public Long getId() {
         return id;
     }
@@ -196,6 +199,14 @@ public class Analysis extends OzTrackBaseEntity {
 
     public String getAbsoluteResultFilePath() {
         return project.getAbsoluteDataDirectoryPath() + File.separator + getResultFilePath();
+    }
+
+    public boolean isSaved() {
+        return saved;
+    }
+
+    public void setSaved(boolean saved) {
+        this.saved = saved;
     }
 
     public SearchQuery toSearchQuery() {

@@ -38,6 +38,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -63,17 +64,31 @@ public class AnalysisController {
         return analysisDao.getAnalysisById(analysisId);
     }
 
-    private boolean canRead(Authentication authentication, HttpServletRequest request, Analysis analysis) {
-        if (permissionEvaluator.hasPermission(authentication, analysis.getProject(), "read")) {
-            return true;
+    private boolean hasPermission(Authentication authentication, HttpServletRequest request, Analysis analysis, String permission) {
+        if (permission.equals("write")) {
+            // Users with write access to the project have write access to all of its analyses
+            if (permissionEvaluator.hasPermission(authentication, analysis.getProject(), "write")) {
+                return true;
+            }
         }
-        User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
-        if ((currentUser != null) && currentUser.equals(analysis.getCreateUser())) {
-            return true;
-        }
-        HttpSession currentSession = request.getSession(false);
-        if ((currentSession != null) && currentSession.getId().equals(analysis.getCreateSession())) {
-            return true;
+        else if (permission.equals("read")) {
+            // Users with read access to the project have read access to all of its analyses
+            if (permissionEvaluator.hasPermission(authentication, analysis.getProject(), "read")) {
+                return true;
+            }
+            // Saved analyses are visible to users for open-access projects
+            if (analysis.getProject().isGlobal() && analysis.isSaved()) {
+                return true;
+            }
+            // Otherwise, only the creator of an analysis is able to view it
+            User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
+            if ((currentUser != null) && currentUser.equals(analysis.getCreateUser())) {
+                return true;
+            }
+            HttpSession currentSession = request.getSession(false);
+            if ((currentSession != null) && currentSession.getId().equals(analysis.getCreateSession())) {
+                return true;
+            }
         }
         return false;
     }
@@ -86,7 +101,7 @@ public class AnalysisController {
         HttpServletResponse response,
         @ModelAttribute(value="analysis") Analysis analysis
     ) throws IOException, JSONException {
-        if (!canRead(authentication, request, analysis)) {
+        if (!hasPermission(authentication, request, analysis, "read")) {
             response.setStatus(403);
             return;
         }
@@ -130,6 +145,24 @@ public class AnalysisController {
         out.endObject();
     }
 
+    @RequestMapping(value="/projects/{projectId}/analyses/{analysisId}/saved", method=RequestMethod.PUT, consumes="application/json")
+    @PreAuthorize("permitAll")
+    public void updateSaved(
+        Authentication authentication,
+        HttpServletRequest request,
+        HttpServletResponse response,
+        @ModelAttribute(value="analysis") Analysis analysis,
+        @RequestBody String savedString
+    ) {
+        if (!hasPermission(authentication, request, analysis, "write")) {
+            response.setStatus(403);
+            return;
+        }
+        analysis.setSaved(Boolean.valueOf(savedString));
+        analysisDao.save(analysis);
+        response.setStatus(204);
+    }
+
     @RequestMapping(value="/projects/{projectId}/analyses/{analysisId}/result", method=RequestMethod.GET, produces="application/vnd.google-earth.kml+xml")
     @PreAuthorize("permitAll")
     public void handleResultKML(
@@ -138,7 +171,7 @@ public class AnalysisController {
         HttpServletResponse response,
         @ModelAttribute(value="analysis") Analysis analysis
     ) {
-        if (!canRead(authentication, request, analysis)) {
+        if (!hasPermission(authentication, request, analysis, "read")) {
             response.setStatus(403);
             return;
         }

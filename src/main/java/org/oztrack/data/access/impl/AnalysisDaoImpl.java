@@ -38,6 +38,20 @@ public class AnalysisDaoImpl implements AnalysisDao {
     }
 
     @Override
+    public List<Analysis> getSavedAnalyses(Project project) {
+        @SuppressWarnings("unchecked")
+        List<Analysis> resultList = em
+            .createQuery(
+                "from org.oztrack.data.model.Analysis\n" +
+                "where project = :project and saved = true\n" +
+                "order by createDate")
+            .setParameter("project", project)
+            .setMaxResults(20)
+            .getResultList();
+        return resultList;
+    }
+
+    @Override
     public List<Analysis> getPreviousAnalyses(Project project, User createUser, String createSession) {
         @SuppressWarnings("unchecked")
         List<Analysis> resultList = em

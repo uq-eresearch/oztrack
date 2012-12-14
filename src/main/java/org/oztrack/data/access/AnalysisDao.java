@@ -11,5 +11,6 @@ import org.springframework.stereotype.Service;
 public interface AnalysisDao {
     Analysis getAnalysisById(Long id);
     void save(Analysis analysis);
+    List<Analysis> getSavedAnalyses(Project project);
     List<Analysis> getPreviousAnalyses(Project project, User createUser, String createSession);
 }
