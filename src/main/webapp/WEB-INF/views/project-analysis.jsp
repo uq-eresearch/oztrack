@@ -115,6 +115,20 @@
                 font-size: 0.9em;
                 color: #666;
             }
+            .analysis-content {
+                margin: 9px 0;
+                background-color: #DBDBD0;
+                border: 1px solid transparent;
+                border-radius: 5px;
+            }
+            .analysis-content-params {
+                margin: 6px;
+            }
+            .analysis-content-actions {
+                padding-top: 3px;
+                padding-bottom: 3px;
+                border-top: 1px solid #CCC;
+            }
         </style>
     </jsp:attribute>
     <jsp:attribute name="tail">
@@ -263,57 +277,24 @@
                     .append($('<a>')
                         .attr('href', 'javascript:void(0);')
                         .text(layerName)
-                        .popover({
-                            placement: 'bottom',
-                            trigger: 'hover',
-                            html: true,
-                            title: layerName,
-                            content: function() {
-                                return getAnalysisPopoverContent(analysisUrl);
-                            }
-                        })
                         .click(function(e) {
-                            analysisMap.addAnalysisLayer(analysisUrl, layerName);
+                            var content = $(this).parent().find('.analysis-content');
+                            if (content.length != 0) {
+                                content.slideToggle();
+                            }
+                            else {
+                                $(this).parent().append(getAnalysisContent(analysisUrl, layerName, analysisCreateDate, saved));
+                            }
                         })
                     )
                     .append($('<span>')
                         .attr('style', 'font-size: 11px; color: #666;')
                         .text(' (' + dateToISO8601(analysisCreateDate) + ' ' + analysisCreateDate.toLocaleTimeString() + ')')
                     )
-                    <sec:authorize access="hasPermission(#project, 'write')">
-                    .append($('<span>')
-                        .attr('style', 'font-size: 11px; color: #666;')
-                        .append(' [')
-                        .append($('<a>')
-                            .attr('href', 'javascript:void(0);')
-                            .text(saved ? 'remove' : 'save')
-                            .click(function(e) {
-                                jQuery.ajax({
-                                    url: analysisUrl + '/saved',
-                                    type: 'PUT',
-                                    contentType: "application/json",
-                                    data: (saved ? 'false' : 'true'),
-                                    success: function() {
-                                        addAnalysis(layerName, analysisUrl, analysisCreateDate, !saved);
-                                        var li = $(e.target).closest('li');
-                                        if (li.siblings().length == 0) {
-                                            li.parent().prev().andSelf().fadeOut();
-                                        }
-                                        li.remove();
-                                    },
-                                    error: function() {
-                                        alert('Could not save analysis.');
-                                    }
-                                });
-                            })
-                        )
-                        .append(']')
-                    )
-                    </sec:authorize>
                 );
             }
-            function getAnalysisPopoverContent(analysisUrl) {
-                var div = $('<div>').append('<img src="${pageContext.request.contextPath}/img/ui-anim_basic_16x16.gif" />');
+            function getAnalysisContent(analysisUrl, layerName, analysisCreateDate, saved) {
+                var div = $('<div class="analysis-content">').hide();
                 $.ajax({
                     url: analysisUrl,
                     type: 'GET',
@@ -322,10 +303,9 @@
                     complete: function (xhr, textStatus) {
                         if (textStatus == 'success') {
                             var analysis = $.parseJSON(xhr.responseText);
-                            div.empty();
-                            var table = $('<table>');
+                            var paramsTable = $('<table class="analysis-content-params">');
                             if (analysis.params.fromDate) {
-                                table.append(
+                                paramsTable.append(
                                     '<tr>' +
                                     '<td class="layerInfoLabel">Date From:</td>' +
                                     '<td>' + analysis.params.fromDate + '</td>' +
@@ -333,14 +313,14 @@
                                 );
                             }
                             if (analysis.params.toDate) {
-                                table.append(
+                                paramsTable.append(
                                     '<tr>' +
                                     '<td class="layerInfoLabel">Date To:</td>' +
                                     '<td>' + analysis.params.toDate + '</td>' +
                                     '</tr>'
                                 );
                             }
-                            table.append(
+                            paramsTable.append(
                                 '<tr>' +
                                 '<td class="layerInfoLabel">Animals: </td>' +
                                 '<td>' + analysis.params.animalNames.join(', ') + '</td>' +
@@ -350,7 +330,7 @@
                             if (analysis.params.queryType == '${analysisType}') {
                                 <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
                                 if (analysis.params.${parameterType.identifier}) {
-                                    table.append(
+                                    paramsTable.append(
                                         '<tr>' +
                                         '<td class="layerInfoLabel">${parameterType.displayName}: </td>' +
                                         '<td>' + analysis.params.${parameterType.identifier} + ' ${parameterType.units}</td>' +
@@ -360,7 +340,50 @@
                                 </c:forEach>
                             }
                             </c:forEach>
-                            div.append(table);
+                            var actionsList = $('<ul class="analysis-content-actions icons">');
+                            actionsList.append($('<li>')
+                                .addClass('add-layer')
+                                .append(
+                                    $('<a>')
+                                        .attr('href', 'javascript:void(0);')
+                                        .text('Add anlaysis to map')
+                                        .click(function(e) {
+                                            analysisMap.addAnalysisLayer(analysisUrl, layerName);
+                                        })
+                                )
+                            );
+                            <sec:authorize access="hasPermission(#project, 'write')">
+                            actionsList.append($('<li>')
+                                .addClass(saved ? 'delete' : 'create')
+                                .append(
+                                    $('<a>')
+                                        .attr('href', 'javascript:void(0);')
+                                        .text(saved ? 'Remove analysis' : 'Save analysis')
+                                        .click(function(e) {
+                                            jQuery.ajax({
+                                                url: analysisUrl + '/saved',
+                                                type: 'PUT',
+                                                contentType: "application/json",
+                                                data: (saved ? 'false' : 'true'),
+                                                success: function() {
+                                                    addAnalysis(layerName, analysisUrl, analysisCreateDate, !saved);
+                                                    var li = $(e.target).closest('li.analysis');
+                                                    if (li.siblings().length == 0) {
+                                                        li.parent().prev().andSelf().fadeOut();
+                                                    }
+                                                    li.remove();
+                                                },
+                                                error: function() {
+                                                    alert('Could not save analysis.');
+                                                }
+                                            });
+                                        })
+                                )
+                            );
+                            </sec:authorize>
+                            div.append(paramsTable);
+                            div.append(actionsList);
+                            div.slideDown();
                         }
                     }
                 });
