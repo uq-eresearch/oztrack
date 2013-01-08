@@ -143,10 +143,15 @@
                 padding-bottom: 3px;
                 border-bottom: 1px solid #CCC;
             }
-            .analysis-content-description p,
-            .analysis-content-description .editable-container {
+            .analysis-content-description {
                 margin: 6px;
+            }
+            .analysis-content-description .analysis-content-description-text,
+            .analysis-content-description .editable-container {
                 font-style: italic;
+            }
+            .analysis-content-description .editable-empty {
+                color: #666;
             }
             .analysis-content-params {
                 margin: 6px;
@@ -342,13 +347,23 @@
                             var analysis = $.parseJSON(xhr.responseText);
                             if (saved) {
                                 var descriptionDiv = $('<div class="analysis-content-description">');
-                                descriptionDiv.append($('<p>')
+                                <sec:authorize access="hasPermission(#project, 'write')">
+                                var editLink = $('<a style="float: right; padding: 0 6px;">')
+                                    .attr('href', 'javascript:void(0);')
+                                    .append($('<img src="${pageContext.request.contextPath}/img/page_white_edit.png" />'))
+                                    .click(function(e) {
+                                        e.stopPropagation();
+                                        $(this).closest('.analysis-content').find('.analysis-content-description .analysis-content-description-text').editable('toggle');
+                                    });
+                                descriptionDiv.append(editLink);
+                                </sec:authorize>
+                                descriptionDiv.append($('<div class="analysis-content-description-text">')
                                     .text(analysis.description || '')
                                     <sec:authorize access="hasPermission(#project, 'write')">
                                     .editable({
                                         type: 'textarea',
                                         toggle: 'manual',
-                                        emptytext: '',
+                                        emptytext: 'No description entered.',
                                         url: function(params) {
                                             jQuery.ajax({
                                                 url: analysisUrl + '/description',
@@ -420,20 +435,6 @@
                                 )
                             );
                             <sec:authorize access="hasPermission(#project, 'write')">
-                            if (saved) {
-                                actionsList.append($('<li>')
-                                    .addClass('edit')
-                                    .append(
-                                        $('<a>')
-                                            .attr('href', 'javascript:void(0);')
-                                            .text('Edit description')
-                                            .click(function(e) {
-                                                e.stopPropagation();
-                                                $(this).closest('.analysis-content').find('.analysis-content-description p').editable('toggle');
-                                            })
-                                    )
-                                );
-                            }
                             actionsList.append($('<li>')
                                 .addClass(saved ? 'delete' : 'create')
                                 .append(
