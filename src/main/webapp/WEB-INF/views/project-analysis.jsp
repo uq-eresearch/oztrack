@@ -112,19 +112,46 @@
             a.layer-delete {
                 float: right;
                 margin-right: 3px;
-                font-size: 0.9em;
+                font-size: 11px;
                 color: #666;
             }
-            .analysis-content {
-                margin: 9px 0;
+            #savedAnalysesList .analysis-header {
+                padding: 2px 4px;
+                border-bottom: 1px solid #ccc;
+                background-color: #D8E0A8;
+            }
+            #savedAnalysesList .analysis-header a {
+                color: #444;
+                font-weight: normal;
+                text-decoration: none;
+            }
+            .analysis-header-timestamp {
+                float: right;
+                font-size: 11px;
+                color: #666;
+            }
+            #savedAnalysesList .analysis-content {
+                margin: 0 0 9px 0;
+            }
+            #previousAnalysesList .analysis-content {
+                margin: 6px 0 9px 0;
                 background-color: #DBDBD0;
                 border: 1px solid transparent;
-                border-radius: 5px;
+            }
+            #previousAnalysesList .analysis-content-description {
+                padding-top: 3px;
+                padding-bottom: 3px;
+                border-bottom: 1px solid #CCC;
+            }
+            .analysis-content-description p,
+            .analysis-content-description .editable-container {
+                margin: 6px;
+                font-style: italic;
             }
             .analysis-content-params {
                 margin: 6px;
             }
-            .analysis-content-actions {
+            #previousAnalysesList .analysis-content-actions {
                 padding-top: 3px;
                 padding-bottom: 3px;
                 border-top: 1px solid #CCC;
@@ -271,27 +298,37 @@
                 </c:forEach>
             });
             function addAnalysis(layerName, analysisUrl, analysisCreateDate, saved) {
-                $(saved ? '#savedAnalysesTitle' : '#previousAnalysesTitle').fadeIn();
-                $(saved ? '#savedAnalysesList' : '#previousAnalysesList').fadeIn().prepend($('<li>')
-                    .addClass('analysis')
-                    .append($('<a>')
-                        .attr('href', 'javascript:void(0);')
-                        .text(layerName)
-                        .click(function(e) {
-                            var content = $(this).parent().find('.analysis-content');
-                            if (content.length != 0) {
-                                content.slideToggle();
-                            }
-                            else {
-                                $(this).parent().append(getAnalysisContent(analysisUrl, layerName, analysisCreateDate, saved));
-                            }
-                        })
-                    )
-                    .append($('<span>')
-                        .attr('style', 'font-size: 11px; color: #666;')
-                        .text(' (' + dateToISO8601(analysisCreateDate) + ' ' + analysisCreateDate.toLocaleTimeString() + ')')
-                    )
-                );
+                var analysisContainer = $('<li class="analysis">');
+                var analysisHeader = $('<div class="analysis-header">');
+                if (!saved) {
+                    var analysisTimestamp = $('<span class="analysis-header-timestamp">')
+                        .text(dateToISO8601(analysisCreateDate) + ' ' + analysisCreateDate.toLocaleTimeString());
+                    analysisHeader.append(analysisTimestamp);
+                }
+                var analysisLink = $('<a>')
+                    .attr('href', 'javascript:void(0);')
+                    .text(layerName)
+                    .click(function(e) {
+                        var parent = $(this).closest('.analysis');
+                        var content = parent.find('.analysis-content');
+                        if (content.length != 0) {
+                            content.slideToggle();
+                        }
+                        else {
+                            parent.append(getAnalysisContent(analysisUrl, layerName, analysisCreateDate, saved));
+                        }
+                    });
+                analysisHeader.append(analysisLink);
+                analysisContainer.append(analysisHeader);
+                if (saved) {
+                    analysisContainer.append(getAnalysisContent(analysisUrl, layerName, analysisCreateDate, saved));
+                    $('#savedAnalysesTitle').fadeIn();
+                    $('#savedAnalysesList').fadeIn().prepend(analysisContainer);
+                }
+                else {
+                    $('#previousAnalysesTitle').fadeIn();
+                    $('#previousAnalysesList').fadeIn().prepend(analysisContainer);
+                }
             }
             function getAnalysisContent(analysisUrl, layerName, analysisCreateDate, saved) {
                 var div = $('<div class="analysis-content">').hide();
@@ -303,6 +340,34 @@
                     complete: function (xhr, textStatus) {
                         if (textStatus == 'success') {
                             var analysis = $.parseJSON(xhr.responseText);
+                            if (saved) {
+                                var descriptionDiv = $('<div class="analysis-content-description">');
+                                descriptionDiv.append($('<p>')
+                                    .text(analysis.description || '')
+                                    <sec:authorize access="hasPermission(#project, 'write')">
+                                    .editable({
+                                        type: 'textarea',
+                                        toggle: 'manual',
+                                        emptytext: '',
+                                        url: function(params) {
+                                            jQuery.ajax({
+                                                url: analysisUrl + '/description',
+                                                type: 'PUT',
+                                                contentType: "text/plain",
+                                                data: params.value,
+                                                success: function() {
+                                                },
+                                                error: function() {
+                                                    alert('Could not save description.');
+                                                }
+                                            });
+                                        }
+                                    })
+                                    </sec:authorize>
+                                );
+                                div.append(descriptionDiv);
+                            }
+
                             var paramsTable = $('<table class="analysis-content-params">');
                             if (analysis.params.fromDate) {
                                 paramsTable.append(
@@ -340,6 +405,8 @@
                                 </c:forEach>
                             }
                             </c:forEach>
+                            div.append(paramsTable);
+
                             var actionsList = $('<ul class="analysis-content-actions icons">');
                             actionsList.append($('<li>')
                                 .addClass('add-layer')
@@ -353,6 +420,20 @@
                                 )
                             );
                             <sec:authorize access="hasPermission(#project, 'write')">
+                            if (saved) {
+                                actionsList.append($('<li>')
+                                    .addClass('edit')
+                                    .append(
+                                        $('<a>')
+                                            .attr('href', 'javascript:void(0);')
+                                            .text('Edit description')
+                                            .click(function(e) {
+                                                e.stopPropagation();
+                                                $(this).closest('.analysis-content').find('.analysis-content-description p').editable('toggle');
+                                            })
+                                    )
+                                );
+                            }
                             actionsList.append($('<li>')
                                 .addClass(saved ? 'delete' : 'create')
                                 .append(
@@ -381,8 +462,8 @@
                                 )
                             );
                             </sec:authorize>
-                            div.append(paramsTable);
                             div.append(actionsList);
+
                             div.slideDown();
                         }
                     }
@@ -616,7 +697,7 @@
             <h3><a href="javascript:void(0);">Previous Analyses</a></h3>
             <div id="previousAnalysesPanel">
                 <div id="savedAnalysesTitle" style="display: none; margin-bottom: 9px; font-weight: bold;">Saved Analyses</div>
-                <ul id="savedAnalysesList" class="icons" style="display: none;">
+                <ul id="savedAnalysesList" class="unstyled" style="display: none;">
                 </ul>
                 <div id="previousAnalysesTitle" style="display: none; margin-bottom: 9px; font-weight: bold;">Previous Analyses</div>
                 <ul id="previousAnalysesList" class="icons" style="display: none;">

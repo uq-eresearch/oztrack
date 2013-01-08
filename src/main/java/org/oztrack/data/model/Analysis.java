@@ -83,6 +83,9 @@ public class Analysis extends OzTrackBaseEntity {
     @Column(name="saved", nullable=false)
     private boolean saved;
 
+    @Column(name="description", columnDefinition="text")
+    private String description;
+
     public Long getId() {
         return id;
     }
@@ -207,6 +210,14 @@ public class Analysis extends OzTrackBaseEntity {
 
     public void setSaved(boolean saved) {
         this.saved = saved;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public SearchQuery toSearchQuery() {

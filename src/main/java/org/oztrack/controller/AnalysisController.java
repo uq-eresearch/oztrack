@@ -142,6 +142,9 @@ public class AnalysisController {
             String resultUrl = String.format("%s/projects/%d/analyses/%d/result", request.getContextPath(), analysis.getProject().getId(), analysis.getId());
             out.key("resultUrl").value(resultUrl);
         }
+        if (analysis.getDescription() != null) {
+            out.key("description").value(analysis.getDescription());
+        }
         out.endObject();
     }
 
@@ -159,6 +162,24 @@ public class AnalysisController {
             return;
         }
         analysis.setSaved(Boolean.valueOf(savedString));
+        analysisDao.save(analysis);
+        response.setStatus(204);
+    }
+
+    @RequestMapping(value="/projects/{projectId}/analyses/{analysisId}/description", method=RequestMethod.PUT, consumes="text/plain")
+    @PreAuthorize("permitAll")
+    public void updateDescription(
+        Authentication authentication,
+        HttpServletRequest request,
+        HttpServletResponse response,
+        @ModelAttribute(value="analysis") Analysis analysis,
+        @RequestBody String description
+    ) {
+        if (!hasPermission(authentication, request, analysis, "write")) {
+            response.setStatus(403);
+            return;
+        }
+        analysis.setDescription(description);
         analysisDao.save(analysis);
         response.setStatus(204);
     }

@@ -1,0 +1,1 @@
+alter table analysis add column description text;
