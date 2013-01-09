@@ -191,8 +191,13 @@
                 <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
                 $('input[id=select-animal-${animal.id}]').change(function() {
                     analysisMap.toggleAllAnimalFeatures("${animal.id}", this.checked);
+                    $('#selectAnimalConfirmationBox').fadeIn();
                 });
                 </c:forEach>
+                $('#selectAnimalConfirmationLink').click(function(e) {
+                    analysisMap.toggleAllAnimalFeaturesCommit();
+                    $('#selectAnimalConfirmationBox').fadeOut();
+                });
 
                 $('#select-animal-all').prop('checked', $('.select-animal:not(:checked)').length == 0);
                 $('.select-animal').change(function (e) {
@@ -301,6 +306,9 @@
                     false
                 );
                 </c:forEach>
+                $(window).resize(onResize);
+                $(window).resize(repositionSelectAnimalConfirmationBox);
+                repositionSelectAnimalConfirmationBox();
             });
             function addAnalysis(layerName, analysisUrl, analysisCreateDate, saved) {
                 var analysisContainer = $('<li class="analysis">');
@@ -480,7 +488,13 @@
                     analysisMap.updateSize();
                 }
             }
-            $(window).resize(onResize);
+            function repositionSelectAnimalConfirmationBox() {
+                $('#selectAnimalConfirmationBox').position({
+                    my: 'center bottom',
+                    at: 'center bottom',
+                    of: '#animalPanel'
+                });
+            }
         </script>
     </jsp:attribute>
     <jsp:attribute name="breadcrumbs">
@@ -546,6 +560,10 @@
                     <div id="animalInfo-${animal.id}" class="animalInfo" style="display: ${showAnimalInfo ? 'block' : 'none'};">
                     </div>
                 </c:forEach>
+                
+                <div id="selectAnimalConfirmationBox" style="display: none; position: fixed; background-color: #263F00; color: white; opacity: 0.80; padding: 10px; border-radius: 6px 6px 0 0;">
+                    <a id="selectAnimalConfirmationLink" href="javascript:void(0);" style="color: white; font-weight: bold;">Click here to finish selecting animals</a>
+                </div>
             </div>
 
 

@@ -751,6 +751,10 @@ function createAnalysisMap(div, options) {
 
         analysisMap.toggleAllAnimalFeatures = function(animalId, visible) {
             animalVisible[animalId] = visible;
+            $("#animalInfo-" + animalId).find(':checkbox').attr("checked", visible);
+        };
+
+        analysisMap.toggleAllAnimalFeaturesCommit = function() {
             updateDetectionLayers();
             updateTrajectoryLayers();
             function getVectorLayers() {
@@ -766,21 +770,23 @@ function createAnalysisMap(div, options) {
                 return vectorLayers;
             }
             var vectorLayers = getVectorLayers();
-            for (var l in vectorLayers) {
-                var layer = vectorLayers[l];
-                var layerName = layer.name;
-                for (var f in layer.features) {
-                    var feature = layer.features[f];
-                    var featureAnimalId =
-                        (feature.attributes.animalId) ? feature.attributes.animalId :
-                        (feature.attributes.id.value) ? feature.attributes.id.value :
-                        null;
-                    if (featureAnimalId == animalId) {
-                        toggleFeature(feature, visible);
+            for (i = 0; i < animalIds.length; i++) {
+                var animalId = animalIds[i];
+                for (var l in vectorLayers) {
+                    var layer = vectorLayers[l];
+                    var layerName = layer.name;
+                    for (var f in layer.features) {
+                        var feature = layer.features[f];
+                        var featureAnimalId =
+                            (feature.attributes.animalId) ? feature.attributes.animalId :
+                            (feature.attributes.id.value) ? feature.attributes.id.value :
+                            null;
+                        if (featureAnimalId == animalId) {
+                            toggleFeature(feature, animalVisible[animalId]);
+                        }
                     }
                 }
             }
-            $("#animalInfo-" + animalId).find(':checkbox').attr("checked", visible);
         };
 
         analysisMap.updateSize = function() {
