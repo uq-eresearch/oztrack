@@ -16,7 +16,6 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
-import org.oztrack.data.model.types.ProjectType;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
 public class SearchQueryXLSView extends AbstractExcelView {
@@ -37,9 +36,6 @@ public class SearchQueryXLSView extends AbstractExcelView {
         HttpServletRequest request,
         HttpServletResponse response
     ) throws Exception {
-        if (project.getProjectType() != ProjectType.GPS) {
-            throw new IllegalArgumentException("Can only export " + ProjectType.GPS.getDisplayName() + " projects");
-        }
         createPositionFixSheet(workbook);
         response.setHeader("Content-Disposition", "attachment; filename=\"export.xls\"");
     }

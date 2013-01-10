@@ -50,7 +50,6 @@
                         <tr>
                             <th>Title</th>
                             <th>Spatial Coverage</th>
-                            <th>Project Type</th>
                             <th>Created Date</th>
                         </tr>
                     </thead>
@@ -59,7 +58,6 @@
                         <tr>
                             <td><a href="${pageContext.request.contextPath}/projects/${projectUser.project.id}"><c:out value="${projectUser.project.title}"/></a></td>
                             <td><c:out value="${projectUser.project.spatialCoverageDescr}"/></td>
-                            <td><c:out value="${projectUser.project.projectType.displayName}"/></td>
                             <td><fmt:formatDate value="${projectUser.project.createDate}" type="date" dateStyle="long"/></td>
                         </tr>
                         </c:forEach>

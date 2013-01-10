@@ -278,21 +278,6 @@
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="projectType">Project Type</label>
-                    <div class="controls">
-                        <form:select path="projectType">
-                            <form:option value="GPS">GPS Based Telemetry</form:option>
-                        </form:select>
-                        <div class="help-inline">
-                            <div class="help-popover" title="Project Type">
-                                What kind of telemetry device was used to track your animal? This
-                                will determine the format of the data files you upload, and the
-                                types of analysis available to this project's data set.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="control-group">
                     <label class="control-label" for="spatialCoverageDescr">Location</label>
                     <div class="controls">
                         <form:input path="spatialCoverageDescr" id="spatialCoverageDescr"/>

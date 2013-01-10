@@ -117,27 +117,13 @@ public class SearchController {
         int offset
     ) throws Exception {
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
-
-        int nbrObjectsPerPage=30;
-        int totalCount=0;
-        int nbrObjectsThisPage=0;
-
-        switch (project.getProjectType()) {
-             case GPS:
-                 Page<PositionFix> positionFixPage = positionFixDao.getPage(searchQuery, offset, nbrObjectsPerPage);
-                 nbrObjectsThisPage = positionFixPage.getObjects().size();
-                 totalCount = positionFixPage.getCount();
-                 model.addAttribute("positionFixList", positionFixPage.getObjects());
-                 break;
-             default:
-                 break;
-        }
-
+        Page<PositionFix> positionFixPage = positionFixDao.getPage(searchQuery, offset, 30);
+        model.addAttribute("positionFixList", positionFixPage.getObjects());
         model.addAttribute("projectAnimalsList", projectAnimalsList);
         model.addAttribute("offset", offset);
-        model.addAttribute("nbrObjectsPerPage", nbrObjectsPerPage);
-        model.addAttribute("nbrObjectsThisPage", nbrObjectsThisPage);
-        model.addAttribute("totalCount", totalCount);
+        model.addAttribute("nbrObjectsPerPage", positionFixPage.getLimit());
+        model.addAttribute("nbrObjectsThisPage", positionFixPage.getObjects().size());
+        model.addAttribute("totalCount", positionFixPage.getCount());
         return "project-search";
     }
 }

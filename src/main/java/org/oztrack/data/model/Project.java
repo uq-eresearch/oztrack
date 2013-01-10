@@ -1,7 +1,5 @@
 package org.oztrack.data.model;
 
-import static javax.persistence.EnumType.STRING;
-
 import java.io.File;
 import java.util.Date;
 import java.util.LinkedList;
@@ -10,7 +8,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,7 +19,6 @@ import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 
 import org.oztrack.app.OzTrackApplication;
-import org.oztrack.data.model.types.ProjectType;
 
 @Entity(name="Project")
 public class Project extends OzTrackBaseEntity {
@@ -61,10 +57,6 @@ public class Project extends OzTrackBaseEntity {
 
     @OneToMany(mappedBy="project", cascade=CascadeType.ALL, orphanRemoval=true, fetch=FetchType.LAZY)
     private List<DataFile> dataFiles = new LinkedList<DataFile>();
-
-    @Enumerated(STRING)
-    @Column(name="projecttype")
-    private ProjectType projectType;
 
     private String speciesCommonName;
 
@@ -186,16 +178,6 @@ public class Project extends OzTrackBaseEntity {
     public void setPublicationUrl(String publicationUrl) {
         this.publicationUrl = publicationUrl;
     }
-
-
-    public ProjectType getProjectType() {
-        return projectType;
-    }
-
-    public void setProjectType(ProjectType projectType) {
-        this.projectType = projectType;
-    }
-
 
     public String getSpeciesCommonName() {
         return speciesCommonName;

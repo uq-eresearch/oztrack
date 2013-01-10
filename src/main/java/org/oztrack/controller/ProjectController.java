@@ -68,7 +68,6 @@ public class ProjectController {
         binder.setAllowedFields(
             "title",
             "description",
-            "projectType",
             "spatialCoverageDescr",
             "speciesCommonName",
             "speciesScientificName",

@@ -46,12 +46,6 @@
             <fieldset>
                 <div class="legend">Add a Data File</div>
                 <div class="control-group">
-                    <label class="control-label" for="projectType">Data File Type</label>
-                    <div class="controls">
-                        <input type="text" disabled="disabled" value="<c:out value="${project.projectType.displayName}"/>" />
-                    </div>
-                </div>
-                <div class="control-group">
                     <label class="control-label" for="fileDescription">File Description</label>
                     <div class="controls">
                         <form:input path="fileDescription" id="fileDescription" cssClass="input-xlarge"/>
@@ -125,66 +119,84 @@ Bert,12/08/2009 2:55:00,142.10619,-12.32208
 </pre>
 
         <h2>File format</h2>
-        <p>OzTrack expects that files will contain particular headers, depending on the type of project specified when the project was created.
-        Because this project is for <b><c:out value="${project.projectType.displayName}"/></b>, the headers in the file can be any of the
-        following:<br>
-        <br>
-        <c:out value="${fileHeaders}"/>
-        <h3>Date formats</h3>
+
+        <h3>CSV headers</h3>
+        <p>
+            OzTrack accepts CSV files containing the following headers:<br>
+        </p>
+        <ul>
+            <li><tt>DATE</tt>, <tt>UTCDATE</tt>, <tt>LOCDATE</tt>, or <tt>ACQUISITIONTIME</tt>: date or date/time value (required)</li>
+            <li><tt>TIME</tt> or <tt>UTCTIME</tt>: time value, if not included in date/time value (optional)</li>
+            <li><tt>LATITUDE</tt>, <tt>LATT</tt>, or <tt>LAT</tt>: WGS84 latitude in decimal degrees (required)</li>
+            <li><tt>LONGITUDE</tt>, <tt>LONG</tt>, or <tt>LON</tt>: WGS84 longitude in decimal degrees (required)</li>
+            <li><tt>ID</tt> or <tt>ANIMALID</tt>: Alphanumeric ID for animal, if file contains several animals (optional)</li>
+        </ul>
+
+        <h3>Date and time formats</h3>
         <p>Date formats that can be read:</p>
-            <ul>
-                <li><span>dd/MM/yyyy H:mi:s.S</span></li>
-                <li><span>dd/MM/yyyy H:mi:s</span></li>
-                <li><span>dd/MM/yyyy H:mi</span></li>
-                <li><span>dd/MM/yyyy</span></li>
-                <li><span>dd.MM.yyyy H:mi:s.S</span></li>
-                <li><span>dd.MM.yyyy H:mi:s</span></li>
-                <li><span>dd.MM.yyyy H:mi</span></li>
-                <li><span>dd.MM.yyyy</span></li>
-                <li><span>yyyy.MM.dd H:mi:s.S</span></li>
-                <li><span>yyyy.MM.dd H:mi:s</span></li>
-                <li><span>yyyy.MM.dd H:mi</span></li>
-                <li><span>yyyy.MM.dd</span></li>
-            </ul>
+        <ul>
+            <li><span>dd/MM/yyyy</span></li>
+            <li><span>dd.MM.yyyy</span></li>
+            <li><span>yyyy.MM.dd</span></li>
+        </ul>
 
-            <table class="table table-bordered table-condensed">
-                <thead>
-                <tr><th>Field</th>
-                    <th>Description</th>
-                    <th>Example</th></tr>
-                </thead>
-                <tbody>
-                <tr><td>dd</td>
-                    <td>day in month (number)</td>
-                    <td>01, 1, 31, 08</td></tr>
+        <p>Time formats that can be read:</p>
+        <ul>
+            <li><span>H:mi:s.S</span></li>
+            <li><span>H:mi:s</span></li>
+            <li><span>H:mi</span></li>
+        </ul>
 
-                <tr><td>MM</td>
-                    <td>month (number)</td>
-                    <td>01, 1, 12, 6, 06</td></tr>
+        <p>Date/time values can be combined by putting a space between the date and time, e.g.:</p>
+        <ul>
+            <li><span>dd/MM/yyyy H:mi</span></li>
+            <li><span>dd.MM.yyyy H:mi:s.S</span></li>
+            <li><span>yyyy.MM.dd H:mi:s</span></li>
+        </ul>
 
-                <tr><td>yyyy</td>
-                    <td>year (4 digit number)</td>
-                    <td>1997, 2011</td></tr>
+        <table class="table table-bordered table-condensed">
+            <thead>
+            <tr><th>Field</th>
+                <th>Description</th>
+                <th>Example</th></tr>
+            </thead>
+            <tbody>
+            <tr><td>dd</td>
+                <td>day in month (number)</td>
+                <td>01, 1, 31, 08</td></tr>
 
-                <tr><td>H</td>
-                    <td>hour in day (0-23)</td>
-                    <td>00, 23, 16</td></tr>
+            <tr><td>MM</td>
+                <td>month (number)</td>
+                <td>01, 1, 12, 6, 06</td></tr>
 
-                <tr><td>mi</td>
-                    <td>minute in hour (0-60)</td>
-                    <td>00, 01, 1, 58</td></tr>
+            <tr><td>yyyy</td>
+                <td>year (4 digit number)</td>
+                <td>1997, 2011</td></tr>
 
-                <tr><td>s</td>
-                    <td>second in hour (0-60)</td>
-                    <td>00, 01, 1, 58</td></tr>
+            <tr><td>H</td>
+                <td>hour in day (0-23)</td>
+                <td>00, 23, 16</td></tr>
 
-                <tr><td>S</td>
-                    <td>millisecond</td>
-                    <td>00, 01234, 1234</td></tr>
-                </tbody>
-            </table>
-        <p>Note: OzTrack will look for the headings specified above to populate the date and time fields. The date fields above (including <tt>ACQUIISITIONTIME</tt>) can contain either
-           a date or a date and time stamp. The time stamp can be in a separate field to the date, but the date field must precede it (left to right). </p>
+            <tr><td>mi</td>
+                <td>minute in hour (0-60)</td>
+                <td>00, 01, 1, 58</td></tr>
+
+            <tr><td>s</td>
+                <td>second in hour (0-60)</td>
+                <td>00, 01, 1, 58</td></tr>
+
+            <tr><td>S</td>
+                <td>millisecond</td>
+                <td>00, 01234, 1234</td></tr>
+            </tbody>
+        </table>
+        <p>
+            Note: OzTrack will look for the headings specified above to populate the date and time fields.
+            The date fields above (including <tt>ACQUIISITIONTIME</tt>) can contain either a date or a date
+            and time stamp. The time stamp can be in a separate field to the date, but the date field must
+            precede it (left to right).
+        </p>
+
         <h3>Spatial coordinates</h3>
         <p>At this stage we only accept Lat/Longs in the WGS 84 coordinate system.</p>
         <p>Coordinate formats that can be read:</p>
@@ -193,16 +205,16 @@ Bert,12/08/2009 2:55:00,142.10619,-12.32208
             <li>Degrees minutes (e.g., 153 1.046)</li>
             <li>Degrees minutes seconds (e.g., 153 1 2.76)</li>
         </ul>
+
         <h3>Animal IDs</h3>
-            <p>
-                If there is an <tt>ID</tt> or <tt>ANIMALID</tt> field in the file,
-                OzTrack will assume that this field is the identifier of the animals.
-            </p>
-            <p>
-                If there is no <tt>ID</tt> or <tt>ANIMALID</tt> field in the file,
-                OzTrack will assume that the file pertains to a single animal and will automatically generate an ID for it.
-                You can add the details for the animal later.
-            </p>
+        <p>
+            If there is an <tt>ID</tt> or <tt>ANIMALID</tt> field in the file,
+            OzTrack will assume that this field is the identifier of the animals.
+        </p>
+        <p>
+            If there is no <tt>ID</tt> or <tt>ANIMALID</tt> field in the file,
+            OzTrack will assume that the file pertains to a single animal and will automatically generate an ID for it.
+            You can add the details for the animal later.
         </p>
     </jsp:body>
 </tags:page>

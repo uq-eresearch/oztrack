@@ -80,14 +80,8 @@ public class DataFileRunner {
         }
 
         try {
-            switch (nextDataFile.getProject().getProjectType()) {
-                case GPS:
-                    PositionFixFileLoader positionFixFileLoader = new PositionFixFileLoader(nextDataFile, dataFileDao, animalDao, positionFixDao, entityManager, jdbcAccess);
-                    positionFixFileLoader.process();
-                    break;
-                default:
-                    break;
-            }
+            PositionFixFileLoader positionFixFileLoader = new PositionFixFileLoader(nextDataFile, dataFileDao, animalDao, positionFixDao, entityManager, jdbcAccess);
+            positionFixFileLoader.process();
 
             EntityTransaction finishTransaction = entityManager.getTransaction();
             finishTransaction.begin();

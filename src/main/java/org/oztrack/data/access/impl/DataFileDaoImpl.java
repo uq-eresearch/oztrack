@@ -61,15 +61,6 @@ public class DataFileDaoImpl implements DataFileDao {
 
         String entityName = "RawPositionFix";
 
-        switch (dataFile.getProject().getProjectType()) {
-            case GPS:
-                entityName = "RawPositionFix";
-                break;
-            default:
-                break;
-        }
-
-
         Query query = em.createQuery("SELECT animalId from " + entityName);
         try {
 

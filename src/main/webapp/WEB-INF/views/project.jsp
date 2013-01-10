@@ -233,10 +233,6 @@
             <td><c:out value="${project.description}"/></td>
         </tr>
         <tr>
-            <th>Project Type:</th>
-            <td><c:out value="${project.projectType.displayName}"/></td>
-        </tr>
-        <tr>
             <th>Species:</th>
             <td>
                 <c:out value="${project.speciesCommonName}"/>

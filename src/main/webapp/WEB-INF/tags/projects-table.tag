@@ -24,7 +24,6 @@
             <tr>
                 <th>Title</th>
                 <th>Spatial Coverage</th>
-                <th>Project Type</th>
                 <th>Created Date</th>
             </tr>
         </thead>
@@ -33,7 +32,6 @@
             <tr>
                 <td><a href="${pageContext.request.contextPath}/projects/${project.id}"><c:out value="${project.title}"/></a></td>
                 <td><c:out value="${project.spatialCoverageDescr}"/></td>
-                <td><c:out value="${project.projectType.displayName}"/></td>
                 <td><fmt:formatDate value="${project.createDate}" type="date" dateStyle="long"/></td>
             </tr>
             </c:forEach>

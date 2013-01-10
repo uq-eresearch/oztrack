@@ -85,14 +85,8 @@ public class DataFileListController {
         @ModelAttribute(value="dataFile") DataFile dataFile
     ) {
         ArrayList <String> fileHeaders = new ArrayList <String>();
-        switch (project.getProjectType()) {
-            case GPS:
-                for (PositionFixFileHeader h : PositionFixFileHeader.values()) {
-                    fileHeaders.add(h.toString());
-                }
-                break;
-            default:
-                break;
+        for (PositionFixFileHeader h : PositionFixFileHeader.values()) {
+            fileHeaders.add(h.toString());
         }
         model.addAttribute("fileHeaders", fileHeaders);
         return "datafile-form";
