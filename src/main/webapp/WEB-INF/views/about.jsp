@@ -21,7 +21,6 @@
         <a href="${pageContext.request.contextPath}/">Home</a>
         &rsaquo; <span class="active">About</span>
     </jsp:attribute>
-    <jsp:attribute name="sidebar"/>
     <jsp:body>
         ${text}
         <h2>Software information</h2>

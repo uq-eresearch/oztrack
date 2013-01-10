@@ -21,9 +21,10 @@
     </jsp:attribute>
     <jsp:attribute name="sidebar">
         <c:if test="${currentUser != null}">
-        <div class="sidebarMenu">
-            <ul>
-                <li><a href="${pageContext.request.contextPath}/projects/new">Create Project</a></li>
+        <div class="sidebar-actions">
+            <div class="sidebar-actions-title">Manage Projects</div>
+            <ul class="icons sidebar-actions-list">
+                <li class="create"><a href="${pageContext.request.contextPath}/projects/new">Create new project</a></li>
             </ul>
         </div>
         </c:if>
@@ -42,10 +43,9 @@
                     Select a project to work with from the list below, or <a href="${pageContext.request.contextPath}/projects/new">create a new project</a>.
                 </p>
                 <table class="table table-bordered table-condensed">
-                    <col style="width: 250px;" />
+                    <col style="width: 320px;" />
+                    <col style="width: 230px;" />
                     <col style="width: 150px;" />
-                    <col style="width: 125px;" />
-                    <col style="width: 100px;" />
                     <thead>
                         <tr>
                             <th>Title</th>

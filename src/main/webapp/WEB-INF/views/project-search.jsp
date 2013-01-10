@@ -45,6 +45,7 @@
     </jsp:attribute>
     <jsp:attribute name="sidebar">
         <tags:project-menu project="${project}"/>
+        <tags:data-actions project="${project}"/>
     </jsp:attribute>
     <jsp:body>
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>

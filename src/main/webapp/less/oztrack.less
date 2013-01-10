@@ -406,11 +406,8 @@ a.carousel-control {
 /* sidebar */
 
 .sidebarMenu ul {
-  margin-left: 0px;
-  margin-right: 0px;
-  margin-top: 0px;
-  margin-bottom: 30px;
-  padding: 0px;
+  margin: 0 0 24px 0;
+  padding: 0;
 }
 
 .sidebarMenu ul li ul {
@@ -428,9 +425,7 @@ a.carousel-control {
   list-style-image: none;
   background-repeat: no-repeat;
   background-position: 0px 5px;
-  padding-left: 14px;
-  padding-top: 0.4em;
-  padding-bottom: 0.4em;
+  padding: 0.4em 12px;
   border-bottom: dashed 1px @grayLight;
 }
 
@@ -483,17 +478,22 @@ div.help {
 
 /* action boxes */
 
-div.actions {
-  margin-top: 1.5em;
-  padding: 0px 10px;
+.sidebar-actions {
+  padding: 0px 12px;
   background-color: #f6f6e6;
-  border: 1px solid transparent;
-  border-top: 1px solid #e6e6c0;
+  border: 1px solid #e6e6c0;
+  .border-radius(3px);
 }
 
-div.actions h2,
-div.actions ul {
+.sidebar-actions-title {
+  color: #EF9800;
+  font-weight: bold;
+  margin: 6px 0;
+}
+
+ul.icons.sidebar-actions-list {
   margin: 10px 0;
+  padding: 0;
 }
 
 ul.icons {
@@ -512,6 +512,10 @@ ul.icons li {
 
 ul.icons li.create {
   background-image: url('../img/page_white_add.png');
+}
+
+ul.icons li.view {
+  background-image: url('../img/page_white.png');
 }
 
 ul.icons li.edit {

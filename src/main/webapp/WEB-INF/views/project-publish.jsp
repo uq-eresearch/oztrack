@@ -64,6 +64,14 @@
     </jsp:attribute>
     <jsp:attribute name="sidebar">
         <tags:project-menu project="${project}"/>
+        <sec:authorize access="hasPermission(#project, 'write')">
+        <div class="sidebar-actions">
+            <div class="sidebar-actions-title">Manage Project</div>
+            <ul class="icons sidebar-actions-list">
+                <li class="edit"><a href="${pageContext.request.contextPath}/projects/${project.id}/edit">Edit project</a></li>
+            </ul>
+        </div>
+        </sec:authorize>
     </jsp:attribute>
     <jsp:body>
         <h1>Metadata Publication</h1>

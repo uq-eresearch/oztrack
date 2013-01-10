@@ -166,6 +166,25 @@
         <sec:authorize access="#project.global or hasPermission(#project, 'read')">
         <tags:project-menu project="${project}"/>
         </sec:authorize>
+
+        <sec:authorize access="hasPermission(#project, 'write')">
+        <div class="sidebar-actions">
+            <div class="sidebar-actions-title">Manage Project</div>
+            <ul class="icons sidebar-actions-list">
+                <li class="create"><a href="${pageContext.request.contextPath}/projects/${project.id}/datafiles/new">Upload data file</a></li>
+                <c:if test="${not empty project.dataFiles}">
+                <li class="edit"><a href="${pageContext.request.contextPath}/projects/${project.id}/cleanse">Edit tracks</a></li>
+                </c:if>
+                <li class="edit"><a href="${pageContext.request.contextPath}/projects/${project.id}/edit">Edit project</a></li>
+                <sec:authorize access="hasPermission(#project, 'manage')">
+                <li class="publish"><a href="${pageContext.request.contextPath}/projects/${project.id}/publish">Publish project</a></li>
+                <c:if test="${empty project.dataSpaceURI}">
+                <li class="delete"><a href="javascript:void(deleteEntity('${pageContext.request.contextPath}/projects/${project.id}', '${pageContext.request.contextPath}/projects', 'Are you sure you want to delete this project?'));">Delete project</a></li>
+                </c:if>
+                </sec:authorize>
+            </ul>
+        </div>
+        </sec:authorize>
     </jsp:attribute>
     <jsp:body>
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
@@ -398,29 +417,6 @@
         </form>
         <div id="projectUserError" class="alert alert-error" style="margin-top: -12px; display: none;"></div>
         </sec:authorize>
-        </sec:authorize>
-
-        <sec:authorize access="hasPermission(#project, 'write')">
-        <div class="actions">
-        <h2>Manage Project</h2>
-        <ul class="icons">
-            <li class="edit"><a href="${pageContext.request.contextPath}/projects/${project.id}/edit">Edit project</a></li>
-            <sec:authorize access="hasPermission(#project, 'manage')">
-            <c:if test="${empty project.dataSpaceURI}">
-            <li class="delete"><a href="javascript:void(deleteEntity('${pageContext.request.contextPath}/projects/${project.id}', '${pageContext.request.contextPath}/projects', 'Are you sure you want to delete this project?'));">Delete project</a></li>
-            </c:if>
-            <c:choose>
-                <c:when test ="${empty project.dataSpaceUpdateDate}">
-                    <c:set var="publishButtonText" value="Publish Metadata to UQ DataSpace"/>
-                </c:when>
-                <c:otherwise>
-                    <c:set var="publishButtonText" value="Update UQ DataSpace Collection Registry"/>
-                </c:otherwise>
-            </c:choose>
-            <li class="publish"><a href="${pageContext.request.contextPath}/projects/${project.id}/publish"><c:out value="${publishButtonText}"/></a></li>
-            </sec:authorize>
-        </ul>
-        </div>
         </sec:authorize>
     </jsp:body>
 </tags:page>

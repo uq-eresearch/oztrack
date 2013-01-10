@@ -16,10 +16,9 @@
         There are currently <c:out value="${fn:length(projects)}"/> ${adjective} projects in OzTrack.
     </p>
     <table class="table table-bordered table-condensed">
-        <col style="width: 250px;" />
+        <col style="width: 320px;" />
+        <col style="width: 230px;" />
         <col style="width: 150px;" />
-        <col style="width: 125px;" />
-        <col style="width: 100px;" />
         <thead>
             <tr>
                 <th>Title</th>

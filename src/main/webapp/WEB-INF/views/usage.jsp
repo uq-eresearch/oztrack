@@ -21,7 +21,6 @@
         &rsaquo; <a href="${pageContext.request.contextPath}/settings">Settings</a>
         &rsaquo; <span class="active">Usage Summary</span>
     </jsp:attribute>
-    <jsp:attribute name="sidebar"/>
     <jsp:body>
         <h1>Usage Summary</h1>
         <p>

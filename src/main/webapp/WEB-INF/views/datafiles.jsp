@@ -3,6 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <c:set var="dateFormatPattern" value="dd/MM/yyyy"/>
 <tags:page title="${project.title}: Data Files">
@@ -13,7 +14,7 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
-                $('#projectMenuUploads').addClass('active');
+                $('#projectMenuSearch').addClass('active');
             });
         </script>
     </jsp:attribute>
@@ -25,6 +26,7 @@
     </jsp:attribute>
     <jsp:attribute name="sidebar">
         <tags:project-menu project="${project}"/>
+        <tags:data-actions project="${project}"/>
     </jsp:attribute>
     <jsp:body>
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
@@ -34,7 +36,7 @@
             <c:out value="${fn:length(dataFileList)}"/> data file(s) found.
         </p>
         <p>
-            <a class="btn btn-primary" href="${pageContext.request.contextPath}/projects/${project.id}/datafiles/new" >Add a data file</a>
+            <a class="btn btn-primary" href="${pageContext.request.contextPath}/projects/${project.id}/datafiles/new" >Upload data file</a>
             <a class="btn" id="pageRefresh" href="javascript:location.reload(true)">Refresh</a>
         </p>
         <c:if test="${not empty dataFileList}">

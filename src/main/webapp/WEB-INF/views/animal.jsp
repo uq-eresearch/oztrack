@@ -23,6 +23,17 @@
     </jsp:attribute>
     <jsp:attribute name="sidebar">
         <tags:project-menu project="${project}"/>
+        <sec:authorize access="hasPermission(#animal.project, 'write')">
+        <div class="sidebar-actions">
+            <div class="sidebar-actions-title">Manage Animal</div>
+            <ul class="icons sidebar-actions-list">
+                <li class="edit"><a href="${pageContext.request.contextPath}/animals/${animal.id}/edit">Edit animal</a></li>
+                <c:if test="${empty animal.positionFixes}">
+                <li class="delete"><a href="javascript:void(deleteEntity('${pageContext.request.contextPath}/animals/${animal.id}', '${pageContext.request.contextPath}/projects/${project.id}/animals', 'Are you sure you want to delete this animal?'));">Delete animal</a></li>
+                </c:if>
+            </ul>
+        </div>
+        </sec:authorize>
     </jsp:attribute>
     <jsp:body>
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
@@ -57,17 +68,6 @@
             ${animal.createDescription}
         </p>
         </c:if>
-        </sec:authorize>
-        <sec:authorize access="hasPermission(#animal.project, 'write')">
-        <div class="actions">
-        <h2>Manage Animal</h2>
-        <ul class="icons">
-            <li class="edit"><a href="${pageContext.request.contextPath}/animals/${animal.id}/edit">Edit animal</a></li>
-            <c:if test="${empty animal.positionFixes}">
-            <li class="delete"><a href="javascript:void(deleteEntity('${pageContext.request.contextPath}/animals/${animal.id}', '${pageContext.request.contextPath}/projects/${project.id}/animals', 'Are you sure you want to delete this animal?'));">Delete animal</a></li>
-            </c:if>
-        </ul>
-        </div>
         </sec:authorize>
     </jsp:body>
 </tags:page>

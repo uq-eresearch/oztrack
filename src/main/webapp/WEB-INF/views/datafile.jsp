@@ -14,7 +14,7 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
-                $('#projectMenuUploads').addClass('active');
+                $('#projectMenuSearch').addClass('active');
             });
         </script>
     </jsp:attribute>
@@ -27,6 +27,14 @@
     </jsp:attribute>
     <jsp:attribute name="sidebar">
         <tags:project-menu project="${dataFile.project}"/>
+        <sec:authorize access="hasPermission(#dataFile.project, 'write')">
+        <div class="sidebar-actions">
+            <div class="sidebar-actions-title">Manage Data File</div>
+            <ul class="icons sidebar-actions-list">
+                <li class="delete"><a href="javascript:void(deleteEntity('${pageContext.request.contextPath}/datafiles/${dataFile.id}', '${pageContext.request.contextPath}/projects/${dataFile.project.id}/datafiles', 'Are you sure you want to delete this data file?'));">Delete data file</a></li>
+            </ul>
+        </div>
+        </sec:authorize>
     </jsp:attribute>
     <jsp:body>
         <h1 id="projectTitle"><c:out value="${dataFile.project.title}"/></h1>
@@ -67,14 +75,5 @@
             <td><c:out value="${dataFile.statusMessage}"/></td>
         </tr>
         </table>
-
-        <sec:authorize access="hasPermission(#dataFile.project, 'write')">
-        <div class="actions">
-        <h2>Manage Data File</h2>
-        <ul class="icons">
-            <li class="delete"><a href="javascript:void(deleteEntity('${pageContext.request.contextPath}/datafiles/${dataFile.id}', '${pageContext.request.contextPath}/projects/${dataFile.project.id}/datafiles', 'Are you sure you want to delete this data file?'));">Delete data file</a></li>
-        </ul>
-        </div>
-        </sec:authorize>
     </jsp:body>
 </tags:page>

@@ -20,7 +20,7 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
-                $('#projectMenuUploads').addClass('active');
+                $('#projectMenuSearch').addClass('active');
             });
         </script>
     </jsp:attribute>
@@ -33,6 +33,7 @@
     </jsp:attribute>
     <jsp:attribute name="sidebar">
         <tags:project-menu project="${project}"/>
+        <tags:data-actions project="${project}"/>
     </jsp:attribute>
     <jsp:body>
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
@@ -44,7 +45,7 @@
 
         <form:form cssClass="form-horizontal form-bordered" action="/projects/${project.id}/datafiles" commandName="dataFile" method="POST" enctype="multipart/form-data">
             <fieldset>
-                <div class="legend">Add a Data File</div>
+                <div class="legend">Data File</div>
                 <div class="control-group">
                     <label class="control-label" for="fileDescription">File Description</label>
                     <div class="controls">
@@ -83,7 +84,7 @@
                 </div>
             </fieldset>
             <div class="form-actions">
-                <input class="btn btn-primary" type="submit" value="Add File"/>
+                <input class="btn btn-primary" type="submit" value="Upload File"/>
                 <a class="btn" href="${pageContext.request.contextPath}/projects/${project.id}/datafiles">Cancel</a>
             </div>
         </form:form>

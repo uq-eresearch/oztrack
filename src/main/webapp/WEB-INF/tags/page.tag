@@ -81,11 +81,11 @@
     <jsp:invoke var="sidebarContent" fragment="sidebar"/>
     <div class="row${fluid ? '-fluid' : ''}">
     <c:if test="${!empty sidebarContent}">
-    <div id="left-menu" class="span2">
+    <div id="left-menu" class="span3">
         ${sidebarContent}
     </div>
     </c:if>
-    <div id="content" class="${empty sidebarContent ? 'span12' : 'span10'}">
+    <div id="content" class="${empty sidebarContent ? 'span12' : 'span9'}">
         <jsp:doBody/>
         <div style="clear:both;"></div>
     </div> <!-- content -->

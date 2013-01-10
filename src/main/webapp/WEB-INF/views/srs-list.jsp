@@ -20,6 +20,14 @@
         &rsaquo; <a href="${pageContext.request.contextPath}/settings">Settings</a>
         &rsaquo; <span class="active">Spatial Reference Systems</span>
     </jsp:attribute>
+    <jsp:attribute name="sidebar">
+        <div class="sidebar-actions">
+            <div class="sidebar-actions-title">Manage SRSs</div>
+            <ul class="icons sidebar-actions-list">
+                <li class="create"><a href="${pageContext.request.contextPath}/settings/srs/new">Create new SRS</a></li>
+            </ul>
+        </div>
+    </jsp:attribute>
     <jsp:body>
         <h1>Spatial Reference Systems</h1>
         <table class="table table-bordered">
@@ -57,11 +65,5 @@
                 </c:forEach>
             </tbody>
         </table>
-        <div class="actions">
-        <h2>Manage Spatial Reference Systems</h2>
-        <ul class="icons">
-            <li class="create"><a href="${pageContext.request.contextPath}/settings/srs/new">Create new SRS</a></li>
-        </ul>
-        </div>
     </jsp:body>
 </tags:page>

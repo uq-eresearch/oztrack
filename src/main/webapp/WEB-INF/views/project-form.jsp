@@ -177,13 +177,6 @@
         </c:otherwise>
         </c:choose>
     </jsp:attribute>
-    <jsp:attribute name="sidebar">
-        <div class="sidebarMenu">
-            <ul>
-                <li><a href="${pageContext.request.contextPath}/projects">Project List</a></li>
-            </ul>
-        </div>
-    </jsp:attribute>
     <jsp:body>
         <c:choose>
         <c:when test="${project.id != null}">
