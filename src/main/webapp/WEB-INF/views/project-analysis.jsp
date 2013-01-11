@@ -191,7 +191,8 @@
                 <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
                 $('input[id=select-animal-${animal.id}]').change(function() {
                     analysisMap.toggleAllAnimalFeatures("${animal.id}", this.checked);
-                    $('#selectAnimalConfirmationBox').fadeIn();
+                    $('#selectAnimalConfirmationBox').show();
+                    repositionSelectAnimalConfirmationBox();
                 });
                 </c:forEach>
                 $('#selectAnimalConfirmationLink').click(function(e) {
@@ -308,6 +309,7 @@
                 </c:forEach>
                 $(window).resize(onResize);
                 $(window).resize(repositionSelectAnimalConfirmationBox);
+                $('#animalPanel').scroll(repositionSelectAnimalConfirmationBox);
                 repositionSelectAnimalConfirmationBox();
             });
             function addAnalysis(layerName, analysisUrl, analysisCreateDate, saved) {
@@ -561,8 +563,8 @@
                     </div>
                 </c:forEach>
                 
-                <div id="selectAnimalConfirmationBox" style="display: none; position: fixed; background-color: #263F00; color: white; opacity: 0.80; padding: 10px; border-radius: 6px 6px 0 0;">
-                    <a id="selectAnimalConfirmationLink" href="javascript:void(0);" style="color: white; font-weight: bold;">Click here to finish selecting animals</a>
+                <div id="selectAnimalConfirmationBox" style="display: none; position: absolute; background-color: #263F00; color: white; opacity: 0.80; padding: 10px; border-radius: 6px 6px 0 0;">
+                    <a id="selectAnimalConfirmationLink" href="javascript:void(0);" style="color: white; font-weight: bold;">Click to finish selecting animals</a>
                 </div>
             </div>
 
