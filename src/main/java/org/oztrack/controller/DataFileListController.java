@@ -67,7 +67,7 @@ public class DataFileListController {
     }
 
     @RequestMapping(value="/projects/{project_id}/datafiles", method=RequestMethod.GET)
-    @PreAuthorize("hasPermission(#project, 'read')")
+    @PreAuthorize("hasPermission(#project, 'write')")
     public String handleDataFilesRequest(
         Model model,
         @ModelAttribute(value="project") Project project

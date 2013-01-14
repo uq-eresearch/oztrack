@@ -128,7 +128,7 @@
             <col style="width: 150px;" />
             <col style="width: 70px;" />
             <col style="width: 70px;" />
-            <sec:authorize access="hasPermission(#project, 'read')">
+            <sec:authorize access="hasPermission(#project, 'write')">
             <col style="width: 70px;" />
             </sec:authorize>
             <thead>
@@ -138,7 +138,7 @@
                     <th>Animal Name</th>
                     <th>Latitude</th>
                     <th>Longitude</th>
-                    <sec:authorize access="hasPermission(#project, 'read')">
+                    <sec:authorize access="hasPermission(#project, 'write')">
                     <th>Uploaded</th>
                     </sec:authorize>
                 </tr>
@@ -151,7 +151,7 @@
                     <td><a href="${pageContext.request.contextPath}/animals/${detection.animal.id}/edit"><c:out value="${detection.animal.animalName}"/></a></td>
                     <td><c:out value="${detection.latitude}"/></td>
                     <td><c:out value="${detection.longitude}"/></td>
-                    <sec:authorize access="hasPermission(#project, 'read')">
+                    <sec:authorize access="hasPermission(#project, 'write')">
                     <td>
                         <a href="${pageContext.request.contextPath}/datafiles/${detection.dataFile.id}"
                         ><fmt:formatDate pattern="${dateFormatPattern}" value="${detection.dataFile.createDate}"/></a>

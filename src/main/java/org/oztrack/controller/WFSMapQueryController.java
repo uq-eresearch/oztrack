@@ -109,7 +109,7 @@ public class WFSMapQueryController {
     }
 
     @RequestMapping(value="/mapQueryWFS", method=RequestMethod.POST)
-    @PreAuthorize("#searchQuery.project.global or hasPermission(#searchQuery.project, 'read')")
+    @PreAuthorize("hasPermission(#searchQuery.project, 'read')")
     public void handleQueryWFS(
         @ModelAttribute(value="searchQuery") SearchQuery searchQuery,
         @RequestParam(value="queryType", required=true) MapLayerType mapLayerType,

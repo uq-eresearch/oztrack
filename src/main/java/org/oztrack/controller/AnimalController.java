@@ -44,7 +44,7 @@ public class AnimalController {
     }
 
     @RequestMapping(value="/animals/{id}", method=RequestMethod.GET)
-    @PreAuthorize("#animal.project.global or hasPermission(#animal.project, 'read')")
+    @PreAuthorize("hasPermission(#animal.project, 'read')")
     public String getView(Model model, @ModelAttribute("animal") Animal animal) {
         model.addAttribute("project", animal.getProject());
         return "animal";

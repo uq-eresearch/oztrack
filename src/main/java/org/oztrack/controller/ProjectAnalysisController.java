@@ -54,7 +54,7 @@ public class ProjectAnalysisController {
     }
 
     @RequestMapping(value="/projects/{id}/analysis", method=RequestMethod.GET)
-    @PreAuthorize("#project.global or hasPermission(#project, 'read')")
+    @PreAuthorize("hasPermission(#project, 'read')")
     public String getView(
         Authentication authentication,
         HttpServletRequest request,

@@ -90,7 +90,7 @@ public class ProjectImageController {
     }
 
     @RequestMapping(value="/projects/{id}/image", method=RequestMethod.GET, produces="image/png")
-    @PreAuthorize("#project.global or hasPermission(#project, 'read')")
+    @PreAuthorize("hasPermission(#project, 'read')")
     public void getView(
         @ModelAttribute(value="project") Project project,
         @RequestParam(value="mapLayerType", required=false) List<String> mapLayerTypeStrings,

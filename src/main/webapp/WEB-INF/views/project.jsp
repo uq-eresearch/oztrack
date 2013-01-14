@@ -163,28 +163,8 @@
         &rsaquo; <span class="active">${project.title}</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
-        <sec:authorize access="#project.global or hasPermission(#project, 'read')">
         <tags:project-menu project="${project}"/>
-        </sec:authorize>
-
-        <sec:authorize access="hasPermission(#project, 'write')">
-        <div class="sidebar-actions">
-            <div class="sidebar-actions-title">Manage Project</div>
-            <ul class="icons sidebar-actions-list">
-                <li class="create"><a href="${pageContext.request.contextPath}/projects/${project.id}/datafiles/new">Upload data file</a></li>
-                <c:if test="${not empty project.dataFiles}">
-                <li class="edit"><a href="${pageContext.request.contextPath}/projects/${project.id}/cleanse">Edit tracks</a></li>
-                </c:if>
-                <li class="edit"><a href="${pageContext.request.contextPath}/projects/${project.id}/edit">Edit project</a></li>
-                <sec:authorize access="hasPermission(#project, 'manage')">
-                <li class="publish"><a href="${pageContext.request.contextPath}/projects/${project.id}/publish">Publish project</a></li>
-                <c:if test="${empty project.dataSpaceURI}">
-                <li class="delete"><a href="javascript:void(deleteEntity('${pageContext.request.contextPath}/projects/${project.id}', '${pageContext.request.contextPath}/projects', 'Are you sure you want to delete this project?'));">Delete project</a></li>
-                </c:if>
-                </sec:authorize>
-            </ul>
-        </div>
-        </sec:authorize>
+        <tags:project-actions project="${project}"/>
     </jsp:attribute>
     <jsp:body>
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
@@ -193,7 +173,7 @@
         <div id="coverageMap"></div>
         </c:if>
 
-        <sec:authorize access="#project.global or hasPermission(#project, 'read')">
+        <sec:authorize access="hasPermission(#project, 'read')">
         <div id="projectData">
         <h2 style="margin-top: 0;">Data Summary</h2>
         <c:choose>
@@ -305,7 +285,6 @@
         </tr>
         </c:if>
         
-        <sec:authorize access="!#project.global or hasPermission(#project, 'read')">
         <tr>
             <th>Access Rights:</th>
             <td>
@@ -319,7 +298,6 @@
             </c:choose>
             </td>
         </tr>
-        </sec:authorize>
 
         <c:if test="${dataLicencingEnabled}">
         <c:if test="${project.global and (project.dataLicence != null)}">
@@ -370,7 +348,7 @@
 
         <div style="clear: both;"></div>
 
-        <sec:authorize access="hasPermission(#project, 'read')">
+        <sec:authorize access="hasPermission(#project, 'manage')">
         <h2>User Roles</h2>
         <table style="width: 100%; margin: 0;">
         <c:forEach items="${roles}" var="role">
@@ -398,7 +376,6 @@
             </c:forEach>
         </tr>
         </table>
-        <sec:authorize access="hasPermission(#project, 'manage')">
         <form
             onsubmit="return false;"
             class="form-inline"
@@ -416,7 +393,6 @@
             <button class="btn" id="addProjectUserButton" onclick="addProjectUser();">Add</button>
         </form>
         <div id="projectUserError" class="alert alert-error" style="margin-top: -12px; display: none;"></div>
-        </sec:authorize>
         </sec:authorize>
     </jsp:body>
 </tags:page>

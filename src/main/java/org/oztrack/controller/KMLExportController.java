@@ -58,7 +58,7 @@ public class KMLExportController {
     }
 
     @RequestMapping(value="/exportKML", method=RequestMethod.GET)
-    @PreAuthorize("#project.global or hasPermission(#project, 'read')")
+    @PreAuthorize("hasPermission(#project, 'read')")
     public View handleRequest(
         @ModelAttribute(value="project") Project project,
         @ModelAttribute(value="animal") Animal animal

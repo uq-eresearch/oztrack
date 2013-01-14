@@ -22,11 +22,11 @@ public class OzTrackPermissionEvaluator implements PermissionEvaluator {
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
         User currentUser = getAuthenticatedUser(authentication);
-        if (currentUser == null) {
-            return false;
-        }
-        if ((currentUser.getAdmin() != null) && currentUser.getAdmin()) {
+        if ((currentUser != null) && (currentUser.getAdmin() != null) && currentUser.getAdmin()) {
             return true;
+        }
+        if (targetDomainObject == null) {
+            return false;
         }
         if (targetDomainObject instanceof Project) {
             return hasProjectPermission(currentUser, (Project) targetDomainObject, permission);
@@ -46,13 +46,20 @@ public class OzTrackPermissionEvaluator implements PermissionEvaluator {
     }
 
     private boolean hasProjectPermission(User currentUser, Project project, Object permission) {
+        if (permission.equals("read") && project.isGlobal()) {
+            return true;
+        }
+        if (currentUser == null) {
+            return false;
+        }
         List<ProjectUser> projectUsers = project.getProjectUsers();
         for (ProjectUser projectUser : projectUsers) {
             if (!projectUser.getUser().equals(currentUser)) {
                 continue;
             }
             if (permission.equals("read")) {
-                if ((projectUser.getRole() == Role.READER) ||
+                if (
+                    (projectUser.getRole() == Role.READER) ||
                     (projectUser.getRole() == Role.WRITER) ||
                     (projectUser.getRole() == Role.MANAGER)
                 ) {

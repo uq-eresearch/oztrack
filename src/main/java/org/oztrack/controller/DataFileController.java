@@ -35,7 +35,7 @@ public class DataFileController {
     }
 
     @RequestMapping(value="/datafiles/{id}", method=RequestMethod.GET)
-    @PreAuthorize("hasPermission(#dataFile.project, 'read')")
+    @PreAuthorize("hasPermission(#dataFile.project, 'write')")
     public String getView(Model model, @ModelAttribute(value="dataFile") DataFile dataFile) throws Exception {
         model.addAttribute("dataFileDetectionCount", dataFileDao.getDetectionCount(dataFile, false));
         return "datafile";

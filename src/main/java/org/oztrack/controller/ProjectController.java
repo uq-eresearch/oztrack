@@ -101,7 +101,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value="/projects/{id}/animals", method=RequestMethod.GET)
-    @PreAuthorize("#project.global or hasPermission(#project, 'read')")
+    @PreAuthorize("hasPermission(#project, 'read')")
     public String getAnimalsView(Model model, @ModelAttribute(value="project") Project project) {
         return getView(model, project, "project-animals");
     }

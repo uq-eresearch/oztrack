@@ -76,7 +76,7 @@ public class SearchController {
     }
 
     @RequestMapping(value="/projects/{id}/search", method=RequestMethod.POST)
-    @PreAuthorize("#project.global or hasPermission(#project, 'read')")
+    @PreAuthorize("hasPermission(#project, 'read')")
     public String onSubmit(
         HttpSession session,
         Model model,
@@ -93,7 +93,7 @@ public class SearchController {
     }
 
     @RequestMapping(value="/projects/{id}/search", method=RequestMethod.GET)
-    @PreAuthorize("#project.global or hasPermission(#project, 'read')")
+    @PreAuthorize("hasPermission(#project, 'read')")
     public String showForm(
         Model model,
         @ModelAttribute(value="project") Project project,
@@ -104,7 +104,7 @@ public class SearchController {
     }
 
     @RequestMapping(value="/projects/{id}/export", method=RequestMethod.GET)
-    @PreAuthorize("#searchQuery.project.global or hasPermission(#searchQuery.project, 'read')")
+    @PreAuthorize("hasPermission(#searchQuery.project, 'read')")
     public View handleRequest(@ModelAttribute(value="searchQuery") SearchQuery searchQuery, Model model) throws Exception {
         List<PositionFix> positionFixes = positionFixDao.getProjectPositionFixList(searchQuery);
         return new SearchQueryXLSView(searchQuery.getProject(), positionFixes);
