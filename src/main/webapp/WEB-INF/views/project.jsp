@@ -289,8 +289,13 @@
             <th>Access Rights:</th>
             <td>
             <c:choose>
-            <c:when test="${project.isGlobal}">
+            <c:when test="${project.access == 'OPEN'}">
                 The data in the project are available in OzTrack for the public to use.
+            </c:when>
+            <c:when test="${project.access == 'EMBARGO'}">
+                The data in the project are covered by an embargo period,
+                ending <fmt:formatDate pattern="${dateFormatPattern}" value="${project.embargoDate}"/>,
+                and are currently only available to users on the OzTrack system whom have been granted access.
             </c:when>
             <c:otherwise>
                 The data in this project are only available to users on the OzTrack system whom have been granted access.
@@ -300,7 +305,7 @@
         </tr>
 
         <c:if test="${dataLicencingEnabled}">
-        <c:if test="${project.global and (project.dataLicence != null)}">
+        <c:if test="${(project.access == 'OPEN') and (project.dataLicence != null)}">
         <tr>
             <th>Data Licence:</th>
             <td>

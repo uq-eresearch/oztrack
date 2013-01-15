@@ -67,8 +67,10 @@
             </c:choose>
         </c:if>
         <h2>Open Access Projects</h2>
-        <tags:projects-table projects="${publicProjects}" adjective="open access"/>
-        <h2>Restricted Access Projects</h2>
-        <tags:projects-table projects="${privateProjects}" adjective="restricted access"/>
+        <tags:projects-table projects="${openAccessProjects}" adjective="open access"/>
+        <h2>Delayed Open Access Projects</h2>
+        <tags:projects-table projects="${embargoAccessProjects}" adjective="delayed open access"/>
+        <h2>Closed Access Projects</h2>
+        <tags:projects-table projects="${closedAccessProjects}" adjective="closed access"/>
     </jsp:body>
 </tags:page>

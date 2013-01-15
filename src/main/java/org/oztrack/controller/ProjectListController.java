@@ -1,9 +1,13 @@
 package org.oztrack.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
@@ -13,8 +17,10 @@ import org.oztrack.data.access.SrsDao;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.User;
+import org.oztrack.data.model.types.ProjectAccess;
 import org.oztrack.validator.ProjectFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -54,37 +60,49 @@ public class ProjectListController {
             "srsIdentifier",
             "publicationTitle",
             "publicationUrl",
-            "isGlobal",
+            "access",
+            "embargoDate",
             "rightsStatement"
         );
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd"), true));
     }
 
-    @InitBinder("publicProjects")
-    public void initPublicProjectsBinder(WebDataBinder binder) {
+    @InitBinder("openAccessProjects")
+    public void initOpenAccessProjectsBinder(WebDataBinder binder) {
         binder.setAllowedFields();
     }
 
-    @InitBinder("privateProjects")
-    public void initPrivateProjectsBinder(WebDataBinder binder) {
+    @InitBinder("embargoAccessProjects")
+    public void initEmbargoAccessProjectsBinder(WebDataBinder binder) {
+        binder.setAllowedFields();
+    }
+
+    @InitBinder("closedAccessProjects")
+    public void initClosedAccessProjectsBinder(WebDataBinder binder) {
         binder.setAllowedFields();
     }
 
     @ModelAttribute("project")
     public Project getProject() {
         Project project = new Project();
-        project.setIsGlobal(true);
+        project.setAccess(ProjectAccess.OPEN);
         project.setSrsIdentifier("EPSG:3577");
         return project;
     }
 
-    @ModelAttribute("publicProjects")
-    public List<Project> getPublicProjects() {
-        return projectDao.getProjectsByPublished(true);
+    @ModelAttribute("openAccessProjects")
+    public List<Project> getOpenAccessProjects() {
+        return projectDao.getProjectsByAccess(ProjectAccess.OPEN);
     }
 
-    @ModelAttribute("privateProjects")
-    public List<Project> getPrivateProjects() {
-        return projectDao.getProjectsByPublished(false);
+    @ModelAttribute("embargoAccessProjects")
+    public List<Project> getEmbargoAccessProjects() {
+        return projectDao.getProjectsByAccess(ProjectAccess.EMBARGO);
+    }
+
+    @ModelAttribute("closedAccessProjects")
+    public List<Project> getClosedAccessProjects() {
+        return projectDao.getProjectsByAccess(ProjectAccess.CLOSED);
     }
 
     @RequestMapping(value="/projects", method=RequestMethod.GET)
@@ -97,11 +115,24 @@ public class ProjectListController {
     @PreAuthorize("isAuthenticated()")
     public String getNewView(Model model, @ModelAttribute(value="project") Project project) {
         model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
+        setEmbargoDateAttributes(model);
         if (OzTrackApplication.getApplicationContext().isDataLicencingEnabled()) {
             model.addAttribute("dataLicences", dataLicenceDao.getAll());
         }
         model.addAttribute("currentYear", (new GregorianCalendar()).get(Calendar.YEAR));
         return "project-form";
+    }
+
+    private void setEmbargoDateAttributes(Model model) {
+        Date truncatedCreateDate = DateUtils.truncate(new Date(), Calendar.DATE);
+        LinkedHashMap<String, Date> presetEmbargoDates = new LinkedHashMap<String, Date>();
+        presetEmbargoDates.put("1 year", DateUtils.addYears(truncatedCreateDate, 1));
+        presetEmbargoDates.put("2 years", DateUtils.addYears(truncatedCreateDate, 2));
+        presetEmbargoDates.put("3 years", DateUtils.addYears(truncatedCreateDate, 3));
+        model.addAttribute("presetEmbargoDates", presetEmbargoDates);
+        model.addAttribute("otherEmbargoDate", null);
+        model.addAttribute("minEmbargoDate", DateUtils.truncate(new Date(), Calendar.DATE));
+        model.addAttribute("maxEmbargoDate", DateUtils.addYears(truncatedCreateDate, 3));
     }
 
     @RequestMapping(value="/projects", method=RequestMethod.POST)
@@ -113,7 +144,7 @@ public class ProjectListController {
         BindingResult bindingResult,
         @RequestParam(value="dataLicenceIdentifier", required=false) String dataLicenceIdentifier
     ) throws Exception {
-        if (OzTrackApplication.getApplicationContext().isDataLicencingEnabled() && project.isGlobal() && (dataLicenceIdentifier != null)) {
+        if (OzTrackApplication.getApplicationContext().isDataLicencingEnabled() && (project.getAccess() != ProjectAccess.CLOSED) && (dataLicenceIdentifier != null)) {
             project.setDataLicence(dataLicenceDao.getByIdentifier(dataLicenceIdentifier));
         }
         else {
@@ -122,6 +153,7 @@ public class ProjectListController {
         new ProjectFormValidator().validate(project, bindingResult);
         if (bindingResult.hasErrors()) {
             model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
+            setEmbargoDateAttributes(model);
             if (OzTrackApplication.getApplicationContext().isDataLicencingEnabled()) {
                 model.addAttribute("dataLicences", dataLicenceDao.getAll());
             }

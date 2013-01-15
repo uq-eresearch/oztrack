@@ -146,15 +146,17 @@ function buildPopup(f) {
         '    <div class="home-popup-attr-name">Data access:</div>\n' +
         '    <div class="home-popup-attr-value">' +
         (
-            (f.attributes.global == 'true')
+            (f.attributes.access == 'OPEN')
             ? '<span style="font-weight: bold; color: green;">Open Access</span>'
-            : '<span style="font-weight: bold; color: red;">Restricted Access</span>'
+            : (f.attributes.access == 'EMBARGO')
+            ? '<span style="font-weight: bold; color: orange;">Delayed Open Access</span>'
+            : '<span style="font-weight: bold; color: red;">Closed Access</span>'
         ) +
         '    </div>\n' +
         '    <div style="margin-top: 1em;">\n' +
         '        <a href="projects/' + f.attributes.projectId + '">View details</a>\n' +
         (
-            (f.attributes.global == 'true')
+            (f.attributes.access == 'OPEN')
             ? '        | <a href="projects/' + f.attributes.projectId + '/analysis">View tracks</a>\n'
             : ''
         ) +

@@ -5,6 +5,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
+<c:set var="isoDateFormatPattern" value="yyyy-MM-dd"/>
+<c:set var="dateFormatPattern" value="dd/MM/yyyy"/>
 <c:set var="dateTimeFormatPattern" value="dd/MM/yyyy HH:mm:ss"/>
 <c:set var="dataLicencingEnabled"><%= OzTrackApplication.getApplicationContext().isDataLicencingEnabled() %></c:set>
 <tags:page>
@@ -160,6 +162,11 @@
                 <c:if test="${dataLicencingEnabled}">
                 $('.dataLicenceCheckbox').change(updateDataLicenceFromLicenceSelector);
                 updateLicenceSelectorFromDataLicence();
+                $('#otherEmbargoDateInput').datepicker({
+                    altField: "#otherEmbargoDate",
+                    minDate: new Date(${minEmbargoDate.time}),
+                    maxDate: new Date(${maxEmbargoDate.time})
+                });
                 </c:if>
             });
         </script>
@@ -346,16 +353,55 @@
                 <div class="control-group">
                     <label class="control-label" for="publicationUrl">Access Rights</label>
                     <div class="controls">
-                        <label for="isGlobalTrue" class="radio">
-                            <form:radiobutton id="isGlobalTrue" path="isGlobal" value="true" onclick="$('#data-licences-control-group').fadeIn();"/>
+                        <label for="accessOpen" class="radio">
+                            <form:radiobutton id="accessOpen" path="access" value="OPEN" onclick="
+                                $('#embargo-date-control-group').fadeOut();
+                                $('#data-licences-control-group').fadeIn();
+                            "/>
                             <span style="font-weight: bold; color: green;">Open Access</span>
                             <div style="margin: 0.5em 0;">
                                 Data in this project will be made publicly available via OzTrack.
                             </div>
                         </label>
-                        <label for="isGlobalFalse" class="radio">
-                            <form:radiobutton id="isGlobalFalse" path="isGlobal" value="false" onclick="$('#data-licences-control-group').fadeOut();"/>
-                            <span style="font-weight: bold; color: red;">Restricted Access</span>
+                        <label for="accessEmbargo" class="radio">
+                            <form:radiobutton id="accessEmbargo" path="access" value="EMBARGO" onclick="
+                                $('#embargo-date-control-group').fadeIn();
+                                $('#data-licences-control-group').fadeIn();
+                            "/>
+                            <span style="font-weight: bold; color: orange;">Delayed Open Access</span>
+                            <div style="margin: 0.5em 0;">
+                                Data in this project will be made publicly available via OzTrack after an embargo period.
+                                However, note that metadata including title, description, location, and animal species
+                                are made publicly available for all projects in OzTrack.
+                            </div>
+                        </label>
+                        <div id="embargo-date-control-group" style="margin: 10px 20px 20px 30px;<c:if test="${project.access != 'EMBARGO'}"> display: none;</c:if>">
+                            <c:forEach items="${presetEmbargoDates}" var="presetEmbargoDate" varStatus="status">
+                            <label for="presetEmbargoDate${status.index}" class="radio">
+                                <form:radiobutton id="presetEmbargoDate${status.index}" path="embargoDate">
+                                    <jsp:attribute name="value"><fmt:formatDate pattern="${isoDateFormatPattern}" value="${presetEmbargoDate.value}"/></jsp:attribute>
+                                </form:radiobutton>
+                                <span>${presetEmbargoDate.key}</span>
+                                <span style="color: #666; font-size: 11px;">(expires <fmt:formatDate pattern="${dateFormatPattern}" value="${presetEmbargoDate.value}"/>)</span>
+                            </label>
+                            </c:forEach>
+                            <label for="otherEmbargoDate" class="radio">
+                                <form:radiobutton id="otherEmbargoDate" path="embargoDate" onclick="$('#otherEmbargoDateInput').datepicker('show');">
+                                    <jsp:attribute name="value"><fmt:formatDate pattern="${isoDateFormatPattern}" value="${otherEmbargoDate}"/></jsp:attribute>
+                                </form:radiobutton>
+                                <span>Other date</span>
+                                <input id="otherEmbargoDateInput" class="input-small datepicker" type="text"
+                                    value="<fmt:formatDate pattern="${dateFormatPattern}" value="${otherEmbargoDate}"/>"
+                                    onclick="$('#otherEmbargoDate').click(); return false;"/>
+                            </label>
+                            <form:errors path="embargoDate" element="div" cssClass="help-block formErrors"/>
+                        </div>
+                        <label for="accessClosed" class="radio">
+                            <form:radiobutton id="accessClosed" path="access" value="CLOSED" onclick="
+                                $('#embargo-date-control-group').fadeOut();
+                                $('#data-licences-control-group').fadeOut();
+                            "/>
+                            <span style="font-weight: bold; color: red;">Closed Access</span>
                             <div style="margin: 0.5em 0;">
                                 Data in this project will only be accessible to you.
                                 However, note that metadata including title, description, location, and animal species
@@ -365,7 +411,7 @@
                     </div>
                 </div>
                 <c:if test="${dataLicencingEnabled}">
-                <div class="control-group" id="data-licences-control-group" style="<c:if test="${!project.global}">display: none;</c:if>">
+                <div class="control-group" id="data-licences-control-group" style="<c:if test="${project.access == 'CLOSED'}">display: none;</c:if>">
                     <label class="control-label" for="dataLicenceCopyright">Data Licence</label>
                     <div class="controls">
                         <div style="margin: 0.5em 0 1em 0;">

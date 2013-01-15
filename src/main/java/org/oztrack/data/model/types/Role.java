@@ -17,7 +17,7 @@ public enum Role {
         "reader",
         "Reader",
         "Readers",
-        "Readers can access data in restricted projects."
+        "Readers can access data in closed projects."
     );
 
     private String identifier;

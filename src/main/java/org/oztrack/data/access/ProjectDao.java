@@ -9,6 +9,7 @@ import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.ProjectUser;
 import org.oztrack.data.model.User;
+import org.oztrack.data.model.types.ProjectAccess;
 import org.oztrack.data.model.types.Role;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,6 @@ public interface ProjectDao {
     int getDetectionCount(Project project, boolean includeDeleted);
     Polygon getBoundingBox(Project project);
     HashMap<Long, Polygon> getBoundingBoxes(Project project, List<Animal> animals);
-    List<Project> getProjectsByPublished(boolean published);
+    List<Project> getProjectsByAccess(ProjectAccess access);
     List<ProjectUser> getProjectUsersWithRole(Project project, Role role);
 }

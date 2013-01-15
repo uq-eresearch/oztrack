@@ -1,5 +1,7 @@
 package org.oztrack.data.model;
 
+import static javax.persistence.EnumType.STRING;
+
 import java.io.File;
 import java.util.Date;
 import java.util.LinkedList;
@@ -8,6 +10,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,8 +20,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.oztrack.app.OzTrackApplication;
+import org.oztrack.data.model.types.ProjectAccess;
 
 @Entity(name="Project")
 public class Project extends OzTrackBaseEntity {
@@ -34,7 +40,13 @@ public class Project extends OzTrackBaseEntity {
     @Column(columnDefinition="TEXT")
     private String description;
 
-    private boolean isGlobal;
+    @Enumerated(STRING)
+    @Column(name="access", columnDefinition="TEXT")
+    private ProjectAccess access;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="embargodate")
+    private Date embargoDate;
 
     private String spatialCoverageDescr;
     @ManyToOne
@@ -109,14 +121,6 @@ public class Project extends OzTrackBaseEntity {
         this.description = description;
     }
 
-    public boolean getIsGlobal() {
-        return isGlobal;
-    }
-
-    public void setIsGlobal(boolean isGlobal) {
-        this.isGlobal = isGlobal;
-    }
-
     public List<ProjectUser> getProjectUsers() {
         return this.projectUsers;
     }
@@ -141,12 +145,20 @@ public class Project extends OzTrackBaseEntity {
         this.dataFiles = dataFiles;
     }
 
-    public boolean isGlobal() {
-        return isGlobal;
+    public ProjectAccess getAccess() {
+        return access;
     }
 
-    public void setGlobal(boolean global) {
-        isGlobal = global;
+    public void setAccess(ProjectAccess access) {
+        this.access = access;
+    }
+
+    public Date getEmbargoDate() {
+        return embargoDate;
+    }
+
+    public void setEmbargoDate(Date embargoDate) {
+        this.embargoDate = embargoDate;
     }
 
     public String getSpatialCoverageDescr() {

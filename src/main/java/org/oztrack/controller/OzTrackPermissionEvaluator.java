@@ -7,6 +7,7 @@ import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.ProjectUser;
 import org.oztrack.data.model.User;
+import org.oztrack.data.model.types.ProjectAccess;
 import org.oztrack.data.model.types.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
@@ -46,7 +47,7 @@ public class OzTrackPermissionEvaluator implements PermissionEvaluator {
     }
 
     private boolean hasProjectPermission(User currentUser, Project project, Object permission) {
-        if (permission.equals("read") && project.isGlobal()) {
+        if (permission.equals("read") && (project.getAccess() == ProjectAccess.OPEN)) {
             return true;
         }
         if (currentUser == null) {

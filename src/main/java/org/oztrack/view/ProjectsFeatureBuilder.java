@@ -60,7 +60,7 @@ public class ProjectsFeatureBuilder {
         featureTypeBuilder.add("lastDetectionDate",String.class);
         featureTypeBuilder.add("spatialCoverageDescr", String.class);
         featureTypeBuilder.add("speciesCommonName", String.class);
-        featureTypeBuilder.add("global", Boolean.class);
+        featureTypeBuilder.add("access", String.class);
         return featureTypeBuilder.buildFeatureType();
     }
 
@@ -75,7 +75,7 @@ public class ProjectsFeatureBuilder {
         featureBuilder.set("lastDetectionDate", sdf.format(projectDetectionDateRange.getMaximum()));
         featureBuilder.set("spatialCoverageDescr", project.getSpatialCoverageDescr());
         featureBuilder.set("speciesCommonName", project.getSpeciesCommonName());
-        featureBuilder.set("global", project.isGlobal());
+        featureBuilder.set("access", project.getAccess().name());
         return featureBuilder.buildFeature(project.getId().toString());
     }
 }

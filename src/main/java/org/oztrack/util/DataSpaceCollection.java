@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.model.Project;
+import org.oztrack.data.model.types.ProjectAccess;
 import org.springframework.core.io.ClassPathResource;
 
 import com.samskivert.mustache.Mustache;
@@ -160,13 +161,21 @@ public class DataSpaceCollection {
     }
 
     public String getAccessRights() {
-        if (project.getIsGlobal()) {
+        if (project.getAccess() == ProjectAccess.OPEN) {
             return "The data in this project are available in OzTrack for the public to use.";
+        }
+        else if (project.getAccess() == ProjectAccess.EMBARGO) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            return
+                "The data in the project are covered by an embargo period, " +
+                "ending " + dateFormat.format(project.getEmbargoDate()) + ", " +
+                "and are currently only available to users on the OzTrack system whom have been granted access. " +
+                "Contact the Collection Manager regarding permission and procedures for accessing the data.";
         }
         else {
             return
-                "The data in this project are only available to users on the OzTrack system whom have " +
-                "been granted access. Contact the Collection Manager regarding permission and procedures for accessing the data.";
+                "The data in this project are only available to users on the OzTrack system whom have been granted access. " +
+                "Contact the Collection Manager regarding permission and procedures for accessing the data.";
         }
     }
 

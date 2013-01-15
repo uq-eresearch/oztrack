@@ -4,6 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
+<c:set var="dateFormatPattern" value="dd/MM/yyyy"/>
 <c:set var="dateTimeFormatPattern" value="dd/MM/yyyy HH:mm:ss"/>
 <c:set var="shortDateFormatPattern" value="MMMM yyyy"/>
 <tags:page title="${project.title}: Publish Metadata">
@@ -161,13 +162,22 @@
 
         <tr><th>Access:</th><td>
 
-            <c:choose><c:when test="${project.isGlobal}">
+            <c:choose>
+            <c:choose>
+            <c:when test="${project.access == 'OPEN'}">
                 The data in the project are available in OzTrack for the public to use.
             </c:when>
+            <c:when test="${project.access == 'EMBARGO'}">
+                The data in the project are covered by an embargo period,
+                ending <fmt:formatDate pattern="${dateFormatPattern}" value="${project.embargoDate}"/>,
+                and are currently only available to users on the OzTrack system whom have been granted access.
+                Contact the Collection Manager regarding permission and procedures for accessing the data.
+            </c:when>
             <c:otherwise>
-                The data in this project are only available to users on the OzTrack system whom have been granted access. Contact
-                the Collection Manager regarding permission and procedures for accessing the data.
+                The data in this project are only available to users on the OzTrack system whom have been granted access.
+                Contact the Collection Manager regarding permission and procedures for accessing the data.
             </c:otherwise>
+            </c:choose>
             </c:choose>
 
         </td></tr>

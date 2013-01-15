@@ -72,12 +72,8 @@ public class AnalysisController {
             }
         }
         else if (permission.equals("read")) {
-            // Users with read access to the project have read access to all of its analyses
-            if (permissionEvaluator.hasPermission(authentication, analysis.getProject(), "read")) {
-                return true;
-            }
-            // Saved analyses are visible to users for open-access projects
-            if (analysis.getProject().isGlobal() && analysis.isSaved()) {
+            // Users with read access to the project have read access to all saved analyses
+            if (permissionEvaluator.hasPermission(authentication, analysis.getProject(), "read") && analysis.isSaved()) {
                 return true;
             }
             // Otherwise, only the creator of an analysis is able to view it

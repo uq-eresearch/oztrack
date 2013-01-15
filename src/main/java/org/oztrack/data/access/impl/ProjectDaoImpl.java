@@ -16,6 +16,7 @@ import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.ProjectUser;
 import org.oztrack.data.model.User;
+import org.oztrack.data.model.types.ProjectAccess;
 import org.oztrack.data.model.types.Role;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -183,11 +184,11 @@ public class ProjectDaoImpl implements ProjectDao {
     }
 
     @Override
-    public List<Project> getProjectsByPublished(boolean published) {
+    public List<Project> getProjectsByAccess(ProjectAccess access) {
         @SuppressWarnings("unchecked")
         List<Project> resultList = em
-            .createQuery("from Project where isglobal = :published order by createDate")
-            .setParameter("published", published)
+            .createQuery("from Project where access = :access order by createDate")
+            .setParameter("access", access)
             .getResultList();
         return resultList;
     }
