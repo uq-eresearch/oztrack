@@ -376,14 +376,11 @@
                                 However, note that metadata including title, description, location, and animal species
                                 are made publicly available for all projects in OzTrack.
                             </div>
+                            <div style="margin: 0.5em 0;">
+                                Note: maximum embargo period is 3 years from the project's creation date.
+                            </div>
                         </label>
-                        <c:choose>
-                        <c:when test="${maxEmbargoDate.before(minEmbargoDate)}">
-                        <div style="margin: 0.5em 0; padding-left: 20px;">
-                            Note: maximum embargo period is 3 years from the project's creation date.
-                        </div>
-                        </c:when>
-                        <c:otherwise>
+                        <c:if test="${!maxEmbargoDate.before(minEmbargoDate)}">
                         <div id="embargo-date-control-group" style="margin: 10px 20px 20px 30px;<c:if test="${project.access != 'EMBARGO'}"> display: none;</c:if>">
                             <c:forEach items="${presetEmbargoDates}" var="presetEmbargoDate" varStatus="status">
                             <label for="presetEmbargoDate${status.index}" class="radio <c:if test="${presetEmbargoDate.value.before(minEmbargoDate)}">disabled</c:if>">
@@ -406,8 +403,7 @@
                             </label>
                             <form:errors path="embargoDate" element="div" cssClass="help-block formErrors"/>
                         </div>
-                        </c:otherwise>
-                        </c:choose>
+                        </c:if>
                         <label for="accessClosed" class="radio">
                             <form:radiobutton id="accessClosed" path="access" value="CLOSED" onclick="
                                 $('#embargo-date-control-group').fadeOut();
