@@ -214,14 +214,14 @@ public class ProjectDaoImpl implements ProjectDao {
     }
 
     @Override
-    public List<Project> getProjectsWithExpiredEmbargo() {
+    public List<Project> getProjectsWithExpiredEmbargo(Date expiryDate) {
         @SuppressWarnings("unchecked")
         List<Project> resultList = em
             .createQuery(
                 "from org.oztrack.data.model.Project\n" +
-                "where access = 'EMBARGO' and embargoDate <= :currentDate"
+                "where access = 'EMBARGO' and :expiryDate >= embargoDate"
             )
-            .setParameter("currentDate", DateUtils.truncate(new Date(), Calendar.DATE))
+            .setParameter("expiryDate", DateUtils.truncate(expiryDate, Calendar.DATE))
             .getResultList();
         return resultList;
     }

@@ -31,17 +31,32 @@
         <property name="startDelay" value="10000" />
     </bean>
 
+    <bean id="embargoNotifier" class="org.oztrack.app.EmbargoNotifier"/>
+    <bean id="embargoNotifierJobDetailFactory" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+      <property name="targetObject" ref="embargoNotifier" />
+      <property name="targetMethod" value="run" />
+      <property name="concurrent" value="false" />
+    </bean>
+    <bean id="embargoNotifierTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="embargoNotifierJobDetailFactory" />
+        <!-- Run at 2am every day (see http://www.quartz-scheduler.org/documentation/quartz-1.x/tutorials/crontrigger) -->
+        <property name="cronExpression" value="0 0 2 * * ?" />
+        <property name="startDelay" value="10000" />
+    </bean>
+
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="jobDetails">
             <list>
                 <ref bean="dataFileJobDetailFactory" />
                 <ref bean="embargoUpdaterJobDetailFactory" />
+                <ref bean="embargoNotifierJobDetailFactory" />
             </list>
         </property>
         <property name="triggers">
             <list>
                 <ref bean="dataFileTrigger" />
                 <ref bean="embargoUpdaterTrigger" />
+                <ref bean="embargoNotifierTrigger" />
             </list>
         </property>
     </bean>

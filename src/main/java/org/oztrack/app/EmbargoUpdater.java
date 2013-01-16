@@ -1,6 +1,7 @@
 package org.oztrack.app;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -33,23 +34,23 @@ public class EmbargoUpdater implements Runnable {
         ProjectDaoImpl projectDao = new ProjectDaoImpl();
         projectDao.setEntityManger(entityManager);
 
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
-        try {
-            List<Project> projects = projectDao.getProjectsWithExpiredEmbargo();
-            for (Project project : projects) {
-                logger.info(
-                    "Making project " + project.getId() + " open access " +
-                    "(embargo expired " + isoDateFormat.format(project.getEmbargoDate()) + ")."
-                );
+        List<Project> projects = projectDao.getProjectsWithExpiredEmbargo(new Date());
+        for (Project project : projects) {
+            logger.info(
+                "Making project " + project.getId() + " open access " +
+                "(embargo expired " + isoDateFormat.format(project.getEmbargoDate()) + ")."
+            );
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+            try {
                 project.setAccess(ProjectAccess.OPEN);
                 projectDao.update(project);
+                transaction.commit();
             }
-            transaction.commit();
-        }
-        catch (Exception e) {
-            logger.error("Exception in embargo updater", e);
-            try {transaction.rollback();} catch (Exception e2) {}
+            catch (Exception e) {
+                logger.error("Exception in embargo updater", e);
+                try {transaction.rollback();} catch (Exception e2) {}
+            }
         }
     }
 }

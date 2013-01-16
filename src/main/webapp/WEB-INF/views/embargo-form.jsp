@@ -25,7 +25,17 @@
                 Click to update projects that have reached the end of their embargo period.
             </p>
             <div class="form-actions">
+                <input type="hidden" name="action" value="update" />
                 <input class="btn btn-primary" type="submit" value="Update Embargo" />
+            </div>
+        </form:form>
+        <form:form cssClass="form-vertical form-bordered" method="POST">
+            <p>
+                Click to send notifications for projects nearing the end of their embargo period.
+            </p>
+            <div class="form-actions">
+                <input type="hidden" name="action" value="notify" />
+                <input class="btn btn-primary" type="submit" value="Notify Embargo" />
             </div>
         </form:form>
     </jsp:body>

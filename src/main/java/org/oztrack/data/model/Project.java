@@ -48,6 +48,10 @@ public class Project extends OzTrackBaseEntity {
     @Column(name="embargodate")
     private Date embargoDate;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="embargonotificationdate")
+    private Date embargoNotificationDate;
+
     private String spatialCoverageDescr;
     @ManyToOne
     private User dataSpaceAgent;
@@ -159,6 +163,14 @@ public class Project extends OzTrackBaseEntity {
 
     public void setEmbargoDate(Date embargoDate) {
         this.embargoDate = embargoDate;
+    }
+
+    public Date getEmbargoNotificationDate() {
+        return embargoNotificationDate;
+    }
+
+    public void setEmbargoNotificationDate(Date embargoNotificationDate) {
+        this.embargoNotificationDate = embargoNotificationDate;
     }
 
     public String getSpatialCoverageDescr() {

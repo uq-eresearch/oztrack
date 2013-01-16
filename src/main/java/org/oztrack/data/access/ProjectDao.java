@@ -29,5 +29,5 @@ public interface ProjectDao {
     HashMap<Long, Polygon> getBoundingBoxes(Project project, List<Animal> animals);
     List<Project> getProjectsByAccess(ProjectAccess access);
     List<ProjectUser> getProjectUsersWithRole(Project project, Role role);
-    List<Project> getProjectsWithExpiredEmbargo();
+    List<Project> getProjectsWithExpiredEmbargo(Date expiryDate);
 }

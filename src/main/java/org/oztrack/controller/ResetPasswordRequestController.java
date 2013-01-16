@@ -15,6 +15,7 @@ import org.apache.commons.mail.resolver.DataSourceClassPathResolver;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
+import org.oztrack.util.EmailUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -71,15 +72,7 @@ public class ResetPasswordRequestController {
         user.setPasswordResetToken(passwordResetToken);
         user.setPasswordResetExpiresAt(passwordResetExpiresAtCalendar.getTime());
 
-        HtmlEmail email = new HtmlEmail();
-        email.setHostName(OzTrackApplication.getApplicationContext().getMailServerHostName());
-        email.setSmtpPort(OzTrackApplication.getApplicationContext().getMailServerPort());
-        email.addTo(user.getEmail(), user.getFullName());
-        email.setFrom(
-            OzTrackApplication.getApplicationContext().getMailFromEmail(),
-            OzTrackApplication.getApplicationContext().getMailFromName()
-        );
-        email.setSubject("OzTrack password reset");
+        HtmlEmail email = EmailUtils.createHtmlEmail(user, "OzTrack password reset");
 
         String passwordResetLink = url + "/" + user.getPasswordResetToken();
         DataSourceClassPathResolver imageResolver = new DataSourceClassPathResolver("/images");
@@ -112,6 +105,7 @@ public class ResetPasswordRequestController {
         textMsg.append("\n");
         textMsg.append("Note: for security reasons, this link will expire in " + passwordResetExpiryDays + " days.");
         email.setTextMsg(textMsg.toString());
+
         email.send();
 
         userDao.update(user);
