@@ -1,5 +1,6 @@
 package org.oztrack.data.access.impl;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.apache.commons.lang3.Range;
+import org.apache.commons.lang3.time.DateUtils;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Animal;
@@ -27,8 +29,12 @@ import com.vividsolutions.jts.io.WKTReader;
 
 @Service
 public class ProjectDaoImpl implements ProjectDao {
-    @PersistenceContext
     private EntityManager em;
+
+    @PersistenceContext
+    public void setEntityManger(EntityManager em) {
+        this.em = em;
+    }
 
     @Override
     public List<Project> getAll() {
@@ -203,6 +209,19 @@ public class ProjectDaoImpl implements ProjectDao {
                 "order by user.lastName, user.firstName")
             .setParameter("project", project)
             .setParameter("role", role)
+            .getResultList();
+        return resultList;
+    }
+
+    @Override
+    public List<Project> getProjectsWithExpiredEmbargo() {
+        @SuppressWarnings("unchecked")
+        List<Project> resultList = em
+            .createQuery(
+                "from org.oztrack.data.model.Project\n" +
+                "where access = 'EMBARGO' and embargoDate <= :currentDate"
+            )
+            .setParameter("currentDate", DateUtils.truncate(new Date(), Calendar.DATE))
             .getResultList();
         return resultList;
     }

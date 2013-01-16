@@ -1,6 +1,6 @@
 package org.oztrack.controller;
 
-import org.oztrack.geoserver.GeoServerUploader;
+import org.oztrack.app.EmbargoUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -8,20 +8,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
-public class GeoServerController {
+public class EmbargoController {
     @Autowired
-    private GeoServerUploader geoServerUploader;
+    private EmbargoUpdater embargoUpdater;
 
-    @RequestMapping(value="/settings/geoserver", method=RequestMethod.GET)
+    @RequestMapping(value="/settings/embargo", method=RequestMethod.GET)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String handleRequest() {
-        return "geoserver-form";
+        return "embargo-form";
     }
 
-    @RequestMapping(value="/settings/geoserver", method=RequestMethod.POST)
+    @RequestMapping(value="/settings/embargo", method=RequestMethod.POST)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String processSubmit() throws Exception {
-        geoServerUploader.upload();
-        return "geoserver-form";
+        embargoUpdater.run();
+        return "embargo-form";
     }
 }
