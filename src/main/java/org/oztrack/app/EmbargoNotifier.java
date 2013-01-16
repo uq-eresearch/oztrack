@@ -14,12 +14,9 @@ import javax.persistence.PersistenceUnit;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.mail.HtmlEmail;
-import org.apache.commons.mail.resolver.DataSourceClassPathResolver;
 import org.oztrack.data.access.impl.ProjectDaoImpl;
 import org.oztrack.data.model.Project;
-import org.oztrack.data.model.User;
-import org.oztrack.util.EmailUtils;
+import org.oztrack.util.EmailBuilder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -56,32 +53,20 @@ public class EmbargoNotifier implements Runnable {
             EntityTransaction transaction = entityManager.getTransaction();
             transaction.begin();
             try {
-                User user = project.getCreateUser();
-                HtmlEmail email = EmailUtils.createHtmlEmail(
-                    user,
-                    "OzTrack project embargo ends " + isoDateFormat.format(project.getEmbargoDate()));
-
-                DataSourceClassPathResolver imageResolver = new DataSourceClassPathResolver("/images");
-                String oztrackLogoImgSrc = "cid:" + email.embed(imageResolver.resolve("oztrack-logo.png"), "oztrack-logo.png");
-
-                StringBuilder htmlMsg = new StringBuilder();
-                htmlMsg.append("<html>\n");
-                htmlMsg.append("<body>\n");
-                htmlMsg.append("<p><img src=\"" + oztrackLogoImgSrc + "\" /></p>\n");
-                htmlMsg.append("<p>Dear " + user.getFirstName() + ",</p>\n");
-                htmlMsg.append("<p>");
-                htmlMsg.append("    This is an automated message from OzTrack, notifying you that your project,\n");
-                htmlMsg.append("    <b>" + project.getTitle() + "</b>, will end its embargo period on ");
-                htmlMsg.append("    " + isoDateFormat.format(project.getEmbargoDate()) + ".\n");
-                htmlMsg.append("</p>\n");
-                htmlMsg.append("<p>");
-                htmlMsg.append("    Following this date, data in this project will be made publicly available via OzTrack. ");
-                htmlMsg.append("</p>");
-                htmlMsg.append("</body>\n");
-                htmlMsg.append("</html>");
-                email.setHtmlMsg(htmlMsg.toString());
-
-                email.send();
+                EmailBuilder emailBuilder = new EmailBuilder();
+                emailBuilder.to(project.getCreateUser());
+                emailBuilder.subject("OzTrack project embargo ends " + isoDateFormat.format(project.getEmbargoDate()));
+                StringBuilder htmlMsgContent = new StringBuilder();
+                htmlMsgContent.append("<p>");
+                htmlMsgContent.append("    This is an automated message from OzTrack, notifying you that your project,\n");
+                htmlMsgContent.append("    <b>" + project.getTitle() + "</b>, will end its embargo period on ");
+                htmlMsgContent.append("    " + isoDateFormat.format(project.getEmbargoDate()) + ".\n");
+                htmlMsgContent.append("</p>\n");
+                htmlMsgContent.append("<p>");
+                htmlMsgContent.append("    Following this date, data in this project will be made publicly available via OzTrack. ");
+                htmlMsgContent.append("</p>");
+                emailBuilder.htmlMsgContent(htmlMsgContent.toString());
+                emailBuilder.build().send();
 
                 project.setEmbargoNotificationDate(expiryDate);
                 projectDao.update(project);
