@@ -36,16 +36,26 @@ public class EmbargoNotifier implements Runnable {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         ProjectDaoImpl projectDao = new ProjectDaoImpl();
         projectDao.setEntityManger(entityManager);
-        notify(entityManager, projectDao, Calendar.MONTH, 2);
+        sendNotifications(entityManager, projectDao, Calendar.MONTH, 2);
     }
 
-    private void notify(EntityManager entityManager, ProjectDaoImpl projectDao, int field, int amount) {
+    // Note: successive calls to this method should be performed with earlier expiry dates first.
+    // See code below that skips notification for a project if one already sent for an equal or shorter period.
+    private void sendNotifications(EntityManager entityManager, ProjectDaoImpl projectDao, int field, int amount) {
         Calendar expiryCalendar = new GregorianCalendar();
         expiryCalendar.add(field, amount);
         Date expiryDate = DateUtils.truncate(expiryCalendar.getTime(), Calendar.DATE);
         List<Project> projects = projectDao.getProjectsWithExpiredEmbargo(expiryDate);
 
         for (Project project : projects) {
+            // If notification has been sent for an earlier or equal expiry date, e.g. a one-week
+            // notification has been sent and we're preparing to send two-month notifications here,
+            // then skip this project. It doesn't make sense to send both if we are already in the
+            // shorter period before expiry due to the scheduler not being run for a while - or to
+            // send duplicate notifications for the same date.
+            if (!expiryDate.before(project.getEmbargoNotificationDate())) {
+                continue;
+            }
             logger.info(
                 "Sending notification for project " + project.getId() + " " +
                 "(embargo expires " + isoDateFormat.format(project.getEmbargoDate()) + ")."
@@ -55,10 +65,10 @@ public class EmbargoNotifier implements Runnable {
             try {
                 EmailBuilder emailBuilder = new EmailBuilder();
                 emailBuilder.to(project.getCreateUser());
-                emailBuilder.subject("OzTrack project embargo ends " + isoDateFormat.format(project.getEmbargoDate()));
+                emailBuilder.subject("OzTrack project embargo ending");
                 StringBuilder htmlMsgContent = new StringBuilder();
                 htmlMsgContent.append("<p>");
-                htmlMsgContent.append("    This is an automated message from OzTrack, notifying you that your project,\n");
+                htmlMsgContent.append("    Please note that your OzTrack project,\n");
                 htmlMsgContent.append("    <b>" + project.getTitle() + "</b>, will end its embargo period on ");
                 htmlMsgContent.append("    " + isoDateFormat.format(project.getEmbargoDate()) + ".\n");
                 htmlMsgContent.append("</p>\n");
