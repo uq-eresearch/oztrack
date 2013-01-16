@@ -14,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.access.impl.ProjectDaoImpl;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.types.ProjectAccess;
+import org.oztrack.util.EmailBuilder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,6 +31,8 @@ public class EmbargoUpdater implements Runnable {
 
     @Override
     public void run() {
+        logger.info("Running embargo updater.");
+
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         ProjectDaoImpl projectDao = new ProjectDaoImpl();
         projectDao.setEntityManger(entityManager);
@@ -46,6 +49,20 @@ public class EmbargoUpdater implements Runnable {
                 project.setAccess(ProjectAccess.OPEN);
                 projectDao.update(project);
                 transaction.commit();
+
+                EmailBuilder emailBuilder = new EmailBuilder();
+                emailBuilder.to(project.getCreateUser());
+                emailBuilder.subject("OzTrack project embargo ended");
+                StringBuilder htmlMsgContent = new StringBuilder();
+                htmlMsgContent.append("<p>");
+                htmlMsgContent.append("    Please note that your OzTrack project,\n");
+                htmlMsgContent.append("    <b>" + project.getTitle() + "</b>, has ended its embargo period.\n");
+                htmlMsgContent.append("</p>\n");
+                htmlMsgContent.append("<p>");
+                htmlMsgContent.append("    Data in this project are now publicly available via OzTrack.");
+                htmlMsgContent.append("</p>");
+                emailBuilder.htmlMsgContent(htmlMsgContent.toString());
+                emailBuilder.build().send();
             }
             catch (Exception e) {
                 logger.error("Exception in embargo updater", e);

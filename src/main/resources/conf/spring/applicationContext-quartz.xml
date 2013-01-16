@@ -24,10 +24,9 @@
       <property name="targetMethod" value="run" />
       <property name="concurrent" value="false" />
     </bean>
-    <bean id="embargoUpdaterTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    <bean id="embargoUpdaterTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
         <property name="jobDetail" ref="embargoUpdaterJobDetailFactory" />
-        <!-- Run at 1am every day (see http://www.quartz-scheduler.org/documentation/quartz-1.x/tutorials/crontrigger) -->
-        <property name="cronExpression" value="0 0 1 * * ?" />
+        <property name="repeatInterval" value="60000" />
         <property name="startDelay" value="10000" />
     </bean>
 
@@ -37,10 +36,9 @@
       <property name="targetMethod" value="run" />
       <property name="concurrent" value="false" />
     </bean>
-    <bean id="embargoNotifierTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    <bean id="embargoNotifierTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
         <property name="jobDetail" ref="embargoNotifierJobDetailFactory" />
-        <!-- Run at 2am every day (see http://www.quartz-scheduler.org/documentation/quartz-1.x/tutorials/crontrigger) -->
-        <property name="cronExpression" value="0 0 2 * * ?" />
+        <property name="repeatInterval" value="60000" />
         <property name="startDelay" value="10000" />
     </bean>
 

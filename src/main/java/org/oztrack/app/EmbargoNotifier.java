@@ -33,6 +33,7 @@ public class EmbargoNotifier implements Runnable {
 
     @Override
     public void run() {
+        logger.info("Running embargo notifier.");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         ProjectDaoImpl projectDao = new ProjectDaoImpl();
         projectDao.setEntityManger(entityManager);
@@ -73,7 +74,7 @@ public class EmbargoNotifier implements Runnable {
                 htmlMsgContent.append("    " + isoDateFormat.format(project.getEmbargoDate()) + ".\n");
                 htmlMsgContent.append("</p>\n");
                 htmlMsgContent.append("<p>");
-                htmlMsgContent.append("    Following this date, data in this project will be made publicly available via OzTrack. ");
+                htmlMsgContent.append("    Following this date, data in this project will be made publicly available via OzTrack.");
                 htmlMsgContent.append("</p>");
                 emailBuilder.htmlMsgContent(htmlMsgContent.toString());
                 emailBuilder.build().send();
