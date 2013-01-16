@@ -363,11 +363,13 @@
                                 Data in this project will be made publicly available via OzTrack.
                             </div>
                         </label>
-                        <label for="accessEmbargo" class="radio">
+                        <label for="accessEmbargo" class="radio <c:if test="${maxEmbargoDate.before(minEmbargoDate)}">disabled</c:if>">
                             <form:radiobutton id="accessEmbargo" path="access" value="EMBARGO" onclick="
                                 $('#embargo-date-control-group').fadeIn();
                                 $('#data-licences-control-group').fadeIn();
-                            "/>
+                            ">
+                                <jsp:attribute name="disabled">${minEmbargoDate.after(maxEmbargoDate)}</jsp:attribute>
+                            </form:radiobutton>
                             <span style="font-weight: bold; color: orange;">Delayed Open Access</span>
                             <div style="margin: 0.5em 0;">
                                 Data in this project will be made publicly available via OzTrack after an embargo period.
@@ -375,14 +377,22 @@
                                 are made publicly available for all projects in OzTrack.
                             </div>
                         </label>
+                        <c:choose>
+                        <c:when test="${maxEmbargoDate.before(minEmbargoDate)}">
+                        <div style="margin: 0.5em 0; padding-left: 20px;">
+                            Note: maximum embargo period is 3 years from the project's creation date.
+                        </div>
+                        </c:when>
+                        <c:otherwise>
                         <div id="embargo-date-control-group" style="margin: 10px 20px 20px 30px;<c:if test="${project.access != 'EMBARGO'}"> display: none;</c:if>">
                             <c:forEach items="${presetEmbargoDates}" var="presetEmbargoDate" varStatus="status">
-                            <label for="presetEmbargoDate${status.index}" class="radio">
-                                <form:radiobutton id="presetEmbargoDate${status.index}" path="embargoDate">
+                            <label for="presetEmbargoDate${status.index}" class="radio <c:if test="${presetEmbargoDate.value.before(minEmbargoDate)}">disabled</c:if>">
+                                <form:radiobutton id="presetEmbargoDate${status.index}" path="embargoDate" >
                                     <jsp:attribute name="value"><fmt:formatDate pattern="${isoDateFormatPattern}" value="${presetEmbargoDate.value}"/></jsp:attribute>
+                                    <jsp:attribute name="disabled">${presetEmbargoDate.value.before(minEmbargoDate)}</jsp:attribute>
                                 </form:radiobutton>
                                 <span>${presetEmbargoDate.key}</span>
-                                <span style="color: #666; font-size: 11px;">(expires <fmt:formatDate pattern="${dateFormatPattern}" value="${presetEmbargoDate.value}"/>)</span>
+                                <span style="font-size: 11px;">(expires <fmt:formatDate pattern="${dateFormatPattern}" value="${presetEmbargoDate.value}"/>)</span>
                             </label>
                             </c:forEach>
                             <label for="otherEmbargoDate" class="radio">
@@ -396,6 +406,8 @@
                             </label>
                             <form:errors path="embargoDate" element="div" cssClass="help-block formErrors"/>
                         </div>
+                        </c:otherwise>
+                        </c:choose>
                         <label for="accessClosed" class="radio">
                             <form:radiobutton id="accessClosed" path="access" value="CLOSED" onclick="
                                 $('#embargo-date-control-group').fadeOut();
