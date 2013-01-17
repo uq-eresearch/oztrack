@@ -1,6 +1,7 @@
 package org.oztrack.app;
 
 public interface OzTrackConfiguration {
+    String getBaseURL();
     String getDataSpaceURL();
     String getDataSpaceUsername();
     String getDataSpacePassword();

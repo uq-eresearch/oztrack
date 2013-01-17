@@ -1,6 +1,7 @@
 package org.oztrack.app;
 
 public class OzTrackConfigurationImpl implements OzTrackConfiguration {
+    private String baseURL;
     private String dataSpaceURL;
     private String dataSpaceUsername;
     private String dataSpacePassword;
@@ -16,6 +17,15 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
     private String googleAnalyticsDomainName;
     private String recaptchaPublicKey;
     private String recaptchaPrivateKey;
+
+    @Override
+    public String getBaseURL() {
+        return baseURL;
+    }
+
+    public void setBaseURL(String baseURL) {
+        this.baseURL = baseURL;
+    }
 
     @Override
     public String getDataSpaceURL() {

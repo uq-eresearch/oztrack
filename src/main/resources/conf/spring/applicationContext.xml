@@ -43,6 +43,7 @@
     <import resource="applicationContext-task.xml"/>
 
     <bean id="applicationContext" class="org.oztrack.app.OzTrackConfigurationImpl">
+        <property name="baseURL" value="${application.baseURL}"/>
         <property name="dataSpaceURL" value="${application.dataSpaceURL}"/>
         <property name="dataSpaceUsername" value="${application.dataSpaceUsername}"/>
         <property name="dataSpacePassword" value="${application.dataSpacePassword}"/>
