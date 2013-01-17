@@ -1,5 +1,6 @@
 package org.oztrack.validator;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -8,11 +9,14 @@ import org.geotools.referencing.CRS;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.types.ProjectAccess;
+import org.oztrack.util.EmbargoUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 public class ProjectFormValidator implements Validator {
+    private SimpleDateFormat shortDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
     @Override
     public boolean supports(@SuppressWarnings("rawtypes") Class clazz) {
         return Project.class.isAssignableFrom(clazz);
@@ -38,9 +42,11 @@ public class ProjectFormValidator implements Validator {
                 if (project.getEmbargoDate().before(DateUtils.truncate(new Date(), Calendar.DATE))) {
                     errors.rejectValue("embargoDate", "error.embargoDate", "Embargo date must be today's date or later.");
                 }
-                Date createDate = DateUtils.truncate((project.getCreateDate() != null) ? project.getCreateDate() : new Date(), Calendar.DATE);
-                if (project.getEmbargoDate().after(DateUtils.addYears(createDate, 3))) {
-                    errors.rejectValue("embargoDate", "error.embargoDate", "Embargo date can't be more than 3 years after project creation date.");
+
+                Date createDate = (project.getCreateDate() != null) ? project.getCreateDate() : new Date();
+                EmbargoUtils.EmbargoInfo embargoInfo = EmbargoUtils.getEmbargoInfo(createDate);
+                if (project.getEmbargoDate().after(embargoInfo.getMaxEmbargoDate())) {
+                    errors.rejectValue("embargoDate", "error.embargoDate", "Embargo date must be " + shortDateFormat.format(embargoInfo.getMaxEmbargoDate()) + " or earlier.");
                 }
             }
         }

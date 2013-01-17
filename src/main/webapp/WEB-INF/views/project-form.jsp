@@ -377,7 +377,7 @@
                                 are made publicly available for all projects in OzTrack.
                             </div>
                             <div style="margin: 0.5em 0;">
-                                Note: maximum embargo period is 3 years from the project's creation date.
+                                Note: maximum embargo period is ${maxEmbargoYears} years from the project's creation date.
                             </div>
                         </label>
                         <c:if test="${!maxEmbargoDate.before(minEmbargoDate)}">

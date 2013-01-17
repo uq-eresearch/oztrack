@@ -18,6 +18,7 @@ import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.ProjectAccess;
+import org.oztrack.util.EmbargoUtils;
 import org.oztrack.validator.ProjectFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -124,15 +125,23 @@ public class ProjectListController {
     }
 
     private void setEmbargoDateAttributes(Model model) {
-        Date truncatedCreateDate = DateUtils.truncate(new Date(), Calendar.DATE);
+        final Date truncatedCurrentDate = DateUtils.truncate(new Date(), Calendar.DATE);
+        final Date truncatedCreateDate = truncatedCurrentDate;
+
+        EmbargoUtils.EmbargoInfo embargoInfo = EmbargoUtils.getEmbargoInfo(truncatedCreateDate);
+
+        model.addAttribute("minEmbargoDate", truncatedCurrentDate);
+        model.addAttribute("maxEmbargoDate", embargoInfo.getMaxEmbargoDateNorm());
+        model.addAttribute("maxEmbargoYears", EmbargoUtils.maxEmbargoYearsNorm);
+
         LinkedHashMap<String, Date> presetEmbargoDates = new LinkedHashMap<String, Date>();
-        presetEmbargoDates.put("1 year", DateUtils.addYears(truncatedCreateDate, 1));
-        presetEmbargoDates.put("2 years", DateUtils.addYears(truncatedCreateDate, 2));
-        presetEmbargoDates.put("3 years", DateUtils.addYears(truncatedCreateDate, 3));
+        for (int years = 1; years <= EmbargoUtils.maxEmbargoYearsNorm; years++) {
+            String key = years + " " + ((years == 1) ? "year" : "years");
+            Date value = DateUtils.addYears(truncatedCreateDate, years);
+            presetEmbargoDates.put(key, value);
+        }
         model.addAttribute("presetEmbargoDates", presetEmbargoDates);
         model.addAttribute("otherEmbargoDate", null);
-        model.addAttribute("minEmbargoDate", DateUtils.truncate(new Date(), Calendar.DATE));
-        model.addAttribute("maxEmbargoDate", DateUtils.addYears(truncatedCreateDate, 3));
     }
 
     @RequestMapping(value="/projects", method=RequestMethod.POST)

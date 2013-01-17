@@ -18,6 +18,7 @@ import org.oztrack.data.access.impl.ProjectDaoImpl;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.types.ProjectAccess;
 import org.oztrack.util.EmailBuilder;
+import org.oztrack.util.EmbargoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +45,7 @@ public class EmbargoUpdater implements Runnable {
         projectDao.setEntityManger(entityManager);
         Date currentDate = new Date();
         endEmbargo(entityManager, projectDao, currentDate);
-        sendNotifications(entityManager, projectDao, currentDate, Calendar.MONTH, 2);
+        sendNotifications(entityManager, projectDao, currentDate);
     }
 
     private void endEmbargo(EntityManager entityManager, ProjectDaoImpl projectDao, Date currentDate) {
@@ -89,10 +90,10 @@ public class EmbargoUpdater implements Runnable {
 
     // Note: successive calls to this method should be performed with earlier expiry dates first.
     // See code below that skips notification for a project if one already sent for an equal or shorter period.
-    private void sendNotifications(EntityManager entityManager, ProjectDaoImpl projectDao, Date currentDate, int field, int amount) {
+    private void sendNotifications(EntityManager entityManager, ProjectDaoImpl projectDao, Date currentDate) {
         Calendar expiryCalendar = new GregorianCalendar();
         expiryCalendar.setTime(currentDate);
-        expiryCalendar.add(field, amount);
+        expiryCalendar.add(Calendar.MONTH, EmbargoUtils.embargoNotificationMonths);
         Date expiryDate = DateUtils.truncate(expiryCalendar.getTime(), Calendar.DATE);
         List<Project> projects = projectDao.getProjectsWithExpiredEmbargo(expiryDate);
 

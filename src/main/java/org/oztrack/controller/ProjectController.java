@@ -31,6 +31,7 @@ import org.oztrack.data.model.types.ProjectAccess;
 import org.oztrack.data.model.types.Role;
 import org.oztrack.error.DataSpaceInterfaceException;
 import org.oztrack.util.DataSpaceInterface;
+import org.oztrack.util.EmbargoUtils;
 import org.oztrack.validator.ProjectFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -163,12 +164,26 @@ public class ProjectController {
     }
 
     private void setEmbargoDateAttributes(Model model, Project project) {
-        Date truncatedCreateDate = DateUtils.truncate(project.getCreateDate(), Calendar.DATE);
+        final Date truncatedCurrentDate = DateUtils.truncate(new Date(), Calendar.DATE);
+        final Date truncatedCreateDate = DateUtils.truncate(project.getCreateDate(), Calendar.DATE);
+
+        EmbargoUtils.EmbargoInfo embargoInfo = EmbargoUtils.getEmbargoInfo(project.getCreateDate());
+
+        model.addAttribute("minEmbargoDate", truncatedCurrentDate);
+        model.addAttribute("maxEmbargoDate", embargoInfo.getMaxEmbargoDate());
+        model.addAttribute("maxEmbargoYears", embargoInfo.getMaxEmbargoYears());
+
         LinkedHashMap<String, Date> presetEmbargoDates = new LinkedHashMap<String, Date>();
-        presetEmbargoDates.put("1 year", DateUtils.addYears(truncatedCreateDate, 1));
-        presetEmbargoDates.put("2 years", DateUtils.addYears(truncatedCreateDate, 2));
-        presetEmbargoDates.put("3 years", DateUtils.addYears(truncatedCreateDate, 3));
+        for (int years = 1; years <= embargoInfo.getMaxEmbargoYears(); years++) {
+            String key =
+                ((years > EmbargoUtils.maxEmbargoYearsNorm) ? "Extension: " : "") +
+                years + " " + ((years == 1) ? "year" : "years");
+            Date value = DateUtils.addYears(truncatedCreateDate, years);
+            presetEmbargoDates.put(key, value);
+        }
         model.addAttribute("presetEmbargoDates", presetEmbargoDates);
+
+        // Only set otherEmbargoDate field if it doesn't match any of the presets
         Date otherEmbargoDate = null;
         if (project.getEmbargoDate() != null) {
             otherEmbargoDate = project.getEmbargoDate();
@@ -181,8 +196,6 @@ public class ProjectController {
             }
         }
         model.addAttribute("otherEmbargoDate", otherEmbargoDate);
-        model.addAttribute("minEmbargoDate", DateUtils.truncate(new Date(), Calendar.DATE));
-        model.addAttribute("maxEmbargoDate", DateUtils.addYears(truncatedCreateDate, 3));
     }
 
     @RequestMapping(value="/projects/{id}", method=RequestMethod.PUT)
