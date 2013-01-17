@@ -26,7 +26,7 @@
     </bean>
     <bean id="embargoUpdaterTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
         <property name="jobDetail" ref="embargoUpdaterJobDetailFactory" />
-        <property name="repeatInterval" value="300000" />
+        <property name="repeatInterval" value="60000" />
         <property name="startDelay" value="10000" />
     </bean>
 
