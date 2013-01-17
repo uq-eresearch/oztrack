@@ -26,19 +26,7 @@
     </bean>
     <bean id="embargoUpdaterTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
         <property name="jobDetail" ref="embargoUpdaterJobDetailFactory" />
-        <property name="repeatInterval" value="60000" />
-        <property name="startDelay" value="10000" />
-    </bean>
-
-    <bean id="embargoNotifier" class="org.oztrack.app.EmbargoNotifier"/>
-    <bean id="embargoNotifierJobDetailFactory" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-      <property name="targetObject" ref="embargoNotifier" />
-      <property name="targetMethod" value="run" />
-      <property name="concurrent" value="false" />
-    </bean>
-    <bean id="embargoNotifierTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
-        <property name="jobDetail" ref="embargoNotifierJobDetailFactory" />
-        <property name="repeatInterval" value="60000" />
+        <property name="repeatInterval" value="300000" />
         <property name="startDelay" value="10000" />
     </bean>
 
@@ -47,14 +35,12 @@
             <list>
                 <ref bean="dataFileJobDetailFactory" />
                 <ref bean="embargoUpdaterJobDetailFactory" />
-                <ref bean="embargoNotifierJobDetailFactory" />
             </list>
         </property>
         <property name="triggers">
             <list>
                 <ref bean="dataFileTrigger" />
                 <ref bean="embargoUpdaterTrigger" />
-                <ref bean="embargoNotifierTrigger" />
             </list>
         </property>
     </bean>
