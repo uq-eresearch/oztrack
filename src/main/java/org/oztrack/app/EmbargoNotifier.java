@@ -54,7 +54,7 @@ public class EmbargoNotifier implements Runnable {
             // then skip this project. It doesn't make sense to send both if we are already in the
             // shorter period before expiry due to the scheduler not being run for a while - or to
             // send duplicate notifications for the same date.
-            if (!expiryDate.before(project.getEmbargoNotificationDate())) {
+            if ((project.getEmbargoNotificationDate() != null) && !expiryDate.before(project.getEmbargoNotificationDate())) {
                 continue;
             }
             logger.info(
@@ -74,7 +74,7 @@ public class EmbargoNotifier implements Runnable {
                 htmlMsgContent.append("    " + isoDateFormat.format(project.getEmbargoDate()) + ".\n");
                 htmlMsgContent.append("</p>\n");
                 htmlMsgContent.append("<p>");
-                htmlMsgContent.append("    Following this date, data in this project will be made publicly available via OzTrack.");
+                htmlMsgContent.append("    Starting from this date, data in this project will be made publicly available via OzTrack.");
                 htmlMsgContent.append("</p>");
                 emailBuilder.htmlMsgContent(htmlMsgContent.toString());
                 emailBuilder.build().send();
