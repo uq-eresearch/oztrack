@@ -7,15 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.AbstractCachingViewResolver;
 
-/**
- * Created by IntelliJ IDEA.
- * User: uqpnewm5
- * Date: 3/08/11
- * Time: 2:33 PM
- */
 public class JavaViewResolver extends AbstractCachingViewResolver {
-
-    /** Logger for this class and subclasses */
     protected final Log logger = LogFactory.getLog(getClass());
 
     private String viewPrefix;
@@ -30,7 +22,7 @@ public class JavaViewResolver extends AbstractCachingViewResolver {
             Class<?> viewClass = Class.forName("org.oztrack.view." + viewClassName + "View");
             view = (View) viewClass.getConstructor().newInstance();
         }
-        return view;  //To change body of implemented methods use File | Settings | File Templates.
+        return view;
     }
 
     public String getViewPrefix() {
@@ -40,5 +32,4 @@ public class JavaViewResolver extends AbstractCachingViewResolver {
     public void setViewPrefix(String viewPrefix) {
         this.viewPrefix = viewPrefix;
     }
-
 }
