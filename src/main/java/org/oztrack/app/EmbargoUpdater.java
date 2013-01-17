@@ -18,6 +18,7 @@ import org.oztrack.data.access.impl.ProjectDaoImpl;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.types.ProjectAccess;
 import org.oztrack.util.EmailBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,6 +26,9 @@ public class EmbargoUpdater implements Runnable {
     protected final Log logger = LogFactory.getLog(getClass());
 
     private SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+    @Autowired
+    private OzTrackConfiguration configuration;
 
     @PersistenceUnit
     private EntityManagerFactory entityManagerFactory;
@@ -60,14 +64,19 @@ public class EmbargoUpdater implements Runnable {
                 EmailBuilder emailBuilder = new EmailBuilder();
                 emailBuilder.to(project.getCreateUser());
                 emailBuilder.subject("OzTrack project embargo ended");
+                String projectLink = configuration.getBaseURL() + "/projects/" + project.getId();
                 StringBuilder htmlMsgContent = new StringBuilder();
-                htmlMsgContent.append("<p>");
+                htmlMsgContent.append("<p>\n");
                 htmlMsgContent.append("    Please note that your OzTrack project,\n");
                 htmlMsgContent.append("    <b>" + project.getTitle() + "</b>, has ended its embargo period.\n");
                 htmlMsgContent.append("</p>\n");
-                htmlMsgContent.append("<p>");
-                htmlMsgContent.append("    Data in this project are now publicly available via OzTrack.");
+                htmlMsgContent.append("<p>\n");
+                htmlMsgContent.append("    Data in this project are now publicly available via OzTrack.\n");
                 htmlMsgContent.append("</p>");
+                htmlMsgContent.append("<p>\n");
+                htmlMsgContent.append("    You can view and update your project here:\n");
+                htmlMsgContent.append("    <a href=\"" + projectLink + "\">" + projectLink + "</a>\n");
+                htmlMsgContent.append("</p>\n");
                 emailBuilder.htmlMsgContent(htmlMsgContent.toString());
                 emailBuilder.build().send();
             }
@@ -111,15 +120,20 @@ public class EmbargoUpdater implements Runnable {
                 EmailBuilder emailBuilder = new EmailBuilder();
                 emailBuilder.to(project.getCreateUser());
                 emailBuilder.subject("OzTrack project embargo ending");
+                String projectLink = configuration.getBaseURL() + "/projects/" + project.getId();
                 StringBuilder htmlMsgContent = new StringBuilder();
-                htmlMsgContent.append("<p>");
+                htmlMsgContent.append("<p>\n");
                 htmlMsgContent.append("    Please note that your OzTrack project,\n");
-                htmlMsgContent.append("    <b>" + project.getTitle() + "</b>, will end its embargo period on ");
+                htmlMsgContent.append("    <b>" + project.getTitle() + "</b>, will end its embargo period on\n");
                 htmlMsgContent.append("    " + isoDateFormat.format(project.getEmbargoDate()) + ".\n");
                 htmlMsgContent.append("</p>\n");
-                htmlMsgContent.append("<p>");
-                htmlMsgContent.append("    Starting from this date, data in this project will be made publicly available via OzTrack.");
+                htmlMsgContent.append("<p>\n");
+                htmlMsgContent.append("    Starting from this date, data in this project will be made publicly available via OzTrack.\n");
                 htmlMsgContent.append("</p>");
+                htmlMsgContent.append("<p>\n");
+                htmlMsgContent.append("    You can view and update your project here:\n");
+                htmlMsgContent.append("    <a href=\"" + projectLink + "\">" + projectLink + "</a>\n");
+                htmlMsgContent.append("</p>\n");
                 emailBuilder.htmlMsgContent(htmlMsgContent.toString());
                 emailBuilder.build().send();
 
