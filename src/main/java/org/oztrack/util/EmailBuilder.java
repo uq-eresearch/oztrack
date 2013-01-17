@@ -15,6 +15,7 @@ public class EmailBuilder {
 
     public EmailBuilder() throws EmailException {
         email = new HtmlEmail();
+        email.setCharset("UTF-8");
         email.setHostName(OzTrackApplication.getApplicationContext().getMailServerHostName());
         email.setSmtpPort(OzTrackApplication.getApplicationContext().getMailServerPort());
         email.setFrom(
@@ -38,6 +39,9 @@ public class EmailBuilder {
         String oztrackLogoImgSrc = embedImg("oztrack-logo.png");
         StringBuilder htmlMsg = new StringBuilder();
         htmlMsg.append("<html>\n");
+        htmlMsg.append("<head>\n");
+        htmlMsg.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n");
+        htmlMsg.append("</head>\n");
         htmlMsg.append("<body>\n");
         htmlMsg.append("<p><img src=\"" + oztrackLogoImgSrc + "\" /></p>\n");
         htmlMsg.append("<p>Dear " + firstName + ",</p>\n");
