@@ -21,6 +21,7 @@ import org.springframework.web.servlet.view.document.AbstractExcelView;
 public class SearchQueryXLSView extends AbstractExcelView {
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @SuppressWarnings("unused")
     private Project project;
     private List<PositionFix> positionFixes;
 
