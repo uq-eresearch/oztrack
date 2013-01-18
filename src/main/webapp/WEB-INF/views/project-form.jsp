@@ -367,12 +367,12 @@
                                 their projects be published and made available for re-use.
                             </div>
                         </label>
-                        <label for="accessEmbargo" class="radio <c:if test="${maxEmbargoDate.before(minEmbargoDate)}">disabled</c:if>">
+                        <label for="accessEmbargo" class="radio <c:if test="${maxEmbargoDate.time < minEmbargoDate.time}">disabled</c:if>">
                             <form:radiobutton id="accessEmbargo" path="access" value="EMBARGO" onclick="
                                 $('#embargo-date-control-group').fadeIn();
                                 $('#data-licences-control-group').fadeIn();
                             ">
-                                <jsp:attribute name="disabled">${minEmbargoDate.after(maxEmbargoDate)}</jsp:attribute>
+                                <jsp:attribute name="disabled">${maxEmbargoDate.time < minEmbargoDate.time}</jsp:attribute>
                             </form:radiobutton>
                             <span style="font-weight: bold; color: orange;">Delayed Open Access</span>
                             <div style="margin: 0.5em 0;">
@@ -384,13 +384,13 @@
                                 Note: maximum embargo period is ${maxEmbargoYears} years from the project's creation date.
                             </div>
                         </label>
-                        <c:if test="${!maxEmbargoDate.before(minEmbargoDate)}">
+                        <c:if test="${minEmbargoDate.time <= maxEmbargoDate.time}">
                         <div id="embargo-date-control-group" style="margin: 10px 20px 20px 30px;<c:if test="${project.access != 'EMBARGO'}"> display: none;</c:if>">
                             <c:forEach items="${presetEmbargoDates}" var="presetEmbargoDate" varStatus="status">
-                            <label for="presetEmbargoDate${status.index}" class="radio <c:if test="${presetEmbargoDate.value.before(minEmbargoDate)}">disabled</c:if>">
+                            <label for="presetEmbargoDate${status.index}" class="radio <c:if test="${presetEmbargoDate.value.time < minEmbargoDate.time}">disabled</c:if>">
                                 <form:radiobutton id="presetEmbargoDate${status.index}" path="embargoDate" >
                                     <jsp:attribute name="value"><fmt:formatDate pattern="${isoDateFormatPattern}" value="${presetEmbargoDate.value}"/></jsp:attribute>
-                                    <jsp:attribute name="disabled">${presetEmbargoDate.value.before(minEmbargoDate)}</jsp:attribute>
+                                    <jsp:attribute name="disabled">${presetEmbargoDate.value.time < minEmbargoDate.time}</jsp:attribute>
                                 </form:radiobutton>
                                 <span>${presetEmbargoDate.key}</span>
                                 <span style="font-size: 11px;">(expires <fmt:formatDate pattern="${dateFormatPattern}" value="${presetEmbargoDate.value}"/>)</span>
