@@ -363,6 +363,8 @@
                                 Data in this project will be made publicly available in OzTrack.
                                 Releasing data under an open-access licence benefits the wider scientific community
                                 and increases the potential impact of your research.
+                                Many research funding bodies and research organisations require that data from
+                                their projects be published and made available for re-use.
                             </div>
                         </label>
                         <label for="accessEmbargo" class="radio <c:if test="${maxEmbargoDate.before(minEmbargoDate)}">disabled</c:if>">
