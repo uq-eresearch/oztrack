@@ -1,6 +1,12 @@
 package org.oztrack.app;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class OzTrackConfigurationImpl implements OzTrackConfiguration {
+    private SimpleDateFormat isoDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
     private String baseURL;
     private String dataSpaceURL;
     private String dataSpaceUsername;
@@ -17,6 +23,7 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
     private String googleAnalyticsDomainName;
     private String recaptchaPublicKey;
     private String recaptchaPrivateKey;
+    private Date closedAccessDisableDate;
 
     @Override
     public String getBaseURL() {
@@ -160,5 +167,22 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
 
     public void setRecaptchaPrivateKey(String recaptchaPrivateKey) {
         this.recaptchaPrivateKey = recaptchaPrivateKey;
+    }
+
+    @Override
+    public Date getClosedAccessDisableDate() {
+        return closedAccessDisableDate;
+    }
+
+    public void setClosedAccessDisableDate(Date closedAccessDisableDate) {
+        this.closedAccessDisableDate = closedAccessDisableDate;
+    }
+
+    public String getClosedAccessDisableDateString() {
+        return isoDateTimeFormat.format(closedAccessDisableDate);
+    }
+
+    public void setClosedAccessDisableDateString(String closedAccessDisableDateString) throws ParseException {
+        this.closedAccessDisableDate = isoDateTimeFormat.parse(closedAccessDisableDateString);
     }
 }

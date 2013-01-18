@@ -1,5 +1,7 @@
 package org.oztrack.app;
 
+import java.util.Date;
+
 public interface OzTrackConfiguration {
     String getBaseURL();
     String getDataSpaceURL();
@@ -17,4 +19,5 @@ public interface OzTrackConfiguration {
     String getGoogleAnalyticsDomainName();
     String getRecaptchaPublicKey();
     String getRecaptchaPrivateKey();
+    Date getClosedAccessDisableDate();
 }

@@ -115,16 +115,51 @@ public class ProjectListController {
     @RequestMapping(value="/projects/new", method=RequestMethod.GET)
     @PreAuthorize("isAuthenticated()")
     public String getNewView(Model model, @ModelAttribute(value="project") Project project) {
-        model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
-        setEmbargoDateAttributes(model);
-        if (OzTrackApplication.getApplicationContext().isDataLicencingEnabled()) {
-            model.addAttribute("dataLicences", dataLicenceDao.getAll());
-        }
-        model.addAttribute("currentYear", (new GregorianCalendar()).get(Calendar.YEAR));
+        addFormAttributes(model);
         return "project-form";
     }
 
-    private void setEmbargoDateAttributes(Model model) {
+    @RequestMapping(value="/projects", method=RequestMethod.POST)
+    @PreAuthorize("isAuthenticated()")
+    public String processCreate(
+        Authentication authentication,
+        Model model,
+        @ModelAttribute(value="project") Project project,
+        BindingResult bindingResult,
+        @RequestParam(value="dataLicenceIdentifier", required=false) String dataLicenceIdentifier
+    ) throws Exception {
+        if (
+            OzTrackApplication.getApplicationContext().isDataLicencingEnabled() &&
+            (project.getAccess() != ProjectAccess.CLOSED) &&
+            (dataLicenceIdentifier != null)
+        ) {
+            project.setDataLicence(dataLicenceDao.getByIdentifier(dataLicenceIdentifier));
+        }
+        else {
+            project.setDataLicence(null);
+        }
+        new ProjectFormValidator().validate(project, bindingResult);
+        if (bindingResult.hasErrors()) {
+            addFormAttributes(model);
+            return "project-form";
+        }
+        User currentUser = userDao.getByUsername((String) authentication.getPrincipal());
+        projectDao.create(project, currentUser);
+        return "redirect:/projects/" + project.getId();
+    }
+
+    private void addFormAttributes(Model model) {
+        if (OzTrackApplication.getApplicationContext().isDataLicencingEnabled()) {
+            model.addAttribute("dataLicences", dataLicenceDao.getAll());
+        }
+        model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
+        model.addAttribute("currentYear", (new GregorianCalendar()).get(Calendar.YEAR));
+        model.addAttribute("currentDate", new Date());
+        model.addAttribute("closedAccessDisableDate", OzTrackApplication.getApplicationContext().getClosedAccessDisableDate());
+        addEmbargoDateFormAttributes(model);
+    }
+
+    private void addEmbargoDateFormAttributes(Model model) {
         final Date truncatedCurrentDate = DateUtils.truncate(new Date(), Calendar.DATE);
         final Date truncatedCreateDate = truncatedCurrentDate;
 
@@ -142,35 +177,5 @@ public class ProjectListController {
         }
         model.addAttribute("presetEmbargoDates", presetEmbargoDates);
         model.addAttribute("otherEmbargoDate", null);
-    }
-
-    @RequestMapping(value="/projects", method=RequestMethod.POST)
-    @PreAuthorize("isAuthenticated()")
-    public String processCreate(
-        Authentication authentication,
-        Model model,
-        @ModelAttribute(value="project") Project project,
-        BindingResult bindingResult,
-        @RequestParam(value="dataLicenceIdentifier", required=false) String dataLicenceIdentifier
-    ) throws Exception {
-        if (OzTrackApplication.getApplicationContext().isDataLicencingEnabled() && (project.getAccess() != ProjectAccess.CLOSED) && (dataLicenceIdentifier != null)) {
-            project.setDataLicence(dataLicenceDao.getByIdentifier(dataLicenceIdentifier));
-        }
-        else {
-            project.setDataLicence(null);
-        }
-        new ProjectFormValidator().validate(project, bindingResult);
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
-            setEmbargoDateAttributes(model);
-            if (OzTrackApplication.getApplicationContext().isDataLicencingEnabled()) {
-                model.addAttribute("dataLicences", dataLicenceDao.getAll());
-            }
-            model.addAttribute("currentYear", (new GregorianCalendar()).get(Calendar.YEAR));
-            return "project-form";
-        }
-        User currentUser = userDao.getByUsername((String) authentication.getPrincipal());
-        projectDao.create(project, currentUser);
-        return "redirect:/projects/" + project.getId();
     }
 }

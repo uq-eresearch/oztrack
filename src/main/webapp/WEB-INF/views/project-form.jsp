@@ -404,6 +404,11 @@
                             <form:errors path="embargoDate" element="div" cssClass="help-block formErrors"/>
                         </div>
                         </c:if>
+                        <c:if test="${
+                            (closedAccessDisableDate == null) ||
+                            ((project.createDate != null) && (project.createDate.time < closedAccessDisableDate.time)) ||
+                            ((project.createDate == null) && (currentDate.time < closedAccessDisableDate.time))
+                        }">
                         <label for="accessClosed" class="radio">
                             <form:radiobutton id="accessClosed" path="access" value="CLOSED" onclick="
                                 $('#embargo-date-control-group').fadeOut();
@@ -416,10 +421,12 @@
                                 are made publicly available for all projects in OzTrack.
                             </div>
                         </label>
+                        </c:if>
+                        <form:errors path="access" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
                 <c:if test="${dataLicencingEnabled}">
-                <div class="control-group" id="data-licences-control-group" style="<c:if test="${project.access == 'CLOSED'}">display: none;</c:if>">
+                <div id="data-licences-control-group" class="control-group" style="<c:if test="${project.access == 'CLOSED'}">display: none;</c:if>">
                     <label class="control-label" for="dataLicenceCopyright">Data Licence</label>
                     <div class="controls">
                         <div style="margin: 0.5em 0 1em 0;">

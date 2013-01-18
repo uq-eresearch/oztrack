@@ -59,6 +59,7 @@
         <property name="googleAnalyticsDomainName" value="${application.googleAnalyticsDomainName}"/>
         <property name="recaptchaPublicKey" value="${application.recaptchaPublicKey}"/>
         <property name="recaptchaPrivateKey" value="${application.recaptchaPrivateKey}"/>
+        <property name="closedAccessDisableDateString" value="${application.closedAccessDisableDate}"/>
     </bean>
 
     <bean id="ozTrackApplication" class="org.oztrack.app.OzTrackApplication">

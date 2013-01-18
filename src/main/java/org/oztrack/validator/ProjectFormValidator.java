@@ -25,9 +25,12 @@ public class ProjectFormValidator implements Validator {
     @Override
     public void validate(Object obj, Errors errors) {
         Project project = (Project) obj;
+        Date currentDate = new Date();
+        Date createDate = (project.getCreateDate() != null) ? project.getCreateDate() : currentDate;
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "title", "error.empty.field", "Please enter a short project title.");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "error.empty.field", "Please enter a description for the project.");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "spatialCoverageDescr", "error.empty.field", "Please give a location description.");
+
         if (OzTrackApplication.getApplicationContext().isDataLicencingEnabled()) {
             if (project.getAccess() == ProjectAccess.OPEN) {
                 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "dataLicence", "error.empty.field", "A Data Licence must be selected for Open Access projects.");
@@ -36,20 +39,27 @@ public class ProjectFormValidator implements Validator {
                 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "dataLicence", "error.empty.field", "A Data Licence must be selected for Delayed Open Access projects.");
             }
         }
+
         if (project.getAccess() == ProjectAccess.EMBARGO) {
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "embargoDate", "error.empty.field", "An embargo date must be selected for Delayed Open Access projects.");
             if (project.getEmbargoDate() != null) {
-                if (project.getEmbargoDate().before(DateUtils.truncate(new Date(), Calendar.DATE))) {
+                if (project.getEmbargoDate().before(DateUtils.truncate(currentDate, Calendar.DATE))) {
                     errors.rejectValue("embargoDate", "error.embargoDate", "Embargo date must be today's date or later.");
                 }
-
-                Date createDate = (project.getCreateDate() != null) ? project.getCreateDate() : new Date();
                 EmbargoUtils.EmbargoInfo embargoInfo = EmbargoUtils.getEmbargoInfo(createDate);
                 if (project.getEmbargoDate().after(embargoInfo.getMaxEmbargoDate())) {
                     errors.rejectValue("embargoDate", "error.embargoDate", "Embargo date must be " + shortDateFormat.format(embargoInfo.getMaxEmbargoDate()) + " or earlier.");
                 }
             }
         }
+
+        if (project.getAccess() == ProjectAccess.CLOSED) {
+            Date closedAccessDisableDate = OzTrackApplication.getApplicationContext().getClosedAccessDisableDate();
+            if ((closedAccessDisableDate != null) && !createDate.before(closedAccessDisableDate)) {
+                errors.rejectValue("access", "error.access", "Creation of Closed Access projects has been disabled.");
+            }
+        }
+
         try {
             CRS.decode(project.getSrsIdentifier());
         }
