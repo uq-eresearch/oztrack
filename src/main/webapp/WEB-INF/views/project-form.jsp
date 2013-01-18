@@ -360,7 +360,9 @@
                             "/>
                             <span style="font-weight: bold; color: green;">Open Access</span>
                             <div style="margin: 0.5em 0;">
-                                Data in this project will be made publicly available via OzTrack.
+                                Data in this project will be made publicly available in OzTrack.
+                                Releasing data under an open-access licence benefits the wider scientific community
+                                and increases the potential impact of your research.
                             </div>
                         </label>
                         <label for="accessEmbargo" class="radio <c:if test="${maxEmbargoDate.before(minEmbargoDate)}">disabled</c:if>">
@@ -372,7 +374,7 @@
                             </form:radiobutton>
                             <span style="font-weight: bold; color: orange;">Delayed Open Access</span>
                             <div style="margin: 0.5em 0;">
-                                Data in this project will be made publicly available via OzTrack after an embargo period.
+                                Data in this project will be made publicly available in OzTrack after an embargo period.
                                 However, note that metadata including title, description, location, and animal species
                                 are made publicly available for all projects in OzTrack.
                             </div>

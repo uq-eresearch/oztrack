@@ -132,7 +132,7 @@ public class EmbargoUpdater implements Runnable {
                 htmlMsgContent.append("    will <b>end its embargo period</b> on " + isoDateFormat.format(project.getEmbargoDate()) + ".\n");
                 htmlMsgContent.append("</p>\n");
                 htmlMsgContent.append("<p>\n");
-                htmlMsgContent.append("    Starting from this date, data in this project will be made publicly available in OzTrack.\n");
+                htmlMsgContent.append("    Starting from this date, data in the project will be made publicly available in OzTrack.\n");
                 htmlMsgContent.append("</p>");
                 htmlMsgContent.append("<p>\n");
                 htmlMsgContent.append("    If necessary, you can extend the embargo period by up to a further " + extensionYears + " years.\n");
