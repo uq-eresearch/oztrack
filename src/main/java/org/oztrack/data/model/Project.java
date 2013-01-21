@@ -44,11 +44,11 @@ public class Project extends OzTrackBaseEntity {
     @Column(name="access", columnDefinition="TEXT")
     private ProjectAccess access;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name="embargodate")
     private Date embargoDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name="embargonotificationdate")
     private Date embargoNotificationDate;
 
