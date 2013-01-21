@@ -52,6 +52,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ProjectController {
     protected final Log logger = LogFactory.getLog(getClass());
 
+    private SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
     @Autowired
     private ProjectDao projectDao;
 
@@ -82,7 +84,6 @@ public class ProjectController {
             "publicationTitle",
             "publicationUrl",
             "access",
-            "embargoDate",
             "rightsStatement"
         );
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd"), true));
@@ -165,8 +166,16 @@ public class ProjectController {
         Model model,
         @ModelAttribute(value="project") Project project,
         BindingResult bindingResult,
+        @RequestParam(value="embargoDate", required=false) String embargoDateString,
         @RequestParam(value="dataLicenceIdentifier", required=false) String dataLicenceIdentifier
     ) throws Exception {
+        if (embargoDateString != null) {
+            Date embargoDate = isoDateFormat.parse(embargoDateString);
+            if (!embargoDate.equals(project.getEmbargoDate())) {
+                project.setEmbargoDate(embargoDate);
+                project.setEmbargoNotificationDate(null);
+            }
+        }
         if (
             OzTrackApplication.getApplicationContext().isDataLicencingEnabled() &&
             (project.getAccess() != ProjectAccess.CLOSED) &&
