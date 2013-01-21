@@ -3,10 +3,7 @@
   <sld:NamedLayer>
     <sld:Name>startendlayer</sld:Name>
     <sld:UserStyle>
-      <sld:Name>startendlayer</sld:Name>
-      <sld:Title/>
       <sld:FeatureTypeStyle>
-        <sld:Name>startendlayer</sld:Name>
         <sld:Rule>
           <sld:PointSymbolizer>
             <sld:Geometry>

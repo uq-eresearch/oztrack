@@ -79,7 +79,7 @@ function createAnalysisMap(div, options) {
                 '/geoserver/gwc/service/wms',
                 {
                     layers: 'oztrack:gebco_08',
-                    styles: 'bathymetry',
+                    styles: 'oztrack_bathymetry',
                     format: 'image/png'
                 },
                 {
@@ -464,7 +464,7 @@ function createAnalysisMap(div, options) {
                 '/geoserver/wms',
                 {
                     layers: 'oztrack:positionfixlayer',
-                    styles: 'positionfixlayer',
+                    styles: 'oztrack_positionfixlayer',
                     cql_filter: buildFilter(params),
                     format: 'image/png',
                     transparent: true
@@ -533,7 +533,7 @@ function createAnalysisMap(div, options) {
                 '/geoserver/wms',
                 {
                     layers: 'oztrack:trajectorylayer',
-                    styles: 'trajectorylayer',
+                    styles: 'oztrack_trajectorylayer',
                     cql_filter: buildFilter(params),
                     format: 'image/png',
                     transparent: true

@@ -101,7 +101,7 @@ public class GeoServerUploader {
             )
         );
         client.replaceStyle(
-            "positionfixlayer",
+            workspaceName + "_" + "positionfixlayer",
             createFreemarkerEntity(
                 "styles/positionfixlayer.sld.ftl",
                 new HashMap<String, Object>() {{
@@ -128,7 +128,7 @@ public class GeoServerUploader {
             )
         );
         client.replaceStyle(
-            "trajectorylayer",
+            workspaceName + "_" + "trajectorylayer",
             createFreemarkerEntity(
                 "styles/trajectorylayer.sld.ftl",
                 new HashMap<String, Object>() {{
@@ -155,7 +155,7 @@ public class GeoServerUploader {
             )
         );
         client.replaceStyle(
-            "startendlayer",
+            workspaceName + "_" + "startendlayer",
             createFreemarkerEntity(
                 "styles/startendlayer.sld.ftl",
                 new HashMap<String, Object>() {{

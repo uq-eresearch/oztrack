@@ -167,7 +167,7 @@ public class ProjectImageController {
     private BufferedImage buildBaseLayerImage(ReferencedEnvelope mapBounds, Dimension mapDimension) throws Exception {
         String capabilitiesURL = "http://localhost/geoserver/ows?service=wms&version=1.1.1&request=GetCapabilities";
         String layerName = "oztrack:gebco_08";
-        String styleName = "elevation";
+        String styleName = "oztrack_elevation";
         return MapUtils.getWMSLayerImage(capabilitiesURL, layerName, styleName, mapBounds, mapDimension);
     }
 

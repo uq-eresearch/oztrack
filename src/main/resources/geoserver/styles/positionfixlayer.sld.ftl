@@ -3,10 +3,7 @@
   <sld:NamedLayer>
     <sld:Name>positionfixlayer</sld:Name>
     <sld:UserStyle>
-      <sld:Name>positionfixlayer</sld:Name>
-      <sld:Title/>
       <sld:FeatureTypeStyle>
-        <sld:Name>positionfixlayer</sld:Name>
         <sld:Rule>
           <ogc:Filter>
             <ogc:PropertyIsEqualTo>

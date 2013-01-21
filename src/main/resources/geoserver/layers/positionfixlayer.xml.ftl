@@ -3,11 +3,11 @@
   <name>positionfixlayer</name>
   <type>VECTOR</type>
   <defaultStyle>
-    <name>positionfixlayer</name>
+    <name>oztrack_positionfixlayer</name>
   </defaultStyle>
   <styles>
     <style>
-      <name>positionfixlayer</name>
+      <name>oztrack_positionfixlayer</name>
     </style>
     <style>
       <name>point</name>

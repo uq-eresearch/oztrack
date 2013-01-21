@@ -51,7 +51,7 @@ function createCleanseMap(div, options) {
                     '/geoserver/gwc/service/wms',
                     {
                         layers: 'oztrack:gebco_08',
-                        styles: 'bathymetry',
+                        styles: 'oztrack_bathymetry',
                         format: 'image/png'
                     },
                     {
@@ -202,7 +202,7 @@ function createCleanseMap(div, options) {
                 '/geoserver/wms',
                 {
                     layers: 'oztrack:positionfixlayer',
-                    styles: 'positionfixlayer',
+                    styles: 'oztrack_positionfixlayer',
                     cql_filter: buildAllDetectionsFilter(),
                     format: 'image/png',
                     transparent: true

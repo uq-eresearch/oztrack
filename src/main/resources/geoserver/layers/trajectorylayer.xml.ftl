@@ -3,11 +3,11 @@
   <name>trajectorylayer</name>
   <type>VECTOR</type>
   <defaultStyle>
-    <name>trajectorylayer</name>
+    <name>oztrack_trajectorylayer</name>
   </defaultStyle>
   <styles>
     <style>
-      <name>trajectorylayer</name>
+      <name>oztrack_trajectorylayer</name>
     </style>
     <style>
       <name>line</name>

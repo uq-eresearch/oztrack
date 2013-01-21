@@ -3,11 +3,11 @@
   <name>startendlayer</name>
   <type>VECTOR</type>
   <defaultStyle>
-    <name>startendlayer</name>
+    <name>oztrack_startendlayer</name>
   </defaultStyle>
   <styles>
     <style>
-      <name>startendlayer</name>
+      <name>oztrack_startendlayer</name>
     </style>
     <style>
       <name>point</name>

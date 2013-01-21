@@ -3,10 +3,7 @@
   <sld:NamedLayer>
     <sld:Name>trajectorylayer</sld:Name>
     <sld:UserStyle>
-      <sld:Name>trajectorylayer</sld:Name>
-      <sld:Title/>
       <sld:FeatureTypeStyle>
-        <sld:Name>trajectorylayer</sld:Name>
         <sld:Rule>
           <sld:LineSymbolizer>
             <sld:Stroke>
