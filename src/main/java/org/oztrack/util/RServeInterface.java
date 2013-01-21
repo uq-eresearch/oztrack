@@ -308,7 +308,7 @@ public class RServeInterface {
             safeEval("locoh.obj <- LoCoH.r(positionFix.proj, r=" + r + ");");
         }
         safeEval("hr.proj <- getverticeshr(locoh.obj, percent=" + percent + ", unin=c('m'), unout=c('km2'));");
-                safeEval("hr.xy <- spTransform(hr.proj, CRS('+proj=longlat +datum=WGS84'));");
+        safeEval("hr.xy <- spTransform(hr.proj, CRS('+proj=longlat +datum=WGS84'));");
         safeEval("writeOGR(hr.xy, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer= \"KBB\", driver=\"KML\", dataset_options=c(\"NameField=id\"))");
     }
 
