@@ -4,20 +4,15 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
 
-import org.geotools.data.wms.WebMapServer;
-import org.geotools.data.wms.request.GetMapRequest;
-import org.geotools.data.wms.response.GetMapResponse;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapContext;
-import org.geotools.ows.ServiceException;
 import org.geotools.referencing.CRS;
 import org.geotools.renderer.GTRenderer;
 import org.geotools.renderer.lite.StreamingRenderer;
@@ -36,22 +31,24 @@ public class MapUtils {
     }
 
     public static BufferedImage getWMSLayerImage(
-        String capabilitiesURL,
+        String geoServerBaseUrl,
+        String format,
         String layerName,
         String styleName,
         ReferencedEnvelope mapBounds,
         Dimension mapDimension
-    ) throws IOException, ServiceException, MalformedURLException {
-        WebMapServer wms = new WebMapServer(new URL(capabilitiesURL));
-        GetMapRequest request = wms.createGetMapRequest();
-        request.setFormat("image/png");
-        request.setDimensions(mapDimension);
-        request.setTransparent(false);
-        request.setSRS(CRS.toSRS(mapBounds.getCoordinateReferenceSystem()));
-        request.setBBox(mapBounds);
-        request.addLayer(layerName, styleName);
-        GetMapResponse response = wms.issueRequest(request);
-        BufferedImage image = ImageIO.read(response.getInputStream());
-        return image;
+    ) throws Exception {
+        String url = geoServerBaseUrl + "/oztrack/wms";
+        url += "?SERVICE=WMS";
+        url += "&VERSION=1.1.1";
+        url += "&REQUEST=GetMap";
+        url += "&FORMAT=" + URLEncoder.encode(format, "UTF-8");
+        url += "&LAYERS=" + URLEncoder.encode(layerName, "UTF-8");
+        url += "&STYLES=" + URLEncoder.encode(styleName, "UTF-8");
+        url += "&SRS=" + URLEncoder.encode(CRS.toSRS(mapBounds.getCoordinateReferenceSystem()), "UTF-8");
+        url += "&BBOX=" + String.format("%f,%f,%f,%f", mapBounds.getMinX(), mapBounds.getMinY(), mapBounds.getMaxX(), mapBounds.getMaxY());
+        url += "&WIDTH=" + mapDimension.width;
+        url += "&HEIGHT=" + mapDimension.height;
+        return ImageIO.read(new URL(url));
     }
 }

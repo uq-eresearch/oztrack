@@ -165,12 +165,12 @@ public class ProjectImageController {
     }
 
     private BufferedImage buildBaseLayerImage(ReferencedEnvelope mapBounds, Dimension mapDimension) throws Exception {
-        String capabilitiesURL = "http://localhost/geoserver/ows?service=wms&version=1.1.1&request=GetCapabilities";
-        String layerName = "oztrack:gebco_08";
-        String styleName = "oztrack_elevation";
-        return MapUtils.getWMSLayerImage(capabilitiesURL, layerName, styleName, mapBounds, mapDimension);
+        final String geoServerBaseUrl = "http://localhost/geoserver";
+        final String layerName = "oztrack:gebco_08";
+        final String styleName = "oztrack_elevation";
+        final String format = "image/jpeg";
+        return MapUtils.getWMSLayerImage(geoServerBaseUrl, format, layerName, styleName, mapBounds, mapDimension);
     }
-
     private Style buildDetectionsStyle(List<Animal> animals) {
         FeatureTypeStyle featureTypeStyle = styleFactory.createFeatureTypeStyle();
         for (Animal animal : animals) {
