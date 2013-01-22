@@ -102,6 +102,7 @@ public class ProjectImageController {
     ) throws Exception {
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setProject(project);
+        List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
 
         if ((layerNames == null) || layerNames.isEmpty()) {
             layerNames = Arrays.asList("base", "trajectory", "detections", "startEnd");
@@ -131,21 +132,19 @@ public class ProjectImageController {
                 imageLayers.add(buildBaseLayerImage(mapBounds, mapDimension));
             }
             else if (layerName.equals("trajectory")) {
-                List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
+
                 mapContext.addLayer(new FeatureLayer(
                     new AnimalTrajectoryFeatureBuilder(positionFixList).buildFeatureCollection(),
                     buildTrajectoryStyle(project.getAnimals())
                 ));
             }
             else if (layerName.equals("detections")) {
-                List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
                 mapContext.addLayer(new FeatureLayer(
                     new AnimalDetectionsFeatureBuilder(positionFixList, true).buildFeatureCollection(),
                     buildDetectionsStyle(project.getAnimals())
                 ));
             }
             else if (layerName.equals("startEnd")) {
-                List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
                 mapContext.addLayer(new FeatureLayer(
                     new AnimalStartEndFeatureBuilder(positionFixList).buildFeatureCollection(),
                     buildStartEndStyle()
