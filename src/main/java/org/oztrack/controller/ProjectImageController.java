@@ -71,6 +71,8 @@ public class ProjectImageController {
     private final Color endMarkColour = new Color(0xCD0000);
     private final int startEndGraphicSize = 4;
 
+    private Dimension mapDimension = new Dimension(600, 450);
+
     private final StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
     private final FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory(null);
 
@@ -104,7 +106,6 @@ public class ProjectImageController {
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setProject(project);
 
-        Dimension mapDimension = new Dimension(800, 600);
         ReferencedEnvelope mapBounds = new ReferencedEnvelope(projectDao.getBoundingBox(project).getEnvelopeInternal(), CRS.decode("EPSG:4326"));
 
         // Expand either width or height of bounding box to match aspect ratio of image
@@ -172,7 +173,7 @@ public class ProjectImageController {
         final String geoServerBaseUrl = configuration.getGeoServerLocalUrl();
         final String layerName = "oztrack:gebco_08";
         final String styleName = "oztrack_elevation";
-        final String format = "image/jpeg";
+        final String format = "image/png";
         return MapUtils.getWMSLayerImage(geoServerBaseUrl, format, layerName, styleName, mapBounds, mapDimension);
     }
     private Style buildDetectionsStyle(List<Animal> animals) {
