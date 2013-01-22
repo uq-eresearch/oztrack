@@ -1,6 +1,5 @@
 package org.oztrack.controller;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -9,11 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.mail.EmailException;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
 import org.oztrack.util.EmailBuilder;
+import org.oztrack.util.EmailBuilderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +26,9 @@ public class ResetPasswordRequestController {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private EmailBuilderFactory emailBuilderFactory;
 
     @RequestMapping(value="/reset-password", method=RequestMethod.GET)
     public String getView(
@@ -62,7 +64,7 @@ public class ResetPasswordRequestController {
         return "reset-password-request";
     }
 
-    private void sendResetPasswordEmail(String url, User user) throws EmailException, IOException {
+    private void sendResetPasswordEmail(String url, User user) throws Exception {
         String passwordResetToken = UUID.randomUUID().toString();
         Calendar passwordResetExpiresAtCalendar = Calendar.getInstance();
         Integer passwordResetExpiryDays = OzTrackApplication.getApplicationContext().getPasswordResetExpiryDays();
@@ -70,7 +72,7 @@ public class ResetPasswordRequestController {
         user.setPasswordResetToken(passwordResetToken);
         user.setPasswordResetExpiresAt(passwordResetExpiresAtCalendar.getTime());
 
-        EmailBuilder emailBuilder = new EmailBuilder();
+        EmailBuilder emailBuilder = emailBuilderFactory.getObject();
         emailBuilder.to(user);
         emailBuilder.subject("OzTrack password reset");
 

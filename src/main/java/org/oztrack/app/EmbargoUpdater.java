@@ -18,6 +18,7 @@ import org.oztrack.data.access.impl.ProjectDaoImpl;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.types.ProjectAccess;
 import org.oztrack.util.EmailBuilder;
+import org.oztrack.util.EmailBuilderFactory;
 import org.oztrack.util.EmbargoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,9 @@ public class EmbargoUpdater implements Runnable {
 
     @Autowired
     private OzTrackConfiguration configuration;
+
+    @Autowired
+    private EmailBuilderFactory emailBuilderFactory;
 
     @PersistenceUnit
     private EntityManagerFactory entityManagerFactory;
@@ -62,7 +66,7 @@ public class EmbargoUpdater implements Runnable {
                 projectDao.update(project);
                 transaction.commit();
 
-                EmailBuilder emailBuilder = new EmailBuilder();
+                EmailBuilder emailBuilder = emailBuilderFactory.getObject();
                 emailBuilder.to(project.getCreateUser());
                 emailBuilder.subject("OzTrack project embargo ended");
                 String projectLink = configuration.getBaseURL() + "/projects/" + project.getId();
@@ -119,7 +123,7 @@ public class EmbargoUpdater implements Runnable {
             EntityTransaction transaction = entityManager.getTransaction();
             transaction.begin();
             try {
-                EmailBuilder emailBuilder = new EmailBuilder();
+                EmailBuilder emailBuilder = emailBuilderFactory.getObject();
                 emailBuilder.to(project.getCreateUser());
                 emailBuilder.subject("OzTrack project embargo ending");
                 String projectLink = configuration.getBaseURL() + "/projects/" + project.getId();

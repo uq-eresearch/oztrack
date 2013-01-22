@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.apache.commons.mail.resolver.DataSourceClassPathResolver;
-import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.model.User;
 
 public class EmailBuilder {
@@ -13,15 +12,13 @@ public class EmailBuilder {
     String firstName;
     DataSourceClassPathResolver imageResolver = new DataSourceClassPathResolver("/images");
 
-    public EmailBuilder() throws EmailException {
+    public EmailBuilder(String hostName, Integer smtpPort, String fromEmail, String fromName)
+    throws EmailException {
         email = new HtmlEmail();
         email.setCharset("UTF-8");
-        email.setHostName(OzTrackApplication.getApplicationContext().getMailServerHostName());
-        email.setSmtpPort(OzTrackApplication.getApplicationContext().getMailServerPort());
-        email.setFrom(
-            OzTrackApplication.getApplicationContext().getMailFromEmail(),
-            OzTrackApplication.getApplicationContext().getMailFromName()
-        );
+        email.setHostName(hostName);
+        email.setSmtpPort(smtpPort);
+        email.setFrom(fromEmail, fromName);
     }
 
     public EmailBuilder to(User user) throws EmailException {
