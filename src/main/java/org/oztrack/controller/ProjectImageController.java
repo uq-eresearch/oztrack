@@ -11,7 +11,6 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 
-import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.DefaultMapContext;
@@ -35,7 +34,6 @@ import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
-import org.oztrack.data.model.types.MapLayerType;
 import org.oztrack.util.MapUtils;
 import org.oztrack.view.AnimalDetectionsFeatureBuilder;
 import org.oztrack.view.AnimalStartEndFeatureBuilder;
@@ -99,12 +97,15 @@ public class ProjectImageController {
     @PreAuthorize("hasPermission(#project, 'read')")
     public void getView(
         @ModelAttribute(value="project") Project project,
-        @RequestParam(value="mapLayerType", required=false) List<String> mapLayerTypeStrings,
-        @RequestParam(value="includeBaseLayer", defaultValue="false") Boolean includeBaseLayer,
+        @RequestParam(value="layers", required=false) List<String> layerNames,
         HttpServletResponse response
     ) throws Exception {
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setProject(project);
+
+        if ((layerNames == null) || layerNames.isEmpty()) {
+            layerNames = Arrays.asList("base", "trajectory", "detections", "startEnd");
+        }
 
         ReferencedEnvelope mapBounds = new ReferencedEnvelope(projectDao.getBoundingBox(project).getEnvelopeInternal(), CRS.decode("EPSG:4326"));
 
@@ -123,40 +124,36 @@ public class ProjectImageController {
         mapBounds.expandBy(mapBounds.getWidth() * padding, mapBounds.getHeight() * padding);
 
         ArrayList<BufferedImage> imageLayers = new ArrayList<BufferedImage>();
-        if (includeBaseLayer) {
-            imageLayers.add(buildBaseLayerImage(mapBounds, mapDimension));
-        }
-
         MapContext mapContext = new DefaultMapContext();
         mapContext.setAreaOfInterest(mapBounds);
-        for (String mapLayerTypeString : mapLayerTypeStrings) {
-            MapLayerType mapLayerType = MapLayerType.valueOf(mapLayerTypeString);
-            SimpleFeatureCollection featureCollection = null;
-            Style style = null;
-            switch (mapLayerType) {
-                case POINTS: {
-                    List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-                    featureCollection = new AnimalDetectionsFeatureBuilder(positionFixList, true).buildFeatureCollection();
-                    style = buildDetectionsStyle(project.getAnimals());
-                    break;
-                }
-                case LINES: {
-                    List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-                    featureCollection = new AnimalTrajectoryFeatureBuilder(positionFixList).buildFeatureCollection();
-                    style = buildTrajectoryStyle(project.getAnimals());
-                    break;
-                }
-                case START_END: {
-                    List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-                    featureCollection = new AnimalStartEndFeatureBuilder(positionFixList).buildFeatureCollection();
-                    style = buildStartEndStyle();
-                    break;
-                }
-                default:
-                    throw new RuntimeException("Unsupported map layer type: " + mapLayerType);
+        for (String layerName : layerNames) {
+            if (layerName.equals("base")) {
+                imageLayers.add(buildBaseLayerImage(mapBounds, mapDimension));
             }
-            FeatureLayer featureLayer = new FeatureLayer(featureCollection, style);
-            mapContext.addLayer(featureLayer);
+            else if (layerName.equals("trajectory")) {
+                List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
+                mapContext.addLayer(new FeatureLayer(
+                    new AnimalTrajectoryFeatureBuilder(positionFixList).buildFeatureCollection(),
+                    buildTrajectoryStyle(project.getAnimals())
+                ));
+            }
+            else if (layerName.equals("detections")) {
+                List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
+                mapContext.addLayer(new FeatureLayer(
+                    new AnimalDetectionsFeatureBuilder(positionFixList, true).buildFeatureCollection(),
+                    buildDetectionsStyle(project.getAnimals())
+                ));
+            }
+            else if (layerName.equals("startEnd")) {
+                List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
+                mapContext.addLayer(new FeatureLayer(
+                    new AnimalStartEndFeatureBuilder(positionFixList).buildFeatureCollection(),
+                    buildStartEndStyle()
+                ));
+            }
+            else {
+                throw new RuntimeException("Unsupported map layer: " + layerName);
+            }
         }
         imageLayers.add(MapUtils.getBufferedImage(mapContext, mapDimension));
         mapContext.dispose();
