@@ -8,7 +8,6 @@
 <c:set var="isoDateFormatPattern" value="yyyy-MM-dd"/>
 <c:set var="dateFormatPattern" value="dd/MM/yyyy"/>
 <c:set var="dateTimeFormatPattern" value="dd/MM/yyyy HH:mm:ss"/>
-<c:set var="dataLicencingEnabled"><%= OzTrackApplication.getApplicationContext().isDataLicencingEnabled() %></c:set>
 <tags:page>
     <jsp:attribute name="title">
         <c:choose>

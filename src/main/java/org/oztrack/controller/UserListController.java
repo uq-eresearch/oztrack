@@ -15,7 +15,7 @@ import net.tanesha.recaptcha.ReCaptchaResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONWriter;
-import org.oztrack.app.OzTrackApplication;
+import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
 import org.oztrack.validator.UserFormValidator;
@@ -36,6 +36,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class UserListController {
+    @Autowired
+    private OzTrackConfiguration configuration;
+
     @Autowired
     private UserDao userDao;
 
@@ -65,7 +68,7 @@ public class UserListController {
     )
     throws Exception {
         User newUser = new User();
-        if (OzTrackApplication.getApplicationContext().isAafEnabled()) {
+        if (configuration.isAafEnabled()) {
             newUser.setAafId(aafId);
             newUser.setTitle(title);
             newUser.setFirstName(givenName);
@@ -87,8 +90,8 @@ public class UserListController {
 
     @ModelAttribute("recaptchaHtml")
     public String getRecaptcha() {
-        String recaptchaPrivateKey = OzTrackApplication.getApplicationContext().getRecaptchaPrivateKey();
-        String recaptchaPublicKey = OzTrackApplication.getApplicationContext().getRecaptchaPublicKey();
+        String recaptchaPrivateKey = configuration.getRecaptchaPrivateKey();
+        String recaptchaPublicKey = configuration.getRecaptchaPublicKey();
         if (StringUtils.isNotBlank(recaptchaPublicKey) && StringUtils.isNotBlank(recaptchaPrivateKey)) {
             ReCaptcha c = ReCaptchaFactory.newReCaptcha(recaptchaPublicKey, recaptchaPrivateKey, false);
             return c.createRecaptchaHtml(null, null);
@@ -112,7 +115,7 @@ public class UserListController {
         @RequestParam(value="aafId", required=false) String aafIdParam,
         BindingResult bindingResult
     ) {
-        if (OzTrackApplication.getApplicationContext().isAafEnabled()) {
+        if (configuration.isAafEnabled()) {
             if (StringUtils.isBlank(aafIdParam)) {
                 user.setAafId(null);
             }
@@ -128,8 +131,8 @@ public class UserListController {
             return "user-form";
         }
         if (user.getAafId() == null) {
-            String recaptchaPrivateKey = OzTrackApplication.getApplicationContext().getRecaptchaPrivateKey();
-            String recaptchaPublicKey = OzTrackApplication.getApplicationContext().getRecaptchaPublicKey();
+            String recaptchaPrivateKey = configuration.getRecaptchaPrivateKey();
+            String recaptchaPublicKey = configuration.getRecaptchaPublicKey();
             if (StringUtils.isNotBlank(recaptchaPublicKey) && StringUtils.isNotBlank(recaptchaPrivateKey)) {
                 ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
                 reCaptcha.setPrivateKey(recaptchaPrivateKey);

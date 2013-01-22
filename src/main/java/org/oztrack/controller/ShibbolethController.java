@@ -4,7 +4,7 @@ import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.oztrack.app.OzTrackApplication;
+import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
 import org.oztrack.util.OzTrackUtil;
@@ -22,13 +22,16 @@ public class ShibbolethController {
     protected final Log logger = LogFactory.getLog(getClass());
 
     @Autowired
+    private OzTrackConfiguration configuration;
+
+    @Autowired
     private UserDao userDao;
 
     @RequestMapping(value="/login/shibboleth", method=RequestMethod.GET)
     @PreAuthorize("permitAll")
     @Transactional
     public String handleLogin(@RequestHeader(value="eppn", required=false) String aafId) throws Exception {
-        if (!OzTrackApplication.getApplicationContext().isAafEnabled()) {
+        if (!configuration.isAafEnabled()) {
             throw new RuntimeException("AAF authentication is disabled");
         }
         if ((aafId == null) || aafId.isEmpty()) {

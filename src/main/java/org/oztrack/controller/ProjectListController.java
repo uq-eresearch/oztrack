@@ -11,6 +11,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackApplication;
+import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.DataLicenceDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.SrsDao;
@@ -37,6 +38,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class ProjectListController {
     protected final Log logger = LogFactory.getLog(getClass());
+
+    @Autowired
+    private OzTrackConfiguration configuration;
 
     @Autowired
     private ProjectDao projectDao;
@@ -149,13 +153,13 @@ public class ProjectListController {
     }
 
     private void addFormAttributes(Model model) {
-        if (OzTrackApplication.getApplicationContext().isDataLicencingEnabled()) {
+        if (configuration.isDataLicencingEnabled()) {
             model.addAttribute("dataLicences", dataLicenceDao.getAll());
         }
         model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
         model.addAttribute("currentYear", (new GregorianCalendar()).get(Calendar.YEAR));
         model.addAttribute("currentDate", new Date());
-        model.addAttribute("closedAccessDisableDate", OzTrackApplication.getApplicationContext().getClosedAccessDisableDate());
+        model.addAttribute("closedAccessDisableDate", configuration.getClosedAccessDisableDate());
         addEmbargoDateFormAttributes(model);
     }
 

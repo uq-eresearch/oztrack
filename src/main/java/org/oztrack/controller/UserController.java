@@ -2,6 +2,7 @@ package org.oztrack.controller;
 
 import org.apache.commons.lang3.StringUtils;
 import org.oztrack.app.OzTrackApplication;
+import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
 import org.oztrack.util.OzTrackUtil;
@@ -23,6 +24,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class UserController {
+    @Autowired
+    private OzTrackConfiguration configuration;
+
     @Autowired
     private UserDao userDao;
 
@@ -55,7 +59,7 @@ public class UserController {
         if (currentUser == null || !currentUser.equals(user)) {
             return "redirect:/login";
         }
-        if (OzTrackApplication.getApplicationContext().isAafEnabled()) {
+        if (configuration.isAafEnabled()) {
             if (StringUtils.isBlank(user.getAafId()) && StringUtils.isNotBlank(aafIdHeader)) {
                 user.setAafId(aafIdHeader);
             }

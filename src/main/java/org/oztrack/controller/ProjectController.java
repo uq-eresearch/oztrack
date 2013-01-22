@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.oztrack.app.OzTrackApplication;
+import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.DataLicenceDao;
@@ -53,6 +53,9 @@ public class ProjectController {
     protected final Log logger = LogFactory.getLog(getClass());
 
     private SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+    @Autowired
+    private OzTrackConfiguration configuration;
 
     @Autowired
     private ProjectDao projectDao;
@@ -177,7 +180,7 @@ public class ProjectController {
             }
         }
         if (
-            OzTrackApplication.getApplicationContext().isDataLicencingEnabled() &&
+            configuration.isDataLicencingEnabled() &&
             (project.getAccess() != ProjectAccess.CLOSED) &&
             (dataLicenceIdentifier != null)
         ) {
@@ -196,13 +199,14 @@ public class ProjectController {
     }
 
     private void addFormAttributes(Model model, Project project) {
-        if (OzTrackApplication.getApplicationContext().isDataLicencingEnabled()) {
+        if (configuration.isDataLicencingEnabled()) {
             model.addAttribute("dataLicences", dataLicenceDao.getAll());
         }
         model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
         model.addAttribute("currentYear", (new GregorianCalendar()).get(Calendar.YEAR));
         model.addAttribute("currentDate", new Date());
-        model.addAttribute("closedAccessDisableDate", OzTrackApplication.getApplicationContext().getClosedAccessDisableDate());
+        model.addAttribute("dataLicencingEnabled", configuration.isDataLicencingEnabled());
+        model.addAttribute("closedAccessDisableDate", configuration.getClosedAccessDisableDate());
         addEmbargoDateFormAttributes(model, project);
     }
 
@@ -255,7 +259,7 @@ public class ProjectController {
     private String getView(Model model, Project project, String viewName) {
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
         List<DataFile> dataFileList = dataFileDao.getDataFilesByProject(project);
-        String dataSpaceURL = OzTrackApplication.getApplicationContext().getDataSpaceURL();
+        String dataSpaceURL = configuration.getDataSpaceURL();
         model.addAttribute("project", project);
         model.addAttribute("projectAnimalsList", projectAnimalsList);
         model.addAttribute("dataFileList", dataFileList);
