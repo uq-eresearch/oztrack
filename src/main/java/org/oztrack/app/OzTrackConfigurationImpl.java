@@ -8,6 +8,7 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
     private SimpleDateFormat isoDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     private String baseURL;
+    private String geoServerLocalUrl;
     private String dataSpaceURL;
     private String dataSpaceUsername;
     private String dataSpacePassword;
@@ -32,6 +33,15 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
 
     public void setBaseURL(String baseURL) {
         this.baseURL = baseURL;
+    }
+
+    @Override
+    public String getGeoServerLocalUrl() {
+        return geoServerLocalUrl;
+    }
+
+    public void setGeoServerLocalUrl(String geoServerLocalUrl) {
+        this.geoServerLocalUrl = geoServerLocalUrl;
     }
 
     @Override

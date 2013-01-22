@@ -34,9 +34,9 @@ public class GeoServerClient {
     public GeoServerClient(
         String username,
         String password,
-        URI geoServerBaseUri
+        String geoServerBaseUrl
     ) {
-        this.geoServerRestUri = geoServerBaseUri.resolve("rest/");
+        this.geoServerRestUri = URI.create(geoServerBaseUrl + "/rest/");
 
         httpClient = new DefaultHttpClient();
 

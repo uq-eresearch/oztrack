@@ -44,6 +44,7 @@
 
     <bean id="applicationContext" class="org.oztrack.app.OzTrackConfigurationImpl">
         <property name="baseURL" value="${application.baseURL}"/>
+        <property name="geoServerLocalUrl" value="${application.geoServerLocalUrl}"/>
         <property name="dataSpaceURL" value="${application.dataSpaceURL}"/>
         <property name="dataSpaceUsername" value="${application.dataSpaceUsername}"/>
         <property name="dataSpacePassword" value="${application.dataSpacePassword}"/>
@@ -69,7 +70,7 @@
     <bean id="geoServerUploader" class="org.oztrack.geoserver.GeoServerUploader">
         <constructor-arg name="geoServerUsername" value="${application.geoServerUsername}"/>
         <constructor-arg name="geoServerPassword" value="${application.geoServerPassword}"/>
-        <constructor-arg name="geoServerLocalUri" value="${application.geoServerLocalUri}"/>
+        <constructor-arg name="geoServerBaseUrl" value="${application.geoServerLocalUrl}"/>
         <constructor-arg name="databaseHost" value="${application.databaseHost}"/>
         <constructor-arg name="databasePort" value="${application.databasePort}"/>
         <constructor-arg name="databaseName" value="${application.databaseName}"/>

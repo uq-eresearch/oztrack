@@ -4,6 +4,7 @@ import java.util.Date;
 
 public interface OzTrackConfiguration {
     String getBaseURL();
+    String getGeoServerLocalUrl();
     String getDataSpaceURL();
     String getDataSpaceUsername();
     String getDataSpacePassword();

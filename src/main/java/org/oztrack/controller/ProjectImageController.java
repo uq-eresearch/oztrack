@@ -28,6 +28,7 @@ import org.geotools.styling.StyleFactory;
 import org.geotools.styling.Symbolizer;
 import org.opengis.filter.FilterFactory;
 import org.opengis.style.GraphicalSymbol;
+import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Animal;
@@ -72,6 +73,9 @@ public class ProjectImageController {
 
     private final StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
     private final FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory(null);
+
+    @Autowired
+    private OzTrackConfiguration configuration;
 
     @Autowired
     private ProjectDao projectDao;
@@ -165,7 +169,7 @@ public class ProjectImageController {
     }
 
     private BufferedImage buildBaseLayerImage(ReferencedEnvelope mapBounds, Dimension mapDimension) throws Exception {
-        final String geoServerBaseUrl = "http://localhost/geoserver";
+        final String geoServerBaseUrl = configuration.getGeoServerLocalUrl();
         final String layerName = "oztrack:gebco_08";
         final String styleName = "oztrack_elevation";
         final String format = "image/jpeg";

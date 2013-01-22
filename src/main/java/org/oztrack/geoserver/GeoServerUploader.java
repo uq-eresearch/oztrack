@@ -3,7 +3,6 @@ package org.oztrack.geoserver;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +23,7 @@ public class GeoServerUploader {
 
     private final String geoServerUsername;
     private final String geoServerPassword;
-    private final URI geoServerLocalUri;
+    private final String geoServerBaseUrl;
     private final String databaseHost;
     private final Integer databasePort;
     private final String databaseName;
@@ -34,7 +33,7 @@ public class GeoServerUploader {
     public GeoServerUploader(
         final String geoServerUsername,
         final String geoServerPassword,
-        final String geoServerLocalUri,
+        final String geoServerBaseUrl,
         final String databaseHost,
         final Integer databasePort,
         final String databaseName,
@@ -43,7 +42,7 @@ public class GeoServerUploader {
     ) {
         this.geoServerUsername = geoServerUsername;
         this.geoServerPassword = geoServerPassword;
-        this.geoServerLocalUri = URI.create(geoServerLocalUri);
+        this.geoServerBaseUrl = geoServerBaseUrl;
         this.databaseHost = databaseHost;
         this.databasePort = databasePort;
         this.databaseName = databaseName;
@@ -52,7 +51,7 @@ public class GeoServerUploader {
     }
 
     public void upload() throws Exception {
-        GeoServerClient client = new GeoServerClient(geoServerUsername, geoServerPassword, geoServerLocalUri);
+        GeoServerClient client = new GeoServerClient(geoServerUsername, geoServerPassword, geoServerBaseUrl);
 
         final String namespacePrefix = Constants.namespacePrefix;
         final String namespaceUri = Constants.namespaceURI;
