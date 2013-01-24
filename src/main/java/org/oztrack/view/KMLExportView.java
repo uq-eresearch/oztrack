@@ -16,6 +16,8 @@ import org.oztrack.data.model.Project;
 import org.springframework.web.servlet.view.AbstractView;
 
 public class KMLExportView extends AbstractView{
+    private final SimpleDateFormat isoDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    private final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
     private final Animal animal;
     private final List<PositionFix> positionFixList;
 
@@ -55,17 +57,15 @@ public class KMLExportView extends AbstractView{
         }
         writer.append("<Folder>");
         writer.append("<name>" + animal.getId() + "</name>");
-        SimpleDateFormat timestampDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        SimpleDateFormat descriptionDateFormat = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss");
         for(PositionFix positionFix : positionFixList) {
             writer.append("<Placemark>");
             writer.append("  <styleUrl>#animal-" + animal.getId() + "</styleUrl>");
-            writer.append("  <description>" + descriptionDateFormat.format(positionFix.getDetectionTime()) + "</description>");
+            writer.append("  <description>" + dateTimeFormat.format(positionFix.getDetectionTime()) + "</description>");
             writer.append("  <Point>");
             writer.append("    <coordinates>" + positionFix.getLocationGeometry().getX() + "," + positionFix.getLocationGeometry().getY() + "</coordinates>");
             writer.append("  </Point>");
             writer.append("  <TimeStamp>");
-            writer.append("    <when>" + timestampDateFormat.format(positionFix.getDetectionTime()) + "</when>");
+            writer.append("    <when>" + isoDateTimeFormat.format(positionFix.getDetectionTime()) + "</when>");
             writer.append("  </TimeStamp>");
             writer.append("</Placemark>");
         }

@@ -23,6 +23,10 @@ import com.vividsolutions.jts.geom.Polygon;
 public class DataSpaceCollection {
     protected final Log logger = LogFactory.getLog(getClass());
 
+    private final SimpleDateFormat isoYearMonthDateFormat = new SimpleDateFormat("yyyy-MM");
+    private final SimpleDateFormat isoDateTimeUTCFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
     private static Template atomAgentTemplate;
     private static Template atomCollectionTemplate;
 
@@ -139,8 +143,9 @@ public class DataSpaceCollection {
     }
 
     public String getTemporalCoverage() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
-        return "start=" + sdf.format(dateRange.getMinimum()) + "; end=" + sdf.format(dateRange.getMaximum());
+        return
+            "start=" + isoYearMonthDateFormat.format(dateRange.getMinimum()) + "; " +
+            "end=" + isoYearMonthDateFormat.format(dateRange.getMaximum());
     }
 
     public String getBoundingBoxCoordinatesString() {
@@ -165,7 +170,6 @@ public class DataSpaceCollection {
             return "The data in this project are available in OzTrack for the public to use.";
         }
         else if (project.getAccess() == ProjectAccess.EMBARGO) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             return
                 "The data in the project are covered by an embargo period, " +
                 "ending " + dateFormat.format(project.getEmbargoDate()) + ", " +
@@ -182,15 +186,13 @@ public class DataSpaceCollection {
     public String getDataSpaceUpdateDate() {
         Date d = project.getDataSpaceUpdateDate();
         if (d == null) d = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        return sdf.format(d);
+        return isoDateTimeUTCFormat.format(d);
     }
 
     public String getDataSpaceAgentUpdateDate() {
         Date d = project.getDataSpaceAgent().getDataSpaceAgentUpdateDate();
         if (d == null) d = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        return sdf.format(d);
+        return isoDateTimeUTCFormat.format(d);
     }
 
     public String getContactDataSpaceURL() {

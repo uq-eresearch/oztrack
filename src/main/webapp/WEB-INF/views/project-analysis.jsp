@@ -6,7 +6,6 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <c:set var="isoDateFormatPattern" value="yyyy-MM-dd"/>
-<c:set var="dateTimeFormatPattern" value="dd/MM/yyyy' at 'HH:mm"/>
 <tags:page title="${project.title}: View Tracks" fluid="true">
     <jsp:attribute name="description">
         View and analyse animal tracking data in the ${project.title} project.
@@ -317,7 +316,7 @@
                 var analysisHeader = $('<div class="analysis-header">');
                 if (!saved) {
                     var analysisTimestamp = $('<span class="analysis-header-timestamp">')
-                        .text(dateToISO8601(analysisCreateDate) + ' ' + analysisCreateDate.toLocaleTimeString());
+                        .text(moment(analysisCreateDate).format('YYYY-MM-DD HH:mm'));
                     analysisHeader.append(analysisTimestamp);
                 }
                 var analysisLink = $('<a>')

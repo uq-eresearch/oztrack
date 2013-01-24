@@ -5,7 +5,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
-<c:set var="dateFormatPattern" value="dd/MM/yyyy"/>
+<c:set var="dateTimeFormatPattern" value="yyyy-MM-dd HH:mm:ss"/>
 <tags:page title="${project.title}: Data Files">
     <jsp:attribute name="description">
         Upload data files to the ${project.title} project.
@@ -44,12 +44,12 @@
 
             <table id="dataFileStatusTable" class="table table-bordered">
                 <col style="width: 200px;" />
-                <col style="width: 100px;" />
+                <col style="width: 300px;" />
                 <col style="width: 100px;" />
                 <thead>
                     <tr>
                         <th>File Name</th>
-                        <th>Upload Date</th>
+                        <th>Uploaded</th>
                         <th>File Status</th>
                     </tr>
                 </thead>
@@ -57,7 +57,10 @@
                 <c:forEach items="${dataFileList}" var="dataFile">
                     <tr>
                         <td><c:out value="${dataFile.userGivenFileName}"/></td>
-                        <td><fmt:formatDate pattern="${dateFormatPattern}" value="${dataFile.createDate}"/>
+                        <td>
+                            <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${dataFile.createDate}"/>
+                            by <c:out value="${dataFile.createUser.fullName}"/>
+                        </td>
                         <td><a href="${pageContext.request.contextPath}/datafiles/${dataFile.id}"><c:out value="${dataFile.status}"/></a></td>
                     </tr>
                 </c:forEach>

@@ -19,26 +19,13 @@ function deleteEntity(url, destUrl, message) {
     });
 }
 
-//Returns date in ISO8601 format: required by HTML 5 [1]; code taken from [2]; other discussion at [3].
-//[1] http://www.whatwg.org/specs/web-apps/current-work/multipage/common-microsyntaxes.html#dates-and-Elems
-//[2] https://developer.mozilla.org/en/Core_JavaScript_1.5_Reference:Global_Objects:Date
-//[3] http://stackoverflow.com/questions/2573521/how-do-i-output-an-iso-8601-formatted-string-in-javascript
-function padForISO8601(n) {
-    return (n < 10) ? ('0' + n) : n;
-}
-function dateToISO8601(d) {
-    return d.getUTCFullYear() + '-' + padForISO8601(d.getUTCMonth() + 1) + '-' + padForISO8601(d.getUTCDate());
-}
-function dateTimeToISO8601(d) {
-    return dateToISO8601(d) + 'T' + padForISO8601(d.getUTCHours()) + ':' + padForISO8601(d.getUTCMinutes()) + ':' + padForISO8601(d.getUTCSeconds()) + 'Z';
-}
-
 $(document).ready(function() {
     $.datepicker.setDefaults({
-        dateFormat: 'd/m/yy',
+        dateFormat: 'yy-mm-dd',
         altFormat: 'yy-mm-dd',
         changeMonth: true,
-        changeYear: true
+        changeYear: true,
+        firstDay: 1 // make first day of week Monday (default is Sunday)
     });
     // Fix bug where clearing field doesn't clear alt field
     // http://bugs.jqueryui.com/ticket/5734

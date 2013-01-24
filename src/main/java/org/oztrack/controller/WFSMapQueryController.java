@@ -53,7 +53,7 @@ import com.vividsolutions.jts.geom.Polygon;
 public class WFSMapQueryController {
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
     private ProjectDao projectDao;
@@ -77,13 +77,13 @@ public class WFSMapQueryController {
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setProject((projectId != null) ? projectDao.getProjectById(projectId) : null);
         try {
-            searchQuery.setFromDate(StringUtils.isNotBlank(fromDateString) ? dateFormat.parse(fromDateString) : null);
+            searchQuery.setFromDate(StringUtils.isNotBlank(fromDateString) ? isoDateFormat.parse(fromDateString) : null);
         }
         catch (ParseException e) {
             logger.error("Invalid fromDate", e);
         }
         try {
-            searchQuery.setToDate(StringUtils.isNotBlank(toDateString) ? dateFormat.parse(toDateString) : null);
+            searchQuery.setToDate(StringUtils.isNotBlank(toDateString) ? isoDateFormat.parse(toDateString) : null);
         }
         catch (ParseException e) {
             logger.error("Invalid toDate", e);

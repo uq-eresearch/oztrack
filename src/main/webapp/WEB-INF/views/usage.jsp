@@ -4,7 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
-<c:set var="dateTimeFormatPattern" value="dd/MM/yyyy' at 'HH:mm"/>
+<c:set var="dateTimeFormatPattern" value="yyyy-MM-dd HH:mm"/>
 <tags:page title="Usage">
     <jsp:attribute name="description">
         Summary of OzTrack usage statistics.
@@ -25,7 +25,7 @@
         <h1>Usage Summary</h1>
         <p>
             <jsp:useBean id="now" class="java.util.Date" />
-            <fmt:formatDate value="${now}" type="both" pattern="MM/dd/yyyy HH:mm:ss" />
+            <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${now}" />
         </p>
         <h2>Users</h2>
         <p>

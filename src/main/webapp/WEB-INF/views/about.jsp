@@ -115,6 +115,7 @@
             <li class="software"><a href="http://acko.net/blog/farbtastic-jquery-color-picker-plug-in/">Farbtastic</a>: JavaScript colour picker</li>
             <li class="software"><a href="http://openlayers.org/">OpenLayers</a>: JavaScript library for displaying map data in the Web browser</li>
             <li class="software"><a href="http://trac.osgeo.org/proj4js/">Proj4js</a>: JavaScript library to transform point coordinates from one coordinate system to another</li>
+            <li class="software"><a href="http://momentjs.com/">Moment.js</a>: JavaScript library for parsing, validating, manipulating, and formatting dates.</li>
             <li class="software"><a href="http://twitter.github.com/bootstrap/">Bootstrap</a>: front-end framework for web development</li>
             <li class="software"><a href="http://vitalets.github.com/x-editable/">X-editable</a>: in-place editing with Twitter Bootstrap</li>
             <li class="software"><a href="http://lesscss.org/">LESS</a>: extends CSS with dynamic behavior such as variables, mixins, operations, and functions</li>

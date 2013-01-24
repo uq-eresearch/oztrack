@@ -46,7 +46,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class AnalysisController {
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
     private AnalysisDao analysisDao;
@@ -111,10 +111,10 @@ public class AnalysisController {
         out.key("params").object();
         out.key("queryType").value(analysis.getAnalysisType());
         if (analysis.getFromDate() != null) {
-            out.key("fromDate").value(dateFormat.format(analysis.getFromDate()));
+            out.key("fromDate").value(isoDateFormat.format(analysis.getFromDate()));
         }
         if (analysis.getToDate() != null) {
-            out.key("toDate").value(dateFormat.format(analysis.getToDate()));
+            out.key("toDate").value(isoDateFormat.format(analysis.getToDate()));
         }
         out.key("animalIds").array();
         for (Animal animal : analysis.getAnimals()) {

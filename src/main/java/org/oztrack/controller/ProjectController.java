@@ -52,7 +52,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ProjectController {
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
     private OzTrackConfiguration configuration;

@@ -28,7 +28,7 @@ public class AnimalTrajectoryFeatureBuilder {
         private List<Coordinate> coordinates;
     }
 
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private final GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
     private final List<PositionFix> positionFixList;
 
@@ -79,8 +79,8 @@ public class AnimalTrajectoryFeatureBuilder {
     private SimpleFeature buildFeature(SimpleFeatureType featureType, AnimalTrajectory animalTrajectory) {
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
         featureBuilder.set("animalId", animalTrajectory.animal.getId());
-        featureBuilder.set("fromDate", (animalTrajectory.fromDate == null) ? null : dateFormat.format(animalTrajectory.fromDate));
-        featureBuilder.set("toDate", (animalTrajectory.toDate == null) ? null : dateFormat.format(animalTrajectory.toDate));
+        featureBuilder.set("fromDate", (animalTrajectory.fromDate == null) ? null : isoDateFormat.format(animalTrajectory.fromDate));
+        featureBuilder.set("toDate", (animalTrajectory.toDate == null) ? null : isoDateFormat.format(animalTrajectory.toDate));
         LineString lineString = null;
         if (animalTrajectory.coordinates.size() >= 2) {
             lineString = geometryFactory.createLineString(animalTrajectory.coordinates.toArray(new Coordinate[] {}));

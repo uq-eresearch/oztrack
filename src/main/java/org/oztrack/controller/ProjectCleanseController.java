@@ -43,7 +43,8 @@ import com.vividsolutions.jts.io.WKTReader;
 @Controller
 public class ProjectCleanseController {
     protected final Log logger = LogFactory.getLog(getClass());
-    private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+    private final DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
     private ProjectDao projectDao;
@@ -89,10 +90,10 @@ public class ProjectCleanseController {
         Date toDate = null;
         try {
             if (StringUtils.isNotBlank(fromDateString)) {
-                fromDate = dateFormat.parse(fromDateString);
+                fromDate = isoDateFormat.parse(fromDateString);
             }
             if (StringUtils.isNotBlank(toDateString)) {
-                toDate = (toDateString == null) ? null : dateFormat.parse(toDateString);
+                toDate = (toDateString == null) ? null : isoDateFormat.parse(toDateString);
             }
         }
         catch (java.text.ParseException e1) {

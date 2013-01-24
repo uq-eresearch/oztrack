@@ -120,6 +120,7 @@ public class SearchController {
         Page<PositionFix> positionFixPage = positionFixDao.getPage(searchQuery, offset, 30);
         model.addAttribute("positionFixList", positionFixPage.getObjects());
         model.addAttribute("projectAnimalsList", projectAnimalsList);
+        model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, false));
         model.addAttribute("offset", offset);
         model.addAttribute("nbrObjectsPerPage", positionFixPage.getLimit());
         model.addAttribute("nbrObjectsThisPage", positionFixPage.getObjects().size());

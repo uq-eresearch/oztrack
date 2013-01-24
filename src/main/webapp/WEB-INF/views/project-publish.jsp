@@ -4,9 +4,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
-<c:set var="dateFormatPattern" value="dd/MM/yyyy"/>
-<c:set var="dateTimeFormatPattern" value="dd/MM/yyyy HH:mm:ss"/>
-<c:set var="shortDateFormatPattern" value="MMMM yyyy"/>
+<c:set var="dateFormatPattern" value="yyyy-MM-dd"/>
+<c:set var="dateTimeFormatPattern" value="yyyy-MM-dd HH:mm:ss"/>
+<c:set var="monthYearDateFormatPattern" value="MMMM yyyy"/>
 <tags:page title="${project.title}: Publish Metadata">
     <jsp:attribute name="description">
         Publish metadata for the ${project.title} project.
@@ -143,9 +143,9 @@
                 No data have been uploaded for this project yet.
             </c:when>
             <c:otherwise>
-                <fmt:formatDate pattern="${shortDateFormatPattern}" value="${projectDetectionDateRange.minimum}"/>
+                <fmt:formatDate pattern="${monthYearDateFormatPattern}" value="${projectDetectionDateRange.minimum}"/>
                 to
-                <fmt:formatDate pattern="${shortDateFormatPattern}" value="${projectDetectionDateRange.maximum}"/>
+                <fmt:formatDate pattern="${monthYearDateFormatPattern}" value="${projectDetectionDateRange.maximum}"/>
             </c:otherwise>
             </c:choose>
             </td></tr>
@@ -192,7 +192,7 @@
                 <c:otherwise>
                     <b>Collection Manager record: </b><br/>
                     Published to <c:out value="${dataSpaceURL}"/>agents/<c:out value = "${project.dataSpaceAgent.dataSpaceAgentURI}"/> <br/>
-                    Last updated on    <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${project.dataSpaceAgent.dataSpaceAgentUpdateDate}"/>.
+                    Last updated on <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${project.dataSpaceAgent.dataSpaceAgentUpdateDate}"/>.
                 </c:otherwise>
                 </c:choose>
                 <br/><br/>

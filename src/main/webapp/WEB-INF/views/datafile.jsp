@@ -5,7 +5,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
-<c:set var="dateTimeFormatPattern" value="dd/MM/yyyy HH:mm:ss"/>
+<c:set var="dateTimeFormatPattern" value="yyyy-MM-dd HH:mm:ss"/>
 <tags:page title="${dataFile.project.title}: Data File ${dataFile.userGivenFileName}">
     <jsp:attribute name="description">
         Data file ${dataFile.userGivenFileName} uploaded to the ${dataFile.project.title} project.

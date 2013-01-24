@@ -23,7 +23,7 @@ public class AnimalStartEndFeatureBuilder {
         private PositionFix endPositionFix;
     }
 
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private final List<PositionFix> positionFixList;
 
     public AnimalStartEndFeatureBuilder(List<PositionFix> positionFixList) {
@@ -75,8 +75,8 @@ public class AnimalStartEndFeatureBuilder {
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
         featureBuilder.set("animalId", startEnd.animal.getId());
         featureBuilder.set("identifier", identifier);
-        featureBuilder.set("fromDate", (startEnd.startPositionFix == null) ? null : dateFormat.format(startEnd.startPositionFix.getDetectionTime()));
-        featureBuilder.set("toDate", (startEnd.endPositionFix == null) ? null : dateFormat.format(startEnd.endPositionFix.getDetectionTime()));
+        featureBuilder.set("fromDate", (startEnd.startPositionFix == null) ? null : isoDateFormat.format(startEnd.startPositionFix.getDetectionTime()));
+        featureBuilder.set("toDate", (startEnd.endPositionFix == null) ? null : isoDateFormat.format(startEnd.endPositionFix.getDetectionTime()));
         featureBuilder.set("point", (identifier.equals("start") ? startEnd.startPositionFix : startEnd.endPositionFix).getLocationGeometry());
         String featureId = startEnd.animal.getId().toString();
         if (identifier != null) {

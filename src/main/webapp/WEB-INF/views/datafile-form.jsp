@@ -139,6 +139,7 @@ Bert,12/08/2009 2:55:00,142.10619,-12.32208
             <li><span>dd/MM/yyyy</span></li>
             <li><span>dd.MM.yyyy</span></li>
             <li><span>yyyy.MM.dd</span></li>
+            <li><span>yyyy-MM-dd</span></li>
         </ul>
 
         <p>Time formats that can be read:</p>
@@ -153,6 +154,7 @@ Bert,12/08/2009 2:55:00,142.10619,-12.32208
             <li><span>dd/MM/yyyy H:mi</span></li>
             <li><span>dd.MM.yyyy H:mi:s.S</span></li>
             <li><span>yyyy.MM.dd H:mi:s</span></li>
+            <li><span>yyyy-MM-dd H:mi:s.S</span></li>
         </ul>
 
         <table class="table table-bordered table-condensed">

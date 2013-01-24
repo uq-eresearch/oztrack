@@ -43,7 +43,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AnalysisListController {
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
     private ProjectDao projectDao;
@@ -89,13 +89,13 @@ public class AnalysisListController {
         analysis.setMessage(null);
         analysis.setProject((projectId != null) ? projectDao.getProjectById(projectId) : null);
         try {
-            analysis.setFromDate(StringUtils.isNotBlank(fromDateString) ? dateFormat.parse(fromDateString) : null);
+            analysis.setFromDate(StringUtils.isNotBlank(fromDateString) ? isoDateFormat.parse(fromDateString) : null);
         }
         catch (ParseException e) {
             logger.error("Invalid fromDate", e);
         }
         try {
-            analysis.setToDate(StringUtils.isNotBlank(toDateString) ? dateFormat.parse(toDateString) : null);
+            analysis.setToDate(StringUtils.isNotBlank(toDateString) ? isoDateFormat.parse(toDateString) : null);
         }
         catch (ParseException e) {
             logger.error("Invalid toDate", e);

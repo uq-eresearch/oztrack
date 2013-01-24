@@ -29,7 +29,7 @@ public class AnimalDetectionsFeatureBuilder {
         private List<Coordinate> deletedCoordinates;
     }
 
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private final GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
     private final List<PositionFix> positionFixList;
     private final boolean includeDeleted;
@@ -97,8 +97,8 @@ public class AnimalDetectionsFeatureBuilder {
     private SimpleFeature buildFeature(SimpleFeatureType featureType, AnimalDetections animalDetections, boolean deleted) {
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
         featureBuilder.set("animalId", animalDetections.animal.getId());
-        featureBuilder.set("fromDate", (animalDetections.fromDate == null) ? null : dateFormat.format(animalDetections.fromDate));
-        featureBuilder.set("toDate", (animalDetections.toDate == null) ? null : dateFormat.format(animalDetections.toDate));
+        featureBuilder.set("fromDate", (animalDetections.fromDate == null) ? null : isoDateFormat.format(animalDetections.fromDate));
+        featureBuilder.set("toDate", (animalDetections.toDate == null) ? null : isoDateFormat.format(animalDetections.toDate));
         featureBuilder.set("deleted", deleted);
         List<Coordinate> coordinates = deleted ? animalDetections.deletedCoordinates : animalDetections.nondeletedCoordinates;
         featureBuilder.set("multiPoint", geometryFactory.createMultiPoint(coordinates.toArray(new Coordinate[] {})));

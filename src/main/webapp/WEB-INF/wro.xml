@@ -6,6 +6,7 @@
     <css>/css/jquery-ui/jquery-ui-1.8.23.custom.css</css>
     <css>/less/bootstrap/bootstrap.less</css>
     <css>/css/bootstrap-editable/bootstrap-editable.css</css>
+    <js>/js/moment/moment.min.js</js>
     <js>/js/jquery/jquery-1.8.0.min.js</js>
     <js>/js/jquery/jquery-ui-1.8.23.custom.min.js</js>
     <js>/js/bootstrap/bootstrap-transition.js</js>

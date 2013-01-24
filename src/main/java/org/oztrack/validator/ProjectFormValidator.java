@@ -15,7 +15,7 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 public class ProjectFormValidator implements Validator {
-    private SimpleDateFormat shortDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
     public boolean supports(@SuppressWarnings("rawtypes") Class clazz) {
@@ -48,7 +48,7 @@ public class ProjectFormValidator implements Validator {
                 }
                 EmbargoUtils.EmbargoInfo embargoInfo = EmbargoUtils.getEmbargoInfo(createDate);
                 if (project.getEmbargoDate().after(embargoInfo.getMaxEmbargoDate())) {
-                    errors.rejectValue("embargoDate", "error.embargoDate", "Embargo date must be " + shortDateFormat.format(embargoInfo.getMaxEmbargoDate()) + " or earlier.");
+                    errors.rejectValue("embargoDate", "error.embargoDate", "Embargo date must be " + dateFormat.format(embargoInfo.getMaxEmbargoDate()) + " or earlier.");
                 }
             }
         }

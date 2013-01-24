@@ -5,8 +5,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
-<c:set var="dateFormatPattern" value="dd/MM/yyyy"/>
-<c:set var="dateTimeFormatPattern" value="dd/MM/yyyy HH:mm:ss"/>
+<c:set var="dateFormatPattern" value="yyyy-MM-dd"/>
+<c:set var="dateTimeFormatPattern" value="yyyy-MM-dd HH:mm:ss"/>
 <tags:page title="${project.title}: View Data">
     <jsp:attribute name="description">
         View data in the ${project.title} project.
@@ -29,10 +29,16 @@
                 $('#navTrack').addClass('active');
                 $('#projectMenuSearch').addClass('active');
                 $('#fromDateVisible').datepicker({
-                    altField: "#fromDate"
+                    altField: "#fromDate",
+                    minDate: new Date(${projectDetectionDateRange.minimum.time}),
+                    maxDate: new Date(${projectDetectionDateRange.maximum.time}),
+                    defaultDate: new Date(${projectDetectionDateRange.minimum.time})
                 });
                 $('#toDateVisible').datepicker({
-                    altField: "#toDate"
+                    altField: "#toDate",
+                    minDate: new Date(${projectDetectionDateRange.minimum.time}),
+                    maxDate: new Date(${projectDetectionDateRange.maximum.time}),
+                    defaultDate: new Date(${projectDetectionDateRange.maximum.time})
                 });
             });
         </script>

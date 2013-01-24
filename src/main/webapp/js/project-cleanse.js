@@ -188,10 +188,10 @@ function createCleanseMap(div, options) {
             var fromDate = jQuery('#fromDate').val();
             var toDate = jQuery('#toDate').val();
             if (fromDate) {
-                cqlFilter += ' and detectiontime >= \'' + dateTimeToISO8601(new Date(fromDate)) + '\'';
+                cqlFilter += ' and detectiontime >= \'' + moment(new Date(fromDate)).format('YYYY-MM-DD') + '\'';
             }
             if (toDate) {
-                cqlFilter += ' and detectiontime <= \'' + dateTimeToISO8601(new Date(toDate)) + '\'';
+                cqlFilter += ' and detectiontime <= \'' + moment(new Date(toDate)).format('YYYY-MM-DD') + '\'';
             }
             return cqlFilter;
         }

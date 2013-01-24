@@ -98,11 +98,9 @@ function createAnalysisMap(div, options) {
             polygonStyleMap = createPolygonStyleMap();
 
             var allDetectionsLayer = createDetectionLayer({});
-            detectionLayers.push(allDetectionsLayer);
             map.addLayer(allDetectionsLayer.getWMSLayer());
 
             var allTrajectoriesLayer = createTrajectoryLayer({});
-            trajectoryLayers.push(allTrajectoriesLayer);
             map.addLayer(allTrajectoriesLayer.getWMSLayer());
 
             map.addLayer(createWFSLayer('Start and End Points', 'StartEnd', {
@@ -268,12 +266,10 @@ function createAnalysisMap(div, options) {
             });
             if (queryTypeValue == "LINES") {
                 var trajectoryLayer = createTrajectoryLayer(params);
-                trajectoryLayers.push(trajectoryLayer);
                 map.addLayer(trajectoryLayer.getWMSLayer());
             }
             else if (queryTypeValue == "POINTS") {
                 var detectionLayer = createDetectionLayer(params);
-                detectionLayers.push(detectionLayer);
                 map.addLayer(detectionLayer.getWMSLayer());
             }
             else if (queryTypeValue == "START_END") {
@@ -418,6 +414,8 @@ function createAnalysisMap(div, options) {
                 projectMapLayers[id].getWMSLayer().destroy();
                 delete projectMapLayers[id];
             }
+            detectionLayers = $.grep(detectionLayers, function(e, i) {return e.id != id});
+            trajectoryLayers = $.grep(trajectoryLayers, function(e, i) {return e.id != id});
             $('.projectMapLayerInfo-' + id).fadeOut().remove();
         };
 
@@ -434,27 +432,23 @@ function createAnalysisMap(div, options) {
 
         function createDetectionLayer(params) {
             function buildFilter(params) {
-                var visibleAnimalIds = [];
-                for (i = 0; i < animalIds.length; i++) {
-                    if (animalVisible[animalIds[i]]) {
-                        visibleAnimalIds.push(animalIds[i]);
-                    }
-                }
-                // Include bogus animal ID (e.g. -1) that will never be matched.
-                // This covers the case where no animals are selected to be visible,
-                // preventing the CQL_FILTER parameter from being syntactically invalid.
-                if (visibleAnimalIds.length == 0) {
-                    visibleAnimalIds.push(-1);
-                }
-                var cqlFilter =
-                    'deleted = false' +
-                    ' and project_id = ' + projectId +
-                    ' and animal_id in (' + visibleAnimalIds.join(', ') + ')';
+                // If supplied, use param to filter animals; otherwise, include all animals.
+                var cqlFilterAnimalIds = params.animalIds ? params.animalIds.split(',') : animalIds;
+                
+                // Exclude animals not currently visible on the map.
+                cqlFilterAnimalIds = $.grep(cqlFilterAnimalIds, function(e, i) {return animalVisible[e]});
+                
+                // If filter is empty, include dummy ID (i.e. -1) that will never be matched.
+                // This prevents the CQL_FILTER parameter from being syntactically invalid.
+                cqlFilterAnimalIds = (cqlFilterAnimalIds.length > 0) ? cqlFilterAnimalIds : [-1];
+                
+                var cqlFilter = 'project_id = ' + projectId + ' and deleted = false';
+                cqlFilter += ' and animal_id in (' + cqlFilterAnimalIds.join(',') + ')';
                 if (params.fromDate) {
-                    cqlFilter += ' and detectiontime >= \'' + dateTimeToISO8601(new Date(params.fromDate)) + '\'';
+                    cqlFilter += ' and detectiontime >= \'' + moment(new Date(params.fromDate)).format('YYYY-MM-DD') + '\'';
                 }
                 if (params.toDate) {
-                    cqlFilter += ' and detectiontime <= \'' + dateTimeToISO8601(new Date(params.toDate)) + '\'';
+                    cqlFilter += ' and detectiontime <= \'' + moment(new Date(params.toDate)).format('YYYY-MM-DD') + '\'';
                 }
                 return cqlFilter;
             }
@@ -490,6 +484,7 @@ function createAnalysisMap(div, options) {
                 }
             };
             projectMapLayers[layer.id] = layer;
+            detectionLayers.push(layer);
             updateAnimalInfoFromLayer(layer);
             onAnalysisSuccess();
             return layer;
@@ -504,26 +499,23 @@ function createAnalysisMap(div, options) {
         
         function createTrajectoryLayer(params) {
             function buildFilter(params) {
-                var visibleAnimalIds = [];
-                for (i = 0; i < animalIds.length; i++) {
-                    if (animalVisible[animalIds[i]]) {
-                        visibleAnimalIds.push(animalIds[i]);
-                    }
-                }
-                // Include bogus animal ID (e.g. -1) that will never be matched.
-                // This covers the case where no animals are selected to be visible,
-                // preventing the CQL_FILTER parameter from being syntactically invalid.
-                if (visibleAnimalIds.length == 0) {
-                    visibleAnimalIds.push(-1);
-                }
-                var cqlFilter =
-                    'project_id = ' + projectId +
-                    ' and animal_id in (' + visibleAnimalIds.join(', ') + ')';
+                // If supplied, use param to filter animals; otherwise, include all animals.
+                var cqlFilterAnimalIds = params.animalIds ? params.animalIds.split(',') : animalIds;
+                
+                // Exclude animals not currently visible on the map.
+                cqlFilterAnimalIds = $.grep(cqlFilterAnimalIds, function(e, i) {return animalVisible[e]});
+                
+                // If filter is empty, include dummy ID (i.e. -1) that will never be matched.
+                // This prevents the CQL_FILTER parameter from being syntactically invalid.
+                cqlFilterAnimalIds = (cqlFilterAnimalIds.length > 0) ? cqlFilterAnimalIds : [-1];
+
+                var cqlFilter = 'project_id = ' + projectId;
+                cqlFilter += ' and animal_id in (' + cqlFilterAnimalIds.join(',') + ')';
                 if (params.fromDate) {
-                    cqlFilter += ' and startdetectiontime >= \'' + dateTimeToISO8601(new Date(params.fromDate)) + '\'';
+                    cqlFilter += ' and startdetectiontime >= \'' + moment(new Date(params.fromDate)).format('YYYY-MM-DD') + '\'';
                 }
                 if (params.toDate) {
-                    cqlFilter += ' and enddetectiontime <= \'' + dateTimeToISO8601(new Date(params.toDate)) + '\'';
+                    cqlFilter += ' and enddetectiontime <= \'' + moment(new Date(params.toDate)).format('YYYY-MM-DD') + '\'';
                 }
                 return cqlFilter;
             }
@@ -559,6 +551,7 @@ function createAnalysisMap(div, options) {
                 }
             };
             projectMapLayers[layer.id] = layer;
+            trajectoryLayers.push(layer);
             updateAnimalInfoFromLayer(layer);
             onAnalysisSuccess();
             return layer;
@@ -598,7 +591,7 @@ function createAnalysisMap(div, options) {
 
         function updateAnimalInfoFromWFS(wfsLayer, wfsLayerId) {
             var animalProcessed = {};
-            for ( var key in wfsLayer.features) {
+            for (var key in wfsLayer.features) {
                 var feature = wfsLayer.features[key];
                 if (feature.attributes && feature.attributes.animalId) {
                     if (animalProcessed[feature.attributes.animalId]) {
@@ -640,18 +633,19 @@ function createAnalysisMap(div, options) {
         }
         
         function updateAnimalInfoFromLayer(layer) {
-            for (var i = 0; i < animalIds.length; i++) {
+            var layerAnimalIds = layer.getParams().animalIds ? layer.getParams().animalIds.split(',') : animalIds
+            for (var i = 0; i < layerAnimalIds.length; i++) {
                 var html = '<div class="layerInfoTitle">';
                 html += '<a class="layer-delete" href="javascript:analysisMap.deleteProjectMapLayer(' + layer.id + ');">delete</a></span>';
                 html += layer.getTitle();
                 html += '</div>';
                 var tableRowsHtml = '';
-                var fromDate = layer.getParams().fromDate || dateToISO8601(minDate);
+                var fromDate = layer.getParams().fromDate || moment(minDate).format('YYYY-MM-DD');
                 tableRowsHtml += '<tr>';
                 tableRowsHtml += '<td class="layerInfoLabel">Date From:</td>';
                 tableRowsHtml += '<td>' + fromDate + '</td>';
                 tableRowsHtml += '</tr>';
-                var toDate = layer.getParams().toDate || dateToISO8601(maxDate);
+                var toDate = layer.getParams().toDate || moment(maxDate).format('YYYY-MM-DD');
                 tableRowsHtml += '<tr>';
                 tableRowsHtml += '<td class="layerInfoLabel">Date To:</td>';
                 tableRowsHtml += '<td>' + toDate + '</td>';
@@ -659,7 +653,7 @@ function createAnalysisMap(div, options) {
                 if (tableRowsHtml != '') {
                     html += '<table>' + tableRowsHtml + '</table>';
                 }
-                $('#animalInfo-' + animalIds[i]).append('<div class="layerInfo projectMapLayerInfo-' + layer.id + '">' + html + '</div>');
+                $('#animalInfo-' + layerAnimalIds[i]).append('<div class="layerInfo projectMapLayerInfo-' + layer.id + '">' + html + '</div>');
             }
         }
 

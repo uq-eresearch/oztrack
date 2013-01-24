@@ -6,9 +6,9 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
-<c:set var="dateFormatPattern" value="dd/MM/yyyy"/>
-<c:set var="dateTimeFormatPattern" value="dd/MM/yyyy HH:mm:ss"/>
-<c:set var="shortDateFormatPattern" value="MMMM yyyy"/>
+<c:set var="dateFormatPattern" value="yyyy-MM-dd"/>
+<c:set var="dateTimeFormatPattern" value="yyyy-MM-dd HH:mm:ss"/>
+<c:set var="monthYearDateFormatPattern" value="MMMM yyyy"/>
 <c:set var="dataLicencingEnabled"><%= OzTrackApplication.getApplicationContext().isDataLicencingEnabled() %></c:set>
 <tags:page title="${project.title}">
     <jsp:attribute name="description">
@@ -246,7 +246,8 @@
                     No data have been uploaded for this project yet.
                 </c:when>
                 <c:otherwise>
-                    <fmt:formatDate pattern="${shortDateFormatPattern}" value="${projectDetectionDateRange.minimum}"/> to <fmt:formatDate pattern="${shortDateFormatPattern}" value="${projectDetectionDateRange.maximum}"/>
+                    <fmt:formatDate pattern="${monthYearDateFormatPattern}" value="${projectDetectionDateRange.minimum}"/> to
+                    <fmt:formatDate pattern="${monthYearDateFormatPattern}" value="${projectDetectionDateRange.maximum}"/>
                 </c:otherwise>
                 </c:choose>
             </td>

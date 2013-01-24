@@ -15,6 +15,8 @@ import org.springframework.web.servlet.view.AbstractView;
 public class DataSpaceInterfaceView extends AbstractView {
     protected final Log logger = LogFactory.getLog(getClass());
 
+    private final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     public DataSpaceInterfaceView() {
     }
 
@@ -26,17 +28,14 @@ public class DataSpaceInterfaceView extends AbstractView {
     ) throws Exception {
         Project project = (Project) model.get("project");
         String errorMessage = (String) model.get("errorMessage");
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         String dataSpaceURL = OzTrackApplication.getApplicationContext().getDataSpaceURL();
-
         String agentURL = dataSpaceURL + "agents/" + project.getDataSpaceAgent().getDataSpaceAgentURI();
         String collectionURL = dataSpaceURL + "collections/" + project.getDataSpaceURI();
 
         String json = "{ \"dataSpaceAgentURL\" : \"" + agentURL + "\""
-                    + ",\"dataSpaceAgentUpdateDate\" : \"" + simpleDateFormat.format(project.getDataSpaceAgent().getDataSpaceAgentUpdateDate()) + "\""
+                    + ",\"dataSpaceAgentUpdateDate\" : \"" + dateTimeFormat.format(project.getDataSpaceAgent().getDataSpaceAgentUpdateDate()) + "\""
                     + ",\"dataSpaceCollectionURL\" : \"" + collectionURL + "\""
-                    + ",\"dataSpaceUpdateDate\" : \"" + simpleDateFormat.format(project.getDataSpaceUpdateDate()) + "\""
+                    + ",\"dataSpaceUpdateDate\" : \"" + dateTimeFormat.format(project.getDataSpaceUpdateDate()) + "\""
                     + ",\"errorMessage\" : \"" + errorMessage + "\""
                     + "}";
 
