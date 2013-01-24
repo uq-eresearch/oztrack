@@ -1,0 +1,23 @@
+<layer>
+  <name>gebco_08</name>
+  <type>RASTER</type>
+  <defaultStyle>
+    <name>oztrack_bathymetry</name>
+  </defaultStyle>
+  <styles>
+    <style>
+      <name>oztrack_bathymetry</name>
+    </style>
+    <style>
+      <name>oztrack_elevation</name>
+    </style>
+  </styles>
+  <resource class="coverage">
+    <name>gebco_08</name>
+  </resource>
+  <enabled>true</enabled>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>

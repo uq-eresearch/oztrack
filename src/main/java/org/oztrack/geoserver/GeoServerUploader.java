@@ -170,6 +170,52 @@ public class GeoServerUploader {
                 new HashMap<String, Object>()
             )
         );
+
+        client.replace(
+            "workspaces/" + workspaceName + "/coveragestores",
+            "gebco_08",
+            "application/xml",
+            createFreemarkerEntity(
+                "coveragestores/gebco_08.xml.ftl",
+                new HashMap<String, Object>() {{
+                }}
+            )
+        );
+        client.replace(
+            "workspaces/" + workspaceName + "/coveragestores" + "/" + "gebco_08" + "/coverages",
+            "gebco_08",
+            "application/xml",
+            createFreemarkerEntity(
+                "coverages/gebco_08.xml.ftl",
+                new HashMap<String, Object>() {{
+                }}
+            )
+        );
+        client.replaceStyle(
+            workspaceName + "_" + "bathymetry",
+            createFreemarkerEntity(
+                "styles/bathymetry.sld.ftl",
+                new HashMap<String, Object>() {{
+                }}
+            )
+        );
+        client.replaceStyle(
+            workspaceName + "_" + "elevation",
+            createFreemarkerEntity(
+                "styles/elevation.sld.ftl",
+                new HashMap<String, Object>() {{
+                }}
+            )
+        );
+        client.replace(
+            "layers",
+            "gebco_08",
+            "application/xml",
+            createFreemarkerEntity(
+                "layers/gebco_08.xml.ftl",
+                new HashMap<String, Object>()
+            )
+        );
     }
 
     private ContentProducer createFreemarkerContentProvider(String templateName, final Map<String, Object> datamodel) throws Exception {
