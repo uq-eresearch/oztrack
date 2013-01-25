@@ -5,6 +5,7 @@ import java.util.List;
 public class AnalysisParameterType {
     private final String identifier;
     private final String displayName;
+    private final String explanation;
     private final String dataType;
     private final String units;
     private final String defaultValue;
@@ -14,6 +15,7 @@ public class AnalysisParameterType {
     public AnalysisParameterType(
         String identifier,
         String displayName,
+        String explanation,
         String dataType,
         String units,
         String defaultValue,
@@ -22,6 +24,7 @@ public class AnalysisParameterType {
     ) {
         this.identifier = identifier;
         this.displayName = displayName;
+        this.explanation = explanation;
         this.dataType = dataType;
         this.units = units;
         this.defaultValue = defaultValue;
@@ -35,6 +38,10 @@ public class AnalysisParameterType {
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public String getExplanation() {
+        return explanation;
     }
 
     public String getDataType() {

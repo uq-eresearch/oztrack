@@ -19,13 +19,6 @@
             #projectMapOptions .ui-accordion-content {
                 padding: 10px;
             }
-            #projectMapHelp {
-                display: none;
-            }
-            #projectMapHelp p {
-                text-align: justify;
-                margin: 1em 0;
-            }
             #mapToolForm {
                 padding-left:0px;
                 padding-top:0px;
@@ -104,15 +97,20 @@
             .layerInfoLabel {
                 width: 7em;
             }
-            .citation {
-                font-style: italic;
-                text-align: left;
-            }
             a.layer-delete {
                 float: right;
                 margin-right: 3px;
                 font-size: 11px;
                 color: #666;
+            }
+            .paramTable {
+                margin: 6px 0;
+                width: 100%;
+                background-color: #dcdcb8;
+                border: 3px solid #dcdcb8;
+            }
+            .paramTable td {
+                padding: 2px;
             }
             #savedAnalysesList .analysis-header {
                 padding: 2px 4px;
@@ -216,27 +214,7 @@
                 });
 
                 $('#queryTypeSelect-MCP').trigger('click');
-                $('#projectMapHelpLink').click(function() {
-                    var elem = $('#projectMapHelp');
-                    if (elem.dialog('isOpen') === true) {
-                        elem.dialog('close');
-                    }
-                    else {
-                        elem.dialog({
-                            title: 'Analysis Tools Help',
-                            width: $('#projectMap').width() - 5,
-                            height: $('#projectMap').height() - 5,
-                            modal: false,
-                            resizable: true,
-                            zIndex: 9999999,
-                            position: { 
-                                my: 'center center',
-                                at: 'center center',
-                                of: $('#projectMap')
-                            }
-                        });
-                    }
-                });
+
                 var projectBounds = new OpenLayers.Bounds(
                     ${projectBoundingBox.envelopeInternal.minX}, ${projectBoundingBox.envelopeInternal.minY},
                     ${projectBoundingBox.envelopeInternal.maxX}, ${projectBoundingBox.envelopeInternal.maxY}
@@ -483,7 +461,7 @@
             function onResize() {
                 var mainHeight = $(window).height() - $('#header').height() - $('#crumbs').height() - 21;
                 $('#projectMapOptions').height(mainHeight);
-                $('#projectMapOptions .ui-accordion-content').height($('#projectMapOptions').height() - (70 + $('#projectMapOptionsAccordion > h3').length * 30));
+                $('#projectMapOptions .ui-accordion-content').height($('#projectMapOptions').height() - (40 + $('#projectMapOptionsAccordion > h3').length * 30));
                 $('#projectMap').height(mainHeight);
                 if (analysisMap) {
                     analysisMap.updateSize();
@@ -576,7 +554,13 @@
                     <input id="projectId" type="hidden" value="${project.id}"/>
                     <fieldset>
                     <div class="control-group" style="margin-bottom: 9px;">
-                        <div style="margin-bottom: 9px; font-weight: bold;">Date Range</div>
+                        <div style="margin-bottom: 9px; font-weight: bold;">
+                            <span>Date Range</span>
+                            <div class="help-popover" title="Date Range">
+                                Choose a date range from within your data file for analysis.
+                                If left blank, all data for the selected animals will be included in the analysis.
+                            </div>
+                        </div>
                         <div class="controls">
                             <input id="fromDate" type="hidden"/>
                             <input id="toDate" type="hidden"/>
@@ -585,7 +569,14 @@
                         </div>
                     </div>
                     <div class="control-group" style="margin-bottom: 9px;">
-                    <div style="margin-bottom: 9px; font-weight: bold;">Animals</div>
+                        <div style="margin-bottom: 9px; font-weight: bold;">
+                            <span>Animals</span>
+                            <div class="help-popover" title="Animals">
+                                Choose one or more animals for analysis and visualisation.
+                                OzTrack can generate layers for multiple animals at a time; however, the processing time is
+                                positively related to the number of animals and location fixes included in the analysis.
+                            </div>
+                        </div>
                         <div id="animalsFilter" class="controls">
                             <div style="background-color: #d8e0a8;">
                             <div class="animalsFilterCheckbox">
@@ -618,7 +609,7 @@
                     <div class="control-group" style="margin-bottom: 9px;">
                         <div style="margin-bottom: 9px; font-weight: bold;">Layer Type</div>
                         <div class="controls">
-                            <table class="queryType">
+                            <table class="queryType" style="width: 100%;">
                                 <c:forEach items="${mapLayerTypeList}" var="mapLayerType">
                                 <tr>
                                     <td style="padding: 0 5px; vertical-align: top;">
@@ -630,13 +621,18 @@
                                         />
                                     </td>
                                     <td id="${mapLayerType}">
-                                        <label style="margin: 2px 0 0 0;" for="queryTypeSelect-${mapLayerType}"><c:out value="${mapLayerType.displayName}"/></label>
+                                        <label style="display: inline-block; margin: 2px 0 0 0;" for="queryTypeSelect-${mapLayerType}">${mapLayerType.displayName}</label>
+                                        <c:if test="${not empty mapLayerType.explanation}">
+                                        <div class="help-popover" title="${mapLayerType.displayName}">
+                                            ${mapLayerType.explanation}
+                                        </div>
+                                        </c:if>
                                     </td>
                                 </tr>
                                 </c:forEach>
                                 <c:forEach items="${analysisTypeList}" var="analysisType">
                                 <tr>
-                                    <td style="padding: 0 5px; vertical-align: top;">
+                                    <td style="padding: 0 5px; vertical-align: top; width: 16px;">
                                         <input type="radio"
                                             name="queryTypeSelect"
                                             id="queryTypeSelect-${analysisType}"
@@ -645,8 +641,13 @@
                                         />
                                     </td>
                                     <td id="${analysisType}">
-                                        <label style="margin: 2px 0 0 0;" for="queryTypeSelect-${analysisType}"><c:out value="${analysisType.displayName}"/></label>
-                                        <table id="paramTable-${analysisType}" class="paramTable" style="display: none; margin: 6px 0;">
+                                        <label style="display: inline-block; margin: 2px 0 0 0;" for="queryTypeSelect-${analysisType}">${analysisType.displayName}</label>
+                                        <c:if test="${not empty analysisType.explanation}">
+                                        <div class="help-popover" title="${analysisType.displayName}">
+                                            ${analysisType.explanation}
+                                        </div>
+                                        </c:if>
+                                        <table id="paramTable-${analysisType}" class="paramTable" style="display: none;">
                                             <c:set var="foundAdvancedParameterType" value="false"/>
                                             <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
                                             <c:if test="${!foundAdvancedParameterType and parameterType.advanced}">
@@ -660,11 +661,11 @@
                                             </tr>
                                             </c:if>
                                             <tr <c:if test="${parameterType.advanced}">style="display: none;"</c:if>>
-                                                <td style="padding-right: 10px;">${parameterType.displayName}</td>
-                                                <td class="${(not empty parameterType.units) ? 'input-append' : ''}">
+                                                <td style="white-space: nowrap; width: 10px;">${parameterType.displayName}</td>
+                                                <td class="${(not empty parameterType.units) ? 'input-append' : ''}" style="margin: 0;">
                                                     <c:choose>
                                                     <c:when test="${parameterType.options != null}">
-                                                    <select class="paramField-${analysisType}" style="width: auto;" name="${parameterType.identifier}">
+                                                    <select class="paramField-${analysisType}" style="width: 180px;" name="${parameterType.identifier}">
                                                     <c:forEach items="${parameterType.options}" var="option">
                                                     <option
                                                         value="${option.value}"
@@ -697,6 +698,13 @@
                                                     </c:otherwise>
                                                     </c:choose>
                                                 </td>
+                                                <td style="width: 10px;">
+                                                    <c:if test="${not empty parameterType.explanation}">
+                                                    <div class="help-popover" title="${parameterType.displayName}">
+                                                        ${parameterType.explanation}
+                                                    </div>
+                                                    </c:if>
+                                                </td>
                                             </tr>
                                             </c:forEach>
                                         </table>
@@ -726,9 +734,6 @@
             </c:if>
         </div>
         </div>
-        <div style="padding: 2px 5px 5px 5px;">
-        <a id="projectMapHelpLink" class="btn btn-block" href="javascript:void(0);">Help</a>
-        </div>
         </div>
 
         <div id="projectMap"></div>
@@ -738,103 +743,5 @@
         </div>
         
         <div id="errorDialog"></div>
-        <div id="projectMapHelp">
-            <h2>Trajectory</h2>
-            <p>
-                The trajectory is the animal movement path created from the location fixes (detections)
-                in chronological order. OzTrack plots the trajectory from the first fix in the
-                uploaded file, until the last unless the date range has been specified. The
-                trajectory can be viewed on the OzTrack mapping feature and the minimum distance
-                moved by the animal along this trajectory is calculated and displayed in the
-                Analysis Results window.
-            </p>
-
-            <h2>Minimum Convex polygon</h2>
-            <p>
-                Otherwise known as a convex hull, this approach uses the smallest area convex set
-                that contains the location data. At 100% this will equivalent the area covered by
-                all locations within the dataset. Resetting the computation at a lower % value
-                will remove outliers from the computation, resulting in this % of locations in
-                the final MCP. This calculation is undertaken within R using the adehabitat
-                package (Calenge 2008). For further details about using an MCP home-range
-                estimator see
-            </p>
-
-            <p class="citation">
-                Worton, B.J. (1995)
-                A convex hull-based estimator of home-range size.
-                Biometrics, 51, 1206-1215.
-            </p>
-
-            <h2>Alpha-hull</h2>
-            <p>
-                The alpha hull home range estimation is a generalisation of the convex hull but
-                objectively crops low use areas from the polygon surface. Alpha hulls are generated
-                by connecting all locations as a Delauney triangulation, then systematically
-                removing vertices until only those vertices that are shorter in length than the
-                chosen parameter value alpha are retained. The smaller the value of alpha, the
-                finer the resolution of the hull and the greater the exposure of non-use areas.
-                As alpha increases, the polygon surface will increase until it is equivalent to a
-                100% minimum convex polygon. For further details about using the alpha hull
-                home-range density estimator see Burgman & Fox (2003).
-            </p>
-
-            <p class="citation">
-                Burgman, M.A. &amp; Fox, J.C. (2003)
-                Bias in species range estimates from minimum convex polygons:
-                implications for conservation and options for improved planning.
-                Animal Conservation, 6, 19-28.
-            </p>
-
-            <h2>Kernel Utilization Distribution</h2>
-            <p>
-                The fixed kernel density estimator is a non-parametric method of home-range analysis,
-                which uses the utilization distribution to estimate the probability that an animal
-                will be found at a specific geographical location. OzTrack provides the capacity to
-                calculate and view the kernel UD at any level between 1 and 100%. 95% and 50% level
-                are those most commonly adopted as the home-range and core-area UD, respectively.
-            </p>
-            <p>
-                <b>H smoothing value</b>: The kernel UD accurately estimates areas of high use by
-                the tagged animal, providing that the level of smoothing is appropriate. There are
-                a number of different smoothing parameters that have been adopted in kernel estimates,
-                and no single parameter will perform well in all conditions. OzTrack offers three
-                options for selecting the kernel smoothing parameter. Two of these are automatically
-                generated using either the href (or ad hoc) method, or the least-squares
-                cross-validation (LSCV) algorithm. The third option is for the user to define a set
-                numerical value (in meters). As h decreases, the kernel will become less continuous
-                and more fragmented revealing increasing detail within the home range. These
-                calculations are undertaken within R using the adehabitat library of functions
-                (Calenge 2008). For further details about using Kernel UD for estimating home-range see;
-            </p>
-
-            <p class="citation">
-                Seaman, D.E., Powell, R.A. (1996)
-                An evaluation of the accuracy of kernel density estimators for home range analysis.
-                Ecology, Vol. 77, 2075-2085.
-            </p>
-
-            <p class="citation">
-                Silverman, B.W. (1986) Density estimation for statistics and data analysis. Chapman and Hall, London, UK
-            </p>
-
-            <p class="citation">
-                Worton, B.J. (1989) Kernel methods for estimating the utilization distribution in home-range studies
-            </p>
-            
-            <h2>Heat Map</h2>
-            <p>
-                This generates a grid over the study area and uses a coloured gradient to visually
-                identify areas of high usage by the tagged animal. These can be applied to either
-                points or connectivity lines between points.  The size of the grid cells (in meters)
-                can be specified. This OzTrack tool utilises the spatstat package in R
-                (Baddeley &amp; Turner, 2005).
-            </p>
-            <p class="citation">
-                Baddeley, A. &amp; Turner,  R. (2005)
-                spatstat: An R package for analyzing spatial point patterns.
-                Journal of Statistical Software, 12,6
-            </p>
-        </div>
     </jsp:body>
 </tags:page>

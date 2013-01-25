@@ -19,6 +19,18 @@ function deleteEntity(url, destUrl, message) {
     });
 }
 
+function initHelpPopover(helpPopover) {
+    $('<a class="help-popover-icon" href="javascript:void(0);">')
+        .insertBefore(helpPopover)
+        .popover({
+            container: 'body',
+            placement: 'right',
+            trigger: 'click',
+            html: true,
+            title: helpPopover.attr('title'),
+            content: helpPopover.html()
+        });
+}
 $(document).ready(function() {
     $.datepicker.setDefaults({
         dateFormat: 'yy-mm-dd',
@@ -36,21 +48,8 @@ $(document).ready(function() {
             $(altField).val('');
         }
     });
-    $('.help-popover').each(function() {
-        $('<a class="help-popover-icon" href="javascript:void(0);">')
-            .insertBefore($(this))
-            .popover({
-                container: 'body',
-                placement: 'right',
-                trigger: 'click',
-                html: true,
-                title: $(this).attr('title'),
-                content: $(this).html()
-            });
-    });
+    $('.help-popover').each(function() {initHelpPopover($(this));});
 });
 $(document).click(function (e) {
-    if ($(e.target).parents().andSelf().filter('.help-popover-icon, .popover').length == 0) {
-        $('.help-popover-icon').popover('hide');
-    }
+    $('.help-popover-icon').filter(function(i) {return this != e.target;}).popover('hide');
 });

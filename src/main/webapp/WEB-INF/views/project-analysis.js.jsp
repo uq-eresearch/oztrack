@@ -724,7 +724,16 @@ function createAnalysisMap(div, options) {
                 }
                 tableRowsHtml += '<tr>';
                 tableRowsHtml += '<td class="layerInfoLabel">Export as: </td>';
-                tableRowsHtml += '<td><a href="' + analysis.resultUrl + '">KML</a></td>';
+                tableRowsHtml += '<td>';
+                tableRowsHtml += '<a href="' + analysis.resultUrl + '">KML</a> ';
+                tableRowsHtml += '<div id="analysisHelpPopover-' + analysis.id + '" class="help-popover" title="KML Export">';
+                tableRowsHtml += '<p>To enable users to animate their animal tracking files, as well as visualisation in ';
+                tableRowsHtml += '3-dimensions, we offer the option of exporting the animal tracking data and home-range ';
+                tableRowsHtml += 'layers into Google Earth. Once loaded into Google Earth, the user can alter the altitude and ';
+                tableRowsHtml += 'angle of the viewer, add additional features, and run the animal track as an animation.</p>';
+                tableRowsHtml += '</div>';
+                tableRowsHtml += '<script>initHelpPopover($(\'#analysisHelpPopover-' + analysis.id + '\'));</script>';
+                tableRowsHtml += '</td>';
                 tableRowsHtml += '</tr>';
                 if (tableRowsHtml) {
                     $('#analysis-table-' + animalId + '-' + analysis.id).show().append(tableRowsHtml);
