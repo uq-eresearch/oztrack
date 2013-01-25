@@ -40,6 +40,7 @@ $(document).ready(function() {
         $('<a class="help-popover-icon" href="javascript:void(0);">')
             .insertBefore($(this))
             .popover({
+                container: 'body',
                 placement: 'right',
                 trigger: 'click',
                 html: true,
