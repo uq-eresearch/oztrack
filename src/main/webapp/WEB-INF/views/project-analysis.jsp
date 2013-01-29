@@ -106,8 +106,8 @@
             .paramTable {
                 margin: 6px 0;
                 width: 100%;
-                background-color: #dcdcb8;
-                border: 3px solid #dcdcb8;
+                background-color: #DBDBD0;
+                border: 3px solid #DBDBD0;
             }
             .paramTable td {
                 padding: 2px;
