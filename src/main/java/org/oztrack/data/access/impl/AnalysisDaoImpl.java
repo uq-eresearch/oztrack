@@ -69,7 +69,7 @@ public class AnalysisDaoImpl implements AnalysisDao {
                 "    )\n" +
                 "order by createDate")
             .setParameter("project", project)
-            .setParameter("currentUserIsAdmin", currentUser.getAdmin())
+            .setParameter("currentUserIsAdmin", (currentUser != null) && currentUser.getAdmin())
             .setParameter("currentUser", currentUser)
             .setParameter("currentSession", currentSessionId)
             .setMaxResults(20)
