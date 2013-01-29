@@ -43,7 +43,9 @@ public class AnalysisDaoImpl implements AnalysisDao {
         List<Analysis> resultList = em
             .createQuery(
                 "from org.oztrack.data.model.Analysis\n" +
-                "where project = :project and saved = true\n" +
+                "where\n" +
+                "    project = :project and\n" +
+                "    saved = true\n" +
                 "order by createDate")
             .setParameter("project", project)
             .setMaxResults(20)
@@ -52,16 +54,24 @@ public class AnalysisDaoImpl implements AnalysisDao {
     }
 
     @Override
-    public List<Analysis> getPreviousAnalyses(Project project, User createUser, String createSession) {
+    public List<Analysis> getPreviousAnalyses(Project project, User currentUser, String currentSessionId) {
         @SuppressWarnings("unchecked")
         List<Analysis> resultList = em
             .createQuery(
                 "from org.oztrack.data.model.Analysis\n" +
-                "where project = :project and (createUser = :createUser or createSession = :createSession)\n" +
+                "where\n" +
+                "    project = :project and\n" +
+                "    saved = false and\n" +
+                "    (\n" +
+                "        :currentUserIsAdmin = true or\n" +
+                "        createUser = :currentUser or\n" +
+                "        createSession = :currentSession\n" +
+                "    )\n" +
                 "order by createDate")
             .setParameter("project", project)
-            .setParameter("createUser", createUser)
-            .setParameter("createSession", createSession)
+            .setParameter("currentUserIsAdmin", currentUser.getAdmin())
+            .setParameter("currentUser", currentUser)
+            .setParameter("currentSession", currentSessionId)
             .setMaxResults(20)
             .getResultList();
         return resultList;

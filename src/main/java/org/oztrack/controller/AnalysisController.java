@@ -65,6 +65,10 @@ public class AnalysisController {
     }
 
     private boolean hasPermission(Authentication authentication, HttpServletRequest request, Analysis analysis, String permission) {
+        User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
+        if ((currentUser != null) && (currentUser.getAdmin() != null) && currentUser.getAdmin()) {
+            return true;
+        }
         if (permission.equals("write")) {
             // Users with write access to the project have write access to all of its analyses
             if (permissionEvaluator.hasPermission(authentication, analysis.getProject(), "write")) {
@@ -77,7 +81,6 @@ public class AnalysisController {
                 return true;
             }
             // Otherwise, only the creator of an analysis is able to view it
-            User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
             if ((currentUser != null) && currentUser.equals(analysis.getCreateUser())) {
                 return true;
             }
