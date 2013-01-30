@@ -238,6 +238,10 @@ public class User {
         return loginDates;
     }
 
+    public Date getLastLoginDate() {
+        return loginDates.isEmpty() ? null : loginDates.last();
+    }
+
     public void setLoginDates(SortedSet<Date> loginDates) {
         this.loginDates = loginDates;
     }

@@ -46,8 +46,8 @@
                     <p>${user.fullName} (${user.username})</p>
                     <p>
                         Logged in ${fn:length(user.loginDates)} times.
-                        <c:if test="${not empty user.loginDates}">
-                        Last login <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${user.loginDates.last()}"/>.
+                        <c:if test="${not empty user.lastLoginDate}">
+                        Last login <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${user.lastLoginDate}"/>.
                         </c:if>
                     </p>
                 </td>
@@ -86,7 +86,7 @@
                     <p>${project.description}</p>
                 </td>
                 <td>
-                    <p>${fn:length(project.animals)} animals (${projectDao.getDetectionCount(project, false)} position fixes)</p>
+                    <p>${fn:length(project.animals)} animals (${detectionCount[project]} position fixes)</p>
                     <c:if test="${not empty project.speciesCommonName or not empty project.speciesScientificName}">
                     <p>${project.speciesCommonName} <i>${project.speciesScientificName}</i></p>
                     </c:if>
