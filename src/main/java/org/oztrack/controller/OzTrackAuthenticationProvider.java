@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,13 @@ public class OzTrackAuthenticationProvider implements AuthenticationProvider {
     @Transactional
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         User user = userDao.getByUsername((String) authentication.getPrincipal());
-        if ((user == null) || !BCrypt.checkpw((String) authentication.getCredentials(), user.getPassword())) {
+        String password = (String) authentication.getCredentials();
+        if (
+            (user == null) ||
+            StringUtils.isBlank(password) ||
+            StringUtils.isBlank(user.getPassword()) ||
+            !BCrypt.checkpw(password, user.getPassword())
+        ) {
             throw new BadCredentialsException("Invalid username or password.");
         }
         user.getLoginDates().add(new Date());
