@@ -159,6 +159,7 @@ public class ProjectListController {
         model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
         model.addAttribute("currentYear", (new GregorianCalendar()).get(Calendar.YEAR));
         model.addAttribute("currentDate", new Date());
+        model.addAttribute("dataLicencingEnabled", configuration.isDataLicencingEnabled());
         model.addAttribute("closedAccessDisableDate", configuration.getClosedAccessDisableDate());
         addEmbargoDateFormAttributes(model);
     }
