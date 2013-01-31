@@ -138,6 +138,7 @@ public class RServeInterface {
             "kernelud.r",
             "kernelbb.r",
             "alphahull.r",
+            "locoh.r",
             "heatmap.r"
         };
         for (String scriptFileName : scriptFileNames) {
@@ -195,14 +196,14 @@ public class RServeInterface {
             // Create SpatialPointsDataFrame in WGS84
             safeEval("positionFix.xy <- positionFix[, c('Name', 'X', 'Y')];");
             safeEval("coordinates(positionFix.xy) <- ~X+Y;");
-            safeEval("proj4string(positionFix.xy) <- CRS(\"+init=epsg:4326\");");
+            safeEval("proj4string(positionFix.xy) <- CRS('+init=epsg:4326');");
 
             // Create SpatialPointsDataFrame projected to SRS
             // Note: we assume the user-supplied SRS has units of metres in our area calculations.
-            safeEval("positionFix.proj <- try({spTransform(positionFix.xy,CRS(\"+init=" + srs + "\"))}, silent=TRUE);");
+            safeEval("positionFix.proj <- try({spTransform(positionFix.xy,CRS('+init=" + srs + "'))}, silent=TRUE);");
             safeEval(
                 "if (class(positionFix.proj) == 'try-error') {\n" +
-                "  stop(\"Unable to project locations. Please check that coordinates and the project's Spatial Reference System are valid.\")\n" +
+                "  stop('Unable to project locations. Please check that coordinates and the project\\'s Spatial Reference System are valid.')\n" +
                 "}"
             );
         }
@@ -221,7 +222,7 @@ public class RServeInterface {
             throw new RServeInterfaceException("percent must be between 0 and 100.");
         }
         safeEval("percent <- " + percent);
-        safeEval("kmlFile <- \"" + analysis.getAbsoluteResultFilePath() + "\"");
+        safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
         safeEval("oztrack_mcp(percent=percent, kmlFile=kmlFile)");
     }
 
@@ -237,11 +238,11 @@ public class RServeInterface {
         if ((hEstimator == null) && (hValue == null)) {
             throw new RServeInterfaceException("h estimator or h value must be entered.");
         }
-        safeEval("h <- " + ((hValue != null) ? hValue.toString() : "\"" + hEstimator + "\""));
+        safeEval("h <- " + ((hValue != null) ? hValue.toString() : "'" + hEstimator + "'"));
         safeEval("gridSize <- " + gridSize);
         safeEval("extent <- " + extent);
         safeEval("percent <- " + percent);
-        safeEval("kmlFile <- \"" + analysis.getAbsoluteResultFilePath() + "\"");
+        safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
         safeEval("oztrack_kernelud(h=h, gridSize=gridSize, extent=extent, percent=percent, kmlFile=kmlFile)");
     }
 
@@ -262,7 +263,7 @@ public class RServeInterface {
         safeEval("gridSize <- " + gridSize);
         safeEval("extent <- " + extent);
         safeEval("percent <- " + percent);
-        safeEval("kmlFile <- \"" + analysis.getAbsoluteResultFilePath() + "\"");
+        safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
         safeEval("oztrack_kernelbb(sig1=sig1, sig2=sig2, gridSize=gridSize, extent=extent, percent=percent, kmlFile=kmlFile)");
     }
 
@@ -271,8 +272,10 @@ public class RServeInterface {
         if (!(alpha > 0d)) {
             throw new RServeInterfaceException("alpha must be greater than 0.");
         }
-        safeEval("myAhull <- myalphahullP(positionFix.proj, sinputssrs=\"+init=" + srs + "\", ialpha=" + alpha + ")");
-        safeEval("writeOGR(myAhull, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer=\"AHULL\", driver=\"KML\", dataset_options=c(\"NameField=id\"))");
+        safeEval("srs <- " + srs);
+        safeEval("alpha <- " + alpha);
+        safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
+        safeEval("oztrack_alphahull(srs=srs, alpha=alpha, kmlFile=kmlFile)");
     }
 
     private void writeLocohKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
@@ -282,18 +285,11 @@ public class RServeInterface {
         if (!(percent >= 0d && percent <= 100d)) {
             throw new RServeInterfaceException("percent must be between 0 and 100.");
         }
-        if ((k == null) == (r == null)) {
-            throw new RServeInterfaceException("either Neighbours or Radius must be entered.");
-        }
-        if (k != null) {
-            safeEval("locoh.obj <- LoCoH.k(positionFix.proj, k=" + k + ");");
-        }
-        else if (r != null) {
-            safeEval("locoh.obj <- LoCoH.r(positionFix.proj, r=" + r + ");");
-        }
-        safeEval("hr.proj <- getverticeshr(locoh.obj, percent=" + percent + ", unin=c('m'), unout=c('km2'));");
-        safeEval("hr.xy <- spTransform(hr.proj, CRS('+proj=longlat +datum=WGS84'));");
-        safeEval("writeOGR(hr.xy, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer= \"KBB\", driver=\"KML\", dataset_options=c(\"NameField=id\"))");
+        safeEval("k <- " + ((k != null) ? k : "NULL"));
+        safeEval("r <- " + ((r != null) ? r : "NULL"));
+        safeEval("percent <- " + percent);
+        safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
+        safeEval("oztrack_locoh(k=k, r=r, percent=percent, kmlFile=kmlFile)");
     }
 
     private void writePointHeatmapKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
@@ -304,13 +300,13 @@ public class RServeInterface {
             throw new RServeInterfaceException("grid size must be greater than 0.");
         }
         String labsent = showAbsence ? "TRUE" : "FALSE";
-        safeEval("PPA <- try({fpdens2kml(sdata=positionFix.xy, igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\", scol=\"" + colours + "\", labsent=" + labsent + ")}, silent=TRUE)");
+        safeEval("PPA <- try({fpdens2kml(sdata=positionFix.xy, igrid=" + gridSize + ", ssrs='+init=" + srs + "', scol='" + colours + "', labsent=" + labsent + ")}, silent=TRUE)");
         safeEval(
             "if (class(PPA) == 'try-error') {\n" +
             "  stop('Grid size too small. Try increasing grid number.')\n" +
             "}"
         );
-        safeEval("polykml(sw=PPA, filename=\"" + analysis.getAbsoluteResultFilePath() + "\", kmlname=paste(unique(PPA$ID), \"_point_density\",sep=\"\"),namefield=unique(PPA$ID))");
+        safeEval("polykml(sw=PPA, filename='" + analysis.getAbsoluteResultFilePath() + "', kmlname=paste(unique(PPA$ID), '_point_density',sep=''),namefield=unique(PPA$ID))");
     }
 
     private void writeLineHeatmapKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
@@ -321,13 +317,13 @@ public class RServeInterface {
             throw new RServeInterfaceException("grid size must be greater than 0.");
         }
         String labsent = showAbsence ? "TRUE" : "FALSE";
-        safeEval("LPA <- try({fldens2kml(sdata=positionFix.xy, igrid=" + gridSize + ", ssrs=\"+init=" + srs + "\",scol=\"" + colours + "\", labsent=" + labsent + ")}, silent=TRUE)");
+        safeEval("LPA <- try({fldens2kml(sdata=positionFix.xy, igrid=" + gridSize + ", ssrs='+init=" + srs + "',scol='" + colours + "', labsent=" + labsent + ")}, silent=TRUE)");
         safeEval(
             "if (class(LPA) == 'try-error') {\n" +
             "  stop('Grid size too small. Try increasing grid number.')\n" +
             "}"
         );
-        safeEval("polykml(sw=LPA, filename=\"" + analysis.getAbsoluteResultFilePath() + "\", kmlname=paste(unique(LPA$ID), \"_line_density\", sep=\"\"), namefield=unique(LPA$ID))");
+        safeEval("polykml(sw=LPA, filename='" + analysis.getAbsoluteResultFilePath() + "', kmlname=paste(unique(LPA$ID), '_line_density', sep=''), namefield=unique(LPA$ID))");
     }
 
     // Wraps an R statement inside a try({...}, silent=TRUE) so we can catch any exception
