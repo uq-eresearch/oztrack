@@ -272,7 +272,7 @@ public class RServeInterface {
         if (!(alpha > 0d)) {
             throw new RServeInterfaceException("alpha must be greater than 0.");
         }
-        safeEval("srs <- " + srs);
+        safeEval("srs <- '" + srs + "'");
         safeEval("alpha <- " + alpha);
         safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
         safeEval("oztrack_alphahull(srs=srs, alpha=alpha, kmlFile=kmlFile)");
@@ -299,14 +299,12 @@ public class RServeInterface {
         if (!(gridSize > 0d)) {
             throw new RServeInterfaceException("grid size must be greater than 0.");
         }
-        String labsent = showAbsence ? "TRUE" : "FALSE";
-        safeEval("PPA <- try({fpdens2kml(sdata=positionFix.xy, igrid=" + gridSize + ", ssrs='+init=" + srs + "', scol='" + colours + "', labsent=" + labsent + ")}, silent=TRUE)");
-        safeEval(
-            "if (class(PPA) == 'try-error') {\n" +
-            "  stop('Grid size too small. Try increasing grid number.')\n" +
-            "}"
-        );
-        safeEval("polykml(sw=PPA, filename='" + analysis.getAbsoluteResultFilePath() + "', kmlname=paste(unique(PPA$ID), '_point_density',sep=''),namefield=unique(PPA$ID))");
+        safeEval("srs <- '" + srs + "'");
+        safeEval("gridSize <- " + gridSize);
+        safeEval("colours <- '" + colours + "'");
+        safeEval("labsent <- " + (showAbsence ? "TRUE" : "FALSE"));
+        safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
+        safeEval("oztrack_heatmap_point(srs=srs, gridSize=gridSize, colours=colours, labsent=labsent, kmlFile=kmlFile)");
     }
 
     private void writeLineHeatmapKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
@@ -316,14 +314,12 @@ public class RServeInterface {
         if (!(gridSize > 0d)) {
             throw new RServeInterfaceException("grid size must be greater than 0.");
         }
-        String labsent = showAbsence ? "TRUE" : "FALSE";
-        safeEval("LPA <- try({fldens2kml(sdata=positionFix.xy, igrid=" + gridSize + ", ssrs='+init=" + srs + "',scol='" + colours + "', labsent=" + labsent + ")}, silent=TRUE)");
-        safeEval(
-            "if (class(LPA) == 'try-error') {\n" +
-            "  stop('Grid size too small. Try increasing grid number.')\n" +
-            "}"
-        );
-        safeEval("polykml(sw=LPA, filename='" + analysis.getAbsoluteResultFilePath() + "', kmlname=paste(unique(LPA$ID), '_line_density', sep=''), namefield=unique(LPA$ID))");
+        safeEval("srs <- '" + srs + "'");
+        safeEval("gridSize <- " + gridSize);
+        safeEval("colours <- '" + colours + "'");
+        safeEval("labsent <- " + (showAbsence ? "TRUE" : "FALSE"));
+        safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
+        safeEval("oztrack_heatmap_line(srs=srs, gridSize=gridSize, colours=colours, labsent=labsent, kmlFile=kmlFile)");
     }
 
     // Wraps an R statement inside a try({...}, silent=TRUE) so we can catch any exception

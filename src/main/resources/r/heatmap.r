@@ -299,3 +299,19 @@ kmlPolygonRD <- function (obj = NULL, kmlfile = NULL, name = "R Polygon", descri
               collapse = "\n"), "\n", file = kmlfile, sep = "")
   else list(style = kmlStyle, content = kml)
 }
+
+oztrack_heatmap_point <- function(srs, gridSize, colours, labsent, kmlFile) {
+  PPA <- try({fpdens2kml(sdata=positionFix.xy, igrid=gridSize, ssrs=paste('+init=', srs, sep=''), scol=colours, labsent=labsent)}, silent=TRUE)
+  if (class(PPA) == 'try-error') {
+    stop('Grid size too small. Try increasing grid number.')
+  }
+  polykml(sw=PPA, filename=kmlFile, kmlname=paste(unique(PPA$ID), '_point_density',sep=''),namefield=unique(PPA$ID))
+}
+
+oztrack_heatmap_line <- function(srs, gridSize, colours, labsent, kmlFile) {
+  LPA <- try({fldens2kml(sdata=positionFix.xy, igrid=gridSize, ssrs=paste('+init=', srs, sep=''), scol=colours, labsent=labsent)}, silent=TRUE)
+  if (class(LPA) == 'try-error') {
+    stop('Grid size too small. Try increasing grid number.')
+  }
+  polykml(sw=LPA, filename=kmlFile, kmlname=paste(unique(LPA$ID), '_line_density', sep=''), namefield=unique(LPA$ID))
+}
