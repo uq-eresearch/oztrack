@@ -135,6 +135,7 @@ public class RServeInterface {
     private void loadScripts() throws RServeInterfaceException {
         String[] scriptFileNames = new String[] {
             "kernelud.r",
+            "kernelbb.r",
             "alphahull.r",
             "heatmap.r"
         };
@@ -260,13 +261,13 @@ public class RServeInterface {
         if ((sig1 == null) || (sig2 == null)) {
             throw new RServeInterfaceException("sig1 and sig2 must both be entered.");
         }
-        safeEval("ltraj.obj <- as.ltraj(xy=coordinates(positionFix.proj), date=positionFix$Date, id=positionFix$Name, typeII=TRUE);");
-        safeEval("kernelbb.obj <- kernelbb(ltraj.obj, sig1=" + sig1 + ", sig2=" + sig2 + ", grid=" + gridSize + ", extent=" + extent + ");");
-        safeEval("hr.proj <- getverticeshr(kernelbb.obj, percent=" + percent + ", unin=c('m'), unout=c('km2'));");
-        safeEval("if (nrow(hr.proj) == 1) {hr.proj$id <- positionFix[1,'Name']};"); // Puts "homerange" instead of animal ID when only one animal
-        safeEval("proj4string(hr.proj) <- proj4string(positionFix.proj);");
-        safeEval("hr.xy <- spTransform(hr.proj, CRS('+proj=longlat +datum=WGS84'));");
-        safeEval("writeOGR(hr.xy, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer= \"KBB\", driver=\"KML\", dataset_options=c(\"NameField=id\"))");
+        safeEval("sig1 <- " + sig1);
+        safeEval("sig2 <- " + sig2);
+        safeEval("gridSize <- " + gridSize);
+        safeEval("extent <- " + extent);
+        safeEval("percent <- " + percent);
+        safeEval("kmlFile <- \"" + analysis.getAbsoluteResultFilePath() + "\"");
+        safeEval("oztrack_kernelbb(sig1=sig1, sig2=sig2, gridSize=gridSize, extent=extent, percent=percent, kmlFile=kmlFile)");
     }
 
     private void writeAlphahullKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
