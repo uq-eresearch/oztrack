@@ -119,34 +119,43 @@ public class RServeInterface {
             "plotKML"
         };
         for (String library : libraries) {
-            try {
-                this.rConnection.voidEval("library(" + library + ")");
-            }
-            catch (RserveException e) {
-                throw new RServeInterfaceException("Error loading '" + library + "' library.", e);
-            }
+            loadLibrary(library);
+        }
+    }
+
+    private void loadLibrary(String library) throws RServeInterfaceException {
+        try {
+            this.rConnection.voidEval("library(" + library + ")");
+        }
+        catch (RserveException e) {
+            throw new RServeInterfaceException("Error loading '" + library + "' library.", e);
         }
     }
 
     private void loadScripts() throws RServeInterfaceException {
         String[] scriptFileNames = new String[] {
+            "kernelud.r",
             "alphahull.r",
             "heatmap.r"
         };
         for (String scriptFileName : scriptFileNames) {
-            String scriptString = null;
-            try {
-                scriptString = IOUtils.toString(getClass().getResourceAsStream("/r/" + scriptFileName), "UTF-8");
-            }
-            catch (IOException e) {
-                throw new RServeInterfaceException("Error reading '" + scriptFileName + "' script.", e);
-            }
-            try {
-                this.rConnection.voidEval(scriptString);
-            }
-            catch (RserveException e) {
-                throw new RServeInterfaceException("Error running '" + scriptFileName + "' script.", e);
-            }
+            loadScript(scriptFileName);
+        }
+    }
+
+    private void loadScript(String scriptFileName) throws RServeInterfaceException {
+        String scriptString = null;
+        try {
+            scriptString = IOUtils.toString(getClass().getResourceAsStream("/r/" + scriptFileName), "UTF-8");
+        }
+        catch (IOException e) {
+            throw new RServeInterfaceException("Error reading '" + scriptFileName + "' script.", e);
+        }
+        try {
+            this.rConnection.voidEval(scriptString);
+        }
+        catch (RserveException e) {
+            throw new RServeInterfaceException("Error running '" + scriptFileName + "' script.", e);
         }
     }
 
@@ -158,7 +167,7 @@ public class RServeInterface {
         double[] latitudes = new double[positionFixList.size()];
         double[] longitudes = new double[positionFixList.size()];
 
-        /* load up the arrays from the database result set*/
+        // Load up the arrays from the database result set
         for (int i=0; i < positionFixList.size(); i++) {
             PositionFix positionFix = positionFixList.get(i);
             animalIds[i] = positionFix.getAnimal().getId().toString();
@@ -167,7 +176,7 @@ public class RServeInterface {
             latitudes[i] = positionFix.getLocationGeometry().getY();
         }
 
-        /* create the RList to become the dataFrame (add the name+array) */
+        // Create the RList to become the dataframe
         RList rPositionFixList = new RList();
         rPositionFixList.put("Name", new REXPString(animalIds));
         rPositionFixList.put("Date", new REXPString(dates));
@@ -231,34 +240,12 @@ public class RServeInterface {
         if ((hEstimator == null) && (hValue == null)) {
             throw new RServeInterfaceException("h estimator or h value must be entered.");
         }
-        String hExpr = (hValue != null) ? hValue.toString() : "\"" + hEstimator + "\"";
-        safeEval("h <- " + hExpr);
-        safeEval("KerHRp <- try({kernelUD(xy=positionFix.proj, h=h, grid=" + gridSize + ", extent=" + extent + ")}, silent=TRUE)");
-        safeEval(
-            "if (class(KerHRp) == 'try-error') {\n" +
-            "  if (h == 'href') {\n" +
-            "    stop('Kernel unable to generate under these parameters. Try increasing the extent.')\n" +
-            "  }\n" +
-            "  if (h == 'LSCV') {\n" +
-            "    stop('Kernel unable to generate under these parameters. Try increasing the extent and the grid size.')\n" +
-            "  }\n" +
-            "  if (class(h) == 'numeric') {\n" +
-            "    stop('Kernel unable to generate under these parameters. Try increasing the h smoothing parameter value.')\n" +
-            "  }\n" +
-            "  stop('Kernel unable to generate due to error: ' + conditionMessage(KerHRp))\n" +
-            "}"
-        );
-        safeEval("allh <- sapply(1:length(KerHRp), function(x) {KerHRp[[x]]@h$h})");
-        safeEval("myKerP <- try({getverticeshr(KerHRp, percent=" + percent + ", unin=c(\"m\"), unout=c(\"km2\"))}, silent=TRUE)");
-        safeEval(
-            "if (class(myKerP) == 'try-error') {\n" +
-            "  stop('Kernel polygon unable to generate under these parameters. Try increasing the grid size or change the percentile.')\n" +
-            "}"
-        );
-        safeEval("myKer <- spTransform(myKerP, CRS(\"+proj=longlat +datum=WGS84\"))");
-        safeEval("myKer$area <- myKerP$area");
-        safeEval("myKer$hval <- allh");
-        safeEval("writeOGR(myKer, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer= \"KUD\", driver=\"KML\", dataset_options=c(\"NameField=id\"))");
+        safeEval("h <- " + ((hValue != null) ? hValue.toString() : "\"" + hEstimator + "\""));
+        safeEval("gridSize <- " + gridSize);
+        safeEval("extent <- " + extent);
+        safeEval("percent <- " + percent);
+        safeEval("kmlFile <- \"" + analysis.getAbsoluteResultFilePath() + "\"");
+        safeEval("oztrack_kernelud(h=h, gridSize=gridSize, extent=extent, percent=percent, kmlFile=kmlFile)");
     }
 
     private void writeKernelBBKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
