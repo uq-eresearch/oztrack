@@ -6,9 +6,9 @@
 <div class="sidebar-actions">
     <div class="sidebar-actions-title">Manage Animals</div>
     <ul class="icons sidebar-actions-list">
-        <li class="create"><a href="${pageContext.request.contextPath}/projects/${project.id}/datafiles/new">Upload data file</a></li>
+        <li class="create-file"><a href="${pageContext.request.contextPath}/projects/${project.id}/datafiles/new">Upload data file</a></li>
         <c:if test="${not empty project.dataFiles}">
-        <li class="edit"><a href="${pageContext.request.contextPath}/projects/${project.id}/cleanse">Edit tracks</a></li>
+        <li class="edit-track"><a href="${pageContext.request.contextPath}/projects/${project.id}/cleanse">Edit tracks</a></li>
         </c:if>
     </ul>
 </div>

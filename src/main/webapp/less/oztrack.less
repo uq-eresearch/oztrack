@@ -410,47 +410,6 @@ a.carousel-control {
   color: #ef9800;
 }
 
-/* sidebar */
-
-.sidebarMenu ul {
-  margin: 0 0 24px 0;
-  padding: 0;
-}
-
-.sidebarMenu ul li ul {
-  padding-left: 10px;
-}
-
-.sidebarMenu ul li ul li {
-  border: 0px;
-  padding-top: 0.4ex;
-  padding-bottom: 0.3ex;
-}
-
-.sidebarMenu li {
-  list-style-type: none;
-  list-style-image: none;
-  background-repeat: no-repeat;
-  background-position: 0px 5px;
-  padding: 0.4em 12px;
-  border-bottom: dashed 1px @grayLight;
-}
-
-.sidebarMenu li a {
-  text-decoration: none;
-  font-weight: bold;
-  color: @gray;
-}
-
-.sidebarMenu li.active a {
-  color: #ef9800;
-}
-
-.sidebarMenu li a:active,
-.sidebarMenu li a:hover {
-  color: #ef9800;
-}
-
 /* forms */
 
 .formErrors {
@@ -486,10 +445,11 @@ div.help {
 /* action boxes */
 
 .sidebar-actions {
-  padding: 0px 12px;
+  margin: 0 0 12px 0;
+  padding: 0 12px;
   background-color: #f6f6e6;
   border: 1px solid #e6e6c0;
-  .border-radius(3px);
+  .border-radius(4px);
 }
 
 .sidebar-actions-title {
@@ -517,50 +477,44 @@ ul.icons li {
   padding: 0 0 2px 22px;
 }
 
-ul.icons li.create {
-  background-image: url('../img/page_white_add.png');
-}
+ul.icons li.create {background-image: url('../img/page_white_add.png');}
+ul.icons li.view {background-image: url('../img/page_white.png');}
+ul.icons li.edit {background-image: url('../img/page_white_edit.png');}
+ul.icons li.delete {background-image: url('../img/page_white_delete.png');}
 
-ul.icons li.view {
-  background-image: url('../img/page_white.png');
-}
+ul.icons li.create-project {background-image: url('../img/folder_add.png');}
+ul.icons li.view-project {background-image: url('../img/folder.png');}
+ul.icons li.edit-project {background-image: url('../img/folder_edit.png');}
+ul.icons li.delete-project {background-image: url('../img/folder_delete.png');}
+ul.icons li.publish-project {background-image: url('../img/folder_go.png');}
 
-ul.icons li.edit {
-  background-image: url('../img/page_white_edit.png');
-}
+ul.icons li.create-track {background-image: url('../img/chart_line_add.png');}
+ul.icons li.view-track {background-image: url('../img/chart_line.png');}
+ul.icons li.edit-track {background-image: url('../img/chart_line_edit.png');}
+ul.icons li.delete-track {background-image: url('../img/chart_line_delete.png');}
 
-ul.icons li.delete {
-  background-image: url('../img/page_white_delete.png');
-}
+ul.icons li.create-animal {background-image: url('../img/tag_blue_add.png');}
+ul.icons li.view-animal {background-image: url('../img/tag_blue.png');}
+ul.icons li.edit-animal {background-image: url('../img/tag_blue_edit.png');}
+ul.icons li.delete-animal {background-image: url('../img/tag_blue_delete.png');}
 
-ul.icons li.analysis {
-  background-image: url('../img/map.png');
-}
+ul.icons li.view-data {background-image: url('../img/table.png');}
 
-ul.icons li.publish,
-ul.icons li.add-layer {
-  background-image: url('../img/page_white_go.png');
-}
+ul.icons li.create-file {background-image: url('../img/page_white_add.png');}
+ul.icons li.view-file {background-image: url('../img/page_white.png');}
+ul.icons li.edit-file {background-image: url('../img/page_white_edit.png');}
+ul.icons li.delete-file {background-image: url('../img/page_white_delete.png');}
 
-ul.icons li.manager {
-  background-image: url('../img/user.png');
-}
+ul.icons li.analysis {background-image: url('../img/map.png');}
 
-ul.icons li.writer {
-  background-image: url('../img/user_green.png');
-}
+ul.icons li.add-layer {background-image: url('../img/page_white_go.png');}
 
-ul.icons li.reader {
-  background-image: url('../img/user_orange.png');
-}
+ul.icons li.manager {background-image: url('../img/user.png');}
+ul.icons li.writer {background-image: url('../img/user_green.png');}
+ul.icons li.reader {background-image: url('../img/user_orange.png');}
 
-ul.icons li.software {
-  background-image: url('../img/package.png');
-}
-
-ul.icons li.artwork {
-  background-image: url('../img/palette.png');
-}
+ul.icons li.software {background-image: url('../img/package.png');}
+ul.icons li.artwork {background-image: url('../img/palette.png');}
 
 /* maps */
 

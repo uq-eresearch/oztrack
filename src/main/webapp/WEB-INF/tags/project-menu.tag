@@ -3,17 +3,18 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ attribute name="project" type="org.oztrack.data.model.Project" required="true" %>
 <sec:authorize access="hasPermission(#project, 'read')">
-<div class="sidebarMenu">
-    <ul>
-        <li id="projectMenuDetails"><a href="${pageContext.request.contextPath}/projects/${project.id}">View Project</a></li>
+<div class="sidebar-actions">
+    <div class="sidebar-actions-title">Browse Project</div>
+    <ul class="icons sidebar-actions-list">
+        <li id="projectMenuDetails" class="view-project"><a href="${pageContext.request.contextPath}/projects/${project.id}">Project summary</a></li>
         <c:if test="${not empty project.dataFiles}">
-        <li id="projectMenuAnalysis"><a href="${pageContext.request.contextPath}/projects/${project.id}/analysis">View Tracks</a></li>
+        <li id="projectMenuAnalysis" class="view-track"><a href="${pageContext.request.contextPath}/projects/${project.id}/analysis">Tracks and analysis</a></li>
         </c:if>
         <c:if test="${not empty project.animals}">
-        <li id="projectMenuAnimals"><a href="${pageContext.request.contextPath}/projects/${project.id}/animals">View Animals</a></li>
+        <li id="projectMenuAnimals" class="view-animal"><a href="${pageContext.request.contextPath}/projects/${project.id}/animals">Animal details</a></li>
         </c:if>
         <c:if test="${not empty project.dataFiles}">
-        <li id="projectMenuSearch"><a href="${pageContext.request.contextPath}/projects/${project.id}/search">View Data</a></li>
+        <li id="projectMenuSearch" class="view-data"><a href="${pageContext.request.contextPath}/projects/${project.id}/search">Raw data</a></li>
         </c:if>
     </ul>
 </div>

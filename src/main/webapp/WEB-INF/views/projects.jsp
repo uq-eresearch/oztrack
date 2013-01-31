@@ -24,7 +24,7 @@
         <div class="sidebar-actions">
             <div class="sidebar-actions-title">Manage Projects</div>
             <ul class="icons sidebar-actions-list">
-                <li class="create"><a href="${pageContext.request.contextPath}/projects/new">Create new project</a></li>
+                <li class="create-project"><a href="${pageContext.request.contextPath}/projects/new">Create new project</a></li>
             </ul>
         </div>
         </c:if>

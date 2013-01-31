@@ -31,7 +31,7 @@
         <div class="sidebar-actions">
             <div class="sidebar-actions-title">Manage Data File</div>
             <ul class="icons sidebar-actions-list">
-                <li class="delete"><a href="javascript:void(deleteEntity('${pageContext.request.contextPath}/datafiles/${dataFile.id}', '${pageContext.request.contextPath}/projects/${dataFile.project.id}/datafiles', 'Are you sure you want to delete this data file?'));">Delete data file</a></li>
+                <li class="delete-file"><a href="javascript:void(deleteEntity('${pageContext.request.contextPath}/datafiles/${dataFile.id}', '${pageContext.request.contextPath}/projects/${dataFile.project.id}/datafiles', 'Are you sure you want to delete this data file?'));">Delete data file</a></li>
             </ul>
         </div>
         </sec:authorize>

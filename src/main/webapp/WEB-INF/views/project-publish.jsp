@@ -69,7 +69,7 @@
         <div class="sidebar-actions">
             <div class="sidebar-actions-title">Manage Project</div>
             <ul class="icons sidebar-actions-list">
-                <li class="edit"><a href="${pageContext.request.contextPath}/projects/${project.id}/edit">Edit project</a></li>
+                <li class="edit-project"><a href="${pageContext.request.contextPath}/projects/${project.id}/edit">Edit project</a></li>
             </ul>
         </div>
         </sec:authorize>
