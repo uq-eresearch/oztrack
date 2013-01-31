@@ -163,7 +163,6 @@
         <tr><th>Access:</th><td>
 
             <c:choose>
-            <c:choose>
             <c:when test="${project.access == 'OPEN'}">
                 The data in the project are available in OzTrack for the public to use.
             </c:when>
@@ -177,7 +176,6 @@
                 The data in this project are only available to users on the OzTrack system whom have been granted access.
                 Contact the Collection Manager regarding permission and procedures for accessing the data.
             </c:otherwise>
-            </c:choose>
             </c:choose>
 
         </td></tr>
