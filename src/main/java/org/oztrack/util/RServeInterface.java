@@ -134,6 +134,7 @@ public class RServeInterface {
 
     private void loadScripts() throws RServeInterfaceException {
         String[] scriptFileNames = new String[] {
+            "mcp.r",
             "kernelud.r",
             "kernelbb.r",
             "alphahull.r",
@@ -219,14 +220,9 @@ public class RServeInterface {
         if (!(percent >= 0d && percent <= 100d)) {
             throw new RServeInterfaceException("percent must be between 0 and 100.");
         }
-        safeEval("mcp.obj <- try({mcp(positionFix.xy, percent=" + percent + ")}, silent=TRUE)");
-        safeEval(
-            "if (class(mcp.obj) == 'try-error') {\n" +
-            "  stop('At least 5 relocations are required to fit a home range. Please ensure all animals have >5 locations.')\n" +
-            "}"
-        );
-        safeEval("mcp.obj$area <- mcp(positionFix.proj, percent=" + percent + ", unin=c(\"m\"), unout=c(\"km2\"))$area");
-        safeEval("writeOGR(mcp.obj, dsn=\"" + analysis.getAbsoluteResultFilePath() + "\", layer= \"MCP\", driver=\"KML\", dataset_options=c(\"NameField=id\"))");
+        safeEval("percent <- " + percent);
+        safeEval("kmlFile <- \"" + analysis.getAbsoluteResultFilePath() + "\"");
+        safeEval("oztrack_mcp(percent=percent, kmlFile=kmlFile)");
     }
 
     private void writeKernelUDKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
