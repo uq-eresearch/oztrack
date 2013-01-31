@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -172,7 +173,7 @@ public class ProjectController {
         @RequestParam(value="embargoDate", required=false) String embargoDateString,
         @RequestParam(value="dataLicenceIdentifier", required=false) String dataLicenceIdentifier
     ) throws Exception {
-        if (embargoDateString != null) {
+        if (StringUtils.isNotBlank(embargoDateString)) {
             Date embargoDate = isoDateFormat.parse(embargoDateString);
             if (!embargoDate.equals(project.getEmbargoDate())) {
                 project.setEmbargoDate(embargoDate);
@@ -181,8 +182,8 @@ public class ProjectController {
         }
         if (
             configuration.isDataLicencingEnabled() &&
-            (project.getAccess() != ProjectAccess.CLOSED) &&
-            (dataLicenceIdentifier != null)
+            StringUtils.isNotBlank(dataLicenceIdentifier) &&
+            (project.getAccess() != ProjectAccess.CLOSED)
         ) {
             project.setDataLicence(dataLicenceDao.getByIdentifier(dataLicenceIdentifier));
         }
