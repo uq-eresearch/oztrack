@@ -32,7 +32,7 @@ public class KMLExportView extends AbstractView{
         HttpServletRequest request,
         HttpServletResponse response
     ) throws Exception {
-        String fileName = "animal.kml";
+        String fileName = "animal-" + animal.getId() + ".kml";
         response.setHeader("Content-Disposition", "attachment; filename=\""+ fileName + "\"");
         response.setContentType("application/xml");
         response.setCharacterEncoding("UTF-8");

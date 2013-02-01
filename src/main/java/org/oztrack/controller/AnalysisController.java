@@ -6,7 +6,6 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -205,8 +204,8 @@ public class AnalysisController {
             writeResultError(response, "Processing");
             return;
         }
-        String filename = analysis.getAnalysisType().name().toLowerCase(Locale.ENGLISH) + ".kml";
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+        String fileName = "analysis-" + analysis.getId() + ".kml";
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
         response.setContentType("application/vnd.google-earth.kml+xml");
         response.setCharacterEncoding("UTF-8");
         Reader kmlReader = null;
