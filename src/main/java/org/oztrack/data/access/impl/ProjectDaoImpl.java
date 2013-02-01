@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -45,13 +44,22 @@ public class ProjectDaoImpl implements ProjectDao {
 
     @Override
     public Project getProjectById(Long id) {
-        Query query = em.createQuery("SELECT o FROM Project o WHERE o.id = :id");
-        query.setParameter("id", id);
-        try {
-            return (Project) query.getSingleResult();
-        } catch (NoResultException ex) {
-            return null;
-        }
+        @SuppressWarnings("unchecked")
+        List<Project> resultList = em
+            .createQuery("from Project where id = :id")
+            .setParameter("id", id)
+            .getResultList();
+        return resultList.isEmpty() ? null : resultList.get(0);
+    }
+
+    @Override
+    public Project getProjectByTitle(String title) {
+        @SuppressWarnings("unchecked")
+        List<Project> resultList = em
+            .createQuery("from Project where title = :title")
+            .setParameter("title", title)
+            .getResultList();
+        return resultList.isEmpty() ? null : resultList.get(0);
     }
 
     @Override

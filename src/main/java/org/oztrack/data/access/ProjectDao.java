@@ -19,6 +19,7 @@ import com.vividsolutions.jts.geom.Polygon;
 public interface ProjectDao {
     List<Project> getAll();
     Project getProjectById(Long id);
+    Project getProjectByTitle(String title);
     void save(Project object);
     Project update(Project object);
     void delete(Project project);

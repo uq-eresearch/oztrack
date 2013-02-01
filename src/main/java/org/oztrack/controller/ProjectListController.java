@@ -143,6 +143,9 @@ public class ProjectListController {
             project.setDataLicence(null);
         }
         new ProjectFormValidator().validate(project, bindingResult);
+        if (projectDao.getProjectByTitle(project.getTitle()) != null) {
+            bindingResult.rejectValue("title", "error.empty.field", "Project with same title already exists.");
+        }
         if (bindingResult.hasErrors()) {
             addFormAttributes(model);
             return "project-form";

@@ -1,0 +1,1 @@
+create unique index project_title_idx on project (title);
