@@ -211,45 +211,6 @@
             method="${method}" action="${action}"
             commandName="project" name="project" enctype="multipart/form-data">
             <fieldset>
-                <div class="legend">Data Contact</div>
-                <c:set var="dataSpaceAgent" value="${currentUser}"/>
-                <c:if test="${project.id != null}">
-                    <c:set var="dataSpaceAgent" value="${project.dataSpaceAgent}"/>
-                </c:if>
-                <div class="control-group">
-                    <label class="control-label">Name</label>
-                    <div class="controls">
-                        <input type="text" disabled="disabled" value="<c:out value="${dataSpaceAgent.fullName}"/>" />
-                        <div class="help-inline">
-                            <div class="help-popover" title="Contact">
-                                This person is the contact for the data and becomes the Agent specified in the ANDS Collection Registry.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">Organisation</label>
-                    <div class="controls">
-                        <input type="text" disabled="disabled" value="<c:out value="${dataSpaceAgent.organisation}"/>" />
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">Email</label>
-                    <div class="controls">
-                        <input type="text" disabled="disabled" value="<c:out value="${dataSpaceAgent.email}"/>" />
-                    </div>
-                </div>
-                <c:if test="${not empty dataSpaceAgent.dataSpaceAgentDescription}">
-                <div class="control-group">
-                    <label class="control-label">Description</label>
-                    <div class="controls">
-                        <textarea style="width: 400px; height: 100px;" disabled="disabled"
-                            ><c:out value="${dataSpaceAgent.dataSpaceAgentDescription}"/></textarea>
-                    </div>
-                </div>
-                </c:if>
-            </fieldset>
-            <fieldset>
                 <div class="legend">Project Metadata</div>
                 <div class="control-group">
                     <label class="control-label" for="title">Title</label>
