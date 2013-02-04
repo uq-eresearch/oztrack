@@ -146,7 +146,7 @@ public enum AnalysisType {
                 "<p><a href=\"http://cran.r-project.org/web/packages/adehabitatHR/adehabitatHR.pdf\">" +
                 "http://cran.r-project.org/web/packages/adehabitatHR/adehabitatHR.pdf</a></p>",
                 "double",
-                "m",
+                null,
                 "50",
                 true,
                 null
@@ -273,7 +273,7 @@ public enum AnalysisType {
                 "<p><a href=\"http://cran.r-project.org/web/packages/adehabitatHR/adehabitatHR.pdf\">" +
                 "http://cran.r-project.org/web/packages/adehabitatHR/adehabitatHR.pdf</a></p>",
                 "double",
-                "m",
+                null,
                 "50",
                 true,
                 null
