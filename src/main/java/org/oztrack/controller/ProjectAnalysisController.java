@@ -73,6 +73,6 @@ public class ProjectAnalysisController {
         String currentSessionId = (currentSession != null) ? currentSession.getId() : null;
         model.addAttribute("savedAnalyses", analysisDao.getSavedAnalyses(project));
         model.addAttribute("previousAnalyses", analysisDao.getPreviousAnalyses(project, currentUser, currentSessionId));
-        return "project-analysis";
+        return "project-analysis.html";
     }
 }
