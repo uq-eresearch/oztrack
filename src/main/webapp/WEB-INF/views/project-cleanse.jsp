@@ -9,6 +9,9 @@
     <jsp:attribute name="description">
         Edit data in the ${project.title} project.
     </jsp:attribute>
+    <jsp:attribute name="navExtra">
+        <a id="projectMapOptionsBack" href="/projects/${project.id}"><span class="icon-chevron-left icon-white"></span> Back to project</a>
+    </jsp:attribute>
     <jsp:attribute name="head">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/optimised/openlayers.css" type="text/css">
         <style type="text/css">
@@ -197,7 +200,6 @@
         <div id="projectMapOptions">
         <div id="projectMapOptionsInner">
         <div id="projectMapOptionsTabs">
-            <a id="projectMapOptionsBack" class="btn" href="/projects/${project.id}">« Back to project</a>
             <ul>
                 <li><a href="#dataCleansing">Data Cleansing</a></li>
             </ul>

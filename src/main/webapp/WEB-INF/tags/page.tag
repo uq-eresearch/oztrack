@@ -10,6 +10,7 @@
 <%@ attribute name="head" required="false" fragment="true" %>
 <%@ attribute name="tail" required="false" fragment="true" %>
 <%@ attribute name="breadcrumbs" required="false" fragment="true" %>
+<%@ attribute name="navExtra" required="false" fragment="true" %>
 <%@ attribute name="sidebar" required="false" fragment="true" %>
 <%@ attribute name="fluid" required="false" type="java.lang.Boolean" %>
 <c:set var="googleAnalyticsTrackingID"><%= OzTrackApplication.getApplicationContext().getGoogleAnalyticsTrackingID() %></c:set>
@@ -51,6 +52,11 @@
         </div>
     </div>
     </div>
+    <c:if test="${!empty navExtra}">
+    <div id="nav-extra">
+        <jsp:invoke fragment="navExtra"/>
+    </div>
+    </c:if>
     <div class="navbar navbar-inverse">
       <div class="navbar-inner">
         <ul class="nav">
