@@ -90,7 +90,7 @@
             }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
-                $("#projectMapOptionsAccordion").accordion();
+                $("#projectMapOptionsTabs").tabs();
                 $('#fromDateVisible').datepicker({
                     altField: "#fromDate",
                     minDate: new Date(${projectDetectionDateRange.minimum.time}),
@@ -174,33 +174,34 @@
                 });
             });
             function onResize() {
-                var mainHeight = $(window).height() - $('#header').height() - $('#crumbs').height() - 21;
+                var mainHeight = $(window).height() - $('#header').outerHeight();
                 $('#projectMapOptions').height(mainHeight);
-                $('#projectMapOptions .ui-accordion-content').height($('#projectMapOptions').height() - 68);
+                var panelPadding =
+                    parseInt($('#projectMapOptions .ui-tabs-panel').css('padding-top')) +
+                    parseInt($('#projectMapOptions .ui-tabs-panel').css('padding-bottom'));
+                $('#projectMapOptions .ui-tabs-panel').height(
+                    $('#projectMapOptions').innerHeight() -
+                    $('#projectMapOptions .ui-tabs-nav').outerHeight() -
+                    panelPadding
+                );
                 $('#projectMap').height(mainHeight);
                 if (cleanseMap) {
-                    setTimeout("cleanseMap.updateSize();", 250);
+                    cleanseMap.updateSize();
                 }
             }
             $(window).resize(onResize);
         </script>
     </jsp:attribute>
-    <jsp:attribute name="breadcrumbs">
-        <a href="${pageContext.request.contextPath}/">Home</a>
-        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Projects</a>
-        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
-        &rsaquo; <span class="active">Edit Data</span>
-    </jsp:attribute>
-    <jsp:attribute name="breadcrumbsRight">
-        <a class="btn" href="/projects/${project.id}">« Back to project</a>
-    </jsp:attribute>
     <jsp:body>
         <div class="mapTool">
         <div id="projectMapOptions">
         <div id="projectMapOptionsInner">
-        <div id="projectMapOptionsAccordion">
-            <h3><a href="#">Data Cleansing</a></h3>
-            <div style="padding: 1em 10px;">
+        <div id="projectMapOptionsTabs">
+            <a id="projectMapOptionsBack" class="btn" href="/projects/${project.id}">« Back to project</a>
+            <ul>
+                <li><a href="#dataCleansing">Data Cleansing</a></li>
+            </ul>
+            <div id="dataCleansing">
                 <form id="cleanseForm" class="form-veritcal" onsubmit="return false;">
                 <fieldset>
                 <div class="control-group" style="margin-bottom: 9px;">

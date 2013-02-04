@@ -10,7 +10,6 @@
 <%@ attribute name="head" required="false" fragment="true" %>
 <%@ attribute name="tail" required="false" fragment="true" %>
 <%@ attribute name="breadcrumbs" required="false" fragment="true" %>
-<%@ attribute name="breadcrumbsRight" required="false" fragment="true" %>
 <%@ attribute name="sidebar" required="false" fragment="true" %>
 <%@ attribute name="fluid" required="false" type="java.lang.Boolean" %>
 <c:set var="googleAnalyticsTrackingID"><%= OzTrackApplication.getApplicationContext().getGoogleAnalyticsTrackingID() %></c:set>
@@ -70,11 +69,6 @@
 <div class="container${fluid ? '-fluid' : ''}">
     <c:if test="${!empty breadcrumbs}">
     <div id="crumbs">
-        <c:if test="${!empty breadcrumbsRight}">
-        <div id="crumbs-right">
-            <jsp:invoke fragment="breadcrumbsRight"/>
-        </div>
-        </c:if>
         <jsp:invoke fragment="breadcrumbs"/>
     </div>
     </c:if>

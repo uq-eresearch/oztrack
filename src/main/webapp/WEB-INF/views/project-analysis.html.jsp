@@ -16,9 +16,6 @@
             #main {
                 padding-bottom: 0;
             }
-            #projectMapOptions .ui-accordion-content {
-                padding: 10px;
-            }
             #mapToolForm {
                 padding-left:0px;
                 padding-top:0px;
@@ -172,7 +169,7 @@
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
                 $('#projectMenuAnalysis').addClass('active');
-                $("#projectMapOptionsAccordion").accordion();
+                $("#projectMapOptionsTabs").tabs();
                 $('#fromDateVisible').datepicker({
                     altField: "#fromDate",
                     minDate: new Date(${projectDetectionDateRange.minimum.time}),
@@ -265,7 +262,7 @@
                             });
                     },
                     onAnalysisSuccess: function() {
-                        $("#projectMapOptionsAccordion").accordion('activate', '#animalPanelHeader');
+                        $('a[href="#animalPanel"]').trigger('click');
                     }
                 });
                 <c:forEach items="${savedAnalyses}" var="analysis">
@@ -459,9 +456,16 @@
                 return div;
             }
             function onResize() {
-                var mainHeight = $(window).height() - $('#header').height() - $('#crumbs').height() - 21;
+                var mainHeight = $(window).height() - $('#header').outerHeight();
                 $('#projectMapOptions').height(mainHeight);
-                $('#projectMapOptions .ui-accordion-content').height($('#projectMapOptions').height() - (40 + $('#projectMapOptionsAccordion > h3').length * 30));
+                var panelPadding =
+                    parseInt($('#projectMapOptions .ui-tabs-panel').css('padding-top')) +
+                    parseInt($('#projectMapOptions .ui-tabs-panel').css('padding-bottom'));
+                $('#projectMapOptions .ui-tabs-panel').height(
+                    $('#projectMapOptions').innerHeight() -
+                    $('#projectMapOptions .ui-tabs-nav').outerHeight() -
+                    panelPadding
+                );
                 $('#projectMap').height(mainHeight);
                 if (analysisMap) {
                     analysisMap.updateSize();
@@ -476,26 +480,19 @@
             }
         </script>
     </jsp:attribute>
-    <jsp:attribute name="breadcrumbs">
-        <a href="${pageContext.request.contextPath}/">Home</a>
-        &rsaquo; <a href="${pageContext.request.contextPath}/projects">Projects</a>
-        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
-        &rsaquo; <span class="active">View Tracks</span>
-    </jsp:attribute>
-    <jsp:attribute name="breadcrumbsRight">
-        <a class="btn" href="/projects/${project.id}">« Back to project</a>
-    </jsp:attribute>
     <jsp:body>
         <div id="mapTool" class="mapTool">
 
         <div id="projectMapOptions">
         <div id="projectMapOptionsInner">
-        <div id="projectMapOptionsAccordion">
-
-            <h3 id="animalPanelHeader"><a href="javascript:void(0);">Analysis Results</a></h3>
-
+        <div id="projectMapOptionsTabs">
+            <a id="projectMapOptionsBack" class="btn" href="/projects/${project.id}">« Back to project</a>
+            <ul>
+                <li><a href="#animalPanel">Results</a></li>
+                <li><a href="#homeRangeCalculatorPanel">Analysis</a></li>
+                <li><a href="#previousAnalysesPanel">History</a></li>
+            </ul>
             <div id="animalPanel">
-
                 <div class="animalHeader" style="margin-bottom: 10px; border-bottom: 1px solid #ccc;">
                 <div class="animalCheckbox">
                     <input
@@ -544,9 +541,6 @@
                     <a id="selectAnimalConfirmationLink" href="javascript:void(0);" style="color: white; font-weight: bold;">Click to finish selecting animals</a>
                 </div>
             </div>
-
-
-            <h3><a id="homeRangeCalculatorLink" href="javascript:void(0);">Run New Analysis</a></h3>
 
             <div id="homeRangeCalculatorPanel">
 
@@ -721,8 +715,6 @@
                 </form>
             </div>
 
-            <c:if test="${not empty project.analyses}">
-            <h3><a href="javascript:void(0);">Previous Analyses</a></h3>
             <div id="previousAnalysesPanel">
                 <div id="savedAnalysesTitle" style="display: none; margin-bottom: 9px; font-weight: bold;">Saved Analyses</div>
                 <ul id="savedAnalysesList" class="unstyled" style="display: none;">
@@ -731,7 +723,6 @@
                 <ul id="previousAnalysesList" class="icons" style="display: none;">
                 </ul>
             </div>
-            </c:if>
         </div>
         </div>
         </div>
