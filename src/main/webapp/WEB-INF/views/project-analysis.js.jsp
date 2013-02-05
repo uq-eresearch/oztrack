@@ -54,6 +54,7 @@ function createAnalysisMap(div, options) {
             layerSwitcher.maximizeControl();
             loadingPanel = new OpenLayers.Control.LoadingPanel();
             map.addControl(loadingPanel);
+            map.addControl(new OpenLayers.Control({displayClass: 'projectMapBoxShadow'}));
 
             var gphy = new OpenLayers.Layer.Google('Google Physical', {
                 type : google.maps.MapTypeId.TERRAIN

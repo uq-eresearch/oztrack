@@ -40,6 +40,7 @@ function createCleanseMap(div, options) {
             layerSwitcher.maximizeControl();
             map.addControl(new OpenLayers.Control.LoadingPanel());
             map.addControl(createControlPanel());
+            map.addControl(new OpenLayers.Control({displayClass: 'projectMapBoxShadow'}));
 
             var gphy = new OpenLayers.Layer.Google('Google Physical', {type: google.maps.MapTypeId.TERRAIN});
             var gsat = new OpenLayers.Layer.Google('Google Satellite', {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22});
