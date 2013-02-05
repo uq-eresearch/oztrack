@@ -274,22 +274,11 @@ a.carousel-control {
   background-position: right center;
 }
 
-@loginHeight: 15px;
-@loginVerticalPadding: 5px;
-
 #login {
   position: relative;
   float: right;
-  top: @bannerHeight - (@loginHeight + 2 * @loginVerticalPadding);
-  height: @loginHeight;
-  padding: @loginVerticalPadding 0.9em;
-  color: #ffffff;
-  background-color: #666;
-  font-weight: bold;
-}
-
-#login a {
-  color: #ffffff;
+  top: @bannerHeight + 5px;
+  right: 5px;
 }
 
 #crumbs {
@@ -300,10 +289,6 @@ a.carousel-control {
 
 #nav-extra {
   float: left;
-}
-
-#login {
-  font-size: 11px;
 }
 
 #left-menu {
@@ -388,11 +373,6 @@ a.carousel-control {
 }
 
 #crumbs .active {
-  color: #ef9800;
-}
-
-#login a:hover,
-#login a:active {
   color: #ef9800;
 }
 

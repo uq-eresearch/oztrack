@@ -35,18 +35,24 @@
         <div id="banner-right">
             <div id="login">
                 <c:choose>
-                    <c:when test="${currentUser != null}">
-                      Welcome, <c:out value="${currentUser.firstName}"/>
-                      &nbsp;|&nbsp;
-                      <a href="${pageContext.request.contextPath}/users/${currentUser.id}/edit">Profile</a>
-                      &nbsp;|&nbsp;
-                      <a href="${pageContext.request.contextPath}/logout">Logout</a>
-                    </c:when>
-                    <c:otherwise>
-                      <a href="${pageContext.request.contextPath}/login">Login</a>
-                      &nbsp;|&nbsp;
-                      <a href="${pageContext.request.contextPath}/users/new">Register</a>
-                    </c:otherwise>
+                <c:when test="${currentUser != null}">
+                <div class="btn-group">
+                    <a class="btn btn-inverse dropdown-toggle" data-toggle="dropdown" href="#">
+                        <c:out value="${currentUser.fullName}"/>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="${pageContext.request.contextPath}/users/${currentUser.id}/edit">Edit profile</a></li>
+                        <li><a href="${pageContext.request.contextPath}/logout">Logout</a></li>
+                    </ul>
+                </div>
+                </c:when>
+                <c:otherwise>
+                <div class="btn-group">
+                    <a class="btn btn-inverse" href="${pageContext.request.contextPath}/users/new">Register</a>
+                    <a class="btn btn-inverse" href="${pageContext.request.contextPath}/login">Login</a>
+                </div>
+                </c:otherwise>
                 </c:choose>
             </div>
         </div>
