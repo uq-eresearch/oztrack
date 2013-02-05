@@ -41,7 +41,7 @@
                         <c:out value="${currentUser.fullName}"/>
                         <span class="caret"></span>
                     </a>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu pull-right">
                         <li><a href="${pageContext.request.contextPath}/users/${currentUser.id}/edit">Edit profile</a></li>
                         <li><a href="${pageContext.request.contextPath}/logout">Logout</a></li>
                     </ul>
