@@ -251,6 +251,8 @@
                         addAnalysis(layerName, analysisUrl, new Date(), false);
                     },
                     onAnalysisError: function(message) {
+                        $('#projectMapSubmit').prop('disabled', false);
+                        $('#projectMapCancel').fadeOut();
                         jQuery('#errorDialog')
                             .text(message)
                             .dialog({
@@ -265,6 +267,8 @@
                             });
                     },
                     onAnalysisSuccess: function() {
+                        $('#projectMapSubmit').prop('disabled', false);
+                        $('#projectMapCancel').fadeOut();
                         $('a[href="#animalPanel"]').trigger('click');
                     }
                 });
@@ -712,7 +716,10 @@
                     </div>
                     </fieldset>
                     <div style="margin-top: 18px;">
-                        <input id="projectMapSubmit" class="btn btn-primary" type="button" value="Calculate" onclick="analysisMap.addProjectMapLayer();" />
+                        <input id="projectMapSubmit" class="btn btn-primary" type="button" value="Calculate"
+                            onclick="$('#projectMapSubmit').prop('disabled', true); $('#projectMapCancel').fadeIn(); analysisMap.addProjectMapLayer();" />
+                        <input id="projectMapCancel" class="btn" style="display: none;" type="button" value="Cancel"
+                            onclick="analysisMap.deleteCurrentAnalysis(); $('#projectMapSubmit').prop('disabled', false); $('#projectMapCancel').fadeOut();" />
                     </div>
                 </form>
             </div>

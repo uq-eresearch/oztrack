@@ -310,6 +310,7 @@ function createAnalysisMap(div, options) {
                     if (textStatus == 'success') {
                         var analysis = $.parseJSON(xhr.responseText);
                         analyses[analysis.id] = analysis;
+                        currentAnalysisId = analysis.id;
                         updateAnimalInfoForAnalysis(layerName, analysis);
                         loadingPanel.increaseCounter();
                         pollAnalysisLayer(analysisUrl, layerName);
@@ -390,6 +391,12 @@ function createAnalysisMap(div, options) {
             map.addLayer(queryOverlay);
         }
         
+        analysisMap.deleteCurrentAnalysis = function() {
+            if (currentAnalysisId) {
+                analysisMap.deleteAnalysis(currentAnalysisId);
+            }
+        };
+        
         analysisMap.deleteAnalysis = function(id) {
             var confirmMessage =
                 (analyses[id] && (analyses[id].params.animalIds.length > 1))
@@ -403,6 +410,9 @@ function createAnalysisMap(div, options) {
                     analyses[id].layer.destroy();
                 }
                 delete analyses[id];
+            }
+            if (id == currentAnalysisId) {
+                currentAnalysisId = null;
             }
             $('.analysisInfo-' + id).fadeOut().remove();
         };
