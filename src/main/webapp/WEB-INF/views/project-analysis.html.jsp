@@ -103,13 +103,16 @@
                 font-size: 11px;
                 color: #666;
             }
-            .paramTable {
-                margin: 6px 0;
-                width: 100%;
-                background-color: #DBDBD0;
-                border: 3px solid #DBDBD0;
+            .paramTableDiv {
+                margin: 5px 0 10px 0;
+                padding: 5px;
+                border-radius: 4px;
+                border: 1px solid #d0d0a0;
             }
-            .paramTable td {
+            .paramTableDiv table {
+                width: 100%;
+            }
+            .paramTableDiv table td {
                 padding: 2px;
             }
             #savedAnalysesList .analysis-header {
@@ -166,8 +169,8 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/project-analysis.js"></script>
         <script type="text/javascript">
             function showParamTable(queryType) {
-                $('.paramTable').hide();
-                $('#paramTable-' + queryType).fadeIn('slow');
+                $('.paramTableDiv').hide();
+                $('#paramTableDiv-' + queryType).fadeIn('slow');
             }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
@@ -647,7 +650,8 @@
                                             ${analysisType.explanation}
                                         </div>
                                         </c:if>
-                                        <table id="paramTable-${analysisType}" class="paramTable" style="display: none;">
+                                        <div id="paramTableDiv-${analysisType}" class="paramTableDiv" style="display: none;">
+                                        <table>
                                             <c:set var="foundAdvancedParameterType" value="false"/>
                                             <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
                                             <c:if test="${!foundAdvancedParameterType and parameterType.advanced}">
@@ -708,6 +712,7 @@
                                             </tr>
                                             </c:forEach>
                                         </table>
+                                        </div>
                                     </td>
                                 </tr>
                                 </c:forEach>
