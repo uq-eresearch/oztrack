@@ -38,7 +38,7 @@
                 <c:when test="${currentUser != null}">
                 <div class="btn-group">
                     <a class="btn btn-inverse dropdown-toggle" data-toggle="dropdown" href="#">
-                        <c:out value="${currentUser.fullName}"/>
+                        <span><c:out value="${currentUser.fullName}"/></span>
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu pull-right">
