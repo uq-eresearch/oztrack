@@ -134,6 +134,7 @@ public class RServeInterface {
 
     private void loadScripts() throws RServeInterfaceException {
         String[] scriptFileNames = new String[] {
+            "kmlPolygons.r",
             "mcp.r",
             "kernelud.r",
             "kernelbb.r",

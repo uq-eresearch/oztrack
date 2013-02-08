@@ -10,5 +10,5 @@ oztrack_locoh <- function(k, r, percent, kmlFile) {
   }
   hr.proj <- getverticeshr(locoh.obj, percent=percent, unin=c('m'), unout=c('km2'))
   hr.xy <- spTransform(hr.proj, CRS('+proj=longlat +datum=WGS84'))
-  writeOGR(hr.xy, dsn=kmlFile, layer= 'KBB', driver='KML', dataset_options=c('NameField=id'))
+  fOZkmlPolygons(OzSPDF=hr.xy, kmlFileName=kmlFile, folderName='LoCoH')
 }

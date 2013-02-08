@@ -20,5 +20,5 @@ oztrack_kernelud <- function(h, gridSize, extent, percent, kmlFile) {
   myKer <- spTransform(myKerP, CRS('+proj=longlat +datum=WGS84'))
   myKer$area <- myKerP$area
   myKer$hval <- allh
-  writeOGR(myKer, dsn=kmlFile, layer='KUD', driver='KML', dataset_options=c('NameField=id'))
+  fOZkmlPolygons(OzSPDF=myKer, kmlFileName=kmlFile, folderName='KUD')
 }

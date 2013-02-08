@@ -116,5 +116,5 @@ myalphahullP <- function(positionFix.proj, sinputssrs, ialpha) {
 
 oztrack_alphahull <- function(srs, alpha, kmlFile) {
   myAhull <- myalphahullP(positionFix.proj, sinputssrs=paste('+init=', srs, sep=''), ialpha=alpha)
-  writeOGR(myAhull, dsn=kmlFile, layer='AHULL', driver='KML', dataset_options=c('NameField=id'))
+  fOZkmlPolygons(OzSPDF=myAhull, kmlFileName=kmlFile, folderName='AHULL')
 }
