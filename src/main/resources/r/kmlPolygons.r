@@ -1,29 +1,13 @@
 ### This function is an edited version of the kmlPolygon() function in package maptools
 ### Functionality has been extended so that details from the @data slot in the SPDF are returned in the kml
 
-fOZkmlHeader <- function(folderName, OzSPDF) {
+fOZkmlHeader <- function(folderName, fieldNames, fieldTypes) {
   headers <- c("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
   headers <- append(headers, "<kml xmlns=\"http://www.opengis.net/kml/2.2\">")
   headers <- append(headers, "<Document>")
   headers <- append(headers, paste('<Schema name="', 'OzTrack', '" id="OzTrackPolygons">', sep=''))
-  for (fieldName in names(as(OzSPDF, "data.frame"))) {
-    rClassName <- class(as(OzSPDF, "data.frame")[[fieldName]])
-    if ((rClassName == 'numeric') || (rClassName == 'double')) {
-      kmlFieldType <- 'double'
-    }
-    else if (rClassName == 'float') {
-      kmlFieldType <- 'float'
-    }
-    else if (rClassName == 'integer') {
-      kmlFieldType <- 'int'
-    }
-    else if (rClassName == 'logical') {
-      kmlFieldType <- 'bool'
-    }
-    else {
-      kmlFieldType <- 'string'
-    }
-    headers <- append(headers, paste('<SimpleField name="', fieldName, '" type="', kmlFieldType, '"/>', sep=''))
+  for (i in 1:length(fieldNames)) {
+    headers <- append(headers, paste('<SimpleField name="', fieldNames[i], '" type="', fieldTypes[i], '"/>', sep=''))
   }
   headers <- append(headers, "</Schema>")
   headers <- append(headers, "<Folder>")
@@ -56,13 +40,7 @@ fOZkmlPlacemark <- function (obj, name, visibility=TRUE, id, fieldNames, fieldVa
   kml <- append(kml, paste('<ExtendedData>'))
   kml <- append(kml, '<SchemaData schemaUrl="#OzTrackPolygons">')
   for (i in 1:length(fieldNames)) {
-    if (class(fieldValues[i]) == 'logical') {
-      kmlFieldValue <- ifelse(fieldValues[i], 1, 0)
-    }
-    else {
-      kmlFieldValue <- fieldValues[i]
-    }
-    kml <- append(kml, paste('<SimpleData name="', fieldNames[i], '">', as.character(kmlFieldValue), '</SimpleData>',sep=""))
+    kml <- append(kml, paste('<SimpleData name="', fieldNames[i], '">', fieldValues[i], '</SimpleData>',sep=""))
   }
   kml <- append(kml, "</SchemaData>")
   kml <- append(kml, "</ExtendedData>")
@@ -85,20 +63,50 @@ fOZkmlPlacemark <- function (obj, name, visibility=TRUE, id, fieldNames, fieldVa
   kml
 }
 
+fOZkmlType <- function(rClassName) {
+  if ((rClassName == 'numeric') || (rClassName == 'double')) {
+    return('double')
+  }
+  else if (rClassName == 'float') {
+    return('float')
+  }
+  else if (rClassName == 'integer') {
+    return('int')
+  }
+  else if (rClassName == 'logical') {
+    return('bool')
+  }
+  else {
+    return('string')
+  }
+}
+
+fOZkmlValue <- function(rValue) {
+  if (class(rValue) == 'logical') {
+    return(ifelse(rValue, '1', '0'))
+  }
+  else {
+    return(as.character(rValue))
+  }
+}
+
 #  This function extends the fOZkmlPlacemark function to accept a SpatialPolygonsDataFrame object, 
 #  Labels are based on attributes in the dataframe of the SpatialPolygonsDataFrame object
 fOZkmlPolygons <- function(OzSPDF, kmlFileName, folderName) {
-  kmlFile <- file(kmlFileName, "w")
+  fieldNames <- names(as(OzSPDF, "data.frame"))
+  fieldTypes <- sapply(fieldNames, function(name) {fOZkmlType(class(as(OzSPDF, "data.frame")[[name]]))})
+  
   kmlPlacemarks <- sapply(1:nrow(OzSPDF), function(x) {
       fOZkmlPlacemark(OzSPDF[x,],
         name=as.character(as(OzSPDF, "data.frame")[x,'id']), 
         visibility=TRUE,
-        fieldNames=names(as(OzSPDF, "data.frame")),
-        fieldValues=as(OzSPDF, "data.frame")[x,]
+        fieldNames=fieldNames,
+        fieldValues=sapply(fieldNames, function(name) {fOZkmlValue(as(OzSPDF, "data.frame")[x, name])})
       )
     })
   
-  cat(fOZkmlHeader(folderName=folderName, OzSPDF=OzSPDF), file=kmlFile, sep="\n")
+  kmlFile <- file(kmlFileName, "w")
+  cat(fOZkmlHeader(folderName=folderName, fieldNames=fieldNames, fieldTypes=fieldTypes), file=kmlFile, sep="\n")
   cat(unlist(kmlPlacemarks), file=kmlFile, sep="\n")
   cat(fOZkmlFooter(), file=kmlFile, sep="\n")
   close(kmlFile)
