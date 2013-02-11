@@ -8,3 +8,4 @@ src/main/resources/r/.Rhistory
 src/main/webapp/css/optimised/
 src/main/webapp/js/optimised/
 target/
+*.swp
