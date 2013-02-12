@@ -236,7 +236,7 @@ public class AnalysisController {
         xslBuilder.append("  xmlns:kml=\"http://www.opengis.net/kml/2.2\"");
         xslBuilder.append("  xmlns=\"http://www.opengis.net/kml/2.2\"");
         xslBuilder.append("  version=\"1.0\">");
-        // Wwe're only making small changes to the KML, so copy elements through by default
+        // We're only making small changes to the KML, so copy elements through by default
         xslBuilder.append("  <xsl:template match=\"@*|node()\">");
         xslBuilder.append("    <xsl:copy>");
         xslBuilder.append("      <xsl:apply-templates select=\"@*|node()\"/>");
