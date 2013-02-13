@@ -233,6 +233,6 @@ The jQuery UI theme used on this project is produced using the jQuery UI ThemeRo
 (http://jqueryui.com/themeroller/). To modify the theme, use the link included in the
 ThemeRoller-generated CSS file to pre-fill settings in the theme creation form.
 
-    grep 'jqueryui\.com\/themeroller\/?' src/main/webapp/css/jquery-ui/jquery-ui-*.custom.css
+    grep 'jqueryui\.com\/themeroller\/?' src/main/webapp/css/jquery-ui/*.css
 
 (The link should look something like this: http://jqueryui.com/themeroller/?ffDefault=Helvetica&fsDefault=13px&cornerRadius=3px&...)
