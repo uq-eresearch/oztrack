@@ -1,5 +1,5 @@
 /* ============================================================
- * bootstrap-button.js v2.3.0-wip-01b465928ec47d460ea1fd705e49aa2e0e9a4d28
+ * bootstrap-button.js v2.3.0
  * http://twitter.github.com/bootstrap/javascript.html#buttons
  * ============================================================
  * Copyright 2012 Twitter, Inc.

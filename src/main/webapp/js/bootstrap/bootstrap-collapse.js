@@ -1,5 +1,5 @@
 /* =============================================================
- * bootstrap-collapse.js v2.3.0-wip-01b465928ec47d460ea1fd705e49aa2e0e9a4d28
+ * bootstrap-collapse.js v2.3.0
  * http://twitter.github.com/bootstrap/javascript.html#collapse
  * =============================================================
  * Copyright 2012 Twitter, Inc.
@@ -72,7 +72,7 @@
 
   , hide: function () {
       var dimension
-      if (this.transitioning) return
+      if (this.transitioning || !this.$element.hasClass('in')) return
       dimension = this.dimension()
       this.reset(this.$element[dimension]())
       this.transition('removeClass', $.Event('hide'), 'hidden')

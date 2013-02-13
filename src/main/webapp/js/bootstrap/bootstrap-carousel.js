@@ -1,5 +1,5 @@
 /* ==========================================================
- * bootstrap-carousel.js v2.3.0-wip-01b465928ec47d460ea1fd705e49aa2e0e9a4d28
+ * bootstrap-carousel.js v2.3.0
  * http://twitter.github.com/bootstrap/javascript.html#carousel
  * ==========================================================
  * Copyright 2012 Twitter, Inc.
@@ -39,6 +39,7 @@
 
     cycle: function (e) {
       if (!e) this.paused = false
+      if (this.interval) clearInterval(this.interval);
       this.options.interval
         && !this.paused
         && (this.interval = setInterval($.proxy(this.next, this), this.options.interval))
