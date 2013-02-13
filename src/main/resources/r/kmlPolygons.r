@@ -98,7 +98,7 @@ fOZkmlPolygons <- function(OzSPDF, kmlFileName, folderName) {
   
   kmlPlacemarks <- sapply(1:nrow(OzSPDF), function(x) {
       fOZkmlPlacemark(OzSPDF[x,],
-        name=as.character(as(OzSPDF, "data.frame")[x,'id']), 
+        name=animalName[as.character(as(OzSPDF, "data.frame")[x,'id'])], 
         visibility=TRUE,
         fieldNames=fieldNames,
         fieldValues=sapply(fieldNames, function(name) {fOZkmlValue(as(OzSPDF, "data.frame")[x, name])})

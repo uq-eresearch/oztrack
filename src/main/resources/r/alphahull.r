@@ -88,17 +88,17 @@ ah2sp <- function(x, increment=360, rnd=10, proj4string=CRS(as.character(NA))){
 } 
 
 myalphahullP <- function(positionFix.proj, sinputssrs, ialpha) {
-  iids <- unique(as.character(positionFix.proj$Name))
+  iids <- unique(as.character(positionFix.proj$ID))
   alphaHRD <- function(ialpha,iepsg)
   {
     id.alpha <- function(i) # Need to run for each animal ID
     {
-      positionFix.proj1 <- subset(positionFix.proj,positionFix.proj$Name==iids[i])
+      positionFix.proj1 <- subset(positionFix.proj,positionFix.proj$ID==iids[i])
       positionFix.xy <- coordinates(positionFix.proj1)[!duplicated(coordinates(positionFix.proj1)),]
   
       a <- ahull(coordinates(positionFix.xy), alpha = ialpha) 
       Ahull.proj <- ah2sp(a,rnd=2)
-      Ahull.proj$id <- Ahull.proj$name <- unique(positionFix.proj1$Name)
+      Ahull.proj$id <- Ahull.proj$name <- unique(positionFix.proj1$ID)
       Ahull.proj$alpha <- ialpha
       row.names(Ahull.proj) <- as.character(i)
       return(Ahull.proj)

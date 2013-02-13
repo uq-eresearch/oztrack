@@ -3,6 +3,7 @@ package org.oztrack.util;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -11,11 +12,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.model.Analysis;
+import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.error.RServeInterfaceException;
 import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.REXPDouble;
+import org.rosuda.REngine.REXPList;
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REXPString;
 import org.rosuda.REngine.REngineException;
@@ -40,6 +43,7 @@ public class RServeInterface {
             StringUtils.isNotBlank(project.getSrsIdentifier())
             ? project.getSrsIdentifier().toLowerCase(Locale.ENGLISH)
             : "epsg:3577";
+        createAnimalNameList(analysis);
         createRPositionFixDataFrame(positionFixList, srs);
 
         switch (analysis.getAnalysisType()) {
@@ -163,6 +167,22 @@ public class RServeInterface {
         }
     }
 
+    private void createAnimalNameList(Analysis analysis) throws RServeInterfaceException {
+        ArrayList<String> names = new ArrayList<String>();
+        ArrayList<REXP> contents = new ArrayList<REXP>();
+        for (Animal animal : analysis.getAnimals()) {
+            names.add(animal.getId().toString());
+            contents.add(new REXPString(animal.getAnimalName()));
+        }
+        REXP rexp = new REXPList(new RList(contents, names));
+        try {
+            this.rConnection.assign("animalName", rexp);
+        }
+        catch (REngineException e) {
+            throw new RServeInterfaceException(e.toString());
+        }
+    }
+
     private void createRPositionFixDataFrame(List<PositionFix> positionFixList, String srs) throws RServeInterfaceException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -182,7 +202,7 @@ public class RServeInterface {
 
         // Create the RList to become the dataframe
         RList rPositionFixList = new RList();
-        rPositionFixList.put("Name", new REXPString(animalIds));
+        rPositionFixList.put("ID", new REXPString(animalIds));
         rPositionFixList.put("Date", new REXPString(dates));
         rPositionFixList.put("X", new REXPDouble(longitudes));
         rPositionFixList.put("Y", new REXPDouble(latitudes));
@@ -195,7 +215,7 @@ public class RServeInterface {
             safeEval("positionFix$Date <- as.POSIXct(strptime(positionFix$Date, '%Y-%m-%d %H:%M:%S'));");
 
             // Create SpatialPointsDataFrame in WGS84
-            safeEval("positionFix.xy <- positionFix[, c('Name', 'X', 'Y')];");
+            safeEval("positionFix.xy <- positionFix[, c('ID', 'X', 'Y')];");
             safeEval("coordinates(positionFix.xy) <- ~X+Y;");
             safeEval("proj4string(positionFix.xy) <- CRS('+init=epsg:4326');");
 
