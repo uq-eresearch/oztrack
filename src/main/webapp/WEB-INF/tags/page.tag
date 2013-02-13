@@ -48,7 +48,7 @@
                 </div>
                 </c:when>
                 <c:otherwise>
-                <div class="btn-group">
+                <div>
                     <a class="btn btn-inverse" href="${pageContext.request.contextPath}/users/new">Register</a>
                     <a class="btn btn-inverse" href="${pageContext.request.contextPath}/login">Login</a>
                 </div>
