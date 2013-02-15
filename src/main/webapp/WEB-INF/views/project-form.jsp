@@ -65,14 +65,14 @@
             function updateLicenceSelectorFromDataLicence() {
                 var dataLicenceIdentifier = $('#dataLicenceIdentifier').val();
                 if (!dataLicenceIdentifier) {
-                    dataLicenceIdentifier = 'CC-BY-SA';
+                    dataLicenceIdentifier = 'CC-BY';
                     $('#dataLicenceIdentifier').val(dataLicenceIdentifier);
                 }
                 if (dataLicenceIdentifier == 'PDM') {
                     $('#dataLicenceCopyright').prop('checked', false);
                     setCheckboxDisabled('#dataLicenceAttribution', true);
                     setCheckboxDisabled('#dataLicenceDerivatives', true);
-                    setCheckboxDisabled('#dataLicenceShareAlike', true);
+                    setCheckboxDisabled('#dataLicenceNonShareAlike', true);
                     setCheckboxDisabled('#dataLicenceCommercial', true);
                 }
                 else {
@@ -81,7 +81,7 @@
                     if (dataLicenceIdentifier == 'CC0') {
                         $('#dataLicenceAttribution').prop('checked', false);
                         setCheckboxDisabled('#dataLicenceDerivatives', true);
-                        setCheckboxDisabled('#dataLicenceShareAlike', true);
+                        setCheckboxDisabled('#dataLicenceNonShareAlike', true);
                         setCheckboxDisabled('#dataLicenceCommercial', true);
                     }
                     else {
@@ -90,17 +90,13 @@
                         setCheckboxDisabled('#dataLicenceCommercial', false);
                         if ((dataLicenceIdentifier == 'CC-BY-ND') || (dataLicenceIdentifier == 'CC-BY-NC-ND')) {
                             $('#dataLicenceDerivatives').prop('checked', false);
-                            setCheckboxDisabled('#dataLicenceShareAlike', true);
+                            setCheckboxDisabled('#dataLicenceNonShareAlike', true);
                         }
                         else {
                             $('#dataLicenceDerivatives').prop('checked', true);
-                            setCheckboxDisabled('#dataLicenceShareAlike', false);
-                            if ((dataLicenceIdentifier == 'CC-BY-SA') || (dataLicenceIdentifier == 'CC-BY-NC-SA')) {
-                                $('#dataLicenceShareAlike').prop('checked', true);
-                            }
-                            else {
-                                $('#dataLicenceShareAlike').prop('checked', false);
-                            }
+                            setCheckboxDisabled('#dataLicenceNonShareAlike', false);
+                            var shareAlike = (dataLicenceIdentifier == 'CC-BY-SA') || (dataLicenceIdentifier == 'CC-BY-NC-SA');
+                            $('#dataLicenceNonShareAlike').prop('checked', !shareAlike);
                         }
                         if ((dataLicenceIdentifier == 'CC-BY-NC') || (dataLicenceIdentifier == 'CC-BY-NC-ND') || (dataLicenceIdentifier == 'CC-BY-NC-SA')) {
                             $('#dataLicenceCommercial').prop('checked', false);
@@ -128,7 +124,7 @@
                     if (!$('#dataLicenceDerivatives').prop('checked')) {
                         dataLicenceIdentifier += '-ND';
                     }
-                    else if ($('#dataLicenceShareAlike').prop('checked')) {
+                    else if (!$('#dataLicenceNonShareAlike').prop('checked')) {
                         dataLicenceIdentifier += '-SA';
                     }
                     $('#dataLicenceIdentifier').val(dataLicenceIdentifier);
@@ -406,8 +402,8 @@
                                 Others may alter, transform, or build upon data in this project.
                             </label>
                             <label>
-                                <input id="dataLicenceShareAlike" class="dataLicenceCheckbox" type="checkbox" checked="checked" />
-                                Others must licence any derivative data under identical licencing terms.
+                                <input id="dataLicenceNonShareAlike" class="dataLicenceCheckbox" type="checkbox" checked="checked" />
+                                Others may licence any derivative data under different licencing terms.
                             </label>
                             <label>
                                 <input id="dataLicenceCommercial" class="dataLicenceCheckbox" type="checkbox" checked="checked" />
