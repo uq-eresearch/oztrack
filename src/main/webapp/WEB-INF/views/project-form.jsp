@@ -419,7 +419,7 @@
                                 ${dataLicence.title}
                             </div>
                             <div style="margin: 0.5em 0 0 0;">
-                                ${dataLicence.description}
+                                <span>${dataLicence.description}</span>
                                 <a href="${dataLicence.infoUrl}">More information</a>
                             </div>
                         </div>
