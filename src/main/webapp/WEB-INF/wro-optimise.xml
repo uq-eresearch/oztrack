@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://www.isdc.ro/wro wro.xsd">
   <group name="core">
     <css>/css/jquery-ui/jquery-ui.custom.css</css>
-    <css>/less/bootstrap/bootstrap.less</css>
+    <css>/css/bootstrap/bootstrap.css</css>
     <css>/css/bootstrap-editable/bootstrap-editable.css</css>
     <js>/js/moment/moment.js</js>
     <js>/js/jquery/jquery.js</js>

@@ -162,20 +162,37 @@
                 <groupId>ro.isdc.wro4j</groupId>
                 <artifactId>wro4j-maven-plugin</artifactId>
                 <version>1.6.0</version>
+                <configuration>
+                    <contextFolder>${basedir}/src/main/webapp/</contextFolder>
+                    <wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory</wroManagerFactory>
+                </configuration>
                 <executions>
                     <execution>
+                        <id>bootstrap</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
+                        <configuration>
+                            <wroFile>${basedir}/src/main/webapp/WEB-INF/wro-bootstrap.xml</wroFile>
+                            <extraConfigFile>${basedir}/src/main/webapp/WEB-INF/wro-bootstrap.properties</extraConfigFile>
+                            <cssDestinationFolder>${basedir}/src/main/webapp/css/bootstrap/</cssDestinationFolder>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <wroFile>${basedir}/src/main/webapp/WEB-INF/wro-optimise.xml</wroFile>
+                            <extraConfigFile>${basedir}/src/main/webapp/WEB-INF/wro-optimise.properties</extraConfigFile>
+                            <cssDestinationFolder>${basedir}/src/main/webapp/css/optimised/</cssDestinationFolder>
+                            <jsDestinationFolder>${basedir}/src/main/webapp/js/optimised/</jsDestinationFolder>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <contextFolder>${basedir}/src/main/webapp/</contextFolder>
-                    <cssDestinationFolder>${basedir}/src/main/webapp/css/optimised/</cssDestinationFolder>
-                    <jsDestinationFolder>${basedir}/src/main/webapp/js/optimised/</jsDestinationFolder>
-                    <wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory</wroManagerFactory>
-                </configuration>
             </plugin>
         </plugins>
     </build>
