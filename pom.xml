@@ -72,13 +72,14 @@
                         <fileset>
                             <directory>${basedir}/src/main/webapp/css</directory>
                             <includes>
-                                <include>optimised</include>
+                                <include>bootstrap/**/*</include>
+                                <include>optimised/**/*</include>
                             </includes>
                         </fileset>
                         <fileset>
                             <directory>${basedir}/src/main/webapp/js</directory>
                             <includes>
-                                <include>optimised</include>
+                                <include>optimised/**/*</include>
                             </includes>
                         </fileset>
                     </filesets>
