@@ -3,12 +3,12 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.isdc.ro/wro wro.xsd">
   <group name="core">
-    <css>/css/jquery-ui/jquery-ui.custom.css</css>
+    <css>/css/jquery-ui/jquery-ui.custom.min.css</css>
     <css>/css/bootstrap/bootstrap.css</css>
     <css>/css/bootstrap-editable/bootstrap-editable.css</css>
-    <js>/js/moment/moment.js</js>
-    <js>/js/jquery/jquery.js</js>
-    <js>/js/jquery-ui/jquery-ui.custom.js</js>
+    <js>/js/moment/moment.min.js</js>
+    <js>/js/jquery/jquery.min.js</js>
+    <js>/js/jquery-ui/jquery-ui.custom.min.js</js>
     <js>/js/bootstrap/bootstrap-transition.js</js>
     <js>/js/bootstrap/bootstrap-alert.js</js>
     <js>/js/bootstrap/bootstrap-button.js</js>
