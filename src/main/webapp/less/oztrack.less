@@ -560,11 +560,17 @@ ul.icons li.artwork {background-image: url('../img/palette.png');}
 }
 
 .ui-datepicker {
-    z-index: 9999999 !important;
+  z-index: 9999999 !important;
 }
 
 .ui-autocomplete-loading {
   background: white url('../img/ui-anim_basic_16x16.gif') right center no-repeat;
+}
+
+/* Hide dialog close button because the 'x' is not shown in jquery-ui 1.10.1. */
+/* Add a Close button at the bottom of each dialog instead. */
+.ui-dialog-titlebar-close {
+  display: none;
 }
 
 /* openlayers */

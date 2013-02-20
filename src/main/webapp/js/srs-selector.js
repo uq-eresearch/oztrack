@@ -3,8 +3,8 @@ function createSrsSelector(options) {
     return (function() {
         var srsSelector = {};
 
-        var mapWidth = 700;
-        var mapHeight = 500;
+        var mapWidth = 600;
+        var mapHeight = 400;
 
         var srsList = options.srsList;
         var onSrsSelected = options.onSrsSelected;
@@ -15,10 +15,15 @@ function createSrsSelector(options) {
                 dialogDiv = $('<div style="display: none; text-align: center;">').appendTo('body');
                 dialogDiv.dialog({
                     title: 'Select spatial reference system (SRS)',
-                    width: mapWidth + 30,
-                    height: mapHeight + 40,
+                    modal: true,
                     resizable: false,
-                    zIndex: 20000
+                    buttons: {
+                        'Close': function() {
+                            $(this).dialog('close');
+                        }
+                    },
+                    width: mapWidth + 25,
+                    height: mapHeight + 110
                 });
                 var mapDiv = $('<div style="width: ' + mapWidth + 'px; height: ' + mapHeight + 'px;">').appendTo(dialogDiv);
 
