@@ -1,3 +1,4 @@
+/*global OpenLayers, google*/
 function createCleanseMap(div, options) {
     return (function() {
         var cleanseMap = {};

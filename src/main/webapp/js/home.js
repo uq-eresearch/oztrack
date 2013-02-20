@@ -1,3 +1,4 @@
+/*global OpenLayers, google*/
 function createHomeMap(div) {
     var projection900913 = new OpenLayers.Projection('EPSG:900913');
     var projection4326 =  new OpenLayers.Projection("EPSG:4326");
@@ -122,7 +123,7 @@ function createProjectClickControl(map, projectPointsLayer) {
             clickout: true,
             eventListeners: {
                 featurehighlighted: function(e) {
-                    jQuery('#map-instructions').fadeOut();
+                    $('#map-instructions').fadeOut();
                     for (var i = 0; i < map.popups.length; i++) {
                         map.removePopup(map.popups[i]);
                     };

@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    jQuery(".oztrack-ckeditor").ckeditor({
+    $(".oztrack-ckeditor").ckeditor({
         language: 'en-au',
         toolbar: [
             {name: 'clipboard', items : ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo']},

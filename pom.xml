@@ -127,6 +127,37 @@
                     </connectors>
                 </configuration>
             </plugin>
+            <!-- Run jslint using mvn jslint4java:lint -->
+            <!-- http://jslint4java.googlecode.com/svn/docs/2.0.0/maven.html -->
+            <plugin>
+                <groupId>com.googlecode.jslint4java</groupId>
+                <artifactId>jslint4java-maven-plugin</artifactId>
+                <version>2.0.3</version>
+                <configuration>
+                    <sourceFolders>
+                        <sourceFolder>${basedir}/src/main/webapp/js</sourceFolder>
+                    </sourceFolders>
+                    <excludes>
+                        <exclude>bootstrap-editable/**/*.js</exclude>
+                        <exclude>bootstrap/**/*.js</exclude>
+                        <exclude>ckeditor/**/*.js</exclude>
+                        <exclude>farbtastic/**/*.js</exclude>
+                        <exclude>jquery-ui/**/*.js</exclude>
+                        <exclude>jquery/**/*.js</exclude>
+                        <exclude>moment/**/*.js</exclude>
+                        <exclude>openlayers/**/*.js</exclude>
+                        <exclude>optimised/**/*.js</exclude>
+                        <exclude>proj4js/**/*.js</exclude>
+                    </excludes>
+                    <options>
+                        <browser>true</browser>
+                        <sloppy>true</sloppy>
+                        <white>true</white>
+                        <vars>true</vars>
+                        <predef>$</predef>
+                    </options>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>ro.isdc.wro4j</groupId>
                 <artifactId>wro4j-maven-plugin</artifactId>

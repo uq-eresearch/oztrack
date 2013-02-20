@@ -1,8 +1,9 @@
+/*global confirm, alert*/
 function deleteEntity(url, destUrl, message) {
     if (!confirm(message)) {
         return;
     }
-    jQuery.ajax({
+    $.ajax({
         url: url,
         type: 'POST',
         data: {
@@ -12,7 +13,7 @@ function deleteEntity(url, destUrl, message) {
             alert('Error processing delete');
         },
         complete: function (xhr, textStatus) {
-            if (textStatus == 'success') {
+            if (textStatus === 'success') {
                 window.location = destUrl;
             }
         }
@@ -51,5 +52,5 @@ $(document).ready(function() {
     $('.help-popover').each(function() {initHelpPopover($(this));});
 });
 $(document).click(function (e) {
-    $('.help-popover-icon').filter(function(i) {return this != e.target;}).popover('hide');
+    $('.help-popover-icon').filter(function(i) {return this !== e.target;}).popover('hide');
 });

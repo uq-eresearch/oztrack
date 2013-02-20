@@ -1,3 +1,4 @@
+/*global OpenLayers, google*/
 function createSrsSelector(options) {
     return (function() {
         var srsSelector = {};
@@ -9,12 +10,9 @@ function createSrsSelector(options) {
         var onSrsSelected = options.onSrsSelected;
         var dialogDiv = null;
 
-        (function() {
-        })();
-
         srsSelector.showDialog = function() {
-            if (dialogDiv == null) {
-                dialogDiv = jQuery('<div style="display: none; text-align: center;">').appendTo('body');
+            if (dialogDiv === null) {
+                dialogDiv = $('<div style="display: none; text-align: center;">').appendTo('body');
                 dialogDiv.dialog({
                     title: 'Select spatial reference system (SRS)',
                     width: mapWidth + 30,
@@ -22,7 +20,7 @@ function createSrsSelector(options) {
                     resizable: false,
                     zIndex: 20000
                 });
-                var mapDiv = jQuery('<div style="width: ' + mapWidth + 'px; height: ' + mapHeight + 'px;">').appendTo(dialogDiv);
+                var mapDiv = $('<div style="width: ' + mapWidth + 'px; height: ' + mapHeight + 'px;">').appendTo(dialogDiv);
 
                 var projection900913 = new OpenLayers.Projection("EPSG:900913");
                 var projection4326 =  new OpenLayers.Projection("EPSG:4326");
@@ -46,7 +44,7 @@ function createSrsSelector(options) {
                             cursor: 'pointer',
                             label : '${title} (${id})',
                             fontSize: '11px',
-                            fontWeight: 'normal',
+                            fontWeight: 'normal'
                         }
                     })
                 });

@@ -1,3 +1,4 @@
+/*global OpenLayers, google*/
 function createCoverageMap(id, wkt) {
     var projection900913 = new OpenLayers.Projection('EPSG:900913');
     var projection4326 =  new OpenLayers.Projection("EPSG:4326");
