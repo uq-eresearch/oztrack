@@ -726,11 +726,6 @@
             }
         };
 
-        function toggleFeature(feature, visible) {
-            feature.renderIntent = visible ? 'default' : 'temporary';
-            feature.layer.drawFeature(feature);
-        }
-
         that.toggleAllAnimalFeatures = function(animalId, visible) {
             that.animalVisible[animalId] = visible;
             $("#animalInfo-" + animalId).find(':checkbox').attr("checked", visible);
@@ -764,7 +759,8 @@
                             (feature.attributes.id.value) ? feature.attributes.id.value :
                             null;
                         if (featureAnimalId == animalId) {
-                            toggleFeature(feature, that.animalVisible[animalId]);
+                            feature.renderIntent = that.animalVisible[animalId] ? 'default' : 'temporary';
+                            feature.layer.drawFeature(feature);
                         }
                     }
                 }
