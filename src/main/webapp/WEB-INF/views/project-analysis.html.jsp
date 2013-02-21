@@ -224,7 +224,7 @@
                 );
                 analysisMap = null;
                 onResize();
-                analysisMap = createAnalysisMap('projectMap', {
+                analysisMap = new OzTrack.AnalysisMap('projectMap', {
                     projectId: <c:out value="${project.id}"/>,
                     animalIds: [
                         <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">

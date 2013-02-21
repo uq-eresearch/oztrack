@@ -1,159 +1,125 @@
 <%@ page contentType="text/javascript; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-function createAnalysisMap(div, options) {
-    return (function() {
-        var analysisMap = {};
-
-        var projection900913 = new OpenLayers.Projection("EPSG:900913");
-        var projection4326 = new OpenLayers.Projection("EPSG:4326");
-
-        var projectId = options.projectId;
-        var animalIds = options.animalIds;
-        var animalVisible = {};
-        for (var i = 0; i < animalIds.length; i++) {
-            animalVisible[animalIds[i]] = true;
+(function(OzTrack) {
+    OzTrack.AnalysisMap = function(div, options) {
+        if (!(this instanceof OzTrack.AnalysisMap)) {
+            throw new Error("Constructor called as a function");
         }
-        var projectBounds = options.projectBounds.clone().transform(projection4326, projection900913);
-        var animalBounds = {};
-        for (animalId in options.animalBounds) {
-            animalBounds[animalId] = options.animalBounds[animalId].clone().transform(projection4326, projection900913);
-        }
-        var animalColours = options.animalColours;
-        var minDate = options.minDate;
-        var maxDate = options.maxDate;
-        var onAnalysisCreate = options.onAnalysisCreate;
-        var onAnalysisError = options.onAnalysisError;
-        var onAnalysisSuccess = options.onAnalysisSuccess;
+        var that = this;
 
-        var map;
-        var loadingPanel;
-        var detectionLayers = [];
-        var trajectoryLayers = [];
-        var projectMapLayers = {};
-        var wfsLayers = {};
-        var analyses = {};
-        var polygonStyleMap;
-        var lineStyleMap;
-        var pointStyleMap;
-        var startEndStyleMap;
-        var projectMapLayerIdSeq = 0;
-        var wfsLayerIdSeq = 0;
+        that.projection900913 = new OpenLayers.Projection("EPSG:900913");
+        that.projection4326 = new OpenLayers.Projection("EPSG:4326");
 
-        (function() {
-            map = new OpenLayers.Map(div, {
-                theme: null,
-                units : 'm',
-                projection : projection900913,
-                displayProjection : projection4326
-            });
-            map.addControl(new OpenLayers.Control.MousePosition());
-            map.addControl(new OpenLayers.Control.ScaleLine());
-            map.addControl(new OpenLayers.Control.NavToolbar());
-            var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
-            map.addControl(layerSwitcher);
-            layerSwitcher.maximizeControl();
-            loadingPanel = new OpenLayers.Control.LoadingPanel();
-            map.addControl(loadingPanel);
-            map.addControl(new OpenLayers.Control({displayClass: 'projectMapBoxShadow'}));
+        that.projectId = options.projectId;
+        that.animalIds = options.animalIds;
+        that.animalVisible = {};
+        $.each(that.animalIds, function(i, animalId) {
+            that.animalVisible[animalId] = true;
+        });
+        that.projectBounds = options.projectBounds.clone().transform(that.projection4326, that.projection900913);
+        that.animalBounds = {};
+        $.each(options.animalBounds, function(animalId, bounds) {
+            that.animalBounds[animalId] = bounds.clone().transform(that.projection4326, that.projection900913);
+        });
+        that.animalColours = options.animalColours;
+        that.minDate = options.minDate;
+        that.maxDate = options.maxDate;
+        that.onAnalysisCreate = options.onAnalysisCreate;
+        that.onAnalysisError = options.onAnalysisError;
+        that.onAnalysisSuccess = options.onAnalysisSuccess;
 
-            var gphy = new OpenLayers.Layer.Google('Google Physical', {
-                type : google.maps.MapTypeId.TERRAIN
-            });
-            var gsat = new OpenLayers.Layer.Google('Google Satellite', {
-                type : google.maps.MapTypeId.SATELLITE,
-                numZoomLevels : 22
-            });
-            var gmap = new OpenLayers.Layer.Google('Google Streets', {
-                numZoomLevels : 20
-            });
-            var ghyb = new OpenLayers.Layer.Google('Google Hybrid', {
-                type : google.maps.MapTypeId.HYBRID,
-                numZoomLevels : 20
-            });
-            map.addLayers([gsat, gphy, gmap, ghyb]);
+        that.detectionLayers = [];
+        that.trajectoryLayers = [];
+        that.projectMapLayers = {};
+        that.wfsLayers = {};
+        that.analyses = {};
+        that.projectMapLayerIdSeq = 0;
+        that.wfsLayerIdSeq = 0;
 
-            var osmLayer = new OpenLayers.Layer.OSM('OpenStreetMap');
-            map.addLayer(osmLayer);
+        that.map = new OpenLayers.Map(div, {
+            theme: null,
+            units : 'm',
+            projection : that.projection900913,
+            displayProjection : that.projection4326
+        });
+        that.map.addControl(new OpenLayers.Control.MousePosition());
+        that.map.addControl(new OpenLayers.Control.ScaleLine());
+        that.map.addControl(new OpenLayers.Control.NavToolbar());
+        that.layerSwitcher = new OpenLayers.Control.LayerSwitcher();
+        that.map.addControl(that.layerSwitcher);
+        that.layerSwitcher.maximizeControl();
+        that.loadingPanel = new OpenLayers.Control.LoadingPanel();
+        that.map.addControl(that.loadingPanel);
+        that.boxShadowControl = new OpenLayers.Control({displayClass: 'projectMapBoxShadow'});
+        that.map.addControl(that.boxShadowControl);
 
-            var bathymetryLayer = new OpenLayers.Layer.WMS(
-                'Bathymetry',
-                '/geoserver/gwc/service/wms',
-                {
-                    layers: 'oztrack:gebco_08',
-                    styles: 'oztrack_bathymetry',
-                    format: 'image/png'
-                },
-                {
-                    isBaseLayer: true,
-                    wrapDateLine: true,
-                    attribution: '<a href="http://www.gebco.net">The GEBCO_08 Grid, version 20091120</a>'
+        that.googlePhysicalLayer = new OpenLayers.Layer.Google('Google Physical', {
+            type : google.maps.MapTypeId.TERRAIN
+        });
+        that.googleSatelliteLayer = new OpenLayers.Layer.Google('Google Satellite', {
+            type : google.maps.MapTypeId.SATELLITE,
+            numZoomLevels : 22
+        });
+        that.googleStreetsLayer = new OpenLayers.Layer.Google('Google Streets', {
+            numZoomLevels : 20
+        });
+        that.googleHybridLayer = new OpenLayers.Layer.Google('Google Hybrid', {
+            type : google.maps.MapTypeId.HYBRID,
+            numZoomLevels : 20
+        });
+        that.map.addLayers([that.googleSatelliteLayer, that.googlePhysicalLayer, that.googleStreetsLayer, that.googleHybridLayer]);
+
+        that.osmLayer = new OpenLayers.Layer.OSM('OpenStreetMap');
+        that.map.addLayer(that.osmLayer);
+
+        that.bathymetryLayer = new OpenLayers.Layer.WMS(
+            'Bathymetry',
+            '/geoserver/gwc/service/wms',
+            {
+                layers: 'oztrack:gebco_08',
+                styles: 'oztrack_bathymetry',
+                format: 'image/png'
+            },
+            {
+                isBaseLayer: true,
+                wrapDateLine: true,
+                attribution: '<a href="http://www.gebco.net">The GEBCO_08 Grid, version 20091120</a>'
+            }
+        );
+        that.map.addLayer(that.bathymetryLayer);
+
+        that.controlPanel = new OpenLayers.Control.Panel();
+        that.controlPanel.addControls([
+            new OpenLayers.Control.Button({
+                title : 'Zoom to Data Extent',
+                displayClass : "zoomButton",
+                trigger : function() {
+                    that.map.zoomToExtent(that.projectBounds, false);
                 }
-            );
-            map.addLayer(bathymetryLayer);
+            })
+        ]);
+        that.map.addControl(that.controlPanel);
 
-            map.addControl(createControlPanel());
+        that.startEndStyleMap = createStartEndPointsStyleMap();
+        that.polygonStyleMap = createPolygonStyleMap();
 
-            lineStyleMap = createLineStyleMap();
-            pointStyleMap = createPointStyleMap();
-            startEndStyleMap = createStartEndPointsStyleMap();
-            polygonStyleMap = createPolygonStyleMap();
+        that.allDetectionsLayer = createDetectionLayer({});
+        that.map.addLayer(that.allDetectionsLayer.getWMSLayer());
 
-            var allDetectionsLayer = createDetectionLayer({});
-            map.addLayer(allDetectionsLayer.getWMSLayer());
+        that.allTrajectoriesLayer = createTrajectoryLayer({});
+        that.map.addLayer(that.allTrajectoriesLayer.getWMSLayer());
 
-            var allTrajectoriesLayer = createTrajectoryLayer({});
-            map.addLayer(allTrajectoriesLayer.getWMSLayer());
-
-            map.addLayer(createWFSLayer('Start and End Points', 'StartEnd', {
-                projectId : projectId,
-                queryType : 'START_END'
-            }, startEndStyleMap));
-            
-            map.zoomToExtent(projectBounds, false);
-        }());
-
-        function createControlPanel() {
-            var panel = new OpenLayers.Control.Panel();
-            panel.addControls([
-                new OpenLayers.Control.Button({
-                    title : 'Zoom to Data Extent',
-                    displayClass : "zoomButton",
-                    trigger : function() {
-                        map.zoomToExtent(projectBounds, false);
-                    }
-                })
-            ]);
-            return panel;
-        }
-
-        function createLineStyleMap() {
-            var styleContext = {
-                getColour : function(feature) {
-                    return animalColours[feature.attributes.animalId];
-                }
-            };
-            var lineOnStyle = new OpenLayers.Style({
-                strokeColor : "\${getColour}",
-                strokeWidth : 2.0,
-                strokeOpacity : 0.8
-            }, {
-                context : styleContext
-            });
-            var lineOffStyle = {
-                strokeOpacity : 0.0,
-                fillOpacity : 0.0
-            };
-            var lineStyleMap = new OpenLayers.StyleMap({
-                "default" : lineOnStyle,
-                "temporary" : lineOffStyle
-            });
-            return lineStyleMap;
-        }
+        that.map.addLayer(createWFSLayer('Start and End Points', 'StartEnd', {
+            projectId : that.projectId,
+            queryType : 'START_END'
+        }, that.startEndStyleMap));
+        
+        that.map.zoomToExtent(that.projectBounds, false);
 
         function createPointStyleMap() {
             var styleContext = {
                 getColour : function(feature) {
-                    return animalColours[feature.attributes.animalId];
+                    return that.animalColours[feature.attributes.animalId];
                 }
             };
             var pointOnStyle = new OpenLayers.Style({
@@ -180,7 +146,7 @@ function createAnalysisMap(div, options) {
         function createPolygonStyleMap() {
             var styleContext = {
                 getColour : function(feature) {
-                    return animalColours[feature.attributes.id.value];
+                    return that.animalColours[feature.attributes.id.value];
                 }
             };
             var polygonOnStyle = new OpenLayers.Style({
@@ -236,7 +202,7 @@ function createAnalysisMap(div, options) {
             return startEndPointsStyleMap;
         }
 
-        analysisMap.addProjectMapLayer = function() {
+        that.addProjectMapLayer = function() {
             var queryType = $('input[name=queryTypeSelect]:checked');
             var queryTypeValue = queryType.val();
             var queryTypeLabel = $('label[for="' + queryType.attr('id') + '"]').text();
@@ -267,14 +233,14 @@ function createAnalysisMap(div, options) {
             });
             if (queryTypeValue == "LINES") {
                 var trajectoryLayer = createTrajectoryLayer(params);
-                map.addLayer(trajectoryLayer.getWMSLayer());
+                that.map.addLayer(trajectoryLayer.getWMSLayer());
             }
             else if (queryTypeValue == "POINTS") {
                 var detectionLayer = createDetectionLayer(params);
-                map.addLayer(detectionLayer.getWMSLayer());
+                that.map.addLayer(detectionLayer.getWMSLayer());
             }
             else if (queryTypeValue == "START_END") {
-                map.addLayer(createWFSLayer(layerName, 'StartEnd', params, startEndStyleMap));
+                that.map.addLayer(createWFSLayer(layerName, 'StartEnd', params, that.startEndStyleMap));
             }
             else {
                 createAnalysisLayer(params, layerName);
@@ -283,36 +249,36 @@ function createAnalysisMap(div, options) {
 
         function createAnalysisLayer(params, layerName) {
             $.ajax({
-                url: '/projects/' + projectId + '/analyses',
+                url: '/projects/' + that.projectId + '/analyses',
                 type: 'POST',
                 data: params,
                 error: function(xhr, textStatus, errorThrown) {
-                    onAnalysisError($(xhr.responseText).find('error').text() || 'Error processing request');
+                    that.onAnalysisError($(xhr.responseText).find('error').text() || 'Error processing request');
                 },
                 complete: function (xhr, textStatus) {
                     if (textStatus == 'success') {
                         var analysisUrl = xhr.getResponseHeader('Location');
-                        onAnalysisCreate(layerName, analysisUrl);
-                        analysisMap.addAnalysisLayer(analysisUrl, layerName);
+                        that.onAnalysisCreate(layerName, analysisUrl);
+                        that.addAnalysisLayer(analysisUrl, layerName);
                     }
                 }
             });
         }
 
-        analysisMap.addAnalysisLayer = function(analysisUrl, layerName) {
+        that.addAnalysisLayer = function(analysisUrl, layerName) {
             $.ajax({
                 url: analysisUrl,
                 type: 'GET',
                 error: function(xhr, textStatus, errorThrown) {
-                    onAnalysisError($(xhr.responseText).find('error').text() || 'Error getting analysis');
+                    that.onAnalysisError($(xhr.responseText).find('error').text() || 'Error getting analysis');
                 },
                 complete: function (xhr, textStatus) {
                     if (textStatus == 'success') {
                         var analysis = $.parseJSON(xhr.responseText);
-                        analyses[analysis.id] = analysis;
+                        that.analyses[analysis.id] = analysis;
                         currentAnalysisId = analysis.id;
                         updateAnimalInfoForAnalysis(layerName, analysis);
-                        loadingPanel.increaseCounter();
+                        that.loadingPanel.increaseCounter();
                         pollAnalysisLayer(analysisUrl, layerName);
                     }
                 }
@@ -324,17 +290,17 @@ function createAnalysisMap(div, options) {
                 url: analysisUrl,
                 type: 'GET',
                 error: function(xhr, textStatus, errorThrown) {
-                    loadingPanel.decreaseCounter();
-                    onAnalysisError($(xhr.responseText).find('error').text() || 'Error getting analysis');
+                    that.loadingPanel.decreaseCounter();
+                    that.onAnalysisError($(xhr.responseText).find('error').text() || 'Error getting analysis');
                 },
                 complete: function (xhr, textStatus) {
                     if (textStatus == 'success') {
                         var analysis = $.parseJSON(xhr.responseText);
-                        if (!analyses[analysis.id]) {
-                            loadingPanel.decreaseCounter();
+                        if (!that.analyses[analysis.id]) {
+                            that.loadingPanel.decreaseCounter();
                             return;
                         }
-                        analyses[analysis.id] = analysis;
+                        that.analyses[analysis.id] = analysis;
                         if (analysis.status == 'COMPLETE') {
                             addAnalysisResultLayer(analysis, layerName);
                         }
@@ -342,8 +308,8 @@ function createAnalysisMap(div, options) {
                             setTimeout(function () {pollAnalysisLayer(analysisUrl, layerName);}, 1000);
                         }
                         else {
-                            loadingPanel.decreaseCounter();
-                            onAnalysisError(analysis.message || 'Error running analysis');
+                            that.loadingPanel.decreaseCounter();
+                            that.onAnalysisError(analysis.message || 'Error running analysis');
                         }
                     }
                 }
@@ -351,7 +317,7 @@ function createAnalysisMap(div, options) {
         }
 
         function addAnalysisResultLayer(analysis, layerName) {
-            var styleMap = polygonStyleMap;
+            var styleMap = that.polygonStyleMap;
             var extractStyles = false;
             if ((analysis.params.queryType == "HEATMAP_POINT") || (analysis.params.queryType == "HEATMAP_LINE")) {
                 styleMap = null;
@@ -360,8 +326,8 @@ function createAnalysisMap(div, options) {
             var queryOverlay = new OpenLayers.Layer.Vector(layerName, {
                 styleMap : styleMap
             });
-            if (analyses[analysis.id]) {
-                analyses[analysis.id].layer = queryOverlay;
+            if (that.analyses[analysis.id]) {
+                that.analyses[analysis.id].layer = queryOverlay;
             }
             var protocol = new OpenLayers.Protocol.HTTP({
                 url : analysis.resultUrl,
@@ -369,47 +335,47 @@ function createAnalysisMap(div, options) {
                     extractStyles: extractStyles,
                     extractAttributes: true,
                     maxDepth: 2,
-                    internalProjection: projection900913,
-                    externalProjection: projection4326,
+                    internalProjection: that.projection900913,
+                    externalProjection: that.projection4326,
                     kmlns: "http://oztrack.org/xmlns#"
                 })
             });
             var callback = function(resp) {
-                loadingPanel.decreaseCounter();
+                that.loadingPanel.decreaseCounter();
                 if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
                     queryOverlay.addFeatures(resp.features);
                     updateAnimalInfoFromKML(analysis, resp.features);
-                    onAnalysisSuccess();
+                    that.onAnalysisSuccess();
                 }
                 else {
-                    onAnalysisError(jQuery(resp.priv.responseText).find('error').text() || 'Error processing request');
+                    that.onAnalysisError(jQuery(resp.priv.responseText).find('error').text() || 'Error processing request');
                 }
             };
             protocol.read({
                 callback : callback
             });
-            map.addLayer(queryOverlay);
+            that.map.addLayer(queryOverlay);
         }
         
-        analysisMap.deleteCurrentAnalysis = function() {
+        that.deleteCurrentAnalysis = function() {
             if (currentAnalysisId) {
-                analysisMap.deleteAnalysis(currentAnalysisId);
+                that.deleteAnalysis(currentAnalysisId);
             }
         };
         
-        analysisMap.deleteAnalysis = function(id) {
+        that.deleteAnalysis = function(id) {
             var confirmMessage =
-                (analyses[id] && (analyses[id].params.animalIds.length > 1))
+                (that.analyses[id] && (that.analyses[id].params.animalIds.length > 1))
                 ? 'This will delete the analysis for all animals. Do you wish to continue?'
                 : 'Are you sure you wish to delete this analysis?';
             if (!confirm(confirmMessage)) {
                 return;
             }
-            if (analyses[id]) {
-                if (analyses[id].layer) {
-                    analyses[id].layer.destroy();
+            if (that.analyses[id]) {
+                if (that.analyses[id].layer) {
+                    that.analyses[id].layer.destroy();
                 }
-                delete analyses[id];
+                delete that.analyses[id];
             }
             if (id == currentAnalysisId) {
                 currentAnalysisId = null;
@@ -417,26 +383,26 @@ function createAnalysisMap(div, options) {
             $('.analysisInfo-' + id).fadeOut().remove();
         };
         
-        analysisMap.deleteProjectMapLayer = function(id) {
+        that.deleteProjectMapLayer = function(id) {
             if (!confirm('This will delete the layer for all animals. Do you wish to continue?')) {
                 return;
             }
-            if (projectMapLayers[id]) {
-                projectMapLayers[id].getWMSLayer().destroy();
-                delete projectMapLayers[id];
+            if (that.projectMapLayers[id]) {
+                that.projectMapLayers[id].getWMSLayer().destroy();
+                delete that.projectMapLayers[id];
             }
-            detectionLayers = $.grep(detectionLayers, function(e, i) {return e.id != id});
-            trajectoryLayers = $.grep(trajectoryLayers, function(e, i) {return e.id != id});
+            that.detectionLayers = $.grep(that.detectionLayers, function(e, i) {return e.id != id});
+            that.trajectoryLayers = $.grep(that.trajectoryLayers, function(e, i) {return e.id != id});
             $('.projectMapLayerInfo-' + id).fadeOut().remove();
         };
 
-        analysisMap.deleteWFSLayer = function(id) {
+        that.deleteWFSLayer = function(id) {
             if (!confirm('This will delete the layer for all animals. Do you wish to continue?')) {
                 return;
             }
-            if (wfsLayers[id]) {
-                wfsLayers[id].destroy();
-                delete wfsLayers[id];
+            if (that.wfsLayers[id]) {
+                that.wfsLayers[id].destroy();
+                delete that.wfsLayers[id];
             }
             $('.wfsLayerInfo-' + id).fadeOut().remove();
         };
@@ -444,16 +410,16 @@ function createAnalysisMap(div, options) {
         function createDetectionLayer(params) {
             function buildFilter(params) {
                 // If supplied, use param to filter animals; otherwise, include all animals.
-                var cqlFilterAnimalIds = params.animalIds ? params.animalIds.split(',') : animalIds;
+                var cqlFilterAnimalIds = params.animalIds ? params.animalIds.split(',') : that.animalIds;
                 
                 // Exclude animals not currently visible on the map.
-                cqlFilterAnimalIds = $.grep(cqlFilterAnimalIds, function(e, i) {return animalVisible[e]});
+                cqlFilterAnimalIds = $.grep(cqlFilterAnimalIds, function(e, i) {return that.animalVisible[e]});
                 
                 // If filter is empty, include dummy ID (i.e. -1) that will never be matched.
                 // This prevents the CQL_FILTER parameter from being syntactically invalid.
                 cqlFilterAnimalIds = (cqlFilterAnimalIds.length > 0) ? cqlFilterAnimalIds : [-1];
                 
-                var cqlFilter = 'project_id = ' + projectId + ' and deleted = false';
+                var cqlFilter = 'project_id = ' + that.projectId + ' and deleted = false';
                 cqlFilter += ' and animal_id in (' + cqlFilterAnimalIds.join(',') + ')';
                 if (params.fromDate) {
                     cqlFilter += ' and detectiontime >= \'' + moment(new Date(params.fromDate)).format('YYYY-MM-DD') + '\'';
@@ -480,7 +446,7 @@ function createAnalysisMap(div, options) {
                 }
             );
             var layer = {
-                id: projectMapLayerIdSeq++,
+                id: that.projectMapLayerIdSeq++,
                 getTitle: function() {
                     return title;
                 },
@@ -494,33 +460,33 @@ function createAnalysisMap(div, options) {
                     return wmsLayer;
                 }
             };
-            projectMapLayers[layer.id] = layer;
-            detectionLayers.push(layer);
+            that.projectMapLayers[layer.id] = layer;
+            that.detectionLayers.push(layer);
             updateAnimalInfoFromLayer(layer);
-            onAnalysisSuccess();
+            that.onAnalysisSuccess();
             return layer;
         }
         
         function updateDetectionLayers() {
-            for (var i = 0; i < detectionLayers.length; i++) {
-                detectionLayers[i].getWMSLayer().params['CQL_FILTER'] = detectionLayers[i].getCQLFilter();
-                detectionLayers[i].getWMSLayer().redraw();
+            for (var i = 0; i < that.detectionLayers.length; i++) {
+                that.detectionLayers[i].getWMSLayer().params['CQL_FILTER'] = that.detectionLayers[i].getCQLFilter();
+                that.detectionLayers[i].getWMSLayer().redraw();
             }
         }
         
         function createTrajectoryLayer(params) {
             function buildFilter(params) {
                 // If supplied, use param to filter animals; otherwise, include all animals.
-                var cqlFilterAnimalIds = params.animalIds ? params.animalIds.split(',') : animalIds;
+                var cqlFilterAnimalIds = params.animalIds ? params.animalIds.split(',') : that.animalIds;
                 
                 // Exclude animals not currently visible on the map.
-                cqlFilterAnimalIds = $.grep(cqlFilterAnimalIds, function(e, i) {return animalVisible[e]});
+                cqlFilterAnimalIds = $.grep(cqlFilterAnimalIds, function(e, i) {return that.animalVisible[e]});
                 
                 // If filter is empty, include dummy ID (i.e. -1) that will never be matched.
                 // This prevents the CQL_FILTER parameter from being syntactically invalid.
                 cqlFilterAnimalIds = (cqlFilterAnimalIds.length > 0) ? cqlFilterAnimalIds : [-1];
 
-                var cqlFilter = 'project_id = ' + projectId;
+                var cqlFilter = 'project_id = ' + that.projectId;
                 cqlFilter += ' and animal_id in (' + cqlFilterAnimalIds.join(',') + ')';
                 if (params.fromDate) {
                     cqlFilter += ' and startdetectiontime >= \'' + moment(new Date(params.fromDate)).format('YYYY-MM-DD') + '\'';
@@ -547,7 +513,7 @@ function createAnalysisMap(div, options) {
                 }
             );
             var layer = {
-                id: projectMapLayerIdSeq++,
+                id: that.projectMapLayerIdSeq++,
                 getTitle: function() {
                     return title;
                 },
@@ -561,24 +527,24 @@ function createAnalysisMap(div, options) {
                     return wmsLayer;
                 }
             };
-            projectMapLayers[layer.id] = layer;
-            trajectoryLayers.push(layer);
+            that.projectMapLayers[layer.id] = layer;
+            that.trajectoryLayers.push(layer);
             updateAnimalInfoFromLayer(layer);
-            onAnalysisSuccess();
+            that.onAnalysisSuccess();
             return layer;
         }
         
         function updateTrajectoryLayers() {
-            for (var i = 0; i < trajectoryLayers.length; i++) {
-                trajectoryLayers[i].getWMSLayer().params['CQL_FILTER'] = trajectoryLayers[i].getCQLFilter();
-                trajectoryLayers[i].getWMSLayer().redraw();
+            for (var i = 0; i < that.trajectoryLayers.length; i++) {
+                that.trajectoryLayers[i].getWMSLayer().params['CQL_FILTER'] = that.trajectoryLayers[i].getCQLFilter();
+                that.trajectoryLayers[i].getWMSLayer().redraw();
             }
         }
 
         function createWFSLayer(layerName, featureType, params, styleMap) {
-            var wfsLayerId = wfsLayerIdSeq++;
+            var wfsLayerId = that.wfsLayerIdSeq++;
             var wfsLayer = new OpenLayers.Layer.Vector(layerName, {
-                projection : projection4326,
+                projection : that.projection4326,
                 protocol : new OpenLayers.Protocol.WFS.v1_1_0({
                     url : "/mapQueryWFS",
                     params : params,
@@ -592,11 +558,11 @@ function createAnalysisMap(div, options) {
                 eventListeners : {
                     loadend : function(e) {
                         updateAnimalInfoFromWFS(e.object, wfsLayerId);
-                        onAnalysisSuccess();
+                        that.onAnalysisSuccess();
                     }
                 }
             });
-            wfsLayers[wfsLayerId] = wfsLayer;
+            that.wfsLayers[wfsLayerId] = wfsLayer;
             return wfsLayer;
         }
 
@@ -629,7 +595,7 @@ function createAnalysisMap(div, options) {
                         tableRowsHtml += '</tr>';
                     }
                     if (feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString') {
-                        var distance = (Math.round(feature.geometry.getGeodesicLength(map.projection)) / 1000);
+                        var distance = (Math.round(feature.geometry.getGeodesicLength(that.map.projection)) / 1000);
                         tableRowsHtml += '<tr>';
                         tableRowsHtml += '<td class="layerInfoLabel">Min Distance: </td>';
                         tableRowsHtml += '<td>' + distance + ' km </td>';
@@ -644,19 +610,19 @@ function createAnalysisMap(div, options) {
         }
         
         function updateAnimalInfoFromLayer(layer) {
-            var layerAnimalIds = layer.getParams().animalIds ? layer.getParams().animalIds.split(',') : animalIds
+            var layerAnimalIds = layer.getParams().animalIds ? layer.getParams().animalIds.split(',') : that.animalIds
             for (var i = 0; i < layerAnimalIds.length; i++) {
                 var html = '<div class="layerInfoTitle">';
                 html += '<a class="layer-delete" href="javascript:analysisMap.deleteProjectMapLayer(' + layer.id + ');">delete</a></span>';
                 html += layer.getTitle();
                 html += '</div>';
                 var tableRowsHtml = '';
-                var fromDate = layer.getParams().fromDate || moment(minDate).format('YYYY-MM-DD');
+                var fromDate = layer.getParams().fromDate || moment(that.minDate).format('YYYY-MM-DD');
                 tableRowsHtml += '<tr>';
                 tableRowsHtml += '<td class="layerInfoLabel">Date From:</td>';
                 tableRowsHtml += '<td>' + fromDate + '</td>';
                 tableRowsHtml += '</tr>';
-                var toDate = layer.getParams().toDate || moment(maxDate).format('YYYY-MM-DD');
+                var toDate = layer.getParams().toDate || moment(that.maxDate).format('YYYY-MM-DD');
                 tableRowsHtml += '<tr>';
                 tableRowsHtml += '<td class="layerInfoLabel">Date To:</td>';
                 tableRowsHtml += '<td>' + toDate + '</td>';
@@ -752,9 +718,9 @@ function createAnalysisMap(div, options) {
             }
         }
 
-        analysisMap.zoomToAnimal = function(animalId) {
-            if (animalBounds[animalId]) {
-                map.zoomToExtent(animalBounds[animalId], false);
+        that.zoomToAnimal = function(animalId) {
+            if (that.animalBounds[animalId]) {
+                that.map.zoomToExtent(that.animalBounds[animalId], false);
             }
         };
 
@@ -763,18 +729,18 @@ function createAnalysisMap(div, options) {
             feature.layer.drawFeature(feature);
         }
 
-        analysisMap.toggleAllAnimalFeatures = function(animalId, visible) {
-            animalVisible[animalId] = visible;
+        that.toggleAllAnimalFeatures = function(animalId, visible) {
+            that.animalVisible[animalId] = visible;
             $("#animalInfo-" + animalId).find(':checkbox').attr("checked", visible);
         };
 
-        analysisMap.toggleAllAnimalFeaturesCommit = function() {
+        that.toggleAllAnimalFeaturesCommit = function() {
             updateDetectionLayers();
             updateTrajectoryLayers();
             function getVectorLayers() {
                 var vectorLayers = new Array();
-                for (var c in map.controls) {
-                    var control = map.controls[c];
+                for (var c in that.map.controls) {
+                    var control = that.map.controls[c];
                     if (control.id.indexOf("LayerSwitcher") != -1) {
                         for (var i = 0; i < control.dataLayers.length; i++) {
                             vectorLayers.push(control.dataLayers[i].layer);
@@ -784,8 +750,8 @@ function createAnalysisMap(div, options) {
                 return vectorLayers;
             }
             var vectorLayers = getVectorLayers();
-            for (i = 0; i < animalIds.length; i++) {
-                var animalId = animalIds[i];
+            for (i = 0; i < that.animalIds.length; i++) {
+                var animalId = that.animalIds[i];
                 for (var l in vectorLayers) {
                     var layer = vectorLayers[l];
                     var layerName = layer.name;
@@ -796,17 +762,15 @@ function createAnalysisMap(div, options) {
                             (feature.attributes.id.value) ? feature.attributes.id.value :
                             null;
                         if (featureAnimalId == animalId) {
-                            toggleFeature(feature, animalVisible[animalId]);
+                            toggleFeature(feature, that.animalVisible[animalId]);
                         }
                     }
                 }
             }
         };
 
-        analysisMap.updateSize = function() {
-            map.updateSize();
+        that.updateSize = function() {
+            that.map.updateSize();
         };
-
-        return analysisMap;
-    }());
-}
+    };
+}(window.OzTrack = window.OzTrack || {}));
