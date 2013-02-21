@@ -31,7 +31,13 @@
 <div id="header">
     <div class="container${fluid ? '-fluid' : ''}">
     <div id="banner">
-        <div id="banner-left"></div>
+        <div id="banner-left">
+            <c:if test="${!empty navExtra}">
+            <div id="nav-extra">
+                <jsp:invoke fragment="navExtra"/>
+            </div>
+            </c:if>
+        </div>
         <div id="banner-right">
             <div id="login">
                 <c:choose>
@@ -58,11 +64,6 @@
         </div>
     </div>
     </div>
-    <c:if test="${!empty navExtra}">
-    <div id="nav-extra">
-        <jsp:invoke fragment="navExtra"/>
-    </div>
-    </c:if>
     <div class="navbar navbar-inverse">
       <div class="navbar-inner">
         <ul class="nav">
