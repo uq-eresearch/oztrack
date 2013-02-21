@@ -40,8 +40,12 @@
             theme: null,
             units : 'm',
             projection : that.projection900913,
-            displayProjection : that.projection4326
+            displayProjection : that.projection4326,
+            controls: []
         });
+        that.map.addControl(new OpenLayers.Control.Navigation());
+        that.map.addControl(new OpenLayers.Control.Zoom());
+        that.map.addControl(new OpenLayers.Control.Attribution());
         that.map.addControl(new OpenLayers.Control.MousePosition());
         that.map.addControl(new OpenLayers.Control.ScaleLine());
         that.map.addControl(new OpenLayers.Control.NavToolbar());
@@ -50,8 +54,6 @@
         that.layerSwitcher.maximizeControl();
         that.loadingPanel = new OpenLayers.Control.LoadingPanel();
         that.map.addControl(that.loadingPanel);
-        that.boxShadowControl = new OpenLayers.Control({displayClass: 'projectMapBoxShadow'});
-        that.map.addControl(that.boxShadowControl);
 
         that.googlePhysicalLayer = new OpenLayers.Layer.Google('Google Physical', {
             type : google.maps.MapTypeId.TERRAIN
