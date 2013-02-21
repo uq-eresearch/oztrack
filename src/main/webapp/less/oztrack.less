@@ -616,7 +616,7 @@ div.olControlMousePosition {
 
 div.olControlPanel {
   top: 0px !important;
-  right: 29px !important;
+  right: 5px !important;
   position: absolute !important;
   float: right !important;
 }
@@ -658,15 +658,16 @@ div.olControlPanel {
 }
 
 .olControlLoadingPanel {
-  border: solid 1px #adbc6b !important;
-  background-image: url('../img/ajax-loader.gif') !important;
-  background-color: #e6e6c0 !important;
-  width: 22px !important;
-  height: 22px !important;
+  background-color: transparent;
+  #translucent .background(black, 0.35);
+  background-image: url('../img/loading.gif') !important;
   background-position: center !important;
   background-repeat: no-repeat !important;
-  margin-top: 5px !important;
-  right: 5px !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  top: 0 !important;
+  right: 0 !important;
 }
 
 .olControlLayerSwitcher {
