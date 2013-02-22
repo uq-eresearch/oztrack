@@ -1,106 +1,116 @@
 /*global OpenLayers, google*/
-function createCleanseMap(div, options) {
-    return (function() {
-        var cleanseMap = {};
-
-        var projection900913 = new OpenLayers.Projection('EPSG:900913');
-        var projection4326 = new OpenLayers.Projection('EPSG:4326');
-
-        var projectId = options.projectId;
-        var fromDate = options.fromDate;
-        var toDate = options.toDate;
-        var animalIds = options.animalIds;
-        var animalVisible = {};
-        for (var i = 0; i < animalIds.length; i++) {
-            animalVisible[animalIds[i]] = true;
+(function(OzTrack) {
+    OzTrack.CleanseMap = function(div, options) {
+        if (!(this instanceof OzTrack.CleanseMap)) {
+            throw new Error("Constructor called as a function");
         }
-        var projectBounds = options.projectBounds.clone().transform(projection4326, projection900913);
-        var onReset = options.onReset;
-        var onPolygonFeatureAdded = options.onPolygonFeatureAdded;
-        var onDeletePolygonFeature = options.onDeletePolygonFeature;
+        var that = this;
 
-        var map;
-        var allDetectionsLayer;
-        var polygonLayer;
-        var polygonFeatures;
-        var highlightControl;
+        that.projection900913 = new OpenLayers.Projection('EPSG:900913');
+        that.projection4326 = new OpenLayers.Projection('EPSG:4326');
 
-        (function() {
-            map = new OpenLayers.Map(div, {
-                theme: null,
-                units: 'm',
-                projection: projection900913,
-                displayProjection: projection4326
-            });
-            var navToolbar = new OpenLayers.Control.NavToolbar();
-            map.addControl(navToolbar);
-            map.addControl(new OpenLayers.Control.MousePosition());
-            map.addControl(new OpenLayers.Control.ScaleLine());
-            var layerSwitcher = new OpenLayers.Control.LayerSwitcher();
-            map.addControl(layerSwitcher);
-            layerSwitcher.maximizeControl();
-            map.addControl(new OpenLayers.Control.LoadingPanel());
-            map.addControl(createControlPanel());
-            map.addControl(new OpenLayers.Control({displayClass: 'projectMapBoxShadow'}));
+        that.projectId = options.projectId;
+        that.fromDate = options.fromDate;
+        that.toDate = options.toDate;
+        that.animalIds = options.animalIds;
+        that.animalVisible = {};
+        $.each(that.animalIds, function(i, animalId) {
+            that.animalVisible[animalId] = true;
+        });
+        that.projectBounds = options.projectBounds.clone().transform(that.projection4326, that.projection900913);
+        that.onReset = options.onReset;
+        that.onPolygonFeatureAdded = options.onPolygonFeatureAdded;
+        that.onDeletePolygonFeature = options.onDeletePolygonFeature;
 
-            var gphy = new OpenLayers.Layer.Google('Google Physical', {type: google.maps.MapTypeId.TERRAIN});
-            var gsat = new OpenLayers.Layer.Google('Google Satellite', {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22});
-            var gmap = new OpenLayers.Layer.Google('Google Streets', {numZoomLevels: 20});
-            var ghyb = new OpenLayers.Layer.Google('Google Hybrid', {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20});
-            var osmLayer = new OpenLayers.Layer.OSM('OpenStreetMap');
-            var bathymetryLayer = new OpenLayers.Layer.WMS(
-                    'Bathymetry',
-                    '/geoserver/gwc/service/wms',
-                    {
-                        layers: 'oztrack:gebco_08',
-                        styles: 'oztrack_bathymetry',
-                        format: 'image/png'
-                    },
-                    {
-                        isBaseLayer: true,
-                        wrapDateLine: true,
-                        attribution: '<a href="http://www.gebco.net">The GEBCO_08 Grid, version 20091120</a>'
-                    }
-                );
-            map.addLayers([gsat, gphy, gmap, ghyb, osmLayer, bathymetryLayer]);
+        that.map = new OpenLayers.Map(div, {
+            theme: null,
+            units: 'm',
+            projection: that.projection900913,
+            displayProjection: that.projection4326
+        });
+        that.navToolbar = new OpenLayers.Control.NavToolbar();
+        that.map.addControl(that.navToolbar);
+        that.map.addControl(new OpenLayers.Control.MousePosition());
+        that.map.addControl(new OpenLayers.Control.ScaleLine());
+        that.layerSwitcher = new OpenLayers.Control.LayerSwitcher();
+        that.map.addControl(that.layerSwitcher);
+        that.layerSwitcher.maximizeControl();
+        that.loadingPanel = new OpenLayers.Control.LoadingPanel();
+        that.map.addControl(that.loadingPanel);
+        that.map.addControl(createControlPanel());
+        that.map.addControl(new OpenLayers.Control({displayClass: 'projectMapBoxShadow'}));
 
-            allDetectionsLayer = createAllDetectionsLayer(projectId);
-            polygonLayer = new OpenLayers.Layer.Vector('Selections');
-            map.addLayers([allDetectionsLayer, polygonLayer]);
+        that.googlePhysicalLayer = new OpenLayers.Layer.Google('Google Physical', {
+            type : google.maps.MapTypeId.TERRAIN
+        });
+        that.googleSatelliteLayer = new OpenLayers.Layer.Google('Google Satellite', {
+            type : google.maps.MapTypeId.SATELLITE,
+            numZoomLevels : 22
+        });
+        that.googleStreetsLayer = new OpenLayers.Layer.Google('Google Streets', {
+            numZoomLevels : 20
+        });
+        that.googleHybridLayer = new OpenLayers.Layer.Google('Google Hybrid', {
+            type : google.maps.MapTypeId.HYBRID,
+            numZoomLevels : 20
+        });
+        that.map.addLayers([that.googleSatelliteLayer, that.googlePhysicalLayer, that.googleStreetsLayer, that.googleHybridLayer]);
 
-            polygonFeatures = [];
-            var polygonControl = new OpenLayers.Control.DrawFeature(polygonLayer, OpenLayers.Handler.Polygon);
-            polygonControl.events.register('featureadded', null, polygonFeatureAdded);
-            navToolbar.addControls(polygonControl);
-            navToolbar.activateControl(polygonControl);
+        that.osmLayer = new OpenLayers.Layer.OSM('OpenStreetMap');
+        that.map.addLayer(that.osmLayer);
 
-            highlightControl = new OpenLayers.Control.SelectFeature([polygonLayer], {
-                hover: true,
-                highlightOnly: true,
-                renderIntent: 'temporary'
-            });
-            map.addControl(highlightControl);
-
-            map.zoomToExtent(projectBounds);
-        }());
-
-        cleanseMap.reset = function() {
-            updateFilter();
-            while (polygonFeatures.length > 0) {
-                polygonFeatures.shift().destroy();
+        that.bathymetryLayer = new OpenLayers.Layer.WMS(
+            'Bathymetry',
+            '/geoserver/gwc/service/wms',
+            {
+                layers: 'oztrack:gebco_08',
+                styles: 'oztrack_bathymetry',
+                format: 'image/png'
+            },
+            {
+                isBaseLayer: true,
+                wrapDateLine: true,
+                attribution: '<a href="http://www.gebco.net">The GEBCO_08 Grid, version 20091120</a>'
             }
-            if (onReset) {
-                onReset();
+        );
+        that.map.addLayer(that.bathymetryLayer);
+
+        that.allDetectionsLayer = createAllDetectionsLayer(that.projectId);
+        that.polygonLayer = new OpenLayers.Layer.Vector('Selections');
+        that.map.addLayers([that.allDetectionsLayer, that.polygonLayer]);
+
+        that.polygonFeatures = [];
+        that.polygonControl = new OpenLayers.Control.DrawFeature(that.polygonLayer, OpenLayers.Handler.Polygon);
+        that.polygonControl.events.register('featureadded', null, polygonFeatureAdded);
+        that.navToolbar.addControls(that.polygonControl);
+        that.navToolbar.activateControl(that.polygonControl);
+
+        that.highlightControl = new OpenLayers.Control.SelectFeature([that.polygonLayer], {
+            hover: true,
+            highlightOnly: true,
+            renderIntent: 'temporary'
+        });
+        that.map.addControl(that.highlightControl);
+
+        that.map.zoomToExtent(that.projectBounds);
+
+        that.reset = function() {
+            updateFilter();
+            while (that.polygonFeatures.length > 0) {
+                that.polygonFeatures.shift().destroy();
+            }
+            if (that.onReset) {
+                that.onReset();
             }
         };
 
         function updateFilter() {
-            allDetectionsLayer.params['CQL_FILTER'] = buildAllDetectionsFilter();
-            allDetectionsLayer.redraw(true);
+            that.allDetectionsLayer.params['CQL_FILTER'] = buildAllDetectionsFilter();
+            that.allDetectionsLayer.redraw(true);
         }
         
-        cleanseMap.updateSize = function() {
-            map.updateSize();
+        that.updateSize = function() {
+            that.map.updateSize();
         };
         
         function createControlPanel() {
@@ -110,25 +120,25 @@ function createCleanseMap(div, options) {
                     title: 'Zoom to Data Extent',
                     displayClass: "zoomButton",
                     trigger: function() {
-                        map.zoomToExtent(projectBounds, false);
+                        that.map.zoomToExtent(that.projectBounds, false);
                     }
                 })
             ]);
             return panel;
         }
 
-        cleanseMap.setFromDate = function(date) {
-            fromDate = date;
+        that.setFromDate = function(date) {
+            that.fromDate = date;
             updateFilter();
         };
 
-        cleanseMap.setToDate = function(date) {
-            fromDate = date;
+        that.setToDate = function(date) {
+            that.toDate = date;
             updateFilter();
         };
 
-        cleanseMap.setAnimalVisible = function(animalId, visible) {
-            animalVisible[animalId] = visible;
+        that.setAnimalVisible = function(animalId, visible) {
+            that.animalVisible[animalId] = visible;
             updateFilter();
         };
 
@@ -139,43 +149,51 @@ function createCleanseMap(div, options) {
                 e.feature.destroy();
                 return;
             }
-            polygonFeatures.push(e.feature);
-            if (onPolygonFeatureAdded) {
+            that.polygonFeatures.push(e.feature);
+            if (that.onPolygonFeatureAdded) {
                 var geometry = e.feature.geometry.clone();
-                geometry.transform(projection900913, projection4326);
+                geometry.transform(that.projection900913, that.projection4326);
                 var wktFormat = new OpenLayers.Format.WKT();
                 var wkt = wktFormat.extractGeometry(geometry);
-                onPolygonFeatureAdded(e.feature.id, 'Selection ' + polygonFeatures.length, wkt);
+                that.onPolygonFeatureAdded(e.feature.id, 'Selection ' + that.polygonFeatures.length, wkt);
             }
         }
 
-        cleanseMap.selectPolygonFeature = function(id, selected) {
-            for (var i = 0; i < polygonFeatures.length; i++) {
-                if (polygonFeatures[i].id == id) {
-                    highlightControl[selected ? 'select' : 'unselect'](polygonFeatures[i]);
+        that.selectPolygonFeature = function(id, selected) {
+            for (var i = 0; i < that.polygonFeatures.length; i++) {
+                if (that.polygonFeatures[i].id == id) {
+                    that.highlightControl[selected ? 'select' : 'unselect'](that.polygonFeatures[i]);
                     break;
                 }
             }
         };
 
-        cleanseMap.deletePolygonFeature = function(id) {
-            if (onDeletePolygonFeature) {
-                onDeletePolygonFeature(id);
+        that.deletePolygonFeature = function(id) {
+            if (that.onDeletePolygonFeature) {
+                that.onDeletePolygonFeature(id);
             }
-            for (var i = 0; i < polygonFeatures.length; i++) {
-                if (polygonFeatures[i].id == id) {
-                    polygonFeatures[i].destroy();
-                    polygonFeatures.splice(i, 1);
+            for (var i = 0; i < that.polygonFeatures.length; i++) {
+                if (that.polygonFeatures[i].id == id) {
+                    that.polygonFeatures[i].destroy();
+                    that.polygonFeatures.splice(i, 1);
                     break;
                 }
             }
+        };
+        
+        that.increaseLoadingCounter = function() {
+            that.loadingPanel.increaseCounter();
+        };
+        
+        that.decreaseLoadingCounter = function() {
+            that.loadingPanel.decreaseCounter();
         };
 
         function buildAllDetectionsFilter() {
             var visibleAnimalIds = [];
-            for (i = 0; i < animalIds.length; i++) {
-                if (animalVisible[animalIds[i]]) {
-                    visibleAnimalIds.push(animalIds[i]);
+            for (i = 0; i < that.animalIds.length; i++) {
+                if (that.animalVisible[that.animalIds[i]]) {
+                    visibleAnimalIds.push(that.animalIds[i]);
                 }
             }
             // Include bogus animal ID (e.g. -1) that will never be matched.
@@ -185,7 +203,7 @@ function createCleanseMap(div, options) {
                 visibleAnimalIds.push(-1);
             }
             var cqlFilter =
-                'project_id = ' + projectId +
+                'project_id = ' + that.projectId +
                 ' and animal_id in (' + visibleAnimalIds.join(', ') + ')';
             var fromDate = jQuery('#fromDate').val();
             var toDate = jQuery('#toDate').val();
@@ -215,7 +233,5 @@ function createCleanseMap(div, options) {
                 }
             );
         }
-
-        return cleanseMap;
-    }());
-}
+    };
+}(window.OzTrack = window.OzTrack || {}));

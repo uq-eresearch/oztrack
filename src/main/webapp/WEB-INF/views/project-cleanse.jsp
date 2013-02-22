@@ -73,6 +73,9 @@
                     url: '${pageContext.request.contextPath}/projects/${project.id}/cleanse',
                     type: 'POST',
                     data: 'operation=' + operation + '&' + jQuery('#cleanseForm').serialize(),
+                    beforeSend: function(jqXHR, settings) {
+                        cleanseMap.increaseLoadingCounter();
+                    },
                     success: function(data, textStatus, jqXHR) {
                         cleanseMap.reset();
                         if ((operation == 'delete') || (operation == 'delete-all')) {
@@ -87,6 +90,9 @@
                     error: function(jqXHR, textStatus, errorThrown) {
                         var message = jQuery(jqXHR.responseText).find('error').text() || 'Error processing request';
                         jQuery('#cleanse-response-error').text(message).fadeIn();
+                    },
+                    complete: function(jqXHR, textStatus) {
+                        cleanseMap.decreaseLoadingCounter();
                     }
                 });
                 return false;
@@ -128,7 +134,7 @@
                 });
                 cleanseMap = null;
                 onResize();
-                cleanseMap = createCleanseMap('projectMap', {
+                cleanseMap = new OzTrack.CleanseMap('projectMap', {
                     projectId: <c:out value="${project.id}"/>,
                     fromDate: new Date(${projectDetectionDateRange.minimum.time}),
                     toDate: new Date(${projectDetectionDateRange.maximum.time}),
