@@ -222,15 +222,6 @@
                     </div>
                 </div>
                 <div class="control-group" style="margin-bottom: 9px;">
-                    <div style="margin-bottom: 9px; font-weight: bold;">Speed Filter</div>
-                    <div class="controls">
-                        <div class="input-append">
-                            <input id="maxSpeed" name="maxSpeed" type="text" class="input-small" placeholder="Max speed" >
-                            <span class="add-on">km/h</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="control-group" style="margin-bottom: 9px;">
                     <div style="margin-bottom: 9px; font-weight: bold;">Animals</div>
                     <div id="animalHeader" class="controls">
                         <div style="background-color: #d8e0a8;">
@@ -262,7 +253,21 @@
                     </div>
                 </div>
                 <div class="control-group" style="margin-bottom: 9px;">
-                    <div style="margin-bottom: 9px; font-weight: bold;">Selection</div>
+                    <div style="margin-bottom: 9px; font-weight: bold;">Speed Filter</div>
+                    <p>
+                        <small style="color: #555;">If you enter a maximum speed, only those points implying
+                        that the animal has exceeded the maximum speed will be deleted.
+                        This option has no effect when restoring points.</small>
+                    </p>
+                    <div class="controls">
+                        <div class="input-append">
+                            <input id="maxSpeed" name="maxSpeed" type="text" class="input-small" placeholder="Max speed" >
+                            <span class="add-on">km/h</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group" style="margin-bottom: 9px;">
+                    <div style="margin-bottom: 9px; font-weight: bold;">Polygon Selection</div>
                     <p>
                         <small style="color: #555;">Select points for removal from the project by drawing polygons around them.
                         Click to start drawing and click again to draw each side of your selected area.
