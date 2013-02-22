@@ -2,6 +2,7 @@ package org.oztrack.data.access.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -121,7 +122,15 @@ public class PositionFixDaoImpl implements PositionFixDao {
 
     @Override
     @Transactional
-    public int setDeletedOnOverlappingPositionFixes(Project project, Date fromDate, Date toDate, List<Long> animalIds, MultiPolygon multiPolygon, boolean deleted) {
+    public int setDeletedOnOverlappingPositionFixes(
+        Project project,
+        Date fromDate,
+        Date toDate,
+        List<Long> animalIds,
+        Set<PositionFix> speedFilterPositionFixes,
+        MultiPolygon multiPolygon,
+        boolean deleted
+    ) {
         String queryString =
             "update positionfix\n" +
             "set deleted = :deleted\n" +
@@ -134,6 +143,9 @@ public class PositionFixDaoImpl implements PositionFixDao {
         }
         if (toDate != null) {
             queryString += "    and detectionTime <= :toDate\n";
+        }
+        if (speedFilterPositionFixes != null) {
+            queryString += "    and id not in (:speedFilterPositionFixes)\n";
         }
         if (multiPolygon != null) {
             queryString += "    and ST_Within(locationgeometry, ST_GeomFromText(:wkt, 4326))\n";
@@ -149,6 +161,9 @@ public class PositionFixDaoImpl implements PositionFixDao {
         if (toDate != null) {
             query.setParameter("toDate", toDate);
         };
+        if (speedFilterPositionFixes != null) {
+            query.setParameter("speedFilterPositionFixes", speedFilterPositionFixes);
+        }
         if (multiPolygon != null) {
             query.setParameter("wkt", new WKTWriter().write(multiPolygon));
         }

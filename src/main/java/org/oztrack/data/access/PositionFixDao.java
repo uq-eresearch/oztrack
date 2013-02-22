@@ -2,6 +2,7 @@ package org.oztrack.data.access;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
@@ -16,6 +17,14 @@ public interface PositionFixDao {
     int getNumPositionFixes();
     Page<PositionFix> getPage(SearchQuery searchQuery, int offset, int nbrObjectsPerPage);
     List<PositionFix> getProjectPositionFixList(SearchQuery searchQuery);
-    int setDeletedOnOverlappingPositionFixes(Project project, Date fromDate, Date toDate, List<Long> animalIds, MultiPolygon multiPolygon, boolean deleted);
+    int setDeletedOnOverlappingPositionFixes(
+        Project project,
+        Date fromDate,
+        Date toDate,
+        List<Long> animalIds,
+        Set<PositionFix> speedFilterPositionFixes,
+        MultiPolygon multiPolygon,
+        boolean deleted
+    );
     void renumberPositionFixes(Project project);
 }

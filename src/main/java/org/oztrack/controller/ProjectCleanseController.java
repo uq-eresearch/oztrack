@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -132,11 +133,9 @@ public class ProjectCleanseController {
         }
         MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(polygons.toArray(new Polygon[0]));
         if (operation.equals("delete") || operation.equals("delete-all")) {
-            int numDeleted =
-                operation.equals("delete-all")
-                ? positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, null, true)
-                : positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, multiPolygon, true);
+            Set<PositionFix> speedFilterPositionFixes = null;
             if (maxSpeed != null) {
+                speedFilterPositionFixes = new HashSet<PositionFix>();
                 SearchQuery searchQuery = new SearchQuery();
                 searchQuery.setProject(project);
                 searchQuery.setFromDate(fromDate);
@@ -149,15 +148,15 @@ public class ProjectCleanseController {
                     Set<Date> dates = animalDates.get(positionFix.getAnimal().getId());
                     // Need to create new java.util.Date here because positionFix.detectionTime is a java.sql.Timestamp.
                     // Date and Timestamp have same hashCode but their equals methods differ, breaking contains call.
-                    if ((dates == null) || !dates.contains(new Date(positionFix.getDetectionTime().getTime()))) {
-                        if (!positionFix.getDeleted()) {
-                            positionFix.setDeleted(true);
-                            positionFixDao.update(positionFix);
-                            numDeleted++;
-                        }
+                    if ((dates != null) && dates.contains(new Date(positionFix.getDetectionTime().getTime()))) {
+                        speedFilterPositionFixes.add(positionFix);
                     }
                 }
             }
+            int numDeleted =
+                operation.equals("delete-all")
+                ? positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, speedFilterPositionFixes, null, true)
+                : positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, speedFilterPositionFixes, multiPolygon, true);
             positionFixDao.renumberPositionFixes(project);
             PrintWriter out = response.getWriter();
             out.append("<?xml version=\"1.0\"?>\n");
@@ -170,8 +169,8 @@ public class ProjectCleanseController {
         else if (operation.equals("undelete") || operation.equals("undelete-all")) {
             int numUndeleted =
                 operation.equals("undelete-all")
-                ? positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, null, false)
-                : positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, multiPolygon, false);
+                ? positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, null, null, false)
+                : positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, null, multiPolygon, false);
             positionFixDao.renumberPositionFixes(project);
             PrintWriter out = response.getWriter();
             out.append("<?xml version=\"1.0\"?>\n");
