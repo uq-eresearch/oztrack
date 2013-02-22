@@ -12,6 +12,7 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 
 @Service
 public interface PositionFixDao {
+    PositionFix update(PositionFix object);
     int getNumPositionFixes();
     Page<PositionFix> getPage(SearchQuery searchQuery, int offset, int nbrObjectsPerPage);
     List<PositionFix> getProjectPositionFixList(SearchQuery searchQuery);

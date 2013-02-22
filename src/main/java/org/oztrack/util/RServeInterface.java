@@ -4,8 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -73,6 +78,41 @@ public class RServeInterface {
         }
 
         rConnection.close();
+    }
+
+    public Map<Long, Set<Date>> runSpeedFilter(Project project, List<PositionFix> positionFixList, Double maxSpeed) throws RServeInterfaceException {
+        startRConnection();
+        try {
+            String srs =
+                StringUtils.isNotBlank(project.getSrsIdentifier())
+                ? project.getSrsIdentifier().toLowerCase(Locale.ENGLISH)
+                : "epsg:3577";
+            createRPositionFixDataFrame(positionFixList, srs);
+            safeEval("srs <- '+init=" + srs + "'");
+            safeEval("max.speed <- " + maxSpeed);
+            REXP rexp = safeEval("fspeedfilter(sinputfile=positionFix, sinputssrs=srs, max.speed=max.speed)");
+            RList data = rexp.getAttribute("data").asList();
+            String[] idStrings = data.at("ID").asStrings();
+            double[] dateDoubles = ((REXPDouble) data.at("Date")).asDoubles();
+            Map<Long, Set<Date>> animalDates = new HashMap<Long, Set<Date>>();
+            for (int i = 0; i < idStrings.length; i++) {
+                Long id = Long.valueOf(idStrings[i]);
+                Date date = new Date(((long) dateDoubles[i]) * 1000L); // s to ms
+                Set<Date> dates = animalDates.get(id);
+                if (dates == null) {
+                    dates = new HashSet<Date>();
+                    animalDates.put(id, dates);
+                }
+                dates.add(date);
+            }
+            return animalDates;
+        }
+        catch (REXPMismatchException e) {
+            throw new RServeInterfaceException("Error running speed filter.", e);
+        }
+        finally {
+            rConnection.close();
+        }
     }
 
     private void startRConnection() throws RServeInterfaceException {
@@ -144,7 +184,8 @@ public class RServeInterface {
             "kernelbb.r",
             "alphahull.r",
             "locoh.r",
-            "heatmap.r"
+            "heatmap.r",
+            "speedfilter.r"
         };
         for (String scriptFileName : scriptFileNames) {
             loadScript(scriptFileName);
@@ -353,10 +394,11 @@ public class RServeInterface {
     //
     //     org.rosuda.REngine.Rserve.RserveException: voidEval failed
     //
-    private void safeEval(String rCommand) throws RServeInterfaceException {
+    private REXP safeEval(String rCommand) throws RServeInterfaceException {
         logger.debug(String.format("Evaluating R: %s", rCommand));
+        REXP rexp = null;
         try {
-            rConnection.eval("e <- tryCatch({" + rCommand + "}, error = function(e) {e})");
+            rexp = rConnection.eval("e <- tryCatch({" + rCommand + "}, error = function(e) {e})");
         }
         catch (RserveException e) {
             throw new RServeInterfaceException("Error evaluating expression", e);
@@ -373,5 +415,6 @@ public class RServeInterface {
         if (errorMessage != null) {
             throw new RServeInterfaceException(errorMessage);
         }
+        return rexp;
     }
 }

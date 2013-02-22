@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +23,11 @@ import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Animal;
+import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
+import org.oztrack.data.model.SearchQuery;
+import org.oztrack.error.RServeInterfaceException;
+import org.oztrack.util.RServeInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -81,11 +87,12 @@ public class ProjectCleanseController {
         @ModelAttribute(value="project") Project project,
         @RequestParam(value="fromDate", required=false) String fromDateString,
         @RequestParam(value="toDate", required=false) String toDateString,
+        @RequestParam(value="maxSpeed", required=false) Double maxSpeed,
         @RequestParam(value="operation", defaultValue="delete") String operation,
         @RequestParam(value="animal") List<Long> animalIds,
         HttpServletRequest request,
         HttpServletResponse response
-    ) throws IOException {
+    ) throws IOException, RServeInterfaceException {
         Date fromDate = null;
         Date toDate = null;
         try {
@@ -129,6 +136,28 @@ public class ProjectCleanseController {
                 operation.equals("delete-all")
                 ? positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, null, true)
                 : positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, multiPolygon, true);
+            if (maxSpeed != null) {
+                SearchQuery searchQuery = new SearchQuery();
+                searchQuery.setProject(project);
+                searchQuery.setFromDate(fromDate);
+                searchQuery.setToDate(toDate);
+                searchQuery.setAnimalIds(animalIds);
+                List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
+                RServeInterface rServeInterface = new RServeInterface();
+                Map<Long, Set<Date>> animalDates = rServeInterface.runSpeedFilter(project, positionFixList, maxSpeed);
+                for (PositionFix positionFix : positionFixList) {
+                    Set<Date> dates = animalDates.get(positionFix.getAnimal().getId());
+                    // Need to create new java.util.Date here because positionFix.detectionTime is a java.sql.Timestamp.
+                    // Date and Timestamp have same hashCode but their equals methods differ, breaking contains call.
+                    if ((dates == null) || !dates.contains(new Date(positionFix.getDetectionTime().getTime()))) {
+                        if (!positionFix.getDeleted()) {
+                            positionFix.setDeleted(true);
+                            positionFixDao.update(positionFix);
+                            numDeleted++;
+                        }
+                    }
+                }
+            }
             positionFixDao.renumberPositionFixes(project);
             PrintWriter out = response.getWriter();
             out.append("<?xml version=\"1.0\"?>\n");

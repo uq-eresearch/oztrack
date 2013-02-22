@@ -216,6 +216,15 @@
                     </div>
                 </div>
                 <div class="control-group" style="margin-bottom: 9px;">
+                    <div style="margin-bottom: 9px; font-weight: bold;">Speed Filter</div>
+                    <div class="controls">
+                        <div class="input-append">
+                            <input id="maxSpeed" name="maxSpeed" type="text" class="input-small" placeholder="Max speed" >
+                            <span class="add-on">km/h</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group" style="margin-bottom: 9px;">
                     <div style="margin-bottom: 9px; font-weight: bold;">Animals</div>
                     <div id="animalHeader" class="controls">
                         <div style="background-color: #d8e0a8;">
