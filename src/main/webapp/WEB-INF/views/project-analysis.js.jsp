@@ -769,6 +769,13 @@
 
         that.updateSize = function() {
             that.map.updateSize();
+
+            // Workaround zooming bug:
+            // Map resize displays google layer at incorrect zoom level
+            // Calling pan results in zoom levels for all layers getting back in synch
+            // http://gis.stackexchange.com/questions/30075/map-resize-displays-google-layer-at-incorrect-zoom-level
+            that.map.pan(1, 0, null);
+            that.map.pan(-1, 0, null);
         };
     };
 }(window.OzTrack = window.OzTrack || {}));
