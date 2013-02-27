@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.pool.ObjectPool;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -29,6 +30,7 @@ import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.error.RServeInterfaceException;
 import org.oztrack.util.RServeInterface;
+import org.rosuda.REngine.Rserve.RConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -61,6 +63,9 @@ public class ProjectCleanseController {
 
     @Autowired
     AnimalDao animalDao;
+
+    @Autowired
+    private ObjectPool<RConnection> rServeConnectionPool;
 
     @InitBinder("project")
     public void initProjectBinder(WebDataBinder binder) {
@@ -142,7 +147,7 @@ public class ProjectCleanseController {
                 searchQuery.setToDate(toDate);
                 searchQuery.setAnimalIds(animalIds);
                 List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-                RServeInterface rServeInterface = new RServeInterface();
+                RServeInterface rServeInterface = new RServeInterface(rServeConnectionPool);
                 Map<Long, Set<Date>> animalDates = rServeInterface.runSpeedFilter(project, positionFixList, maxSpeed);
                 for (PositionFix positionFix : positionFixList) {
                     Set<Date> dates = animalDates.get(positionFix.getAnimal().getId());

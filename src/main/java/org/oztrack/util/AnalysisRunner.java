@@ -8,11 +8,14 @@ import javax.persistence.PersistenceUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.pool.ObjectPool;
 import org.oztrack.data.access.impl.AnalysisDaoImpl;
 import org.oztrack.data.access.impl.PositionFixDaoImpl;
 import org.oztrack.data.model.Analysis;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.types.AnalysisStatus;
+import org.rosuda.REngine.Rserve.RConnection;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,9 @@ public class AnalysisRunner {
 
     @PersistenceUnit
     private EntityManagerFactory entityManagerFactory;
+
+    @Autowired
+    private ObjectPool<RConnection> rServeConnectionPool;
 
     public AnalysisRunner() {
     }
@@ -44,7 +50,7 @@ public class AnalysisRunner {
             entityManager.getTransaction().begin();
             analysis.setResultFilePath("analysis-" + analysis.getId().toString() + ".kml");
             List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(analysis.toSearchQuery());
-            RServeInterface rServeInterface = new RServeInterface();
+            RServeInterface rServeInterface = new RServeInterface(rServeConnectionPool);
             rServeInterface.createKml(analysis, positionFixList);
             analysis.setStatus(AnalysisStatus.COMPLETE);
             analysisDao.save(analysis);

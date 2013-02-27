@@ -1,7 +1,5 @@
 package org.oztrack.util;
 
-import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,10 +10,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.pool.ObjectPool;
 import org.oztrack.data.model.Analysis;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
@@ -34,54 +32,73 @@ import org.rosuda.REngine.Rserve.RserveException;
 public class RServeInterface {
     protected final Log logger = LogFactory.getLog(getClass());
 
+    private ObjectPool<RConnection> rConnectionPool;
     private RConnection rConnection;
-    private String rWorkingDir;
 
-    public RServeInterface() {
+    public RServeInterface(ObjectPool<RConnection> rConnectionPool) {
+        this.rConnectionPool = rConnectionPool;
     }
 
     public void createKml(Analysis analysis, List<PositionFix> positionFixList) throws RServeInterfaceException {
-        startRConnection();
-        Project project = analysis.getProject();
-
-        String srs =
-            StringUtils.isNotBlank(project.getSrsIdentifier())
-            ? project.getSrsIdentifier().toLowerCase(Locale.ENGLISH)
-            : "epsg:3577";
-        createAnimalNameList(analysis);
-        createRPositionFixDataFrame(positionFixList, srs);
-
-        switch (analysis.getAnalysisType()) {
-            case MCP:
-                writeMCPKmlFile(analysis, srs);
-                break;
-            case KUD:
-                writeKernelUDKmlFile(analysis, srs);
-                break;
-            case KBB:
-                writeKernelBBKmlFile(analysis, srs);
-                break;
-            case AHULL:
-                writeAlphahullKmlFile(analysis, srs);
-                break;
-            case LOCOH:
-                writeLocohKmlFile(analysis, srs);
-                break;
-            case HEATMAP_POINT:
-                writePointHeatmapKmlFile(analysis, srs);
-                break;
-            case HEATMAP_LINE:
-                writeLineHeatmapKmlFile(analysis, srs);
-                break;
-            default:
-                throw new RServeInterfaceException("Unhandled AnalysisType: " + analysis.getAnalysisType());
+        try {
+            this.rConnection = rConnectionPool.borrowObject();
         }
+        catch (Exception e) {
+            throw new RServeInterfaceException("Error getting R connection.", e);
+        }
+        try {
+            Project project = analysis.getProject();
 
-        rConnection.close();
+            String srs =
+                StringUtils.isNotBlank(project.getSrsIdentifier())
+                ? project.getSrsIdentifier().toLowerCase(Locale.ENGLISH)
+                : "epsg:3577";
+            createAnimalNameList(analysis);
+            createRPositionFixDataFrame(positionFixList, srs);
+
+            switch (analysis.getAnalysisType()) {
+                case MCP:
+                    writeMCPKmlFile(analysis, srs);
+                    break;
+                case KUD:
+                    writeKernelUDKmlFile(analysis, srs);
+                    break;
+                case KBB:
+                    writeKernelBBKmlFile(analysis, srs);
+                    break;
+                case AHULL:
+                    writeAlphahullKmlFile(analysis, srs);
+                    break;
+                case LOCOH:
+                    writeLocohKmlFile(analysis, srs);
+                    break;
+                case HEATMAP_POINT:
+                    writePointHeatmapKmlFile(analysis, srs);
+                    break;
+                case HEATMAP_LINE:
+                    writeLineHeatmapKmlFile(analysis, srs);
+                    break;
+                default:
+                    throw new RServeInterfaceException("Unhandled AnalysisType: " + analysis.getAnalysisType());
+            }
+        }
+        finally {
+            try {
+                rConnectionPool.returnObject(this.rConnection);
+            }
+            catch (Exception e) {
+                logger.error("Error returning R connection", e);
+            }
+        }
     }
 
     public Map<Long, Set<Date>> runSpeedFilter(Project project, List<PositionFix> positionFixList, Double maxSpeed) throws RServeInterfaceException {
-        startRConnection();
+        try {
+            this.rConnection = rConnectionPool.borrowObject();
+        }
+        catch (Exception e) {
+            throw new RServeInterfaceException("Error getting R connection.", e);
+        }
         try {
             String srs =
                 StringUtils.isNotBlank(project.getSrsIdentifier())
@@ -111,100 +128,12 @@ public class RServeInterface {
             throw new RServeInterfaceException("Error running speed filter.", e);
         }
         finally {
-            rConnection.close();
-        }
-    }
-
-    private void startRConnection() throws RServeInterfaceException {
-        if (StartRserve.checkLocalRserve()) {
             try {
-                this.rConnection = new RConnection();
-                this.rConnection.setSendBufferSize(10485760);
-            }
-            catch (RserveException e) {
-                throw new RServeInterfaceException("Error starting Rserve.", e);
-            }
-
-            try {
-                this.rWorkingDir = rConnection.eval("getwd()").asString() + File.separator;
+                rConnectionPool.returnObject(this.rConnection);
             }
             catch (Exception e) {
-                throw new RServeInterfaceException("Error getting Rserve working directory.", e);
+                logger.error("Error returning R connection", e);
             }
-            String osname = System.getProperty("os.name");
-            if (StringUtils.startsWith(osname, "Windows")) {
-                this.rWorkingDir = this.rWorkingDir.replace("\\","/");
-            }
-
-            loadLibraries();
-            loadScripts();
-        }
-        else {
-            throw new RServeInterfaceException("Could not start Rserve.");
-        }
-    }
-
-    private void loadLibraries() throws RServeInterfaceException {
-        String[] libraries = new String[] {
-            "adehabitatHR",
-            "adehabitatMA",
-            "shapefiles",
-            "rgdal",
-            "alphahull",
-            "sp",
-            "raster",
-            "plyr",
-            "spatstat",
-            "maptools",
-            "Grid2Polygons",
-            "RColorBrewer",
-            "googleVis",
-            "spacetime",
-            "plotKML"
-        };
-        for (String library : libraries) {
-            loadLibrary(library);
-        }
-    }
-
-    private void loadLibrary(String library) throws RServeInterfaceException {
-        try {
-            this.rConnection.voidEval("library(" + library + ")");
-        }
-        catch (RserveException e) {
-            throw new RServeInterfaceException("Error loading '" + library + "' library.", e);
-        }
-    }
-
-    private void loadScripts() throws RServeInterfaceException {
-        String[] scriptFileNames = new String[] {
-            "kmlPolygons.r",
-            "mcp.r",
-            "kernelud.r",
-            "kernelbb.r",
-            "alphahull.r",
-            "locoh.r",
-            "heatmap.r",
-            "speedfilter.r"
-        };
-        for (String scriptFileName : scriptFileNames) {
-            loadScript(scriptFileName);
-        }
-    }
-
-    private void loadScript(String scriptFileName) throws RServeInterfaceException {
-        String scriptString = null;
-        try {
-            scriptString = IOUtils.toString(getClass().getResourceAsStream("/r/" + scriptFileName), "UTF-8");
-        }
-        catch (IOException e) {
-            throw new RServeInterfaceException("Error reading '" + scriptFileName + "' script.", e);
-        }
-        try {
-            this.rConnection.voidEval(scriptString);
-        }
-        catch (RserveException e) {
-            throw new RServeInterfaceException("Error running '" + scriptFileName + "' script.", e);
         }
     }
 
@@ -398,15 +327,15 @@ public class RServeInterface {
         logger.debug(String.format("Evaluating R: %s", rCommand));
         REXP rexp = null;
         try {
-            rexp = rConnection.eval("e <- tryCatch({" + rCommand + "}, error = function(e) {e})");
+            rexp = this.rConnection.eval("e <- tryCatch({" + rCommand + "}, error = function(e) {e})");
         }
         catch (RserveException e) {
             throw new RServeInterfaceException("Error evaluating expression", e);
         }
         String errorMessage = null;
         try {
-            if (rConnection.eval("inherits(e, 'error')").asInteger() == 1) {
-                errorMessage = rConnection.eval("conditionMessage(e)").asString();
+            if (this.rConnection.eval("inherits(e, 'error')").asInteger() == 1) {
+                errorMessage = this.rConnection.eval("conditionMessage(e)").asString();
             }
         }
         catch (Exception e) {
