@@ -212,9 +212,11 @@ public class RServeInterface {
         if (!(percent >= 0d && percent <= 100d)) {
             throw new RServeInterfaceException("percent must be between 0 and 100.");
         }
+        safeEval("srs <- '" + srs + "'");
         safeEval("percent <- " + percent);
         safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
-        safeEval("oztrack_mcp(percent=percent, kmlFile=kmlFile)");
+        safeEval("is180 <- FALSE");
+        safeEval("oztrack_mcp(srs=srs, percent=percent, kmlFile=kmlFile, is180=is180)");
     }
 
     private void writeKernelUDKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
@@ -229,12 +231,14 @@ public class RServeInterface {
         if ((hEstimator == null) && (hValue == null)) {
             throw new RServeInterfaceException("h estimator or h value must be entered.");
         }
+        safeEval("srs <- '" + srs + "'");
         safeEval("h <- " + ((hValue != null) ? hValue.toString() : "'" + hEstimator + "'"));
         safeEval("gridSize <- " + gridSize);
         safeEval("extent <- " + extent);
         safeEval("percent <- " + percent);
         safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
-        safeEval("oztrack_kernelud(h=h, gridSize=gridSize, extent=extent, percent=percent, kmlFile=kmlFile)");
+        safeEval("is180 <- FALSE");
+        safeEval("oztrack_kernelud(srs=srs, h=h, gridSize=gridSize, extent=extent, percent=percent, kmlFile=kmlFile, is180=is180)");
     }
 
     private void writeKernelBBKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
@@ -266,7 +270,8 @@ public class RServeInterface {
         safeEval("srs <- '" + srs + "'");
         safeEval("alpha <- " + alpha);
         safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
-        safeEval("oztrack_alphahull(srs=srs, alpha=alpha, kmlFile=kmlFile)");
+        safeEval("is180 <- FALSE");
+        safeEval("oztrack_alphahull(srs=srs, alpha=alpha, kmlFile=kmlFile, is180=is180)");
     }
 
     private void writeLocohKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
