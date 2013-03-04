@@ -8,16 +8,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.pool.BasePoolableObjectFactory;
-import org.oztrack.error.RServeInterfaceException;
+import org.oztrack.error.RserveInterfaceException;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
 
-public class RServeConnectionFactory extends BasePoolableObjectFactory<RConnection> {
+public class RserveConnectionFactory extends BasePoolableObjectFactory<RConnection> {
     protected final Log logger = LogFactory.getLog(getClass());
 
     @Override
-    public RConnection makeObject() throws RServeInterfaceException {
-        logger.info("Creating RServe connection");
+    public RConnection makeObject() throws RserveInterfaceException {
+        logger.info("Creating Rserve connection");
         RConnection rConnection = null;
         String rWorkingDir = null;
         if (StartRserve.checkLocalRserve()) {
@@ -26,14 +26,14 @@ public class RServeConnectionFactory extends BasePoolableObjectFactory<RConnecti
                 rConnection.setSendBufferSize(10485760);
             }
             catch (RserveException e) {
-                throw new RServeInterfaceException("Error starting Rserve.", e);
+                throw new RserveInterfaceException("Error starting Rserve.", e);
             }
 
             try {
                 rWorkingDir = rConnection.eval("getwd()").asString() + File.separator;
             }
             catch (Exception e) {
-                throw new RServeInterfaceException("Error getting Rserve working directory.", e);
+                throw new RserveInterfaceException("Error getting Rserve working directory.", e);
             }
             String osname = System.getProperty("os.name");
             if (StringUtils.startsWith(osname, "Windows")) {
@@ -44,7 +44,7 @@ public class RServeConnectionFactory extends BasePoolableObjectFactory<RConnecti
             loadScripts(rConnection);
         }
         else {
-            throw new RServeInterfaceException("Could not start Rserve.");
+            throw new RserveInterfaceException("Could not start Rserve.");
         }
         return rConnection;
     }
@@ -71,7 +71,7 @@ public class RServeConnectionFactory extends BasePoolableObjectFactory<RConnecti
         }
     }
 
-    private void loadLibraries(RConnection rConnection) throws RServeInterfaceException {
+    private void loadLibraries(RConnection rConnection) throws RserveInterfaceException {
         String[] libraries = new String[] {
             "adehabitatHR",
             "adehabitatMA",
@@ -94,16 +94,16 @@ public class RServeConnectionFactory extends BasePoolableObjectFactory<RConnecti
         }
     }
 
-    private void loadLibrary(RConnection rConnection, String library) throws RServeInterfaceException {
+    private void loadLibrary(RConnection rConnection, String library) throws RserveInterfaceException {
         try {
             rConnection.voidEval("library(" + library + ")");
         }
         catch (RserveException e) {
-            throw new RServeInterfaceException("Error loading '" + library + "' library.", e);
+            throw new RserveInterfaceException("Error loading '" + library + "' library.", e);
         }
     }
 
-    private void loadScripts(RConnection rConnection) throws RServeInterfaceException {
+    private void loadScripts(RConnection rConnection) throws RserveInterfaceException {
         String[] scriptFileNames = new String[] {
             "kmlPolygons.r",
             "mcp.r",
@@ -119,19 +119,19 @@ public class RServeConnectionFactory extends BasePoolableObjectFactory<RConnecti
         }
     }
 
-    private void loadScript(RConnection rConnection, String scriptFileName) throws RServeInterfaceException {
+    private void loadScript(RConnection rConnection, String scriptFileName) throws RserveInterfaceException {
         String scriptString = null;
         try {
             scriptString = IOUtils.toString(getClass().getResourceAsStream("/r/" + scriptFileName), "UTF-8");
         }
         catch (IOException e) {
-            throw new RServeInterfaceException("Error reading '" + scriptFileName + "' script.", e);
+            throw new RserveInterfaceException("Error reading '" + scriptFileName + "' script.", e);
         }
         try {
             rConnection.voidEval(scriptString);
         }
         catch (RserveException e) {
-            throw new RServeInterfaceException("Error running '" + scriptFileName + "' script.", e);
+            throw new RserveInterfaceException("Error running '" + scriptFileName + "' script.", e);
         }
     }
 }

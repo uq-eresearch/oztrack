@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class RServeSettingsController {
+public class RserveSettingsController {
     @Autowired
-    private ObjectPool<RConnection> rServeConnectionPool;
+    private ObjectPool<RConnection> rserveConnectionPool;
 
     @RequestMapping(value="/settings/rserve", method=RequestMethod.GET)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String handleRequest(Model model) {
-        model.addAttribute("rServeConnectionPool", rServeConnectionPool);
+        model.addAttribute("rserveConnectionPool", rserveConnectionPool);
         return "rserve-settings-form";
     }
 
@@ -34,7 +34,7 @@ public class RServeSettingsController {
         String err = IOUtils.toString(process.getErrorStream());
         String out = IOUtils.toString(process.getInputStream());
         process.waitFor();
-        model.addAttribute("rServeConnectionPool", rServeConnectionPool);
+        model.addAttribute("rserveConnectionPool", rserveConnectionPool);
         model.addAttribute("err", err);
         model.addAttribute("out", out);
         return "rserve-settings-form";

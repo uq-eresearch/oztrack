@@ -78,7 +78,7 @@
         <constructor-arg name="databasePassword" value="${application.databasePassword}"/>
     </bean>
     
-    <bean id="rServeConnectionPool" class="org.oztrack.util.RServeConnectionPoolFactoryBean">
+    <bean id="rserveConnectionPool" class="org.oztrack.util.RserveConnectionPoolFactoryBean">
         <constructor-arg name="numConnections" value="8"/>
     </bean>
 

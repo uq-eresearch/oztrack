@@ -18,7 +18,7 @@ import org.oztrack.data.model.Analysis;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
-import org.oztrack.error.RServeInterfaceException;
+import org.oztrack.error.RserveInterfaceException;
 import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.REXPDouble;
 import org.rosuda.REngine.REXPList;
@@ -29,22 +29,22 @@ import org.rosuda.REngine.RList;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
 
-public class RServeInterface {
+public class RserveInterface {
     protected final Log logger = LogFactory.getLog(getClass());
 
     private ObjectPool<RConnection> rConnectionPool;
     private RConnection rConnection;
 
-    public RServeInterface(ObjectPool<RConnection> rConnectionPool) {
+    public RserveInterface(ObjectPool<RConnection> rConnectionPool) {
         this.rConnectionPool = rConnectionPool;
     }
 
-    public void createKml(Analysis analysis, List<PositionFix> positionFixList) throws RServeInterfaceException {
+    public void createKml(Analysis analysis, List<PositionFix> positionFixList) throws RserveInterfaceException {
         try {
             this.rConnection = rConnectionPool.borrowObject();
         }
         catch (Exception e) {
-            throw new RServeInterfaceException("Error getting R connection.", e);
+            throw new RserveInterfaceException("Error getting R connection.", e);
         }
         try {
             Project project = analysis.getProject();
@@ -79,7 +79,7 @@ public class RServeInterface {
                     writeLineHeatmapKmlFile(analysis, srs);
                     break;
                 default:
-                    throw new RServeInterfaceException("Unhandled AnalysisType: " + analysis.getAnalysisType());
+                    throw new RserveInterfaceException("Unhandled AnalysisType: " + analysis.getAnalysisType());
             }
         }
         finally {
@@ -92,12 +92,12 @@ public class RServeInterface {
         }
     }
 
-    public Map<Long, Set<Date>> runSpeedFilter(Project project, List<PositionFix> positionFixList, Double maxSpeed) throws RServeInterfaceException {
+    public Map<Long, Set<Date>> runSpeedFilter(Project project, List<PositionFix> positionFixList, Double maxSpeed) throws RserveInterfaceException {
         try {
             this.rConnection = rConnectionPool.borrowObject();
         }
         catch (Exception e) {
-            throw new RServeInterfaceException("Error getting R connection.", e);
+            throw new RserveInterfaceException("Error getting R connection.", e);
         }
         try {
             String srs =
@@ -125,7 +125,7 @@ public class RServeInterface {
             return animalDates;
         }
         catch (REXPMismatchException e) {
-            throw new RServeInterfaceException("Error running speed filter.", e);
+            throw new RserveInterfaceException("Error running speed filter.", e);
         }
         finally {
             try {
@@ -137,7 +137,7 @@ public class RServeInterface {
         }
     }
 
-    private void createAnimalNameList(Analysis analysis) throws RServeInterfaceException {
+    private void createAnimalNameList(Analysis analysis) throws RserveInterfaceException {
         ArrayList<String> names = new ArrayList<String>();
         ArrayList<REXP> contents = new ArrayList<REXP>();
         for (Animal animal : analysis.getAnimals()) {
@@ -149,11 +149,11 @@ public class RServeInterface {
             this.rConnection.assign("animalName", rexp);
         }
         catch (REngineException e) {
-            throw new RServeInterfaceException(e.toString());
+            throw new RserveInterfaceException(e.toString());
         }
     }
 
-    private void createRPositionFixDataFrame(List<PositionFix> positionFixList, String srs) throws RServeInterfaceException {
+    private void createRPositionFixDataFrame(List<PositionFix> positionFixList, String srs) throws RserveInterfaceException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         String[] animalIds = new String[positionFixList.size()];
@@ -199,18 +199,18 @@ public class RServeInterface {
             );
         }
         catch (REngineException e) {
-            throw new RServeInterfaceException(e.toString());
+            throw new RserveInterfaceException(e.toString());
         }
         catch (REXPMismatchException e) {
-            throw new RServeInterfaceException(e.toString());
+            throw new RserveInterfaceException(e.toString());
         }
     }
 
 
-    private void writeMCPKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
+    private void writeMCPKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
         Double percent = (Double) analysis.getParameterValue("percent", true);
         if (!(percent >= 0d && percent <= 100d)) {
-            throw new RServeInterfaceException("percent must be between 0 and 100.");
+            throw new RserveInterfaceException("percent must be between 0 and 100.");
         }
         safeEval("srs <- '" + srs + "'");
         safeEval("percent <- " + percent);
@@ -219,17 +219,17 @@ public class RServeInterface {
         safeEval("oztrack_mcp(srs=srs, percent=percent, kmlFile=kmlFile, is180=is180)");
     }
 
-    private void writeKernelUDKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
+    private void writeKernelUDKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
         Double percent = (Double) analysis.getParameterValue("percent", true);
         String hEstimator = (String) analysis.getParameterValue("hEstimator", false);
         Double hValue = (Double) analysis.getParameterValue("hValue", false);
         Double gridSize = (Double) analysis.getParameterValue("gridSize", true);
         Double extent = (Double) analysis.getParameterValue("extent", true);
         if (!(percent >= 0d && percent <= 100d)) {
-            throw new RServeInterfaceException("percent must be between 0 and 100.");
+            throw new RserveInterfaceException("percent must be between 0 and 100.");
         }
         if ((hEstimator == null) && (hValue == null)) {
-            throw new RServeInterfaceException("h estimator or h value must be entered.");
+            throw new RserveInterfaceException("h estimator or h value must be entered.");
         }
         safeEval("srs <- '" + srs + "'");
         safeEval("h <- " + ((hValue != null) ? hValue.toString() : "'" + hEstimator + "'"));
@@ -241,17 +241,17 @@ public class RServeInterface {
         safeEval("oztrack_kernelud(srs=srs, h=h, gridSize=gridSize, extent=extent, percent=percent, kmlFile=kmlFile, is180=is180)");
     }
 
-    private void writeKernelBBKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
+    private void writeKernelBBKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
         Double percent = (Double) analysis.getParameterValue("percent", true);
         Double sig1 = (Double) analysis.getParameterValue("sig1", false);
         Double sig2 = (Double) analysis.getParameterValue("sig2", false);
         Double gridSize = (Double) analysis.getParameterValue("gridSize", true);
         Double extent = (Double) analysis.getParameterValue("extent", true);
         if (!(percent >= 0d && percent <= 100d)) {
-            throw new RServeInterfaceException("percent must be between 0 and 100.");
+            throw new RserveInterfaceException("percent must be between 0 and 100.");
         }
         if ((sig1 == null) || (sig2 == null)) {
-            throw new RServeInterfaceException("sig1 and sig2 must both be entered.");
+            throw new RserveInterfaceException("sig1 and sig2 must both be entered.");
         }
         safeEval("sig1 <- " + sig1);
         safeEval("sig2 <- " + sig2);
@@ -262,10 +262,10 @@ public class RServeInterface {
         safeEval("oztrack_kernelbb(sig1=sig1, sig2=sig2, gridSize=gridSize, extent=extent, percent=percent, kmlFile=kmlFile)");
     }
 
-    private void writeAlphahullKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
+    private void writeAlphahullKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
         Double alpha = (Double) analysis.getParameterValue("alpha", true);
         if (!(alpha > 0d)) {
-            throw new RServeInterfaceException("alpha must be greater than 0.");
+            throw new RserveInterfaceException("alpha must be greater than 0.");
         }
         safeEval("srs <- '" + srs + "'");
         safeEval("alpha <- " + alpha);
@@ -274,12 +274,12 @@ public class RServeInterface {
         safeEval("oztrack_alphahull(srs=srs, alpha=alpha, kmlFile=kmlFile, is180=is180)");
     }
 
-    private void writeLocohKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
+    private void writeLocohKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
         Double percent = (Double) analysis.getParameterValue("percent", true);
         Double k = (Double) analysis.getParameterValue("k", false);
         Double r = (Double) analysis.getParameterValue("r", false);
         if (!(percent >= 0d && percent <= 100d)) {
-            throw new RServeInterfaceException("percent must be between 0 and 100.");
+            throw new RserveInterfaceException("percent must be between 0 and 100.");
         }
         safeEval("k <- " + ((k != null) ? k : "NULL"));
         safeEval("r <- " + ((r != null) ? r : "NULL"));
@@ -288,12 +288,12 @@ public class RServeInterface {
         safeEval("oztrack_locoh(k=k, r=r, percent=percent, kmlFile=kmlFile)");
     }
 
-    private void writePointHeatmapKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
+    private void writePointHeatmapKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
         Boolean showAbsence = (Boolean) analysis.getParameterValue("showAbsence", true);
         Double gridSize = (Double) analysis.getParameterValue("gridSize", true);
         String colours = (String) analysis.getParameterValue("colours", true);
         if (!(gridSize > 0d)) {
-            throw new RServeInterfaceException("grid size must be greater than 0.");
+            throw new RserveInterfaceException("grid size must be greater than 0.");
         }
         safeEval("srs <- '" + srs + "'");
         safeEval("gridSize <- " + gridSize);
@@ -303,12 +303,12 @@ public class RServeInterface {
         safeEval("oztrack_heatmap_point(srs=srs, gridSize=gridSize, colours=colours, labsent=labsent, kmlFile=kmlFile)");
     }
 
-    private void writeLineHeatmapKmlFile(Analysis analysis, String srs) throws RServeInterfaceException {
+    private void writeLineHeatmapKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
         Boolean showAbsence = (Boolean) analysis.getParameterValue("showAbsence", true);
         Double gridSize = (Double) analysis.getParameterValue("gridSize", true);
         String colours = (String) analysis.getParameterValue("colours", true);
         if (!(gridSize > 0d)) {
-            throw new RServeInterfaceException("grid size must be greater than 0.");
+            throw new RserveInterfaceException("grid size must be greater than 0.");
         }
         safeEval("srs <- '" + srs + "'");
         safeEval("gridSize <- " + gridSize);
@@ -328,14 +328,14 @@ public class RServeInterface {
     //
     //     org.rosuda.REngine.Rserve.RserveException: voidEval failed
     //
-    private REXP safeEval(String rCommand) throws RServeInterfaceException {
+    private REXP safeEval(String rCommand) throws RserveInterfaceException {
         logger.debug(String.format("Evaluating R: %s", rCommand));
         REXP rexp = null;
         try {
             rexp = this.rConnection.eval("e <- tryCatch({" + rCommand + "}, error = function(e) {e})");
         }
         catch (RserveException e) {
-            throw new RServeInterfaceException("Error evaluating expression", e);
+            throw new RserveInterfaceException("Error evaluating expression", e);
         }
         String errorMessage = null;
         try {
@@ -344,10 +344,10 @@ public class RServeInterface {
             }
         }
         catch (Exception e) {
-            throw new RServeInterfaceException("Error getting error message", e);
+            throw new RserveInterfaceException("Error getting error message", e);
         }
         if (errorMessage != null) {
-            throw new RServeInterfaceException(errorMessage);
+            throw new RserveInterfaceException(errorMessage);
         }
         return rexp;
     }

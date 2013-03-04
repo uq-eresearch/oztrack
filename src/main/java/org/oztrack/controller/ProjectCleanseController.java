@@ -28,8 +28,8 @@ import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
-import org.oztrack.error.RServeInterfaceException;
-import org.oztrack.util.RServeInterface;
+import org.oztrack.error.RserveInterfaceException;
+import org.oztrack.util.RserveInterface;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -65,7 +65,7 @@ public class ProjectCleanseController {
     AnimalDao animalDao;
 
     @Autowired
-    private ObjectPool<RConnection> rServeConnectionPool;
+    private ObjectPool<RConnection> rserveConnectionPool;
 
     @InitBinder("project")
     public void initProjectBinder(WebDataBinder binder) {
@@ -98,7 +98,7 @@ public class ProjectCleanseController {
         @RequestParam(value="animal") List<Long> animalIds,
         HttpServletRequest request,
         HttpServletResponse response
-    ) throws IOException, RServeInterfaceException {
+    ) throws IOException, RserveInterfaceException {
         Date fromDate = null;
         Date toDate = null;
         try {
@@ -147,8 +147,8 @@ public class ProjectCleanseController {
                 searchQuery.setToDate(toDate);
                 searchQuery.setAnimalIds(animalIds);
                 List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-                RServeInterface rServeInterface = new RServeInterface(rServeConnectionPool);
-                Map<Long, Set<Date>> animalDates = rServeInterface.runSpeedFilter(project, positionFixList, maxSpeed);
+                RserveInterface rserveInterface = new RserveInterface(rserveConnectionPool);
+                Map<Long, Set<Date>> animalDates = rserveInterface.runSpeedFilter(project, positionFixList, maxSpeed);
                 for (PositionFix positionFix : positionFixList) {
                     Set<Date> dates = animalDates.get(positionFix.getAnimal().getId());
                     // Need to create new java.util.Date here because positionFix.detectionTime is a java.sql.Timestamp.

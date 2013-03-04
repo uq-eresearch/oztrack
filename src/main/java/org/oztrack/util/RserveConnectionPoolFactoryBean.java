@@ -7,19 +7,19 @@ import org.apache.commons.pool.impl.GenericObjectPool;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.springframework.beans.factory.FactoryBean;
 
-public class RServeConnectionPoolFactoryBean implements FactoryBean<ObjectPool<RConnection>> {
+public class RserveConnectionPoolFactoryBean implements FactoryBean<ObjectPool<RConnection>> {
     protected final Log logger = LogFactory.getLog(getClass());
 
     private final int numConnections;
 
-    public RServeConnectionPoolFactoryBean(int numConnections) {
+    public RserveConnectionPoolFactoryBean(int numConnections) {
         this.numConnections = numConnections;
     }
 
     @Override
     public ObjectPool<RConnection> getObject() throws Exception {
-        logger.info("Creating RServe connection pool");
-        RServeConnectionFactory factory = new RServeConnectionFactory();
+        logger.info("Creating Rserve connection pool");
+        RserveConnectionFactory factory = new RserveConnectionFactory();
         GenericObjectPool.Config config = new GenericObjectPool.Config();
         config.maxActive = numConnections;
         config.maxIdle = numConnections;

@@ -27,7 +27,7 @@ public class AnalysisRunner {
     private EntityManagerFactory entityManagerFactory;
 
     @Autowired
-    private ObjectPool<RConnection> rServeConnectionPool;
+    private ObjectPool<RConnection> rserveConnectionPool;
 
     public AnalysisRunner() {
     }
@@ -50,8 +50,8 @@ public class AnalysisRunner {
             entityManager.getTransaction().begin();
             analysis.setResultFilePath("analysis-" + analysis.getId().toString() + ".kml");
             List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(analysis.toSearchQuery());
-            RServeInterface rServeInterface = new RServeInterface(rServeConnectionPool);
-            rServeInterface.createKml(analysis, positionFixList);
+            RserveInterface rserveInterface = new RserveInterface(rserveConnectionPool);
+            rserveInterface.createKml(analysis, positionFixList);
             analysis.setStatus(AnalysisStatus.COMPLETE);
             analysisDao.save(analysis);
             entityManager.getTransaction().commit();

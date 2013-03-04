@@ -22,8 +22,8 @@
         <h1>Rserve</h1>
         <p>Connection pool:</p>
         <ul>
-            <li>${rServeConnectionPool.numActive} active connections</li>
-            <li>${rServeConnectionPool.numIdle} idle connections</li>
+            <li>${rserveConnectionPool.numActive} active connections</li>
+            <li>${rserveConnectionPool.numIdle} idle connections</li>
         </ul>
         <c:if test="${not empty err}">
         <p>Error stream</p>
