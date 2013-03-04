@@ -24,6 +24,7 @@ class StreamHog extends Thread {
     public String getInstallPath() {
         return installPath;
     }
+    @Override
     public void run()
     {
         BufferedReader br = null;
@@ -60,7 +61,7 @@ class StreamHog extends Thread {
 /** simple class that start Rserve locally if it's not running already - see mainly <code>checkLocalRserve</code> method. It spits out quite some debugging outout of the console, so feel free to modify it for your application if desired.<p>
  <i>Important:</i> All applications should shutdown every Rserve that they started! Never leave Rserve running if you started it after your application quits since it may pose a security risk. Inform the user if you started an Rserve instance.
  */
-public class StartRserve {
+public class RserveUtils {
 
 
     private static Logger logger = Logger.getLogger(OzTrackUtil.class);
@@ -114,6 +115,11 @@ public class StartRserve {
             attempts--;
         }
         return false;
+    }
+
+    public static Process stopRserve(boolean force) throws Exception {
+        String signal = force ? "KILL" : "TERM";
+        return Runtime.getRuntime().exec("killall --verbose --signal " + signal + " --regexp Rserve");
     }
 
     /** checks whether Rserve is running and if that's not the case it attempts to start it using the defaults for the platform where it is run on. This method is meant to be set-and-forget and cover most default setups. For special setups you may get more control over R with <<code>launchRserve</code> instead. */

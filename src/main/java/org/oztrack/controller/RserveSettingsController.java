@@ -2,6 +2,7 @@ package org.oztrack.controller;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.pool.ObjectPool;
+import org.oztrack.util.RserveUtils;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,8 +30,7 @@ public class RserveSettingsController {
         Model model,
         @RequestParam(value="force", defaultValue="false") Boolean force
     ) throws Exception {
-        String signal = force ? "KILL" : "TERM";
-        Process process = Runtime.getRuntime().exec("killall --verbose --signal " + signal + " --regexp Rserve");
+        Process process = RserveUtils.stopRserve(force);
         String err = IOUtils.toString(process.getErrorStream());
         String out = IOUtils.toString(process.getInputStream());
         process.waitFor();

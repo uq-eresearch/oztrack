@@ -20,7 +20,7 @@ public class RserveConnectionFactory extends BasePoolableObjectFactory<RConnecti
         logger.info("Creating Rserve connection");
         RConnection rConnection = null;
         String rWorkingDir = null;
-        if (StartRserve.checkLocalRserve()) {
+        if (RserveUtils.checkLocalRserve()) {
             try {
                 rConnection = new RConnection();
                 rConnection.setSendBufferSize(10485760);
