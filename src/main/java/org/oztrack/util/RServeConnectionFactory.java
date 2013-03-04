@@ -56,7 +56,19 @@ public class RServeConnectionFactory extends BasePoolableObjectFactory<RConnecti
 
     @Override
     public boolean validateObject(RConnection rConnection) {
-        return rConnection.isConnected();
+        // Can't use RConneciton.isConnected() here because, from the doc:
+        // "currently this state is not checked on-the-spot, that is if connection
+        // went down by an outside event this is not reflected by the flag".
+        // We evaluate a simple expression, the literal integer 1 in this case
+        // to test the connection and Rserve itself are working.
+        try {
+            rConnection.eval("1");
+            return true;
+        }
+        catch (RserveException e) {
+            logger.error("Error validating R connection", e);
+            return false;
+        }
     }
 
     private void loadLibraries(RConnection rConnection) throws RServeInterfaceException {
