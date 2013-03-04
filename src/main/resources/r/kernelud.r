@@ -32,7 +32,7 @@ fmykernel <- function(sinputfile,sinputssrs,imypercent,smyh,imygrid,imyextent)
     myKerP <- try({
       getverticeshr(KerHRud,percent=imypercent,
                     unin = c("m"),
-                    unout = c("ha"))
+                    unout = c("km2"))
     },silent=TRUE)
     
     if (class(myKerP) == 'try-error') 
@@ -159,7 +159,7 @@ fmykernelAMindegrees <- function(sinputfile,sinputssrs,imypercent,smyh,imygrid,i
     proj4string(myKer) <- CRS("+proj=longlat +datum=WGS84")
     myKer.proj <- spTransform(myKer,CRS(sinputssrs))  
     polygonareas <- sapply(myKer.proj@polygons,function(x) x@area)  
-    myKer$area <- polygonareas/10000 # Convert meters to hectares
+    myKer$area <- polygonareas / (1000 * 1000) # Convert from m2 to km2
     myKer$hval <- allh
     return(myKer)  
   }

@@ -133,7 +133,7 @@ fmyalphahullP <- function(sinputfile,sinputssrs,ialpha)
     print(myAhull)
     stop('Alpha hull unable to generate under these parameters. Try increasing the alpha value.') 
   }else{
-    myAhull@data <- data.frame(id=iids,area= myAhull@data$area/10000,alpha= myAhull@data$alpha)
+    myAhull@data <- data.frame(id=iids, area=myAhull@data$area / (1000 * 1000), alpha=myAhull@data$alpha) # Convert from m2 to km2
     return(myAhull)
   }
 }
@@ -293,7 +293,7 @@ fmyalphahullAMindegrees <- function(sinputfile,sinputssrs,ialpha)
   Ahull.proj <- spTransform(Ahull,CRS(sinputssrs))  
   polygonareas <- sapply(Ahull.proj@polygons,function(x) x@area)  
   #Attach areas and alpha to SPDF
-  Ahull$area <- polygonareas/10000 # Change to hectares
+  Ahull$area <- polygonareas / (1000 * 1000) # Convert from m2 to km2
   Ahull$alpha <- ialpha
   return(Ahull)
 }

@@ -21,10 +21,9 @@ fmymcp <- function(sinputfile,sinputssrs,imypercent){
   {
     stop('At least 5 relocations are required to fit a home range. Please ensure all animals have >5 locations.')
   }else{
-    # Calculate MCP area in hectares and write to MCP100
     MCP_oz$area <- mcp(positionFix.proj,percent=imypercent,
                        unin = c("m"),
-                       unout = c("ha"))$area # here we export it as ha byut in the github code it is exported as km2???
+                       unout = c("km2"))$area
   }
   return(MCP_oz) 
 }
@@ -88,7 +87,7 @@ fmymcpAM <- function(sinputfile,sinputssrs,imypercent){
   proj4string(all.mcp) <- CRS("+proj=longlat +datum=WGS84")
   all.mcp.proj <- spTransform(all.mcp,CRS(sinputssrs))
   polygonareas <- sapply(all.mcp.proj@polygons,function(x) x@area)
-  all.mcp$area <- polygonareas/10000 # Convert meters sq to hectares
+  all.mcp$area <- polygonareas / (1000 * 1000) # Convert from m2 to km2
   return(all.mcp)
 }
 
