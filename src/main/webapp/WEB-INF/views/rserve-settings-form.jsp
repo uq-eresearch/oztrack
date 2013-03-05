@@ -26,22 +26,15 @@
             <li>${rserveConnectionPool.numIdle} idle connections</li>
         </ul>
         <c:if test="${not empty err}">
-        <p>Error stream</p>
+        <p>Error stream:</p>
         <pre>${err}</pre>
         </c:if>
         <c:if test="${not empty out}">
-        <p>Output stream</p>
+        <p>Output stream:</p>
         <pre>${out}</pre>
         </c:if>
         <form:form cssClass="form-vertical form-bordered" method="POST">
-            <div class="control-group">
-                <label class="control-label" for="title">Stop Rserve process</label>
-                <div class="controls">
-                    <label class="checkbox">
-                        <input name="force" type="checkbox" /> Force (<tt>SIGKILL</tt> instead of <tt>SIGTERM</tt>)
-                    </label>
-                </div>
-            </div>
+            <p>Stop Rserve process</p>
             <div class="form-actions">
                 <input class="btn btn-primary" type="submit" value="Stop Rserve" />
             </div>

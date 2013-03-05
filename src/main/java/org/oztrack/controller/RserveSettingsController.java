@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class RserveSettingsController {
@@ -26,11 +25,8 @@ public class RserveSettingsController {
 
     @RequestMapping(value="/settings/rserve", method=RequestMethod.POST)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String processSubmit(
-        Model model,
-        @RequestParam(value="force", defaultValue="false") Boolean force
-    ) throws Exception {
-        Process process = RserveUtils.stopRserve(force);
+    public String processSubmit(Model model) throws Exception {
+        Process process = RserveUtils.stopRserve();
         String err = IOUtils.toString(process.getErrorStream());
         String out = IOUtils.toString(process.getInputStream());
         process.waitFor();

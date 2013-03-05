@@ -121,9 +121,8 @@ public class RserveUtils {
         return false;
     }
 
-    public static Process stopRserve(boolean force) throws Exception {
-        String signal = force ? "KILL" : "TERM";
-        return Runtime.getRuntime().exec("killall --verbose --signal " + signal + " --regexp Rserve");
+    public static Process stopRserve() throws Exception {
+        return Runtime.getRuntime().exec("killall --verbose --signal KILL --regexp Rserve");
     }
 
     /** checks whether Rserve is running and if that's not the case it attempts to start it using the defaults for the platform where it is run on. This method is meant to be set-and-forget and cover most default setups. For special setups you may get more control over R with <<code>launchRserve</code> instead. */
