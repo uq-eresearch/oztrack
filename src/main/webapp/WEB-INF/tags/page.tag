@@ -49,6 +49,9 @@
                     </a>
                     <ul class="dropdown-menu pull-right">
                         <li><a href="${pageContext.request.contextPath}/users/${currentUser.id}/edit">Edit profile</a></li>
+                        <c:if test="${currentUser.admin}">
+                        <li><a href="${pageContext.request.contextPath}/settings">Settings</a></li>
+                        </c:if>
                         <li><a href="${pageContext.request.contextPath}/logout">Logout</a></li>
                     </ul>
                 </div>
@@ -71,9 +74,6 @@
           <li id="navTrack"><a href="${pageContext.request.contextPath}/projects">Projects</a></li>
           <li id="navAbout"><a href="${pageContext.request.contextPath}/about">About</a></li>
           <li id="navContact"><a href="${pageContext.request.contextPath}/contact">Contact</a></li>
-          <c:if test="${currentUser.admin}">
-          <li id="navSettings"><a href="${pageContext.request.contextPath}/settings">Settings</a></li>
-          </c:if>
         </ul>
       </div>
     </div>
