@@ -82,17 +82,21 @@ public class RserveUtils {
             if (osname != null && osname.length() >= 7 && osname.substring(0,7).equals("Windows")) {
                 isWindows = true; /* Windows startup */
                 p = Runtime.getRuntime().exec("\""+cmd+"\" -e \"library(Rserve);Rserve("+(debug?"TRUE":"FALSE")+",args='"+rsrvargs+"')\" "+rargs);
-            } else /* unix startup */
+                // we need to fetch the output - some platforms will die if you don't ...
+                @SuppressWarnings("unused")
+                StreamHog errorHog = new StreamHog(p.getErrorStream(), false);
+                @SuppressWarnings("unused")
+                StreamHog outputHog = new StreamHog(p.getInputStream(), false);
+            } else /* unix startup */ {
+                String rserveLogFile = "/dev/null";
                 p = Runtime.getRuntime().exec(new String[] {
-                                  "/bin/sh", "-c",
-                                  "echo 'library(Rserve);Rserve("+(debug?"TRUE":"FALSE")+",args=\""+rsrvargs+"\")'|"+cmd+" "+rargs
-                                  });
+                    "/bin/sh", "-c",
+                    "echo 'library(Rserve); Rserve("+(debug?"TRUE":"FALSE")+",args=\""+rsrvargs+"\")' " +
+                    "| " + cmd + " " + rargs + " " +
+                    "> " + rserveLogFile + " 2>&1"
+                });
+            }
             logger.debug("waiting for Rserve to start ... ("+p+")");
-            // we need to fetch the output - some platforms will die if you don't ...
-            @SuppressWarnings("unused")
-            StreamHog errorHog = new StreamHog(p.getErrorStream(), false);
-            @SuppressWarnings("unused")
-            StreamHog outputHog = new StreamHog(p.getInputStream(), false);
             if (!isWindows) /* on Windows the process will never return, so we cannot wait */
                 p.waitFor();
             logger.debug("call terminated, let us try to connect ...");
