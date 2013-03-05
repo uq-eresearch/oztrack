@@ -83,12 +83,66 @@
                 format: 'image/png'
             },
             {
-                isBaseLayer: true,
+                visibility: false,
+                isBaseLayer: false,
                 wrapDateLine: true,
                 attribution: '<a href="http://www.gebco.net">The GEBCO_08 Grid, version 20091120</a>'
             }
         );
         that.map.addLayer(that.bathymetryLayer);
+
+        that.map.addLayer(new OpenLayers.Layer.WMS(
+            'IBRA Regions',
+            '/geoserver/gwc/service/wms',
+            {
+                layers: 'oztrack:ibra7_regions',
+                format: 'image/png'
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true
+            }
+        ));
+        that.map.addLayer(new OpenLayers.Layer.WMS(
+            'IBRA Subregions',
+            '/geoserver/gwc/service/wms',
+            {
+                layers: 'oztrack:ibra7_subregions',
+                format: 'image/png'
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true
+            }
+        ));
+        that.map.addLayer(new OpenLayers.Layer.WMS(
+            'IMCRA Provincial Bioregions',
+            '/geoserver/gwc/service/wms',
+            {
+                layers: 'oztrack:imcra4_pb',
+                format: 'image/png'
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true
+            }
+        ));
+        that.map.addLayer(new OpenLayers.Layer.WMS(
+            'IMCRA Mesoscale Bioregions',
+            '/geoserver/gwc/service/wms',
+            {
+                layers: 'oztrack:imcra4_meso',
+                format: 'image/png'
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true
+            }
+        ));
 
         that.controlPanel = new OpenLayers.Control.Panel();
         that.controlPanel.addControls([

@@ -56,7 +56,6 @@ public class GeoServerUploader {
         final String namespacePrefix = Constants.namespacePrefix;
         final String namespaceUri = Constants.namespaceURI;
         final String workspaceName = namespacePrefix;
-        final String datastoreName = namespacePrefix;
 
         // Note: creating /namespaces/${name} implicitly creates /workspaces/${name})
         client.replace(
@@ -72,12 +71,25 @@ public class GeoServerUploader {
             )
         );
 
+        createOzTrackLayers(client, workspaceName, namespaceUri);
+        createGEBCOLayers(client, workspaceName);
+        createIBRALayers(client, workspaceName, namespaceUri);
+        createIMCRALayers(client, workspaceName, namespaceUri);
+    }
+
+    private void createOzTrackLayers(
+        GeoServerClient client,
+        final String workspaceName,
+        final String namespaceUri
+    ) throws Exception {
+        final String datastoreName = workspaceName;
+
         client.replace(
             "workspaces/" + workspaceName + "/datastores",
             datastoreName,
             "application/xml",
             createFreemarkerEntity(
-                "datastore.xml.ftl",
+                "datastores/postgis-datastore.xml.ftl",
                 new HashMap<String, Object>() {{
                     put("datastoreName", datastoreName);
                     put("databaseHost", databaseHost);
@@ -103,8 +115,7 @@ public class GeoServerUploader {
             workspaceName + "_" + "positionfixlayer",
             createFreemarkerEntity(
                 "styles/positionfixlayer.sld.ftl",
-                new HashMap<String, Object>() {{
-                }}
+                new HashMap<String, Object>()
             )
         );
         client.replace(
@@ -112,8 +123,13 @@ public class GeoServerUploader {
             "positionfixlayer",
             "application/xml",
             createFreemarkerEntity(
-                "layers/positionfixlayer.xml.ftl",
-                new HashMap<String, Object>()
+                "layers/featuretype-layer.xml.ftl",
+                new HashMap<String, Object>() {{
+                    put("layerName", "positionfixlayer");
+                    put("featuretypeName", "positionfixlayer");
+                    put("defaultStyle", "oztrack_positionfixlayer");
+                    put("styles", new String[] {"oztrack_positionfixlayer", "point"});
+                }}
             )
         );
 
@@ -130,8 +146,7 @@ public class GeoServerUploader {
             workspaceName + "_" + "trajectorylayer",
             createFreemarkerEntity(
                 "styles/trajectorylayer.sld.ftl",
-                new HashMap<String, Object>() {{
-                }}
+                new HashMap<String, Object>()
             )
         );
         client.replace(
@@ -139,8 +154,13 @@ public class GeoServerUploader {
             "trajectorylayer",
             "application/xml",
             createFreemarkerEntity(
-                "layers/trajectorylayer.xml.ftl",
-                new HashMap<String, Object>()
+                "layers/featuretype-layer.xml.ftl",
+                new HashMap<String, Object>() {{
+                    put("layerName", "trajectorylayer");
+                    put("featuretypeName", "trajectorylayer");
+                    put("defaultStyle", "oztrack_trajectorylayer");
+                    put("styles", new String[] {"oztrack_trajectorylayer", "line"});
+                }}
             )
         );
 
@@ -157,8 +177,7 @@ public class GeoServerUploader {
             workspaceName + "_" + "startendlayer",
             createFreemarkerEntity(
                 "styles/startendlayer.sld.ftl",
-                new HashMap<String, Object>() {{
-                }}
+                new HashMap<String, Object>()
             )
         );
         client.replace(
@@ -166,19 +185,25 @@ public class GeoServerUploader {
             "startendlayer",
             "application/xml",
             createFreemarkerEntity(
-                "layers/startendlayer.xml.ftl",
-                new HashMap<String, Object>()
+                "layers/featuretype-layer.xml.ftl",
+                new HashMap<String, Object>() {{
+                    put("layerName", "startendlayerlayer");
+                    put("featuretypeName", "startendlayerlayer");
+                    put("defaultStyle", "oztrack_startendlayerlayer");
+                    put("styles", new String[] {"oztrack_startendlayerlayer", "point"});
+                }}
             )
         );
+    }
 
+    private void createGEBCOLayers(GeoServerClient client, final String workspaceName) throws Exception {
         client.replace(
             "workspaces/" + workspaceName + "/coveragestores",
             "gebco_08",
             "application/xml",
             createFreemarkerEntity(
                 "coveragestores/gebco_08.xml.ftl",
-                new HashMap<String, Object>() {{
-                }}
+                new HashMap<String, Object>()
             )
         );
         client.replace(
@@ -187,24 +212,21 @@ public class GeoServerUploader {
             "application/xml",
             createFreemarkerEntity(
                 "coverages/gebco_08.xml.ftl",
-                new HashMap<String, Object>() {{
-                }}
+                new HashMap<String, Object>()
             )
         );
         client.replaceStyle(
             workspaceName + "_" + "bathymetry",
             createFreemarkerEntity(
                 "styles/bathymetry.sld.ftl",
-                new HashMap<String, Object>() {{
-                }}
+                new HashMap<String, Object>()
             )
         );
         client.replaceStyle(
             workspaceName + "_" + "elevation",
             createFreemarkerEntity(
                 "styles/elevation.sld.ftl",
-                new HashMap<String, Object>() {{
-                }}
+                new HashMap<String, Object>()
             )
         );
         client.replace(
@@ -212,8 +234,193 @@ public class GeoServerUploader {
             "gebco_08",
             "application/xml",
             createFreemarkerEntity(
-                "layers/gebco_08.xml.ftl",
+                "layers/coverage-layer.xml.ftl",
+                new HashMap<String, Object>() {{
+                    put("layerName", "gebco_08");
+                    put("coverageName", "gebco_08");
+                    put("defaultStyle", "oztrack_bathymetry");
+                    put("styles", new String[] {"oztrack_bathymetry", "oztrack_elevation"});
+                }}
+            )
+        );
+    }
+
+    private void createIBRALayers(
+        GeoServerClient client,
+        final String workspaceName,
+        final String namespaceUri
+    ) throws Exception {
+        client.replace(
+            "workspaces/" + workspaceName + "/datastores",
+            "ibra7_regions",
+            "application/xml",
+            createFreemarkerEntity(
+                "datastores/shapefile-datastore.xml.ftl",
+                new HashMap<String, Object>() {{
+                    put("datastoreName", "ibra7_regions");
+                    put("shapefileUrl", "file:shapefiles/IBRA7_regions/IBRA7_regions.shp");
+                    put("shapefileCharset", "UTF-8");
+                    put("shapefileTimezone", "Australia/Brisbane");
+                    put("namespaceUri", namespaceUri);
+                }}
+            )
+        );
+        client.replace(
+            "workspaces/" + workspaceName + "/datastores",
+            "ibra7_subregions",
+            "application/xml",
+            createFreemarkerEntity(
+                "datastores/shapefile-datastore.xml.ftl",
+                new HashMap<String, Object>() {{
+                    put("datastoreName", "ibra7_subregions");
+                    put("shapefileUrl", "file:shapefiles/IBRA7_subregions/IBRA7_subregions.shp");
+                    put("shapefileCharset", "UTF-8");
+                    put("shapefileTimezone", "Australia/Brisbane");
+                    put("namespaceUri", namespaceUri);
+                }}
+            )
+        );
+        client.replace(
+            "workspaces/" + workspaceName + "/datastores/" + "ibra7_regions" + "/featuretypes",
+            "ibra7_regions",
+            "application/xml",
+            createFreemarkerEntity(
+                "featuretypes/ibra7_regions.xml.ftl",
                 new HashMap<String, Object>()
+            )
+        );
+        client.replace(
+            "workspaces/" + workspaceName + "/datastores/" + "ibra7_subregions" + "/featuretypes",
+            "ibra7_subregions",
+            "application/xml",
+            createFreemarkerEntity(
+                "featuretypes/ibra7_subregions.xml.ftl",
+                new HashMap<String, Object>()
+            )
+        );
+        client.replaceStyle(
+            workspaceName + "_" + "ibra",
+            createFreemarkerEntity(
+                "styles/ibra.sld.ftl",
+                new HashMap<String, Object>()
+            )
+        );
+        client.replace(
+            "layers",
+            "ibra7_regions",
+            "application/xml",
+            createFreemarkerEntity(
+                "layers/featuretype-layer.xml.ftl",
+                new HashMap<String, Object>() {{
+                    put("layerName", "ibra7_regions");
+                    put("featuretypeName", "ibra7_regions");
+                    put("defaultStyle", "oztrack_ibra");
+                    put("styles", new String[] {"oztrack_ibra", "polygon"});
+                }}
+            )
+        );
+        client.replace(
+            "layers",
+            "ibra7_subregions",
+            "application/xml",
+            createFreemarkerEntity(
+                "layers/featuretype-layer.xml.ftl",
+                new HashMap<String, Object>() {{
+                    put("layerName", "ibra7_subregions");
+                    put("featuretypeName", "ibra7_subregions");
+                    put("defaultStyle", "oztrack_ibra");
+                    put("styles", new String[] {"oztrack_ibra", "polygon"});
+                }}
+            )
+        );
+    }
+
+    private void createIMCRALayers(
+        GeoServerClient client,
+        final String workspaceName,
+        final String namespaceUri
+    ) throws Exception {
+        client.replace(
+            "workspaces/" + workspaceName + "/datastores",
+            "imcra4_pb",
+            "application/xml",
+            createFreemarkerEntity(
+                "datastores/shapefile-datastore.xml.ftl",
+                new HashMap<String, Object>() {{
+                    put("datastoreName", "imcra4_pb");
+                    put("shapefileUrl", "file:shapefiles/imcra_provincial_bioregions/imcra4_pb.shp");
+                    put("shapefileCharset", "UTF-8");
+                    put("shapefileTimezone", "Australia/Brisbane");
+                    put("namespaceUri", namespaceUri);
+                }}
+            )
+        );
+        client.replace(
+            "workspaces/" + workspaceName + "/datastores",
+            "imcra4_meso",
+            "application/xml",
+            createFreemarkerEntity(
+                "datastores/shapefile-datastore.xml.ftl",
+                new HashMap<String, Object>() {{
+                    put("datastoreName", "imcra4_meso");
+                    put("shapefileUrl", "file:shapefiles/imcra_mesoscale_bioregions/imcra4_meso.shp");
+                    put("shapefileCharset", "UTF-8");
+                    put("shapefileTimezone", "Australia/Brisbane");
+                    put("namespaceUri", namespaceUri);
+                }}
+            )
+        );
+        client.replace(
+            "workspaces/" + workspaceName + "/datastores/" + "imcra4_pb" + "/featuretypes",
+            "imcra4_pb",
+            "application/xml",
+            createFreemarkerEntity(
+                "featuretypes/imcra4_pb.xml.ftl",
+                new HashMap<String, Object>()
+            )
+        );
+        client.replace(
+            "workspaces/" + workspaceName + "/datastores/" + "imcra4_meso" + "/featuretypes",
+            "imcra4_meso",
+            "application/xml",
+            createFreemarkerEntity(
+                "featuretypes/imcra4_meso.xml.ftl",
+                new HashMap<String, Object>()
+            )
+        );
+        client.replaceStyle(
+            workspaceName + "_" + "imcra",
+            createFreemarkerEntity(
+                "styles/imcra.sld.ftl",
+                new HashMap<String, Object>()
+            )
+        );
+        client.replace(
+            "layers",
+            "imcra4_pb",
+            "application/xml",
+            createFreemarkerEntity(
+                "layers/featuretype-layer.xml.ftl",
+                new HashMap<String, Object>() {{
+                    put("layerName", "imcra4_pb");
+                    put("featuretypeName", "imcra4_pb");
+                    put("defaultStyle", "oztrack_imcra");
+                    put("styles", new String[] {"oztrack_imcra", "polygon"});
+                }}
+            )
+        );
+        client.replace(
+            "layers",
+            "imcra4_meso",
+            "application/xml",
+            createFreemarkerEntity(
+                "layers/featuretype-layer.xml.ftl",
+                new HashMap<String, Object>() {{
+                    put("layerName", "imcra4_meso");
+                    put("featuretypeName", "imcra4_meso");
+                    put("defaultStyle", "oztrack_imcra");
+                    put("styles", new String[] {"oztrack_imcra", "polygon"});
+                }}
             )
         );
     }
