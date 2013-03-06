@@ -161,6 +161,20 @@
                 padding-bottom: 3px;
                 border-top: 1px solid #CCC;
             }
+            #selectAnimalConfirmationBox {
+                display: none;
+                position: absolute;
+                background-color: #263F00;
+                color: white;
+                opacity: 0.80;
+                padding: 10px;
+                border-radius: 6px 6px 0 0;
+            }
+            #selectAnimalConfirmationLink {
+                color: white;
+                font-weight: bold;
+                white-space: nowrap;
+            }
         </style>
     </jsp:attribute>
     <jsp:attribute name="tail">
@@ -546,8 +560,8 @@
                     </div>
                 </c:forEach>
                 
-                <div id="selectAnimalConfirmationBox" style="display: none; position: absolute; background-color: #263F00; color: white; opacity: 0.80; padding: 10px; border-radius: 6px 6px 0 0;">
-                    <a id="selectAnimalConfirmationLink" href="javascript:void(0);" style="color: white; font-weight: bold;">Click to finish selecting animals</a>
+                <div id="selectAnimalConfirmationBox">
+                    <a id="selectAnimalConfirmationLink" href="javascript:void(0);">Click to finish selecting animals</a>
                 </div>
             </div>
 
