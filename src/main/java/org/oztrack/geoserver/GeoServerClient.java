@@ -5,20 +5,26 @@ import java.net.URI;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.AuthCache;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.ProxySelectorRoutePlanner;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +35,8 @@ public class GeoServerClient {
 
     private final URI geoServerRestUri;
 
-    private final DefaultHttpClient httpClient;
+    private final HttpClient httpClient;
+    private final HttpContext httpContext;
 
     public GeoServerClient(
         String username,
@@ -38,7 +45,7 @@ public class GeoServerClient {
     ) {
         this.geoServerRestUri = URI.create(geoServerBaseUrl + "/rest/");
 
-        httpClient = new DefaultHttpClient();
+        DefaultHttpClient httpClient = new DefaultHttpClient();
 
         // Use HTTP proxy settings from JVM: see system properties
         // http.proxyHost, http.proxyPort, and http.nonProxyHosts.
@@ -49,11 +56,19 @@ public class GeoServerClient {
         httpClient.setRoutePlanner(routePlanner);
 
         // Set username/password credentials for all GeoServer requests
-        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        AuthScope authScope = new AuthScope(geoServerRestUri.getHost(), geoServerRestUri.getPort());
+        HttpHost httpHost = new HttpHost(geoServerRestUri.getHost(), geoServerRestUri.getPort(), geoServerRestUri.getScheme());
+        AuthScope authScope = new AuthScope(httpHost.getHostName(), httpHost.getPort());
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);
-        credentialsProvider.setCredentials(authScope, credentials);
-        httpClient.setCredentialsProvider(credentialsProvider);
+        httpClient.getCredentialsProvider().setCredentials(authScope, credentials);
+
+        // Create execution context wiht AuthCache for preemptive authentication
+        BasicHttpContext httpContext = new BasicHttpContext();
+        AuthCache authCache = new BasicAuthCache();
+        authCache.put(httpHost, new BasicScheme());
+        httpContext.setAttribute(ClientContext.AUTH_CACHE, authCache);
+
+        this.httpClient = httpClient;
+        this.httpContext = httpContext;
     }
 
     public void replace(String parentPath, String name, String contentType, HttpEntity entity) throws Exception {
@@ -93,7 +108,7 @@ public class GeoServerClient {
         HttpGet request = new HttpGet();
         request.setURI(geoServerRestUri.resolve(path));
         logger.debug("get " + request.getURI().toString());
-        HttpResponse response = httpClient.execute(request);
+        HttpResponse response = httpClient.execute(request, httpContext);
         int status = response.getStatusLine().getStatusCode();
         logger.debug("response status code: " + status);
         EntityUtils.consume(response.getEntity());
@@ -127,7 +142,7 @@ public class GeoServerClient {
         request.setHeader("Content-Type", contentType);
         request.setEntity(entity);
         logger.debug("post " + uri.toString());
-        HttpResponse response = httpClient.execute(request);
+        HttpResponse response = httpClient.execute(request, httpContext);
         logger.debug("response status code: " + response.getStatusLine().getStatusCode());
         return response;
     }
@@ -138,7 +153,7 @@ public class GeoServerClient {
         request.setHeader("Content-Type", contentType);
         request.setEntity(entity);
         logger.debug("put " + request.getURI().toString());
-        HttpResponse response = httpClient.execute(request);
+        HttpResponse response = httpClient.execute(request, httpContext);
         logger.debug("response status code: " + response.getStatusLine().getStatusCode());
         checkResponse(response);
         EntityUtils.consume(response.getEntity());
@@ -147,7 +162,7 @@ public class GeoServerClient {
     private boolean checkExists(String path) throws Exception {
         HttpHead request = new HttpHead();
         request.setURI(geoServerRestUri.resolve(path));
-        HttpResponse response = httpClient.execute(request);
+        HttpResponse response = httpClient.execute(request, httpContext);
         if (response.getStatusLine().getStatusCode() >= 200 && response.getStatusLine().getStatusCode() < 300) {
             return true;
         }
