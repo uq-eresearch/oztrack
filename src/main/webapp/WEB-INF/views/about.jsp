@@ -51,7 +51,7 @@
             <li class="software"><a href="http://www.geotools.org/">GeoTools (Main, XML, EPSG-HSQL, XSD-KML, Swing)</a>: Java library providing tools for geospatial data</li>
             <li class="software"><a href="http://quartz-scheduler.org/">Quartz</a>: Java job scheduling service</li>
             <li class="software"><a href="http://hc.apache.org/httpcomponents-client-ga/">Apache HttpComponents HttpClient</a>: Java implementation of client side of HTTP protocol</li>
-            <li class="software"><a href="http://commons.apache.org/">Apache Commons (Lang, IO, Email, FileUpload)</a>: reusable Java components</li>
+            <li class="software"><a href="http://commons.apache.org/">Apache Commons (Lang, IO, Pool, Email, FileUpload)</a>: reusable Java components</li>
             <li class="software"><a href="http://poi.apache.org/">Apache POI</a>: Java API for Microsoft Documents</li>
             <li class="software"><a href="http://freemarker.sourceforge.net/">FreeMarker</a>: Java template engine</li>
             <li class="software"><a href="https://github.com/samskivert/jmustache">JMustache</a>: Java implementation of the Mustache template language</li>
