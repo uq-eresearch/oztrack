@@ -25,14 +25,30 @@ public enum AnalysisType {
             new AnalysisParameterType(
                 "percent",
                 "Percent",
-                "OzTrack offers the feature to strip the Minimum Convex Polygon (MCP) " +
+                "<p>OzTrack offers the feature to strip the Minimum Convex Polygon (MCP) " +
                 "to different levels based on percentage. At 100% the MCP will be the " +
                 "equivalent to the area covered by all locations within the dataset. " +
                 "Inserting a lower % value into the box will result in only this " +
-                "percentage of locations being contained in the final MCP.",
+                "percentage of locations being contained in the final MCP.</p>",
                 "double",
                 "%",
                 "100",
+                false,
+                null
+            ),
+            new AnalysisParameterType(
+                "is180",
+                "Crosses 180°",
+                "<p>Check this box if any of the selected trajectories cross the antimeridian (180° east or west longitude).</p>\n" +
+                "\n" +
+                "<p>If this option is not checked, the resulting home range polygons may include points near 180° east " +
+                "and wrap around the globe, through the prime meridian, to include points near 180° west.</p>\n" +
+                "\n" +
+                "<p><a href=\"http://en.wikipedia.org/wiki/180th_meridian\">" +
+                "http://en.wikipedia.org/wiki/180th_meridian</a></p>",
+                "boolean",
+                null,
+                "false",
                 false,
                 null
             )
@@ -108,6 +124,22 @@ public enum AnalysisType {
                     new AnalysisParameterOption("LSCV", "Least-square cross validation (LSCV)"),
                     new AnalysisParameterOption(null, "None (enter h value) [advanced]")
                 )
+            ),
+            new AnalysisParameterType(
+                "is180",
+                "Crosses 180°",
+                "<p>Check this box if any of the selected trajectories cross the antimeridian (180° east or west longitude).</p>\n" +
+                "\n" +
+                "<p>If this option is not checked, the resulting home range polygons may include points near 180° east " +
+                "and wrap around the globe, through the prime meridian, to include points near 180° west.</p>\n" +
+                "\n" +
+                "<p><a href=\"http://en.wikipedia.org/wiki/180th_meridian\">" +
+                "http://en.wikipedia.org/wiki/180th_meridian</a></p>",
+                "boolean",
+                null,
+                "false",
+                false,
+                null
             ),
             new AnalysisParameterType(
                 "hValue",
@@ -327,6 +359,22 @@ public enum AnalysisType {
                 "double",
                 null,
                 "100",
+                false,
+                null
+            ),
+            new AnalysisParameterType(
+                "is180",
+                "Crosses 180°",
+                "<p>Check this box if any of the selected trajectories cross the antimeridian (180° east or west longitude).</p>\n" +
+                "\n" +
+                "<p>If this option is not checked, the resulting home range polygons may include points near 180° east " +
+                "and wrap around the globe, through the prime meridian, to include points near 180° west.</p>\n" +
+                "\n" +
+                "<p><a href=\"http://en.wikipedia.org/wiki/180th_meridian\">" +
+                "http://en.wikipedia.org/wiki/180th_meridian</a></p>",
+                "boolean",
+                null,
+                "false",
                 false,
                 null
             )

@@ -209,19 +209,21 @@ public class RserveInterface {
 
     private void writeMCPKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
         Double percent = (Double) analysis.getParameterValue("percent", true);
+        Boolean is180 = (Boolean) analysis.getParameterValue("is180", true);
         if (!(percent >= 0d && percent <= 100d)) {
             throw new RserveInterfaceException("percent must be between 0 and 100.");
         }
         safeEval("srs <- '" + srs + "'");
         safeEval("percent <- " + percent);
         safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
-        safeEval("is180 <- FALSE");
+        safeEval("is180 <- " + (is180 ? "TRUE" : "FALSE"));
         safeEval("oztrack_mcp(srs=srs, percent=percent, kmlFile=kmlFile, is180=is180)");
     }
 
     private void writeKernelUDKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
         Double percent = (Double) analysis.getParameterValue("percent", true);
         String hEstimator = (String) analysis.getParameterValue("hEstimator", false);
+        Boolean is180 = (Boolean) analysis.getParameterValue("is180", true);
         Double hValue = (Double) analysis.getParameterValue("hValue", false);
         Double gridSize = (Double) analysis.getParameterValue("gridSize", true);
         Double extent = (Double) analysis.getParameterValue("extent", true);
@@ -237,7 +239,7 @@ public class RserveInterface {
         safeEval("extent <- " + extent);
         safeEval("percent <- " + percent);
         safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
-        safeEval("is180 <- FALSE");
+        safeEval("is180 <- " + (is180 ? "TRUE" : "FALSE"));
         safeEval("oztrack_kernelud(srs=srs, h=h, gridSize=gridSize, extent=extent, percent=percent, kmlFile=kmlFile, is180=is180)");
     }
 
@@ -264,13 +266,14 @@ public class RserveInterface {
 
     private void writeAlphahullKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
         Double alpha = (Double) analysis.getParameterValue("alpha", true);
+        Boolean is180 = (Boolean) analysis.getParameterValue("is180", true);
         if (!(alpha > 0d)) {
             throw new RserveInterfaceException("alpha must be greater than 0.");
         }
         safeEval("srs <- '" + srs + "'");
         safeEval("alpha <- " + alpha);
         safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
-        safeEval("is180 <- FALSE");
+        safeEval("is180 <- " + (is180 ? "TRUE" : "FALSE"));
         safeEval("oztrack_alphahull(srs=srs, alpha=alpha, kmlFile=kmlFile, is180=is180)");
     }
 
