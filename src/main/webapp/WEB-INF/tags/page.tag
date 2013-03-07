@@ -22,6 +22,7 @@
     <meta name="description" content="${description}" />
     </c:if>
     <title>OzTrack${(not empty title) ? ': ' : ' - '}${(not empty title) ? title : 'Free Animal Tracking Software'}</title>
+    <link rel="shortcut icon" href="${pageContext.request.contextPath}/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/optimised/core.css"/>
     <jsp:invoke fragment="head"/>
 </head>
