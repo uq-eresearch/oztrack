@@ -15,14 +15,17 @@ public class Settings {
     @SequenceGenerator(name="settings_id_seq", sequenceName="settings_id_seq")
     private Long id;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition="TEXT")
     private String homeText;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition="TEXT")
     private String aboutText;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition="TEXT")
     private String contactText;
+
+    @Column(columnDefinition="TEXT")
+    private String customJs;
 
     public Long getId() {
         return id;
@@ -54,5 +57,13 @@ public class Settings {
 
     public void setContactText(String contactText) {
         this.contactText = contactText;
+    }
+
+    public String getCustomJs() {
+        return customJs;
+    }
+
+    public void setCustomJs(String customJs) {
+        this.customJs = customJs;
     }
 }

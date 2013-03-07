@@ -13,8 +13,6 @@
 <%@ attribute name="navExtra" required="false" fragment="true" %>
 <%@ attribute name="sidebar" required="false" fragment="true" %>
 <%@ attribute name="fluid" required="false" type="java.lang.Boolean" %>
-<c:set var="googleAnalyticsTrackingID"><%= OzTrackApplication.getApplicationContext().getGoogleAnalyticsTrackingID() %></c:set>
-<c:set var="googleAnalyticsDomainName"><%= OzTrackApplication.getApplicationContext().getGoogleAnalyticsDomainName() %></c:set>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -113,22 +111,6 @@
 </c:if>
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/optimised/core.js"></script>
 <jsp:invoke fragment="tail"/>
-<c:if test="${not empty googleAnalyticsTrackingID}">
-<script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', '${googleAnalyticsTrackingID}']);
-    <c:if test="${not empty googleAnalyticsDomainName}">
-    _gaq.push(['_setDomainName', '${googleAnalyticsDomainName}']);
-    _gaq.push(['_setAllowLinker', true]);
-    </c:if>
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-</script>
-</c:if>
+<c:out value="${customJs}" escapeXml="false"/>
 </body>
 </html>

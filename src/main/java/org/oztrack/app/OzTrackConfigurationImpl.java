@@ -20,8 +20,6 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
     private Integer passwordResetExpiryDays;
     private boolean aafEnabled;
     private boolean dataLicencingEnabled;
-    private String googleAnalyticsTrackingID;
-    private String googleAnalyticsDomainName;
     private String recaptchaPublicKey;
     private String recaptchaPrivateKey;
     private Date closedAccessDisableDate;
@@ -141,24 +139,6 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
 
     public void setDataLicencingEnabled(boolean dataLicencingEnabled) {
         this.dataLicencingEnabled = dataLicencingEnabled;
-    }
-
-    @Override
-    public String getGoogleAnalyticsTrackingID() {
-        return googleAnalyticsTrackingID;
-    }
-
-    public void setGoogleAnalyticsTrackingID(String googleAnalyticsTrackingID) {
-        this.googleAnalyticsTrackingID = googleAnalyticsTrackingID;
-    }
-
-    @Override
-    public String getGoogleAnalyticsDomainName() {
-        return googleAnalyticsDomainName;
-    }
-
-    public void setGoogleAnalyticsDomainName(String googleAnalyticsDomainName) {
-        this.googleAnalyticsDomainName = googleAnalyticsDomainName;
     }
 
     @Override

@@ -1,0 +1,1 @@
+alter table settings add column customjs text;

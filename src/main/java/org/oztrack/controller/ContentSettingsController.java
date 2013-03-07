@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
-public class ContentController {
+public class ContentSettingsController {
     @Autowired
     private SettingsDao settingsDao;
 
@@ -23,7 +23,8 @@ public class ContentController {
         binder.setAllowedFields(
             "homeText",
             "aboutText",
-            "contactText"
+            "contactText",
+            "customJs"
         );
     }
 
@@ -35,7 +36,7 @@ public class ContentController {
     @RequestMapping(value="/settings/content", method=RequestMethod.GET)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String handleRequest() {
-        return "content-form";
+        return "content-settings-form";
     }
 
     @RequestMapping(value="/settings/content", method=RequestMethod.POST)
@@ -46,9 +47,9 @@ public class ContentController {
     ) throws Exception {
         new SettingsFormValidator().validate(settings, bindingResult);
         if (bindingResult.hasErrors()) {
-            return "content-form";
+            return "content-settings-form";
         }
         settingsDao.update(settings);
-        return "content-form";
+        return "content-settings-form";
     }
 }

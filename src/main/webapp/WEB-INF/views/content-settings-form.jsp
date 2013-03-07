@@ -41,6 +41,13 @@
                     <form:textarea path="contactText" id="contactText" cssClass="oztrack-ckeditor"/>
                 </div>
             </div>
+            <div class="control-group">
+                <h2>Custom JS</h2>
+                <div class="controls">
+                    <form:errors path="customJs" element="div" cssClass="alert alert-error"/>
+                    <form:textarea path="customJs" id="customJs" cssClass="oztrack-codeeditor"/>
+                </div>
+            </div>
             </fieldset>
             <div class="form-actions">
                 <input class="btn btn-primary" type="submit" value="Save" />
