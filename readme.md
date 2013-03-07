@@ -204,7 +204,7 @@ set for OzTrack to run correctly.
 
 * `dataDir`: Used to store files. Ensure that such a directory is available and
   can be written to.
-* `dataSpaceURL`: This is the URL that project collection records will be written
+* `dataSpaceUrl`: This is the URL that project collection records will be written
   to. A username and password must be provided in this file for the functionality
   to work.
 
@@ -223,7 +223,7 @@ To set the `dataDir` property in `application.properties`:
      application.rights=All Rights reserved
     -application.dataDir=
     +application.dataDir=/var/local/oztrack
-     dataSpaceURL=http://dataspace-uat.metadata.net/
+     dataSpaceUrl=http://dataspace-uat.metadata.net/
      dataSpaceUsername=
      dataSpacePassword=alternatively,
 

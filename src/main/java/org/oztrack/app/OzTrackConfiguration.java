@@ -3,9 +3,9 @@ package org.oztrack.app;
 import java.util.Date;
 
 public interface OzTrackConfiguration {
-    String getBaseURL();
+    String getBaseUrl();
     String getGeoServerLocalUrl();
-    String getDataSpaceURL();
+    String getDataSpaceUrl();
     String getDataSpaceUsername();
     String getDataSpacePassword();
     String getDataDir();

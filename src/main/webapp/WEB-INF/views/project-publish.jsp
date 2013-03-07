@@ -189,7 +189,7 @@
                 </c:when>
                 <c:otherwise>
                     <b>Collection Manager record: </b><br/>
-                    Published to <c:out value="${dataSpaceURL}"/>agents/<c:out value = "${project.dataSpaceAgent.dataSpaceAgentURI}"/> <br/>
+                    Published to <c:out value="${dataSpaceUrl}"/>agents/<c:out value = "${project.dataSpaceAgent.dataSpaceAgentURI}"/> <br/>
                     Last updated on <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${project.dataSpaceAgent.dataSpaceAgentUpdateDate}"/>.
                 </c:otherwise>
                 </c:choose>
@@ -202,7 +202,7 @@
                 </c:when>
                 <c:otherwise>
                     <b>Collection record: </b><br/>
-                    Published to <c:out value="${dataSpaceURL}"/>collections/<c:out value = "${project.dataSpaceURI}"/> <br/>
+                    Published to <c:out value="${dataSpaceUrl}"/>collections/<c:out value = "${project.dataSpaceURI}"/> <br/>
                     Last updated on <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${project.dataSpaceUpdateDate}"/>.
                     <c:set var="publishButtonText" value="Update UQ DataSpace Collection Registry"/>
                 </c:otherwise>

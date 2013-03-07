@@ -39,14 +39,14 @@ public class DataSpaceInterface {
     protected final Log logger = LogFactory.getLog(getClass());
     private ProjectDao projectDao;
     private UserDao userDao;
-    private String dataSpaceURL;
+    private String dataSpaceUrl;
     private String dataSpaceResponse;
     private HttpClient httpClient;
 
     public DataSpaceInterface(ProjectDao projectDao, UserDao userDao) {
         this.projectDao = projectDao;
         this.userDao = userDao;
-        this.dataSpaceURL = OzTrackApplication.getApplicationContext().getDataSpaceURL();
+        this.dataSpaceUrl = OzTrackApplication.getApplicationContext().getDataSpaceUrl();
         this.httpClient = new DefaultHttpClient();
     }
 
@@ -202,7 +202,7 @@ public class DataSpaceInterface {
 
     public URL createURL(String uri) throws DataSpaceInterfaceException {
         try {
-            return new URL(this.dataSpaceURL + uri);
+            return new URL(this.dataSpaceUrl + uri);
         }
         catch (MalformedURLException e) {
             throw new DataSpaceInterfaceException(e.getMessage());
@@ -314,7 +314,7 @@ public class DataSpaceInterface {
         Document doc;
         String href = "";
         String uri = "";
-        String url = this.dataSpaceURL + responseType + "/";
+        String url = this.dataSpaceUrl + responseType + "/";
         try {
             db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             InputSource is = new InputSource();

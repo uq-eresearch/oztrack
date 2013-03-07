@@ -69,7 +69,7 @@ public class EmbargoUpdater implements Runnable {
                 EmailBuilder emailBuilder = emailBuilderFactory.getObject();
                 emailBuilder.to(project.getCreateUser());
                 emailBuilder.subject("OzTrack project embargo ended");
-                String projectLink = configuration.getBaseURL() + "/projects/" + project.getId();
+                String projectLink = configuration.getBaseUrl() + "/projects/" + project.getId();
                 StringBuilder htmlMsgContent = new StringBuilder();
                 htmlMsgContent.append("<p>\n");
                 htmlMsgContent.append("    Please note that your OzTrack project,\n");
@@ -126,7 +126,7 @@ public class EmbargoUpdater implements Runnable {
                 EmailBuilder emailBuilder = emailBuilderFactory.getObject();
                 emailBuilder.to(project.getCreateUser());
                 emailBuilder.subject("OzTrack project embargo ending");
-                String projectLink = configuration.getBaseURL() + "/projects/" + project.getId();
+                String projectLink = configuration.getBaseUrl() + "/projects/" + project.getId();
                 String projectEditLink = projectLink + "/edit";
                 int extensionYears = EmbargoUtils.maxEmbargoYearsExtn - EmbargoUtils.maxEmbargoYearsNorm;
                 StringBuilder htmlMsgContent = new StringBuilder();

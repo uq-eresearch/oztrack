@@ -35,7 +35,7 @@
         term="{{speciesScientificName}}"/>
 
    <!--    collection manager -->
-    <link rel="http://purl.org/dc/terms/publisher" href="{{contactDataSpaceURL}}" title="{{contactGivenName}} {{contactFamilyName}}"/>
+    <link rel="http://purl.org/dc/terms/publisher" href="{{contactDataSpaceUrl}}" title="{{contactGivenName}} {{contactFamilyName}}"/>
 
     <!--     temporal coverage -->
     <rdfa:meta

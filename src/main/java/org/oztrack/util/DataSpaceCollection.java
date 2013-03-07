@@ -33,7 +33,7 @@ public class DataSpaceCollection {
     private final Project project;
     private final Range<Date> dateRange;
     private final Polygon boundingBox;
-    private String dataSpaceURL;
+    private String dataSpaceUrl;
 
     private String collectionTitle;
     private String collectionDescription;
@@ -53,13 +53,12 @@ public class DataSpaceCollection {
     private String dataSpaceAgentUpdateDate;
     private String contactDataSpaceURI;
 
-
     public DataSpaceCollection(Project project, Range<Date> dateRange, Polygon boundingBox) {
         this.project = project;
         this.dateRange = dateRange;
         this.boundingBox = boundingBox;
         buildAtomTemplates();
-        this.dataSpaceURL = OzTrackApplication.getApplicationContext().getDataSpaceURL();
+        this.dataSpaceUrl = OzTrackApplication.getApplicationContext().getDataSpaceUrl();
     }
 
     public static synchronized void buildAtomTemplates() {
@@ -195,10 +194,7 @@ public class DataSpaceCollection {
         return isoDateTimeUTCFormat.format(d);
     }
 
-    public String getContactDataSpaceURL() {
-        return this.dataSpaceURL + "agents/" + project.getDataSpaceAgent().getDataSpaceAgentURI();
+    public String getContactDataSpaceUrl() {
+        return this.dataSpaceUrl + "agents/" + project.getDataSpaceAgent().getDataSpaceAgentURI();
     }
-
-
-
 }

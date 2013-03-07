@@ -28,9 +28,9 @@ public class DataSpaceInterfaceView extends AbstractView {
     ) throws Exception {
         Project project = (Project) model.get("project");
         String errorMessage = (String) model.get("errorMessage");
-        String dataSpaceURL = OzTrackApplication.getApplicationContext().getDataSpaceURL();
-        String agentURL = dataSpaceURL + "agents/" + project.getDataSpaceAgent().getDataSpaceAgentURI();
-        String collectionURL = dataSpaceURL + "collections/" + project.getDataSpaceURI();
+        String dataSpaceUrl = OzTrackApplication.getApplicationContext().getDataSpaceUrl();
+        String agentURL = dataSpaceUrl + "agents/" + project.getDataSpaceAgent().getDataSpaceAgentURI();
+        String collectionURL = dataSpaceUrl + "collections/" + project.getDataSpaceURI();
 
         String json = "{ \"dataSpaceAgentURL\" : \"" + agentURL + "\""
                     + ",\"dataSpaceAgentUpdateDate\" : \"" + dateTimeFormat.format(project.getDataSpaceAgent().getDataSpaceAgentUpdateDate()) + "\""

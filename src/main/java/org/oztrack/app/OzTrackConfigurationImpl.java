@@ -7,9 +7,9 @@ import java.util.Date;
 public class OzTrackConfigurationImpl implements OzTrackConfiguration {
     private final SimpleDateFormat isoDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-    private String baseURL;
+    private String baseUrl;
     private String geoServerLocalUrl;
-    private String dataSpaceURL;
+    private String dataSpaceUrl;
     private String dataSpaceUsername;
     private String dataSpacePassword;
     private String dataDir;
@@ -25,12 +25,12 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
     private Date closedAccessDisableDate;
 
     @Override
-    public String getBaseURL() {
-        return baseURL;
+    public String getBaseUrl() {
+        return baseUrl;
     }
 
-    public void setBaseURL(String baseURL) {
-        this.baseURL = baseURL;
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 
     @Override
@@ -43,12 +43,12 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
     }
 
     @Override
-    public String getDataSpaceURL() {
-        return dataSpaceURL;
+    public String getDataSpaceUrl() {
+        return dataSpaceUrl;
     }
 
-    public void setDataSpaceURL(String dataSpaceURL) {
-        this.dataSpaceURL = dataSpaceURL;
+    public void setDataSpaceUrl(String dataSpaceUrl) {
+        this.dataSpaceUrl = dataSpaceUrl;
     }
 
     @Override

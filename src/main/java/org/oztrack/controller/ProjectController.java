@@ -264,11 +264,11 @@ public class ProjectController {
     private String getView(Model model, Project project, String viewName) {
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
         List<DataFile> dataFileList = dataFileDao.getDataFilesByProject(project);
-        String dataSpaceURL = configuration.getDataSpaceURL();
+        String dataSpaceUrl = configuration.getDataSpaceUrl();
         model.addAttribute("project", project);
         model.addAttribute("projectAnimalsList", projectAnimalsList);
         model.addAttribute("dataFileList", dataFileList);
-        model.addAttribute("dataSpaceURL", dataSpaceURL);
+        model.addAttribute("dataSpaceUrl", dataSpaceUrl);
         return viewName;
     }
 
