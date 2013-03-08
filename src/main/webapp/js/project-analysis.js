@@ -1,5 +1,3 @@
-<%@ page contentType="text/javascript; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 (function(OzTrack) {
     OzTrack.AnalysisMap = function(div, options) {
         if (!(this instanceof OzTrack.AnalysisMap)) {
@@ -27,6 +25,10 @@
         that.onAnalysisCreate = options.onAnalysisCreate;
         that.onAnalysisError = options.onAnalysisError;
         that.onAnalysisSuccess = options.onAnalysisSuccess;
+        that.onUpdateAnimalInfoFromWFS = options.onUpdateAnimalInfoFromWFS;
+        that.onUpdateAnimalInfoFromLayer = options.onUpdateAnimalInfoFromLayer;
+        that.onUpdateAnimalInfoForAnalysis = options.onUpdateAnimalInfoForAnalysis;
+        that.onUpdateAnimalInfoFromKML = options.onUpdateAnimalInfoFromKML;
 
         that.detectionLayers = [];
         that.trajectoryLayers = [];
@@ -179,8 +181,8 @@
                 }
             };
             var pointOnStyle = new OpenLayers.Style({
-                fillColor : "\${getColour}",
-                strokeColor : "\${getColour}",
+                fillColor : "${getColour}",
+                strokeColor : "${getColour}",
                 strokeOpacity : 0.8,
                 strokeWidth : 0.2,
                 graphicName : "cross",
@@ -206,10 +208,10 @@
                 }
             };
             var polygonOnStyle = new OpenLayers.Style({
-                strokeColor : "\${getColour}",
+                strokeColor : "${getColour}",
                 strokeWidth : 2.0,
                 strokeOpacity : 0.8,
-                fillColor : "\${getColour}",
+                fillColor : "${getColour}",
                 fillOpacity : 0.5
             }, {
                 context : styleContext
@@ -239,10 +241,10 @@
             };
             var startEndPointsOnStyle = new OpenLayers.Style({
                 pointRadius : 2,
-                strokeColor : "\${getColour}",
+                strokeColor : "${getColour}",
                 strokeWidth : 1.2,
                 strokeOpacity : 1.0,
-                fillColor : "\${getColour}",
+                fillColor : "${getColour}",
                 fillOpacity : 0
             }, {
                 context : styleContext
@@ -621,7 +623,7 @@
             that.wfsLayers[wfsLayerId] = wfsLayer;
             return wfsLayer;
         }
-
+        
         function updateAnimalInfoFromWFS(wfsLayer, wfsLayerId) {
             var animalProcessed = {};
             for (var key in wfsLayer.features) {
@@ -632,35 +634,13 @@
                     }
                     animalProcessed[feature.attributes.animalId] = true;
                     feature.renderIntent = "default";
-                    $('input[id=select-animal-' + feature.attributes.animalId + ']').attr('checked', 'checked');
-                    var html = '<div class="layerInfoTitle">';
-                    html += '<a class="layer-delete" href="javascript:analysisMap.deleteWFSLayer(' + wfsLayerId + ');">delete</a></span>';
-                    html += wfsLayer.name;
-                    html += '</div>';
-                    var tableRowsHtml = '';
-                    if (feature.attributes.fromDate) {
-                        tableRowsHtml += '<tr>';
-                        tableRowsHtml += '<td class="layerInfoLabel">Date From:</td>';
-                        tableRowsHtml += '<td>' + feature.attributes.fromDate + '</td>';
-                        tableRowsHtml += '</tr>';
-                    }
-                    if (feature.attributes.toDate) {
-                        tableRowsHtml += '<tr>';
-                        tableRowsHtml += '<td class="layerInfoLabel">Date To:</td>';
-                        tableRowsHtml += '<td>' + feature.attributes.toDate + '</td>';
-                        tableRowsHtml += '</tr>';
-                    }
-                    if (feature.geometry.CLASS_NAME == 'OpenLayers.Geometry.LineString') {
-                        var distance = (Math.round(feature.geometry.getGeodesicLength(that.map.projection)) / 1000);
-                        tableRowsHtml += '<tr>';
-                        tableRowsHtml += '<td class="layerInfoLabel">Min Distance: </td>';
-                        tableRowsHtml += '<td>' + distance + ' km </td>';
-                        tableRowsHtml += '</tr>';
-                    }
-                    if (tableRowsHtml != '') {
-                        html += '<table>' + tableRowsHtml + '</table>';
-                    }
-                    $('#animalInfo-' + feature.attributes.animalId).append('<div class="layerInfo wfsLayerInfo-' + wfsLayerId + '">' + html + '</div>');
+                    that.onUpdateAnimalInfoFromWFS(
+                        wfsLayer.name,
+                        wfsLayerId,
+                        feature.attributes.animalId,
+                        feature.attributes.fromDate,
+                        feature.attributes.toDate
+                    );
                 }
             }
         }
@@ -668,61 +648,19 @@
         function updateAnimalInfoFromLayer(layer) {
             var layerAnimalIds = layer.getParams().animalIds ? layer.getParams().animalIds.split(',') : that.animalIds
             for (var i = 0; i < layerAnimalIds.length; i++) {
-                var html = '<div class="layerInfoTitle">';
-                html += '<a class="layer-delete" href="javascript:analysisMap.deleteProjectMapLayer(' + layer.id + ');">delete</a></span>';
-                html += layer.getTitle();
-                html += '</div>';
-                var tableRowsHtml = '';
-                var fromDate = layer.getParams().fromDate || moment(that.minDate).format('YYYY-MM-DD');
-                tableRowsHtml += '<tr>';
-                tableRowsHtml += '<td class="layerInfoLabel">Date From:</td>';
-                tableRowsHtml += '<td>' + fromDate + '</td>';
-                tableRowsHtml += '</tr>';
-                var toDate = layer.getParams().toDate || moment(that.maxDate).format('YYYY-MM-DD');
-                tableRowsHtml += '<tr>';
-                tableRowsHtml += '<td class="layerInfoLabel">Date To:</td>';
-                tableRowsHtml += '<td>' + toDate + '</td>';
-                tableRowsHtml += '</tr>';
-                if (tableRowsHtml != '') {
-                    html += '<table>' + tableRowsHtml + '</table>';
-                }
-                $('#animalInfo-' + layerAnimalIds[i]).append('<div class="layerInfo projectMapLayerInfo-' + layer.id + '">' + html + '</div>');
+                that.onUpdateAnimalInfoFromLayer(
+                    layer.getTitle(),
+                    layer.id,
+                    layerAnimalIds[i],
+                    layer.getParams().fromDate || moment(that.minDate).format('YYYY-MM-DD'),
+                    layer.getParams().toDate || moment(that.maxDate).format('YYYY-MM-DD')
+                );
             }
         }
-
+        
         function updateAnimalInfoForAnalysis(layerName, analysis) {
             for (var i = 0; i < analysis.params.animalIds.length; i++) {
-                var html = '<div class="layerInfoTitle">';
-                html += '<a class="layer-delete" href="javascript:analysisMap.deleteAnalysis(' + analysis.id + ');">delete</a></span>';
-                html += layerName;
-                html += '</div>';
-                var tableRowsHtml = '';
-                if (analysis.params.fromDate) {
-                    tableRowsHtml += '<tr>';
-                    tableRowsHtml += '<td class="layerInfoLabel">Date From:</td>';
-                    tableRowsHtml += '<td>' + analysis.params.fromDate + '</td>';
-                    tableRowsHtml += '</tr>';
-                }
-                if (analysis.params.toDate) {
-                    tableRowsHtml += '<tr>';
-                    tableRowsHtml += '<td class="layerInfoLabel">Date To:</td>';
-                    tableRowsHtml += '<td>' + analysis.params.toDate + '</td>';
-                    tableRowsHtml += '</tr>';
-                }
-                <c:forEach items="${analysisTypeList}" var="analysisType">
-                if (analysis.params.queryType == '${analysisType}') {
-                    <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
-                    if (analysis.params.${parameterType.identifier}) {
-                        tableRowsHtml += '<tr>';
-                        tableRowsHtml += '<td class="layerInfoLabel">${parameterType.displayName}: </td>';
-                        tableRowsHtml += '<td>' + analysis.params.${parameterType.identifier} + ' ${parameterType.units}</td>';
-                        tableRowsHtml += '</tr>';
-                    }
-                    </c:forEach>
-                }
-                </c:forEach>
-                html += '<table id="analysis-table-' + analysis.params.animalIds[i] + '-' + analysis.id + '" style="' + (tableRowsHtml ? '' : 'display: none;') + '">' + tableRowsHtml + '</table>';
-                $('#animalInfo-' + analysis.params.animalIds[i]).append('<div class="layerInfo analysisInfo-' + analysis.id + '">' + html + '</div>');
+                that.onUpdateAnimalInfoForAnalysis(layerName, analysis.params.animalIds[i], analysis);
             }
         }
 
@@ -736,40 +674,15 @@
                         break;
                     }
                 }
-                var tableRowsHtml = '';
                 if (animalFeature) {
                     animalFeature.renderIntent = "default";
                     animalFeature.layer.drawFeature(animalFeature);
-                    if (animalFeature.attributes.area && animalFeature.attributes.area.value) {
-                        var area = Math.round(animalFeature.attributes.area.value * 1000) / 1000;
-                        tableRowsHtml += '<tr>';
-                        tableRowsHtml += '<td class="layerInfoLabel">Area: </td>';
-                        tableRowsHtml += '<td>' + area + ' km<sup>2</sup></td>';
-                        tableRowsHtml += '</tr>';
-                    }
-                    if (!analysis.params.hValue && animalFeature.attributes.hval && animalFeature.attributes.hval.value) {
-                        var hval = Math.round(animalFeature.attributes.hval.value * 1000) / 1000;
-                        tableRowsHtml += '<tr>';
-                        tableRowsHtml += '<td class="layerInfoLabel">h value: </td>';
-                        tableRowsHtml += '<td>' + hval + '</td>';
-                        tableRowsHtml += '</tr>';
-                    }
-                }
-                tableRowsHtml += '<tr>';
-                tableRowsHtml += '<td class="layerInfoLabel">Export as: </td>';
-                tableRowsHtml += '<td>';
-                tableRowsHtml += '<a href="' + analysis.resultUrl + '">KML</a> ';
-                tableRowsHtml += '<div id="analysisHelpPopover-' + analysis.id + '" class="help-popover" title="KML Export">';
-                tableRowsHtml += '<p>To enable users to animate their animal tracking files, as well as visualisation in ';
-                tableRowsHtml += '3-dimensions, we offer the option of exporting the animal tracking data and home-range ';
-                tableRowsHtml += 'layers into Google Earth. Once loaded into Google Earth, the user can alter the altitude and ';
-                tableRowsHtml += 'angle of the viewer, add additional features, and run the animal track as an animation.</p>';
-                tableRowsHtml += '</div>';
-                tableRowsHtml += '<script>initHelpPopover($(\'#analysisHelpPopover-' + analysis.id + '\'));</script>';
-                tableRowsHtml += '</td>';
-                tableRowsHtml += '</tr>';
-                if (tableRowsHtml) {
-                    $('#analysis-table-' + animalId + '-' + analysis.id).show().append(tableRowsHtml);
+                    that.onUpdateAnimalInfoFromKML(
+                        animalId,
+                        analysis,
+                        animalFeature.attributes.area ? animalFeature.attributes.area.value : null,
+                        (!analysis.params.hValue && animalFeature.attributes.hval) ? animalFeature.attributes.hval.value : null
+                    );
                 }
             }
         }

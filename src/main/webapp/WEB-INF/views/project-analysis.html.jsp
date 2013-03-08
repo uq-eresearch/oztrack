@@ -287,6 +287,115 @@
                         $('#projectMapSubmit').prop('disabled', false);
                         $('#projectMapCancel').fadeOut();
                         $('a[href="#animalPanel"]').trigger('click');
+                    },
+                    onUpdateAnimalInfoFromLayer: function(layerName, layerId, animalId, fromDate, toDate) {
+                        var html = '<div class="layerInfoTitle">';
+                        html += '<a class="layer-delete" href="javascript:analysisMap.deleteProjectMapLayer(' + layerId + ');">delete</a></span>';
+                        html += layerName;
+                        html += '</div>';
+                        var tableRowsHtml = '';
+                        tableRowsHtml += '<tr>';
+                        tableRowsHtml += '<td class="layerInfoLabel">Date From:</td>';
+                        tableRowsHtml += '<td>' + fromDate + '</td>';
+                        tableRowsHtml += '</tr>';
+                        tableRowsHtml += '<tr>';
+                        tableRowsHtml += '<td class="layerInfoLabel">Date To:</td>';
+                        tableRowsHtml += '<td>' + toDate + '</td>';
+                        tableRowsHtml += '</tr>';
+                        if (tableRowsHtml != '') {
+                            html += '<table>' + tableRowsHtml + '</table>';
+                        }
+                        $('#animalInfo-' + animalId).append('<div class="layerInfo projectMapLayerInfo-' + layerId + '">' + html + '</div>');
+                    },
+                    onUpdateAnimalInfoFromWFS: function(layerName, layerId, animalId, fromDate, toDate) {
+                        $('input[id=select-animal-' + animalId + ']').attr('checked', 'checked');
+                        var html = '<div class="layerInfoTitle">';
+                        html += '<a class="layer-delete" href="javascript:analysisMap.deleteWFSLayer(' + layerId + ');">delete</a></span>';
+                        html += layerName;
+                        html += '</div>';
+                        var tableRowsHtml = '';
+                        if (fromDate) {
+                            tableRowsHtml += '<tr>';
+                            tableRowsHtml += '<td class="layerInfoLabel">Date From:</td>';
+                            tableRowsHtml += '<td>' + fromDate + '</td>';
+                            tableRowsHtml += '</tr>';
+                        }
+                        if (toDate) {
+                            tableRowsHtml += '<tr>';
+                            tableRowsHtml += '<td class="layerInfoLabel">Date To:</td>';
+                            tableRowsHtml += '<td>' + toDate + '</td>';
+                            tableRowsHtml += '</tr>';
+                        }
+                        if (tableRowsHtml != '') {
+                            html += '<table>' + tableRowsHtml + '</table>';
+                        }
+                        $('#animalInfo-' + animalId).append('<div class="layerInfo wfsLayerInfo-' + layerId + '">' + html + '</div>');
+                    },
+                    onUpdateAnimalInfoForAnalysis: function(layerName, animalId, analysis) {
+                        var html = '<div class="layerInfoTitle">';
+                        html += '<a class="layer-delete" href="javascript:analysisMap.deleteAnalysis(' + analysis.id + ');">delete</a></span>';
+                        html += layerName;
+                        html += '</div>';
+                        var tableRowsHtml = '';
+                        if (analysis.params.fromDate) {
+                            tableRowsHtml += '<tr>';
+                            tableRowsHtml += '<td class="layerInfoLabel">Date From:</td>';
+                            tableRowsHtml += '<td>' + analysis.params.fromDate + '</td>';
+                            tableRowsHtml += '</tr>';
+                        }
+                        if (analysis.params.toDate) {
+                            tableRowsHtml += '<tr>';
+                            tableRowsHtml += '<td class="layerInfoLabel">Date To:</td>';
+                            tableRowsHtml += '<td>' + analysis.params.toDate + '</td>';
+                            tableRowsHtml += '</tr>';
+                        }
+                        <c:forEach items="${analysisTypeList}" var="analysisType">
+                        if (analysis.params.queryType == '${analysisType}') {
+                            <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
+                            if (analysis.params.${parameterType.identifier}) {
+                                tableRowsHtml += '<tr>';
+                                tableRowsHtml += '<td class="layerInfoLabel">${parameterType.displayName}: </td>';
+                                tableRowsHtml += '<td>' + analysis.params.${parameterType.identifier} + ' ${parameterType.units}</td>';
+                                tableRowsHtml += '</tr>';
+                            }
+                            </c:forEach>
+                        }
+                        </c:forEach>
+                        html += '<table id="analysis-table-' + animalId + '-' + analysis.id + '" style="' + (tableRowsHtml ? '' : 'display: none;') + '">' + tableRowsHtml + '</table>';
+                        $('#animalInfo-' + animalId).append('<div class="layerInfo analysisInfo-' + analysis.id + '">' + html + '</div>');
+                    },
+                    onUpdateAnimalInfoFromKML: function(animalId, analysis, area, hval) {
+                        var tableRowsHtml = '';
+                        if (area) {
+                            var roundedArea = Math.round(area * 1000) / 1000;
+                            tableRowsHtml += '<tr>';
+                            tableRowsHtml += '<td class="layerInfoLabel">Area: </td>';
+                            tableRowsHtml += '<td>' + roundedArea + ' km<sup>2</sup></td>';
+                            tableRowsHtml += '</tr>';
+                        }
+                        if (hval) {
+                            var roundedHval = Math.round(hval * 1000) / 1000;
+                            tableRowsHtml += '<tr>';
+                            tableRowsHtml += '<td class="layerInfoLabel">h value: </td>';
+                            tableRowsHtml += '<td>' + roundedHval + '</td>';
+                            tableRowsHtml += '</tr>';
+                        }
+                        tableRowsHtml += '<tr>';
+                        tableRowsHtml += '<td class="layerInfoLabel">Export as: </td>';
+                        tableRowsHtml += '<td>';
+                        tableRowsHtml += '<a href="' + analysis.resultUrl + '">KML</a> ';
+                        tableRowsHtml += '<div id="analysisHelpPopover-' + animalId + '-' + analysis.id + '" class="help-popover" title="KML Export">';
+                        tableRowsHtml += '<p>To enable users to animate their animal tracking files, as well as visualisation in ';
+                        tableRowsHtml += '3-dimensions, we offer the option of exporting the animal tracking data and home-range ';
+                        tableRowsHtml += 'layers into Google Earth. Once loaded into Google Earth, the user can alter the altitude and ';
+                        tableRowsHtml += 'angle of the viewer, add additional features, and run the animal track as an animation.</p>';
+                        tableRowsHtml += '</div>';
+                        tableRowsHtml += '</td>';
+                        tableRowsHtml += '</tr>';
+                        if (tableRowsHtml) {
+                            $('#analysis-table-' + animalId + '-' + analysis.id).show().append(tableRowsHtml);
+                            initHelpPopover($('#analysisHelpPopover-' + animalId + '-' + analysis.id));
+                        }
                     }
                 });
                 <c:forEach items="${savedAnalyses}" var="analysis">
