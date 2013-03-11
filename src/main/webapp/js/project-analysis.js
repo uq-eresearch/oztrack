@@ -76,6 +76,12 @@
         that.osmLayer = new OpenLayers.Layer.OSM('OpenStreetMap');
         that.map.addLayer(that.osmLayer);
 
+        that.emptyBaseLayer = new OpenLayers.Layer("None", {
+            isBaseLayer: true,
+            numZoomLevels : 22
+        });
+        that.map.addLayer(that.emptyBaseLayer);
+
         that.bathymetryLayer = new OpenLayers.Layer.WMS(
             'Bathymetry',
             '/geoserver/gwc/service/wms',
