@@ -50,6 +50,12 @@
             label.disabled {
                 color: #999;'
             }
+            #publicationTables table {
+                margin-bottom: 1em;
+            }
+            #publicationTables td {
+                padding: 2px 2px;
+            }
         </style>
         </c:if>
     </jsp:attribute>
@@ -132,6 +138,29 @@
                 updateLicenceSelectorFromDataLicence();
             }
             </c:if>
+            function addPublication(publication) {
+                var publication = publication || {title: '', url: ''};
+                $('#publicationTables').append($('<table>')
+                    .append($('<tr>')
+                        .append($('<td>').append('Title'))
+                        .append($('<td>').append($('<input name="publicationTitle" type="text" class="input-xxlarge" />')
+                            .val(publication.title)
+                        ))
+                        .append($('<td>'))
+                    )
+                    .append($('<tr>')
+                        .append($('<td>').append('URL'))
+                        .append($('<td>').append($('<input name="publicationUrl" type="text" class="input-xxlarge" />')
+                            .val(publication.url)
+                        ))
+                        .append($('<td class="btn-group">')
+                            .append($('<a class="btn" href="javascript:void(0);" onclick="var prev = $(this).closest(\'table\').prev(); $(this).closest(\'table\').insertBefore(prev);"><i class="icon-arrow-up"></i></a>'))
+                            .append($('<a class="btn" href="javascript:void(0);" onclick="var next = $(this).closest(\'table\').next(); $(this).closest(\'table\').insertAfter(next);"><i class="icon-arrow-down"></i></a>'))
+                            .append($('<a class="btn" href="javascript:void(0);" onclick="$(this).closest(\'table\').remove();"><i class="icon-trash"></i></a>'))
+                        )
+                    )
+                );
+            }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
                 srsSelector = createSrsSelector({
@@ -162,6 +191,14 @@
                     maxDate: new Date(${maxEmbargoDate.time})
                 });
                 </c:if>
+
+                var publications = [];
+                <c:forEach var="publication" items="${project.publications}">
+                publications.push({title: '${publication.title}', url: '${publication.url}'})
+                </c:forEach>
+                $.each(publications, function(i, publication) {
+                    addPublication(publication);
+                });
             });
         </script>
     </jsp:attribute>
@@ -289,17 +326,14 @@
             <fieldset>
                 <div class="legend">Publications</div>
                 <div class="control-group">
-                    <label class="control-label" for="publicationTitle">Publication Title</label>
+                    <label class="control-label" for="publicationTitle">Publication</label>
                     <div class="controls">
-                        <form:input path="publicationTitle" id="publicationTitle" cssClass="input-xxlarge"/>
-                        <form:errors path="publicationTitle" element="div" cssClass="help-block formErrors"/>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="publicationUrl">Publication URL</label>
-                    <div class="controls">
-                        <form:input path="publicationUrl" id="publicationUrl" cssClass="input-xxlarge"/>
-                        <form:errors path="publicationUrl" element="div" cssClass="help-block formErrors"/>
+                        <div id="publicationTables">
+                        </div>
+                        <div>
+                            <a class="btn" href="javascript:void(0);" onclick="addPublication();">Add publication</a>
+                        </div>
+                        <form:errors path="publications" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
             </fieldset>

@@ -27,6 +27,7 @@ import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.ProjectUser;
+import org.oztrack.data.model.Publication;
 import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.ProjectAccess;
 import org.oztrack.data.model.types.Role;
@@ -85,8 +86,6 @@ public class ProjectController {
             "speciesCommonName",
             "speciesScientificName",
             "srsIdentifier",
-            "publicationTitle",
-            "publicationUrl",
             "access",
             "rightsStatement"
         );
@@ -171,7 +170,9 @@ public class ProjectController {
         @ModelAttribute(value="project") Project project,
         BindingResult bindingResult,
         @RequestParam(value="embargoDate", required=false) String embargoDateString,
-        @RequestParam(value="dataLicenceIdentifier", required=false) String dataLicenceIdentifier
+        @RequestParam(value="dataLicenceIdentifier", required=false) String dataLicenceIdentifier,
+        @RequestParam(value="publicationTitle") List<String> publicationTitles,
+        @RequestParam(value="publicationUrl") List<String> publicationUrls
     ) throws Exception {
         if (StringUtils.isNotBlank(embargoDateString)) {
             Date embargoDate = isoDateFormat.parse(embargoDateString);
@@ -189,6 +190,18 @@ public class ProjectController {
         }
         else {
             project.setDataLicence(null);
+        }
+        if (publicationTitles.size() != publicationUrls.size()) {
+            bindingResult.rejectValue("publications", "publications", "All publications must have a Title and URL.");
+        }
+        project.getPublications().clear();
+        for (int i = 0; i < publicationTitles.size(); i++) {
+            Publication publication = new Publication();
+            publication.setProject(project);
+            publication.setOrdinal(i);
+            publication.setTitle(publicationTitles.get(i));
+            publication.setUrl(publicationUrls.get(i));
+            project.getPublications().add(publication);
         }
         new ProjectFormValidator().validate(project, bindingResult);
         Project projectWithSameTitle = projectDao.getProjectByTitle(project.getTitle());

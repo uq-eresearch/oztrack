@@ -3,6 +3,7 @@ package org.oztrack.data.model;
 import static javax.persistence.EnumType.STRING;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,6 +20,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -57,13 +59,11 @@ public class Project extends OzTrackBaseEntity {
     private User dataSpaceAgent;
 
     @Column(columnDefinition="TEXT")
-    private String publicationTitle;
-
-    @Column(columnDefinition="TEXT")
-    private String publicationUrl;
-
-    @Column(columnDefinition="TEXT")
     private String dataDirectoryPath;
+
+    @OneToMany(mappedBy="project", cascade={CascadeType.ALL}, orphanRemoval=true, fetch=FetchType.LAZY)
+    @OrderColumn(name="ordinal", nullable=false)
+    private List<Publication> publications = new ArrayList<Publication>();
 
     @OneToMany(mappedBy="project", cascade={CascadeType.ALL}, orphanRemoval=true, fetch=FetchType.EAGER)
     private List<ProjectUser> projectUsers = new LinkedList<ProjectUser>();
@@ -123,6 +123,14 @@ public class Project extends OzTrackBaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Publication> getPublications() {
+        return publications;
+    }
+
+    public void setPublications(List<Publication> publications) {
+        this.publications = publications;
     }
 
     public List<ProjectUser> getProjectUsers() {
@@ -186,21 +194,6 @@ public class Project extends OzTrackBaseEntity {
     }
     public void setDataSpaceAgent(User dataSpaceAgent) {
         this.dataSpaceAgent = dataSpaceAgent;
-    }
-    public String getPublicationTitle() {
-        return publicationTitle;
-    }
-
-    public void setPublicationTitle(String publicationTitle) {
-        this.publicationTitle = publicationTitle;
-    }
-
-    public String getPublicationUrl() {
-        return publicationUrl;
-    }
-
-    public void setPublicationUrl(String publicationUrl) {
-        this.publicationUrl = publicationUrl;
     }
 
     public String getSpeciesCommonName() {

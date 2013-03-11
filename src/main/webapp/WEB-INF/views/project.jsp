@@ -273,15 +273,15 @@
             <th>Organisation:</th>
             <td><c:out value="${project.dataSpaceAgent.organisation}"/></td>
         </tr>
-        <c:if test="${not empty project.publicationTitle}">
+        <c:if test="${not empty project.publications}">
         <tr>
-            <th>Publication:</th>
+            <th>Publications:</th>
             <td>
-                <i><c:out value="${project.publicationTitle}"/></i>
-                <c:if test="${not empty project.publicationUrl}">
-                <br>
-                <a href="<c:out value="${project.publicationUrl}"/>"><c:out value="${project.publicationUrl}"/></a>
-                </c:if>
+                <ul class="unstyled">
+                <c:forEach var="publication" items="${project.publications}">
+                <li><a href="<c:out value="${publication.url}"/>"><c:out value="${publication.title}"/></a></li>
+                </c:forEach>
+                </ul>
             </td>
         </tr>
         </c:if>
