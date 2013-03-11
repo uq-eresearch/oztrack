@@ -677,13 +677,13 @@
                 if (animalFeature) {
                     animalFeature.renderIntent = "default";
                     animalFeature.layer.drawFeature(animalFeature);
-                    that.onUpdateAnimalInfoFromKML(
-                        animalId,
-                        analysis,
-                        animalFeature.attributes.area ? animalFeature.attributes.area.value : null,
-                        (!analysis.params.hValue && animalFeature.attributes.hval) ? animalFeature.attributes.hval.value : null
-                    );
                 }
+                that.onUpdateAnimalInfoFromKML(
+                    animalId,
+                    analysis,
+                    (animalFeature && animalFeature.attributes.area) ? animalFeature.attributes.area.value : null,
+                    (animalFeature && !analysis.params.hValue && animalFeature.attributes.hval) ? animalFeature.attributes.hval.value : null
+                );
             }
         }
 
