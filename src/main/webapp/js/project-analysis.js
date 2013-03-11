@@ -45,12 +45,23 @@
             displayProjection : that.projection4326,
             controls: []
         });
-        that.map.addControl(new OpenLayers.Control.Navigation());
         that.map.addControl(new OpenLayers.Control.Zoom());
         that.map.addControl(new OpenLayers.Control.Attribution());
         that.map.addControl(new OpenLayers.Control.MousePosition());
         that.map.addControl(new OpenLayers.Control.ScaleLine());
-        that.map.addControl(new OpenLayers.Control.NavToolbar());
+        
+        var OzTrackNavToolbar = OpenLayers.Class(OpenLayers.Control.NavToolbar, {
+            initialize: function() { 
+                OpenLayers.Control.Panel.prototype.initialize.apply(this, [options]);
+                this.addControls([
+                    new OpenLayers.Control.Navigation(),
+                    new OpenLayers.Control.ZoomBox(),
+                    new OzTrack.OpenLayers.Control.ZoomToExtent({extent: that.projectBounds})
+                ])
+            }
+        });
+        that.map.addControl(new OzTrackNavToolbar());
+        
         that.layerSwitcher = new OpenLayers.Control.LayerSwitcher();
         that.map.addControl(that.layerSwitcher);
         that.layerSwitcher.maximizeControl();
@@ -151,18 +162,6 @@
                 wrapDateLine: true
             }
         ));
-
-        that.controlPanel = new OpenLayers.Control.Panel();
-        that.controlPanel.addControls([
-            new OpenLayers.Control.Button({
-                title : 'Zoom to Data Extent',
-                displayClass : "zoomButton",
-                trigger : function() {
-                    that.map.zoomToExtent(that.projectBounds, false);
-                }
-            })
-        ]);
-        that.map.addControl(that.controlPanel);
 
         that.startEndStyleMap = createStartEndPointsStyleMap();
         that.polygonStyleMap = createPolygonStyleMap();

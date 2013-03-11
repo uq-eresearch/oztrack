@@ -28,7 +28,17 @@
             projection: that.projection900913,
             displayProjection: that.projection4326
         });
-        that.navToolbar = new OpenLayers.Control.NavToolbar();
+        var OzTrackNavToolbar = OpenLayers.Class(OpenLayers.Control.NavToolbar, {
+            initialize: function() { 
+                OpenLayers.Control.Panel.prototype.initialize.apply(this, [options]);
+                this.addControls([
+                    new OpenLayers.Control.Navigation(),
+                    new OpenLayers.Control.ZoomBox(),
+                    new OzTrack.OpenLayers.Control.ZoomToExtent({extent: that.projectBounds})
+                ])
+            }
+        });
+        that.navToolbar = new OzTrackNavToolbar();
         that.map.addControl(that.navToolbar);
         that.map.addControl(new OpenLayers.Control.MousePosition());
         that.map.addControl(new OpenLayers.Control.ScaleLine());
@@ -37,7 +47,6 @@
         that.layerSwitcher.maximizeControl();
         that.loadingPanel = new OpenLayers.Control.LoadingPanel();
         that.map.addControl(that.loadingPanel);
-        that.map.addControl(createControlPanel());
         that.map.addControl(new OpenLayers.Control({displayClass: 'projectMapBoxShadow'}));
 
         that.googlePhysicalLayer = new OpenLayers.Layer.Google('Google Physical', {
@@ -112,20 +121,6 @@
         that.updateSize = function() {
             that.map.updateSize();
         };
-        
-        function createControlPanel() {
-            var panel = new OpenLayers.Control.Panel();
-            panel.addControls([
-                new OpenLayers.Control.Button({
-                    title: 'Zoom to Data Extent',
-                    displayClass: "zoomButton",
-                    trigger: function() {
-                        that.map.zoomToExtent(that.projectBounds, false);
-                    }
-                })
-            ]);
-            return panel;
-        }
 
         that.setFromDate = function(date) {
             that.fromDate = date;
