@@ -2,6 +2,7 @@ package org.oztrack.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -171,8 +172,8 @@ public class ProjectController {
         BindingResult bindingResult,
         @RequestParam(value="embargoDate", required=false) String embargoDateString,
         @RequestParam(value="dataLicenceIdentifier", required=false) String dataLicenceIdentifier,
-        @RequestParam(value="publicationTitle") List<String> publicationTitles,
-        @RequestParam(value="publicationUrl") List<String> publicationUrls
+        @RequestParam(value="publicationTitle", required=false) List<String> publicationTitles,
+        @RequestParam(value="publicationUrl", required=false) List<String> publicationUrls
     ) throws Exception {
         if (StringUtils.isNotBlank(embargoDateString)) {
             Date embargoDate = isoDateFormat.parse(embargoDateString);
@@ -191,16 +192,39 @@ public class ProjectController {
         else {
             project.setDataLicence(null);
         }
-        if (publicationTitles.size() != publicationUrls.size()) {
-            bindingResult.rejectValue("publications", "publications", "All publications must have a Title and URL.");
-        }
         project.getPublications().clear();
-        for (int i = 0; i < publicationTitles.size(); i++) {
+        int numPublicationTitles = (publicationTitles != null) ? publicationTitles.size() : 0;
+        int numPublicationUrls = (publicationUrls != null) ? publicationUrls.size() : 0;
+        int numPublications = Math.max(numPublicationTitles, numPublicationUrls);
+        for (int i = 0; i < numPublications; i++) {
+            String title = (i < numPublicationTitles) ? publicationTitles.get(i) : null;
+            String url = (i < numPublicationUrls) ? publicationUrls.get(i) : null;
+            if (StringUtils.isBlank(title) || StringUtils.isBlank(url)) {
+                bindingResult.rejectValue("publications", "publications", "All publications must have both a Title and URL.");
+            }
+            if (StringUtils.isNotBlank(url)) {
+                try {
+                    // Prepend "http://" to URLs that look like they need it.
+                    URI uri = new URI(url);
+                    String prefix = "";
+                    if (uri.getScheme() == null) {
+                        prefix += "http:";
+                    }
+                    if (uri.getAuthority() == null) {
+                        prefix += "//";
+                    }
+                    url = prefix + url;
+                    new URI(url).toURL();
+                }
+                catch (Exception e) {
+                    bindingResult.rejectValue("publications", "publications", "Invalid URL provided: \"" + url + "\".");
+                }
+            }
             Publication publication = new Publication();
             publication.setProject(project);
             publication.setOrdinal(i);
-            publication.setTitle(publicationTitles.get(i));
-            publication.setUrl(publicationUrls.get(i));
+            publication.setTitle(title);
+            publication.setUrl(url);
             project.getPublications().add(publication);
         }
         new ProjectFormValidator().validate(project, bindingResult);

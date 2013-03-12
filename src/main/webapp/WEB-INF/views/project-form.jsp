@@ -50,11 +50,17 @@
             label.disabled {
                 color: #999;'
             }
-            #publicationTables table {
-                margin-bottom: 1em;
+            .publication td.name {
+                padding-right: 12px;
             }
-            #publicationTables td {
-                padding: 2px 2px;
+            .publication td.value {
+                padding-right: 12px;
+            }
+            .publication td.actions {
+                vertical-align: middle;
+            }
+            .publication {
+                margin-bottom: 18px;
             }
         </style>
         </c:if>
@@ -140,26 +146,37 @@
             </c:if>
             function addPublication(publication) {
                 var publication = publication || {title: '', url: ''};
-                $('#publicationTables').append($('<table>')
+                $('#publications').append($('<div class="publication">')
+                    .append($('<table>')
                     .append($('<tr>')
-                        .append($('<td>').append('Title'))
-                        .append($('<td>').append($('<input name="publicationTitle" type="text" class="input-xxlarge" />')
+                        .append($('<td class="name">').append('Title'))
+                        .append($('<td class="value">').append($('<input name="publicationTitle" type="text" class="input-xxlarge" />')
                             .val(publication.title)
                         ))
-                        .append($('<td>'))
+                        .append($('<td class="actions" rowspan="2">')
+                            .append($('<div class="btn-group">')
+                                .append($('<a class="btn" href="javascript:void(0);">')
+                                    .click(function(e) {$(this).closest('.publication').insertBefore($(this).closest('.publication').prev());})
+                                    .append('<i class="icon-arrow-up"></i>')
+                                )
+                                .append($('<a class="btn" href="javascript:void(0);">')
+                                    .click(function(e) {$(this).closest('.publication').insertAfter($(this).closest('.publication').next());})
+                                    .append('<i class="icon-arrow-down"></i>')
+                                )
+                                .append($('<a class="btn" href="javascript:void(0);">')
+                                    .click(function(e) {$(this).closest('.publication').remove();})
+                                    .append('<i class="icon-trash"></i>')
+                                )
+                            )
+                        )
                     )
                     .append($('<tr>')
                         .append($('<td>').append('URL'))
                         .append($('<td>').append($('<input name="publicationUrl" type="text" class="input-xxlarge" />')
                             .val(publication.url)
                         ))
-                        .append($('<td class="btn-group">')
-                            .append($('<a class="btn" href="javascript:void(0);" onclick="var prev = $(this).closest(\'table\').prev(); $(this).closest(\'table\').insertBefore(prev);"><i class="icon-arrow-up"></i></a>'))
-                            .append($('<a class="btn" href="javascript:void(0);" onclick="var next = $(this).closest(\'table\').next(); $(this).closest(\'table\').insertAfter(next);"><i class="icon-arrow-down"></i></a>'))
-                            .append($('<a class="btn" href="javascript:void(0);" onclick="$(this).closest(\'table\').remove();"><i class="icon-trash"></i></a>'))
-                        )
                     )
-                );
+                ));
             }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
@@ -326,14 +343,14 @@
             <fieldset>
                 <div class="legend">Publications</div>
                 <div class="control-group">
-                    <label class="control-label" for="publicationTitle">Publication</label>
+                    <label class="control-label" for="publicationTitle">Publication list</label>
                     <div class="controls">
-                        <div id="publicationTables">
+                        <div id="publications">
                         </div>
+                        <form:errors path="publications" element="div" cssClass="help-block formErrors" cssStyle="margin: 1em 0;"/>
                         <div>
                             <a class="btn" href="javascript:void(0);" onclick="addPublication();">Add publication</a>
                         </div>
-                        <form:errors path="publications" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
             </fieldset>
