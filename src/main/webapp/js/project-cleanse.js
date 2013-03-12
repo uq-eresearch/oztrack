@@ -46,7 +46,6 @@
         that.layerSwitcher.maximizeControl();
         that.loadingPanel = new OpenLayers.Control.LoadingPanel();
         that.map.addControl(that.loadingPanel);
-        that.map.addControl(new OpenLayers.Control({displayClass: 'projectMapBoxShadow'}));
 
         that.googlePhysicalLayer = new OpenLayers.Layer.Google('Google Physical', {
             type : google.maps.MapTypeId.TERRAIN

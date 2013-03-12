@@ -48,6 +48,7 @@
         that.map.addControl(new OpenLayers.Control.Zoom());
         that.map.addControl(new OpenLayers.Control.Attribution());
         that.map.addControl(new OpenLayers.Control.ScaleLine());
+        that.map.addControl(new OpenLayers.Control({displayClass: 'projectMapLogo'}));
         
         var OzTrackNavToolbar = OpenLayers.Class(OpenLayers.Control.NavToolbar, {
             initialize: function() { 
