@@ -40,7 +40,6 @@
         });
         that.navToolbar = new OzTrackNavToolbar();
         that.map.addControl(that.navToolbar);
-        that.map.addControl(new OpenLayers.Control.MousePosition());
         that.map.addControl(new OpenLayers.Control.ScaleLine());
         that.layerSwitcher = new OpenLayers.Control.LayerSwitcher();
         that.map.addControl(that.layerSwitcher);
