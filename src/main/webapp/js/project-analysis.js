@@ -62,34 +62,49 @@
         });
         that.map.addControl(new OzTrackNavToolbar());
         
-        that.layerSwitcher = new OpenLayers.Control.LayerSwitcher();
+        that.layerSwitcher = new OzTrack.OpenLayers.Control.OzTrackLayerSwitcher({
+            categoryLabels: {
+                'base': 'Base layer',
+                'environment': 'Environmental layers',
+                'project': 'Project layers',
+                'analysis': 'Analysis layers',
+                'other': 'Other layers'
+            }
+        });
         that.map.addControl(that.layerSwitcher);
         that.layerSwitcher.maximizeControl();
         that.loadingPanel = new OpenLayers.Control.LoadingPanel();
         that.map.addControl(that.loadingPanel);
 
         that.googlePhysicalLayer = new OpenLayers.Layer.Google('Google Physical', {
-            type : google.maps.MapTypeId.TERRAIN
+            type: google.maps.MapTypeId.TERRAIN,
+            metadata: {category: 'base'}
         });
         that.googleSatelliteLayer = new OpenLayers.Layer.Google('Google Satellite', {
-            type : google.maps.MapTypeId.SATELLITE,
-            numZoomLevels : 22
+            type: google.maps.MapTypeId.SATELLITE,
+            numZoomLevels: 22,
+            metadata: {category: 'base'}
         });
         that.googleStreetsLayer = new OpenLayers.Layer.Google('Google Streets', {
-            numZoomLevels : 20
+            numZoomLevels: 20,
+            metadata: {category: 'base'}
         });
         that.googleHybridLayer = new OpenLayers.Layer.Google('Google Hybrid', {
-            type : google.maps.MapTypeId.HYBRID,
-            numZoomLevels : 20
+            type: google.maps.MapTypeId.HYBRID,
+            numZoomLevels: 20,
+            metadata: {category: 'base'}
         });
         that.map.addLayers([that.googleSatelliteLayer, that.googlePhysicalLayer, that.googleStreetsLayer, that.googleHybridLayer]);
 
-        that.osmLayer = new OpenLayers.Layer.OSM('OpenStreetMap');
+        that.osmLayer = new OpenLayers.Layer.OSM('OpenStreetMap', null, {
+            metadata: {category: 'base'}
+        });
         that.map.addLayer(that.osmLayer);
 
         that.emptyBaseLayer = new OpenLayers.Layer("None", {
             isBaseLayer: true,
-            numZoomLevels : 22
+            numZoomLevels : 22,
+            metadata: {category: 'base'}
         });
         that.map.addLayer(that.emptyBaseLayer);
 
@@ -105,7 +120,8 @@
                 visibility: false,
                 isBaseLayer: false,
                 wrapDateLine: true,
-                attribution: '<a href="http://www.gebco.net/">GEBCO_08 Grid, version 20091120</a>'
+                attribution: '<a href="http://www.gebco.net/">GEBCO_08 Grid, version 20091120</a>',
+                metadata: {category: 'environment'}
             }
         );
         that.map.addLayer(that.bathymetryLayer);
@@ -121,7 +137,8 @@
                 visibility: false,
                 isBaseLayer: false,
                 wrapDateLine: true,
-                attribution: '<a href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B573FA186-1997-4F8B-BCF8-58B5876A156B%7D">IBRA 7 Regions</a>'
+                attribution: '<a href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B573FA186-1997-4F8B-BCF8-58B5876A156B%7D">IBRA 7 Regions</a>',
+                metadata: {category: 'environment'}
             }
         ));
         that.map.addLayer(new OpenLayers.Layer.WMS(
@@ -135,7 +152,8 @@
                 visibility: false,
                 isBaseLayer: false,
                 wrapDateLine: true,
-                attribution: '<a href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7BC88F4317-42B0-4D4B-AC5D-47F6ACF1A24F%7D">IBRA 7 Subregions</a>'
+                attribution: '<a href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7BC88F4317-42B0-4D4B-AC5D-47F6ACF1A24F%7D">IBRA 7 Subregions</a>',
+                metadata: {category: 'environment'}
             }
         ));
         that.map.addLayer(new OpenLayers.Layer.WMS(
@@ -149,7 +167,8 @@
                 visibility: false,
                 isBaseLayer: false,
                 wrapDateLine: true,
-                attribution: '<a href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B30DA5FD4-AE08-405B-9F55-7E1833C230A4%7D">IMCRA 4 Provincial Bioregions</a>'
+                attribution: '<a href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B30DA5FD4-AE08-405B-9F55-7E1833C230A4%7D">IMCRA 4 Provincial Bioregions</a>',
+                metadata: {category: 'environment'}
             }
         ));
         that.map.addLayer(new OpenLayers.Layer.WMS(
@@ -163,23 +182,24 @@
                 visibility: false,
                 isBaseLayer: false,
                 wrapDateLine: true,
-                attribution: '<a href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7BA0D9F8EE-4261-438A-8ADE-EFF664EFF55C%7D">IMCRA 4 Meso-scale Bioregions</a>'
+                attribution: '<a href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7BA0D9F8EE-4261-438A-8ADE-EFF664EFF55C%7D">IMCRA 4 Meso-scale Bioregions</a>',
+                metadata: {category: 'environment'}
             }
         ));
 
         that.startEndStyleMap = createStartEndPointsStyleMap();
         that.polygonStyleMap = createPolygonStyleMap();
 
-        that.allDetectionsLayer = createDetectionLayer({});
+        that.allDetectionsLayer = createDetectionLayer({}, 'project');
         that.map.addLayer(that.allDetectionsLayer.getWMSLayer());
 
-        that.allTrajectoriesLayer = createTrajectoryLayer({});
+        that.allTrajectoriesLayer = createTrajectoryLayer({}, 'project');
         that.map.addLayer(that.allTrajectoriesLayer.getWMSLayer());
 
         that.map.addLayer(createWFSLayer('Start and End Points', 'StartEnd', {
             projectId : that.projectId,
             queryType : 'START_END'
-        }, that.startEndStyleMap));
+        }, that.startEndStyleMap, 'project'));
         
         that.map.zoomToExtent(that.projectBounds, false);
 
@@ -299,15 +319,15 @@
                 }
             });
             if (queryTypeValue == "LINES") {
-                var trajectoryLayer = createTrajectoryLayer(params);
+                var trajectoryLayer = createTrajectoryLayer(params, 'analysis');
                 that.map.addLayer(trajectoryLayer.getWMSLayer());
             }
             else if (queryTypeValue == "POINTS") {
-                var detectionLayer = createDetectionLayer(params);
+                var detectionLayer = createDetectionLayer(params, 'analysis');
                 that.map.addLayer(detectionLayer.getWMSLayer());
             }
             else if (queryTypeValue == "START_END") {
-                that.map.addLayer(createWFSLayer(layerName, 'StartEnd', params, that.startEndStyleMap));
+                that.map.addLayer(createWFSLayer(layerName, 'StartEnd', params, that.startEndStyleMap, 'analysis'));
             }
             else {
                 createAnalysisLayer(params, layerName);
@@ -391,7 +411,8 @@
                 extractStyles = true;
             }
             var queryOverlay = new OpenLayers.Layer.Vector(layerName, {
-                styleMap : styleMap
+                styleMap : styleMap,
+                metadata: {category: 'analysis'}
             });
             if (that.analyses[analysis.id]) {
                 that.analyses[analysis.id].layer = queryOverlay;
@@ -474,7 +495,7 @@
             $('.wfsLayerInfo-' + id).fadeOut().remove();
         };
 
-        function createDetectionLayer(params) {
+        function createDetectionLayer(params, category) {
             function buildFilter(params) {
                 // If supplied, use param to filter animals; otherwise, include all animals.
                 var cqlFilterAnimalIds = params.animalIds ? params.animalIds.split(',') : that.animalIds;
@@ -509,7 +530,8 @@
                 },
                 {
                     isBaseLayer: false,
-                    tileSize: new OpenLayers.Size(512,512)
+                    tileSize: new OpenLayers.Size(512,512),
+                    metadata: {category: category}
                 }
             );
             var layer = {
@@ -541,7 +563,7 @@
             }
         }
         
-        function createTrajectoryLayer(params) {
+        function createTrajectoryLayer(params, category) {
             function buildFilter(params) {
                 // If supplied, use param to filter animals; otherwise, include all animals.
                 var cqlFilterAnimalIds = params.animalIds ? params.animalIds.split(',') : that.animalIds;
@@ -576,7 +598,8 @@
                 },
                 {
                     isBaseLayer: false,
-                    tileSize: new OpenLayers.Size(512,512)
+                    tileSize: new OpenLayers.Size(512,512),
+                    metadata: {category: category}
                 }
             );
             var layer = {
@@ -608,7 +631,7 @@
             }
         }
 
-        function createWFSLayer(layerName, featureType, params, styleMap) {
+        function createWFSLayer(layerName, featureType, params, styleMap, category) {
             var wfsLayerId = that.wfsLayerIdSeq++;
             var wfsLayer = new OpenLayers.Layer.Vector(layerName, {
                 projection : that.projection4326,
@@ -627,7 +650,8 @@
                         updateAnimalInfoFromWFS(e.object, wfsLayerId);
                         that.onAnalysisSuccess();
                     }
-                }
+                },
+                metadata: {category: category}
             });
             that.wfsLayers[wfsLayerId] = wfsLayer;
             return wfsLayer;

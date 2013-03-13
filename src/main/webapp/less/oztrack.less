@@ -605,8 +605,8 @@ ul.icons li.artwork {background-image: url('../img/palette.png');}
   bottom: 29px !important;
 }
 
-.olControlNoSelect,
-.olControlNoSelect a {
+.olControlScaleLine,
+.olControlAttribution a {
   color: #ffffff !important;
   text-shadow: 1px 1px #333333 !important;
 }
@@ -663,12 +663,60 @@ ul.icons li.artwork {background-image: url('../img/palette.png');}
   right: 0 !important;
 }
 
-.olControlLayerSwitcher {
-  top: 8px !important;
+.OzTrackOpenLayersControlOzTrackLayerSwitcher {
+  position: absolute;
+  top: 8px;
+  right: 0;
+  width: 20em;
+  font-size: 11px;
+  font-family: sans-serif;
+  font-weight: normal;
+  margin-top: 3px;
+  margin-left: 3px;
+  margin-bottom: 3px;
+  color: white;
+  background-color: transparent;
 }
 
-.olControlLayerSwitcher .layersDiv {
-  border-radius: 5px 0 0 5px !important;
+.OzTrackOpenLayersControlOzTrackLayerSwitcher .layersDiv {
+  padding: 0px 22px 10px 15px;
+  .border-radius(6px 0 0 6px);
+  border: 1px solid transparent;
+}
+
+.OzTrackOpenLayersControlOzTrackLayerSwitcher .layersDiv,
+.OzTrackOpenLayersControlOzTrackLayerSwitcher .maximizeDiv {
+  background-color: #000;
+  #translucent .background(#000, 0.4);
+}
+
+.OzTrackOpenLayersControlOzTrackLayerSwitcher .layersDiv input[type="checkbox"],
+.OzTrackOpenLayersControlOzTrackLayerSwitcher .layersDiv input[type="radio"] {
+  margin: 0 2px;
+}
+
+.OzTrackOpenLayersControlOzTrackLayerSwitcher .layersDiv .categoryLabelDiv {
+  font-weight: bold;
+  margin-top: 7px;
+  margin-bottom: 7px;
+  padding-bottom: 1px;
+  border-bottom: 1px solid white;
+}
+
+.OzTrackOpenLayersControlOzTrackLayerSwitcher .layersDiv .categoryLayersDiv {
+}
+
+.OzTrackOpenLayersControlOzTrackLayerSwitcher .maximizeDiv,
+.OzTrackOpenLayersControlOzTrackLayerSwitcher .minimizeDiv {
+  width: 18px;
+  height: 18px;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+  line-height: 1;
+  text-align: center;
+  padding: 3px 2px 2px 4px;
+  .border-radius(6px 0 0 6px);
 }
 
 .olControlDrawFeatureItemInactive {
