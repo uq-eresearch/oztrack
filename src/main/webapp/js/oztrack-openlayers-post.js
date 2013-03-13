@@ -113,7 +113,7 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                         this.map.setBaseLayer(layer);
                     }
                     else {
-                        this.updateMap();
+                        layer.setVisibility(button.checked);
                     }
                 }
             }
@@ -174,24 +174,6 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
             }
 
             return this.div;
-        },
-
-        updateMap: function() {
-            for (categoryId in this.categories) {
-                var category = this.categories[categoryId];
-                for (i = 0; i < category.layerEntries.length; i++) {
-                    var layerEntry = category.layerEntries[i];
-                    if (!layerEntry.inputElem.checked) {
-                        return true;
-                    }
-                    if (layerEntry.layer.isBaseLayer) {
-                        this.map.setBaseLayer(layerEntry.layer, false);
-                    }
-                    else {
-                        layerEntry.layer.setVisibility(layerEntry.inputElem.checked);
-                    }
-                }
-            }
         },
 
         maximizeControl: function(e) {
