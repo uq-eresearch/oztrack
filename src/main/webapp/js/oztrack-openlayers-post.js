@@ -222,7 +222,21 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
             this.layersDiv = $('<div id="' + this.id + '_layersDiv" class="layersDiv">')[0];
             for (categoryId in this.categories) {
                 var category = this.categories[categoryId];
-                category.labelDiv = $('<div class="categoryLabelDiv">').text(category.label)[0];
+                category.labelDiv = $('<div class="categoryLabelDiv">')
+                    .append($('<span>')
+                        .addClass('icon-chevron-up')
+                        .addClass('icon-white')
+                        .css('float', 'right')
+                        .css('cursor', 'pointer')
+                        .click(function(e) {
+                            $(this)
+                                .toggleClass('icon-chevron-up')
+                                .toggleClass('icon-chevron-down')
+                                .closest('.categoryLabelDiv').next().slideToggle();
+                        })
+                    )
+                    .append(category.label)
+                    .get(0);
                 category.layersDiv = $('<div class="categoryLayersDiv">')[0];
                 this.layersDiv.appendChild(category.labelDiv);
                 this.layersDiv.appendChild(category.layersDiv);
