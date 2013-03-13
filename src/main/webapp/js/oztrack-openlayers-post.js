@@ -220,6 +220,9 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
 
         loadContents: function() {
             this.layersDiv = $('<div id="' + this.id + '_layersDiv" class="layersDiv">')[0];
+            var layersHeading = $('<div class="layersHeading">Show/hide map layers</div>')[0];
+            this.layersDiv.appendChild(layersHeading);
+            
             for (categoryId in this.categories) {
                 var category = this.categories[categoryId];
                 category.labelDiv = $('<div class="categoryLabelDiv">')
