@@ -246,11 +246,11 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
             }
             this.div.appendChild(this.layersDiv);
 
-            this.maximizeDiv = $('<div class="maximizeDiv olButton" style="position:absolute; display: none;">')[0];
+            this.maximizeDiv = $('<div class="maximizeDiv olButton" style="position:absolute; display: none;" title="Maximise layer switcher">')[0];
             this.maximizeDiv.appendChild($('<i class="icon-plus icon-white">')[0]);
             this.div.appendChild(this.maximizeDiv);
 
-            this.minimizeDiv = $('<div class="minimizeDiv olButton" style="position:absolute; display: none;">')[0];
+            this.minimizeDiv = $('<div class="minimizeDiv olButton" style="position:absolute; display: none;" title="Minimise layer switcher">')[0];
             this.minimizeDiv.appendChild($('<i class="icon-minus icon-white">')[0]);
             this.div.appendChild(this.minimizeDiv);
         },
