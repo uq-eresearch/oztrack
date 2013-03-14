@@ -156,10 +156,9 @@
             .analysis-content-params {
                 margin: 6px;
             }
-            #previousAnalysesList .analysis-content-actions {
+            #previousAnalysesList .analysis-content-footer {
                 padding-top: 3px;
                 padding-bottom: 3px;
-                border-top: 1px solid #CCC;
             }
             #selectAnimalConfirmationBox {
                 display: none;
@@ -539,48 +538,62 @@
                             </c:forEach>
                             div.append(paramsTable);
 
-                            var actionsList = $('<ul class="analysis-content-actions icons">');
-                            actionsList.append($('<li>')
-                                .addClass('add-layer')
-                                .append(
-                                    $('<a>')
-                                        .attr('href', 'javascript:void(0);')
-                                        .text('Add anlaysis to map')
-                                        .click(function(e) {
-                                            analysisMap.addAnalysisLayer(analysisUrl, layerName);
-                                        })
-                                )
-                            );
-                            <sec:authorize access="hasPermission(#project, 'write')">
-                            actionsList.append($('<li>')
-                                .addClass(saved ? 'delete' : 'create')
-                                .append(
-                                    $('<a>')
-                                        .attr('href', 'javascript:void(0);')
-                                        .text(saved ? 'Remove analysis' : 'Save analysis')
-                                        .click(function(e) {
-                                            jQuery.ajax({
-                                                url: analysisUrl + '/saved',
-                                                type: 'PUT',
-                                                contentType: "application/json",
-                                                data: (saved ? 'false' : 'true'),
-                                                success: function() {
-                                                    addAnalysis(layerName, analysisUrl, analysisCreateDate, !saved);
-                                                    var li = $(e.target).closest('li.analysis');
-                                                    if (li.siblings().length == 0) {
-                                                        li.parent().prev().andSelf().fadeOut();
+                            var footerList = $('<ul class="analysis-content-footer icons">');
+                            if (analysis.status == 'COMPLETE') {
+                                footerList.append($('<li>')
+                                    .addClass('add-layer')
+                                    .append(
+                                        $('<a>')
+                                            .attr('href', 'javascript:void(0);')
+                                            .text('Add anlaysis to map')
+                                            .click(function(e) {
+                                                analysisMap.addAnalysisLayer(analysisUrl, layerName);
+                                            })
+                                    )
+                                );
+                                <sec:authorize access="hasPermission(#project, 'write')">
+                                footerList.append($('<li>')
+                                    .addClass(saved ? 'delete' : 'create')
+                                    .append(
+                                        $('<a>')
+                                            .attr('href', 'javascript:void(0);')
+                                            .text(saved ? 'Remove analysis' : 'Save analysis')
+                                            .click(function(e) {
+                                                jQuery.ajax({
+                                                    url: analysisUrl + '/saved',
+                                                    type: 'PUT',
+                                                    contentType: "application/json",
+                                                    data: (saved ? 'false' : 'true'),
+                                                    success: function() {
+                                                        addAnalysis(layerName, analysisUrl, analysisCreateDate, !saved);
+                                                        var li = $(e.target).closest('li.analysis');
+                                                        if (li.siblings().length == 0) {
+                                                            li.parent().prev().andSelf().fadeOut();
+                                                        }
+                                                        li.remove();
+                                                    },
+                                                    error: function() {
+                                                        alert('Could not save analysis.');
                                                     }
-                                                    li.remove();
-                                                },
-                                                error: function() {
-                                                    alert('Could not save analysis.');
-                                                }
-                                            });
-                                        })
-                                )
-                            );
-                            </sec:authorize>
-                            div.append(actionsList);
+                                                });
+                                            })
+                                    )
+                                );
+                                </sec:authorize>
+                            }
+                            else if ((analysis.status == 'NEW') || (analysis.status == 'PROCESSING')) {
+                                footerList.append($('<li>')
+                                    .addClass('processing')
+                                    .append('Processing')
+                                );
+                            }
+                            else if (analysis.status == 'FAILED') {
+                                footerList.append($('<li>')
+                                    .addClass('error')
+                                    .append('Error: ' + analysis.message || 'unknown error')
+                                );
+                            }
+                            div.append(footerList);
 
                             div.slideDown();
                         }

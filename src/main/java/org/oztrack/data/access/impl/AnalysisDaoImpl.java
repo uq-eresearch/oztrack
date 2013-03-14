@@ -1,5 +1,6 @@
 package org.oztrack.data.access.impl;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -46,10 +47,13 @@ public class AnalysisDaoImpl implements AnalysisDao {
                 "where\n" +
                 "    project = :project and\n" +
                 "    saved = true\n" +
-                "order by createDate")
+                "order by createDate desc")
             .setParameter("project", project)
             .setMaxResults(20)
             .getResultList();
+        // We order by date descending in the query so we can limit to N most recent analyses.
+        // Now reverse the list of those N analyses so order is by date ascending.
+        Collections.reverse(resultList);
         return resultList;
     }
 
@@ -67,13 +71,16 @@ public class AnalysisDaoImpl implements AnalysisDao {
                 "        createUser = :currentUser or\n" +
                 "        createSession = :currentSession\n" +
                 "    )\n" +
-                "order by createDate")
+                "order by createDate desc")
             .setParameter("project", project)
             .setParameter("currentUserIsAdmin", (currentUser != null) && (currentUser.getAdmin() != null) && currentUser.getAdmin())
             .setParameter("currentUser", currentUser)
             .setParameter("currentSession", currentSessionId)
             .setMaxResults(20)
             .getResultList();
+        // We order by date descending in the query so we can limit to N most recent analyses.
+        // Now reverse the list of those N analyses so order is by date ascending.
+        Collections.reverse(resultList);
         return resultList;
     }
 }
