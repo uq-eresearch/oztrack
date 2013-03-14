@@ -96,10 +96,26 @@
         </div>
         <div style="float:right">
             <div class="btn-group">
-                <a class="btn ${(offset > 0) ? '' : 'disabled'}" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${0}">&lt;&lt;</a>
-                <a class="btn ${(offset > 0) ? '' : 'disabled'}" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${offset-nbrObjectsPerPage}">&lt;</a>
-                <a class="btn ${(offset < totalCount - (totalCount % nbrObjectsPerPage)) ? '' : 'disabled'}" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${offset + nbrObjectsThisPage}">&gt;</a>
-                <a class="btn ${(offset < totalCount - (totalCount % nbrObjectsPerPage)) ? '' : 'disabled'}" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${totalCount - (totalCount % nbrObjectsPerPage)}">&gt;&gt;</a>
+                <c:choose>
+                <c:when test="${(offset > 0)}">
+                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${0}">&lt;&lt;</a>
+                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${offset-nbrObjectsPerPage}">&lt;</a>
+                </c:when>
+                <c:otherwise>
+                <a class="btn disabled" href="javascript:void(0);">&lt;&lt;</a>
+                <a class="btn disabled" href="javascript:void(0);">&lt;</a>
+                </c:otherwise>
+                </c:choose>
+                <c:choose>
+                <c:when test="${(offset + nbrObjectsPerPage < totalCount)}">
+                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${offset + nbrObjectsThisPage}">&gt;</a>
+                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${totalCount - (totalCount % nbrObjectsPerPage) - (((totalCount > nbrObjectsPerPage) && (totalCount % nbrObjectsPerPage == 0)) ? nbrObjectsPerPage : 0)}">&gt;&gt;</a>
+                </c:when>
+                <c:otherwise>
+                <a class="btn disabled" href="javascript:void(0);">&gt;</a>
+                <a class="btn disabled" href="javascript:void(0);">&gt;&gt;</a>
+                </c:otherwise>
+                </c:choose>
             </div>
             <div class="btn-group">
                 <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/export?format=csv">Export CSV</a>
