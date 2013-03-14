@@ -32,7 +32,7 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                 var categoryLabel = options.categoryLabels[categoryId];
                 this.categories[categoryId] = {
                     label: categoryLabel,
-                    layerEntries: [],
+                    layers: [],
                     labelDiv: null,
                     layersDiv: null
                 };
@@ -130,6 +130,29 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                     continue;
                 }
 
+                var layerDiv = $('<div class="layerDiv">').get(0);
+
+                function addLayerMoveSpan(map, layer, delta) {
+                    var layerMoveSpan = $('<span>').addClass('icon-white').css('float', 'right');
+                    layerMoveSpan.addClass((delta > 0) ? 'icon-arrow-down' : 'icon-arrow-up');
+                    var targetLayer = map.layers[map.getLayerIndex(layer) + delta];
+                    if (targetLayer && (layer.metadata.category == targetLayer.metadata.category)) {
+                        layerMoveSpan
+                            .css('cursor', 'pointer')
+                            .click(function(e) {
+                                var targetLayer = map.layers[map.getLayerIndex(layer) + delta];
+                                if (targetLayer && (layer.metadata.category == targetLayer.metadata.category)) {
+                                    map.raiseLayer(layer, delta);
+                                }
+                            });
+                    }
+                    $(layerDiv).append(layerMoveSpan);
+                }
+                if (!layer.isBaseLayer) {
+                    addLayerMoveSpan(this.map, layer, 1);
+                    addLayerMoveSpan(this.map, layer, -1);
+                }
+
                 var inputElem = document.createElement("input");
                 var checked = (layer.isBaseLayer) ? (layer == this.map.baseLayer) : layer.getVisibility();
                 inputElem.id = this.id + "_input_" + layer.name;
@@ -157,20 +180,17 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                 labelElem.innerHTML = layer.name;
                 labelElem.style.verticalAlign = (layer.isBaseLayer) ? "bottom" : "baseline";
 
+                layerDiv.appendChild(inputElem);
+                layerDiv.appendChild(labelElem);
+
                 var category = this.categories[layer.metadata.category];
-                category.layerEntries.push({
-                    'layer': layer,
-                    'inputElem': inputElem,
-                    'labelElem': labelElem
-                });
-                category.layersDiv.appendChild(inputElem);
-                category.layersDiv.appendChild(labelElem);
-                category.layersDiv.appendChild(document.createElement("br"));
+                category.layers.push(layer);
+                category.layersDiv.appendChild(layerDiv);
             }
 
             for (categoryId in this.categories) {
                 var category = this.categories[categoryId];
-                category.labelDiv.style.display = category.layerEntries.length ? "" : "none";
+                category.labelDiv.style.display = category.layers.length ? "" : "none";
             }
 
             return this.div;
