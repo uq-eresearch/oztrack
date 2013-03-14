@@ -146,25 +146,25 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                     inputElem.disabled = true;
                 }
 
-                var labelSpan = document.createElement("label");
-                labelSpan["for"] = inputElem.id;
-                OpenLayers.Element.addClass(labelSpan, "labelSpan olButton");
-                labelSpan._layer = layer.id;
-                labelSpan._layerSwitcher = this.id;
+                var labelElem = document.createElement("label");
+                labelElem["for"] = inputElem.id;
+                OpenLayers.Element.addClass(labelElem, "labelElem olButton");
+                labelElem._layer = layer.id;
+                labelElem._layerSwitcher = this.id;
                 if (!layer.isBaseLayer && !layer.inRange) {
-                    labelSpan.style.color = "gray";
+                    labelElem.style.color = "gray";
                 }
-                labelSpan.innerHTML = layer.name;
-                labelSpan.style.verticalAlign = (layer.isBaseLayer) ? "bottom" : "baseline";
+                labelElem.innerHTML = layer.name;
+                labelElem.style.verticalAlign = (layer.isBaseLayer) ? "bottom" : "baseline";
 
                 var category = this.categories[layer.metadata.category];
                 category.layerEntries.push({
                     'layer': layer,
                     'inputElem': inputElem,
-                    'labelSpan': labelSpan
+                    'labelElem': labelElem
                 });
                 category.layersDiv.appendChild(inputElem);
-                category.layersDiv.appendChild(labelSpan);
+                category.layersDiv.appendChild(labelElem);
                 category.layersDiv.appendChild(document.createElement("br"));
             }
 
