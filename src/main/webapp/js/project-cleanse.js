@@ -41,49 +41,47 @@
         that.navToolbar = new OzTrackNavToolbar();
         that.map.addControl(that.navToolbar);
         that.map.addControl(new OpenLayers.Control.ScaleLine());
-        that.layerSwitcher = new OpenLayers.Control.LayerSwitcher();
+
+        that.layerSwitcher = new OzTrack.OpenLayers.Control.OzTrackLayerSwitcher({
+            categoryLabels: {
+                'base': 'Base layer',
+                'project': 'Project layers'
+            }
+        });
         that.map.addControl(that.layerSwitcher);
         that.layerSwitcher.maximizeControl();
         that.loadingPanel = new OpenLayers.Control.LoadingPanel();
         that.map.addControl(that.loadingPanel);
 
         that.googlePhysicalLayer = new OpenLayers.Layer.Google('Google Physical', {
-            type : google.maps.MapTypeId.TERRAIN
+            type: google.maps.MapTypeId.TERRAIN,
+            metadata: {category: 'base'}
         });
         that.googleSatelliteLayer = new OpenLayers.Layer.Google('Google Satellite', {
-            type : google.maps.MapTypeId.SATELLITE,
-            numZoomLevels : 22
+            type: google.maps.MapTypeId.SATELLITE,
+            numZoomLevels: 22,
+            metadata: {category: 'base'}
         });
         that.googleStreetsLayer = new OpenLayers.Layer.Google('Google Streets', {
-            numZoomLevels : 20
+            numZoomLevels: 20,
+            metadata: {category: 'base'}
         });
         that.googleHybridLayer = new OpenLayers.Layer.Google('Google Hybrid', {
-            type : google.maps.MapTypeId.HYBRID,
-            numZoomLevels : 20
+            type: google.maps.MapTypeId.HYBRID,
+            numZoomLevels: 20,
+            metadata: {category: 'base'}
         });
         that.map.addLayers([that.googleSatelliteLayer, that.googlePhysicalLayer, that.googleStreetsLayer, that.googleHybridLayer]);
 
-        that.osmLayer = new OpenLayers.Layer.OSM('OpenStreetMap');
+        that.osmLayer = new OpenLayers.Layer.OSM('OpenStreetMap', null, {
+            metadata: {category: 'base'}
+        });
         that.map.addLayer(that.osmLayer);
 
-        that.bathymetryLayer = new OpenLayers.Layer.WMS(
-            'Bathymetry',
-            '/geoserver/gwc/service/wms',
-            {
-                layers: 'oztrack:gebco_08',
-                styles: 'oztrack_bathymetry',
-                format: 'image/png'
-            },
-            {
-                isBaseLayer: true,
-                wrapDateLine: true,
-                attribution: '<a href="http://www.gebco.net">The GEBCO_08 Grid, version 20091120</a>'
-            }
-        );
-        that.map.addLayer(that.bathymetryLayer);
-
         that.allDetectionsLayer = createAllDetectionsLayer(that.projectId);
-        that.polygonLayer = new OpenLayers.Layer.Vector('Selections');
+        that.polygonLayer = new OpenLayers.Layer.Vector('Polygon selections', {
+            metadata: {category: 'project'}
+        });
         that.map.addLayers([that.allDetectionsLayer, that.polygonLayer]);
 
         that.polygonFeatures = [];
@@ -222,7 +220,8 @@
                 },
                 {
                     isBaseLayer: false,
-                    tileSize: new OpenLayers.Size(512,512)
+                    tileSize: new OpenLayers.Size(512,512),
+                    metadata: {category: 'project'}
                 }
             );
         }

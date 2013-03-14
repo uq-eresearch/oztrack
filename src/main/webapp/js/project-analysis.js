@@ -67,8 +67,7 @@
                 'base': 'Base layer',
                 'environment': 'Environmental layers',
                 'project': 'Project layers',
-                'analysis': 'Analysis layers',
-                'other': 'Other layers'
+                'analysis': 'Analysis layers'
             }
         });
         that.map.addControl(that.layerSwitcher);
