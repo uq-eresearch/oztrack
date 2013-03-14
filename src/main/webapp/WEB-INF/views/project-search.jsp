@@ -14,7 +14,7 @@
     <jsp:attribute name="head">
         <style type="text/css">
             .dataTableNav {
-                margin: 10px 0;
+                margin: 18px 0;
                 font-weight: bold;
             }
             .dataTableNav a {
@@ -91,37 +91,20 @@
 
 
         <div class="dataTableNav">
-        <div style="float:left;">
+        <div style="float:left; padding: 5px 0;">
             Displaying <c:out value="${offset+1}"/> to <c:out value="${offset+nbrObjectsThisPage}"/> of <c:out value="${totalCount}"/> records.
         </div>
         <div style="float:right">
-            <c:choose>
-            <c:when test="${offset > 0}">
-                <a href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${0}">&lt;&lt;</a>
-                &nbsp;&nbsp;
-                <a href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${offset-nbrObjectsPerPage}">&lt;</a>
-            </c:when>
-            <c:otherwise>
-                &lt;&lt;
-                &nbsp;&nbsp;
-                &lt;
-            </c:otherwise>
-            </c:choose>
-            &nbsp;&nbsp;
-            <c:choose>
-            <c:when test="${offset < totalCount - (totalCount % nbrObjectsPerPage)}">
-                <a href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${offset+nbrObjectsThisPage}">&gt;</a>
-                &nbsp;&nbsp;
-                <a href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${totalCount - (totalCount % nbrObjectsPerPage)}">&gt;&gt;</a>
-            </c:when>
-            <c:otherwise>
-                &gt;
-                &nbsp;&nbsp;
-                &gt;&gt;
-            </c:otherwise>
-            </c:choose>
-            &nbsp;&nbsp;
-            <a href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/export">Export</a>
+            <div class="btn-group">
+                <a class="btn ${(offset > 0) ? '' : 'disabled'}" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${0}">&lt;&lt;</a>
+                <a class="btn ${(offset > 0) ? '' : 'disabled'}" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${offset-nbrObjectsPerPage}">&lt;</a>
+                <a class="btn ${(offset < totalCount - (totalCount % nbrObjectsPerPage)) ? '' : 'disabled'}" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${offset + nbrObjectsThisPage}">&gt;</a>
+                <a class="btn ${(offset < totalCount - (totalCount % nbrObjectsPerPage)) ? '' : 'disabled'}" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${totalCount - (totalCount % nbrObjectsPerPage)}">&gt;&gt;</a>
+            </div>
+            <div class="btn-group">
+                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/export?format=csv">Export CSV</a>
+                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/export?format=xls">XLS</a>
+            </div>
         </div>
         <div style="clear: both;"></div>
         </div>

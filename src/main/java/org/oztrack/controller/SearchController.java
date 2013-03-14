@@ -3,7 +3,10 @@ package org.oztrack.controller;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.oztrack.data.access.AnimalDao;
@@ -30,6 +33,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.View;
+
+import au.com.bytecode.opencsv.CSVWriter;
 
 @Controller
 public class SearchController {
@@ -105,9 +110,44 @@ public class SearchController {
 
     @RequestMapping(value="/projects/{id}/export", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#searchQuery.project, 'read')")
-    public View handleRequest(@ModelAttribute(value="searchQuery") SearchQuery searchQuery, Model model) throws Exception {
-        List<PositionFix> positionFixes = positionFixDao.getProjectPositionFixList(searchQuery);
-        return new SearchQueryXLSView(searchQuery.getProject(), positionFixes);
+    public View handleRequest(
+        Model model,
+        @ModelAttribute(value="searchQuery") SearchQuery searchQuery,
+        @RequestParam(value="format", defaultValue="xls") String format
+    ) throws Exception {
+        final List<PositionFix> positionFixes = positionFixDao.getProjectPositionFixList(searchQuery);
+        if (format.equals("xls")) {
+            return new SearchQueryXLSView(searchQuery.getProject(), positionFixes);
+        }
+        else {
+            return new View() {
+                @Override
+                public String getContentType() {
+                    return "text/csv";
+                }
+
+                @Override
+                public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+                    response.setHeader("Content-Disposition", "attachment; filename=\"export.csv\"");
+                    CSVWriter writer = new CSVWriter(response.getWriter());
+                    try {
+                        writer.writeNext(new String[] {"ANIMALID", "DATE", "LONGITUDE", "LATITUDE"});
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                        for (PositionFix positionFix : positionFixes) {
+                            writer.writeNext(new String[] {
+                                String.valueOf(positionFix.getAnimal().getId()),
+                                dateFormat.format(positionFix.getDetectionTime()),
+                                String.valueOf(positionFix.getLocationGeometry().getX()),
+                                String.valueOf(positionFix.getLocationGeometry().getY())
+                            });
+                        }
+                    }
+                    finally {
+                        try {writer.close();} catch (Exception e) {}
+                    }
+                }
+            };
+        }
     }
 
     private String showFormInternal(
