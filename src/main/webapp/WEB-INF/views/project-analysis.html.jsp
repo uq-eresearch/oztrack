@@ -655,11 +655,11 @@
                         <div class="btn-group" style="float: right;">
                             <button
                                 id="buttonShowHide${animal.id}"
-                                class="btn btn-mini"
+                                class="btn btn-small"
                                 onclick="var infoElem = $(this).parent().parent().next(); $(this).text(infoElem.is(':visible') ? 'Expand' : 'Shrink'); infoElem.slideToggle();">
                                 ${showAnimalInfo ? 'Shrink' : 'Expand'}
                             </button>
-                            <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
+                            <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu pull-right">
