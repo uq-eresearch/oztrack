@@ -291,6 +291,22 @@ public enum AnalysisType {
                 null
             ),
             new AnalysisParameterType(
+                "is180",
+                "Crosses 180°",
+                "<p>Check this box if any of the selected trajectories cross the antimeridian (180° east or west longitude).</p>\n" +
+                "\n" +
+                "<p>If this option is not checked, the resulting home range polygons may include points near 180° east " +
+                "and wrap around the globe, through the prime meridian, to include points near 180° west.</p>\n" +
+                "\n" +
+                "<p><a href=\"http://en.wikipedia.org/wiki/180th_meridian\">" +
+                "http://en.wikipedia.org/wiki/180th_meridian</a></p>",
+                "boolean",
+                null,
+                "false",
+                false,
+                null
+            ),
+            new AnalysisParameterType(
                 "gridSize",
                 "Grid size",
                 "<p>The utilisation distribution is estimated in e ach pixel of this grid " +
@@ -444,6 +460,22 @@ public enum AnalysisType {
                 "double",
                 "m",
                 null,
+                false,
+                null
+            ),
+            new AnalysisParameterType(
+                "is180",
+                "Crosses 180°",
+                "<p>Check this box if any of the selected trajectories cross the antimeridian (180° east or west longitude).</p>\n" +
+                "\n" +
+                "<p>If this option is not checked, the resulting home range polygons may include points near 180° east " +
+                "and wrap around the globe, through the prime meridian, to include points near 180° west.</p>\n" +
+                "\n" +
+                "<p><a href=\"http://en.wikipedia.org/wiki/180th_meridian\">" +
+                "http://en.wikipedia.org/wiki/180th_meridian</a></p>",
+                "boolean",
+                null,
+                "false",
                 false,
                 null
             )

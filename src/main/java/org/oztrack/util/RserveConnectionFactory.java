@@ -106,6 +106,7 @@ public class RserveConnectionFactory extends BasePoolableObjectFactory<RConnecti
     private void loadScripts(RConnection rConnection) throws RserveInterfaceException {
         String[] scriptFileNames = new String[] {
             "kmlPolygons.r",
+            "elide2.r",
             "mcp.r",
             "kernelud.r",
             "kernelbb.r",

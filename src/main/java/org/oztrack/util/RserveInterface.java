@@ -249,19 +249,22 @@ public class RserveInterface {
         Double sig2 = (Double) analysis.getParameterValue("sig2", false);
         Double gridSize = (Double) analysis.getParameterValue("gridSize", true);
         Double extent = (Double) analysis.getParameterValue("extent", true);
+        Boolean is180 = (Boolean) analysis.getParameterValue("is180", true);
         if (!(percent >= 0d && percent <= 100d)) {
             throw new RserveInterfaceException("percent must be between 0 and 100.");
         }
         if ((sig1 == null) || (sig2 == null)) {
             throw new RserveInterfaceException("sig1 and sig2 must both be entered.");
         }
+        safeEval("srs <- '" + srs + "'");
         safeEval("sig1 <- " + sig1);
         safeEval("sig2 <- " + sig2);
         safeEval("gridSize <- " + gridSize);
         safeEval("extent <- " + extent);
         safeEval("percent <- " + percent);
         safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
-        safeEval("oztrack_kernelbb(sig1=sig1, sig2=sig2, gridSize=gridSize, extent=extent, percent=percent, kmlFile=kmlFile)");
+        safeEval("is180 <- " + (is180 ? "TRUE" : "FALSE"));
+        safeEval("oztrack_kernelbb(srs=srs, sig1=sig1, sig2=sig2, gridSize=gridSize, extent=extent, percent=percent, kmlFile=kmlFile, is180=is180)");
     }
 
     private void writeAlphahullKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
@@ -281,14 +284,17 @@ public class RserveInterface {
         Double percent = (Double) analysis.getParameterValue("percent", true);
         Double k = (Double) analysis.getParameterValue("k", false);
         Double r = (Double) analysis.getParameterValue("r", false);
+        Boolean is180 = (Boolean) analysis.getParameterValue("is180", true);
         if (!(percent >= 0d && percent <= 100d)) {
             throw new RserveInterfaceException("percent must be between 0 and 100.");
         }
+        safeEval("srs <- '" + srs + "'");
         safeEval("k <- " + ((k != null) ? k : "NULL"));
         safeEval("r <- " + ((r != null) ? r : "NULL"));
         safeEval("percent <- " + percent);
         safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
-        safeEval("oztrack_locoh(k=k, r=r, percent=percent, kmlFile=kmlFile)");
+        safeEval("is180 <- " + (is180 ? "TRUE" : "FALSE"));
+        safeEval("oztrack_locoh(srs=srs, k=k, r=r, percent=percent, kmlFile=kmlFile, is180=is180)");
     }
 
     private void writePointHeatmapKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
