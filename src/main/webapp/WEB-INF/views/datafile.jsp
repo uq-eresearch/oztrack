@@ -50,10 +50,6 @@
             <td><c:out value="${dataFile.fileDescription}"/></td>
         </tr>
         <tr>
-            <th>Content Type:</th>
-            <td><c:out value="${dataFile.contentType}"/></td>
-        </tr>
-        <tr>
             <th>Uploaded:</th>
             <td><fmt:formatDate pattern="${dateTimeFormatPattern}" value="${dataFile.createDate}"/> by <c:out value="${dataFile.createUser.fullName}"/></td>
         </tr>
