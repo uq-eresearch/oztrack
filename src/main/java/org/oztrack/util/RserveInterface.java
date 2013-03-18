@@ -82,12 +82,16 @@ public class RserveInterface {
                     throw new RserveInterfaceException("Unhandled AnalysisType: " + analysis.getAnalysisType());
             }
         }
+        catch (RserveInterfaceException e) {
+            logger.error("Error running R analysis.", e);
+            throw e;
+        }
         finally {
             try {
-                rConnectionPool.returnObject(this.rConnection);
+                rConnectionPool.invalidateObject(this.rConnection);
             }
-            catch (Exception e) {
-                logger.error("Error returning R connection", e);
+            catch (Exception e2) {
+                logger.error("Error invalidating R connection.", e2);
             }
         }
     }
@@ -129,10 +133,10 @@ public class RserveInterface {
         }
         finally {
             try {
-                rConnectionPool.returnObject(this.rConnection);
+                rConnectionPool.invalidateObject(this.rConnection);
             }
-            catch (Exception e) {
-                logger.error("Error returning R connection", e);
+            catch (Exception e2) {
+                logger.error("Error invalidating R connection.", e2);
             }
         }
     }
