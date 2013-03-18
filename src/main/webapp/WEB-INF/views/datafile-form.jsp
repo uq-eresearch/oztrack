@@ -10,9 +10,11 @@
     </jsp:attribute>
     <jsp:attribute name="head">
         <style type="text/css">
+            .datafile {
+                background-color: white;
+            }
             pre.datafile {
-                width: 600px;
-                background: white;
+                border: 1px solid #aaaaaa;
             }
         </style>
     </jsp:attribute>
@@ -90,7 +92,7 @@
 
         <p>CSV file containing a single animal:</p>
 <pre class="datafile">
-date,time,latitude,longitude
+DATE,TIME,LATITUDE,LONGITUDE
 30/03/2010,5:46:35,-17.557141,146.089866
 30/03/2010,6:46:35,-17.557291,146.089891
 31/03/2010,21:47:53,-17.558633,146.089075
@@ -98,16 +100,16 @@ date,time,latitude,longitude
 2/04/2010,22:17:23,-17.559016,146.087858
 </pre>
 
-        <p>CSV file containing several animals (note the extra <tt>ANIMALID</tt> column):</p>
-<pre class="datafile">
-ANIMALID,DATE,LONGITUDE,LATITUDE
-Ernie,5/08/2009 11:16:00,142.17893,-12.38277
-Ernie,11/08/2009 20:56:00,142.17896,-12.38248
-Ernie,12/08/2009 5:56:00,142.10926,-12.31637
-Bert,5/08/2009 11:16:00,142.17888,-12.38272
-Bert,11/08/2009 20:56:00,142.17881,-12.3824
-Bert,12/08/2009 2:55:00,142.10619,-12.32208
-</pre>
+        <p>Excel file containing several animals (note the extra <tt>ANIMALID</tt> column):</p>
+        <table class="table table-bordered table-condensed datafile">
+        <tr><th>ANIMALID</th><th>DATE</th><th>LONGITUDE</th><th>LATITUDE</th></tr>
+        <tr><td>Ernie</td><td>5/08/2009 11:16:00</td><td>142.17893</td><td>-12.38277</th></tr>
+        <tr><td>Ernie</td><td>11/08/2009 20:56:00</td><td>142.17896</td><td>-12.38248</th></tr>
+        <tr><td>Ernie</td><td>12/08/2009 5:56:00</td><td>142.10926</td><td>-12.31637</th></tr>
+        <tr><td>Bert</td><td>5/08/2009 11:16:00</td><td>142.17888</td><td>-12.38272</th></tr>
+        <tr><td>Bert</td><td>11/08/2009 20:56:00</td><td>142.17881</td><td>-12.3824</th></tr>
+        <tr><td>Bert</td><td>12/08/2009 2:55:00</td><td>142.10619</td><td>-12.32208</th></tr>
+        </table>
 
         <h2>File format</h2>
 
