@@ -37,15 +37,24 @@
     </jsp:attribute>
     <jsp:body>
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
-        <h2>Upload Data File</h2>
-
-        <p>
-            This form allows you to upload animal tracking data in CSV format.
-        </p>
+        <h2>Upload data file</h2>
 
         <form:form cssClass="form-horizontal form-bordered" action="/projects/${project.id}/datafiles" commandName="dataFile" method="POST" enctype="multipart/form-data">
             <fieldset>
-                <div class="legend">Data File</div>
+                <div class="legend">Data file</div>
+                <p style="margin: 18px 0;">
+                    Uploaded files must be in
+                    <a href="http://en.wikipedia.org/wiki/Comma-separated_values">CSV</a> or
+                    <a href="http://en.wikipedia.org/wiki/Microsoft_Excel">Excel</a> format.
+                    See below for details on required columns.
+                </p>
+                <div class="control-group">
+                    <label class="control-label" for="file">File: </label>
+                    <div class="controls">
+                        <input type="file" name="file"/>
+                        <form:errors path="file" element="div" cssClass="help-block formErrors"/>
+                    </div>
+                </div>
                 <div class="control-group">
                     <label class="control-label" for="fileDescription">File Description</label>
                     <div class="controls">
@@ -70,18 +79,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="control-group">
-                    <label class="control-label" for="file">File: </label>
-                    <div class="controls">
-                        <input type="file" name="file"/>
-                        <div class="help-inline">
-                            <div class="help-popover" title="Uploading the File">
-                                See below for details on the required file format.
-                            </div>
-                        </div>
-                        <form:errors path="file" element="div" cssClass="help-block formErrors"/>
-                    </div>
-                </div>
             </fieldset>
             <div class="form-actions">
                 <input class="btn btn-primary" type="submit" value="Upload File"/>
@@ -89,16 +86,9 @@
             </div>
         </form:form>
 
-        <p style="margin-top: 1.00em; margin-bottom: 0.33em;">
-            <b>Note: all files must be CSV (comma-separated values) only.</b>
-        </p>
-        <p style="margin-top: 0.33em; margin-bottom: 1.00em;">
-            If you are uploading data from an Excel spreadsheet, please save as .csv before proceeding.
-        </p>
-
         <h2>Example data files</h2>
 
-        <p>Data file containing a single animal:</p>
+        <p>CSV file containing a single animal:</p>
 <pre class="datafile">
 date,time,latitude,longitude
 30/03/2010,5:46:35,-17.557141,146.089866
@@ -108,7 +98,7 @@ date,time,latitude,longitude
 2/04/2010,22:17:23,-17.559016,146.087858
 </pre>
 
-        <p>Data file containing several animals (note the extra <tt>ANIMALID</tt> column):</p>
+        <p>CSV file containing several animals (note the extra <tt>ANIMALID</tt> column):</p>
 <pre class="datafile">
 ANIMALID,DATE,LONGITUDE,LATITUDE
 Ernie,5/08/2009 11:16:00,142.17893,-12.38277
@@ -121,9 +111,9 @@ Bert,12/08/2009 2:55:00,142.10619,-12.32208
 
         <h2>File format</h2>
 
-        <h3>CSV headers</h3>
+        <h3>Columns</h3>
         <p>
-            OzTrack accepts CSV files containing the following headers:<br>
+            OzTrack accepts CSV and Excel files containing the following headers:<br>
         </p>
         <ul>
             <li><tt>DATE</tt>, <tt>UTCDATE</tt>, <tt>LOCDATE</tt>, or <tt>ACQUISITIONTIME</tt>: date or date/time value (required)</li>

@@ -1,7 +1,5 @@
 package org.oztrack.data.loader;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,6 +23,8 @@ import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.RawPositionFix;
 import org.oztrack.data.model.types.PositionFixFileHeader;
 import org.oztrack.error.FileProcessingException;
+
+import au.com.bytecode.opencsv.CSVReader;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -50,23 +50,27 @@ public class PositionFixFileLoader extends DataFileLoader {
     @Override
     public void createRawObservations() throws FileProcessingException {
         FileInputStream fileInputStream = null;
-        DataInputStream dataInputStream = null;
-        BufferedReader reader = null;
+        CSVReader csvReader = null;
         try {
             try {
                 fileInputStream = new FileInputStream(dataFile.getAbsoluteDataFilePath());
-            } catch (FileNotFoundException e) {
-                 throw new FileProcessingException("File not found.", e);
+            }
+            catch (FileNotFoundException e) {
+                throw new FileProcessingException("File not found.", e);
             }
 
-            dataInputStream = new DataInputStream(fileInputStream);
-            reader = new BufferedReader(new InputStreamReader(dataInputStream));
+            try {
+                csvReader = new CSVReader(new InputStreamReader(fileInputStream, "UTF-8"));
+            }
+            catch (IOException e) {
+                throw new FileProcessingException("Error reading CSV file.", e);
+            }
 
-            String strLine;
+            String[] colHeadings = null;
             int lineNumber = 0;
 
             try {
-                strLine = reader.readLine();
+                colHeadings = csvReader.readNext();
                 lineNumber++;
             } catch (IOException e) {
                 throw new FileProcessingException("Problem reading file.", e);
@@ -77,8 +81,6 @@ public class PositionFixFileLoader extends DataFileLoader {
                    2 ANIMALID    */
 
             HashMap<Integer, PositionFixFileHeader> headerMap = new HashMap<Integer, PositionFixFileHeader>();
-            String[] colHeadings = strLine.split(",");
-            String[] dataRow;
 
             boolean dateFieldFound = false;
             boolean latFieldFound = false;
@@ -144,9 +146,9 @@ public class PositionFixFileLoader extends DataFileLoader {
             Boolean dateIncludesTime = null;
 
             try {
-                while ((strLine = reader.readLine()) != null) {
+                String[] dataRow = null;
+                while ((dataRow = csvReader.readNext()) != null) {
                     lineNumber++;
-                    dataRow = strLine.split(",");
                     RawPositionFix rawPositionFix= new RawPositionFix();
 
                     logger.debug("file linenumber: " + lineNumber);
@@ -240,8 +242,7 @@ public class PositionFixFileLoader extends DataFileLoader {
             logger.debug(lineNumber + " rows persisted.");
         }
         finally {
-            IOUtils.closeQuietly(reader);
-            IOUtils.closeQuietly(dataInputStream);
+            try {csvReader.close();} catch (Exception e) {};
             IOUtils.closeQuietly(fileInputStream);
         }
     }

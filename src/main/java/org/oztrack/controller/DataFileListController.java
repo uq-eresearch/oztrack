@@ -1,9 +1,10 @@
 package org.oztrack.controller;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.ProjectDao;
@@ -13,6 +14,7 @@ import org.oztrack.data.model.Project;
 import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.DataFileStatus;
 import org.oztrack.data.model.types.PositionFixFileHeader;
+import org.oztrack.util.ExcelToCsvConverter;
 import org.oztrack.validator.DataFileFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
+
 
 @Controller
 public class DataFileListController {
@@ -107,10 +110,10 @@ public class DataFileListController {
             return "datafile-form";
         }
 
-        MultipartFile file = dataFile.getFile();
+        MultipartFile uploadedFile = dataFile.getFile();
         dataFile.setSingleAnimalInFile(false);
-        dataFile.setUserGivenFileName(file.getOriginalFilename());
-        dataFile.setContentType(file.getContentType());
+        dataFile.setUserGivenFileName(uploadedFile.getOriginalFilename());
+        dataFile.setContentType(uploadedFile.getContentType());
         dataFile.setCreateDate(new java.util.Date());
         dataFile.setUpdateDate(new java.util.Date());
         dataFile.setCreateUser(currentUser);
@@ -120,16 +123,37 @@ public class DataFileListController {
 
         dataFile.setDataFilePath("datafile-" + dataFile.getId().toString() + ".csv");
 
+        String errorMessage = null;
         try {
-            File saveFile = new File(dataFile.getAbsoluteDataFilePath());
-            saveFile.mkdirs();
-            file.transferTo(saveFile);
+            File savedFile = new File(dataFile.getAbsoluteDataFilePath());
+            savedFile.getParentFile().mkdirs();
+            if (
+                uploadedFile.getContentType().equals("text/csv") ||
+                uploadedFile.getContentType().equals("text/plain") ||
+                uploadedFile.getOriginalFilename().toLowerCase(Locale.ENGLISH).endsWith(".csv") ||
+                uploadedFile.getOriginalFilename().toLowerCase(Locale.ENGLISH).endsWith(".txt")
+            ) {
+                uploadedFile.transferTo(savedFile);
+            }
+            else if (
+                uploadedFile.getContentType().equals("application/vnd.ms-excel") ||
+                uploadedFile.getOriginalFilename().toLowerCase(Locale.ENGLISH).endsWith(".xls") ||
+                uploadedFile.getOriginalFilename().toLowerCase(Locale.ENGLISH).endsWith(".xlsx")
+            ) {
+                ExcelToCsvConverter.convertExcelToCsv(uploadedFile.getInputStream(), new FileOutputStream(savedFile));
+            }
+            else {
+                errorMessage = "Files must be in CSV or Excel format.";
+            }
         }
-        catch (IOException e) {
-            // usually we should only arrive here if everything crashed during the file upload and we can't write over a failed file
-            model.addAttribute("errorMessage", "There was a problem with uploading that file. Please try and create a new one.");
+        catch (Exception e) {
+            errorMessage = "Error uploading file. Please check file and try again.";
+        }
+
+        if (errorMessage != null) {
+            model.addAttribute("errorMessage", errorMessage);
             dataFile.setStatus(DataFileStatus.INACTIVE);
-            dataFile.setStatusMessage("There was a problem with this file upload and it has been discarded. Please try again.");
+            dataFile.setStatusMessage("There was a problem with this file upload and it has been discarded.");
             return "datafile-form";
         }
 

@@ -1,15 +1,15 @@
 package org.oztrack.util;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.oztrack.data.access.UserDao;
@@ -18,69 +18,70 @@ import org.oztrack.error.FileProcessingException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.CSVWriter;
+
 public class OzTrackUtil {
     public static void removeDuplicateLinesFromFile(String fileName) throws FileProcessingException {
         File inFile = new File(fileName);
         File outFile = new File(fileName + ".dedup");
 
         FileInputStream fileInputStream = null;
-        DataInputStream dataInputStream = null;
-        BufferedReader reader = null;
-        BufferedWriter writer = null;
+        FileOutputStream fileOutputStream = null;
+        CSVReader csvReader = null;
+        CSVWriter csvWriter = null;
         try {
             try {
-                 fileInputStream = new FileInputStream(inFile);
+                fileInputStream = new FileInputStream(inFile);
             }
             catch (FileNotFoundException e) {
-                 throw new FileProcessingException("File not found.", e);
+                throw new FileProcessingException("File not found.", e);
             }
             if (inFile.getTotalSpace() == 0) {
                 throw new FileProcessingException("No data in file");
             }
-            dataInputStream = new DataInputStream(fileInputStream);
-            reader = new BufferedReader(new InputStreamReader(dataInputStream));
-
             try {
-                writer = new BufferedWriter(new FileWriter(outFile));
+                csvReader = new CSVReader(new InputStreamReader(fileInputStream, "UTF-8"));
             }
             catch (IOException e) {
-                throw new FileProcessingException("Couldn't create new file", e);
+                throw new FileProcessingException("Couldn't read CSV file", e);
             }
 
             try {
-                String headers = reader.readLine();
-                writer.write(headers);
-                writer.newLine();
+                fileOutputStream = new FileOutputStream(outFile);
+                csvWriter = new CSVWriter(new OutputStreamWriter(fileOutputStream, "UTF-8"));
+            }
+            catch (IOException e) {
+                throw new FileProcessingException("Couldn't create CSV file", e);
+            }
 
-                HashSet<String> hashSet = new HashSet<String>(10000);
-                String strLine;
-                while ((strLine = reader.readLine()) != null) {
-                    if (!hashSet.contains(strLine)) {
-                      hashSet.add(strLine);
-                      writer.write(strLine);
-                      writer.newLine();
+            try {
+                String[] headers = csvReader.readNext();
+                csvWriter.writeNext(headers);
+
+                HashSet<List<String>> hashSet = new HashSet<List<String>>();
+                String[] values;
+                while ((values = csvReader.readNext()) != null) {
+                    List<String> valuesList = Arrays.asList(values);
+                    if (!hashSet.contains(valuesList)) {
+                        hashSet.add(valuesList);
+                        csvWriter.writeNext(values);
                     }
                 }
-                hashSet.clear();
-                reader.close();
-                writer.close();
 
-                File finalFile = new File(fileName);
-                File origFile = new File(fileName.replace(".csv",".orig"));
-
-                inFile.renameTo(origFile);
-                outFile.renameTo(finalFile);
+                inFile.renameTo(new File(fileName.replace(".csv",".orig")));
+                outFile.renameTo(new File(fileName));
                 outFile.delete();
             }
             catch (Exception e) {
-                throw new FileProcessingException("File Processing problem (dedup.");
+                throw new FileProcessingException("File Processing problem (dedup).");
             }
         }
         finally {
-            IOUtils.closeQuietly(writer);
-            IOUtils.closeQuietly(reader);
-            IOUtils.closeQuietly(dataInputStream);
+            try {csvReader.close();} catch (Exception e) {}
+            try {csvWriter.close();} catch (Exception e) {}
             IOUtils.closeQuietly(fileInputStream);
+            IOUtils.closeQuietly(fileOutputStream);
         }
     }
 
