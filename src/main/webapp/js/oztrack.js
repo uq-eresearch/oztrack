@@ -12,10 +12,8 @@ function deleteEntity(url, destUrl, message) {
         error: function(xhr, textStatus, errorThrown) {
             alert('Error processing delete');
         },
-        complete: function (xhr, textStatus) {
-            if (textStatus === 'success') {
-                window.location = destUrl;
-            }
+        success: function (data,textStatus, jqXHR) {
+            window.location = destUrl;
         }
     });
 }
