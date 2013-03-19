@@ -28,6 +28,11 @@
         <name>eResearch, ITEE, UQ</name>
         <url>http://www.itee.uq.edu.au/~eresearch</url>
     </organization>
+    <scm>
+        <connection>scm:git:git@github.com:uq-eresearch/oztrack.git</connection>
+        <developerConnection>scm:git:git@github.com:uq-eresearch/oztrack.git</developerConnection>
+        <url>scm:git:git@github.com:uq-eresearch/oztrack.git</url>
+    </scm>
     <distributionManagement>
         <repository>
             <id>maenad-releases</id>
@@ -54,6 +59,37 @@
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.0.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Implementation-Build>${buildNumber}</Implementation-Build>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.2</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <doCheck>false</doCheck>
+                    <doUpdate>false</doUpdate>
                 </configuration>
             </plugin>
             <plugin>
