@@ -38,30 +38,31 @@
     <jsp:body>
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
         <h2>Animal Details</h2>
-        <table class="entityTable">
-            <sec:authorize access="hasPermission(#animal.project, 'write')">
+        <table>
             <tr>
-                <th>Animal ID:</th>
-                <td>${animal.projectAnimalId}</td>
-            </tr>
-            </sec:authorize>
-            <tr>
-                <th>Name:</th>
-                <td>${animal.animalName}</td>
-            </tr>
-            <tr>
-                <th>Species:</th>
-                <td>${animal.speciesName}</td>
-            </tr>
-            <tr>
-                <th>Description:</th>
-                <td>${animal.animalDescription}</td>
-            </tr>
-            <tr>
-                <th>Colour:</th>
-                <td><div style="width: 18px; height: 18px; background-color: ${animal.colour};"></div></td>
+                <td style="padding: 5px 5px 0 0; vertical-align: top;">
+                    <div style="width: 18px; height: 18px; background-color: ${animal.colour};"></div>
+                </td>
+                <td style="padding: 5px 5px 0 5px; vertical-align: top;">
+                    <p>
+                        <span style="font-weight: bold; color: #333;"><c:out value="${animal.animalName}"/></span>
+                    </p>
+                </td>
             </tr>
         </table>
+        <c:if test="${not empty project.speciesCommonName}">
+        <p>
+            <c:out value="${project.speciesCommonName}"/>
+            <c:if test="${not empty project.speciesScientificName}">
+            (<i>${project.speciesScientificName}</i>)
+            </c:if>
+        </p>
+        </c:if>
+        <c:if test="${not empty animal.animalDescription}">
+        <p>
+            <c:out value="${animal.animalDescription}"/>
+        </p>
+        </c:if>
         <sec:authorize access="hasPermission(#animal.project, 'write')">
         <c:if test="${not empty animal.createDescription}">
         <p style="color: #666;">

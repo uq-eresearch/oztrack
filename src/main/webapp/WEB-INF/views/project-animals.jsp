@@ -44,15 +44,18 @@
             <tbody>
             <c:forEach items="${projectAnimalsList}" var="animal">
                 <tr>
-                    <td style="padding: 5px 5px 0 5px; vertical-align: top;">
+                    <td style="padding: 5px 5px 0 0; vertical-align: top;">
                         <div style="width: 18px; height: 18px; background-color: ${animal.colour};"></div>
                     </td>
                     <td style="padding: 5px 5px 0 5px; vertical-align: top;">
                         <p>
                             <a href="${pageContext.request.contextPath}/animals/${animal.id}" style="text-decoration: none; font-weight: bold; color: #333;"><c:out value="${animal.animalName}"/></a>
-                            <c:if test="${not empty animal.speciesName}">
-                            <span style="padding-left: 10px; font-style: italic;">
-                                <c:out value="${animal.speciesName}"/>
+                            <c:if test="${not empty project.speciesCommonName}">
+                            <span style="padding-left: 10px;">
+                                <c:out value="${project.speciesCommonName}"/>
+                                <c:if test="${not empty project.speciesScientificName}">
+                                (<i>${project.speciesScientificName}</i>)
+                                </c:if>
                             </span>
                             </c:if>
                             <sec:authorize access="hasPermission(#project, 'write')">

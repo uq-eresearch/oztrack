@@ -33,8 +33,6 @@ public class Animal extends OzTrackBaseEntity {
 
     private String createDescription;
 
-    private String speciesName;
-
     @Column(name="colour", nullable=true)
     private String colour;
 
@@ -83,14 +81,6 @@ public class Animal extends OzTrackBaseEntity {
 
     public void setCreateDescription(String createDescription) {
         this.createDescription = createDescription;
-    }
-
-    public String getSpeciesName() {
-        return speciesName;
-    }
-
-    public void setSpeciesName(String speciesName) {
-        this.speciesName = speciesName;
     }
 
     public String getColour() {

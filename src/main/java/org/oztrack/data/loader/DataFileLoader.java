@@ -141,7 +141,6 @@ public abstract class DataFileLoader {
                      animal.setProjectAnimalId(newAnimalId);
                      animal.setAnimalName(newAnimalId);
                      animal.setAnimalDescription(null);
-                     animal.setSpeciesName(null);
                      animal.setProject(dataFile.getProject());
                      animal.setCreateDate(new java.util.Date());
                      animalDao.save(animal);

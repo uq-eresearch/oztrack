@@ -57,15 +57,6 @@
                 </div>
             </div>
             <div class="control-group">
-                <label class="control-label" for="speciesName">Species</label>
-                <div class="controls">
-                    <form:input path="speciesName" id="speciesName"/>
-                    <span class="help-inline">
-                        <form:errors path="speciesName" cssClass="formErrors"/>
-                    </span>
-                </div>
-            </div>
-            <div class="control-group">
                 <label class="control-label" for="animalDescription">Description</label>
                 <div class="controls">
                     <form:textarea style="width: 400px; height: 100px;" path="animalDescription" id="animalDescription"/>

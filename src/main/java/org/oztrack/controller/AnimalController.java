@@ -33,7 +33,6 @@ public class AnimalController {
             "projectAnimalId",
             "animalName",
             "animalDescription",
-            "speciesName",
             "colour"
         );
     }
