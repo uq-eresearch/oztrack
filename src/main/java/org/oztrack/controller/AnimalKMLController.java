@@ -2,6 +2,7 @@ package org.oztrack.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -13,7 +14,9 @@ import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.view.AnimalDetectionsKMLView;
+import org.oztrack.view.AnimalTrajectoryKMLView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -25,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.View;
 
 @Controller
-public class AnimalDetectionsKMLController {
+public class AnimalKMLController {
     protected final Log logger = LogFactory.getLog(getClass());
 
     private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -44,29 +47,54 @@ public class AnimalDetectionsKMLController {
         binder.setAllowedFields();
     }
 
+    @InitBinder
+    public void initSearchQueryBinder(WebDataBinder binder) {
+        binder.setAllowedFields(
+            "fromDate",
+            "toDate"
+        );
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(isoDateFormat, true));
+    }
+
     @ModelAttribute("animal")
     public Animal getAnimal(@RequestParam(value="animalId") Long animalId) {
         return animalDao.getAnimalById(animalId);
     }
 
-    @RequestMapping(value="/exportKML", method=RequestMethod.GET)
-    @PreAuthorize("hasPermission(#animal.project, 'read')")
-    public View handleRequest(
-        @ModelAttribute(value="animal") Animal animal,
-        @RequestParam(value="fromDate", required=false) String fromDateString,
-        @RequestParam(value="toDate", required=false) String toDateString
-    ) throws Exception {
+    @ModelAttribute("searchQuery")
+    public SearchQuery getSearchQuery() {
         SearchQuery searchQuery = new SearchQuery();
+        return searchQuery;
+    }
+
+    @RequestMapping(value="/detections", method=RequestMethod.GET)
+    @PreAuthorize("hasPermission(#animal.project, 'read')")
+    public View getDetectionsView(
+        @ModelAttribute(value="animal") Animal animal,
+        @ModelAttribute(value="searchQuery") SearchQuery searchQuery
+    ) throws Exception {
         searchQuery.setProject(animal.getProject());
         searchQuery.setAnimalIds(Arrays.asList(animal.getId()));
-        if (fromDateString != null) {
-            searchQuery.setFromDate(isoDateFormat.parse(fromDateString));
-        }
-        if (toDateString != null) {
-            searchQuery.setToDate(isoDateFormat.parse(toDateString));
-        }
         List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
         return new AnimalDetectionsKMLView(
+            configuration,
+            animal,
+            searchQuery.getFromDate(),
+            searchQuery.getToDate(),
+            positionFixList
+        );
+    }
+
+    @RequestMapping(value="/trajectory", method=RequestMethod.GET)
+    @PreAuthorize("hasPermission(#animal.project, 'read')")
+    public View getTrajectoryView(
+        @ModelAttribute(value="animal") Animal animal,
+        @ModelAttribute(value="searchQuery") SearchQuery searchQuery
+    ) throws Exception {
+        searchQuery.setProject(animal.getProject());
+        searchQuery.setAnimalIds(Arrays.asList(animal.getId()));
+        List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
+        return new AnimalTrajectoryKMLView(
             configuration,
             animal,
             searchQuery.getFromDate(),

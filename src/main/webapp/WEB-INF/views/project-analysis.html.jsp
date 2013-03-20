@@ -301,9 +301,10 @@
                         tableRowsHtml += '<td class="layerInfoLabel">Date To:</td>';
                         tableRowsHtml += '<td>' + toDate + '</td>';
                         tableRowsHtml += '</tr>';
-                        if (layerName == 'Detections') {
+                        if ((layerName == 'Detections') || (layerName == 'Trajectory')) {
                             var exportKmlUrl =
-                                '${pageContext.request.contextPath}/exportKML' +
+                                '${pageContext.request.contextPath}/' +
+                                ((layerName == 'Detections') ? 'detections' : 'trajectory') +
                                 '?animalId=' + animalId +
                                 '&fromDate=' + fromDate +
                                 '&toDate=' + toDate;
