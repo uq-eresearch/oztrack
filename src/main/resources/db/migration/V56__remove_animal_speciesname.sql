@@ -1,0 +1,1 @@
+alter table animal drop column speciesname;
