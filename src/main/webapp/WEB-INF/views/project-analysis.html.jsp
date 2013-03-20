@@ -674,17 +674,18 @@
                     <div class="animalHeader">
                         <div class="btn-group" style="float: right;">
                             <button
+                                class="btn btn-small"
+                                title="Zoom to animal"
+                                onclick="analysisMap.zoomToAnimal(${animal.id});">
+                                <i class="icon-zoom-in"></i>
+                            </button>
+                            <button
                                 id="buttonShowHide${animal.id}"
                                 class="btn btn-small"
-                                onclick="var infoElem = $(this).parent().parent().next(); $(this).text(infoElem.is(':visible') ? 'Expand' : 'Shrink'); infoElem.slideToggle();">
-                                ${showAnimalInfo ? 'Shrink' : 'Expand'}
+                                title="Show/hide animal details"
+                                onclick="var infoElem = $(this).parent().parent().next(); $(this).find('i').toggleClass('icon-chevron-up').toggleClass('icon-chevron-down'); infoElem.slideToggle();">
+                                <i class="${showAnimalInfo ? 'icon-chevron-up' : 'icon-chevron-down'}"></i>
                             </button>
-                            <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu pull-right">
-                                <li><a href="javascript:void(0);" onclick="analysisMap.zoomToAnimal(${animal.id});">Zoom to animal</a></li>
-                            </ul>
                         </div>
 
                         <div class="animalCheckbox">
