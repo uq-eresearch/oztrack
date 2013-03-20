@@ -64,7 +64,8 @@ public class AnimalTrajectoryKMLView extends AbstractView{
         writer.append("  </description>\n");
         Matcher m = Pattern.compile("^#(..)(..)(..)$").matcher(animal.getColour());
         String kmlBaseColour = m.matches() ? (m.group(3) + m.group(2) + m.group(1)) : "40c4ff";
-        String kmlIconColour = "cc" + kmlBaseColour; // 80% opacity
+        String kmlNormalColour = "cc" + kmlBaseColour;
+        String kmlHighlightColour = "ff" + kmlBaseColour;
         writer.append("<Placemark>\n");
         writer.append("<name>" + animal.getId() + "</name>\n");
         writer.append("<StyleMap>\n");
@@ -72,14 +73,14 @@ public class AnimalTrajectoryKMLView extends AbstractView{
         writer.append("  <key>normal</key>\n");
         writer.append("  <Style>\n");
         writer.append("    <IconStyle>\n");
-        writer.append("      <color>ff40c4ff</color>\n");
+        writer.append("      <color>" + kmlNormalColour + "</color>\n");
         writer.append("      <scale>1</scale>\n");
         writer.append("      <Icon>\n");
         writer.append("        <href>http://maps.google.com/mapfiles/kml/shapes/track.png</href>\n");
         writer.append("      </Icon>\n");
         writer.append("    </IconStyle>\n");
         writer.append("    <LineStyle>\n");
-        writer.append("      <color>" + kmlIconColour + "</color>\n");
+        writer.append("      <color>" + kmlNormalColour + "</color>\n");
         writer.append("      <width>3</width>\n");
         writer.append("    </LineStyle>\n");
         writer.append("  </Style>\n");
@@ -88,15 +89,15 @@ public class AnimalTrajectoryKMLView extends AbstractView{
         writer.append("  <key>highlight</key>\n");
         writer.append("  <Style>\n");
         writer.append("    <IconStyle>\n");
-        writer.append("      <color>ff40c4ff</color>\n");
+        writer.append("      <color>" + kmlHighlightColour + "</color>\n");
         writer.append("      <scale>1.33</scale>\n");
         writer.append("      <Icon>\n");
         writer.append("        <href>http://maps.google.com/mapfiles/kml/shapes/track.png</href>\n");
         writer.append("      </Icon>\n");
         writer.append("    </IconStyle>\n");
         writer.append("    <LineStyle>\n");
-        writer.append("      <color>ff40c4ff</color>\n");
-        writer.append("      <width>4</width>\n");
+        writer.append("      <color>" + kmlHighlightColour + "</color>\n");
+        writer.append("      <width>3</width>\n");
         writer.append("    </LineStyle>\n");
         writer.append("  </Style>\n");
         writer.append("</Pair>\n");
