@@ -12,11 +12,12 @@
     Detections <c:out value="${positionFixPage.offset+1}"/> to <c:out value="${positionFixPage.offset+fn:length(positionFixPage.objects)}"/> of <c:out value="${positionFixPage.count}"/>
 </div>
 <div style="float:right">
+    <c:set var="urlParamsPrefix" value="${searchQuery.urlParams}${not empty searchQuery.urlParams ? '&' : ''}"/>
     <div class="btn-group">
         <c:choose>
         <c:when test="${(positionFixPage.offset > 0)}">
-        <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?${searchQuery.urlParams}&offset=${0}">&lt;&lt;</a>
-        <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?${searchQuery.urlParams}&offset=${positionFixPage.offset-positionFixPage.getLimit()}">&lt;</a>
+        <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?${urlParamsPrefix}offset=${0}">&lt;&lt;</a>
+        <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?${urlParamsPrefix}offset=${positionFixPage.offset-positionFixPage.limit}">&lt;</a>
         </c:when>
         <c:otherwise>
         <a class="btn disabled" href="javascript:void(0);">&lt;&lt;</a>
@@ -24,9 +25,9 @@
         </c:otherwise>
         </c:choose>
         <c:choose>
-        <c:when test="${(positionFixPage.offset + positionFixPage.getLimit() < positionFixPage.count)}">
-        <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?${searchQuery.urlParams}&offset=${positionFixPage.offset + fn:length(positionFixPage.objects)}">&gt;</a>
-        <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?${searchQuery.urlParams}&offset=${positionFixPage.count - (positionFixPage.count % positionFixPage.getLimit()) - (((positionFixPage.count > positionFixPage.getLimit()) && (positionFixPage.count % positionFixPage.getLimit() == 0)) ? positionFixPage.getLimit() : 0)}">&gt;&gt;</a>
+        <c:when test="${(positionFixPage.offset + positionFixPage.limit < positionFixPage.count)}">
+        <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?${urlParamsPrefix}offset=${positionFixPage.offset + fn:length(positionFixPage.objects)}">&gt;</a>
+        <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?${urlParamsPrefix}offset=${positionFixPage.count - (positionFixPage.count % positionFixPage.limit) - (((positionFixPage.count > positionFixPage.limit) && (positionFixPage.count % positionFixPage.limit == 0)) ? positionFixPage.limit : 0)}">&gt;&gt;</a>
         </c:when>
         <c:otherwise>
         <a class="btn disabled" href="javascript:void(0);">&gt;</a>
@@ -35,8 +36,8 @@
         </c:choose>
     </div>
     <div class="btn-group">
-        <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/export?${searchQuery.urlParams}&format=csv">Export CSV</a>
-        <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/export?${searchQuery.urlParams}&format=xls">XLS</a>
+        <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/export?${urlParamsPrefix}format=csv">Export CSV</a>
+        <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/export?${urlParamsPrefix}format=xls">XLS</a>
     </div>
 </div>
 <div style="clear: both;"></div>

@@ -1,8 +1,11 @@
 package org.oztrack.data.model;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class SearchQuery {
     private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -66,19 +69,21 @@ public class SearchQuery {
     }
 
     public String getUrlParams() {
-        StringBuilder searchQueryParams = new StringBuilder();
+        List<String> params = new ArrayList<String>();
         if (getFromDate() != null) {
-            searchQueryParams.append("fromDate=" + isoDateFormat.format(getFromDate()));
+            params.add("fromDate=" + isoDateFormat.format(getFromDate()));
         }
         if (getToDate() != null) {
-            searchQueryParams.append("&toDate=" + isoDateFormat.format(getToDate()));
+            params.add("toDate=" + isoDateFormat.format(getToDate()));
         }
-        for (Long animalId : getAnimalIds()) {
-            searchQueryParams.append("&animalIds=" + animalId);
+        if (getAnimalIds() != null) {
+            for (Long animalId : getAnimalIds()) {
+                params.add("animalIds=" + animalId);
+            }
         }
         if (getSortField() != null) {
-            searchQueryParams.append("&sortField=" + getSortField());
+            params.add("sortField=" + getSortField());
         }
-        return searchQueryParams.toString();
+        return StringUtils.join(params, "&");
     }
 }
