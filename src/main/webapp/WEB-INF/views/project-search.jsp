@@ -7,22 +7,9 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <%@ taglib uri="/WEB-INF/functions.tld" prefix="oztrack" %>
 <c:set var="dateFormatPattern" value="yyyy-MM-dd"/>
-<c:set var="dateTimeFormatPattern" value="yyyy-MM-dd HH:mm:ss"/>
 <tags:page title="${project.title}: View Data">
     <jsp:attribute name="description">
         View data in the ${project.title} project.
-    </jsp:attribute>
-    <jsp:attribute name="head">
-        <style type="text/css">
-            .dataTableNav {
-                margin: 18px 0;
-                font-weight: bold;
-            }
-            .dataTableNav a {
-                font-weight: bold;
-                text-decoration: none;
-            }
-        </style>
     </jsp:attribute>
     <jsp:attribute name="tail">
         <script type="text/javascript">
@@ -96,84 +83,6 @@
             </div>
         </form:form>
 
-
-        <div class="dataTableNav">
-        <div style="float:left; padding: 5px 0;">
-            Displaying <c:out value="${offset+1}"/> to <c:out value="${offset+nbrObjectsThisPage}"/> of <c:out value="${totalCount}"/> records.
-        </div>
-        <div style="float:right">
-            <div class="btn-group">
-                <c:choose>
-                <c:when test="${(offset > 0)}">
-                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?${searchQueryParams}&offset=${0}">&lt;&lt;</a>
-                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?${searchQueryParams}&offset=${offset-nbrObjectsPerPage}">&lt;</a>
-                </c:when>
-                <c:otherwise>
-                <a class="btn disabled" href="javascript:void(0);">&lt;&lt;</a>
-                <a class="btn disabled" href="javascript:void(0);">&lt;</a>
-                </c:otherwise>
-                </c:choose>
-                <c:choose>
-                <c:when test="${(offset + nbrObjectsPerPage < totalCount)}">
-                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?${searchQueryParams}&offset=${offset + nbrObjectsThisPage}">&gt;</a>
-                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?${searchQueryParams}&offset=${totalCount - (totalCount % nbrObjectsPerPage) - (((totalCount > nbrObjectsPerPage) && (totalCount % nbrObjectsPerPage == 0)) ? nbrObjectsPerPage : 0)}">&gt;&gt;</a>
-                </c:when>
-                <c:otherwise>
-                <a class="btn disabled" href="javascript:void(0);">&gt;</a>
-                <a class="btn disabled" href="javascript:void(0);">&gt;&gt;</a>
-                </c:otherwise>
-                </c:choose>
-            </div>
-            <div class="btn-group">
-                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/export?${searchQueryParams}&format=csv">Export CSV</a>
-                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/export?${searchQueryParams}&format=xls">XLS</a>
-            </div>
-        </div>
-        <div style="clear: both;"></div>
-        </div>
-
-        <c:if test="${positionFixList != null}">
-
-        <table class="table table-bordered table-condensed">
-            <col style="width: 110px;" />
-            <col style="width: 60px;" />
-            <col style="width: 150px;" />
-            <col style="width: 70px;" />
-            <col style="width: 70px;" />
-            <sec:authorize access="hasPermission(#project, 'write')">
-            <col style="width: 70px;" />
-            </sec:authorize>
-            <thead>
-                <tr>
-                    <th>Date/Time</th>
-                    <th>Animal Id</th>
-                    <th>Animal Name</th>
-                    <th>Latitude</th>
-                    <th>Longitude</th>
-                    <sec:authorize access="hasPermission(#project, 'write')">
-                    <th>Uploaded</th>
-                    </sec:authorize>
-                </tr>
-            </thead>
-            <tbody>
-                <c:forEach items="${positionFixList}" var="detection">
-                <tr>
-                    <td><fmt:formatDate pattern="${dateTimeFormatPattern}" value="${detection.detectionTime}"/></td>
-                    <td><c:out value="${detection.animal.projectAnimalId}"/></td>
-                    <td><a href="${pageContext.request.contextPath}/animals/${detection.animal.id}/edit"><c:out value="${detection.animal.animalName}"/></a></td>
-                    <td><c:out value="${detection.latitude}"/></td>
-                    <td><c:out value="${detection.longitude}"/></td>
-                    <sec:authorize access="hasPermission(#project, 'write')">
-                    <td>
-                        <a href="${pageContext.request.contextPath}/datafiles/${detection.dataFile.id}"
-                        ><fmt:formatDate pattern="${dateFormatPattern}" value="${detection.dataFile.createDate}"/></a>
-                    </td>
-                    </sec:authorize>
-                </tr>
-                </c:forEach>
-            </tbody>
-        </table>
-
-        </c:if>
+        <tags:search-results positionFixPage="${positionFixPage}"/>
     </jsp:body>
 </tags:page>

@@ -82,14 +82,6 @@ public class SearchController {
         @ModelAttribute(value="searchQuery") SearchQuery searchQuery,
         @RequestParam(value="offset", defaultValue="0") int offset
     ) throws Exception {
-        StringBuilder searchQueryParams = new StringBuilder();
-        searchQueryParams.append("fromDate=" + ((searchQuery.getFromDate() == null) ? "" : isoDateFormat.format(searchQuery.getFromDate())));
-        searchQueryParams.append("&toDate=" + ((searchQuery.getToDate() == null) ? "" : isoDateFormat.format(searchQuery.getToDate())));
-        for (Long animalId : searchQuery.getAnimalIds()) {
-            searchQueryParams.append("&animalIds=" + animalId);
-        }
-        searchQueryParams.append("&sortField=" + searchQuery.getSortField());
-        model.addAttribute("searchQueryParams", searchQueryParams.toString());
         return showFormInternal(model, project, searchQuery, offset);
     }
 
@@ -143,13 +135,10 @@ public class SearchController {
     ) throws Exception {
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
         Page<PositionFix> positionFixPage = positionFixDao.getPage(searchQuery, offset, 30);
-        model.addAttribute("positionFixList", positionFixPage.getObjects());
+        model.addAttribute("searchQuery", searchQuery);
+        model.addAttribute("positionFixPage", positionFixPage);
         model.addAttribute("projectAnimalsList", projectAnimalsList);
         model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, false));
-        model.addAttribute("offset", offset);
-        model.addAttribute("nbrObjectsPerPage", positionFixPage.getLimit());
-        model.addAttribute("nbrObjectsThisPage", positionFixPage.getObjects().size());
-        model.addAttribute("totalCount", positionFixPage.getCount());
         return "project-search";
     }
 }

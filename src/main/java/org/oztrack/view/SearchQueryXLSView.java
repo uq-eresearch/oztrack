@@ -50,10 +50,10 @@ public class SearchQueryXLSView extends AbstractExcelView {
         HSSFRow headerRow = sheet.createRow(rowNum++);
         {
             int colNum = 0;
-            headerRow.createCell(colNum++).setCellValue("Animal ID");
-            headerRow.createCell(colNum++).setCellValue("Date");
-            headerRow.createCell(colNum++).setCellValue("Latitude");
-            headerRow.createCell(colNum++).setCellValue("Longitude");
+            headerRow.createCell(colNum++).setCellValue("ANIMALID");
+            headerRow.createCell(colNum++).setCellValue("DATE");
+            headerRow.createCell(colNum++).setCellValue("LATITUDE");
+            headerRow.createCell(colNum++).setCellValue("LONGITUDE");
         }
 
         CreationHelper createHelper = workbook.getCreationHelper();

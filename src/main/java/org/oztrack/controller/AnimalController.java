@@ -1,10 +1,15 @@
 package org.oztrack.controller;
 
+import java.util.Arrays;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.oztrack.data.access.AnimalDao;
+import org.oztrack.data.access.Page;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.Animal;
+import org.oztrack.data.model.PositionFix;
+import org.oztrack.data.model.SearchQuery;
 import org.oztrack.validator.AnimalFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -46,6 +51,13 @@ public class AnimalController {
     @PreAuthorize("hasPermission(#animal.project, 'read')")
     public String getView(Model model, @ModelAttribute("animal") Animal animal) {
         model.addAttribute("project", animal.getProject());
+        SearchQuery searchQuery = new SearchQuery();
+        searchQuery.setProject(animal.getProject());
+        searchQuery.setAnimalIds(Arrays.asList(animal.getId()));
+        searchQuery.setSortField("Detection Time");
+        Page<PositionFix> positionFixPage = positionFixDao.getPage(searchQuery, 0, 15);
+        model.addAttribute("searchQuery", searchQuery);
+        model.addAttribute("positionFixPage", positionFixPage);
         return "animal";
     }
 
