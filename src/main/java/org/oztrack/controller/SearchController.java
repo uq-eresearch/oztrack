@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.Page;
@@ -17,14 +16,12 @@ import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
-import org.oztrack.validator.SearchFormValidator;
 import org.oztrack.view.SearchQueryXLSView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -38,6 +35,8 @@ import au.com.bytecode.opencsv.CSVWriter;
 
 @Controller
 public class SearchController {
+    private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
     @Autowired
     private ProjectDao projectDao;
 
@@ -60,7 +59,7 @@ public class SearchController {
             "animalIds",
             "sortField"
         );
-        binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd"), true));
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(isoDateFormat, true));
     }
 
     @ModelAttribute("project")
@@ -69,32 +68,10 @@ public class SearchController {
     }
 
     @ModelAttribute("searchQuery")
-    public SearchQuery getSearchQuery(HttpSession session, @ModelAttribute(value="project") Project project) {
-        // If we have a SearchQuery instance in the session from a previously posted form,
-        // replace the default SearchQuery instance in the model so we show previous values in the form.
-        SearchQuery searchQuery = (SearchQuery) session.getAttribute("searchQuery");
-        if (searchQuery == null) {
-            searchQuery = new SearchQuery();
-            searchQuery.setProject(project);
-        }
+    public SearchQuery getSearchQuery(@ModelAttribute(value="project") Project project) {
+        SearchQuery searchQuery = new SearchQuery();
+        searchQuery.setProject(project);
         return searchQuery;
-    }
-
-    @RequestMapping(value="/projects/{id}/search", method=RequestMethod.POST)
-    @PreAuthorize("hasPermission(#project, 'read')")
-    public String onSubmit(
-        HttpSession session,
-        Model model,
-        @ModelAttribute(value="project") Project project,
-        @ModelAttribute(value="searchQuery") SearchQuery searchQuery,
-        BindingResult bindingResult
-    ) throws Exception {
-        new SearchFormValidator().validate(searchQuery, bindingResult);
-        if (bindingResult.hasErrors()) {
-            return "searchquery";
-        }
-        session.setAttribute("searchQuery", searchQuery);
-        return showFormInternal(model, project, searchQuery, 0);
     }
 
     @RequestMapping(value="/projects/{id}/search", method=RequestMethod.GET)
@@ -105,6 +82,14 @@ public class SearchController {
         @ModelAttribute(value="searchQuery") SearchQuery searchQuery,
         @RequestParam(value="offset", defaultValue="0") int offset
     ) throws Exception {
+        StringBuilder searchQueryParams = new StringBuilder();
+        searchQueryParams.append("fromDate=" + ((searchQuery.getFromDate() == null) ? "" : isoDateFormat.format(searchQuery.getFromDate())));
+        searchQueryParams.append("&toDate=" + ((searchQuery.getToDate() == null) ? "" : isoDateFormat.format(searchQuery.getToDate())));
+        for (Long animalId : searchQuery.getAnimalIds()) {
+            searchQueryParams.append("&animalIds=" + animalId);
+        }
+        searchQueryParams.append("&sortField=" + searchQuery.getSortField());
+        model.addAttribute("searchQueryParams", searchQueryParams.toString());
         return showFormInternal(model, project, searchQuery, offset);
     }
 

@@ -5,6 +5,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
+<%@ taglib uri="/WEB-INF/functions.tld" prefix="oztrack" %>
 <c:set var="dateFormatPattern" value="yyyy-MM-dd"/>
 <c:set var="dateTimeFormatPattern" value="yyyy-MM-dd HH:mm:ss"/>
 <tags:page title="${project.title}: View Data">
@@ -56,7 +57,7 @@
     <jsp:body>
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
 
-        <form:form class="form-horizontal form-bordered" commandName="searchQuery" method="POST" name="searchQuery">
+        <form:form class="form-horizontal form-bordered" commandName="searchQuery" method="GET" action="${pageContext.request.contextPath}/projects/${project.id}/search">
             <fieldset>
                 <div class="legend">Search Project Data</div>
                 <div class="control-group">
@@ -71,7 +72,13 @@
                 <div class="control-group">
                     <label class="control-label" for="animalIds">Animal</label>
                     <div class="controls">
-                        <form:select id="animalIds" path="animalIds" items="${projectAnimalsList}" itemLabel="animalName" itemValue="id" multiple="true"/>
+                        <select id="animalIds" name="animalIds" multiple="multiple">
+                            <c:forEach items="${projectAnimalsList}" var="animal">
+                            <option value="${animal.id}" ${oztrack:contains(searchQuery.animalIds, animal.id) ? 'selected="selected"' : ''}>
+                                ${animal.animalName}
+                            </option>
+                            </c:forEach>
+                        </select>
                     </div>
                 </div>
                 <div class="control-group">
@@ -98,8 +105,8 @@
             <div class="btn-group">
                 <c:choose>
                 <c:when test="${(offset > 0)}">
-                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${0}">&lt;&lt;</a>
-                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${offset-nbrObjectsPerPage}">&lt;</a>
+                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?${searchQueryParams}&offset=${0}">&lt;&lt;</a>
+                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?${searchQueryParams}&offset=${offset-nbrObjectsPerPage}">&lt;</a>
                 </c:when>
                 <c:otherwise>
                 <a class="btn disabled" href="javascript:void(0);">&lt;&lt;</a>
@@ -108,8 +115,8 @@
                 </c:choose>
                 <c:choose>
                 <c:when test="${(offset + nbrObjectsPerPage < totalCount)}">
-                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${offset + nbrObjectsThisPage}">&gt;</a>
-                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?offset=${totalCount - (totalCount % nbrObjectsPerPage) - (((totalCount > nbrObjectsPerPage) && (totalCount % nbrObjectsPerPage == 0)) ? nbrObjectsPerPage : 0)}">&gt;&gt;</a>
+                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?${searchQueryParams}&offset=${offset + nbrObjectsThisPage}">&gt;</a>
+                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/search?${searchQueryParams}&offset=${totalCount - (totalCount % nbrObjectsPerPage) - (((totalCount > nbrObjectsPerPage) && (totalCount % nbrObjectsPerPage == 0)) ? nbrObjectsPerPage : 0)}">&gt;&gt;</a>
                 </c:when>
                 <c:otherwise>
                 <a class="btn disabled" href="javascript:void(0);">&gt;</a>
@@ -118,8 +125,8 @@
                 </c:choose>
             </div>
             <div class="btn-group">
-                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/export?format=csv">Export CSV</a>
-                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/export?format=xls">XLS</a>
+                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/export?${searchQueryParams}&format=csv">Export CSV</a>
+                <a class="btn" href="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/export?${searchQueryParams}&format=xls">XLS</a>
             </div>
         </div>
         <div style="clear: both;"></div>
