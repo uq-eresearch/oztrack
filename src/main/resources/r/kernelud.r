@@ -32,7 +32,7 @@ fmykernel <- function(sinputfile,sinputssrs,imypercent,smyh,imygrid,imyextent)
     myKerP <- try({
       getverticeshr(KerHRud,percent=imypercent,
                     unin = c("m"),
-                    unout = c("ha"))
+                    unout = c("km2"))
     },silent=TRUE)
     
     if (class(myKerP) == 'try-error') 
@@ -88,7 +88,7 @@ fmykernelAM <- function(sinputfile,sinputssrs,imypercent,smyh,imygrid,imyextent)
     myKerP <- try({
       getverticeshr(KerHRud,percent=imypercent,
                     unin = c("m"),
-                    unout = c("ha"))
+                    unout = c("km2"))
     },silent=TRUE)
     
     if (class(myKerP) == 'try-error') 

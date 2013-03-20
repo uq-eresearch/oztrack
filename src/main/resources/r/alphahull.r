@@ -81,7 +81,7 @@ ah2sp <- function(xah, increment=360, rnd=2, proj4string=CRS(as.character(NA))){
     sppolys <- SpatialPolygons(list(Polygons(lapply(list_of_Lines, function(x) { Polygon(slot(slot(x, "Lines")[[1]], "coords")) }), ID = "1")), proj4string=proj4string) 
     # Create a set of ids in a dataframe, then promote to SpatialPolygonsDataFrame 
     hid <- sapply(slot(sppolys, "polygons"), function(x) slot(x, "ID")) 
-    areas <- sapply(slot(sppolys, "polygons"), function(x) slot(x, "area"))/10000 
+    areas <- sapply(slot(sppolys, "polygons"), function(x) slot(x, "area")) / 1000^2 # convert m2 to km2
     df <- data.frame(hid,areas) 
     names(df) <- c("id","area") 
     rownames(df) <- df$id 

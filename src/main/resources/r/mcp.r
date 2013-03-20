@@ -24,7 +24,7 @@ fmymcp <- function(sinputfile,sinputssrs,imypercent){
     # Calculate MCP area in hectares and write to MCP100
     MCP_oz$area <- mcp(positionFix.proj,percent=imypercent,
       unin = c("m"),
-      unout = c("ha"))$area # here we export it as ha byut in the github code it is exported as km2???
+      unout = c("km2"))$area
   }
   return(MCP_oz) 
 }
@@ -56,7 +56,7 @@ fmymcpAM <- function(sinputfile,sinputssrs,imypercent){
   proj4string(MCP_oz) <- CRS("+proj=longlat +datum=WGS84 +over")
   all.mcp.proj <- spTransform(MCP_oz,CRS(sinputssrs))
   polygonareas <- sapply(all.mcp.proj@polygons,function(x) x@area)
-  MCP_oz$area <- polygonareas/10000 # Convert meters sq to hectares
+  MCP_oz$area <- polygonareas / 1000^2 # Convert m2 to km2
   return(MCP_oz)
 }
 
