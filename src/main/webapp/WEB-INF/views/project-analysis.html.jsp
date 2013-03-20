@@ -301,10 +301,30 @@
                         tableRowsHtml += '<td class="layerInfoLabel">Date To:</td>';
                         tableRowsHtml += '<td>' + toDate + '</td>';
                         tableRowsHtml += '</tr>';
+                        if (layerName == 'Detections') {
+                            var exportKmlUrl =
+                                '${pageContext.request.contextPath}/exportKML' +
+                                '?animalId=' + animalId +
+                                '&fromDate=' + fromDate +
+                                '&toDate=' + toDate;
+                            tableRowsHtml += '<tr>';
+                            tableRowsHtml += '<td class="layerInfoLabel">Export as: </td>';
+                            tableRowsHtml += '<td>';
+                            tableRowsHtml += '<a href="' + exportKmlUrl + '">KML</a> ';
+                            tableRowsHtml += '<div id="layerInfoHelpPopover-' + animalId + '-' + layerId + '" class="help-popover" title="KML Export">';
+                            tableRowsHtml += '<p>To enable users to animate their animal tracking files, as well as visualisation in ';
+                            tableRowsHtml += '3-dimensions, we offer the option of exporting the animal tracking data and home-range ';
+                            tableRowsHtml += 'layers into Google Earth. Once loaded into Google Earth, the user can alter the altitude and ';
+                            tableRowsHtml += 'angle of the viewer, add additional features, and run the animal track as an animation.</p>';
+                            tableRowsHtml += '</div>';
+                            tableRowsHtml += '</td>';
+                            tableRowsHtml += '</tr>';
+                        }
                         if (tableRowsHtml != '') {
                             html += '<table>' + tableRowsHtml + '</table>';
                         }
                         $('#animalInfo-' + animalId).append('<div class="layerInfo projectMapLayerInfo-' + layerId + '">' + html + '</div>');
+                        initHelpPopover($('#layerInfoHelpPopover-' + animalId + '-' + layerId));
                     },
                     onUpdateAnimalInfoFromWFS: function(layerName, layerId, animalId, fromDate, toDate) {
                         $('input[id=select-animal-' + animalId + ']').attr('checked', 'checked');
@@ -664,7 +684,6 @@
                             </button>
                             <ul class="dropdown-menu pull-right">
                                 <li><a href="javascript:void(0);" onclick="analysisMap.zoomToAnimal(${animal.id});">Zoom to animal</a></li>
-                                <li><a href="${pageContext.request.contextPath}/exportKML?animalId=${animal.id}">Export as KML</a></li>
                             </ul>
                         </div>
 

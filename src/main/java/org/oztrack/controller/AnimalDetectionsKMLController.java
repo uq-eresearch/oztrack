@@ -1,5 +1,6 @@
 package org.oztrack.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,6 +28,8 @@ import org.springframework.web.servlet.View;
 public class AnimalDetectionsKMLController {
     protected final Log logger = LogFactory.getLog(getClass());
 
+    private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
     @Autowired
     private OzTrackConfiguration configuration;
 
@@ -48,11 +51,27 @@ public class AnimalDetectionsKMLController {
 
     @RequestMapping(value="/exportKML", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#animal.project, 'read')")
-    public View handleRequest(@ModelAttribute(value="animal") Animal animal) throws Exception {
+    public View handleRequest(
+        @ModelAttribute(value="animal") Animal animal,
+        @RequestParam(value="fromDate", required=false) String fromDateString,
+        @RequestParam(value="toDate", required=false) String toDateString
+    ) throws Exception {
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setProject(animal.getProject());
         searchQuery.setAnimalIds(Arrays.asList(animal.getId()));
+        if (fromDateString != null) {
+            searchQuery.setFromDate(isoDateFormat.parse(fromDateString));
+        }
+        if (toDateString != null) {
+            searchQuery.setToDate(isoDateFormat.parse(toDateString));
+        }
         List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-        return new AnimalDetectionsKMLView(configuration, animal, positionFixList);
+        return new AnimalDetectionsKMLView(
+            configuration,
+            animal,
+            searchQuery.getFromDate(),
+            searchQuery.getToDate(),
+            positionFixList
+        );
     }
 }
