@@ -664,7 +664,7 @@
                             </button>
                             <ul class="dropdown-menu pull-right">
                                 <li><a href="javascript:void(0);" onclick="analysisMap.zoomToAnimal(${animal.id});">Zoom to animal</a></li>
-                                <li><a href="${pageContext.request.contextPath}/exportKML?projectId=${project.id}&animalId=${animal.id}">Export as KML</a></li>
+                                <li><a href="${pageContext.request.contextPath}/exportKML?animalId=${animal.id}">Export as KML</a></li>
                             </ul>
                         </div>
 
