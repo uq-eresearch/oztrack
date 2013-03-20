@@ -76,13 +76,7 @@ public class AnimalKMLController {
         searchQuery.setProject(animal.getProject());
         searchQuery.setAnimalIds(Arrays.asList(animal.getId()));
         List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-        return new AnimalDetectionsKMLView(
-            configuration,
-            animal,
-            searchQuery.getFromDate(),
-            searchQuery.getToDate(),
-            positionFixList
-        );
+        return new AnimalDetectionsKMLView(configuration, animal, positionFixList);
     }
 
     @RequestMapping(value="/trajectory", method=RequestMethod.GET)
@@ -94,12 +88,6 @@ public class AnimalKMLController {
         searchQuery.setProject(animal.getProject());
         searchQuery.setAnimalIds(Arrays.asList(animal.getId()));
         List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-        return new AnimalTrajectoryKMLView(
-            configuration,
-            animal,
-            searchQuery.getFromDate(),
-            searchQuery.getToDate(),
-            positionFixList
-        );
+        return new AnimalTrajectoryKMLView(configuration, animal, positionFixList);
     }
 }
