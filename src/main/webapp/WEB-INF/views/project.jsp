@@ -311,10 +311,10 @@
             <th>Data Licence:</th>
             <td>
                 <p>
-                    <a href="${project.dataLicence.infoUrl}"><img src="${project.dataLicence.imageUrl}" /></a>
+                    <img src="${project.dataLicence.imageUrl}" />
                 </p>
                 <p>
-                    <span style="font-weight: bold;"><a href="${project.dataLicence.infoUrl}">${project.dataLicence.title}</a></span>
+                    <span style="font-weight: bold;">${project.dataLicence.title}</span>
                 </p>
                 <p>
                     ${project.dataLicence.description}
