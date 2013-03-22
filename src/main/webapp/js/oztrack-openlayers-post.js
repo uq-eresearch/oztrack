@@ -20,6 +20,37 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
         CLASS_NAME: "OzTrack.OpenLayers.Control.ZoomToExtent"
     });
 
+    OzTrack.OpenLayers.Control.OzTrackDataLicence = OpenLayers.Class(OpenLayers.Control, {
+        initialize: function(options) {
+            options = options || {};
+            this.dataLicence = options.dataLicence;
+            options.displayClass = "OzTrackOpenLayersControlOzTrackDataLicence";
+            OpenLayers.Control.prototype.initialize.apply(this, [options]);
+        },
+        draw: function (px) {
+            if (this.div == null) {
+                this.div =
+                    $('<div>')
+                        .addClass(this.displayClass)
+                        .append($('<a>')
+                            .attr('href', this.dataLicence.infoUrl)
+                            .attr('title',
+                                'Data in this project are made available under the ' +
+                                this.dataLicence.title +
+                                ' licence.'
+                            )
+                            .append($('<img>').attr('src', this.dataLicence.imageUrl))
+                        )
+                        .get(0);
+            }
+            if (px != null) {
+                this.position = px.clone();
+            }
+            this.moveTo(this.position);
+            return this.div;
+        }
+    });
+
     OzTrack.OpenLayers.Control.OzTrackLayerSwitcher = OpenLayers.Class(OpenLayers.Control, {
         layersDiv: null,
         minimizeDiv: null,

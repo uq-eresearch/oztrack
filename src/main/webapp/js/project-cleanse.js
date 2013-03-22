@@ -10,6 +10,7 @@
         that.projection4326 = new OpenLayers.Projection('EPSG:4326');
 
         that.projectId = options.projectId;
+        that.dataLicence = options.dataLicence;
         that.fromDate = options.fromDate;
         that.toDate = options.toDate;
         that.animalIds = options.animalIds;
@@ -41,6 +42,13 @@
         that.navToolbar = new OzTrackNavToolbar();
         that.map.addControl(that.navToolbar);
         that.map.addControl(new OpenLayers.Control.ScaleLine());
+        that.map.addControl(new OpenLayers.Control({displayClass: 'dataLicence'}));
+        that.map.addControl(new OpenLayers.Control({displayClass: 'projectMapLogo'}));
+        if (that.dataLicence) {
+            that.map.addControl(new OzTrack.OpenLayers.Control.OzTrackDataLicence({
+                dataLicence: that.dataLicence
+            }));
+        }
 
         that.layerSwitcher = new OzTrack.OpenLayers.Control.OzTrackLayerSwitcher({
             categoryLabels: {
