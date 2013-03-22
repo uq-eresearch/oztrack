@@ -6,10 +6,10 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
+<c:set var="dataLicencingEnabled"><%= OzTrackApplication.getApplicationContext().isDataLicencingEnabled() %></c:set>
 <c:set var="dateFormatPattern" value="yyyy-MM-dd"/>
 <c:set var="dateTimeFormatPattern" value="yyyy-MM-dd HH:mm:ss"/>
 <c:set var="monthYearDateFormatPattern" value="MMMM yyyy"/>
-<c:set var="dataLicencingEnabled"><%= OzTrackApplication.getApplicationContext().isDataLicencingEnabled() %></c:set>
 <tags:page title="${project.title}">
     <jsp:attribute name="description">
         <c:choose>
@@ -165,6 +165,7 @@
     <jsp:attribute name="sidebar">
         <tags:project-menu project="${project}"/>
         <tags:project-actions project="${project}"/>
+        <tags:project-licence project="${project}"/>
     </jsp:attribute>
     <jsp:body>
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
