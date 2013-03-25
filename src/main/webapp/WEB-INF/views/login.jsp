@@ -71,6 +71,9 @@
                         <input type="password" name="password" id="password"/>
                     </div>
                 </div>
+                <c:if test="${not empty redirectUrl}">
+                <input type="hidden" name="redirect" value="${redirectUrl}" />
+                </c:if>
             </fieldset>
             <div class="form-actions">
                 <input class="btn btn-primary" type="submit" value="Login"/>

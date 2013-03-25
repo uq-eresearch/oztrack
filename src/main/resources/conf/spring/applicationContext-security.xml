@@ -26,6 +26,10 @@
         <property name="permissionEvaluator" ref="permissionEvaluator"/>
     </bean>
 
+    <bean id="authenticationSuccessHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
+        <property name="targetUrlParameter" value="redirect"/>
+    </bean>
+
     <security:http use-expressions="true" authentication-manager-ref="authenticationManager">
         <security:intercept-url pattern="/login" access="permitAll"/>
         <security:intercept-url pattern="/**" access="permitAll"/>
@@ -33,7 +37,8 @@
             login-page="/login"
             login-processing-url="/j_spring_security_check"
             username-parameter="username"
-            password-parameter="password"/>
+            password-parameter="password"
+            authentication-success-handler-ref="authenticationSuccessHandler"/>
         <security:logout logout-url="/logout"/>
         <security:session-management/>
         <security:expression-handler ref="webSecurityExpressionHandler"/>
