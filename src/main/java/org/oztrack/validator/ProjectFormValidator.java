@@ -31,13 +31,11 @@ public class ProjectFormValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "error.empty.field", "Please enter a description for the project.");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "spatialCoverageDescr", "error.empty.field", "Please give a location description.");
 
-        if (OzTrackApplication.getApplicationContext().isDataLicencingEnabled()) {
-            if (project.getAccess() == ProjectAccess.OPEN) {
-                ValidationUtils.rejectIfEmptyOrWhitespace(errors, "dataLicence", "error.empty.field", "A Data Licence must be selected for Open Access projects.");
-            }
-            else if (project.getAccess() == ProjectAccess.EMBARGO) {
-                ValidationUtils.rejectIfEmptyOrWhitespace(errors, "dataLicence", "error.empty.field", "A Data Licence must be selected for Delayed Open Access projects.");
-            }
+        if (project.getAccess() == ProjectAccess.OPEN) {
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "dataLicence", "error.empty.field", "A Data Licence must be selected for Open Access projects.");
+        }
+        else if (project.getAccess() == ProjectAccess.EMBARGO) {
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "dataLicence", "error.empty.field", "A Data Licence must be selected for Delayed Open Access projects.");
         }
 
         if (project.getAccess() == ProjectAccess.EMBARGO) {

@@ -1,5 +1,4 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
-<%@ page import="org.oztrack.app.OzTrackApplication" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -30,7 +29,6 @@
     </jsp:attribute>
     <jsp:attribute name="head">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/optimised/openlayers.css" type="text/css">
-        <c:if test="${dataLicencingEnabled}">
         <style type="text/css">
             .dataLicence {
                 padding: 10px;
@@ -63,14 +61,12 @@
                 margin-bottom: 18px;
             }
         </style>
-        </c:if>
     </jsp:attribute>
     <jsp:attribute name="tail">
         <script src="${pageContext.request.scheme}://maps.google.com/maps/api/js?v=3.9&sensor=false"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/optimised/openlayers.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/srs-selector.js"></script>
         <script type="text/javascript">
-            <c:if test="${dataLicencingEnabled}">
             function setCheckboxDisabled(selector, disabled) {
                 $(selector).prop('disabled', disabled).parent('label').toggleClass('disabled', disabled);
             }
@@ -143,7 +139,6 @@
                 }
                 updateLicenceSelectorFromDataLicence();
             }
-            </c:if>
             function addPublication(publication) {
                 var publication = publication || {title: '', url: ''};
                 $('#publications').append($('<div class="publication">')
@@ -199,7 +194,6 @@
                         </c:forEach>
                     ]
                 });
-                <c:if test="${dataLicencingEnabled}">
                 $('.dataLicenceCheckbox').change(updateDataLicenceFromLicenceSelector);
                 updateLicenceSelectorFromDataLicence();
                 $('#otherEmbargoDateInput').datepicker({
@@ -207,7 +201,6 @@
                     minDate: new Date(${minEmbargoDate.time}),
                     maxDate: new Date(${maxEmbargoDate.time})
                 });
-                </c:if>
 
                 var publications = [];
                 <c:forEach var="publication" items="${project.publications}">
@@ -435,7 +428,6 @@
                         <form:errors path="access" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
-                <c:if test="${dataLicencingEnabled}">
                 <div id="data-licences-control-group" class="control-group" style="<c:if test="${project.access == 'CLOSED'}">display: none;</c:if>">
                     <label class="control-label" for="dataLicenceCopyright">Data Licence</label>
                     <div class="controls">
@@ -477,7 +469,6 @@
                         </c:forEach>
                     </div>
                 </div>
-                </c:if>
                 <div class="control-group">
                     <label class="control-label" for="publicationUrl">Rights Statement</label>
                     <div class="controls">

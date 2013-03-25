@@ -55,7 +55,6 @@
         <property name="mailServerPort" value="${application.mailServerPort}"/>
         <property name="passwordResetExpiryDays" value="${application.passwordResetExpiryDays}"/>
         <property name="aafEnabled" value="${application.aafEnabled}"/>
-        <property name="dataLicencingEnabled" value="${application.dataLicencingEnabled}"/>
         <property name="recaptchaPublicKey" value="${application.recaptchaPublicKey}"/>
         <property name="recaptchaPrivateKey" value="${application.recaptchaPrivateKey}"/>
         <property name="closedAccessDisableDateString" value="${application.closedAccessDisableDate}"/>

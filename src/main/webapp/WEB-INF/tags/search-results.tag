@@ -1,5 +1,4 @@
 <%@ tag pageEncoding="UTF-8" %>
-<%@ tag import="org.oztrack.app.OzTrackApplication" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -8,7 +7,6 @@
 <%@ attribute name="individualAnimal" type="java.lang.Boolean" required="false" %>
 <c:set var="dateFormatPattern" value="yyyy-MM-dd"/>
 <c:set var="dateTimeFormatPattern" value="yyyy-MM-dd HH:mm:ss"/>
-<c:set var="dataLicencingEnabled"><%= OzTrackApplication.getApplicationContext().isDataLicencingEnabled() %></c:set>
 <div class="searchResultsNav">
 <div style="float:left; padding: 5px 0; font-weight: bold;">
     Detections <c:out value="${positionFixPage.offset+1}"/> to <c:out value="${positionFixPage.offset+fn:length(positionFixPage.objects)}"/> of <c:out value="${positionFixPage.count}"/>
@@ -40,7 +38,7 @@
     <div class="btn-group">
         <c:set var="exportBaseUrl" value="${pageContext.request.contextPath}/projects/${searchQuery.project.id}/export?${urlParamsPrefix}"/>
         <c:choose>
-        <c:when test="${dataLicencingEnabled && (project.dataLicence != null)}">
+        <c:when test="${project.dataLicence != null}">
         <button class="btn" onclick="
             $('#exportConfirmation .exportButton').attr('href', '${exportBaseUrl}format=csv').text('Export CSV');
             $('#exportConfirmation').slideDown();
@@ -58,7 +56,7 @@
     </div>
 </div>
 <div style="clear: both;"></div>
-<c:if test="${dataLicencingEnabled && (project.dataLicence != null)}">
+<c:if test="${project.dataLicence != null}">
 <div id="exportConfirmation" class="form-bordered exportConfirmation" style="display: none;">
     <p>
         Data in this project are made available under the following licence:

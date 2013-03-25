@@ -183,7 +183,6 @@ public class ProjectController {
             }
         }
         if (
-            configuration.isDataLicencingEnabled() &&
             StringUtils.isNotBlank(dataLicenceIdentifier) &&
             (project.getAccess() != ProjectAccess.CLOSED)
         ) {
@@ -241,13 +240,10 @@ public class ProjectController {
     }
 
     private void addFormAttributes(Model model, Project project) {
-        if (configuration.isDataLicencingEnabled()) {
-            model.addAttribute("dataLicences", dataLicenceDao.getAll());
-        }
+        model.addAttribute("dataLicences", dataLicenceDao.getAll());
         model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
         model.addAttribute("currentYear", (new GregorianCalendar()).get(Calendar.YEAR));
         model.addAttribute("currentDate", new Date());
-        model.addAttribute("dataLicencingEnabled", configuration.isDataLicencingEnabled());
         model.addAttribute("closedAccessDisableDate", configuration.getClosedAccessDisableDate());
         addEmbargoDateFormAttributes(model, project);
     }

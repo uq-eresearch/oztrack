@@ -1,12 +1,10 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
-<%@ page import="org.oztrack.app.OzTrackApplication" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
-<c:set var="dataLicencingEnabled"><%= OzTrackApplication.getApplicationContext().isDataLicencingEnabled() %></c:set>
 <c:set var="isoDateFormatPattern" value="yyyy-MM-dd"/>
 <tags:page title="${project.title}: View Tracks" fluid="true">
     <jsp:attribute name="description">
@@ -241,14 +239,12 @@
                 onResize();
                 analysisMap = new OzTrack.AnalysisMap('projectMap', {
                     projectId: <c:out value="${project.id}"/>,
-                    <c:if test="${dataLicencingEnabled}">
                     <c:if test="${(project.access == 'OPEN') and (project.dataLicence != null)}">
                     dataLicence: {
                         title: '${project.dataLicence.title}',
                         infoUrl: '${project.dataLicence.infoUrl}',
                         imageUrl: '${project.dataLicence.imageUrl}'
                     },
-                    </c:if>
                     </c:if>
                     animalIds: [
                         <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">

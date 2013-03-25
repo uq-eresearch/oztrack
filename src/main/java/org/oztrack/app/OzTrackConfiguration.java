@@ -15,7 +15,6 @@ public interface OzTrackConfiguration {
     String getMailFromEmail();
     Integer getPasswordResetExpiryDays();
     boolean isAafEnabled();
-    boolean isDataLicencingEnabled();
     String getRecaptchaPublicKey();
     String getRecaptchaPrivateKey();
     Date getClosedAccessDisableDate();

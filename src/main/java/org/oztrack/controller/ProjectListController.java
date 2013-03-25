@@ -10,7 +10,6 @@ import java.util.List;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.oztrack.app.OzTrackApplication;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.DataLicenceDao;
 import org.oztrack.data.access.ProjectDao;
@@ -133,7 +132,6 @@ public class ProjectListController {
         @RequestParam(value="dataLicenceIdentifier", required=false) String dataLicenceIdentifier
     ) throws Exception {
         if (
-            OzTrackApplication.getApplicationContext().isDataLicencingEnabled() &&
             (project.getAccess() != ProjectAccess.CLOSED) &&
             (dataLicenceIdentifier != null)
         ) {
@@ -156,13 +154,10 @@ public class ProjectListController {
     }
 
     private void addFormAttributes(Model model) {
-        if (configuration.isDataLicencingEnabled()) {
-            model.addAttribute("dataLicences", dataLicenceDao.getAll());
-        }
+        model.addAttribute("dataLicences", dataLicenceDao.getAll());
         model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
         model.addAttribute("currentYear", (new GregorianCalendar()).get(Calendar.YEAR));
         model.addAttribute("currentDate", new Date());
-        model.addAttribute("dataLicencingEnabled", configuration.isDataLicencingEnabled());
         model.addAttribute("closedAccessDisableDate", configuration.getClosedAccessDisableDate());
         addEmbargoDateFormAttributes(model);
     }
