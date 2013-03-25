@@ -51,6 +51,13 @@ public class ShibbolethController {
                     logger.debug(headerName + ": " + headerValue);
                 }
             }
+            Enumeration<String> parameterNames = request.getParameterNames();
+            while (parameterNames.hasMoreElements()) {
+                String parameterName = parameterNames.nextElement();
+                for (String parameterValue : request.getParameterValues(parameterName)) {
+                    logger.debug(parameterName + "=" + parameterValue);
+                }
+            }
         }
 
         if ((aafId == null) || aafId.isEmpty()) {
