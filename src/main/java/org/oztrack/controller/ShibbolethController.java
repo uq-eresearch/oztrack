@@ -1,6 +1,9 @@
 package org.oztrack.controller;
 
 import java.util.Date;
+import java.util.Enumeration;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,10 +33,26 @@ public class ShibbolethController {
     @RequestMapping(value="/login/shibboleth", method=RequestMethod.GET)
     @PreAuthorize("permitAll")
     @Transactional
-    public String handleLogin(@RequestHeader(value="eppn", required=false) String aafId) throws Exception {
+    public String handleLogin(
+        @RequestHeader(value="eppn", required=false) String aafId,
+        HttpServletRequest request
+    ) throws Exception {
         if (!configuration.isAafEnabled()) {
             throw new RuntimeException("AAF authentication is disabled");
         }
+
+        if (logger.isDebugEnabled()) {
+            Enumeration<String> headerNames = request.getHeaderNames();
+            while (headerNames.hasMoreElements()) {
+                String headerName = headerNames.nextElement();
+                Enumeration<String> headerValues = request.getHeaders(headerName);
+                while (headerValues.hasMoreElements()) {
+                    String headerValue = headerValues.nextElement();
+                    logger.debug(headerName + ": " + headerValue);
+                }
+            }
+        }
+
         if ((aafId == null) || aafId.isEmpty()) {
             throw new RuntimeException("No AAF credentials were supplied.");
         }
