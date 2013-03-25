@@ -25,9 +25,9 @@
     <jsp:body>
         <h1>Login</h1>
 
-        <c:if test="${not empty sessionScope['SPRING_SECURITY_LAST_EXCEPTION'].message}">
+        <c:if test="${not empty errorMessage}">
         <div class="alert alert-error">
-            ${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}
+            ${errorMessage}
         </div>
         </c:if>
 
@@ -49,12 +49,19 @@
                 </div>
             </fieldset>
             <div class="form-actions">
-                <a class="btn btn-primary" href="${pageContext.request.contextPath}/login/shibboleth">Login using AAF</a>
+                <c:url var="shibbolethUrl" value="${pageContext.request.contextPath}/login/shibboleth">
+                    <c:if test="${not empty redirectUrl}">
+                    <c:param name="redirect">
+                        ${redirectUrl}
+                    </c:param>
+                    </c:if>
+                </c:url>
+                <a class="btn btn-primary" href="${shibbolethUrl}">Login using AAF</a>
             </div>
         </form>
         </c:if>
 
-        <form id="nativeLoginForm" class="form-vertical form-bordered" method="POST" action="${pageContext.request.contextPath}/j_spring_security_check">
+        <form id="nativeLoginForm" class="form-vertical form-bordered" method="POST" action="${pageContext.request.contextPath}/login">
             <fieldset>
                 <c:if test="${aafEnabled}">
                 <div class="legend">Login using OzTrack</div>
@@ -62,7 +69,7 @@
                 <div class="control-group">
                     <label class="control-label" for="username">Username</label>
                     <div class="controls">
-                        <input type="text" name="username" id="username"/>
+                        <input type="text" name="username" id="username" value="${username}"/>
                     </div>
                 </div>
                 <div class="control-group">

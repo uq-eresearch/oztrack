@@ -11,6 +11,7 @@ import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
 import org.oztrack.util.OzTrackUtil;
+import org.oztrack.util.UriUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ShibbolethController {
@@ -35,6 +37,7 @@ public class ShibbolethController {
     @Transactional
     public String handleLogin(
         @RequestHeader(value="eppn", required=false) String aafId,
+        @RequestParam(value="redirect", required=false) String redirectUrl,
         HttpServletRequest request
     ) throws Exception {
         if (!configuration.isAafEnabled()) {
@@ -70,7 +73,12 @@ public class ShibbolethController {
             SecurityContextHolder.getContext().setAuthentication(OzTrackAuthenticationProvider.buildAuthentication(existingUser));
             existingUser.getLoginDates().add(new Date());
             userDao.save(existingUser);
-            return "redirect:/";
+            if (UriUtils.isWithinWebApp(request, redirectUrl)) {
+                return "redirect:" + redirectUrl;
+            }
+            else {
+                return "redirect:/";
+            }
         }
 
         // Existing user already logged in and providing a new AAF ID

@@ -1,62 +1,71 @@
 package org.oztrack.controller;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.oztrack.util.UriUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class LoginController {
     protected final Log logger = LogFactory.getLog(getClass());
 
+    @Autowired
+    AuthenticationManager authenticationManager;
+
     @RequestMapping(value="/login", method=RequestMethod.GET)
     @PreAuthorize("permitAll")
-    public String getView(
+    public String handleGet(
+        @RequestHeader(value="Referer", required=false) String referer,
+        @RequestParam(value="redirect", required=false) String redirectUrl,
         Model model,
         HttpServletRequest request
     ) {
-        model.addAttribute("redirectUrl", getRedirectUrl(request, request.getHeader("Referer")));
+        model.addAttribute("redirectUrl",
+            UriUtils.isWithinWebApp(request, redirectUrl) ? redirectUrl :
+            UriUtils.isWithinWebApp(request, referer) ? referer :
+            null
+        );
         return "login";
     }
 
-    /**
-     * Get redirect URL from Referer header if it links within this web application;
-     * otherwise, return null. The check for being within this application requires
-     * that the authority and path components of the request and referer URIs match.
-     *
-     *   foo://username:password@example.com:8042/over/there/index.html?type=a&name=b#nose
-     *   \_/   \_______________/ \_________/ \__/\____________________/ \___________/ \__/
-     *    |           |               |       |           |                  |         |
-     *  scheme     userinfo        hostname  port        path               query   fragment
-     *   name  \________________________________/
-     *                         |
-     *                     authority
-     */
-    private String getRedirectUrl(HttpServletRequest request, String referer) {
-        if (referer == null) {
-            return null;
-        }
+    @RequestMapping(value="/login", method=RequestMethod.POST)
+    public String handlePost(
+        @RequestParam(value="username", required=false) String username,
+        @RequestParam(value="password", required=false) String password,
+        @RequestParam(value="redirect", required=false) String redirectUrl,
+        Model model,
+        HttpServletRequest request
+    ) {
         try {
-            URI requestURI = new URI(request.getRequestURL().toString());
-            URI refererURI = requestURI.resolve(new URI(referer));
-            if (
-                refererURI.getAuthority().equals(requestURI.getAuthority()) &&
-                refererURI.getPath().startsWith(request.getContextPath())
-            ) {
-                return refererURI.toString();
-            }
+            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
+            Authentication authentication = authenticationManager.authenticate(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-        catch (URISyntaxException e) {
-            logger.error("Error building redirect URI from referer: " + referer);
+        catch (Exception e) {
+            model.addAttribute("username", username);
+            model.addAttribute("redirectUrl", redirectUrl);
+            model.addAttribute("errorMessage", "Invalid username or password.");
+            return "login";
         }
-        return null;
+        if (UriUtils.isWithinWebApp(request, redirectUrl)) {
+            return "redirect:" + redirectUrl;
+        }
+        else {
+            return "redirect:/";
+        }
     }
 }
