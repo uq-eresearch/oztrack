@@ -49,7 +49,7 @@ public class LoginController {
             URI refererURI = requestURI.resolve(new URI(referer));
             if (
                 refererURI.getAuthority().equals(requestURI.getAuthority()) &&
-                refererURI.getPath().startsWith(request.getServletContext().getContextPath())
+                refererURI.getPath().startsWith(request.getContextPath())
             ) {
                 return refererURI.toString();
             }
