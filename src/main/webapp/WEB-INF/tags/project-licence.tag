@@ -3,7 +3,6 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ attribute name="project" type="org.oztrack.data.model.Project" required="true" %>
 <c:if test="${(project.access == 'OPEN') and (project.dataLicence != null)}">
-</c:if>
 <div class="sidebar-data-licence">
 <p class="sidebar-data-licence-image">
     <a href="${project.dataLicence.infoUrl}"><img src="${project.dataLicence.imageUrl}" /></a>
@@ -14,3 +13,4 @@
     licence.
 </p>
 </div>
+</c:if>
