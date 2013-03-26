@@ -82,12 +82,13 @@ public class GeoServerClient {
     }
 
     public void replaceStyle(String style, HttpEntity entity) throws Exception {
-        if(probe(String.format("styles/%s.sld", style))==200) {
+        if (probe(String.format("styles/%s.sld", style)) == 200) {
             put("styles", style+".sld", "application/vnd.ogc.sld+xml", entity);
-        } else if(postProbe("styles.sld", "application/vnd.ogc.sld+xml", entity) != 201) {
+        }
+        else if (postProbe("styles.sld", "application/vnd.ogc.sld+xml", entity) != 201) {
             // this is the dodgy part were we assume that the sld file is still on the server
             // but its style xml is missing (due to flaky geoserver delete of styles)
-            // the workaround posts a new style xml and then updates the sld file
+            // the workaround posts a new style xml and then update the sld file
             String stylesXml =
                 "<style>" +
                 "<name>" + style + "</name>" +
@@ -96,10 +97,11 @@ public class GeoServerClient {
                 "</style>";
             logger.debug(stylesXml);
             StringEntity stylesXmlEntity = new StringEntity(stylesXml, ContentType.create("application/xml", "utf-8"));
-            if(postProbe("styles.xml", "application/xml", stylesXmlEntity)==201) {
+            if (postProbe("styles.xml", "application/xml", stylesXmlEntity) == 201) {
                 put("styles", style+".sld", "application/vnd.ogc.sld+xml", entity);
-            } else {
-                throw new RuntimeException("failed to replace style "+style);
+            }
+            else {
+                throw new RuntimeException("failed to replace style " + style);
             }
         }
     }
