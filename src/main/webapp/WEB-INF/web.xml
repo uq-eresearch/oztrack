@@ -70,6 +70,9 @@
     </filter>
     <filter-mapping>
         <filter-name>shallowEtagHeaderFilter</filter-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/css/*</url-pattern>
+        <url-pattern>/img/*</url-pattern>
+        <url-pattern>/js/*</url-pattern>
+        <url-pattern>/favicon.ico</url-pattern>
     </filter-mapping>
 </web-app>
