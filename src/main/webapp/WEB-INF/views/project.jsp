@@ -40,6 +40,9 @@
             #content.wide #projectDetails {
                 width: 690px;
             }
+            #searchOutput {
+                margin: 20px 0;
+            }
         </style>
     </jsp:attribute>
     <jsp:attribute name="tail">
@@ -150,6 +153,37 @@
                     select: function(event, ui) {
                         jQuery('#addProjectUserId').val(ui.item ? ui.item.id : '');
                         jQuery('#addProjectUserLabel').val(ui.item ? ui.item.label : '');
+                    }
+                });
+            });
+        </script>
+        <script type="text/javascript">
+            $('#searchTernLink').click(function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: 'http://portal.tern.org.au/ternapi/search',
+                    data: $('#searchTernForm').serialize(),
+                    dataType: "jsonp",
+                    success: function(data, textStatus, jqXHR) {
+                        var items =
+                            $.isArray(data.response.item) ? data.response.item : // array of results
+                            data.response.item ? [data.response.item] :          // single result => convert to array
+                            [];                                                  // no results => create empty array
+                        var output = $('#searchOutput').empty();
+                        if (items.length > 0) {
+                            output.append($('<ol>').append($.map(items, function(item) {
+                                return $('<li>').append([
+                                    $('<a>')
+                                        .attr('href', item.link)
+                                        .attr('title', item.description)
+                                        .text(item.title),
+                                    $('<span>').text(' (' + item.temporal + ')')
+                                ]);
+                            })));
+                        }
+                        else {
+                            output.append($('<p>').text('No results found'));
+                        }
                     }
                 });
             });
@@ -397,5 +431,48 @@
         </form>
         <div id="projectUserError" class="alert alert-error" style="margin-top: -12px; display: none;"></div>
         </sec:authorize>
+
+        <h2 style="margin-top: 0;">Search Related Sites</h2>
+
+        <div class="buttons">
+            <a id="searchTernLink" href="#"><img class="img-polaroid" src="${pageContext.request.contextPath}/img/tern-logo.gif" /></a>
+        </div>
+        <form id="searchTernForm" class="form-horizontal form-bordered" style="display: none; padding-bottom: 9px;">
+            <fieldset>
+                <div class="control-group">
+                    <label class="control-label" for="term">Term</label>
+                    <div class="controls">
+                        <input id="term" class="input-xxlarge" name="term" type="text" placeholder="Keyword or *:*" value="${project.title}"/>
+                        <div class="help-block">Example: australia</div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="temporal">Temporal</label>
+                    <div class="controls">
+                        <input id="temporal" class="input-xxlarge" name="temporal" type="text" placeholder="YYYY-YYYY" />
+                        <div class="help-block">Example: 2000-2010</div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="g">Geometry</label>
+                    <div class="controls">
+                        <input id="g" class="input-xxlarge" name="g" type="text" placeholder="WKT" />
+                        <div class="help-block">Example: POLYGON((138.50 -27.25,141.498 -21.32,146.8 -28.34,140.88 -30.63,138.5 -27.25))</div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="b">Bounding box</label>
+                    <div class="controls">
+                        <input id="b" class="input-xxlarge" name="b" type="text" placeholder="northlimit,westlimit,southlimit,eastlimit" />
+                        <div class="help-block">Example: -35.42,138.77,-37.89,130.51</div>
+                    </div>
+                </div>
+                <input type="hidden" name="w" value="1" />
+                <input type="hidden" name="count" value="10" />
+                <input type="hidden" name="format" value="json" />
+            </fieldset>
+        </form>
+        <div id="searchOutput">
+        </div>
     </jsp:body>
 </tags:page>
