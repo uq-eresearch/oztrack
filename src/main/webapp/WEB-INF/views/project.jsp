@@ -314,12 +314,14 @@
                 <c:if test="${!empty project.speciesScientificName}"><i><br><c:out value="${project.speciesScientificName}"/></i></c:if>
           </td>
         </tr>
+        <sec:authorize access="hasPermission(#project, 'manage')">
         <c:if test="${not empty project.srsIdentifier}">
         <tr>
             <th>Spatial Reference System:</th>
             <td><a href="http://spatialreference.org/ref/?search=<c:out value="${project.srsIdentifier}"/>"><c:out value="${project.srsIdentifier}"/></a></td>
         </tr>
         </c:if>
+        </sec:authorize>
         <tr>
             <th>Location:</th>
             <td><c:out value="${project.spatialCoverageDescr}"/></td>
