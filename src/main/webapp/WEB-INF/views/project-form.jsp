@@ -281,7 +281,7 @@
                 <div class="control-group">
                     <label class="control-label" for="spatialCoverageDescr">Location</label>
                     <div class="controls">
-                        <form:input path="spatialCoverageDescr" id="spatialCoverageDescr"/>
+                        <form:input path="spatialCoverageDescr" id="spatialCoverageDescr" cssClass="input-xxlarge"/>
                         <div class="help-inline">
                             <div class="help-popover" title="Location Description">
                                 The general area of the study, eg. country, state, town.
@@ -296,14 +296,14 @@
                 <div class="control-group">
                     <label class="control-label" for="speciesCommonName">Common Name</label>
                     <div class="controls">
-                        <form:input path="speciesCommonName" id="speciesCommonName"/>
+                        <form:input path="speciesCommonName" id="speciesCommonName" cssClass="input-xxlarge"/>
                         <form:errors path="speciesCommonName" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="speciesScientificName">Scientific Name</label>
                     <div class="controls">
-                        <form:input path="speciesScientificName" id="speciesScientificName"/>
+                        <form:input path="speciesScientificName" id="speciesScientificName" cssClass="input-xxlarge"/>
                         <form:errors path="speciesScientificName" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>

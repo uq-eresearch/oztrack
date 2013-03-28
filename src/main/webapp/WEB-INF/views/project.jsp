@@ -314,7 +314,7 @@
         </tr>
         </c:if>
         <tr>
-            <th>Spatial Coverage:</th>
+            <th>Location:</th>
             <td><c:out value="${project.spatialCoverageDescr}"/></td>
         </tr>
         <tr>
