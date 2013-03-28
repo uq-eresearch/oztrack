@@ -372,7 +372,7 @@
                             ">
                                 <jsp:attribute name="disabled">${maxEmbargoDate.time < minEmbargoDate.time}</jsp:attribute>
                             </form:radiobutton>
-                            <span style="font-weight: bold; color: orange;">Delayed Open Access</span>
+                            <span style="font-weight: bold; color: goldenrod;">Delayed Open Access</span>
                             <div style="margin: 0.5em 0;">
                                 Data in this project will be made publicly available in OzTrack after an embargo period.
                                 However, note that metadata including title, description, location, and animal species

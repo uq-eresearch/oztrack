@@ -355,15 +355,23 @@
             <td>
             <c:choose>
             <c:when test="${project.access == 'OPEN'}">
-                The data in the project are available in OzTrack for the public to use.
+                <span style="font-weight: bold; color: green;">Open Access</span>
+                <div style="margin-top: 0.5em 0;">
+                The data in this project are available for public use.
+                </div>
             </c:when>
             <c:when test="${project.access == 'EMBARGO'}">
-                The data in the project are covered by an embargo period,
-                ending <fmt:formatDate pattern="${dateFormatPattern}" value="${project.embargoDate}"/>,
-                and are currently only available to users on the OzTrack system whom have been granted access.
+                <span style="font-weight: bold; color: goldenrod;">Delayed Open Access</span>
+                <div style="margin-top: 0.5em 0;">
+                The data in this project are covered by an embargo period,
+                ending <fmt:formatDate pattern="${dateFormatPattern}" value="${project.embargoDate}"/>.
+                </div>
             </c:when>
             <c:otherwise>
-                The data in this project are only available to users on the OzTrack system whom have been granted access.
+                <span style="font-weight: bold; color: red;">Closed Access</span>
+                <div style="margin-top: 0.5em 0;">
+                The data in this project are not publicly available.
+                </div>
             </c:otherwise>
             </c:choose>
             </td>
