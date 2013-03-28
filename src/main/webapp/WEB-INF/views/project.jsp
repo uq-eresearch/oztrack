@@ -264,18 +264,12 @@
             <table class="entityTable">
             <col style="width: 120px;" />
             <col style="width: 550px;" />
-            <sec:authorize access="hasPermission(#project, 'write')">
-            <tr>
-                <th>Data File Count:</th>
-                <td><a href="${pageContext.request.contextPath}/projects/${project.id}/datafiles"><c:out value="${fn:length(dataFileList)}"/></a></td>
-            </tr>
-            </sec:authorize>
             <tr>
                 <th>Date Range:</th>
                 <td><fmt:formatDate pattern="${dateFormatPattern}" value="${projectDetectionDateRange.minimum}"/> to <fmt:formatDate pattern="${dateFormatPattern}" value="${projectDetectionDateRange.maximum}"/></td>
             </tr>
             <tr>
-                <th>Detection Count:</th>
+                <th>Detections:</th>
                 <td><a href="${pageContext.request.contextPath}/projects/${project.id}/search"><c:out value="${projectDetectionCount}"/></a></td>
             </tr>
             <tr>
