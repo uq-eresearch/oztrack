@@ -222,7 +222,7 @@
                 var form = $('#searchTernForm');
                 if ($(this).is(':checked')) {
                     form.slideDown();
-                    $('body').animate({scrollTop: $(this).offset().top});
+                    $('body').animate({scrollTop: form.offset().top});
                 }
                 else {
                     form.slideUp();
