@@ -9,7 +9,6 @@
 <c:set var="dataSpaceEnabled"><%= OzTrackApplication.getApplicationContext().isDataSpaceEnabled() %></c:set>
 <c:set var="dateFormatPattern" value="yyyy-MM-dd"/>
 <c:set var="dateTimeFormatPattern" value="yyyy-MM-dd HH:mm:ss"/>
-<c:set var="monthYearDateFormatPattern" value="MMMM yyyy"/>
 <tags:page title="${project.title}">
     <jsp:attribute name="description">
         <c:choose>
@@ -313,20 +312,6 @@
                 <c:out value="${project.speciesCommonName}"/>
                 <c:if test="${!empty project.speciesScientificName}"><i><br><c:out value="${project.speciesScientificName}"/></i></c:if>
           </td>
-        </tr>
-        <tr>
-            <th>Temporal Coverage:</th>
-            <td>
-                <c:choose>
-                <c:when test="${empty projectDetectionDateRange}">
-                    No data have been uploaded for this project yet.
-                </c:when>
-                <c:otherwise>
-                    <fmt:formatDate pattern="${monthYearDateFormatPattern}" value="${projectDetectionDateRange.minimum}"/> to
-                    <fmt:formatDate pattern="${monthYearDateFormatPattern}" value="${projectDetectionDateRange.maximum}"/>
-                </c:otherwise>
-                </c:choose>
-            </td>
         </tr>
         <c:if test="${not empty project.srsIdentifier}">
         <tr>
