@@ -122,7 +122,15 @@ public class ProjectController {
 
     @RequestMapping(value="/projects/{id}/publish", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#project, 'manage')")
-    public String getPublishView(Model model, @ModelAttribute(value="project") Project project) {
+    public String getPublishView(
+        Model model,
+        @ModelAttribute(value="project") Project project,
+        HttpServletResponse response
+    ) {
+        if (!configuration.isDataSpaceEnabled()) {
+            response.setStatus(404);
+            return null;
+        }
         model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project));
         model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, false));
         return getView(model, project, "project-publish");
@@ -133,8 +141,13 @@ public class ProjectController {
     public String handleRequest(
         Model model,
         @ModelAttribute(value="project") Project project,
-        @RequestParam(value="action", required=false) String action
+        @RequestParam(value="action", required=false) String action,
+        HttpServletResponse response
     ) throws Exception {
+        if (!configuration.isDataSpaceEnabled()) {
+            response.setStatus(404);
+            return null;
+        }
         String errorMessage = "";
         try {
             DataSpaceInterface dsi = new DataSpaceInterface(projectDao, userDao);

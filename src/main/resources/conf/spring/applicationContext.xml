@@ -45,6 +45,7 @@
     <bean id="applicationContext" class="org.oztrack.app.OzTrackConfigurationImpl">
         <property name="baseUrl" value="${application.baseUrl}"/>
         <property name="geoServerLocalUrl" value="${application.geoServerLocalUrl}"/>
+        <property name="dataSpaceEnabled" value="${application.dataSpaceEnabled}"/>
         <property name="dataSpaceUrl" value="${application.dataSpaceUrl}"/>
         <property name="dataSpaceUsername" value="${application.dataSpaceUsername}"/>
         <property name="dataSpacePassword" value="${application.dataSpacePassword}"/>

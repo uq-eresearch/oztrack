@@ -6,6 +6,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <c:set var="aafEnabled"><%= OzTrackApplication.getApplicationContext().isAafEnabled() %></c:set>
+<c:set var="dataSpaceEnabled"><%= OzTrackApplication.getApplicationContext().isDataSpaceEnabled() %></c:set>
 <c:set var="title" value="${(user.id != null) ? 'User Profile' : 'Register'}"/>
 <tags:page title="${title}">
     <jsp:attribute name="description">
@@ -142,9 +143,10 @@
                         <form:input path="organisation" id="organisation"/>
                         <div class="help-inline">
                             <div class="help-popover" title="Organisation">
-                                Please give the name of the organisation in full.<br />
-                                <br />
-                                This field is used when project metadata are syndicated to UQ DataSpace and ANDS.
+                                <p>Please give the name of the organisation in full.</p>
+                                <c:if test="${dataSpaceEnabled}">
+                                <p>This field is used when project metadata are syndicated to UQ DataSpace and ANDS.</p>
+                                </c:if>
                             </div>
                         </div>
                         <form:errors path="organisation" element="div" cssClass="help-block formErrors"/>
@@ -163,10 +165,11 @@
                         <form:textarea path="dataSpaceAgentDescription" id="dataSpaceAgentDescription" cssStyle="width: 400px; height: 100px;"/>
                         <div class="help-inline">
                             <div class="help-popover" title="Short Bio">
-                                Briefly describe yourself and your research interests.<br />
-                                <br />
-                                This field is used when project metadata are syndicated to UQ DataSpace and ANDS.
-                                See examples at <a href="http://dataspace.uq.edu.au/agents">http://dataspace.uq.edu.au/agents</a>.
+                                <p>Briefly describe yourself and your research interests.</p>
+                                <c:if test="${dataSpaceEnabled}">
+                                <p>This field is used when project metadata are syndicated to UQ DataSpace and ANDS.
+                                See examples at <a href="http://dataspace.uq.edu.au/agents">http://dataspace.uq.edu.au/agents</a>.</p>
+                                </c:if>
                             </div>
                         </div>
                         <form:errors path="dataSpaceAgentDescription" element="div" cssClass="help-block formErrors"/>

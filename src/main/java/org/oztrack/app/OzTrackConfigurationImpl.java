@@ -9,6 +9,7 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
 
     private String baseUrl;
     private String geoServerLocalUrl;
+    private boolean dataSpaceEnabled;
     private String dataSpaceUrl;
     private String dataSpaceUsername;
     private String dataSpacePassword;
@@ -39,6 +40,15 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
 
     public void setGeoServerLocalUrl(String geoServerLocalUrl) {
         this.geoServerLocalUrl = geoServerLocalUrl;
+    }
+
+    @Override
+    public boolean isDataSpaceEnabled() {
+        return dataSpaceEnabled;
+    }
+
+    public void setDataSpaceEnabled(boolean dataSpaceEnabled) {
+        this.dataSpaceEnabled = dataSpaceEnabled;
     }
 
     @Override

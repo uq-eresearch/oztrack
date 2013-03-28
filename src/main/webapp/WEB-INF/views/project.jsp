@@ -1,10 +1,12 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
+<%@ page import="org.oztrack.app.OzTrackApplication" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
+<c:set var="dataSpaceEnabled"><%= OzTrackApplication.getApplicationContext().isDataSpaceEnabled() %></c:set>
 <c:set var="dateFormatPattern" value="yyyy-MM-dd"/>
 <c:set var="dateTimeFormatPattern" value="yyyy-MM-dd HH:mm:ss"/>
 <c:set var="monthYearDateFormatPattern" value="MMMM yyyy"/>
@@ -405,6 +407,7 @@
         </c:if>
 
         <sec:authorize access="hasPermission(#project, 'manage')">
+        <c:if test="${dataSpaceEnabled}">
         <tr>
             <th>Publication Status:</th>
             <td>
@@ -419,6 +422,7 @@
                 </c:choose>
             </td>
         </tr>
+        </c:if>
         </sec:authorize>
 
         </table>
