@@ -529,7 +529,7 @@
                 <input type="hidden" name="format" value="json" />
             </fieldset>
             <div class="form-actions">
-                <button id="searchTernButton" class="btn btn-primary">Search</button>
+                <button id="searchTernButton" type="submit" class="btn btn-primary">Search</button>
             </div>
         </form>
         <div id="searchOutput">
