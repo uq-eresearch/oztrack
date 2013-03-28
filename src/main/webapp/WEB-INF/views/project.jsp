@@ -204,6 +204,7 @@
                             output.append($('<p>').text('No results found'));
                         }
                         $('#searchOutput').empty().append(output);
+                        $('body').animate({scrollTop: output.offset().top});
                     }
                 });
             }
