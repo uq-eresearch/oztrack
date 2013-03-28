@@ -40,8 +40,25 @@
             #content.wide #projectDetails {
                 width: 690px;
             }
+            .searchLink {
+                display: inline-block;
+            }
+            #searchOptions {
+                margin: 9px 0;
+            }
+            .searchForm {
+                display: none;
+                margin: 18px 0;
+                padding-bottom: 1px;
+            }
             #searchOutput {
-                margin: 20px 0;
+                margin: 18px 0;
+            }
+            #searchOutput h3 {
+                font-size: 1em;
+                padding-bottom: 4px;
+                color: #333;
+                border-bottom: 1px solid #c7c7c7;
             }
         </style>
     </jsp:attribute>
@@ -158,8 +175,7 @@
             });
         </script>
         <script type="text/javascript">
-            $('#searchTernLink').click(function(e) {
-                e.preventDefault();
+            function searchTern() {
                 $.ajax({
                     url: 'http://portal.tern.org.au/ternapi/search',
                     data: $('#searchTernForm').serialize(),
@@ -169,14 +185,17 @@
                             $.isArray(data.response.item) ? data.response.item : // array of results
                             data.response.item ? [data.response.item] :          // single result => convert to array
                             [];                                                  // no results => create empty array
-                        var output = $('#searchOutput').empty();
+                        var output = $('<div>').attr('id', 'searchTernOutput');
+                        output.append($('<h3>')
+                            .append($('<button type="button" class="close">×</button>').click(function(e) {
+                                e.preventDefault();
+                                $('#searchTernOutput').fadeOut().remove();
+                            }))
+                            .append('TERN search results'));
                         if (items.length > 0) {
                             output.append($('<ol>').append($.map(items, function(item) {
                                 return $('<li>').append([
-                                    $('<a>')
-                                        .attr('href', item.link)
-                                        .attr('title', item.description)
-                                        .text(item.title),
+                                    $('<a>').attr('href', item.link).attr('title', item.description).text(item.title),
                                     $('<span>').text(' (' + item.temporal + ')')
                                 ]);
                             })));
@@ -184,8 +203,29 @@
                         else {
                             output.append($('<p>').text('No results found'));
                         }
+                        $('#searchOutput').empty().append(output);
                     }
                 });
+            }
+            $('#searchTernButton').click(function(e) {
+                e.preventDefault();
+                searchTern();
+            });
+            $('#searchTernLink').click(function(e) {
+                e.preventDefault();
+                $('#advancedSearch').is(':checked') && $('#searchTernForm').slideToggle() || searchTern();
+            });
+            $('#advancedSearch').change(function (e) {
+                // We only have the TERN search form at the moment; if we add other search forms,
+                // we'll need to keep track of the "current" form and specifically show/hide that one.
+                var form = $('#searchTernForm');
+                if ($(this).is(':checked')) {
+                    form.slideDown();
+                    $('body').animate({scrollTop: $(this).offset().top});
+                }
+                else {
+                    form.slideUp();
+                }
             });
         </script>
     </jsp:attribute>
@@ -393,7 +433,7 @@
         </c:forEach>
         <tr>
             <c:forEach items="${roles}" var="role">
-            <th style="border-bottom: 1px solid #e6e6c0; text-align: left; padding: 4px;">
+            <th style="border-bottom: 1px solid #c7c7c7; text-align: left; padding: 4px;">
                 ${role.pluralTitle}
                 <div class="help-popover" title="${role.pluralTitle}">
                     ${role.explanation}
@@ -416,8 +456,7 @@
         <form
             onsubmit="return false;"
             class="form-inline"
-            style="padding: 10px; background-color: #f6f6e6; border: 0px solid #e6e6c0;
-                -webkit-border-radius: 0px; -moz-border-radius: 0px; -ms-border-radius: 0px; -o-border-radius: 0px; border-radius: 0px;">
+            style="padding: 10px; background-color: #e6e6c0;">
             <span style="line-height: 1.8em; margin-right: 10px;">Assign a new user to the project:</span>
             <input id="addProjectUserId" type="hidden" />
             <input id="addProjectUserLabel" type="hidden" />
@@ -434,43 +473,64 @@
 
         <h2 style="margin-top: 0;">Search Related Sites</h2>
 
-        <div class="buttons">
-            <a id="searchTernLink" href="#"><img class="img-polaroid" src="${pageContext.request.contextPath}/img/tern-logo.gif" /></a>
+        <div id="searchLinks">
+            <a id="searchTernLink" class="searchLink" href="#"><img class="img-polaroid" src="${pageContext.request.contextPath}/img/tern-logo.gif" /></a>
         </div>
-        <form id="searchTernForm" class="form-horizontal form-bordered" style="display: none; padding-bottom: 9px;">
+        <div id="searchOptions">
+            <label class="checkbox"><input id="advancedSearch" type="checkbox" /> Advanced search</label>
+        </div>
+        <form id="searchTernForm" class="searchForm form-horizontal form-bordered">
             <fieldset>
+                <div class="legend">
+                    <button type="button" class="close" onclick="$('#advancedSearch').prop('checked', false).trigger('change');">×</button>
+                    Search TERN
+                </div>
                 <div class="control-group">
                     <label class="control-label" for="term">Term</label>
                     <div class="controls">
-                        <input id="term" class="input-xxlarge" name="term" type="text" placeholder="Keyword or *:*" value="${project.title}"/>
-                        <div class="help-block">Example: australia</div>
+                        <input id="term" class="input-xxlarge" name="term" type="text" placeholder="e.g. ${project.title}" value="${project.title}"/>
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="temporal">Temporal</label>
+                    <label class="control-label" for="temporal">Years</label>
                     <div class="controls">
-                        <input id="temporal" class="input-xxlarge" name="temporal" type="text" placeholder="YYYY-YYYY" />
-                        <div class="help-block">Example: 2000-2010</div>
+                        <input id="temporal" class="input-xxlarge" name="temporal" type="text" placeholder="e.g. 2000-2010" />
                     </div>
                 </div>
-                <div class="control-group">
+                <div class="control-group" style="display: none">
                     <label class="control-label" for="g">Geometry</label>
                     <div class="controls">
-                        <input id="g" class="input-xxlarge" name="g" type="text" placeholder="WKT" />
-                        <div class="help-block">Example: POLYGON((138.50 -27.25,141.498 -21.32,146.8 -28.34,140.88 -30.63,138.5 -27.25))</div>
+                        <input id="g" class="input-xxlarge" name="g" type="text" />
+                        <div class="help-inline">
+                            <div class="help-popover" title="Geometry">
+                                <p>Geometry expressed in Well-Known Text (WKT) format.</p>
+                                <p>Example: POLYGON((138.50 -27.25,141.498 -21.32,146.8 -28.34,140.88 -30.63,138.5 -27.25))</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="b">Bounding box</label>
                     <div class="controls">
-                        <input id="b" class="input-xxlarge" name="b" type="text" placeholder="northlimit,westlimit,southlimit,eastlimit" />
-                        <div class="help-block">Example: -35.42,138.77,-37.89,130.51</div>
+                        <input id="b" class="input-xxlarge" name="b" type="text" placeholder="e.g. -35.42,138.77,-37.89,130.51" />
+                        <div class="help-inline">
+                            <div class="help-popover" title="Bounding box">
+                                <p>
+                                    Geographical bounding box specifying limits for latitude/longitude
+                                    in the format <i>north,west,south,east</i>.
+                                </p>
+                                <p>Example: -35.42,138.77,-37.89,130.51</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <input type="hidden" name="w" value="1" />
                 <input type="hidden" name="count" value="10" />
                 <input type="hidden" name="format" value="json" />
             </fieldset>
+            <div class="form-actions">
+                <button id="searchTernButton" class="btn btn-primary">Search</button>
+            </div>
         </form>
         <div id="searchOutput">
         </div>
