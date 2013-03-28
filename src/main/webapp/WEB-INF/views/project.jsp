@@ -275,8 +275,15 @@
             <tr>
                 <th>Animals:</th>
                 <td>
-                    <c:forEach items="${projectAnimalsList}" var="animal">
+                    <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
+                    <c:choose>
+                    <c:when test="${animalStatus.index < 10}">
                     <a href="${pageContext.request.contextPath}/animals/${animal.id}"><c:out value="${animal.animalName}"/></a>,
+                    </c:when>
+                    <c:when test="${animalStatus.index == 10}">
+                    ...,
+                    </c:when>
+                    </c:choose>
                     </c:forEach>
                     <a href="${pageContext.request.contextPath}/projects/${project.id}/animals">View All</a>
                 </td>
