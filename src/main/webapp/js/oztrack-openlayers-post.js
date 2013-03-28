@@ -36,8 +36,7 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                             .attr('href', this.dataLicence.infoUrl)
                             .attr('title',
                                 'Data in this project are made available under the ' +
-                                this.dataLicence.title +
-                                ' licence.'
+                                this.dataLicence.title + '.'
                             )
                             .append($('<img>').attr('src', this.dataLicence.imageUrl))
                         )

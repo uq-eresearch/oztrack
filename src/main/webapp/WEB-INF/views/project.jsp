@@ -381,24 +381,6 @@
             </td>
         </tr>
 
-        <c:if test="${(project.access == 'OPEN') and (project.dataLicence != null)}">
-        <tr>
-            <th>Data Licence:</th>
-            <td>
-                <p>
-                    <img src="${project.dataLicence.imageUrl}" />
-                </p>
-                <p>
-                    <span style="font-weight: bold;">${project.dataLicence.title}</span>
-                </p>
-                <p>
-                    ${project.dataLicence.description}
-                    <a href="${project.dataLicence.infoUrl}">More information</a>
-                </p>
-            </td>
-        </tr>
-        </c:if>
-        
         <c:if test="${not empty project.rightsStatement}">
         <tr>
             <th>Rights Statement:</th>

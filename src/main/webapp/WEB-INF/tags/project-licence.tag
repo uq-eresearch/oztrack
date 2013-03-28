@@ -9,8 +9,7 @@
 </p>
 <p class="sidebar-data-licence-text">
     Data in this project are made available under the
-    <a href="${project.dataLicence.infoUrl}">${project.dataLicence.title}</a>
-    licence.
+    <a href="${project.dataLicence.infoUrl}">${project.dataLicence.title}</a>.
 </p>
 </div>
 </c:if>
