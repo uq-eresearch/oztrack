@@ -360,8 +360,8 @@
         <c:when test="${project.access == 'EMBARGO'}">
         <p class="project-access-embargo-title">Delayed Open Access</p>
         <p>
-            The data in this project are covered by an embargo period,
-            ending <fmt:formatDate pattern="${dateFormatPattern}" value="${project.embargoDate}"/>.
+            The data in this project are under embargo until
+            <fmt:formatDate pattern="${dateFormatPattern}" value="${project.embargoDate}"/>.
         </p>
         </c:when>
         <c:otherwise>
