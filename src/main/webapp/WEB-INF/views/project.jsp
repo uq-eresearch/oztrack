@@ -24,22 +24,8 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/optimised/openlayers.css" type="text/css">
         <style type="text/css">
             #coverageMap {
-                float: right;
-                width: 240px;
-                height: 200px;
-            }
-            #projectData {
-                float: left;
-                width: 420px;
-            }
-            #projectDetails {
-                float: left;
-            }
-            #content.narrow #projectDetails {
-                width: 100%;
-            }
-            #content.wide #projectDetails {
-                width: 690px;
+                width: 220px;
+                height: 180px;
             }
             .searchLink {
                 display: inline-block;
@@ -149,9 +135,7 @@
             jQuery(document).ready(function() {
                 jQuery('#navTrack').addClass('active');
                 jQuery('#projectMenuDetails').addClass('active');
-                <c:if test="${not empty projectBoundingBox}">
                 var coverageMap = createCoverageMap('coverageMap', '<c:out value="${projectBoundingBox}"/>');
-                </c:if>
                 <c:forEach items="${roles}" var="role">
                     <c:choose>
                     <c:when test="${empty projectUsersByRole[role]}">
@@ -243,38 +227,65 @@
     </jsp:attribute>
     <jsp:body>
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
-
-        <c:if test="${not empty projectBoundingBox}">
-        <div id="coverageMap"></div>
+        
+        <c:if test="${not empty project.description}">
+        <div class="row">
+        <div class="span9">
+        <p>
+            <c:out value="${project.description}"/>
+        </p>
+        </div> <!-- .span9 -->
+        </div> <!-- .row -->
         </c:if>
 
+        <div class="row">
+        
+        <div class="span6">
+
+        <h2>Project Summary</h2>
+
+        <div class="row">
+
+        <c:set var="generalInfoSpan">
+        <sec:authorize access="hasPermission(#project, 'read')">3</sec:authorize>
+        <sec:authorize access="!hasPermission(#project, 'read')">6</sec:authorize>
+        </c:set>
+        <div class="span${generalInfoSpan}">
+        <dl>
+            <dt>Species</dt>
+            <dd>
+                <p>
+                    <c:out value="${project.speciesCommonName}"/>
+                    <c:if test="${!empty project.speciesScientificName}">
+                    <br/>
+                    <i><c:out value="${project.speciesScientificName}"/></i>
+                    </c:if>
+                </p>
+            </dd>
+            <dt>Location</dt>
+            <dd>
+                <p><c:out value="${project.spatialCoverageDescr}"/></p>
+            </dd>
+            <c:if test="${not empty projectDetectionDateRange}">
+            <dt>Date Range</dt>
+            <dd>
+                <p><fmt:formatDate pattern="${dateFormatPattern}" value="${projectDetectionDateRange.minimum}"/> to <fmt:formatDate pattern="${dateFormatPattern}" value="${projectDetectionDateRange.maximum}"/></p>
+            </dd>
+            </c:if>
+        </dl>
+        </div> <!-- .span3|.span6 -->
+
         <sec:authorize access="hasPermission(#project, 'read')">
-        <div id="projectData">
-        <h2 style="margin-top: 0;">Data Summary</h2>
-        <c:choose>
-        <c:when test="${(empty dataFileList)}">
-             <p>
-                 There are no data uploaded for this project yet.
-                 <sec:authorize access="hasPermission(#project, 'write')">
-                 <a href="${pageContext.request.contextPath}/projects/${project.id}/datafiles/new">Upload a data file</a>.
-                 </sec:authorize>
-             </p>
-        </c:when>
-        <c:otherwise>
-            <table class="entityTable">
-            <col style="width: 120px;" />
-            <col style="width: 550px;" />
-            <tr>
-                <th>Date Range:</th>
-                <td><fmt:formatDate pattern="${dateFormatPattern}" value="${projectDetectionDateRange.minimum}"/> to <fmt:formatDate pattern="${dateFormatPattern}" value="${projectDetectionDateRange.maximum}"/></td>
-            </tr>
-            <tr>
-                <th>Detections:</th>
-                <td><a href="${pageContext.request.contextPath}/projects/${project.id}/search"><c:out value="${projectDetectionCount}"/></a></td>
-            </tr>
-            <tr>
-                <th>Animals:</th>
-                <td>
+        <div class="span3">
+        <dl>
+            <dt>Detections</dt>
+            <dd>
+                <p><a href="${pageContext.request.contextPath}/projects/${project.id}/search"><c:out value="${projectDetectionCount}"/></a></p>
+            </dd>
+            <c:if test="${not empty projectAnimalsList}">
+            <dt>Animals</dt>
+            <dd>
+                <p>
                     <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
                     <c:choose>
                     <c:when test="${animalStatus.index < 10}">
@@ -286,160 +297,124 @@
                     </c:choose>
                     </c:forEach>
                     <a href="${pageContext.request.contextPath}/projects/${project.id}/animals">View All</a>
-                </td>
-            </tr>
-            </table>
+                </p>
+            </dd>
+            </c:if>
+        </dl>
+        </div> <!-- .span3 -->
+        </sec:authorize>
+        
+        </div> <!-- .row -->
+
+        </div> <!-- .span6 -->
+
+        <div class="span3">
+        <div id="coverageMap"></div>
+        </div> <!--  .span3 -->
+
+        </div> <!-- .row -->
+
+        <h2>Data Access</h2>
+
+        <div class="row">
+
+        <div class="span6">
+        <c:choose>
+        <c:when test="${project.access == 'OPEN'}">
+        <p style="font-weight: bold; color: green;">Open Access</p>
+        <p>
+            The data in this project are available for public use.
+        </p>
+        </c:when>
+        <c:when test="${project.access == 'EMBARGO'}">
+        <p style="font-weight: bold; color: goldenrod;">Delayed Open Access</p>
+        <p>
+            The data in this project are covered by an embargo period,
+            ending <fmt:formatDate pattern="${dateFormatPattern}" value="${project.embargoDate}"/>.
+        </p>
+        </c:when>
+        <c:otherwise>
+        <p style="font-weight: bold; color: red;">Closed Access</p>
+        <p>
+            The data in this project are not publicly available.
+        </p>
         </c:otherwise>
         </c:choose>
-        </div>
-        </sec:authorize>
-
-        <div id="projectDetails">
-        <h2 style="margin-top: 0;">Project Details</h2>
-        <table class="entityTable">
-        <col style="width: 120px;" />
-        <col style="width: 550px;" />
-        <tr>
-            <th>Title:</th>
-            <td><c:out value="${project.title}"/></td>
-        </tr>
-        <tr>
-            <th>Description:</th>
-            <td><c:out value="${project.description}"/></td>
-        </tr>
-        <tr>
-            <th>Species:</th>
-            <td>
-                <c:out value="${project.speciesCommonName}"/>
-                <c:if test="${!empty project.speciesScientificName}"><i><br><c:out value="${project.speciesScientificName}"/></i></c:if>
-          </td>
-        </tr>
-        <sec:authorize access="hasPermission(#project, 'manage')">
-        <c:if test="${not empty project.srsIdentifier}">
-        <tr>
-            <th>Spatial Reference System:</th>
-            <td><a href="http://spatialreference.org/ref/?search=<c:out value="${project.srsIdentifier}"/>"><c:out value="${project.srsIdentifier}"/></a></td>
-        </tr>
-        </c:if>
-        </sec:authorize>
-        <tr>
-            <th>Location:</th>
-            <td><c:out value="${project.spatialCoverageDescr}"/></td>
-        </tr>
-        <tr>
-            <th>Contact:</th>
-            <td>
-                <c:out value="${project.dataSpaceAgent.firstName}"/>&nbsp;<c:out value="${project.dataSpaceAgent.lastName}"/><br>
-                <a href="mailto:<c:out value="${project.dataSpaceAgent.email}"/>"><c:out value="${project.dataSpaceAgent.email}"/></a>
-            </td>
-        </tr>
-        <tr>
-            <th>Organisation:</th>
-            <td><c:out value="${project.dataSpaceAgent.organisation}"/></td>
-        </tr>
-        <c:if test="${not empty project.publications}">
-        <tr>
-            <th>Publications:</th>
-            <td>
-                <ul class="unstyled">
-                <c:forEach var="publication" items="${project.publications}">
-                <li><a href="<c:out value="${publication.url}"/>"><c:out value="${publication.title}"/></a></li>
-                </c:forEach>
-                </ul>
-            </td>
-        </tr>
-        </c:if>
-        
-        <tr>
-            <th>Access Rights:</th>
-            <td>
-            <c:choose>
-            <c:when test="${project.access == 'OPEN'}">
-                <span style="font-weight: bold; color: green;">Open Access</span>
-                <div style="margin-top: 0.5em 0;">
-                The data in this project are available for public use.
-                </div>
-            </c:when>
-            <c:when test="${project.access == 'EMBARGO'}">
-                <span style="font-weight: bold; color: goldenrod;">Delayed Open Access</span>
-                <div style="margin-top: 0.5em 0;">
-                The data in this project are covered by an embargo period,
-                ending <fmt:formatDate pattern="${dateFormatPattern}" value="${project.embargoDate}"/>.
-                </div>
-            </c:when>
-            <c:otherwise>
-                <span style="font-weight: bold; color: red;">Closed Access</span>
-                <div style="margin-top: 0.5em 0;">
-                The data in this project are not publicly available.
-                </div>
-            </c:otherwise>
-            </c:choose>
-            </td>
-        </tr>
-
         <c:if test="${not empty project.rightsStatement}">
-        <tr>
-            <th>Rights Statement:</th>
-            <td><c:out value="${project.rightsStatement}"/></td>
-        </tr>
+        <p><c:out value="${project.rightsStatement}"/></p>
         </c:if>
-
         <sec:authorize access="hasPermission(#project, 'manage')">
         <c:if test="${dataSpaceEnabled}">
-        <tr>
-            <th>Publication Status:</th>
-            <td>
-                <c:choose>
-                <c:when test ="${empty project.dataSpaceUpdateDate}">
-                    This project metadata has not yet been published externally.
-                </c:when>
-                <c:otherwise>
-                    This project metadata has been published and was last updated on
-                    <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${project.dataSpaceUpdateDate}"/>.
-                </c:otherwise>
-                </c:choose>
-            </td>
-        </tr>
+        <dt>Publication Status</dt>
+        <dd>
+            <p>
+            <c:choose>
+            <c:when test ="${empty project.dataSpaceUpdateDate}">
+                This project metadata has not yet been published externally.
+            </c:when>
+            <c:otherwise>
+                This project metadata has been published and was last updated on
+                <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${project.dataSpaceUpdateDate}"/>.
+            </c:otherwise>
+            </c:choose>
+            </p>
+        </dd>
         </c:if>
         </sec:authorize>
+        </div> <!--  .span6 -->
+        <div class="span3">
+        <dl>
+            <dt>Contact</dt>
+            <dd>
+                <ul class="unstyled">
+                    <li><c:out value="${project.dataSpaceAgent.firstName}"/>&nbsp;<c:out value="${project.dataSpaceAgent.lastName}"/></li>
+                    <li><c:out value="${project.dataSpaceAgent.organisation}"/></li>
+                    <li><a href="mailto:<c:out value="${project.dataSpaceAgent.email}"/>"><c:out value="${project.dataSpaceAgent.email}"/></a></li>
+                </ul>
+            </dd>
+        </dl>
+        </div> <!-- .span3 -->
+        </div> <!-- .row -->
 
-        </table>
-        </div>
-
-        <div style="clear: both;"></div>
+        <c:if test="${not empty project.publications}">
+        <div class="row">
+        <div class="span9">
+        <h2>Publications</h2>
+        <ol>
+            <c:forEach var="publication" items="${project.publications}">
+            <li><a href="<c:out value="${publication.url}"/>"><c:out value="${publication.title}"/></a></li>
+            </c:forEach>
+        </ol>
+        </div> <!-- .span9 -->
+        </div> <!-- .row -->
+        </c:if>
 
         <sec:authorize access="hasPermission(#project, 'manage')">
-        <h2>User Roles</h2>
-        <table style="width: 100%; margin: 0;">
-        <c:forEach items="${roles}" var="role">
-        <col style="width: ${100.0 / fn:length(roles)}%;" />
-        </c:forEach>
-        <tr>
+        <div class="row" style="margin-bottom: 6px;">
             <c:forEach items="${roles}" var="role">
-            <th style="border-bottom: 1px solid #c7c7c7; text-align: left; padding: 4px;">
+            <div class="span3" style="border-bottom: 1px solid #c7c7c7; font-weight: bold;">
                 ${role.pluralTitle}
                 <div class="help-popover" title="${role.pluralTitle}">
                     ${role.explanation}
                 </div>
-            </th>
+            </div>
             </c:forEach>
-        </tr>
-        <tr>
+        </div>
+        <div class="row">
             <c:forEach items="${roles}" var="role">
-            <td>
-                <div id="${role.identifier}ProjectUsersNone" style="margin: 0.3em 4px; color: #999; display: none;">
+            <div class="span3">
+                <p id="${role.identifier}ProjectUsersNone" style="margin: 0.3em 0; color: #999; display: none;">
                     No users with ${role.title} role
-                </div>
+                </p>
                 <ul id="${role.identifier}ProjectUsersList" class="icons" style="display: none;">
                 </ul>
-            </td>
+            </div>
             </c:forEach>
-        </tr>
-        </table>
+        </div>
         <form
             onsubmit="return false;"
-            class="form-inline"
-            style="padding: 10px; background-color: #e6e6c0;">
+            class="form-inline add-project-user-form"
+            style="padding: 10px 12px;">
             <span style="line-height: 1.8em; margin-right: 10px;">Assign a new user to the project:</span>
             <input id="addProjectUserId" type="hidden" />
             <input id="addProjectUserLabel" type="hidden" />
@@ -454,7 +429,7 @@
         <div id="projectUserError" class="alert alert-error" style="margin-top: -12px; display: none;"></div>
         </sec:authorize>
 
-        <h2 style="margin-top: 0;">Search Related Sites</h2>
+        <h2>Search Related Sites</h2>
 
         <div id="searchLinks">
             <a id="searchTernLink" class="searchLink" href="#"><img class="img-polaroid" src="${pageContext.request.contextPath}/img/tern-logo.gif" /></a>

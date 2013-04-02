@@ -29,21 +29,21 @@ h1 {
   color: @textColor;
   font-size: 20px;
   line-height: 1;
-  margin-bottom: 13px;
+  margin: 13px 0;
 }
 
 h2 {
   color: #ef9800;
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1;
-  margin-bottom: 11px;
+  margin: 11px 0;
 }
 
 h3 {
   color: @textColor;
   font-size: 16px;
   line-height: 1;
-  margin-bottom: 9px;
+  margin: 9px 0;
 }
 
 a {
@@ -310,6 +310,7 @@ a.carousel-control {
 }
 
 #content {
+  margin-top: -4px;
 }
 
 #main {
@@ -415,12 +416,21 @@ a.carousel-control {
 }
 
 .searchResultsNav {
-    margin: 18px 0;
+  margin: 18px 0;
 }
 
 .exportConfirmation {
-    margin: 18px 0;
-    background-color: #e6e6e6;
+  margin: 18px 0;
+  background-color: #e6e6e6;
+}
+
+dl {
+  margin-top: 0;
+  margin-bottom: 9px;
+}
+
+dd {
+  margin-left: 0;
 }
 
 /* hover tooltips */
@@ -431,15 +441,23 @@ div.help {
 
 }
 
+.oztrack-inset(@backgroundColor: #f6f6e6, @borderColor: #e6e6c0) {
+  padding: 0 12px;
+  background-color: @backgroundColor;
+  border: 1px solid @borderColor;
+  .border-radius(4px);
+  .box-shadow(inset 0 0 5px rgba(0, 0, 0, 0.08));
+}
+
+.add-project-user-form {
+  .oztrack-inset();
+}
+
 /* data licence box */
 
 .sidebar-data-licence {
   margin: 24px 0;
-  padding: 0 12px;
-  background-color: #ececec;
-  border: 1px solid #dadada;
-  .border-radius(4px);
-  .box-shadow(inset 0 0 5px rgba(0, 0, 0, 0.08));
+  .oztrack-inset(#ececec, #dadada);
 }
 
 .sidebar-data-licence-image {
@@ -455,11 +473,7 @@ div.help {
 
 .sidebar-actions {
   margin: 0 0 12px 0;
-  padding: 0 12px;
-  background-color: #f6f6e6;
-  border: 1px solid #e6e6c0;
-  .border-radius(4px);
-  .box-shadow(inset 0 0 5px rgba(0, 0, 0, 0.08));
+  .oztrack-inset();
 }
 
 .sidebar-actions-title {
