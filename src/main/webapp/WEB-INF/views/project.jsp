@@ -136,7 +136,9 @@
             jQuery(document).ready(function() {
                 jQuery('#navTrack').addClass('active');
                 jQuery('#projectMenuDetails').addClass('active');
-                var coverageMap = createCoverageMap('coverageMap', '<c:out value="${projectBoundingBox}"/>');
+                coverageMap = new OzTrack.CoverageMap('coverageMap', {
+                    wkt: '${projectBoundingBox}'
+                });
                 <c:forEach items="${roles}" var="role">
                     <c:choose>
                     <c:when test="${empty projectUsersByRole[role]}">
