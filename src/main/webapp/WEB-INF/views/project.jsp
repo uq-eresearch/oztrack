@@ -281,25 +281,12 @@
         <dl>
             <dt>Detections</dt>
             <dd>
-                <p><a href="${pageContext.request.contextPath}/projects/${project.id}/search"><c:out value="${projectDetectionCount}"/></a></p>
+                <p><a href="${pageContext.request.contextPath}/projects/${project.id}/search">${projectDetectionCount} detections</a></p>
             </dd>
             <c:if test="${not empty projectAnimalsList}">
             <dt>Animals</dt>
             <dd>
-                <p>
-                    <c:set var="maxAnimalsToShow" value="5"/>
-                    <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
-                    <c:choose>
-                    <c:when test="${animalStatus.index < maxAnimalsToShow}">
-                    <a href="${pageContext.request.contextPath}/animals/${animal.id}"><c:out value="${animal.animalName}"/></a>,
-                    </c:when>
-                    <c:when test="${animalStatus.index == maxAnimalsToShow}">
-                    ...,
-                    </c:when>
-                    </c:choose>
-                    </c:forEach>
-                    <a href="${pageContext.request.contextPath}/projects/${project.id}/animals">View All</a>
-                </p>
+                <p><a href="${pageContext.request.contextPath}/projects/${project.id}/animals">${fn:length(projectAnimalsList)} animals</a></p>
             </dd>
             </c:if>
         </dl>
@@ -308,9 +295,17 @@
         
         </div> <!-- .row -->
 
+        </div> <!-- .span6 -->
+
+        <div class="span3">
+        <div id="coverageMap"></div>
+        </div> <!--  .span3 -->
+
+        </div> <!-- .row -->
+
         <c:if test="${not empty project.publications}">
         <div class="row">
-        <div class="span6">
+        <div class="span9">
         <dl>
             <dt>Publications</dt>
             <dd>
@@ -324,14 +319,6 @@
         </div> <!-- .span6 -->
         </div> <!-- .row -->
         </c:if>
-
-        </div> <!-- .span6 -->
-
-        <div class="span3">
-        <div id="coverageMap"></div>
-        </div> <!--  .span3 -->
-
-        </div> <!-- .row -->
 
         <h2>Data Access</h2>
 
