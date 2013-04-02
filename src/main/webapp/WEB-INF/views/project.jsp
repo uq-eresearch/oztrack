@@ -26,6 +26,7 @@
             #coverageMap {
                 width: 220px;
                 height: 180px;
+                margin-top: 11px; /* to match h2 */
             }
             .searchLink {
                 display: inline-block;
