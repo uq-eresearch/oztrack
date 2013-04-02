@@ -77,7 +77,7 @@
     </bean>
     
     <bean id="rserveConnectionPool" class="org.oztrack.util.RserveConnectionPoolFactoryBean">
-        <constructor-arg name="numConnections" value="8"/>
+        <constructor-arg name="numConnections" value="${application.numRConnections}"/>
     </bean>
 
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
