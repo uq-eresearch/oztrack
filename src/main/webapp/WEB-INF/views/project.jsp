@@ -137,6 +137,7 @@
                 jQuery('#navTrack').addClass('active');
                 jQuery('#projectMenuDetails').addClass('active');
                 coverageMap = new OzTrack.CoverageMap('coverageMap', {wkt: '${projectBoundingBox}'});
+                <sec:authorize access="hasPermission(#project, 'read')">
                 $('#coverageMap').append($('<a>')
                     .addClass('btn')
                     .css('position', 'absolute')
@@ -147,6 +148,7 @@
                     .append('View tracks')
                 );
                 $('#viewTracksButton').position({my: 'center', at: 'center', of: '#coverageMap'}).fadeIn();
+                </sec:authorize>
                 <c:forEach items="${roles}" var="role">
                     <c:choose>
                     <c:when test="${empty projectUsersByRole[role]}">
