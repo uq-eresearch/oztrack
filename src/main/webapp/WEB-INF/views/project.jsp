@@ -136,9 +136,17 @@
             jQuery(document).ready(function() {
                 jQuery('#navTrack').addClass('active');
                 jQuery('#projectMenuDetails').addClass('active');
-                coverageMap = new OzTrack.CoverageMap('coverageMap', {
-                    wkt: '${projectBoundingBox}'
-                });
+                coverageMap = new OzTrack.CoverageMap('coverageMap', {wkt: '${projectBoundingBox}'});
+                $('#coverageMap').append($('<a>')
+                    .addClass('btn')
+                    .css('position', 'absolute')
+                    .css('z-index', '10000000')
+                    .css('display', 'none')
+                    .attr('id', 'viewTracksButton')
+                    .attr('href', '${pageContext.request.contextPath}/projects/${project.id}/analysis')
+                    .append('View tracks')
+                );
+                $('#viewTracksButton').position({my: 'center', at: 'center', of: '#coverageMap'}).fadeIn();
                 <c:forEach items="${roles}" var="role">
                     <c:choose>
                     <c:when test="${empty projectUsersByRole[role]}">
