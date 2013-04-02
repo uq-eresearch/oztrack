@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
@@ -185,9 +187,15 @@ public class ProjectController {
         BindingResult bindingResult,
         @RequestParam(value="embargoDate", required=false) String embargoDateString,
         @RequestParam(value="dataLicenceIdentifier", required=false) String dataLicenceIdentifier,
-        @RequestParam(value="publicationTitle", required=false) List<String> publicationTitles,
-        @RequestParam(value="publicationUrl", required=false) List<String> publicationUrls
+        HttpServletRequest request
     ) throws Exception {
+        // Using @RequestParam for these fails when only one value provided:
+        // Spring decides a single value containing commas should be expanded to a list
+        // (e.g. ["a, b, c"] becomes ["a", "b", "c"] instead of being interpreted as ["a, b, c"]).
+        // Note that two or more values is handled correctly (e.g. ["a, b", "c"]).
+        List<String> publicationTitles = Arrays.asList(request.getParameterValues("publicationTitle"));
+        List<String> publicationUrls = Arrays.asList(request.getParameterValues("publicationUrl"));
+
         if (StringUtils.isNotBlank(embargoDateString)) {
             Date embargoDate = isoDateFormat.parse(embargoDateString);
             if (!embargoDate.equals(project.getEmbargoDate())) {
