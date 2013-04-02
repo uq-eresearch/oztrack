@@ -286,12 +286,13 @@
             <dt>Animals</dt>
             <dd>
                 <p>
+                    <c:set var="maxAnimalsToShow" value="5"/>
                     <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
                     <c:choose>
-                    <c:when test="${animalStatus.index < 10}">
+                    <c:when test="${animalStatus.index < maxAnimalsToShow}">
                     <a href="${pageContext.request.contextPath}/animals/${animal.id}"><c:out value="${animal.animalName}"/></a>,
                     </c:when>
-                    <c:when test="${animalStatus.index == 10}">
+                    <c:when test="${animalStatus.index == maxAnimalsToShow}">
                     ...,
                     </c:when>
                     </c:choose>
@@ -305,6 +306,23 @@
         </sec:authorize>
         
         </div> <!-- .row -->
+
+        <c:if test="${not empty project.publications}">
+        <div class="row">
+        <div class="span6">
+        <dl>
+            <dt>Publications</dt>
+            <dd>
+            <ol>
+                <c:forEach var="publication" items="${project.publications}">
+                <li><a href="<c:out value="${publication.url}"/>"><c:out value="${publication.title}"/></a></li>
+                </c:forEach>
+            </ol>
+            </dd>
+        </dl>
+        </div> <!-- .span6 -->
+        </div> <!-- .row -->
+        </c:if>
 
         </div> <!-- .span6 -->
 
@@ -389,21 +407,8 @@
         </div> <!-- .span3 -->
         </div> <!-- .row -->
 
-        <c:if test="${not empty project.publications}">
-        <div class="row">
-        <div class="span9">
-        <h2>Publications</h2>
-        <ol>
-            <c:forEach var="publication" items="${project.publications}">
-            <li><a href="<c:out value="${publication.url}"/>"><c:out value="${publication.title}"/></a></li>
-            </c:forEach>
-        </ol>
-        </div> <!-- .span9 -->
-        </div> <!-- .row -->
-        </c:if>
-
         <sec:authorize access="hasPermission(#project, 'manage')">
-        <div class="row" style="margin-bottom: 6px;">
+        <div class="row" style="margin-top: 11px; margin-bottom: 6px;">
             <c:forEach items="${roles}" var="role">
             <div class="span3" style="border-bottom: 1px solid #c7c7c7; font-weight: bold;">
                 ${role.pluralTitle}
