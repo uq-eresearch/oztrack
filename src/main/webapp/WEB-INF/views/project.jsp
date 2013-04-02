@@ -316,25 +316,38 @@
 
         <h2>Data Access</h2>
 
-        <div class="row">
-
-        <div class="span6">
+        <c:set var="dataAccessRowClass">
         <c:choose>
         <c:when test="${project.access == 'OPEN'}">
-        <p style="font-weight: bold; color: green;">Open Access</p>
+        project-access-open
+        </c:when>
+        <c:when test="${project.access == 'EMBARGO'}">
+        project-access-embargo
+        </c:when>
+        <c:otherwise>
+        project-access-closed
+        </c:otherwise>
+        </c:choose>
+        </c:set>
+        <div class="row ${dataAccessRowClass}" style="margin-left: 0; padding: 0;">
+
+        <div class="span6" style="width: 449px; margin: 7px 20px 10px 10px;">
+        <c:choose>
+        <c:when test="${project.access == 'OPEN'}">
+        <p class="project-access-open-title">Open Access</p>
         <p>
             The data in this project are available for public use.
         </p>
         </c:when>
         <c:when test="${project.access == 'EMBARGO'}">
-        <p style="font-weight: bold; color: goldenrod;">Delayed Open Access</p>
+        <p class="project-access-embargo-title">Delayed Open Access</p>
         <p>
             The data in this project are covered by an embargo period,
             ending <fmt:formatDate pattern="${dateFormatPattern}" value="${project.embargoDate}"/>.
         </p>
         </c:when>
         <c:otherwise>
-        <p style="font-weight: bold; color: red;">Closed Access</p>
+        <p class="project-access-closed-title">Closed Access</p>
         <p>
             The data in this project are not publicly available.
         </p>
@@ -362,7 +375,7 @@
         </c:if>
         </sec:authorize>
         </div> <!--  .span6 -->
-        <div class="span3">
+        <div class="span3" style="width: 209px; margin: 7px 10px 10px 0;">
         <dl>
             <dt>Contact</dt>
             <dd>

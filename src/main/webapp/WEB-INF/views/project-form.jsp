@@ -356,7 +356,7 @@
                                 $('#embargo-date-control-group').fadeOut();
                                 $('#data-licences-control-group').fadeIn();
                             "/>
-                            <span style="font-weight: bold; color: green;">Open Access</span>
+                            <span class="project-access-open-title">Open Access</span>
                             <div style="margin: 0.5em 0;">
                                 Data in this project will be made publicly available in OzTrack.
                                 Releasing data under an open-access licence benefits the wider scientific community
@@ -372,7 +372,7 @@
                             ">
                                 <jsp:attribute name="disabled">${maxEmbargoDate.time < minEmbargoDate.time}</jsp:attribute>
                             </form:radiobutton>
-                            <span style="font-weight: bold; color: goldenrod;">Delayed Open Access</span>
+                            <span class="project-access-embargo-title">Delayed Open Access</span>
                             <div style="margin: 0.5em 0;">
                                 Data in this project will be made publicly available in OzTrack after an embargo period.
                                 However, note that metadata including title, description, location, and animal species
@@ -416,7 +416,7 @@
                                 $('#embargo-date-control-group').fadeOut();
                                 $('#data-licences-control-group').fadeOut();
                             "/>
-                            <span style="font-weight: bold; color: red;">Closed Access</span>
+                            <span class="project-access-closed-title">Closed Access</span>
                             <div style="margin: 0.5em 0;">
                                 Data in this project will only be accessible to you.
                                 However, note that metadata including title, description, location, and animal species
