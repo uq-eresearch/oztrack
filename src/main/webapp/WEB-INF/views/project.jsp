@@ -9,10 +9,13 @@
 <c:set var="dataSpaceEnabled"><%= OzTrackApplication.getApplicationContext().isDataSpaceEnabled() %></c:set>
 <c:set var="dateFormatPattern" value="yyyy-MM-dd"/>
 <c:set var="dateTimeFormatPattern" value="yyyy-MM-dd HH:mm:ss"/>
+<c:set var="canEditThumbnails">
+<sec:authorize access="hasPermission(#project, 'write')">true</sec:authorize>
+</c:set>
 <c:set var="showThumbnails">
 <c:choose>
 <c:when test="${fn:length(project.images) > 0}">true</c:when>
-<c:otherwise><sec:authorize access="hasPermission(#project, 'write')">true</sec:authorize></c:otherwise>
+<c:otherwise>${canEditThumbnails}</c:otherwise>
 </c:choose>
 </c:set>
 <tags:page title="${project.title}">
@@ -54,6 +57,8 @@
                 color: #333;
                 border-bottom: 1px solid #c7c7c7;
             }
+            #thumbnails li.span2 {height: 110px;}
+            #thumbnails li.span1 {height: 46px;}
         </style>
     </jsp:attribute>
     <jsp:attribute name="tail">
@@ -149,11 +154,19 @@
                 </c:forEach>
             ];
             function initProjectImages() {
-                var numMajorProjectImages = 3;
+                var maxThumbnails = 15;
+                var numBlocksRequired = Math.min(maxThumbnails, projectImages.length + ${canEditThumbnails ? 1 : 0});
+                var numMajorProjectImages =
+                    (numBlocksRequired <= 6) ? 4
+                    : (numBlocksRequired <= 9) ? 3
+                    : (numBlocksRequired <= 12) ? 2
+                    : (numBlocksRequired <= 15) ? 1
+                    : 0;
                 var majorProjectImageSpan = 2;
                 var majorProjectImageHeight = 100;
                 var minorProjectImageSpan = 1;
-                var minorProjectImageHeight = 35;
+                var minorProjectImageHeight = 36;
+                var tallAddImagePadding = 36;
                 $.each(projectImages, function(i, projectImage) {
                     var projectImageSpan = (i < numMajorProjectImages) ? majorProjectImageSpan : minorProjectImageSpan;
                     var projectImageHeight = (i < numMajorProjectImages) ? majorProjectImageHeight : minorProjectImageHeight;
@@ -169,7 +182,7 @@
                             )
                         );
                     $('#thumbnails').append(li);
-                    <sec:authorize access="hasPermission(#project, 'write')">
+                    <c:if test="${canEditThumbnails}">
                     var deleteLink = $('<a>')
                         .css('display', 'inline-block')
                         .css('width', '16px')
@@ -187,22 +200,27 @@
                         .append($('<img>').attr('src', '${pageContext.request.contextPath}/img/delete.png'));
                     li.append(deleteLink)
                     deleteLink.position({my: "right top", at: "right top", of: li});
-                    </sec:authorize>
+                    </c:if>
                 });
                 <sec:authorize access="hasPermission(#project, 'write')">
-                if (projectImages.length < 9) {
+                if (projectImages.length < maxThumbnails) {
+                    var addImageHeight =
+                        (projectImages.length == numMajorProjectImages)
+                        ? ((majorProjectImageHeight - tallAddImagePadding + 4) + 'px')
+                        : (projectImages.length < numMajorProjectImages)
+                        ? (majorProjectImageHeight + 'px')
+                        : (minorProjectImageHeight + 'px');
                     $('#thumbnails').append($('<li>')
-                        .addClass('span' + ((projectImages.length <= numMajorProjectImages) ? majorProjectImageSpan : minorProjectImageSpan))
+                        .addClass('span' + ((projectImages.length < numMajorProjectImages) ? majorProjectImageSpan : minorProjectImageSpan))
+                        .css('height', addImageHeight)
                         .append($('<a>')
                             .addClass('thumbnail')
                             .css('text-align', 'center')
-                            .css('height', ((projectImages.length <= numMajorProjectImages) ? majorProjectImageHeight : minorProjectImageHeight) + 'px')
-                            .css('font-size', (projectImages.length <= numMajorProjectImages) ? '' : 'smaller')
-                            .css('line-height', ((projectImages.length <= numMajorProjectImages) ? majorProjectImageHeight + 'px' : '16px'))
-                            .click(function(e) {
-                                e.preventDefault();
-                                addImage();
-                            })  
+                            .css('height', addImageHeight)
+                            .css('font-size', (projectImages.length < numMajorProjectImages) ? '' : 'smaller')
+                            .css('line-height', ((projectImages.length < numMajorProjectImages) ? majorProjectImageHeight + 'px' : '16px'))
+                            .css('padding-top', ((projectImages.length == numMajorProjectImages) ? (tallAddImagePadding + 'px') : ''))
+                            .click(function(e) {e.preventDefault(); addImage();})  
                             .text('Add image')
                         )
                     );
@@ -346,13 +364,13 @@
         <c:if test="${showThumbnails}">
         <div class="row">
         <div class="span9">
-        <ul id="thumbnails" class="thumbnails" style="margin-bottom: -11px;">
+        <ul id="thumbnails" class="thumbnails" style="margin-bottom: 0;">
         </ul>
         </div> <!-- .span3 -->
         </div> <!-- .row -->
         </c:if>
 
-        <sec:authorize access="hasPermission(#project, 'write')">
+        <c:if test="${canEditThumbnails}">
         <form
             id="addImageForm"
             class="form-vertical"
@@ -368,7 +386,7 @@
                 </div>
             </fieldset>
         </form>
-        </sec:authorize>
+        </c:if>
 
         <div class="row">
         
