@@ -9,13 +9,13 @@
 <c:set var="dataSpaceEnabled"><%= OzTrackApplication.getApplicationContext().isDataSpaceEnabled() %></c:set>
 <c:set var="dateFormatPattern" value="yyyy-MM-dd"/>
 <c:set var="dateTimeFormatPattern" value="yyyy-MM-dd HH:mm:ss"/>
-<c:set var="canEditThumbnails">
+<c:set var="canEditImages">
 <sec:authorize access="hasPermission(#project, 'write')">true</sec:authorize>
 </c:set>
 <c:set var="showThumbnails">
 <c:choose>
 <c:when test="${fn:length(project.images) > 0}">true</c:when>
-<c:otherwise>${canEditThumbnails}</c:otherwise>
+<c:otherwise>${canEditImages}</c:otherwise>
 </c:choose>
 </c:set>
 <tags:page title="${project.title}">
@@ -155,7 +155,7 @@
             ];
             function initProjectImages() {
                 var maxThumbnails = 15;
-                var numBlocksRequired = Math.min(maxThumbnails, projectImages.length + ${canEditThumbnails ? 1 : 0});
+                var numBlocksRequired = Math.min(maxThumbnails, projectImages.length + ${canEditImages ? 1 : 0});
                 var numMajorProjectImages =
                     (numBlocksRequired <= 6) ? 4
                     : (numBlocksRequired <= 9) ? 3
@@ -182,7 +182,7 @@
                             )
                         );
                     $('#thumbnails').append(li);
-                    <c:if test="${canEditThumbnails}">
+                    <c:if test="${canEditImages}">
                     var deleteLink = $('<a>')
                         .css('display', 'inline-block')
                         .css('width', '16px')
@@ -202,7 +202,7 @@
                     deleteLink.position({my: "right top", at: "right top", of: li});
                     </c:if>
                 });
-                <sec:authorize access="hasPermission(#project, 'write')">
+                <c:if test="${canEditImages}">
                 if (projectImages.length < maxThumbnails) {
                     var addImageHeight =
                         (projectImages.length == numMajorProjectImages)
@@ -225,7 +225,7 @@
                         )
                     );
                 }
-                </sec:authorize>
+                </c:if>
             }
             function addImage() {
                 $('#addImageForm').dialog({
@@ -370,7 +370,7 @@
         </div> <!-- .row -->
         </c:if>
 
-        <c:if test="${canEditThumbnails}">
+        <c:if test="${canEditImages}">
         <form
             id="addImageForm"
             class="form-vertical"
