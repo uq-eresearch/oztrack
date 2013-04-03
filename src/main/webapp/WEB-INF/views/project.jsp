@@ -458,7 +458,10 @@
             <dd>
             <ol>
                 <c:forEach var="publication" items="${project.publications}">
-                <li><a href="<c:out value="${publication.url}"/>"><c:out value="${publication.title}"/></a></li>
+                <li>
+                    <c:out value="${publication.title}"/>
+                    [<a href="<c:out value="${publication.url}"/>">Link</a>]
+                </li>
                 </c:forEach>
             </ol>
             </dd>
