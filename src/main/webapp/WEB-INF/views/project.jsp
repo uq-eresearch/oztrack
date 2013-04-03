@@ -9,6 +9,12 @@
 <c:set var="dataSpaceEnabled"><%= OzTrackApplication.getApplicationContext().isDataSpaceEnabled() %></c:set>
 <c:set var="dateFormatPattern" value="yyyy-MM-dd"/>
 <c:set var="dateTimeFormatPattern" value="yyyy-MM-dd HH:mm:ss"/>
+<c:set var="showThumbnails">
+<c:choose>
+<c:when test="${fn:length(project.images) > 0}">true</c:when>
+<c:otherwise><sec:authorize access="hasPermission(#project, 'write')">true</sec:authorize></c:otherwise>
+</c:choose>
+</c:set>
 <tags:page title="${project.title}">
     <jsp:attribute name="description">
         <c:choose>
@@ -133,9 +139,95 @@
                 }
                 jQuery('#' + role + 'ProjectUser-' + userId).remove();
             }
+            projectImages = [
+                <c:forEach var="projectImage" items="${project.images}" varStatus="projectImageStatus">
+                {
+                    imageUrl: '${pageContext.request.contextPath}/projects/${project.id}/images/${projectImage.id}',
+                    fileUrl: '${pageContext.request.contextPath}/projects/${project.id}/images/${projectImage.id}/file',
+                    thumbnailUrl: '${pageContext.request.contextPath}/projects/${project.id}/images/${projectImage.id}/thumbnail'
+                }<c:if test="${!projectImageStatus.last}">,</c:if>
+                </c:forEach>
+            ];
+            function initProjectImages() {
+                var numMajorProjectImages = 3;
+                var majorProjectImageSpan = 2;
+                var majorProjectImageHeight = 100;
+                var minorProjectImageSpan = 1;
+                var minorProjectImageHeight = 35;
+                $.each(projectImages, function(i, projectImage) {
+                    var projectImageSpan = (i < numMajorProjectImages) ? majorProjectImageSpan : minorProjectImageSpan;
+                    var projectImageHeight = (i < numMajorProjectImages) ? majorProjectImageHeight : minorProjectImageHeight;
+                    var li = $('<li>')
+                        .addClass('span' + projectImageSpan)
+                        .append($('<a>')
+                            .addClass('thumbnail')
+                            .css('height', projectImageHeight + 'px')
+                            .attr('href', projectImage.fileUrl)
+                            .append($('<img>')
+                                .css('max-height', projectImageHeight + 'px')
+                                .attr('src', projectImage.thumbnailUrl)
+                            )
+                        );
+                    $('#thumbnails').append(li);
+                    <sec:authorize access="hasPermission(#project, 'write')">
+                    var deleteLink = $('<a>')
+                        .css('display', 'inline-block')
+                        .css('width', '16px')
+                        .css('height', '16px')
+                        .css('line-height', '16px')
+                        .css('padding', '1px 2px')
+                        .click(function(e) {
+                            e.preventDefault();
+                            deleteEntity(
+                                projectImage.imageUrl,
+                                '${pageContext.request.contextPath}/projects/${project.id}',
+                                'Are you sure you want to delete this image?'
+                            );
+                        })
+                        .append($('<img>').attr('src', '${pageContext.request.contextPath}/img/delete.png'));
+                    li.append(deleteLink)
+                    deleteLink.position({my: "right top", at: "right top", of: li});
+                    </sec:authorize>
+                });
+                <sec:authorize access="hasPermission(#project, 'write')">
+                if (projectImages.length < 9) {
+                    $('#thumbnails').append($('<li>')
+                        .addClass('span' + ((projectImages.length <= numMajorProjectImages) ? majorProjectImageSpan : minorProjectImageSpan))
+                        .append($('<a>')
+                            .addClass('thumbnail')
+                            .css('text-align', 'center')
+                            .css('height', ((projectImages.length <= numMajorProjectImages) ? majorProjectImageHeight : minorProjectImageHeight) + 'px')
+                            .css('font-size', (projectImages.length <= numMajorProjectImages) ? '' : 'smaller')
+                            .css('line-height', ((projectImages.length <= numMajorProjectImages) ? majorProjectImageHeight + 'px' : '16px'))
+                            .click(function(e) {
+                                e.preventDefault();
+                                addImage();
+                            })  
+                            .text('Add image')
+                        )
+                    );
+                }
+                </sec:authorize>
+            }
+            function addImage() {
+                $('#addImageForm').dialog({
+                    title: 'Add image',
+                    modal: true,
+                    resizable: false,
+                    buttons: {
+                        'Upload': function() {
+                            $('#addImageForm').submit();
+                        },
+                        'Close': function() {
+                            $(this).dialog('close');
+                        }
+                    }
+                });
+            }
             jQuery(document).ready(function() {
                 jQuery('#navTrack').addClass('active');
                 jQuery('#projectMenuDetails').addClass('active');
+                initProjectImages();
                 coverageMap = new OzTrack.CoverageMap('coverageMap', {wkt: '${projectBoundingBox}'});
                 <sec:authorize access="hasPermission(#project, 'read')">
                 $('#coverageMap').append($('<a>')
@@ -250,6 +342,33 @@
         </div> <!-- .span9 -->
         </div> <!-- .row -->
         </c:if>
+        
+        <c:if test="${showThumbnails}">
+        <div class="row">
+        <div class="span9">
+        <ul id="thumbnails" class="thumbnails" style="margin-bottom: -11px;">
+        </ul>
+        </div> <!-- .span3 -->
+        </div> <!-- .row -->
+        </c:if>
+
+        <sec:authorize access="hasPermission(#project, 'write')">
+        <form
+            id="addImageForm"
+            class="form-vertical"
+            style="display: none;"
+            method="POST"
+            action="${pageContext.request.contextPath}/projects/${project.id}/images"
+            enctype="multipart/form-data">
+            <fieldset>
+                <div class="control-group">
+                    <div class="controls">
+                        <input name="file" type="file" />
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+        </sec:authorize>
 
         <div class="row">
         

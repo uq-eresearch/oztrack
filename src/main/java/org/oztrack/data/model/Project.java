@@ -94,6 +94,10 @@ public class Project extends OzTrackBaseEntity {
     @OrderBy("createDate")
     private List<Analysis> analyses;
 
+    @OneToMany(mappedBy="project", cascade=CascadeType.ALL, orphanRemoval=true)
+    @OrderBy("createDate")
+    private List<ProjectImage> images;
+
     public Project() {
     }
 
@@ -270,6 +274,14 @@ public class Project extends OzTrackBaseEntity {
 
     public void setAnalyses(List<Analysis> analyses) {
         this.analyses = analyses;
+    }
+
+    public List<ProjectImage> getImages() {
+        return images;
+    }
+
+    public void setImages(List<ProjectImage> images) {
+        this.images = images;
     }
 
     @Override
