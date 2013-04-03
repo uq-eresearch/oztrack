@@ -250,9 +250,7 @@
                 <sec:authorize access="hasPermission(#project, 'read')">
                 $('#coverageMap').append($('<a>')
                     .addClass('btn')
-                    .css('position', 'absolute')
                     .css('z-index', '10000000')
-                    .css('display', 'none')
                     .attr('id', 'viewTracksButton')
                     .attr('href', '${pageContext.request.contextPath}/projects/${project.id}/analysis')
                     .append('View tracks')
