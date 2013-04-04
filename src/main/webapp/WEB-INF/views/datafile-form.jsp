@@ -47,8 +47,8 @@
                 <div class="legend">Data file</div>
                 <p style="margin: 18px 0;">
                     Uploaded files must be in
-                    <a href="http://en.wikipedia.org/wiki/Comma-separated_values">CSV</a> or
-                    <a href="http://en.wikipedia.org/wiki/Microsoft_Excel">Excel</a> format.
+                    <a target="_blank" href="http://en.wikipedia.org/wiki/Comma-separated_values">CSV</a> or
+                    <a target="_blank" href="http://en.wikipedia.org/wiki/Microsoft_Excel">Excel</a> format.
                     See below for details on required columns.
                 </p>
                 <div class="control-group">

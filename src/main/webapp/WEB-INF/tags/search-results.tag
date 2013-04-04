@@ -62,14 +62,15 @@
         Data in this project are made available under the following licence:
     </p>
     <p style="margin-top: 18px;">
-        <img src="${project.dataLicence.imageUrl}" />
+        <a target="_blank" href="${project.dataLicence.infoUrl}"
+            ><img src="${pageContext.request.scheme}://${fn:substringAfter(project.dataLicence.imageUrl, '://')}" /></a>
     </p>
     <p>
         <span style="font-weight: bold;">${project.dataLicence.title}</span>
     </p>
     <p>
         ${project.dataLicence.description}
-        <a href="${project.dataLicence.infoUrl}">More information</a>
+        <a target="_blank" href="${project.dataLicence.infoUrl}">More information</a>
     </p>
     <p style="margin-top: 18px;">
         By downloading these data, you agree to the licence terms.

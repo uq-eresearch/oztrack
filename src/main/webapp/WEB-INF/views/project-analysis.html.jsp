@@ -243,7 +243,7 @@
                     dataLicence: {
                         title: '${project.dataLicence.title}',
                         infoUrl: '${project.dataLicence.infoUrl}',
-                        imageUrl: '${project.dataLicence.imageUrl}'
+                        imageUrl: '${pageContext.request.scheme}://${fn:substringAfter(project.dataLicence.imageUrl, "://")}'
                     },
                     </c:if>
                     animalIds: [

@@ -39,7 +39,7 @@
                 <div class="legend">Register using AAF</div>
                 <div style="margin: 18px 0;">
                     <p>
-                        Click here to register using your <a href="http://www.aaf.edu.au/">Australian Access Federation (AAF)</a> profile.
+                        Click here to register using your <a target="_blank" href="http://www.aaf.edu.au/">Australian Access Federation (AAF)</a> profile.
                     </p>
                     <p>
                         You will be redirected to your home institution's login page.
@@ -168,7 +168,7 @@
                                 <p>Briefly describe yourself and your research interests.</p>
                                 <c:if test="${dataSpaceEnabled}">
                                 <p>This field is used when project metadata are syndicated to UQ DataSpace and ANDS.
-                                See examples at <a href="http://dataspace.uq.edu.au/agents">http://dataspace.uq.edu.au/agents</a>.</p>
+                                See examples at <a target="_blank" href="http://dataspace.uq.edu.au/agents">http://dataspace.uq.edu.au/agents</a>.</p>
                                 </c:if>
                             </div>
                         </div>

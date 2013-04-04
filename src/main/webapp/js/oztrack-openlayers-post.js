@@ -33,6 +33,7 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                     $('<div>')
                         .addClass(this.displayClass)
                         .append($('<a>')
+                            .attr('target', '_blank')
                             .attr('href', this.dataLicence.infoUrl)
                             .attr('title',
                                 'Data in this project are made available under the ' +

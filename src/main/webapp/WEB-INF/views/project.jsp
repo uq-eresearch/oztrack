@@ -301,7 +301,11 @@
                         if (items.length > 0) {
                             output.append($('<ol>').append($.map(items, function(item) {
                                 return $('<li>').append([
-                                    $('<a>').attr('href', item.link).attr('title', item.description).text(item.title),
+                                    $('<a>')
+                                        .attr('target', '_blank')
+                                        .attr('href', item.link)
+                                        .attr('title', item.description)
+                                        .text(item.title),
                                     $('<span>').text(' (' + item.temporal + ')')
                                 ]);
                             })));
@@ -461,7 +465,7 @@
                 <li>
                     <c:out value="${publication.reference}"/>
                     <c:if test="${not empty publication.url}">
-                    [<a href="<c:out value="${publication.url}"/>">Link</a>]
+                    [<a target="_blank" href="<c:out value="${publication.url}"/>">Link</a>]
                     </c:if>
                 </li>
                 </c:forEach>

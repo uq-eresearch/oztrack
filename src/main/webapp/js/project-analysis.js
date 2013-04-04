@@ -125,7 +125,7 @@
                 visibility: false,
                 isBaseLayer: false,
                 wrapDateLine: true,
-                attribution: '<a href="http://www.gebco.net/">GEBCO_08 Grid, version 20091120</a>',
+                attribution: '<a target="_blank" href="http://www.gebco.net/">GEBCO_08 Grid, version 20091120</a>',
                 metadata: {category: 'environment'}
             }
         );
@@ -142,7 +142,7 @@
                 visibility: false,
                 isBaseLayer: false,
                 wrapDateLine: true,
-                attribution: '<a href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B573FA186-1997-4F8B-BCF8-58B5876A156B%7D">IBRA 7 Regions</a>',
+                attribution: '<a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B573FA186-1997-4F8B-BCF8-58B5876A156B%7D">IBRA 7 Regions</a>',
                 metadata: {category: 'environment'}
             }
         ));
@@ -157,7 +157,7 @@
                 visibility: false,
                 isBaseLayer: false,
                 wrapDateLine: true,
-                attribution: '<a href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7BC88F4317-42B0-4D4B-AC5D-47F6ACF1A24F%7D">IBRA 7 Subregions</a>',
+                attribution: '<a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7BC88F4317-42B0-4D4B-AC5D-47F6ACF1A24F%7D">IBRA 7 Subregions</a>',
                 metadata: {category: 'environment'}
             }
         ));
@@ -172,7 +172,7 @@
                 visibility: false,
                 isBaseLayer: false,
                 wrapDateLine: true,
-                attribution: '<a href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B30DA5FD4-AE08-405B-9F55-7E1833C230A4%7D">IMCRA 4 Provincial Bioregions</a>',
+                attribution: '<a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B30DA5FD4-AE08-405B-9F55-7E1833C230A4%7D">IMCRA 4 Provincial Bioregions</a>',
                 metadata: {category: 'environment'}
             }
         ));
@@ -187,7 +187,7 @@
                 visibility: false,
                 isBaseLayer: false,
                 wrapDateLine: true,
-                attribution: '<a href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7BA0D9F8EE-4261-438A-8ADE-EFF664EFF55C%7D">IMCRA 4 Meso-scale Bioregions</a>',
+                attribution: '<a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7BA0D9F8EE-4261-438A-8ADE-EFF664EFF55C%7D">IMCRA 4 Meso-scale Bioregions</a>',
                 metadata: {category: 'environment'}
             }
         ));

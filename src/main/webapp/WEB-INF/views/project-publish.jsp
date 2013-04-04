@@ -80,8 +80,8 @@
         <c:choose>
         <c:when test="${empty projectDetectionDateRange}">
 
-            <p>No data have been uploaded for this project yet, so <b>no metadata record will be syndicated </b>to the <a href="http://dataspace.uq.edu.au">UQ DataSpace</a>
-            Collections Registry and subsequently on to the <a href="http://ands.org.au">Australian National Data Service</a>.</p>
+            <p>No data have been uploaded for this project yet, so <b>no metadata record will be syndicated </b>to the <a target="_blank" href="http://dataspace.uq.edu.au">UQ DataSpace</a>
+            Collections Registry and subsequently on to the <a target="_blank" href="http://ands.org.au">Australian National Data Service</a>.</p>
 
         </c:when>
         <c:otherwise>
@@ -89,15 +89,15 @@
             <c:choose>
             <c:when test ="${empty project.dataSpaceUpdateDate}">
 
-                <p>When you click 'Publish', your project metadata shown below are syndicated across to the <a href="http://dataspace.uq.edu.au">UQ DataSpace</a>
-                Collections Registry and subsequently on to the <a href="http://ands.org.au">Australian National Data Service</a>.</p>
+                <p>When you click 'Publish', your project metadata shown below are syndicated across to the <a target="_blank" href="http://dataspace.uq.edu.au">UQ DataSpace</a>
+                Collections Registry and subsequently on to the <a target="_blank" href="http://ands.org.au">Australian National Data Service</a>.</p>
                 <p>Click 'Publish DataSpace Collection' to submit the data shown below.</p>
 
             </c:when>
             <c:otherwise>
 
-                <p>When you click 'Update', the collection entry for this project in the the <a href="http://dataspace.uq.edu.au">UQ DataSpace</a>
-                Collections Registry and subsequently at the <a href="http://ands.org.au">Australian National Data Service</a> will be
+                <p>When you click 'Update', the collection entry for this project in the the <a target="_blank" href="http://dataspace.uq.edu.au">UQ DataSpace</a>
+                Collections Registry and subsequently at the <a target="_blank" href="http://ands.org.au">Australian National Data Service</a> will be
                 updated with the data below.</p>
 
             </c:otherwise>

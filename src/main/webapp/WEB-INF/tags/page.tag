@@ -101,9 +101,9 @@
 <c:if test="${not fluid}">
 <div id="footer">
     <div id="logos">
-        <a href="http://nectar.org.au/"><img src="${pageContext.request.contextPath}/img/nectar-logo.png" width="140px" height="32px"/></a>
-        <a href="http://ands.org.au/"><img src="${pageContext.request.contextPath}/img/ands-logo.png" width="90px" height="40px" style="margin-top: -8px;"/></a>
-        <a href="http://itee.uq.edu.au/~eresearch/"><img src="${pageContext.request.contextPath}/img/uq_logo.png" width="140px" height="40px"/></a>
+        <a target="_blank" href="http://nectar.org.au/"><img src="${pageContext.request.contextPath}/img/nectar-logo.png" width="140px" height="32px"/></a>
+        <a target="_blank" href="http://ands.org.au/"><img src="${pageContext.request.contextPath}/img/ands-logo.png" width="90px" height="40px" style="margin-top: -8px;"/></a>
+        <a target="_blank" href="http://itee.uq.edu.au/~eresearch/"><img src="${pageContext.request.contextPath}/img/uq_logo.png" width="140px" height="40px"/></a>
     </div>
     <div id="copyright">
         &copy; 2011 The University of Queensland

@@ -317,7 +317,7 @@
                     such as home range calculators, and will affect the accuracy of results.
                     Click the link below to select an Australian SRS based on the location of your tracking data.
                     If in doubt, enter <tt>EPSG:3577</tt> for the
-                    <a href="http://spatialreference.org/ref/epsg/3577/">Australian Albers Equal Area Projection</a>,
+                    <a target="_blank" href="http://spatialreference.org/ref/epsg/3577/">Australian Albers Equal Area Projection</a>,
                     an Australia-wide system suitable for geoscience and statistical mapping.
                 </p>
                 <div class="control-group" style="margin-bottom: 9px;">
@@ -456,13 +456,15 @@
                         <input id="dataLicenceIdentifier" name="dataLicenceIdentifier" type="hidden" value="${project.dataLicence.identifier}"/>
                         <c:forEach var="dataLicence" items="${dataLicences}">
                         <div id="dataLicence-${dataLicence.identifier}" class="dataLicence" style="margin: 1.5em 0 0 0; display: none;">
-                            <img src="${pageContext.request.scheme}://${fn:substringAfter(dataLicence.imageUrl, '://')}" />
+                            <a target="_blank" href="${dataLicence.infoUrl}">
+                                <img src="${pageContext.request.scheme}://${fn:substringAfter(dataLicence.imageUrl, '://')}" />
+                            </a>
                             <div style="margin: 0.5em 0px; font-weight: bold;">
                                 ${dataLicence.title}
                             </div>
                             <div style="margin: 0.5em 0 0 0;">
                                 <span>${dataLicence.description}</span>
-                                <a href="${dataLicence.infoUrl}">More information</a>
+                                <a target="_blank" href="${dataLicence.infoUrl}">More information</a>
                             </div>
                         </div>
                         </c:forEach>

@@ -41,7 +41,7 @@
                 <div class="legend">Login using AAF</div>
                 <div style="margin: 18px 0;">
                     <p>
-                        Click here to authenticate using the <a href="http://www.aaf.edu.au/">Australian Access Federation (AAF)</a>.
+                        Click here to authenticate using the <a target="_blank" href="http://www.aaf.edu.au/">Australian Access Federation (AAF)</a>.
                     </p>
                     <p>
                         You will be redirected to your home institution's website to login.
