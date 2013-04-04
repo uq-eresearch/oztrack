@@ -24,8 +24,8 @@ public class Publication {
     @Column(name="ordinal", nullable=false)
     private Integer ordinal;
 
-    @Column(name="title", columnDefinition="TEXT", nullable=false)
-    private String title;
+    @Column(name="reference", columnDefinition="TEXT", nullable=false)
+    private String reference;
 
     @Column(name="url", columnDefinition="TEXT", nullable=true)
     private String url;
@@ -57,12 +57,12 @@ public class Publication {
         this.ordinal = ordinal;
     }
 
-    public String getTitle() {
-        return title;
+    public String getReference() {
+        return reference;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 
     public String getUrl() {

@@ -1,0 +1,1 @@
+alter table publication rename column title to reference;

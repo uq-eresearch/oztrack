@@ -142,13 +142,13 @@
                 updateLicenceSelectorFromDataLicence();
             }
             function addPublication(publication) {
-                var publication = publication || {title: '', url: ''};
+                var publication = publication || {reference: '', url: ''};
                 $('#publications').append($('<div class="publication">')
                     .append($('<table>')
                     .append($('<tr>')
-                        .append($('<td class="name">').append('Title'))
-                        .append($('<td class="value">').append($('<input name="publicationTitle" type="text" class="input-xxlarge" />')
-                            .val(publication.title)
+                        .append($('<td class="name">').append('Reference'))
+                        .append($('<td class="value">').append($('<input name="publicationReference" type="text" class="input-xxlarge" />')
+                            .val(publication.reference)
                         ))
                         .append($('<td class="actions" rowspan="2">')
                             .append($('<div class="btn-group">')
@@ -206,7 +206,7 @@
 
                 var publications = [];
                 <c:forEach var="publication" items="${project.publications}">
-                publications.push({title: '${publication.title}', url: '${publication.url}'})
+                publications.push({reference: '${publication.reference}', url: '${publication.url}'})
                 </c:forEach>
                 $.each(publications, function(i, publication) {
                     addPublication(publication);
@@ -335,7 +335,7 @@
             <fieldset>
                 <div class="legend">Publications</div>
                 <div class="control-group">
-                    <label class="control-label" for="publicationTitle">Publication list</label>
+                    <label class="control-label" for="publicationReference">Publication list</label>
                     <div class="controls">
                         <div id="publications">
                         </div>

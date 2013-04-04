@@ -62,8 +62,6 @@ public class ProjectListController {
             "speciesCommonName",
             "speciesScientificName",
             "srsIdentifier",
-            "publicationTitle",
-            "publicationUrl",
             "access",
             "embargoDate",
             "rightsStatement"

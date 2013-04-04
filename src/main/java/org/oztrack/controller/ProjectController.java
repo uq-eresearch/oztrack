@@ -193,7 +193,7 @@ public class ProjectController {
         // Spring decides a single value containing commas should be expanded to a list
         // (e.g. ["a, b, c"] becomes ["a", "b", "c"] instead of being interpreted as ["a, b, c"]).
         // Note that two or more values is handled correctly (e.g. ["a, b", "c"]).
-        List<String> publicationTitles = Arrays.asList(request.getParameterValues("publicationTitle"));
+        List<String> publicationReferences = Arrays.asList(request.getParameterValues("publicationReference"));
         List<String> publicationUrls = Arrays.asList(request.getParameterValues("publicationUrl"));
 
         if (StringUtils.isNotBlank(embargoDateString)) {
@@ -213,14 +213,14 @@ public class ProjectController {
             project.setDataLicence(null);
         }
         project.getPublications().clear();
-        int numPublicationTitles = (publicationTitles != null) ? publicationTitles.size() : 0;
+        int numPublicationReferences = (publicationReferences != null) ? publicationReferences.size() : 0;
         int numPublicationUrls = (publicationUrls != null) ? publicationUrls.size() : 0;
-        int numPublications = Math.max(numPublicationTitles, numPublicationUrls);
+        int numPublications = Math.max(numPublicationReferences, numPublicationUrls);
         for (int i = 0; i < numPublications; i++) {
-            String title = (i < numPublicationTitles) ? publicationTitles.get(i) : null;
+            String reference = (i < numPublicationReferences) ? publicationReferences.get(i) : null;
             String url = (i < numPublicationUrls) ? publicationUrls.get(i) : null;
-            if (StringUtils.isBlank(title)) {
-                bindingResult.rejectValue("publications", "publications", "All publications must have a Title.");
+            if (StringUtils.isBlank(reference)) {
+                bindingResult.rejectValue("publications", "publications", "All publications must have a Reference.");
             }
             if (StringUtils.isNotBlank(url)) {
                 try {
@@ -243,7 +243,7 @@ public class ProjectController {
             Publication publication = new Publication();
             publication.setProject(project);
             publication.setOrdinal(i);
-            publication.setTitle(title);
+            publication.setReference(reference);
             publication.setUrl(url);
             project.getPublications().add(publication);
         }
