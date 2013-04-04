@@ -52,7 +52,7 @@ public class ProjectImageController {
     }
 
     @RequestMapping(value="/projects/{projectId}/images/{projectImageId}/file", method=RequestMethod.GET)
-    @PreAuthorize("hasPermission(#projectImage.project, 'read')")
+    @PreAuthorize("permitAll")
     public void handleFileGet(
         @ModelAttribute(value="project") Project project,
         @ModelAttribute(value="projectImage") ProjectImage projectImage,
@@ -64,7 +64,7 @@ public class ProjectImageController {
     }
 
     @RequestMapping(value="/projects/{projectId}/images/{projectImageId}/thumbnail", method=RequestMethod.GET)
-    @PreAuthorize("hasPermission(#projectImage.project, 'read')")
+    @PreAuthorize("permitAll")
     public void handleThumbnailGet(
         @ModelAttribute(value="project") Project project,
         @ModelAttribute(value="projectImage") ProjectImage projectImage,
