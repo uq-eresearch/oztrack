@@ -1,0 +1,1 @@
+update appuser set title = '' where title = 'none';

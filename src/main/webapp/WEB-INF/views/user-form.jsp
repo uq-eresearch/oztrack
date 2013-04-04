@@ -112,15 +112,8 @@
                 <div class="control-group">
                     <label class="control-label" for="title">Title:</label>
                     <div class="controls">
-                        <form:select path="title">
-                            <form:option value="none">--- Select ---</form:option>
-                            <form:option value="Dr">Dr</form:option>
-                            <form:option value="A/Prof">A/Prof</form:option>
-                            <form:option value="Prof">Prof</form:option>
-                            <form:option value="Mr">Mr</form:option>
-                            <form:option value="Ms">Ms</form:option>
-                            <form:option value="none">None</form:option>
-                        </form:select>
+                        <form:input path="title" id="title" />
+                        <form:errors path="title" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
                 <div class="control-group">
