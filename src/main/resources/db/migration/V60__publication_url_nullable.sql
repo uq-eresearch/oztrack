@@ -1,0 +1,1 @@
+alter table publication alter column url drop not null;

@@ -27,7 +27,7 @@ public class Publication {
     @Column(name="title", columnDefinition="TEXT", nullable=false)
     private String title;
 
-    @Column(name="url", columnDefinition="TEXT", nullable=false)
+    @Column(name="url", columnDefinition="TEXT", nullable=true)
     private String url;
 
     public Publication() {

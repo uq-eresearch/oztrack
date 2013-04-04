@@ -219,8 +219,8 @@ public class ProjectController {
         for (int i = 0; i < numPublications; i++) {
             String title = (i < numPublicationTitles) ? publicationTitles.get(i) : null;
             String url = (i < numPublicationUrls) ? publicationUrls.get(i) : null;
-            if (StringUtils.isBlank(title) || StringUtils.isBlank(url)) {
-                bindingResult.rejectValue("publications", "publications", "All publications must have both a Title and URL.");
+            if (StringUtils.isBlank(title)) {
+                bindingResult.rejectValue("publications", "publications", "All publications must have a Title.");
             }
             if (StringUtils.isNotBlank(url)) {
                 try {

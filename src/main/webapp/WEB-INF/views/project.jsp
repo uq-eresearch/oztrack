@@ -460,7 +460,9 @@
                 <c:forEach var="publication" items="${project.publications}">
                 <li>
                     <c:out value="${publication.title}"/>
+                    <c:if test="${not empty publication.url}">
                     [<a href="<c:out value="${publication.url}"/>">Link</a>]
+                    </c:if>
                 </li>
                 </c:forEach>
             </ol>
