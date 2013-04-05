@@ -1,9 +1,11 @@
 package org.oztrack.controller;
 
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,7 +40,8 @@ public class ShibbolethController {
     public String handleLogin(
         @RequestHeader(value="eppn", required=false) String aafId,
         @RequestParam(value="redirect", required=false) String redirectUrl,
-        HttpServletRequest request
+        HttpServletRequest request,
+        HttpServletResponse response
     ) throws Exception {
         if (!configuration.isAafEnabled()) {
             throw new RuntimeException("AAF authentication is disabled");
@@ -84,7 +87,8 @@ public class ShibbolethController {
         // Existing user already logged in and providing a new AAF ID
         User currentUser = OzTrackUtil.getCurrentUser(SecurityContextHolder.getContext().getAuthentication(), userDao);
         if (currentUser != null) {
-            return "redirect:/users/" + currentUser.getId() + "/edit";
+            String enc = (response.getCharacterEncoding() != null) ? response.getCharacterEncoding() : null;
+            return "redirect:/users/" + currentUser.getId() + "/edit?aafId=" + URLEncoder.encode(aafId, enc);
         }
 
         // New user registering an account based on their AAF ID

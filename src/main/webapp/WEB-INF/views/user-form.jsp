@@ -66,8 +66,8 @@
                     <div class="controls">
                         <c:choose>
                         <c:when test="${not empty user.aafId}">
-                            <form:input path="aafId" id="aafId"/>
-                            <form:errors element="div" path="aafId" cssClass="formErrors"/>
+                            <input type="text" name="aafId" id="aafId" readonly="readonly" value="${user.aafId}" />
+                            <a class="btn" href="javascript:void($('#aafId').val(''));">Remove AAF ID</a>
                         </c:when>
                         <c:otherwise>
                             <a class="btn" href="${pageContext.request.contextPath}/login/shibboleth">Link profile with AAF ID</a>
@@ -84,9 +84,7 @@
                                 with username 'uqjsmith', your ID is 'uqjsmith@uq.edu.au'.
                             </div>
                         </div>
-                        <c:if test="${not empty user.aafId}">
                         <form:errors path="aafId" element="div" cssClass="help-block formErrors"/>
-                        </c:if>
                     </div>
                 </div>
                 </c:if>
@@ -105,7 +103,13 @@
                 <div class="control-group">
                     <label class="control-label" for="password">Password:</label>
                     <div class="controls">
-                        <form:password path="password" id="password"/>
+                        <input type="password" name="password" id="password"/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="password">Password (confirm):</label>
+                    <div class="controls">
+                        <input type="password" name="password2" id="password2"/>
                         <form:errors path="password" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>

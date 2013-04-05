@@ -23,6 +23,7 @@ public class UserFormValidator implements Validator {
         return User.class.isAssignableFrom(clazz);
     }
 
+    @Override
     public void validate(Object obj, Errors errors) {
         User loginUser = (User) obj;
 
@@ -43,9 +44,6 @@ public class UserFormValidator implements Validator {
             if ((existingUserByAafId != null) && (existingUserByAafId != loginUser)) {
                 errors.rejectValue("aafId", "aafId.user", "This AAF ID is already associated with another account.");
             }
-        }
-        else {
-            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "error.empty.field", "Please enter password");
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "firstName", "error.empty.field", "Please enter first name");

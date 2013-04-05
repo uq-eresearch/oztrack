@@ -46,7 +46,6 @@ public class UserListController {
     public void initUserBinder(WebDataBinder binder) {
         binder.setAllowedFields(
             "username",
-            "password",
             "title",
             "firstName",
             "lastName",
@@ -113,6 +112,8 @@ public class UserListController {
         @ModelAttribute(value="user") User user,
         @RequestHeader(value="eppn", required=false) String aafIdHeader,
         @RequestParam(value="aafId", required=false) String aafIdParam,
+        @RequestParam(value="password", required=false) String password,
+        @RequestParam(value="password2", required=false) String password2,
         BindingResult bindingResult
     ) {
         if (configuration.isAafEnabled()) {
@@ -127,6 +128,12 @@ public class UserListController {
             }
         }
         new UserFormValidator(userDao).validate(user, bindingResult);
+        if (!StringUtils.equals(password, password2)) {
+            bindingResult.rejectValue("password", "error.password.mismatch", "Passwords do not match");
+        }
+        else if (StringUtils.isBlank(password) && StringUtils.isBlank(user.getAafId())) {
+            bindingResult.rejectValue("password", "error.empty.field", "Please enter password");
+        }
         if (bindingResult.hasErrors()) {
             return "user-form";
         }
@@ -145,11 +152,8 @@ public class UserListController {
                 }
             }
         }
-        if (StringUtils.isBlank(user.getPassword())) {
-            user.setPassword(null);
-        }
-        else {
-            user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+        if (StringUtils.isNotBlank(password)) {
+            user.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
         }
         user.setCreateDate(new Date());
         userDao.save(user);

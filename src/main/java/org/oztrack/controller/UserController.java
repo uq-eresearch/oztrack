@@ -34,7 +34,6 @@ public class UserController {
     public void initUserBinder(WebDataBinder binder) {
         binder.setAllowedFields(
             "username",
-            "password",
             "title",
             "firstName",
             "lastName",
@@ -53,6 +52,7 @@ public class UserController {
     public String getEditView(
         @ModelAttribute(value="user") User user,
         @RequestHeader(value="eppn", required=false) String aafIdHeader,
+        @RequestParam(value="aafId", required=false) String aafIdParam,
         @RequestParam(value="update", defaultValue="false") boolean update
     ) {
         User currentUser = OzTrackUtil.getCurrentUser(SecurityContextHolder.getContext().getAuthentication(), userDao);
@@ -60,7 +60,7 @@ public class UserController {
             return "redirect:/login";
         }
         if (configuration.isAafEnabled()) {
-            if (StringUtils.isBlank(user.getAafId()) && StringUtils.isNotBlank(aafIdHeader)) {
+            if (StringUtils.isNotBlank(aafIdParam) && StringUtils.equals(aafIdParam, aafIdHeader)) {
                 user.setAafId(aafIdHeader);
             }
         }
@@ -73,6 +73,8 @@ public class UserController {
         @ModelAttribute(value="user") User user,
         @RequestHeader(value="eppn", required=false) String aafIdHeader,
         @RequestParam(value="aafId", required=false) String aafIdParam,
+        @RequestParam(value="password", required=false) String newPassword,
+        @RequestParam(value="password2", required=false) String newPassword2,
         BindingResult bindingResult
     ) throws Exception {
         User currentUser = OzTrackUtil.getCurrentUser(SecurityContextHolder.getContext().getAuthentication(), userDao);
@@ -91,14 +93,17 @@ public class UserController {
             }
         }
         new UserFormValidator(userDao).validate(user, bindingResult);
+        if (!StringUtils.equals(newPassword, newPassword2)) {
+            bindingResult.rejectValue("password", "error.password.mismatch", "Passwords do not match");
+        }
+        else if (StringUtils.isBlank(user.getPassword()) && StringUtils.isBlank(user.getAafId())) {
+            bindingResult.rejectValue("password", "error.empty.field", "Please enter password");
+        }
         if (bindingResult.hasErrors()) {
             return "user-form";
         }
-        if (StringUtils.isBlank(user.getPassword())) {
-            user.setPassword(null);
-        }
-        else {
-            user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+        if (StringUtils.isNotBlank(newPassword)) {
+            user.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
         }
         userDao.save(user);
         return "redirect:/projects";
