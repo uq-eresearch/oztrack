@@ -504,8 +504,16 @@ div.help {
 /* action boxes */
 
 .sidebar-actions {
-  margin: 0 0 12px 0;
   .oztrack-inset();
+  margin: 0 0 12px 0;
+}
+
+.sidebar-actions li a {
+  color: #505040;
+}
+
+.sidebar-actions li.active a {
+  font-weight: bold;
 }
 
 .sidebar-actions-title {
@@ -558,6 +566,7 @@ ul.icons li.view-data {background-image: url('../img/table.png');}
 
 ul.icons li.create-file {background-image: url('../img/page_white_add.png');}
 ul.icons li.view-file {background-image: url('../img/page_white.png');}
+ul.icons li.view-files {background-image: url('../img/page_white_stack.png');}
 ul.icons li.edit-file {background-image: url('../img/page_white_edit.png');}
 ul.icons li.delete-file {background-image: url('../img/page_white_delete.png');}
 

@@ -22,7 +22,7 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
-                $('#projectMenuSearch').addClass('active');
+                $('#dataActionsCreateFile').addClass('active');
             });
         </script>
     </jsp:attribute>

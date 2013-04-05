@@ -14,7 +14,7 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
-                $('#projectMenuSearch').addClass('active');
+                $('#dataActionsViewFiles').addClass('active');
             });
         </script>
     </jsp:attribute>

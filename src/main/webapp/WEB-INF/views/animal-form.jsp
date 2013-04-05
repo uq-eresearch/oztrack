@@ -16,7 +16,7 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
-                $('#projectMenuAnimals').addClass('active');
+                $('#animalActionsEdit').addClass('active');
                 $('#colorpicker').farbtastic('#colour');
             });
         </script>
@@ -31,7 +31,7 @@
     </jsp:attribute>
     <jsp:attribute name="sidebar">
         <tags:project-menu project="${project}"/>
-        <tags:animals-actions project="${project}"/>
+        <tags:animal-actions animal="${animal}"/>
         <tags:project-licence project="${project}"/>
     </jsp:attribute>
     <jsp:body>

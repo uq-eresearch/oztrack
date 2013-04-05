@@ -10,7 +10,7 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
-                $('#projectMenuAnimals').addClass('active');
+                $('#animalActionsView').addClass('active');
             });
         </script>
     </jsp:attribute>
@@ -23,17 +23,7 @@
     </jsp:attribute>
     <jsp:attribute name="sidebar">
         <tags:project-menu project="${project}"/>
-        <sec:authorize access="hasPermission(#animal.project, 'write')">
-        <div class="sidebar-actions">
-            <div class="sidebar-actions-title">Manage Animal</div>
-            <ul class="icons sidebar-actions-list">
-                <li class="edit-animal"><a href="${pageContext.request.contextPath}/animals/${animal.id}/edit">Edit animal</a></li>
-                <c:if test="${empty animal.positionFixes}">
-                <li class="delete-animal"><a href="javascript:void(deleteEntity('${pageContext.request.contextPath}/animals/${animal.id}', '${pageContext.request.contextPath}/projects/${project.id}/animals', 'Are you sure you want to delete this animal?'));">Delete animal</a></li>
-                </c:if>
-            </ul>
-        </div>
-        </sec:authorize>
+        <tags:animal-actions animal="${animal}"/>
     </jsp:attribute>
     <jsp:body>
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
