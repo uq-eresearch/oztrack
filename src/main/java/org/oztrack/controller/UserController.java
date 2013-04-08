@@ -85,11 +85,13 @@ public class UserController {
             if (StringUtils.isBlank(aafIdParam)) {
                 user.setAafId(null);
             }
-            else if (StringUtils.equals(aafIdHeader, aafIdParam)) {
-                user.setAafId(aafIdHeader);
-            }
-            else {
-                throw new RuntimeException("Attempt to set AAF ID without being logged in");
+            else if (!StringUtils.equals(user.getAafId(), aafIdParam)) {
+                if (StringUtils.equals(aafIdHeader, aafIdParam)) {
+                    user.setAafId(aafIdHeader);
+                }
+                else {
+                    throw new RuntimeException("Attempt to set AAF ID without being logged in");
+                }
             }
         }
         new UserFormValidator(userDao).validate(user, bindingResult);
