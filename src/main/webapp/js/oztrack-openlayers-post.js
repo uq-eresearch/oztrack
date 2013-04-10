@@ -301,6 +301,7 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
          vendorParams: {},
          format: null,
          handler: null,
+         formerViewPortDivTitle: null,
 
          /**
           * APIProperty: events
@@ -326,13 +327,28 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
           */
          initialize: function(options) {
              options = options || {};
-             options.displayClass = options.displayClass || "OzTrackOpenLayersControlOzTrackLayerSwitcher";
+             options.displayClass = options.displayClass || "OzTrackOpenLayersControlWMSGetFeatureInfo";
              OpenLayers.Control.prototype.initialize.apply(this, [options]);
              
              this.format = new OpenLayers.Format.WMSGetFeatureInfo();
              
              var callbacks = {click: this.getInfoForClick};
              this.handler = new OpenLayers.Handler.Click(this, callbacks, {});
+             
+             this.events.register('activate', this, function(evt) {
+                 OpenLayers.Element.addClass(this.map.viewPortDiv, "OzTrackOpenLayersControlWMSGetFeatureInfo");
+                 this.formerViewPortDivTitle = $(this.map.viewPortDiv).attr('title');
+                 $(this.map.viewPortDiv).attr('title', 'Click for layer information');
+             });
+             this.events.register('deactivate', this, function(evt) {
+                 if (this.formerViewPortDivTitle) {
+                     $(this.map.viewPortDiv).attr('title', this.formerViewPortDivTitle);
+                 }
+                 else {
+                     $(this.map.viewPortDiv).removeAttr('title');
+                 }
+                 OpenLayers.Element.removeClass(this.map.viewPortDiv, "OzTrackOpenLayersControlWMSGetFeatureInfo");
+             });
          },
 
          getInfoForClick: function(evt) {
