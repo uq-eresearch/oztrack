@@ -702,7 +702,7 @@
 
                         <div class="smallSquare" style="background-color: ${animal.colour};"></div>
 
-                        <div class="animalLabel">
+                        <div id="animalLabel-${animal.id}" class="animalLabel">
                             <a class="animalInfoToggle" href="javascript:void(0);" onclick="$('#buttonShowHide${animal.id}').click();">${animal.animalName}</a>
                         </div>
                     </div>

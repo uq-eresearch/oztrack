@@ -46,6 +46,7 @@
             displayProjection : that.projection4326,
             controls: []
         });
+        that.map.Z_INDEX_BASE.Popup = 1500;
         that.map.addControl(new OpenLayers.Control.Zoom());
         that.map.addControl(new OpenLayers.Control.Attribution());
         that.map.addControl(new OpenLayers.Control.ScaleLine());
@@ -67,7 +68,7 @@
             }
         });
         that.map.addControl(new OzTrackNavToolbar());
-        
+
         that.layerSwitcher = new OzTrack.OpenLayers.Control.OzTrackLayerSwitcher({
             categoryLabels: {
                 'base': 'Base layer',
@@ -131,7 +132,7 @@
         );
         that.map.addLayer(that.bathymetryLayer);
 
-        that.map.addLayer(new OpenLayers.Layer.WMS(
+        that.ibraRegions = new OpenLayers.Layer.WMS(
             'IBRA Regions',
             '/geoserver/gwc/service/wms',
             {
@@ -145,8 +146,10 @@
                 attribution: '<a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B573FA186-1997-4F8B-BCF8-58B5876A156B%7D">IBRA 7 Regions</a>',
                 metadata: {category: 'environment'}
             }
-        ));
-        that.map.addLayer(new OpenLayers.Layer.WMS(
+        );
+        that.map.addLayer(that.ibraRegions);
+
+        that.ibraSubregions = new OpenLayers.Layer.WMS(
             'IBRA Subregions',
             '/geoserver/gwc/service/wms',
             {
@@ -160,8 +163,10 @@
                 attribution: '<a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7BC88F4317-42B0-4D4B-AC5D-47F6ACF1A24F%7D">IBRA 7 Subregions</a>',
                 metadata: {category: 'environment'}
             }
-        ));
-        that.map.addLayer(new OpenLayers.Layer.WMS(
+        );
+        that.map.addLayer(that.ibraSubregions);
+
+        that.imcraProvincial = new OpenLayers.Layer.WMS(
             'IMCRA Provincial Bioregions',
             '/geoserver/gwc/service/wms',
             {
@@ -175,8 +180,10 @@
                 attribution: '<a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B30DA5FD4-AE08-405B-9F55-7E1833C230A4%7D">IMCRA 4 Provincial Bioregions</a>',
                 metadata: {category: 'environment'}
             }
-        ));
-        that.map.addLayer(new OpenLayers.Layer.WMS(
+        );
+        that.map.addLayer(that.imcraProvincial);
+
+        that.imcraMesoscale = new OpenLayers.Layer.WMS(
             'IMCRA Mesoscale Bioregions',
             '/geoserver/gwc/service/wms',
             {
@@ -190,7 +197,8 @@
                 attribution: '<a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7BA0D9F8EE-4261-438A-8ADE-EFF664EFF55C%7D">IMCRA 4 Meso-scale Bioregions</a>',
                 metadata: {category: 'environment'}
             }
-        ));
+        );
+        that.map.addLayer(that.imcraMesoscale);
 
         that.startEndStyleMap = createStartEndPointsStyleMap();
         that.polygonStyleMap = createPolygonStyleMap();
@@ -205,6 +213,141 @@
             projectId : that.projectId,
             queryType : 'START_END'
         }, that.startEndStyleMap, 'project'));
+
+        var getFeatureInfoControl = new OzTrack.OpenLayers.Control.WMSGetFeatureInfo({
+            url: '/geoserver/wms',
+            layerUrls: ['/geoserver/gwc/service/wms'],
+            layerDetails: [
+                {
+                    layer: that.bathymetryLayer,
+                    propertyNames: [
+                        'GRAY_INDEX'
+                    ],
+                    summary: function(values) {
+                        return $('<span>')
+                            .append(((values.GRAY_INDEX <= 0)
+                                ? ('Depth: ' + (-1 * values.GRAY_INDEX) + ' m')
+                                : ('Elevation: ' + values.GRAY_INDEX + ' m')));
+                    }
+                },
+                {
+                    layer: that.ibraRegions,
+                    propertyNames: [
+                        'REG_CODE_7',
+                        'REG_NAME_7',
+                        'SQ_KM'
+                    ],
+                    summary: function(values) {
+                        return $('<span>')
+                            .append(values.REG_NAME_7 + ' (' + values.REG_CODE_7  + ')')
+                            .append(', ' + values.SQ_KM + ' km<sup>2</sup>');
+                    }
+                },
+                {
+                    layer: that.ibraSubregions,
+                    propertyNames: [
+                        'SUB_CODE_7',
+                        'SUB_NAME_7',
+                        'REG_CODE_7',
+                        'REG_NAME_7',
+                        'SQ_KM'
+                    ],
+                    summary: function(values) {
+                        return $('<span>')
+                            .append(values.SUB_NAME_7 + ' (' + values.SUB_CODE_7  + ')')
+                            .append(', ' + values.SQ_KM + ' km<sup>2</sup>');
+                    }
+                },
+                {
+                    layer: that.imcraProvincial,
+                    propertyNames: [
+                         'PB_NAME',
+                         'PB_NUM',
+                         'WATER_TYPE',
+                         'AREA_KM2'
+                     ],
+                     summary: function(values) {
+                         return $('<span>')
+                             .append('Number ' + values.PB_NUM + ', ')
+                             .append(values.PB_NAME + '<br />')
+                             .append(values.WATER_TYPE + ', ' + values.AREA_KM2 + ' km<sup>2</sup>');
+                     }
+                },
+                {
+                    layer: that.imcraMesoscale,
+                    propertyNames: [
+                         'MESO_NAME',
+                         'MESO_NUM',
+                         'MESO_ABBR',
+                         'WATER_TYPE',
+                         'AREA_KM2'
+                     ],
+                     summary: function(values) {
+                         return $('<span>')
+                             .append('Number ' + values.MESO_NUM + ', ')
+                             .append(values.MESO_NAME + ' (' + values.MESO_ABBR  + ')<br />')
+                             .append(values.WATER_TYPE + ', ' + values.AREA_KM2 + ' km<sup>2</sup>');
+                     }
+                },
+                {
+                    layer: that.allDetectionsLayer.getWMSLayer(),
+                    propertyNames: [
+                        'animal_id',
+                        'detectiontime'
+                    ],
+                    summary: function(values) {
+                        return $('<span>')
+                            .append($('#animalLabel-' + values.animal_id).text())
+                            .append(' at ' + moment(values.detectiontime, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
+                    }
+                },
+                {
+                    layer: that.allTrajectoriesLayer.getWMSLayer(),
+                    propertyNames: [
+                        'animal_id',
+                        'startdetectiontime',
+                        'enddetectiontime'
+                    ],
+                    summary: function(values) {
+                        return $('<span>')
+                            .append($('#animalLabel-' + values.animal_id).text())
+                            .append(' from ' + moment(values.startdetectiontime, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
+                            .append(' to ' + moment(values.enddetectiontime, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
+                    }
+                }
+            ],
+            queryVisible: true,
+            maxFeatures: 10,
+            infoFormat: 'application/vnd.ogc.gml',
+            eventListeners: {
+                getfeatureinfo: function(event) {
+                    var control = this;
+                    var content = $('<div>');
+                    content.append($('<p>').css('font-weight', 'bold').css('width', '400px').append('Layer Information'));
+                    if (event.features && (event.features.length > 0)) {
+                        content.append($.map(control.layerDetails, function(layerDetail) {
+                            var layerFeatures = $.grep(event.features, function(feature) {
+                                return layerDetail.layer.params.LAYERS === (feature.gml.featureNSPrefix + ':' + feature.gml.featureType);
+                            });
+                            return (layerFeatures.length == 0) ? [] : [
+                                $('<div>').addClass('layerInfoTitle').css('margin-bottom', '4px').text(layerDetail.layer.name).get(0),
+                                $('<ul>').append($.map(layerFeatures, function(feature) {
+                                    return $('<li>').append(layerDetail.summary(feature.attributes));
+                                })).get(0)
+                            ];
+                        }));
+                        // Remove all other popups and then show our own.
+                        while (that.map.popups.length > 0) {
+                            that.map.removePopup(that.map.popups[0]);
+                        }
+                        var lonlat = that.map.getLonLatFromPixel(event.xy);
+                        that.map.addPopup(new OpenLayers.Popup.FramedCloud(null, lonlat, null, content.html(), null, true));
+                    }
+                }
+            }
+        });
+        that.map.addControl(getFeatureInfoControl);
+        getFeatureInfoControl.activate();
         
         that.map.zoomToExtent(that.projectBounds, false);
 

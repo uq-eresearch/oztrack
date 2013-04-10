@@ -11,7 +11,7 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
         initialize: function(options) {
             this.extent = options.extent;
             this.title = "Zoom to extent";
-            options.displayClass = "OzTrackOpenLayersControlZoomToExtent";
+            options.displayClass = options.displayClass || "OzTrackOpenLayersControlZoomToExtent";
             OpenLayers.Control.Button.prototype.initialize.apply(this, [options]);
         },
         trigger: function() {
@@ -24,7 +24,7 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
         initialize: function(options) {
             options = options || {};
             this.dataLicence = options.dataLicence;
-            options.displayClass = "OzTrackOpenLayersControlOzTrackDataLicence";
+            options.displayClass = options.displayClass || "OzTrackOpenLayersControlOzTrackDataLicence";
             OpenLayers.Control.prototype.initialize.apply(this, [options]);
         },
         draw: function (px) {
@@ -68,7 +68,7 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                     layersDiv: null
                 };
             }
-            options.displayClass = "OzTrackOpenLayersControlOzTrackLayerSwitcher";
+            options.displayClass = options.displayClass || "OzTrackOpenLayersControlOzTrackLayerSwitcher";
             OpenLayers.Control.prototype.initialize.apply(this, [options]);
         },
 
@@ -118,7 +118,7 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
         draw: function() {
             OpenLayers.Control.prototype.draw.apply(this);
             this.loadContents();
-            if(!this.outsideViewport) {
+            if (!this.outsideViewport) {
                 this.minimizeControl();
             }
             this.redraw();
@@ -290,4 +290,159 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
 
         CLASS_NAME: "OzTrack.OpenLayers.Control.OzTrackLayerSwitcher"
     });
+
+    OzTrack.OpenLayers.Control.WMSGetFeatureInfo = OpenLayers.Class(OpenLayers.Control, {
+         maxFeatures: 10,
+         layerDetails: null,
+         queryVisible: false,
+         url: null,
+         layerUrls: null,
+         infoFormat: null,
+         vendorParams: {},
+         format: null,
+         handler: null,
+
+         /**
+          * APIProperty: events
+          * {<OpenLayers.Events>} Events instance for listeners and triggering
+          *     control specific events.
+          *
+          * Register a listener for a particular event with the following syntax:
+          * (code)
+          * control.events.register(type, obj, listener);
+          * (end)
+          *
+          * Supported event types (in addition to those from <OpenLayers.Control.events>):
+          * beforegetfeatureinfo - Triggered before the request is sent.
+          *      The event object has an *xy* property with the position of the 
+          *      mouse click or hover event that triggers the request.
+          * nogetfeatureinfo - no queryable layers were found.
+          * getfeatureinfo - Triggered when a GetFeatureInfo response is received.
+          *      The event object has a *text* property with the body of the
+          *      response (String), a *features* property with an array of the
+          *      parsed features, an *xy* property with the position of the mouse
+          *      click or hover event that triggered the request, and a *request*
+          *      property with the request itself.
+          */
+         initialize: function(options) {
+             options = options || {};
+             options.displayClass = options.displayClass || "OzTrackOpenLayersControlOzTrackLayerSwitcher";
+             OpenLayers.Control.prototype.initialize.apply(this, [options]);
+             
+             this.format = new OpenLayers.Format.WMSGetFeatureInfo();
+             
+             var callbacks = {click: this.getInfoForClick};
+             this.handler = new OpenLayers.Handler.Click(this, callbacks, {});
+         },
+
+         getInfoForClick: function(evt) {
+             this.events.triggerEvent("beforegetfeatureinfo", {xy: evt.xy});
+             OpenLayers.Element.addClass(this.map.viewPortDiv, "olCursorWait");
+             if (this.layerDetails.length == 0) {
+                 this.events.triggerEvent("nogetfeatureinfo");
+                 OpenLayers.Element.removeClass(this.map.viewPortDiv, "olCursorWait");
+                 return;
+             }
+             var wmsOptions = this.buildWMSOptions(evt.xy); 
+             var request = OpenLayers.Request.GET(wmsOptions);
+         },
+
+         buildWMSOptions: function(clickPosition) {
+             var layerNames = [], styleNames = [], propertyNameParams = [], cqlFilterParams = [];
+             for (var i = 0, len = this.layerDetails.length; i < len; i++) {
+                 if (
+                     (this.layerDetails[i].layer.params.LAYERS != null) &&
+                     (!this.queryVisible || this.layerDetails[i].layer.getVisibility())
+                 ) {
+                     layerNames = layerNames.concat(this.layerDetails[i].layer.params.LAYERS);
+                     styleNames = styleNames.concat(this.getStyleNames(this.layerDetails[i].layer));
+                     propertyNameParams.push(this.layerDetails[i].propertyNames.join(','));
+                     cqlFilterParams.push(this.layerDetails[i].layer.params.CQL_FILTER || 'include');
+                 }
+             }
+             var firstLayer = this.layerDetails[0].layer;
+             // use the firstLayer's projection if it matches the map projection -
+             // this assumes that all layers will be available in this projection
+             var projection = this.map.getProjection();
+             var layerProj = firstLayer.projection;
+             if (layerProj && layerProj.equals(this.map.getProjectionObject())) {
+                 projection = layerProj.getCode();
+             }
+             var params = OpenLayers.Util.extend({
+                 service: "WMS",
+                 version: firstLayer.params.VERSION,
+                 request: "GetFeatureInfo",
+                 exceptions: firstLayer.params.EXCEPTIONS,
+                 bbox: this.map.getExtent().toBBOX(null,
+                     firstLayer.reverseAxisOrder()),
+                 feature_count: this.maxFeatures,
+                 height: this.map.getSize().h,
+                 width: this.map.getSize().w,
+                 format: firstLayer.params.FORMAT,
+                 info_format: firstLayer.params.INFO_FORMAT || this.infoFormat
+             }, (parseFloat(firstLayer.params.VERSION) >= 1.3) ?
+                 {
+                     crs: projection,
+                     i: parseInt(clickPosition.x),
+                     j: parseInt(clickPosition.y)
+                 } :
+                 {
+                     srs: projection,
+                     x: parseInt(clickPosition.x),
+                     y: parseInt(clickPosition.y)
+                 }
+             );
+             if (layerNames.length != 0) {
+                 params = OpenLayers.Util.extend({
+                     layers: layerNames,
+                     query_layers: layerNames,
+                     styles: styleNames,
+                     propertyName: $.map(propertyNameParams, function(p) {return '(' + p + ')'}).join(''),
+                     cql_filter: cqlFilterParams.join(';')
+                 }, params);
+             }
+             OpenLayers.Util.applyDefaults(params, this.vendorParams);
+             return {
+                 url: this.url,
+                 params: OpenLayers.Util.upperCaseObject(params),
+                 callback: function(request) {
+                     this.handleResponse(clickPosition, request, this.url);
+                 },
+                 scope: this
+             };
+         },
+
+         getStyleNames: function(layer) {
+             // in the event of a WMS layer bundling multiple layers but not
+             // specifying styles,we need the same number of commas to specify
+             // the default style for each of the layers.  We can't just leave it
+             // blank as we may be including other layers that do specify styles.
+             var styleNames;
+             if (layer.params.STYLES) {
+                 styleNames = layer.params.STYLES;
+             } else if (OpenLayers.Util.isArray(layer.params.LAYERS)) {
+                 styleNames = new Array(layer.params.LAYERS.length);
+             } else { // Assume it's a String
+                 styleNames = layer.params.LAYERS.replace(/[^,]/g, "");
+             }
+             return styleNames;
+         },
+         
+         handleResponse: function(xy, request, url) {
+             var doc = request.responseXML;
+             if (!doc || !doc.documentElement) {
+                 doc = request.responseText;
+             }
+             var features = this.format.read(doc);
+             this.events.triggerEvent("getfeatureinfo", {
+                 text: request.responseText,
+                 features: features,
+                 request: request,
+                 xy: xy
+             });
+             OpenLayers.Element.removeClass(this.map.viewPortDiv, "olCursorWait");
+         },
+
+         CLASS_NAME: "OzTrack.OpenLayers.Control.WMSGetFeatureInfo"
+     });
 }(window.OzTrack = window.OzTrack || {}));
