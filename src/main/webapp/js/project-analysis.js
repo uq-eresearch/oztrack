@@ -120,7 +120,8 @@
             {
                 layers: 'oztrack:gebco_08',
                 styles: 'oztrack_bathymetry',
-                format: 'image/png'
+                format: 'image/png',
+                tiled: true
             },
             {
                 visibility: false,
@@ -138,7 +139,8 @@
             {
                 layers: 'oztrack:gebco_08',
                 styles: 'oztrack_elevation',
-                format: 'image/png'
+                format: 'image/png',
+                tiled: true
             },
             {
                 visibility: false,
@@ -155,7 +157,8 @@
             '/geoserver/wms',
             {
                 layers: 'oztrack:ibra7_regions',
-                format: 'image/png'
+                format: 'image/png',
+                tiled: true
             },
             {
                 visibility: false,
@@ -172,7 +175,8 @@
             '/geoserver/wms',
             {
                 layers: 'oztrack:ibra7_subregions',
-                format: 'image/png'
+                format: 'image/png',
+                tiled: true
             },
             {
                 visibility: false,
@@ -189,7 +193,8 @@
             '/geoserver/wms',
             {
                 layers: 'oztrack:imcra4_pb',
-                format: 'image/png'
+                format: 'image/png',
+                tiled: true
             },
             {
                 visibility: false,
@@ -206,7 +211,8 @@
             '/geoserver/wms',
             {
                 layers: 'oztrack:imcra4_meso',
-                format: 'image/png'
+                format: 'image/png',
+                tiled: true
             },
             {
                 visibility: false,
