@@ -12,10 +12,19 @@
       <sld:Title/>
       <sld:FeatureTypeStyle>
         <sld:Name>name</sld:Name>
+        <#list regionColour?keys as regionCode>
         <sld:Rule>
+          <Name>${regionCode}</Name>
+          <Title>${regionCode}</Title>
+          <ogc:Filter>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>REG_CODE_7</ogc:PropertyName>
+              <ogc:Literal>${regionCode}</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+          </ogc:Filter>
           <sld:PolygonSymbolizer>
             <sld:Fill>
-              <sld:CssParameter name="fill">#945417</sld:CssParameter>
+              <sld:CssParameter name="fill">${regionColour[regionCode]}</sld:CssParameter>
               <sld:CssParameter name="fill-opacity">0.6</sld:CssParameter>
             </sld:Fill>
             <sld:Stroke>
@@ -24,6 +33,7 @@
             </sld:Stroke>
           </sld:PolygonSymbolizer>
         </sld:Rule>
+        </#list>
       </sld:FeatureTypeStyle>
     </sld:UserStyle>
   </sld:NamedLayer>

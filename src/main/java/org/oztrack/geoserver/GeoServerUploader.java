@@ -1,5 +1,7 @@
 package org.oztrack.geoserver;
 
+import java.util.HashMap;
+
 import org.oztrack.app.Constants;
 
 public class GeoServerUploader {
@@ -186,6 +188,97 @@ public class GeoServerUploader {
         client
             .style("styles/" + workspaceName + "_" + "ibra")
             .template("styles/ibra.sld.ftl")
+            .param("regionColour", new HashMap<String, String>() {{
+                put("ARC", "#76B399");
+                put("ARP", "#91EDC2");
+                put("AUA", "#6F9FC9");
+                put("AVW", "#EDE7BC");
+                put("BBN", "#8BFEB3");
+                put("BBS", "#9BFED4");
+                put("BEL", "#9999F5");
+                put("BHC", "#CCBEB0");
+                put("BRT", "#E0917E");
+                put("CAR", "#F8DB9D");
+                put("CEA", "#C1CF74");
+                put("CEK", "#94CFA5");
+                put("CER", "#AB9076");
+                put("CHC", "#E9C2A1");
+                put("CMC", "#8DC8D0");
+                put("COO", "#DDCF8F");
+                put("COP", "#BBB6EF");
+                put("COS", "#EBFFFF");
+                put("CYP", "#7BDD7A");
+                put("DAB", "#A1E6A9");
+                put("DAC", "#57A057");
+                put("DAL", "#87A973");
+                put("DEU", "#C3F5DD");
+                put("DMR", "#ECAA96");
+                put("DRP", "#CDD8FB");
+                put("EIU", "#86FE91");
+                put("ESP", "#E3CC64");
+                put("EYB", "#D7C6E6");
+                put("FIN", "#CC8A8A");
+                put("FLB", "#CF9BB6");
+                put("FUR", "#BEE8FF");
+                put("GAS", "#E9E6A1");
+                put("GAW", "#DAB2B2");
+                put("GES", "#E9F5CD");
+                put("GFU", "#9BBB9D");
+                put("GID", "#CCA373");
+                put("GSD", "#C3B9A6");
+                put("GUC", "#8CBB69");
+                put("GUP", "#A3E9A1");
+                put("GVD", "#CCAC8D");
+                put("HAM", "#ECC7A3");
+                put("ITI", "#EBFFFF");
+                put("JAF", "#C6FEBB");
+                put("KAN", "#A18AA9");
+                put("KIN", "#7FBFFE");
+                put("LSD", "#EDCA81");
+                put("MAC", "#DD7575");
+                put("MAL", "#E0BD86");
+                put("MDD", "#BAB9D7");
+                put("MGD", "#E6DCC1");
+                put("MII", "#C6CCA5");
+                put("MUL", "#D9D9D9");
+                put("MUR", "#E0D5A2");
+                put("NAN", "#B6C3EF");
+                put("NCP", "#CDD8FB");
+                put("NET", "#C2BDD7");
+                put("NNC", "#B9C5CC");
+                put("NOK", "#96BB7B");
+                put("NSS", "#BEE8FF");
+                put("NUL", "#E0D3B5");
+                put("OVP", "#C1D492");
+                put("PCK", "#83D7C7");
+                put("PIL", "#CCDAB2");
+                put("PSI", "#EBFFFF");
+                put("RIV", "#9DC5E3");
+                put("SAI", "#EBFFFF");
+                put("SCP", "#9FB6CD");
+                put("SEC", "#98ADDD");
+                put("SEH", "#A4D3EE");
+                put("SEQ", "#B1D285");
+                put("SSD", "#EDBC89");
+                put("STP", "#E0BABA");
+                put("STU", "#D7F8D6");
+                put("SVP", "#73DFFF");
+                put("SWA", "#FFFACD");
+                put("SYB", "#918DBA");
+                put("TAN", "#CCA886");
+                put("TCH", "#6959CD");
+                put("TIW", "#92EC80");
+                put("TNM", "#5BA1EF");
+                put("TNS", "#63B8FF");
+                put("TSE", "#6191DD");
+                put("TSR", "#1289E0");
+                put("TWE", "#5B72EF");
+                put("VIB", "#AED4AB");
+                put("VIM", "#BCC9E6");
+                put("WAR", "#A6E9A9");
+                put("WET", "#71C0A6");
+                put("YAL", "#FEE7C4");
+            }})
             .replace();
         client
             .layer("layers/ibra7_regions")
