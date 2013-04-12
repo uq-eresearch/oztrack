@@ -126,11 +126,29 @@
                 visibility: false,
                 isBaseLayer: false,
                 wrapDateLine: true,
-                attribution: '<a target="_blank" href="http://www.gebco.net/">GEBCO_08 Grid, version 20091120</a>',
+                attribution: '<a target="_blank" href="http://www.gebco.net/">The GEBCO_08 Grid, version 20091120 (bathymetry)</a>',
                 metadata: {category: 'environment'}
             }
         );
         that.map.addLayer(that.bathymetryLayer);
+
+        that.elevationLayer = new OpenLayers.Layer.WMS(
+            'Elevation',
+            '/geoserver/gwc/service/wms',
+            {
+                layers: 'oztrack:gebco_08',
+                styles: 'oztrack_elevation',
+                format: 'image/png'
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true,
+                attribution: '<a target="_blank" href="http://www.gebco.net/">The GEBCO_08 Grid, version 20091120 (elevation)</a>',
+                metadata: {category: 'environment'}
+            }
+        );
+        that.map.addLayer(that.elevationLayer);
 
         that.ibraRegions = new OpenLayers.Layer.WMS(
             'IBRA Regions',
@@ -224,10 +242,20 @@
                         'GRAY_INDEX'
                     ],
                     summary: function(values) {
-                        return $('<span>')
-                            .append(((values.GRAY_INDEX <= 0)
-                                ? ('Depth: ' + (-1 * values.GRAY_INDEX) + ' m')
-                                : ('Elevation: ' + values.GRAY_INDEX + ' m')));
+                        return (values.GRAY_INDEX < 0)
+                            ? $('<span>').append('Depth: ' + (-1 * values.GRAY_INDEX) + ' m')
+                            : $();
+                    }
+                },
+                {
+                    layer: that.elevationLayer,
+                    propertyNames: [
+                        'GRAY_INDEX'
+                    ],
+                    summary: function(values) {
+                        return (values.GRAY_INDEX >= 0)
+                            ? $('<span>').append('Elevation: ' + values.GRAY_INDEX + ' m')
+                            : $();
                     }
                 },
                 {
@@ -329,10 +357,34 @@
                             var layerFeatures = $.grep(event.features, function(feature) {
                                 return layerDetail.layer.params.LAYERS === (feature.gml.featureNSPrefix + ':' + feature.gml.featureType);
                             });
-                            return (layerFeatures.length == 0) ? [] : [
+                            var summaries = $.map(layerFeatures, function(feature) {
+                                return layerDetail.summary(feature.attributes);
+                            });
+                            var nonEmptySummaries = $.grep(summaries, function(summary) {
+                                return summary.length > 0;
+                            });
+                            // Filter summaries for uniqueness because GetFeatureInfo may return
+                            // identical features from different layers having the same feature type.
+                            //
+                            // In this case, we expect only one summary function in layerDetails to
+                            // return a non-empty result for each such feature; this means, though,
+                            // that one layerDetail will return N summaries for N identical features.
+                            //
+                            // Example: the Bathymetry and Elevation layers are both from the gebco_08
+                            // feature type, differing only by style; without this uniqueness filter,
+                            // we would get two lines of either "Depth: X m" or "Elevation: X m".
+                            var uniqueSummaries = [], summaryFound = {};
+                            $.each(nonEmptySummaries, function(i, summary) {
+                                var summaryHtml = $('<div>').append(summary).html();
+                                if (!summaryFound[summaryHtml]) {
+                                    summaryFound[summaryHtml] = true;
+                                    uniqueSummaries.push(summary);
+                                }
+                            });
+                            return (uniqueSummaries.length == 0) ? [] : [
                                 $('<div>').addClass('layerInfoTitle').css('margin-bottom', '4px').text(layerDetail.layer.name).get(0),
-                                $('<ul>').append($.map(layerFeatures, function(feature) {
-                                    return $('<li>').append(layerDetail.summary(feature.attributes));
+                                $('<ul>').append($.map(uniqueSummaries, function(summary) {
+                                    return $('<li>').append(summary);
                                 })).get(0)
                             ];
                         }));
