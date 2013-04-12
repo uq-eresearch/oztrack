@@ -116,7 +116,7 @@
 
         that.bathymetryLayer = new OpenLayers.Layer.WMS(
             'Bathymetry',
-            '/geoserver/gwc/service/wms',
+            '/geoserver/wms',
             {
                 layers: 'oztrack:gebco_08',
                 styles: 'oztrack_bathymetry',
@@ -134,7 +134,7 @@
 
         that.elevationLayer = new OpenLayers.Layer.WMS(
             'Elevation',
-            '/geoserver/gwc/service/wms',
+            '/geoserver/wms',
             {
                 layers: 'oztrack:gebco_08',
                 styles: 'oztrack_elevation',
@@ -152,7 +152,7 @@
 
         that.ibraRegions = new OpenLayers.Layer.WMS(
             'IBRA Regions',
-            '/geoserver/gwc/service/wms',
+            '/geoserver/wms',
             {
                 layers: 'oztrack:ibra7_regions',
                 format: 'image/png'
@@ -169,7 +169,7 @@
 
         that.ibraSubregions = new OpenLayers.Layer.WMS(
             'IBRA Subregions',
-            '/geoserver/gwc/service/wms',
+            '/geoserver/wms',
             {
                 layers: 'oztrack:ibra7_subregions',
                 format: 'image/png'
@@ -186,7 +186,7 @@
 
         that.imcraProvincial = new OpenLayers.Layer.WMS(
             'IMCRA Provincial Bioregions',
-            '/geoserver/gwc/service/wms',
+            '/geoserver/wms',
             {
                 layers: 'oztrack:imcra4_pb',
                 format: 'image/png'
@@ -203,7 +203,7 @@
 
         that.imcraMesoscale = new OpenLayers.Layer.WMS(
             'IMCRA Mesoscale Bioregions',
-            '/geoserver/gwc/service/wms',
+            '/geoserver/wms',
             {
                 layers: 'oztrack:imcra4_meso',
                 format: 'image/png'
@@ -234,7 +234,6 @@
 
         var getFeatureInfoControl = new OzTrack.OpenLayers.Control.WMSGetFeatureInfo({
             url: '/geoserver/wms',
-            layerUrls: ['/geoserver/gwc/service/wms'],
             layerDetails: [
                 {
                     layer: that.bathymetryLayer,
