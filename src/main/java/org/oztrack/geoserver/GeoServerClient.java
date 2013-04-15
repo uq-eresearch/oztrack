@@ -46,6 +46,7 @@ public class GeoServerClient {
     private static final Logger logger = LoggerFactory.getLogger(GeoServerClient.class);
 
     private final URI geoServerRestUri;
+    private final URI geoWebCacheRestUri;
     private final String templateBasePath;
 
     private final HttpClient httpClient;
@@ -83,6 +84,33 @@ public class GeoServerClient {
         public void replace() throws Exception {
             HttpEntity entity = createFreemarkerEntity(templatePath, params);
             replaceInternal(parentPath, name, contentType, entity);
+        }
+    }
+
+    public class GeoWebCacheSeedRequest {
+        protected String layerName;
+        protected String templatePath;
+        protected HashMap<String, Object> params;
+
+        protected GeoWebCacheSeedRequest(String layerName) {
+            this.layerName = layerName;
+            this.params = new HashMap<String, Object>();
+        }
+
+        public GeoWebCacheSeedRequest template(String templatePath) {
+            this.templatePath = templatePath;
+            return this;
+        }
+
+        public GeoWebCacheSeedRequest param(String key, Object value) {
+            params.put(key, value);
+            return this;
+        }
+
+        public void post() throws Exception {
+            URI uri = geoWebCacheRestUri.resolve("seed/" + layerName + ".xml");
+            HttpEntity entity = createFreemarkerEntity(templatePath, params);
+            postInternal(uri, "application/xml", entity);
         }
     }
 
@@ -126,6 +154,7 @@ public class GeoServerClient {
         String templateBasePath
     ) {
         this.geoServerRestUri = URI.create(geoServerBaseUrl + "/rest/");
+        this.geoWebCacheRestUri = URI.create(geoServerBaseUrl + "/gwc/rest/");
         this.templateBasePath = templateBasePath;
 
         DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -181,6 +210,10 @@ public class GeoServerClient {
 
     public GeoServerStyleRequest style(String resourcePath) {
         return new GeoServerStyleRequest(resourcePath);
+    }
+
+    public GeoWebCacheSeedRequest seed(String layerName) {
+        return new GeoWebCacheSeedRequest(layerName);
     }
 
     private int postInternal(URI uri, String contentType, HttpEntity entity) throws Exception {
