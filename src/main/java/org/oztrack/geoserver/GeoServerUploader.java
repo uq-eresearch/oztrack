@@ -1,7 +1,6 @@
 package org.oztrack.geoserver;
 
 import java.util.Arrays;
-import java.util.HashMap;
 
 import org.oztrack.app.Constants;
 
@@ -273,97 +272,97 @@ public class GeoServerUploader {
         client
             .style("styles/" + workspaceName + "_" + "ibra")
             .template("styles/ibra.sld.ftl")
-            .param("regionColour", new HashMap<String, String>() {{
-                put("ARC", "#76B399");
-                put("ARP", "#91EDC2");
-                put("AUA", "#6F9FC9");
-                put("AVW", "#EDE7BC");
-                put("BBN", "#8BFEB3");
-                put("BBS", "#9BFED4");
-                put("BEL", "#9999F5");
-                put("BHC", "#CCBEB0");
-                put("BRT", "#E0917E");
-                put("CAR", "#F8DB9D");
-                put("CEA", "#C1CF74");
-                put("CEK", "#94CFA5");
-                put("CER", "#AB9076");
-                put("CHC", "#E9C2A1");
-                put("CMC", "#8DC8D0");
-                put("COO", "#DDCF8F");
-                put("COP", "#BBB6EF");
-                put("COS", "#EBFFFF");
-                put("CYP", "#7BDD7A");
-                put("DAB", "#A1E6A9");
-                put("DAC", "#57A057");
-                put("DAL", "#87A973");
-                put("DEU", "#C3F5DD");
-                put("DMR", "#ECAA96");
-                put("DRP", "#CDD8FB");
-                put("EIU", "#86FE91");
-                put("ESP", "#E3CC64");
-                put("EYB", "#D7C6E6");
-                put("FIN", "#CC8A8A");
-                put("FLB", "#CF9BB6");
-                put("FUR", "#BEE8FF");
-                put("GAS", "#E9E6A1");
-                put("GAW", "#DAB2B2");
-                put("GES", "#E9F5CD");
-                put("GFU", "#9BBB9D");
-                put("GID", "#CCA373");
-                put("GSD", "#C3B9A6");
-                put("GUC", "#8CBB69");
-                put("GUP", "#A3E9A1");
-                put("GVD", "#CCAC8D");
-                put("HAM", "#ECC7A3");
-                put("ITI", "#EBFFFF");
-                put("JAF", "#C6FEBB");
-                put("KAN", "#A18AA9");
-                put("KIN", "#7FBFFE");
-                put("LSD", "#EDCA81");
-                put("MAC", "#DD7575");
-                put("MAL", "#E0BD86");
-                put("MDD", "#BAB9D7");
-                put("MGD", "#E6DCC1");
-                put("MII", "#C6CCA5");
-                put("MUL", "#D9D9D9");
-                put("MUR", "#E0D5A2");
-                put("NAN", "#B6C3EF");
-                put("NCP", "#CDD8FB");
-                put("NET", "#C2BDD7");
-                put("NNC", "#B9C5CC");
-                put("NOK", "#96BB7B");
-                put("NSS", "#BEE8FF");
-                put("NUL", "#E0D3B5");
-                put("OVP", "#C1D492");
-                put("PCK", "#83D7C7");
-                put("PIL", "#CCDAB2");
-                put("PSI", "#EBFFFF");
-                put("RIV", "#9DC5E3");
-                put("SAI", "#EBFFFF");
-                put("SCP", "#9FB6CD");
-                put("SEC", "#98ADDD");
-                put("SEH", "#A4D3EE");
-                put("SEQ", "#B1D285");
-                put("SSD", "#EDBC89");
-                put("STP", "#E0BABA");
-                put("STU", "#D7F8D6");
-                put("SVP", "#73DFFF");
-                put("SWA", "#FFFACD");
-                put("SYB", "#918DBA");
-                put("TAN", "#CCA886");
-                put("TCH", "#6959CD");
-                put("TIW", "#92EC80");
-                put("TNM", "#5BA1EF");
-                put("TNS", "#63B8FF");
-                put("TSE", "#6191DD");
-                put("TSR", "#1289E0");
-                put("TWE", "#5B72EF");
-                put("VIB", "#AED4AB");
-                put("VIM", "#BCC9E6");
-                put("WAR", "#A6E9A9");
-                put("WET", "#71C0A6");
-                put("YAL", "#FEE7C4");
-            }})
+            .param("regions", Arrays.asList(
+                new String[] {"ARC", "#76B399", "Arnhem Coast"},
+                new String[] {"ARP", "#91EDC2", "Arnhem Plateau"},
+                new String[] {"AUA", "#6F9FC9", "Australian Alps"},
+                new String[] {"AVW", "#EDE7BC", "Avon Wheatbelt"},
+                new String[] {"BBN", "#8BFEB3", "Brigalow Belt North"},
+                new String[] {"BBS", "#9BFED4", "Brigalow Belt South"},
+                new String[] {"BEL", "#9999F5", "Ben Lomond"},
+                new String[] {"BHC", "#CCBEB0", "Broken Hill Complex"},
+                new String[] {"BRT", "#E0917E", "Burt Plain"},
+                new String[] {"CAR", "#F8DB9D", "Carnarvon"},
+                new String[] {"CEA", "#C1CF74", "Central Arnhem"},
+                new String[] {"CEK", "#94CFA5", "Central Kimberley"},
+                new String[] {"CER", "#AB9076", "Central Ranges"},
+                new String[] {"CHC", "#E9C2A1", "Channel Country"},
+                new String[] {"CMC", "#8DC8D0", "Central Mackay Coast"},
+                new String[] {"COO", "#DDCF8F", "Coolgardie"},
+                new String[] {"COP", "#BBB6EF", "Cobar Peneplain"},
+                new String[] {"COS", "#EBFFFF", "Coral Sea"},
+                new String[] {"CYP", "#7BDD7A", "Cape York Peninsula"},
+                new String[] {"DAB", "#A1E6A9", "Daly Basin"},
+                new String[] {"DAC", "#57A057", "Darwin Coastal"},
+                new String[] {"DAL", "#87A973", "Dampierland"},
+                new String[] {"DEU", "#C3F5DD", "Desert Uplands"},
+                new String[] {"DMR", "#ECAA96", "Davenport Murchison Ranges"},
+                new String[] {"DRP", "#CDD8FB", "Darling Riverine Plains"},
+                new String[] {"EIU", "#86FE91", "Einasleigh Uplands"},
+                new String[] {"ESP", "#E3CC64", "Esperance Plains"},
+                new String[] {"EYB", "#D7C6E6", "Eyre Yorke Block"},
+                new String[] {"FIN", "#CC8A8A", "Finke"},
+                new String[] {"FLB", "#CF9BB6", "Flinders Lofty Block"},
+                new String[] {"FUR", "#BEE8FF", "Furneaux"},
+                new String[] {"GAS", "#E9E6A1", "Gascoyne"},
+                new String[] {"GAW", "#DAB2B2", "Gawler"},
+                new String[] {"GES", "#E9F5CD", "Geraldton Sandplains"},
+                new String[] {"GFU", "#9BBB9D", "Gulf Fall and Uplands"},
+                new String[] {"GID", "#CCA373", "Gibson Desert"},
+                new String[] {"GSD", "#C3B9A6", "Great Sandy Desert"},
+                new String[] {"GUC", "#8CBB69", "Gulf Coastal"},
+                new String[] {"GUP", "#A3E9A1", "Gulf Plains"},
+                new String[] {"GVD", "#CCAC8D", "Great Victoria Desert"},
+                new String[] {"HAM", "#ECC7A3", "Hampton"},
+                new String[] {"ITI", "#EBFFFF", "Indian Tropical Islands"},
+                new String[] {"JAF", "#C6FEBB", "Jarrah Forest"},
+                new String[] {"KAN", "#A18AA9", "Kanmantoo"},
+                new String[] {"KIN", "#7FBFFE", "King"},
+                new String[] {"LSD", "#EDCA81", "Little Sandy Desert"},
+                new String[] {"MAC", "#DD7575", "MacDonnell Ranges"},
+                new String[] {"MAL", "#E0BD86", "Mallee"},
+                new String[] {"MDD", "#BAB9D7", "Murray Darling Depression"},
+                new String[] {"MGD", "#E6DCC1", "Mitchell Grass Downs"},
+                new String[] {"MII", "#C6CCA5", "Mount Isa Inlier"},
+                new String[] {"MUL", "#D9D9D9", "Mulga Lands"},
+                new String[] {"MUR", "#E0D5A2", "Murchison"},
+                new String[] {"NAN", "#B6C3EF", "Nandewar"},
+                new String[] {"NCP", "#CDD8FB", "Naracoorte Coastal Plain"},
+                new String[] {"NET", "#C2BDD7", "New England Tablelands"},
+                new String[] {"NNC", "#B9C5CC", "NSW North Coast"},
+                new String[] {"NOK", "#96BB7B", "Northern Kimberley"},
+                new String[] {"NSS", "#BEE8FF", "NSW South Western Slopes"},
+                new String[] {"NUL", "#E0D3B5", "Nullarbor"},
+                new String[] {"OVP", "#C1D492", "Ord Victoria Plain"},
+                new String[] {"PCK", "#83D7C7", "Pine Creek"},
+                new String[] {"PIL", "#CCDAB2", "Pilbara"},
+                new String[] {"PSI", "#EBFFFF", "Pacific Subtropical Islands"},
+                new String[] {"RIV", "#9DC5E3", "Riverina"},
+                new String[] {"SAI", "#EBFFFF", "Subantarctic Islands"},
+                new String[] {"SCP", "#9FB6CD", "South East Coastal Plain"},
+                new String[] {"SEC", "#98ADDD", "South East Corner"},
+                new String[] {"SEH", "#A4D3EE", "South Eastern Highlands"},
+                new String[] {"SEQ", "#B1D285", "South Eastern Queensland"},
+                new String[] {"SSD", "#EDBC89", "Simpson Strzelecki Dunefields"},
+                new String[] {"STP", "#E0BABA", "Stony Plains"},
+                new String[] {"STU", "#D7F8D6", "Sturt Plateau"},
+                new String[] {"SVP", "#73DFFF", "Southern Volcanic Plain"},
+                new String[] {"SWA", "#FFFACD", "Swan Coastal Plain"},
+                new String[] {"SYB", "#918DBA", "Sydney Basin"},
+                new String[] {"TAN", "#CCA886", "Tanami"},
+                new String[] {"TCH", "#6959CD", "Tasmanian Central Highlands"},
+                new String[] {"TIW", "#92EC80", "Tiwi Cobourg"},
+                new String[] {"TNM", "#5BA1EF", "Tasmanian Northern Midlands"},
+                new String[] {"TNS", "#63B8FF", "Tasmanian Northern Slopes"},
+                new String[] {"TSE", "#6191DD", "Tasmanian South East"},
+                new String[] {"TSR", "#1289E0", "Tasmanian Southern Ranges"},
+                new String[] {"TWE", "#5B72EF", "Tasmanian West"},
+                new String[] {"VIB", "#AED4AB", "Victoria Bonaparte"},
+                new String[] {"VIM", "#BCC9E6", "Victorian Midlands"},
+                new String[] {"WAR", "#A6E9A9", "Warren"},
+                new String[] {"WET", "#71C0A6", "Wet Tropics"},
+                new String[] {"YAL", "#FEE7C4", "Yalgoo"}
+            ))
             .replace();
         client
             .layer("layers/ibra7_regions")
