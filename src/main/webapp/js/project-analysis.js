@@ -152,6 +152,24 @@
         );
         that.map.addLayer(that.elevationLayer);
 
+        that.fireFrequency = new OpenLayers.Layer.WMS(
+            'Fire Frequency',
+            '/geoserver/wms',
+            {
+                layers: 'oztrack:fire-frequency-avhrr-1997-2009',
+                format: 'image/png',
+                tiled: true
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true,
+                attribution: '<a target="_blank" href="http://data.auscover.org.au/geonetwork/srv/en/main.home?uuid=3535a8c1-940e-4f60-b55b-24185730acba">Fire Frequency - AVHRR</a>',
+                metadata: {category: 'environment'}
+            }
+        );
+        that.map.addLayer(that.fireFrequency);
+
         that.ibraRegions = new OpenLayers.Layer.WMS(
             'IBRA Regions',
             '/geoserver/wms',

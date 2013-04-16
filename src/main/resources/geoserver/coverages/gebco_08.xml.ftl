@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <coverage>
   <name>gebco_08</name>
   <nativeCRS class="org.geotools.referencing.crs.DefaultEngineeringCRS">LOCAL_CS[&quot;Generic cartesian 2D&quot;, 

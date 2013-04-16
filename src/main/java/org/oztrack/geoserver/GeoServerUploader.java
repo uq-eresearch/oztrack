@@ -52,6 +52,7 @@ public class GeoServerUploader {
 
         createOzTrackLayers(client, workspaceName, namespaceUri);
         createGEBCOLayers(client, workspaceName);
+        createFireFrequencyLayer(client, workspaceName);
         createIBRALayers(client, workspaceName, namespaceUri);
         createIMCRALayers(client, workspaceName, namespaceUri);
     }
@@ -133,7 +134,7 @@ public class GeoServerUploader {
             .template("coveragestores/gebco_08.xml.ftl")
             .replace();
         client
-            .coverage("workspaces/" + workspaceName + "/coveragestores" + "/" + "gebco_08" + "/coverages/gebco_08")
+            .coverage("workspaces/" + workspaceName + "/coveragestores/gebco_08/coverages/gebco_08")
             .template("coverages/gebco_08.xml.ftl")
             .replace();
         client
@@ -151,6 +152,29 @@ public class GeoServerUploader {
             .param("coverageName", "gebco_08")
             .param("defaultStyle", "oztrack_bathymetry")
             .param("styles", new String[] {"oztrack_bathymetry", "oztrack_elevation"})
+            .replace();
+    }
+
+    private void createFireFrequencyLayer(GeoServerClient client, final String workspaceName) throws Exception {
+        client
+            .coveragestore("workspaces/" + workspaceName + "/coveragestores/fire-frequency-avhrr-1997-2009")
+            .template("coveragestores/fire-frequency-avhrr-1997-2009.xml.ftl")
+            .replace();
+        client
+            .coverage("workspaces/" + workspaceName + "/coveragestores/fire-frequency-avhrr-1997-2009/coverages/fire-frequency-avhrr-1997-2009")
+            .template("coverages/fire-frequency-avhrr-1997-2009.xml.ftl")
+            .replace();
+        client
+            .style("styles/" + workspaceName + "_" + "fire-frequency")
+            .template("styles/fire-frequency.sld.ftl")
+            .replace();
+        client
+            .layer("layers/fire-frequency-avhrr-1997-2009")
+            .template("layers/coverage-layer.xml.ftl")
+            .param("layerName", "fire-frequency-avhrr-1997-2009")
+            .param("coverageName", "fire-frequency-avhrr-1997-2009")
+            .param("defaultStyle", "oztrack_fire-frequency")
+            .param("styles", new String[] {"oztrack_fire-frequency"})
             .replace();
     }
 
