@@ -1,4 +1,4 @@
-package db.migration;
+package org.oztrack.data.migration;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

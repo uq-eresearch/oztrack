@@ -1,4 +1,4 @@
-package db.migration;
+package org.oztrack.data.migration;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
