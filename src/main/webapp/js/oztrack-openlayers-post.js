@@ -179,9 +179,51 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                     }
                     $(layerDiv).append(layerMoveSpan);
                 }
+                function addLayerLegendSpan(map, layer) {
+                    if (!layer.params) {
+                        return null;
+                    }
+                    var span = $('<span>')
+                        .addClass('icon-white')
+                        .addClass('icon-info-sign')
+                        .css('float', 'right')
+                        .css('cursor', 'pointer')
+                        .click(function(e) {
+                            var content = $('<div>').append($('<div>')
+                                .append($('<p>').css('font-weight', 'bold').append(layer.name))
+                                .append($('<p>').append($(layer.attribution)))
+                                .append($('<img>').attr('src',
+                                    '/geoserver/wms' +
+                                    '?REQUEST=GetLegendGraphic' +
+                                    '&VERSION=1.0.0' +
+                                    '&FORMAT=image/png' +
+                                    '&WIDTH=20' +
+                                    '&HEIGHT=20' +
+                                    '&LAYER=' + layer.params.LAYERS +
+                                    '&STYLES=' + layer.params.STYLES
+                                )
+                            ));
+                            var popup = new OpenLayers.Popup.FramedCloud(
+                                null,
+                                map.getLonLatFromPixel(new OpenLayers.Pixel(100, 20)),
+                                null,
+                                content.html(),
+                                null,
+                                true
+                            );
+                            popup.autoSize = true;
+                            popup.minSize = new OpenLayers.Size(600, map.getSize().h - 40);
+                            popup.calculateRelativePosition = function () {
+                                return 'br';
+                            }
+                            map.addPopup(popup);
+                        });
+                    $(layerDiv).append(span);
+                }
                 if (!layer.isBaseLayer) {
                     addLayerMoveSpan(this.map, layer, 1);
                     addLayerMoveSpan(this.map, layer, -1);
+                    addLayerLegendSpan(this.map, layer);
                 }
 
                 var inputElem = document.createElement("input");
