@@ -1,5 +1,6 @@
 package org.oztrack.geoserver;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import org.oztrack.app.Constants;
@@ -52,6 +53,7 @@ public class GeoServerUploader {
 
         createOzTrackLayers(client, workspaceName, namespaceUri);
         createGEBCOLayers(client, workspaceName);
+        createDLCDClassLayer(client, workspaceName);
         createFireFrequencyLayer(client, workspaceName);
         createIBRALayers(client, workspaceName, namespaceUri);
         createIMCRALayers(client, workspaceName, namespaceUri);
@@ -152,6 +154,65 @@ public class GeoServerUploader {
             .param("coverageName", "gebco_08")
             .param("defaultStyle", "oztrack_bathymetry")
             .param("styles", new String[] {"oztrack_bathymetry", "oztrack_elevation"})
+            .replace();
+    }
+
+    private void createDLCDClassLayer(GeoServerClient client, String workspaceName) throws Exception {
+        client
+            .coveragestore("workspaces/" + workspaceName + "/coveragestores/dlcd-class")
+            .template("coveragestores/dlcd-class.xml.ftl")
+            .replace();
+        client
+            .coverage("workspaces/" + workspaceName + "/coveragestores/dlcd-class/coverages/dlcd-class")
+            .template("coverages/dlcd-class.xml.ftl")
+            .replace();
+        client
+            .style("styles/" + workspaceName + "_" + "dlcd-class")
+            .template("styles/dlcd-class.sld.ftl")
+            .param("dlcdClasses", Arrays.asList(
+                new String[] {"1", "#828282", "Extraction Sites"},
+                new String[] {"2", "#000000", "Bare Areas"},
+                new String[] {"3", "#0046AD", "Inland Waterbodies"},
+                new String[] {"4", "#96E1FF", "Salt Lakes"},
+                new String[] {"5", "#5A245A", "Irrigated Cropping"},
+                new String[] {"6", "#A626AA", "Irrigated Pasture"},
+                new String[] {"7", "#B71234", "Irrigated Sugar"},
+                new String[] {"8", "#C68D99", "Rainfed Cropping"},
+                new String[] {"9", "#E2C2C7", "Rainfed Pasture"},
+                new String[] {"10", "#DB4D69", "Rainfed Sugar"},
+                new String[] {"11", "#00B2A0", "Wetlands"},
+                new String[] {"12", "#FFFF73", "Forbs - Open"},
+                new String[] {"13", "#FFFFCB", "Forbs - Sparse"},
+                new String[] {"14", "#FF7900", "Tussock Grasses - Closed"},
+                new String[] {"15", "#FFFFFF", "Alpine Grasses - Open"},
+                new String[] {"16", "#FFFF73", "Hummock Grasses - Open"},
+                new String[] {"17", "#E1E1E1", "Sedges - Open"},
+                new String[] {"18", "#FFA952", "Tussock Grasses - Open"},
+                new String[] {"19", "#F7E859", "Grassland - Scattered"},
+                new String[] {"20", "#FBCE92", "Tussock Grasses - Scattered"},
+                new String[] {"21", "#F9E526", "Grassland - Sparse"},
+                new String[] {"22", "#FFFFCB", "Hummock Grasses - Sparse"},
+                new String[] {"23", "#FDC480", "Tussock Grasses - Sparse"},
+                new String[] {"24", "#AF8850", "Shrubs - Closed"},
+                new String[] {"25", "#C1A875", "Shrubs - Open"},
+                new String[] {"26", "#7D3228", "Chenopod Shrubs - Open"},
+                new String[] {"27", "#DDCCA5", "Shrubs - Scattered"},
+                new String[] {"28", "#EAAA7A", "Chenopod Shrubs - Scattered"},
+                new String[] {"29", "#D1BF91", "Shrubs - Sparse"},
+                new String[] {"30", "#8C5F46", "Chenopod Shrubs - Sparse"},
+                new String[] {"31", "#008500", "Trees - Closed"},
+                new String[] {"32", "#14C200", "Trees - Open"},
+                new String[] {"33", "#D6FF8A", "Trees - Scattered"},
+                new String[] {"34", "#BAE860", "Trees - Sparse"}
+            ))
+            .replace();
+        client
+            .layer("layers/dlcd-class")
+            .template("layers/coverage-layer.xml.ftl")
+            .param("layerName", "dlcd-class")
+            .param("coverageName", "dlcd-class")
+            .param("defaultStyle", "oztrack_dlcd-class")
+            .param("styles", new String[] {"oztrack_dlcd-class"})
             .replace();
     }
 

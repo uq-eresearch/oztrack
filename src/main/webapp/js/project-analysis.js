@@ -152,6 +152,24 @@
         );
         that.map.addLayer(that.elevationLayer);
 
+        that.dlcdClass = new OpenLayers.Layer.WMS(
+            'Dynamic Land Cover (Class)',
+            '/geoserver/wms',
+            {
+                layers: 'oztrack:dlcd-class',
+                format: 'image/png',
+                tiled: true
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true,
+                attribution: '<a target="_blank" href="http://www.ga.gov.au/earth-observation/landcover.html">Dynamic Land Cover Dataset (Class)</a>',
+                metadata: {category: 'environment'}
+            }
+        );
+        that.map.addLayer(that.dlcdClass);
+
         that.fireFrequency = new OpenLayers.Layer.WMS(
             'Fire Frequency',
             '/geoserver/wms',
