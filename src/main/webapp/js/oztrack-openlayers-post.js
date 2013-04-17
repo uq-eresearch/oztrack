@@ -179,7 +179,7 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                     }
                     $(layerDiv).append(layerMoveSpan);
                 }
-                function addLayerLegendSpan(map, layer) {
+                function addLayerInfoSpan(map, layer) {
                     if (layer.metadata.category != 'environment') {
                         return;
                     }
@@ -189,7 +189,7 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                         .css('float', 'right')
                         .css('cursor', 'pointer')
                         .click(function(e) {
-                            var content = $('<div>').append($('<div>')
+                            var content = $('<div>').append($('<div>').addClass('layerInfoContent')
                                 .append($('<p>').addClass('layerInfoTitle').append(layer.name))
                                 .append($('<p>')
                                     .append('For general information about this layer see:<br />')
@@ -208,6 +208,13 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                                     '&STYLE=' + layer.params.STYLES
                                 )
                             ));
+                            // Remove all other popups and then show our own.
+                            var popups = map.popups.slice(0);
+                            $.each(popups, function(i, popup) {
+                                if ($(popup.contentHTML).hasClass('layerInfoContent')) {
+                                    map.removePopup(popup);
+                                }
+                            });
                             var popup = new OpenLayers.Popup.FramedCloud(
                                 null,
                                 map.getLonLatFromPixel(new OpenLayers.Pixel(100, 20)),
@@ -228,7 +235,7 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                 if (!layer.isBaseLayer) {
                     addLayerMoveSpan(this.map, layer, 1);
                     addLayerMoveSpan(this.map, layer, -1);
-                    addLayerLegendSpan(this.map, layer);
+                    addLayerInfoSpan(this.map, layer);
                 }
 
                 var inputElem = document.createElement("input");

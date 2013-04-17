@@ -411,9 +411,10 @@
                 getfeatureinfo: function(event) {
                     var control = this;
                     var content = $('<div>');
-                    content.append($('<p>').css('font-weight', 'bold').css('width', '400px').append('Layer Information'));
+                    var innerContent = $('<div>').addClass('featureInfoContent').appendTo(content);
+                    innerContent.append($('<p>').css('font-weight', 'bold').css('width', '400px').append('Layer Information'));
                     if (event.features && (event.features.length > 0)) {
-                        content.append($.map(control.layerDetails, function(layerDetail) {
+                        innerContent.append($.map(control.layerDetails, function(layerDetail) {
                             var layerFeatures = $.grep(event.features, function(feature) {
                                 return layerDetail.layer.params.LAYERS === (feature.gml.featureNSPrefix + ':' + feature.gml.featureType);
                             });
@@ -448,10 +449,13 @@
                                 })).get(0)
                             ];
                         }));
-                        // Remove all other popups and then show our own.
-                        while (that.map.popups.length > 0) {
-                            that.map.removePopup(that.map.popups[0]);
-                        }
+                        // Remove other feature info popups and then show our own.
+                        var popups = that.map.popups.slice(0);
+                        $.each(popups, function(i, popup) {
+                            if ($(popup.contentHTML).hasClass('featureInfoContent')) {
+                                that.map.removePopup(popup);
+                            }
+                        });
                         var lonlat = that.map.getLonLatFromPixel(event.xy);
                         that.map.addPopup(new OpenLayers.Popup.FramedCloud(null, lonlat, null, content.html(), null, true));
                     }
