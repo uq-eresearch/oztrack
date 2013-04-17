@@ -199,6 +199,7 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                                     '&FORMAT=image/png' +
                                     '&WIDTH=20' +
                                     '&HEIGHT=20' +
+                                    '&LEGEND_OPTIONS=forceLabels:on' +
                                     '&LAYER=' + layer.params.LAYERS +
                                     '&STYLE=' + layer.params.STYLES
                                 )

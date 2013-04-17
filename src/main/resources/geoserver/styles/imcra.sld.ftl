@@ -13,6 +13,8 @@
       <sld:FeatureTypeStyle>
         <sld:Name>name</sld:Name>
         <sld:Rule>
+          <sld:Name>Bioregion</sld:Name>
+          <sld:Title>IMCRA Bioregion</sld:Title>
           <sld:PolygonSymbolizer>
             <sld:Fill>
               <sld:CssParameter name="fill">#1d71ae</sld:CssParameter>
