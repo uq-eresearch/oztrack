@@ -180,8 +180,8 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                     $(layerDiv).append(layerMoveSpan);
                 }
                 function addLayerLegendSpan(map, layer) {
-                    if (!layer.params) {
-                        return null;
+                    if (layer.metadata.category != 'environment') {
+                        return;
                     }
                     var span = $('<span>')
                         .addClass('icon-white')
