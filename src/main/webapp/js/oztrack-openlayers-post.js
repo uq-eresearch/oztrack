@@ -190,8 +190,12 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                         .css('cursor', 'pointer')
                         .click(function(e) {
                             var content = $('<div>').append($('<div>')
-                                .append($('<p>').css('font-weight', 'bold').append(layer.name))
-                                .append($('<p>').append($(layer.attribution)))
+                                .append($('<p>').addClass('layerInfoTitle').append(layer.name))
+                                .append($('<p>')
+                                    .append('For general information about this layer see:<br />')
+                                    .append($(layer.attribution))
+                                )
+                                .append($('<p>').css('font-weight', 'bold').append('Map legend'))
                                 .append($('<img>').attr('src',
                                     '/geoserver/wms' +
                                     '?REQUEST=GetLegendGraphic' +
@@ -213,7 +217,7 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                                 true
                             );
                             popup.autoSize = true;
-                            popup.minSize = new OpenLayers.Size(400, map.getSize().h - 40);
+                            popup.minSize = new OpenLayers.Size(420, map.getSize().h - 40);
                             popup.calculateRelativePosition = function () {
                                 return 'br';
                             }
