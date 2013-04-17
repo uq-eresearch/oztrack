@@ -301,6 +301,24 @@
                     }
                 },
                 {
+                    layer: that.dlcdClass,
+                    propertyNames: [
+                        'GRAY_INDEX'
+                    ],
+                    summary: function(values) {
+                        return $('<span>').append('Class: ' + Math.floor(values.GRAY_INDEX));
+                    }
+                },
+                {
+                    layer: that.fireFrequency,
+                    propertyNames: [
+                        'GRAY_INDEX'
+                    ],
+                    summary: function(values) {
+                        return $('<span>').append('Fires per annum: ' + Math.floor(values.GRAY_INDEX));
+                    }
+                },
+                {
                     layer: that.ibraRegions,
                     propertyNames: [
                         'REG_CODE_7',

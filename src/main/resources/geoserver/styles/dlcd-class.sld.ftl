@@ -22,7 +22,7 @@
             </sld:ChannelSelection>
             <sld:ColorMap type="values">
               <#list dlcdClasses as dlcdClass>
-              <ColorMapEntry quantity="${dlcdClass[0]}" label="${dlcdClass[2]}" color="${dlcdClass[1]}" opacity="1"/>
+              <ColorMapEntry quantity="${dlcdClass[0]}" label="${dlcdClass[2]} (class ${dlcdClass[0]})" color="${dlcdClass[1]}" opacity="1"/>
               </#list>
             </sld:ColorMap>
           </sld:RasterSymbolizer>
