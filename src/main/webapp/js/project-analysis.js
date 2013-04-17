@@ -153,7 +153,7 @@
         that.map.addLayer(that.elevationLayer);
 
         that.dlcdClass = new OpenLayers.Layer.WMS(
-            'Dynamic Land Cover (Class)',
+            'Dynamic Land Cover',
             '/geoserver/gwc/service/wms',
             {
                 layers: 'oztrack:dlcd-class',
@@ -164,7 +164,7 @@
                 visibility: false,
                 isBaseLayer: false,
                 wrapDateLine: true,
-                attribution: '<a target="_blank" href="http://www.ga.gov.au/earth-observation/landcover.html">Dynamic Land Cover Dataset (Class)</a>',
+                attribution: '<a target="_blank" href="http://www.ga.gov.au/earth-observation/landcover.html">Dynamic Land Cover Dataset</a>',
                 metadata: {category: 'environment'}
             }
         );
