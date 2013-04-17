@@ -212,7 +212,7 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                                 true
                             );
                             popup.autoSize = true;
-                            popup.minSize = new OpenLayers.Size(600, map.getSize().h - 40);
+                            popup.minSize = new OpenLayers.Size(400, map.getSize().h - 40);
                             popup.calculateRelativePosition = function () {
                                 return 'br';
                             }
