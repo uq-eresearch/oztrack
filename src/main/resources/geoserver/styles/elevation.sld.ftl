@@ -18,19 +18,18 @@
               </GrayChannel>
             </ChannelSelection>
             <ColorMap extended="true" type="ramp">
-              <ColorMapEntry color="#00a900" opacity="0" quantity="-1"/>
-              <ColorMapEntry color="#00a900" quantity="0"/>
-              <ColorMapEntry color="#43b518" quantity="250"/>
-              <ColorMapEntry color="#87bf31" quantity="500"/>
-              <ColorMapEntry color="#cccc4b" quantity="750"/>
-              <ColorMapEntry color="#ffff7f" quantity="1000"/>
-              <ColorMapEntry color="#e7df71" quantity="1500"/>
-              <ColorMapEntry color="#cfc066" quantity="2000"/>
-              <ColorMapEntry color="#b7a158" quantity="2500"/>
-              <ColorMapEntry color="#9f824b" quantity="3000"/>
-              <ColorMapEntry color="#87633f" quantity="4000"/>
-              <ColorMapEntry color="#6f4433" quantity="4500"/>
-              <ColorMapEntry color="#582525" quantity="5000"/>
+              <ColorMapEntry color="#00a900" quantity="-1" label="-1 m" opacity="0"/>
+              <ColorMapEntry color="#00a900" quantity="0" label="0 m"/>
+              <ColorMapEntry color="#43b518" quantity="250" label="250 m"/>
+              <ColorMapEntry color="#87bf31" quantity="500" label="500 m"/>
+              <ColorMapEntry color="#cccc4b" quantity="750" label="750 m"/>
+              <ColorMapEntry color="#ffff7f" quantity="1000" label="1000 m"/>
+              <ColorMapEntry color="#e7df71" quantity="1500" label="1500 m"/>
+              <ColorMapEntry color="#cfc066" quantity="2000" label="2000 m"/>
+              <ColorMapEntry color="#b7a158" quantity="2500" label="2000 m"/>
+              <ColorMapEntry color="#9f824b" quantity="3000" label="3000 m"/>
+              <ColorMapEntry color="#87633f" quantity="4000" label="4000 m"/>
+              <ColorMapEntry color="#582525" quantity="5000" label="5000 m"/>
             </ColorMap>
           </RasterSymbolizer>
         </Rule>
