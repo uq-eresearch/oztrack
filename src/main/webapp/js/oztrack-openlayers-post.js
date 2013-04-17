@@ -200,7 +200,7 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                                     '&WIDTH=20' +
                                     '&HEIGHT=20' +
                                     '&LAYER=' + layer.params.LAYERS +
-                                    '&STYLES=' + layer.params.STYLES
+                                    '&STYLE=' + layer.params.STYLES
                                 )
                             ));
                             var popup = new OpenLayers.Popup.FramedCloud(
