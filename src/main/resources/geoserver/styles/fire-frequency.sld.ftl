@@ -18,10 +18,12 @@
               </sld:GrayChannel>
             </sld:ChannelSelection>
             <sld:ColorMap type="ramp">
-              <sld:ColorMapEntry color="#00ff00" quantity="0" opacity="0"/>
-              <sld:ColorMapEntry color="#00ff00" quantity="1.0"/>
-              <sld:ColorMapEntry color="#ffff00" quantity="2.5"/>
-              <sld:ColorMapEntry color="#ff0000" quantity="5.0"/>
+              <sld:ColorMapEntry color="#ffffff" quantity="0" label="0 per annum" opacity="0"/>
+              <sld:ColorMapEntry color="#00ff00" quantity="1" label="1 per annum"/>
+              <sld:ColorMapEntry color="#80ff00" quantity="2" label="2 per annum"/>
+              <sld:ColorMapEntry color="#ffff00" quantity="3" label="3 per annum"/>
+              <sld:ColorMapEntry color="#ff8000" quantity="4" label="4 per annum"/>
+              <sld:ColorMapEntry color="#ff0000" quantity="5" label="5 per annum"/>
             </sld:ColorMap>
           </sld:RasterSymbolizer>
         </sld:Rule>
