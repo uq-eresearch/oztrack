@@ -153,7 +153,7 @@
         that.map.addLayer(that.elevationLayer);
 
         that.dlcdClass = new OpenLayers.Layer.WMS(
-            'Dynamic Land Cover',
+            'Land Cover',
             '/geoserver/gwc/service/wms',
             {
                 layers: 'oztrack:dlcd-class',
@@ -274,6 +274,12 @@
             queryType : 'START_END'
         }, that.startEndStyleMap, 'project'));
 
+        function coordString(geometry) {
+            var x = geometry.x || geometry.lon;
+            var y = geometry.y || geometry.lat;
+            var round = function(n) {return (Math.round(x * 1000000) / 1000000);};
+            return '(' + round(x) + ', ' + round(y) + ')';
+        }
         var getFeatureInfoControl = new OzTrack.OpenLayers.Control.WMSGetFeatureInfo({
             url: '/geoserver/wms',
             layerUrls: ['/geoserver/gwc/service/wms'],
@@ -283,9 +289,9 @@
                     propertyNames: [
                         'GRAY_INDEX'
                     ],
-                    summary: function(values) {
-                        return (values.GRAY_INDEX < 0)
-                            ? $('<span>').append('Depth: ' + (-1 * values.GRAY_INDEX) + ' m')
+                    summary: function(feature) {
+                        return (feature.attributes.GRAY_INDEX < 0)
+                            ? $('<span>').append('Depth: ' + (-1 * feature.attributes.GRAY_INDEX) + ' m')
                             : $();
                     }
                 },
@@ -294,9 +300,9 @@
                     propertyNames: [
                         'GRAY_INDEX'
                     ],
-                    summary: function(values) {
-                        return (values.GRAY_INDEX >= 0)
-                            ? $('<span>').append('Elevation: ' + values.GRAY_INDEX + ' m')
+                    summary: function(feature) {
+                        return (feature.attributes.GRAY_INDEX >= 0)
+                            ? $('<span>').append('Elevation: ' + feature.attributes.GRAY_INDEX + ' m')
                             : $();
                     }
                 },
@@ -305,8 +311,8 @@
                     propertyNames: [
                         'GRAY_INDEX'
                     ],
-                    summary: function(values) {
-                        return $('<span>').append('Class: ' + Math.floor(values.GRAY_INDEX));
+                    summary: function(feature) {
+                        return $('<span>').append('Class: ' + Math.floor(feature.attributes.GRAY_INDEX));
                     }
                 },
                 {
@@ -314,8 +320,8 @@
                     propertyNames: [
                         'GRAY_INDEX'
                     ],
-                    summary: function(values) {
-                        return $('<span>').append('Fires per annum: ' + Math.floor(values.GRAY_INDEX));
+                    summary: function(feature) {
+                        return $('<span>').append('Fires per annum: ' + Math.floor(feature.attributes.GRAY_INDEX));
                     }
                 },
                 {
@@ -325,10 +331,10 @@
                         'REG_NAME_7',
                         'SQ_KM'
                     ],
-                    summary: function(values) {
+                    summary: function(feature) {
                         return $('<span>')
-                            .append(values.REG_NAME_7 + ' (' + values.REG_CODE_7  + ')')
-                            .append(', ' + values.SQ_KM + ' km<sup>2</sup>');
+                            .append(feature.attributes.REG_NAME_7 + ' (' + feature.attributes.REG_CODE_7  + ')')
+                            .append(', ' + feature.attributes.SQ_KM + ' km<sup>2</sup>');
                     }
                 },
                 {
@@ -340,10 +346,10 @@
                         'REG_NAME_7',
                         'SQ_KM'
                     ],
-                    summary: function(values) {
+                    summary: function(feature) {
                         return $('<span>')
-                            .append(values.SUB_NAME_7 + ' (' + values.SUB_CODE_7  + ')')
-                            .append(', ' + values.SQ_KM + ' km<sup>2</sup>');
+                            .append(feature.attributes.SUB_NAME_7 + ' (' + feature.attributes.SUB_CODE_7  + ')')
+                            .append(', ' + feature.attributes.SQ_KM + ' km<sup>2</sup>');
                     }
                 },
                 {
@@ -354,11 +360,11 @@
                          'WATER_TYPE',
                          'AREA_KM2'
                      ],
-                     summary: function(values) {
+                     summary: function(feature) {
                          return $('<span>')
-                             .append('Number ' + values.PB_NUM + ', ')
-                             .append(values.PB_NAME + '<br />')
-                             .append(values.WATER_TYPE + ', ' + values.AREA_KM2 + ' km<sup>2</sup>');
+                             .append('Number ' + feature.attributes.PB_NUM + ', ')
+                             .append(feature.attributes.PB_NAME + '<br />')
+                             .append(feature.attributes.WATER_TYPE + ', ' + feature.attributes.AREA_KM2 + ' km<sup>2</sup>');
                      }
                 },
                 {
@@ -370,23 +376,25 @@
                          'WATER_TYPE',
                          'AREA_KM2'
                      ],
-                     summary: function(values) {
+                     summary: function(feature) {
                          return $('<span>')
-                             .append('Number ' + values.MESO_NUM + ', ')
-                             .append(values.MESO_NAME + ' (' + values.MESO_ABBR  + ')<br />')
-                             .append(values.WATER_TYPE + ', ' + values.AREA_KM2 + ' km<sup>2</sup>');
+                             .append('Number ' + feature.attributes.MESO_NUM + ', ')
+                             .append(feature.attributes.MESO_NAME + ' (' + feature.attributes.MESO_ABBR  + ')<br />')
+                             .append(feature.attributes.WATER_TYPE + ', ' + feature.attributes.AREA_KM2 + ' km<sup>2</sup>');
                      }
                 },
                 {
                     layer: that.allDetectionsLayer.getWMSLayer(),
                     propertyNames: [
                         'animal_id',
-                        'detectiontime'
+                        'detectiontime',
+                        'locationgeometry'
                     ],
-                    summary: function(values) {
+                    summary: function(feature) {
                         return $('<span>')
-                            .append($('#animalLabel-' + values.animal_id).text())
-                            .append(' at ' + moment(values.detectiontime, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
+                            .append($('#animalLabel-' + feature.attributes.animal_id).text())
+                            .append(' at ' + moment(feature.attributes.detectiontime, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
+                            .append(' ' + coordString(feature.geometry));
                     }
                 },
                 {
@@ -394,13 +402,16 @@
                     propertyNames: [
                         'animal_id',
                         'startdetectiontime',
-                        'enddetectiontime'
+                        'enddetectiontime',
+                        'trajectorygeometry'
                     ],
-                    summary: function(values) {
+                    summary: function(feature) {
                         return $('<span>')
-                            .append($('#animalLabel-' + values.animal_id).text())
-                            .append(' from ' + moment(values.startdetectiontime, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
-                            .append(' to ' + moment(values.enddetectiontime, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'));
+                            .append($('#animalLabel-' + feature.attributes.animal_id).text())
+                            .append(' from ' + moment(feature.attributes.startdetectiontime, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
+                            .append(' ' + coordString(feature.geometry.components[0]) + '<br />')
+                            .append(' to ' + moment(feature.attributes.enddetectiontime, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
+                            .append(' ' + coordString(feature.geometry.components[1]));
                     }
                 }
             ],
@@ -410,16 +421,22 @@
             eventListeners: {
                 getfeatureinfo: function(event) {
                     var control = this;
+                    var lonlat900913 = that.map.getLonLatFromPixel(event.xy);
+                    var lonlat4326 = lonlat900913.clone().transform(that.projection900913, that.projection4326);
                     var content = $('<div>');
                     var innerContent = $('<div>').addClass('featureInfoContent').appendTo(content);
-                    innerContent.append($('<p>').css('font-weight', 'bold').css('width', '400px').append('Layer Information'));
+                    innerContent.append($('<p>')
+                        .css('font-weight', 'bold')
+                        .css('width', '400px')
+                        .append('Layer Information at ' + coordString(lonlat4326))
+                    );
                     if (event.features && (event.features.length > 0)) {
                         innerContent.append($.map(control.layerDetails, function(layerDetail) {
                             var layerFeatures = $.grep(event.features, function(feature) {
                                 return layerDetail.layer.params.LAYERS === (feature.gml.featureNSPrefix + ':' + feature.gml.featureType);
                             });
                             var summaries = $.map(layerFeatures, function(feature) {
-                                return layerDetail.summary(feature.attributes);
+                                return layerDetail.summary(feature);
                             });
                             var nonEmptySummaries = $.grep(summaries, function(summary) {
                                 return summary.length > 0;
@@ -456,8 +473,7 @@
                                 that.map.removePopup(popup);
                             }
                         });
-                        var lonlat = that.map.getLonLatFromPixel(event.xy);
-                        that.map.addPopup(new OpenLayers.Popup.FramedCloud(null, lonlat, null, content.html(), null, true));
+                        that.map.addPopup(new OpenLayers.Popup.FramedCloud(null, lonlat900913, null, content.html(), null, true));
                     }
                 }
             }
