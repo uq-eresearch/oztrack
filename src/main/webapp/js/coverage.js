@@ -11,22 +11,22 @@
 
         that.wkt = options.wkt;
 
-        that.map = new OpenLayers.Map(div, {theme: null});
+        that.map = new OpenLayers.Map(div, {
+            theme: null,
+            projection: that.projection900913
+        });
 
         var gphy = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.TERRAIN});
         that.map.addLayer(gphy);
     
-        var bbLayer = new OpenLayers.Layer.Vector("Bounding Box Layer");
+        var bbLayer = new OpenLayers.Layer.Vector("Bounding Box Layer", {
+            projection: that.projection4326
+        });
         that.map.addLayer(bbLayer);
 
         if (that.wkt) {
             var unprojectedPolygon = OpenLayers.Geometry.fromWKT(that.wkt);
-            var projectedVertices = unprojectedPolygon.getVertices();
-            for (var i = 0; i < projectedVertices.length; i++) {
-                projectedVertices[i] = projectedVertices[i].transform(that.projection4326, that.projection900913);
-            }
-            var projectedLinearRing = new OpenLayers.Geometry.LinearRing(projectedVertices);
-            var projectedPolygon = new OpenLayers.Geometry.Polygon(projectedLinearRing);
+            var projectedPolygon = unprojectedPolygon.clone().transform(that.projection4326, that.projection900913);
             var featureVector = new OpenLayers.Feature.Vector(projectedPolygon);
             bbLayer.addFeatures([featureVector]);
             bbLayer.redraw();
