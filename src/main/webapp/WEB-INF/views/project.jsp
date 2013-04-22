@@ -248,14 +248,19 @@
                 initProjectImages();
                 coverageMap = new OzTrack.CoverageMap('coverageMap', {wkt: '${projectBoundingBox}'});
                 <sec:authorize access="hasPermission(#project, 'read')">
-                $('#coverageMap').append($('<a>')
-                    .addClass('btn')
+                $('#coverageMap').append($('<div>')
+                    .css('display', 'inline-block')
                     .css('z-index', '10000000')
-                    .attr('id', 'viewTracksButton')
-                    .attr('href', '${pageContext.request.contextPath}/projects/${project.id}/analysis')
-                    .append('View tracks')
+                    .css('padding', '8px')
+                    .attr('id', 'viewTracksButtonDiv')
+                    .append($('<a>')
+                        .attr('id', 'viewTracksButton')
+                        .addClass('btn')
+                        .attr('href', '${pageContext.request.contextPath}/projects/${project.id}/analysis')
+                        .append('View tracks')
+                    )
                 );
-                $('#viewTracksButton').position({my: 'center', at: 'center', of: '#coverageMap'}).fadeIn();
+                $('#viewTracksButtonDiv').position({my: 'center', at: 'center', of: '#coverageMap'}).fadeIn();
                 </sec:authorize>
                 <c:forEach items="${roles}" var="role">
                     <c:choose>
