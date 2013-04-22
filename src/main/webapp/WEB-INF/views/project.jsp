@@ -246,7 +246,10 @@
                 jQuery('#navTrack').addClass('active');
                 jQuery('#projectMenuDetails').addClass('active');
                 initProjectImages();
-                coverageMap = new OzTrack.CoverageMap('coverageMap', {wkt: '${projectBoundingBox}'});
+                coverageMap = new OzTrack.CoverageMap('coverageMap', {
+                    wkt: '${projectBoundingBox}',
+                    crosses180: ${project.crosses180}
+                });
                 <sec:authorize access="hasPermission(#project, 'read')">
                 $('#coverageMap').append($('<div>')
                     .css('display', 'inline-block')

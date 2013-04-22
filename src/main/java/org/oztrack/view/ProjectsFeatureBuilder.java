@@ -53,6 +53,7 @@ public class ProjectsFeatureBuilder {
         featureTypeBuilder.setName("Project");
         featureTypeBuilder.setNamespaceURI(Constants.namespaceURI);
         featureTypeBuilder.add("projectCentroid", Point.class, 4326);
+        featureTypeBuilder.add("crosses180", Boolean.class);
         featureTypeBuilder.add("projectId", String.class);
         featureTypeBuilder.add("projectTitle", String.class);
         featureTypeBuilder.add("projectDescription", String.class);
@@ -67,6 +68,7 @@ public class ProjectsFeatureBuilder {
     private SimpleFeature buildFeature(SimpleFeatureType featureType, Project project) {
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
         featureBuilder.set("projectCentroid", projectBoundingBoxMap.get(project).getCentroid());
+        featureBuilder.set("crosses180", project.getCrosses180());
         featureBuilder.set("projectId", project.getId().toString());
         featureBuilder.set("projectTitle", project.getTitle());
         featureBuilder.set("projectDescription", project.getDescription());

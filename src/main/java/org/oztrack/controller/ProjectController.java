@@ -6,6 +6,7 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -89,6 +90,7 @@ public class ProjectController {
             "speciesCommonName",
             "speciesScientificName",
             "srsIdentifier",
+            "crosses180",
             "access",
             "rightsStatement"
         );
@@ -193,8 +195,14 @@ public class ProjectController {
         // Spring decides a single value containing commas should be expanded to a list
         // (e.g. ["a, b, c"] becomes ["a", "b", "c"] instead of being interpreted as ["a, b, c"]).
         // Note that two or more values is handled correctly (e.g. ["a, b", "c"]).
-        List<String> publicationReferences = Arrays.asList(request.getParameterValues("publicationReference"));
-        List<String> publicationUrls = Arrays.asList(request.getParameterValues("publicationUrl"));
+        String[] publicationReferenceParam = request.getParameterValues("publicationReference");
+        List<String> publicationReferences = (publicationReferenceParam != null)
+            ? Arrays.asList(publicationReferenceParam)
+            : Collections.<String>emptyList();
+        String[] publicationUrlParam = request.getParameterValues("publicationUrl");
+        List<String> publicationUrls = (publicationUrlParam != null)
+            ? Arrays.asList(publicationUrlParam)
+            : Collections.<String>emptyList();
 
         if (StringUtils.isNotBlank(embargoDateString)) {
             Date embargoDate = isoDateFormat.parse(embargoDateString);

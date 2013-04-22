@@ -10,27 +10,41 @@
         that.projection4326 = new OpenLayers.Projection("EPSG:4326");
 
         that.wkt = options.wkt;
+        that.crosses180 = options.crosses180;
 
         that.map = new OpenLayers.Map(div, {
             theme: null,
             projection: that.projection900913
         });
 
-        var gphy = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.TERRAIN});
-        that.map.addLayer(gphy);
+        that.baseLayer = new OpenLayers.Layer.Google("Google Physical", {
+            type: google.maps.MapTypeId.TERRAIN,
+            sphericalMercator: true,
+            maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34)
+        });
+        that.map.addLayer(that.baseLayer);
     
-        var bbLayer = new OpenLayers.Layer.Vector("Bounding Box Layer", {
+        that.bbLayer = new OpenLayers.Layer.Vector("Bounding Box Layer", {
             projection: that.projection4326
         });
-        that.map.addLayer(bbLayer);
+        that.map.addLayer(that.bbLayer);
 
         if (that.wkt) {
             var unprojectedPolygon = OpenLayers.Geometry.fromWKT(that.wkt);
             var projectedPolygon = unprojectedPolygon.clone().transform(that.projection4326, that.projection900913);
+            if (that.crosses180) {
+                var primeMeridianLon = that.baseLayer.maxExtent.getCenterLonLat().lon;
+                var boundsWidth = that.baseLayer.maxExtent.getWidth();
+                $.each(projectedPolygon.getVertices(), function(i, projectedVertex) {
+                    if (projectedVertex.x < primeMeridianLon) {
+                        projectedVertex.x += boundsWidth;
+                    }
+                });
+            }
             var featureVector = new OpenLayers.Feature.Vector(projectedPolygon);
-            bbLayer.addFeatures([featureVector]);
-            bbLayer.redraw();
-            that.map.zoomToExtent(projectedPolygon.getBounds(), true);
+            that.bbLayer.addFeatures([featureVector]);
+            that.bbLayer.redraw();
+            that.map.zoomToExtent(projectedPolygon.getBounds(), false);
         }
         else {
             that.map.setCenter(new OpenLayers.LonLat(0, 0).transform(that.projection4326, that.projection900913), 0);

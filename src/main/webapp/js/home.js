@@ -163,9 +163,13 @@ function buildPopup(f) {
         ) +
         '    </div>\n' +
         '</div>';
+    var lonlat = f.geometry.getBounds().getCenterLonLat().clone();
+    if ((f.attributes.crosses180 === "true") && (lonlat.lon < 0)) {
+        lonlat.lon += 20037508.34 * 2;
+    }
     var popup = new OpenLayers.Popup.AnchoredBubble(
         f.attributes.projectId,
-        f.geometry.getBounds().getCenterLonLat(),
+        lonlat,
         null,
         popupHtml,
         null,

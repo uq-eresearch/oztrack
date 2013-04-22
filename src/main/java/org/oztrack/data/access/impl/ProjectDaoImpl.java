@@ -139,8 +139,11 @@ public class ProjectDaoImpl implements ProjectDao {
 
     @Override
     public Polygon getBoundingBox(Project project) {
+        String geomExpr = project.getCrosses180()
+            ? "ST_Shift_Longitude(positionfix.locationgeometry)"
+            : "positionfix.locationgeometry";
         Query query = em.createNativeQuery(
-            "select ST_AsText(ST_Envelope(ST_Collect(positionfix.locationgeometry)))\n" +
+            "select ST_AsText(ST_Envelope(ST_Collect(" + geomExpr + ")))\n" +
             "from datafile, positionfix\n" +
             "where datafile.project_id = :projectId\n" +
             "and positionfix.datafile_id = datafile.id\n" +
@@ -165,8 +168,11 @@ public class ProjectDaoImpl implements ProjectDao {
 
     @Override
     public HashMap<Long, Polygon> getBoundingBoxes(Project project, List<Animal> animals) {
+        String geomExpr = project.getCrosses180()
+            ? "ST_Shift_Longitude(positionfix.locationgeometry)"
+            : "positionfix.locationgeometry";
         Query query = em.createNativeQuery(
-            "select animal.id, ST_AsText(ST_Envelope(ST_Collect(positionfix.locationgeometry)))\n" +
+            "select animal.id, ST_AsText(ST_Envelope(ST_Collect(" + geomExpr + ")))\n" +
             "from animal\n" +
             "inner join positionfix on\n" +
             "    positionfix.animal_id = animal.id and\n" +

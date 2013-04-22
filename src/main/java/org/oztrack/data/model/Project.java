@@ -81,6 +81,9 @@ public class Project extends OzTrackBaseEntity {
     @Column(name="srsidentifier")
     private String srsIdentifier;
 
+    @Column(name="crosses180", nullable=false)
+    private Boolean crosses180;
+
     @Column(columnDefinition="TEXT")
     private String dataSpaceURI;
     private Date dataSpaceUpdateDate;
@@ -222,6 +225,14 @@ public class Project extends OzTrackBaseEntity {
 
     public void setSrsIdentifier(String srsIdentifier) {
         this.srsIdentifier = srsIdentifier;
+    }
+
+    public Boolean getCrosses180() {
+        return crosses180;
+    }
+
+    public void setCrosses180(Boolean crosses180) {
+        this.crosses180 = crosses180;
     }
 
     public String getDataDirectoryPath() {

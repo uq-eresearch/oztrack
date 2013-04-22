@@ -309,26 +309,43 @@
                 </div>
             </fieldset>
             <fieldset>
-                <div class="legend">Spatial Reference System</div>
-                <p class="help-block" style="margin: 18px 0;">
-                    A <strong>Spatial Reference System (SRS)</strong> specifies how the coordinates used to represent
-                    spatial data are interpreted as real-world locations on the Earth's surface.
-                    The system you select here will be used by the analysis features of OzTrack,
-                    such as home range calculators, and will affect the accuracy of results.
-                    Click the link below to select an Australian SRS based on the location of your tracking data.
-                    If in doubt, enter <tt>EPSG:3577</tt> for the
-                    <a target="_blank" href="http://spatialreference.org/ref/epsg/3577/">Australian Albers Equal Area Projection</a>,
-                    an Australia-wide system suitable for geoscience and statistical mapping.
-                </p>
+                <div class="legend">Spatial Coordinates</div>
                 <div class="control-group" style="margin-bottom: 9px;">
                     <label class="control-label" for="srsIdentifier">SRS Code</label>
                     <div class="controls">
+                        <p class="help-block" style="margin: 5px 0 18px 0;">
+                            A <strong>Spatial Reference System (SRS)</strong> specifies how the coordinates used to represent
+                            spatial data are interpreted as real-world locations on the Earth's surface.
+                            The system you select here will be used by the analysis features of OzTrack,
+                            such as home range calculators, and will affect the accuracy of results.
+                            Click the link below to select an Australian SRS based on the location of your tracking data.
+                            If in doubt, enter <tt>EPSG:3577</tt> for the
+                            <a target="_blank" href="http://spatialreference.org/ref/epsg/3577/">Australian Albers Equal Area Projection</a>,
+                            an Australia-wide system suitable for geoscience and statistical mapping.
+                        </p>
                         <form:input id="srsIdentifier" path="srsIdentifier" type="text" class="input-medium"/>
                         <form:errors path="srsIdentifier" element="div" cssClass="help-block formErrors"/>
                         <div class="help-block">
                             <a href="javascript:void(0)" onclick="srsSelector.showDialog();">Select Australian SRS</a><br>
                             <a href="javascript:void(0)" onclick="window.open('http://spatialreference.org/ref/', 'popup', 'width=800,height=600,scrollbars=yes');">Search for international SRS codes</a>
                         </div>
+                    </div>
+                </div>
+                <div class="control-group" style="margin-bottom: 9px;">
+                    <label class="control-label" for="crosses180">Croses 180°</label>
+                    <div class="controls">
+                        <p class="help-block" style="margin: 5px 0 9px 0;">
+                            Check the following box if your project's trajectories cross the antimeridian (180° east or west longitude).
+                            If this option is not checked, the resulting geometries may include points near 180° east but then wrap around
+                            the globe, through the prime meridian (0° longitude), to include points near 180° west.
+                            See the <a target="_blank" href="http://en.wikipedia.org/wiki/180th_meridian">180th meridian</a> article on
+                            Wikipedia for more information.
+                        </p>
+                        <label class="checkbox">
+                            <form:checkbox id="crosses180" path="crosses180"/>
+                            Crosses 180°
+                        </label>
+                        <form:errors path="crosses180" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
             </fieldset>

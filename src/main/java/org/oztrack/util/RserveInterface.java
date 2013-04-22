@@ -213,7 +213,7 @@ public class RserveInterface {
 
     private void writeMCPKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
         Double percent = (Double) analysis.getParameterValue("percent", true);
-        Boolean is180 = (Boolean) analysis.getParameterValue("is180", true);
+        Boolean is180 = analysis.getProject().getCrosses180();
         if (!(percent >= 0d && percent <= 100d)) {
             throw new RserveInterfaceException("percent must be between 0 and 100.");
         }
@@ -227,7 +227,7 @@ public class RserveInterface {
     private void writeKernelUDKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
         Double percent = (Double) analysis.getParameterValue("percent", true);
         String hEstimator = (String) analysis.getParameterValue("hEstimator", false);
-        Boolean is180 = (Boolean) analysis.getParameterValue("is180", true);
+        Boolean is180 = analysis.getProject().getCrosses180();
         Double hValue = (Double) analysis.getParameterValue("hValue", false);
         Double gridSize = (Double) analysis.getParameterValue("gridSize", true);
         Double extent = (Double) analysis.getParameterValue("extent", true);
@@ -253,7 +253,7 @@ public class RserveInterface {
         Double sig2 = (Double) analysis.getParameterValue("sig2", false);
         Double gridSize = (Double) analysis.getParameterValue("gridSize", true);
         Double extent = (Double) analysis.getParameterValue("extent", true);
-        Boolean is180 = (Boolean) analysis.getParameterValue("is180", true);
+        Boolean is180 = analysis.getProject().getCrosses180();
         if (!(percent >= 0d && percent <= 100d)) {
             throw new RserveInterfaceException("percent must be between 0 and 100.");
         }
@@ -273,7 +273,7 @@ public class RserveInterface {
 
     private void writeAlphahullKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
         Double alpha = (Double) analysis.getParameterValue("alpha", true);
-        Boolean is180 = (Boolean) analysis.getParameterValue("is180", true);
+        Boolean is180 = analysis.getProject().getCrosses180();
         if (!(alpha > 0d)) {
             throw new RserveInterfaceException("alpha must be greater than 0.");
         }
@@ -288,7 +288,7 @@ public class RserveInterface {
         Double percent = (Double) analysis.getParameterValue("percent", true);
         Double k = (Double) analysis.getParameterValue("k", false);
         Double r = (Double) analysis.getParameterValue("r", false);
-        Boolean is180 = (Boolean) analysis.getParameterValue("is180", true);
+        Boolean is180 = analysis.getProject().getCrosses180();
         if (!(percent >= 0d && percent <= 100d)) {
             throw new RserveInterfaceException("percent must be between 0 and 100.");
         }
