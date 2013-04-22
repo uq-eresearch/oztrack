@@ -9,6 +9,7 @@
         that.projection4326 = new OpenLayers.Projection("EPSG:4326");
 
         that.projectId = options.projectId;
+        that.crosses180 = options.crosses180;
         that.dataLicence = options.dataLicence;
         that.animalIds = options.animalIds;
         that.animalVisible = {};
@@ -711,6 +712,20 @@
             var callback = function(resp) {
                 that.loadingPanel.decreaseCounter();
                 if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
+                    if (that.crosses180) {
+                        var primeMeridianLon = that.map.baseLayer.maxExtent.getCenterLonLat().lon;
+                        var boundsWidth = that.map.baseLayer.maxExtent.getWidth();
+                        $.each(resp.features, function(i, feature) {
+                            var geometries = feature.components || [feature.geometry];
+                            $.each(geometries, function(j, geometry) {
+                                $.each(geometry.getVertices(), function(k, vertex) {
+                                    if (vertex.x < primeMeridianLon) {
+                                        vertex.x += boundsWidth;
+                                    }
+                                });
+                            });
+                        });
+                    }
                     queryOverlay.addFeatures(resp.features);
                     updateAnimalInfoFromKML(analysis, resp.features);
                     that.onAnalysisSuccess();
