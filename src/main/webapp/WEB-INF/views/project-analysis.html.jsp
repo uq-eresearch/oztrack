@@ -319,7 +319,8 @@
                             tableRowsHtml += '<tr>';
                             tableRowsHtml += '<td class="layerInfoLabel">Export as: </td>';
                             tableRowsHtml += '<td>';
-                            tableRowsHtml += '<a href="' + exportKmlUrl + '">KML</a> ';
+                            tableRowsHtml += '<a href="' + exportKmlUrl + '">KML</a>';
+                            tableRowsHtml += ' ';
                             tableRowsHtml += '<div id="layerInfoHelpPopover-' + animalId + '-' + layerId + '" class="help-popover" title="KML Export">';
                             tableRowsHtml += '<p>To enable users to animate their animal tracking files, as well as visualisation in ';
                             tableRowsHtml += '3-dimensions, we offer the option of exporting the animal tracking data and home-range ';
@@ -411,12 +412,22 @@
                         tableRowsHtml += '<tr>';
                         tableRowsHtml += '<td class="layerInfoLabel">Export as: </td>';
                         tableRowsHtml += '<td>';
-                        tableRowsHtml += '<a href="' + analysis.resultUrl + '">KML</a> ';
+                        tableRowsHtml += '<a href="' + analysis.resultUrl + '">KML</a>';
+                        <c:if test="${project.crosses180}">
+                        tableRowsHtml += ', ';
+                        tableRowsHtml += '<a href="' + analysis.resultUrl + '?fill=false">KML (outline only)</a>';
+                        </c:if>
+                        tableRowsHtml += ' ';
                         tableRowsHtml += '<div id="analysisHelpPopover-' + animalId + '-' + analysis.id + '" class="help-popover" title="KML Export">';
                         tableRowsHtml += '<p>To enable users to animate their animal tracking files, as well as visualisation in ';
                         tableRowsHtml += '3-dimensions, we offer the option of exporting the animal tracking data and home-range ';
                         tableRowsHtml += 'layers into Google Earth. Once loaded into Google Earth, the user can alter the altitude and ';
                         tableRowsHtml += 'angle of the viewer, add additional features, and run the animal track as an animation.</p>';
+                        <c:if test="${project.crosses180}">
+                        tableRowsHtml += '<p>Home range KML files are available in an outline-only version due to rendering issues ';
+                        tableRowsHtml += 'in some versions of Google Earth. If you find that polygons crossing 180° longitude are ';
+                        tableRowsHtml += 'being "wrapped", please use the outline-only KML link.</p>';
+                        </c:if>
                         tableRowsHtml += '</div>';
                         tableRowsHtml += '</td>';
                         tableRowsHtml += '</tr>';

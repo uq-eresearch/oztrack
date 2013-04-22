@@ -41,6 +41,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class AnalysisController {
@@ -192,7 +193,8 @@ public class AnalysisController {
         Authentication authentication,
         HttpServletRequest request,
         HttpServletResponse response,
-        @ModelAttribute(value="analysis") Analysis analysis
+        @ModelAttribute(value="analysis") Analysis analysis,
+        @RequestParam(value="fill", defaultValue="true") Boolean fill
     ) {
         if (!hasPermission(authentication, request, analysis, "read")) {
             response.setStatus(403);
@@ -216,7 +218,7 @@ public class AnalysisController {
         Reader xslReader = null;
         try {
             kmlReader = new FileReader(analysis.getAbsoluteResultFilePath());
-            xslReader = buildXslReader(analysis);
+            xslReader = buildXslReader(analysis, fill);
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer(new StreamSource(xslReader));
             transformer.transform(new StreamSource(kmlReader), new StreamResult(response.getOutputStream()));
@@ -232,7 +234,7 @@ public class AnalysisController {
         }
     }
 
-    private Reader buildXslReader(Analysis analysis) {
+    private Reader buildXslReader(Analysis analysis, Boolean fill) {
         StringBuilder xslBuilder = new StringBuilder();
         xslBuilder.append("<?xml version=\"1.0\" ?>");
         xslBuilder.append("<xsl:stylesheet");
@@ -272,7 +274,7 @@ public class AnalysisController {
                 // crossing the antimeridian: the resulting polygon wraps from one side of the antimeridian,
                 // all the way around through the prime meridian, to the other side of the antimeridian. However,
                 // it correctly renders the same polygon when using an "outline only" rather than filled PolyStyle.
-                xslBuilder.append("          <fill>" + (analysis.getProject().getCrosses180() ? "0" : "1") + "</fill>");
+                xslBuilder.append("          <fill>" + (fill ? "1" : "0") + "</fill>");
                 xslBuilder.append("          <outline>1</outline>");
                 xslBuilder.append("        </PolyStyle>");
                 xslBuilder.append("      </Style>");
