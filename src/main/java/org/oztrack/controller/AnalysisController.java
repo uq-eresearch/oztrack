@@ -268,6 +268,12 @@ public class AnalysisController {
                 xslBuilder.append("        </LineStyle>");
                 xslBuilder.append("        <PolyStyle>");
                 xslBuilder.append("          <color>" + kmlPolyColour + "</color>");
+                // Overcome bug in Google Earth on Windows: Google Earth incorrectly renders filled polygons
+                // crossing the antimeridian: the resulting polygon wraps from one side of the antimeridian,
+                // all the way around through the prime meridian, to the other side of the antimeridian. However,
+                // it correctly renders the same polygon when using an "outline only" rather than filled PolyStyle.
+                xslBuilder.append("          <fill>" + (analysis.getProject().getCrosses180() ? "0" : "1") + "</fill>");
+                xslBuilder.append("          <outline>1</outline>");
                 xslBuilder.append("        </PolyStyle>");
                 xslBuilder.append("      </Style>");
             }
