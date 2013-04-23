@@ -1030,12 +1030,11 @@
             updateDetectionLayers();
             updateTrajectoryLayers();
             function getVectorLayers() {
-                var vectorLayers = new Array();
-                for (var c in that.map.controls) {
-                    var control = that.map.controls[c];
-                    if (control.id.indexOf("LayerSwitcher") != -1) {
-                        for (var i = 0; i < control.dataLayers.length; i++) {
-                            vectorLayers.push(control.dataLayers[i].layer);
+                var vectorLayers = [];
+                if (that.map.layers) {
+                    for (var i = 0; i < that.map.layers.length; i++) {
+                        if (that.map.layers[i].features) {
+                            vectorLayers.push(that.map.layers[i]);
                         }
                     }
                 }
