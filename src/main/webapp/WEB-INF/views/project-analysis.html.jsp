@@ -426,7 +426,7 @@
                         <c:if test="${project.crosses180}">
                         tableRowsHtml += '<p>Home range KML files are available in an outline-only version due to rendering issues ';
                         tableRowsHtml += 'in some versions of Google Earth. If you find that polygons crossing 180° longitude are ';
-                        tableRowsHtml += 'being "wrapped", please use the outline-only KML link.</p>';
+                        tableRowsHtml += 'being cut off or "wrapped", please use the outline-only KML link.</p>';
                         </c:if>
                         tableRowsHtml += '</div>';
                         tableRowsHtml += '</td>';
