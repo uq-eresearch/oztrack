@@ -105,9 +105,14 @@ public class AnimalTrajectoryKMLView extends AbstractView{
         writer.append("</Pair>\n");
         writer.append("</StyleMap>\n");
         writer.append("<gx:Track>\n");
-        for(PositionFix positionFix : positionFixList) {
+        for (PositionFix positionFix : positionFixList) {
             writer.append("  <when>" + isoDateTimeFormat.format(positionFix.getDetectionTime()) + "</when>\n");
-            writer.append("  <gx:coord>" + positionFix.getLocationGeometry().getX() + " " + positionFix.getLocationGeometry().getY() + " 0</gx:coord>\n");
+            double lon = positionFix.getLocationGeometry().getX();
+            if (lon < 0d && animal.getProject().getCrosses180()) {
+                lon += 360;
+            }
+            double lat = positionFix.getLocationGeometry().getY();
+            writer.append("  <gx:coord>" + lon + " " + lat + " 0</gx:coord>\n");
         }
         writer.append("</gx:Track>\n");
         writer.append("</Placemark>\n");
