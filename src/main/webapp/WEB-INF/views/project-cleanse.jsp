@@ -81,11 +81,11 @@
                         var message = null;
                         if ((operation == 'delete') || (operation == 'delete-all') || (operation == 'speed-filter')) {
                             var numDeleted = jQuery(data).find('num-deleted').text();
-                            message = numDeleted + ' points deleted';
+                            message = numDeleted + ' detections deleted';
                         }
                         else if ((operation == 'undelete') || (operation == 'undelete-all')) {
                             var numUndeleted = jQuery(data).find('num-undeleted').text();
-                            message = numUndeleted + ' points restored';
+                            message = numUndeleted + ' detections restored';
                         }
                         $('#responseDialog')
                             .text(message)
@@ -305,21 +305,22 @@
                         </div>
                         <div id="accordion-body-polygon" class="accordion-body collapse in">
                             <div class="accordion-inner">
-                            <p>
-                                <small style="color: #555;">Select points for removal from the project by drawing polygons around them.
-                                Click to start drawing and click again to draw each side of your selected area.
-                                Double-click to finish drawing. You can draw as many polygons as are required.</small>
-                            </p>
-                            <div class="controls">
-                                <select id="cleanse-select" name="polygon" multiple="multiple" style="display: none;">
-                                </select>
-                                <ul id="cleanse-list">
-                                </ul>
-                            </div>
-                            <div style="margin-top: 18px;">
-                                <button class="btn btn-primary" onclick="submitCleanseForm('delete');">Delete selected</button>
-                                <button class="btn" onclick="submitCleanseForm('undelete');">Restore selected</button>
-                            </div>
+                                <div class="control-group">
+                                    <p>
+                                        Select detections for removal from the project by drawing polygons around them.
+                                        Click to start drawing and click again to draw each side of your selected area.
+                                        Double-click to finish drawing. You can draw as many polygons as are required.
+                                    </p>
+                                    <div class="controls">
+                                        <select id="cleanse-select" name="polygon" multiple="multiple" style="display: none;">
+                                        </select>
+                                        <ul id="cleanse-list"></ul>
+                                        <div>
+                                            <button class="btn btn-primary" onclick="submitCleanseForm('delete');">Delete selected</button>
+                                            <button class="btn" onclick="submitCleanseForm('undelete');">Restore selected</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -331,21 +332,21 @@
                         </div>
                         <div id="accordion-body-speed-filter" class="accordion-body collapse">
                             <div class="accordion-inner">
-                            <div class="control-group" style="margin-bottom: 9px;">
-                                <p>
-                                    <small style="color: #555;">If you enter a maximum speed, only those points implying
-                                    that the animal has exceeded the maximum speed will be deleted.</small>
-                                </p>
-                                <div class="controls">
-                                    <div class="input-append">
-                                        <input id="maxSpeed" name="maxSpeed" type="text" class="input-small" placeholder="Max speed" >
-                                        <span class="add-on">km/h</span>
+                                <div class="control-group">
+                                    <p>
+                                        If you enter a maximum speed, only those detections implying
+                                        that the animal has exceeded the maximum speed will be deleted.
+                                    </p>
+                                    <div class="controls">
+                                        <div class="input-append">
+                                            <input id="maxSpeed" name="maxSpeed" type="text" class="input-small" placeholder="Max speed" >
+                                            <span class="add-on">km/h</span>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-primary" onclick="submitCleanseForm('speed-filter');">Apply filter</button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div style="margin-top: 18px;">
-                                <button class="btn btn-primary" onclick="submitCleanseForm('speed-filter');">Apply filter</button>
-                            </div>
                             </div>
                         </div>
                     </div>
@@ -357,15 +358,17 @@
                         </div>
                         <div id="accordion-body-bulk" class="accordion-body collapse">
                             <div class="accordion-inner">
-                            <div class="control-group" style="margin-bottom: 9px;">
-                                <p>
-                                    <small style="color: #555;">Delete or restore all points satisfying the filter specified above.</small>
-                                </p>
-                            </div>
-                            <div style="margin-top: 18px;">
-                                <button class="btn btn-primary" onclick="submitCleanseForm('delete-all');">Delete all</button>
-                                <button class="btn" onclick="submitCleanseForm('undelete-all');">Restore all</button>
-                            </div>
+                                <div class="control-group">
+                                    <p>
+                                        Delete or restore all detections satisfying the filter specified above.
+                                    </p>
+                                    <div class="controls">
+                                        <div>
+                                            <button class="btn btn-primary" onclick="submitCleanseForm('delete-all');">Delete all</button>
+                                            <button class="btn" onclick="submitCleanseForm('undelete-all');">Restore all</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
