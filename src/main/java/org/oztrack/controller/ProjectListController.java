@@ -7,6 +7,8 @@ import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -128,8 +130,16 @@ public class ProjectListController {
         Model model,
         @ModelAttribute(value="project") Project project,
         BindingResult bindingResult,
-        @RequestParam(value="dataLicenceIdentifier", required=false) String dataLicenceIdentifier
+        @RequestParam(value="dataLicenceIdentifier", required=false) String dataLicenceIdentifier,
+        HttpServletRequest request
     ) throws Exception {
+        // Using @RequestParam for these fails when only one value provided:
+        // Spring decides a single value containing commas should be expanded to a list
+        // (e.g. ["a, b, c"] becomes ["a", "b", "c"] instead of being interpreted as ["a, b, c"]).
+        // Note that two or more values is handled correctly (e.g. ["a, b", "c"]).
+        String[] publicationReferenceParam = request.getParameterValues("publicationReference");
+        String[] publicationUrlParam = request.getParameterValues("publicationUrl");
+
         if (
             (project.getAccess() != ProjectAccess.CLOSED) &&
             (dataLicenceIdentifier != null)
@@ -139,6 +149,7 @@ public class ProjectListController {
         else {
             project.setDataLicence(null);
         }
+        ProjectController.setProjectPublications(project, bindingResult, publicationReferenceParam, publicationUrlParam);
         new ProjectFormValidator().validate(project, bindingResult);
         if (projectDao.getProjectByTitle(project.getTitle()) != null) {
             bindingResult.rejectValue("title", "error.empty.field", "Project with same title already exists.");

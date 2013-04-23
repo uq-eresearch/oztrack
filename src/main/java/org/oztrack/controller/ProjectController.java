@@ -196,13 +196,7 @@ public class ProjectController {
         // (e.g. ["a, b, c"] becomes ["a", "b", "c"] instead of being interpreted as ["a, b, c"]).
         // Note that two or more values is handled correctly (e.g. ["a, b", "c"]).
         String[] publicationReferenceParam = request.getParameterValues("publicationReference");
-        List<String> publicationReferences = (publicationReferenceParam != null)
-            ? Arrays.asList(publicationReferenceParam)
-            : Collections.<String>emptyList();
         String[] publicationUrlParam = request.getParameterValues("publicationUrl");
-        List<String> publicationUrls = (publicationUrlParam != null)
-            ? Arrays.asList(publicationUrlParam)
-            : Collections.<String>emptyList();
 
         if (StringUtils.isNotBlank(embargoDateString)) {
             Date embargoDate = isoDateFormat.parse(embargoDateString);
@@ -220,6 +214,32 @@ public class ProjectController {
         else {
             project.setDataLicence(null);
         }
+        setProjectPublications(project, bindingResult, publicationReferenceParam, publicationUrlParam);
+        new ProjectFormValidator().validate(project, bindingResult);
+        Project projectWithSameTitle = projectDao.getProjectByTitle(project.getTitle());
+        if ((projectWithSameTitle != null) && (projectWithSameTitle.getId() != project.getId())) {
+            bindingResult.rejectValue("title", "error.empty.field", "Project with same title already exists.");
+        }
+        if (bindingResult.hasErrors()) {
+            addFormAttributes(model, project);
+            return "project-form";
+        }
+        projectDao.update(project);
+        return "redirect:/projects/" + project.getId();
+    }
+
+    public static void setProjectPublications(
+        Project project,
+        BindingResult bindingResult,
+        String[] publicationReferenceParam,
+        String[] publicationUrlParam
+    ) {
+        List<String> publicationReferences = (publicationReferenceParam != null)
+            ? Arrays.asList(publicationReferenceParam)
+            : Collections.<String>emptyList();
+        List<String> publicationUrls = (publicationUrlParam != null)
+            ? Arrays.asList(publicationUrlParam)
+            : Collections.<String>emptyList();
         project.getPublications().clear();
         int numPublicationReferences = (publicationReferences != null) ? publicationReferences.size() : 0;
         int numPublicationUrls = (publicationUrls != null) ? publicationUrls.size() : 0;
@@ -227,6 +247,9 @@ public class ProjectController {
         for (int i = 0; i < numPublications; i++) {
             String reference = (i < numPublicationReferences) ? publicationReferences.get(i) : null;
             String url = (i < numPublicationUrls) ? publicationUrls.get(i) : null;
+            if (StringUtils.isBlank(reference) && StringUtils.isBlank(url)) {
+                continue;
+            }
             if (StringUtils.isBlank(reference)) {
                 bindingResult.rejectValue("publications", "publications", "All publications must have a Reference.");
             }
@@ -250,22 +273,11 @@ public class ProjectController {
             }
             Publication publication = new Publication();
             publication.setProject(project);
-            publication.setOrdinal(i);
+            publication.setOrdinal(project.getPublications().size());
             publication.setReference(reference);
             publication.setUrl(url);
             project.getPublications().add(publication);
         }
-        new ProjectFormValidator().validate(project, bindingResult);
-        Project projectWithSameTitle = projectDao.getProjectByTitle(project.getTitle());
-        if ((projectWithSameTitle != null) && (projectWithSameTitle.getId() != project.getId())) {
-            bindingResult.rejectValue("title", "error.empty.field", "Project with same title already exists.");
-        }
-        if (bindingResult.hasErrors()) {
-            addFormAttributes(model, project);
-            return "project-form";
-        }
-        projectDao.update(project);
-        return "redirect:/projects/" + project.getId();
     }
 
     private void addFormAttributes(Model model, Project project) {
