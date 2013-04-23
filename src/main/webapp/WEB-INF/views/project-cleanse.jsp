@@ -243,63 +243,56 @@
             <div id="dataCleansing">
                 <form id="cleanseForm" class="form-veritcal" onsubmit="return false;">
                 <fieldset>
-                <div style="margin-bottom: 9px; font-weight: bold;">Filter</div>
-                <div class="accordion" id="accordion-filter">
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" href="#accordion-body-dates">
-                                Date Range
-                            </a>
-                        </div>
-                        <div id="accordion-body-dates" class="accordion-body collapse">
-                            <div class="accordion-inner">
-                            <div class="controls">
-                                <input id="fromDate" name="fromDate" type="hidden"/>
-                                <input id="toDate" name="toDate" type="hidden"/>
-                                <input id="fromDateVisible" type="text" class="datepicker" placeholder="From" style="margin-bottom: 3px; width: 80px;"/> -
-                                <input id="toDateVisible" type="text" class="datepicker" placeholder="To" style="margin-bottom: 3px;  width: 80px;"/>
-                            </div>
-                            </div>
+                <div class="control-group" style="margin-bottom: 9px;">
+                    <div style="margin-bottom: 9px; font-weight: bold;">
+                        <span>Date Range</span>
+                        <div class="help-popover" title="Date Range">
+                            <p>Filter detections to be deleted/restored by date range.</p>
+                            <p>If left blank, all detections in the project will be included.</p>
                         </div>
                     </div>
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" href="#accordion-body-animals">
-                                Animals
-                            </a>
+                    <div class="controls">
+                        <input id="fromDate" name="fromDate" type="hidden"/>
+                        <input id="toDate" name="toDate" type="hidden"/>
+                        <input id="fromDateVisible" type="text" class="datepicker" placeholder="From" style="margin-bottom: 3px; width: 80px;"/> -
+                        <input id="toDateVisible" type="text" class="datepicker" placeholder="To" style="margin-bottom: 3px;  width: 80px;"/>
+                    </div>
+                </div>
+                <div class="control-group" style="margin-bottom: 9px;">
+                    <div style="margin-bottom: 9px; font-weight: bold;">
+                        <span>Animals</span>
+                        <div class="help-popover" title="Date Range">
+                            <p>Filter detections to be deleted/restored by animal.</p>
+                            <p>Choose "Select all" to include all animals in the project.</p>
                         </div>
-                        <div id="accordion-body-animals" class="accordion-body collapse">
-                            <div class="accordion-inner">
-                            <div id="animalList" class="controls">
-                                <div style="background-color: #ddd;">
-                                <div class="animalCheckbox">
-                                    <input
-                                        id="select-animal-all"
-                                        type="checkbox"
-                                        style="width: 15px;" />
-                                </div>
-                                <div class="smallSquare" style="background-color: transparent;"></div>
-                                <div class="animalLabel">Select all</div>
-                                </div>
-                                <div style="clear: both;"></div>
-                                <c:forEach items="${projectAnimalsList}" var="animal">
-                                <div class="animalCheckbox">
-                                    <input
-                                        id="select-animal-${animal.id}"
-                                        class="select-animal"
-                                        name="animal"
-                                        type="checkbox"
-                                        value="${animal.id}"
-                                        style="width: 15px;"
-                                        checked="checked" />
-                                </div>
-                                <div class="smallSquare" style="background-color: ${animal.colour};"></div>
-                                <div class="animalLabel">${animal.animalName}</div>
-                                <div style="clear: both;"></div>
-                                </c:forEach>
-                            </div>
-                            </div>
+                    </div>
+                    <div id="animalList" class="controls">
+                        <div style="background-color: #d8e0a8;">
+                        <div class="animalCheckbox">
+                            <input
+                                id="select-animal-all"
+                                type="checkbox"
+                                style="width: 15px;" />
                         </div>
+                        <div class="smallSquare" style="background-color: transparent;"></div>
+                        <div class="animalLabel">Select all</div>
+                        </div>
+                        <div style="clear: both;"></div>
+                        <c:forEach items="${projectAnimalsList}" var="animal">
+                        <div class="animalCheckbox">
+                            <input
+                                id="select-animal-${animal.id}"
+                                class="select-animal"
+                                name="animal"
+                                type="checkbox"
+                                value="${animal.id}"
+                                style="width: 15px;"
+                                checked="checked" />
+                        </div>
+                        <div class="smallSquare" style="background-color: ${animal.colour};"></div>
+                        <div class="animalLabel">${animal.animalName}</div>
+                        <div style="clear: both;"></div>
+                        </c:forEach>
                     </div>
                 </div>
                 <div style="margin-bottom: 9px; font-weight: bold;">Action</div>
