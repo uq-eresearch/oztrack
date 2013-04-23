@@ -644,13 +644,11 @@
             function onResize() {
                 var mainHeight = $(window).height() - $('#header').outerHeight();
                 $('#projectMapOptions').height(mainHeight);
-                var panelPadding =
-                    parseInt($('#projectMapOptions .ui-tabs-panel').css('padding-top')) +
-                    parseInt($('#projectMapOptions .ui-tabs-panel').css('padding-bottom'));
                 $('#projectMapOptions .ui-tabs-panel').height(
                     $('#projectMapOptions').innerHeight() -
                     $('#projectMapOptions .ui-tabs-nav').outerHeight() -
-                    panelPadding
+                    parseInt($('#projectMapOptions .ui-tabs-panel').css('padding-top')) -
+                    parseInt($('#projectMapOptions .ui-tabs-panel').css('padding-bottom'))
                 );
                 $('#projectMap').height(mainHeight);
                 if (analysisMap) {
