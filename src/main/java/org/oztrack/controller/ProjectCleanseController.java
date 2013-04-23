@@ -137,7 +137,7 @@ public class ProjectCleanseController {
             }
         }
         MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(polygons.toArray(new Polygon[0]));
-        if (operation.equals("delete") || operation.equals("delete-all")) {
+        if (operation.equals("speed-filter")) {
             Set<PositionFix> speedFilterPositionFixes = null;
             if (maxSpeed != null) {
                 speedFilterPositionFixes = new HashSet<PositionFix>();
@@ -158,10 +158,21 @@ public class ProjectCleanseController {
                     }
                 }
             }
+            int numDeleted = positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, speedFilterPositionFixes, null, true);
+            positionFixDao.renumberPositionFixes(project);
+            PrintWriter out = response.getWriter();
+            out.append("<?xml version=\"1.0\"?>\n");
+            out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");
+            out.append("    <num-deleted>" + numDeleted + "</num-deleted>\n");
+            out.append("</cleanse-response>\n");
+            response.setStatus(200);
+            return;
+        }
+        else if (operation.equals("delete") || operation.equals("delete-all")) {
             int numDeleted =
                 operation.equals("delete-all")
-                ? positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, speedFilterPositionFixes, null, true)
-                : positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, speedFilterPositionFixes, multiPolygon, true);
+                ? positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, null, null, true)
+                : positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, null, multiPolygon, true);
             positionFixDao.renumberPositionFixes(project);
             PrintWriter out = response.getWriter();
             out.append("<?xml version=\"1.0\"?>\n");

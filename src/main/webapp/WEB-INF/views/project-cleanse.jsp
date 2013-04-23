@@ -35,7 +35,7 @@
             }
             #projectMapOptions {
             }
-            #animalHeader {
+            #animalList {
                 height: 90px;
                 border: 1px solid #ccc;
                 overflow-y: scroll;
@@ -78,18 +78,42 @@
                     },
                     success: function(data, textStatus, jqXHR) {
                         cleanseMap.reset();
-                        if ((operation == 'delete') || (operation == 'delete-all')) {
+                        var message = null;
+                        if ((operation == 'delete') || (operation == 'delete-all') || (operation == 'speed-filter')) {
                             var numDeleted = jQuery(data).find('num-deleted').text();
-                            jQuery('#cleanse-response-deleted').text(numDeleted + " points deleted").fadeIn();
+                            message = numDeleted + ' points deleted';
                         }
                         else if ((operation == 'undelete') || (operation == 'undelete-all')) {
                             var numUndeleted = jQuery(data).find('num-undeleted').text();
-                            jQuery('#cleanse-response-undeleted').text(numUndeleted + " points restored").fadeIn();
+                            message = numUndeleted + ' points restored';
                         }
+                        $('#responseDialog')
+                            .text(message)
+                            .dialog({
+                                title: 'Complete',
+                                modal: true,
+                                resizable: false,
+                                buttons: {
+                                    'Close': function() {
+                                        $(this).dialog('close');
+                                    }
+                                }
+                            });
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         var message = jQuery(jqXHR.responseText).find('error').text() || 'Error processing request';
-                        jQuery('#cleanse-response-error').text(message).fadeIn();
+                        $('#responseDialog')
+                            .text(message)
+                            .dialog({
+                                title: 'Error',
+                                modal: true,
+                                resizable: false,
+                                buttons: {
+                                    'Close': function() {
+                                        $(this).dialog('close');
+                                    }
+                                }
+                            });
                     },
                     complete: function(jqXHR, textStatus) {
                         cleanseMap.decreaseLoadingCounter();
@@ -214,96 +238,148 @@
         <div id="projectMapOptionsInner">
         <div id="projectMapOptionsTabs">
             <ul>
-                <li><a href="#dataCleansing">Data Cleansing</a></li>
+                <li><a href="#dataCleansing">Edit Tracks</a></li>
             </ul>
             <div id="dataCleansing">
                 <form id="cleanseForm" class="form-veritcal" onsubmit="return false;">
                 <fieldset>
-                <div class="control-group" style="margin-bottom: 9px;">
-                    <div style="margin-bottom: 9px; font-weight: bold;">Date Range</div>
-                    <div class="controls">
-                        <input id="fromDate" name="fromDate" type="hidden"/>
-                        <input id="toDate" name="toDate" type="hidden"/>
-                        <input id="fromDateVisible" type="text" class="datepicker" placeholder="From" style="margin-bottom: 3px; width: 80px;"/> -
-                        <input id="toDateVisible" type="text" class="datepicker" placeholder="To" style="margin-bottom: 3px;  width: 80px;"/>
-                    </div>
-                </div>
-                <div class="control-group" style="margin-bottom: 9px;">
-                    <div style="margin-bottom: 9px; font-weight: bold;">Animals</div>
-                    <div id="animalHeader" class="controls">
-                        <div style="background-color: #d8e0a8;">
-                        <div class="animalCheckbox">
-                            <input
-                                id="select-animal-all"
-                                type="checkbox"
-                                style="width: 15px;" />
+                <div style="margin-bottom: 9px; font-weight: bold;">Filter</div>
+                <div class="accordion" id="accordion-filter">
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" href="#accordion-body-dates">
+                                Date Range
+                            </a>
                         </div>
-                        <div class="smallSquare" style="background-color: transparent;"></div>
-                        <div class="animalLabel">Select all</div>
-                        </div>
-                        <div style="clear: both;"></div>
-                        <c:forEach items="${projectAnimalsList}" var="animal">
-                        <div class="animalCheckbox">
-                            <input
-                                id="select-animal-${animal.id}"
-                                class="select-animal"
-                                name="animal"
-                                type="checkbox"
-                                value="${animal.id}"
-                                style="width: 15px;"
-                                checked="checked" />
-                        </div>
-                        <div class="smallSquare" style="background-color: ${animal.colour};"></div>
-                        <div class="animalLabel">${animal.animalName}</div>
-                        <div style="clear: both;"></div>
-                        </c:forEach>
-                    </div>
-                </div>
-                <div class="control-group" style="margin-bottom: 9px;">
-                    <div style="margin-bottom: 9px; font-weight: bold;">Speed Filter</div>
-                    <p>
-                        <small style="color: #555;">If you enter a maximum speed, only those points implying
-                        that the animal has exceeded the maximum speed will be deleted.
-                        This option has no effect when restoring points.</small>
-                    </p>
-                    <div class="controls">
-                        <div class="input-append">
-                            <input id="maxSpeed" name="maxSpeed" type="text" class="input-small" placeholder="Max speed" >
-                            <span class="add-on">km/h</span>
+                        <div id="accordion-body-dates" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                            <div class="controls">
+                                <input id="fromDate" name="fromDate" type="hidden"/>
+                                <input id="toDate" name="toDate" type="hidden"/>
+                                <input id="fromDateVisible" type="text" class="datepicker" placeholder="From" style="margin-bottom: 3px; width: 80px;"/> -
+                                <input id="toDateVisible" type="text" class="datepicker" placeholder="To" style="margin-bottom: 3px;  width: 80px;"/>
+                            </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="control-group" style="margin-bottom: 9px;">
-                    <div style="margin-bottom: 9px; font-weight: bold;">Polygon Selection</div>
-                    <p>
-                        <small style="color: #555;">Select points for removal from the project by drawing polygons around them.
-                        Click to start drawing and click again to draw each side of your selected area.
-                        Double-click to finish drawing. You can draw as many polygons as are required.</small>
-                    </p>
-                    <div class="controls">
-                        <select id="cleanse-select" name="polygon" multiple="multiple" style="display: none;">
-                        </select>
-                        <ul id="cleanse-list">
-                        </ul>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" href="#accordion-body-animals">
+                                Animals
+                            </a>
+                        </div>
+                        <div id="accordion-body-animals" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                            <div id="animalList" class="controls">
+                                <div style="background-color: #ddd;">
+                                <div class="animalCheckbox">
+                                    <input
+                                        id="select-animal-all"
+                                        type="checkbox"
+                                        style="width: 15px;" />
+                                </div>
+                                <div class="smallSquare" style="background-color: transparent;"></div>
+                                <div class="animalLabel">Select all</div>
+                                </div>
+                                <div style="clear: both;"></div>
+                                <c:forEach items="${projectAnimalsList}" var="animal">
+                                <div class="animalCheckbox">
+                                    <input
+                                        id="select-animal-${animal.id}"
+                                        class="select-animal"
+                                        name="animal"
+                                        type="checkbox"
+                                        value="${animal.id}"
+                                        style="width: 15px;"
+                                        checked="checked" />
+                                </div>
+                                <div class="smallSquare" style="background-color: ${animal.colour};"></div>
+                                <div class="animalLabel">${animal.animalName}</div>
+                                <div style="clear: both;"></div>
+                                </c:forEach>
+                            </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <p id="cleanse-response-deleted" class="cleanse-response" style="font-weight: bold; color: red;"></p>
-                <p id="cleanse-response-undeleted" class="cleanse-response" style="font-weight: bold; color: green;"></p>
-                <p id="cleanse-response-error" class="cleanse-response" style="font-weight: bold; color: gray;"></p>
+                <div style="margin-bottom: 9px; font-weight: bold;">Action</div>
+                <div class="accordion" id="accordion-action">
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-action" href="#accordion-body-polygon">
+                                Polygon Selection
+                            </a>
+                        </div>
+                        <div id="accordion-body-polygon" class="accordion-body collapse in">
+                            <div class="accordion-inner">
+                            <p>
+                                <small style="color: #555;">Select points for removal from the project by drawing polygons around them.
+                                Click to start drawing and click again to draw each side of your selected area.
+                                Double-click to finish drawing. You can draw as many polygons as are required.</small>
+                            </p>
+                            <div class="controls">
+                                <select id="cleanse-select" name="polygon" multiple="multiple" style="display: none;">
+                                </select>
+                                <ul id="cleanse-list">
+                                </ul>
+                            </div>
+                            <div style="margin-top: 18px;">
+                                <button class="btn btn-primary" onclick="submitCleanseForm('delete');">Delete selected</button>
+                                <button class="btn" onclick="submitCleanseForm('undelete');">Restore selected</button>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-action" href="#accordion-body-speed-filter">
+                                Speed Filter
+                            </a>
+                        </div>
+                        <div id="accordion-body-speed-filter" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                            <div class="control-group" style="margin-bottom: 9px;">
+                                <p>
+                                    <small style="color: #555;">If you enter a maximum speed, only those points implying
+                                    that the animal has exceeded the maximum speed will be deleted.</small>
+                                </p>
+                                <div class="controls">
+                                    <div class="input-append">
+                                        <input id="maxSpeed" name="maxSpeed" type="text" class="input-small" placeholder="Max speed" >
+                                        <span class="add-on">km/h</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 18px;">
+                                <button class="btn btn-primary" onclick="submitCleanseForm('speed-filter');">Apply filter</button>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-action" href="#accordion-body-bulk">
+                                Bulk Operation
+                            </a>
+                        </div>
+                        <div id="accordion-body-bulk" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                            <div class="control-group" style="margin-bottom: 9px;">
+                                <p>
+                                    <small style="color: #555;">Delete or restore all points satisfying the filter specified above.</small>
+                                </p>
+                            </div>
+                            <div style="margin-top: 18px;">
+                                <button class="btn btn-primary" onclick="submitCleanseForm('delete-all');">Delete all</button>
+                                <button class="btn" onclick="submitCleanseForm('undelete-all');">Restore all</button>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 </fieldset>
-                <div style="margin-top: 18px;">
-                    <div class="btn-group">
-                        <button class="btn btn-primary" onclick="submitCleanseForm('delete');">Delete selected</button>
-                        <button class="btn" onclick="submitCleanseForm('delete-all');">Delete all</button>
-                    </div>
-                </div>
-                <div style="margin-top: 9px;">
-                    <div class="btn-group">
-                        <button class="btn" onclick="submitCleanseForm('undelete');">Restore selected</button>
-                        <button class="btn" onclick="submitCleanseForm('undelete-all');">Restore all</button>
-                    </div>
-                </div>
                 </form>
+                <p id="responseDialog"></div>
             </div>
         </div>
         </div>
