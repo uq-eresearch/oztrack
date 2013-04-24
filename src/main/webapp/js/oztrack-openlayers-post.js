@@ -193,7 +193,7 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                                 .append($('<p>').addClass('layerInfoTitle').append(layer.name))
                                 .append($('<p>')
                                     .append('For general information about this layer see:<br />')
-                                    .append($(layer.attribution))
+                                    .append(layer.attribution)
                                 )
                                 .append($('<p>').css('font-weight', 'bold').append('Map legend'))
                                 .append($('<img>').attr('src',
