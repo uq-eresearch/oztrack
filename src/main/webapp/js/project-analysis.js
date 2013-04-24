@@ -230,6 +230,24 @@
             }
         );
         that.map.addLayer(that.capadMarine);
+        
+        that.nrmRegions = new OpenLayers.Layer.WMS(
+            'NRM Regions',
+            '/geoserver/gwc/service/wms',
+            {
+                layers: 'oztrack:nrm_regions_2010',
+                format: 'image/png',
+                tiled: true
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true,
+                attribution: '<a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId={FA68F769-550B-4605-A0D5-50B10ECD0EB9}">NRM Regions 2010</a>',
+                metadata: {category: 'environment'}
+            }
+        );
+        that.map.addLayer(that.nrmRegions);
 
         that.ibraRegions = new OpenLayers.Layer.WMS(
             'IBRA Regions',
@@ -391,6 +409,18 @@
                     layer: that.capadMarine,
                     propertyNames: capadPropertyNames,
                     summary: capadSummary
+                },
+                {
+                    layer: that.nrmRegions,
+                    propertyNames: [
+                        'NRM_REGION',
+                        'NRM_BODY'
+                    ],
+                    summary: function(feature) {
+                        return $('<span>')
+                            .append(feature.attributes.NRM_REGION + '<br />')
+                            .append(feature.attributes.NRM_BODY);
+                    }
                 },
                 {
                     layer: that.ibraRegions,

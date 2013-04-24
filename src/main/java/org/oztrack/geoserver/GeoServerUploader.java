@@ -55,6 +55,7 @@ public class GeoServerUploader {
         createDLCDClassLayer(client, workspaceName);
         createFireFrequencyLayer(client, workspaceName);
         createCAPADLayers(client, workspaceName, namespaceUri);
+        createNRMRegionsLayer(client, workspaceName, namespaceUri);
         createIBRALayers(client, workspaceName, namespaceUri);
         createIMCRALayers(client, workspaceName, namespaceUri);
     }
@@ -293,6 +294,38 @@ public class GeoServerUploader {
             .param("featuretypeName", "capad10_m_external_all")
             .param("defaultStyle", "oztrack_capad_m")
             .param("styles", new String[] {"oztrack_capad_m", "polygon"})
+            .replace();
+    }
+
+    private void createNRMRegionsLayer(
+        GeoServerClient client,
+        final String workspaceName,
+        final String namespaceUri
+    ) throws Exception {
+        client
+            .datastore("workspaces/" + workspaceName + "/datastores/nrm_regions_2010")
+            .template("datastores/shapefile-datastore.xml.ftl")
+            .param("datastoreName", "nrm_regions_2010")
+            .param("shapefileUrl", "file:shapefiles/NRM_Regions_2010/NRM_Regions_2010.shp")
+            .param("shapefileCharset", "UTF-8")
+            .param("shapefileTimezone", "Australia/Brisbane")
+            .param("namespaceUri", namespaceUri)
+            .replace();
+        client
+            .featuretype("workspaces/" + workspaceName + "/datastores/" + "nrm_regions_2010" + "/featuretypes/nrm_regions_2010")
+            .template("featuretypes/nrm_regions_2010.xml.ftl")
+            .replace();
+        client
+            .style("styles/" + workspaceName + "_" + "nrm_regions")
+            .template("styles/nrm_regions.sld.ftl")
+            .replace();
+        client
+            .layer("layers/nrm_regions_2010")
+            .template("layers/featuretype-layer.xml.ftl")
+            .param("layerName", "nrm_regions_2010")
+            .param("featuretypeName", "nrm_regions_2010")
+            .param("defaultStyle", "oztrack_nrm_regions")
+            .param("styles", new String[] {"oztrack_nrm_regions", "polygon"})
             .replace();
     }
 
