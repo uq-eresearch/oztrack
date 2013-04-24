@@ -62,7 +62,7 @@
         <tr>
             <th>Processing Status:</th>
             <td>
-                <c:out value="${dataFile.status}"/>
+                <c:out value="${not empty dataFile.status ? dataFile.status : 'UNKNOWN'}"/>
                 <c:if test="${(dataFile.status == 'NEW') || (dataFile.status == 'PROCESSING')}">
                 (<a href="javascript:void(0)" onclick="window.location.reload(true);">refresh</a>)
                 </c:if>

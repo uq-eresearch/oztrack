@@ -12,6 +12,7 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.oztrack.data.model.PositionFix;
@@ -68,17 +69,21 @@ public class SearchQueryXLSView extends AbstractExcelView {
                 HSSFRow row = sheet.createRow(rowNum++);
 
                 HSSFCell animalIdCell = row.createCell(colNum++);
-                animalIdCell.setCellValue(positionFix.getAnimal().getId());
+                animalIdCell.setCellType(Cell.CELL_TYPE_STRING);
+                animalIdCell.setCellValue(positionFix.getAnimal().getProjectAnimalId());
 
                 HSSFCell detectionTimeCell = row.createCell(colNum++);
+                detectionTimeCell.setCellType(Cell.CELL_TYPE_NUMERIC);
                 detectionTimeCell.setCellValue(positionFix.getDetectionTime());
                 detectionTimeCell.setCellStyle(dateTimeCellStyle);
 
                 HSSFCell latCell = row.createCell(colNum++);
+                latCell.setCellType(Cell.CELL_TYPE_NUMERIC);
                 latCell.setCellValue(Double.parseDouble(positionFix.getLatitude()));
                 latCell.setCellStyle(latLngCellStyle);
 
                 HSSFCell lngCell = row.createCell(colNum++);
+                lngCell.setCellType(Cell.CELL_TYPE_NUMERIC);
                 lngCell.setCellValue(Double.parseDouble(positionFix.getLongitude()));
                 lngCell.setCellStyle(latLngCellStyle);
             }

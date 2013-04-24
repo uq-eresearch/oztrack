@@ -102,8 +102,8 @@
             <th>Animal Id</th>
             <th>Animal Name</th>
             </c:if>
-            <th>Latitude</th>
             <th>Longitude</th>
+            <th>Latitude</th>
             <sec:authorize access="hasPermission(#project, 'write')">
             <th>Uploaded</th>
             </sec:authorize>
@@ -117,8 +117,8 @@
             <td><c:out value="${detection.animal.projectAnimalId}"/></td>
             <td><a href="${pageContext.request.contextPath}/animals/${detection.animal.id}"><c:out value="${detection.animal.animalName}"/></a></td>
             </c:if>
-            <td><c:out value="${detection.latitude}"/></td>
-            <td><c:out value="${detection.longitude}"/></td>
+            <td><c:out value="${detection.locationGeometry.x}"/></td>
+            <td><c:out value="${detection.locationGeometry.y}"/></td>
             <sec:authorize access="hasPermission(#project, 'write')">
             <td>
                 <a href="${pageContext.request.contextPath}/datafiles/${detection.dataFile.id}"

@@ -112,7 +112,7 @@ public class SearchController {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
                         for (PositionFix positionFix : positionFixes) {
                             writer.writeNext(new String[] {
-                                String.valueOf(positionFix.getAnimal().getId()),
+                                positionFix.getAnimal().getProjectAnimalId(),
                                 dateFormat.format(positionFix.getDetectionTime()),
                                 String.valueOf(positionFix.getLocationGeometry().getX()),
                                 String.valueOf(positionFix.getLocationGeometry().getY())

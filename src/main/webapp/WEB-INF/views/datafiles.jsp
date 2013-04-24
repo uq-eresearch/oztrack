@@ -62,7 +62,7 @@
                             <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${dataFile.createDate}"/>
                             by <c:out value="${dataFile.createUser.fullName}"/>
                         </td>
-                        <td><a href="${pageContext.request.contextPath}/datafiles/${dataFile.id}"><c:out value="${dataFile.status}"/></a></td>
+                        <td><a href="${pageContext.request.contextPath}/datafiles/${dataFile.id}"><c:out value="${not empty dataFile.status ? dataFile.status : 'UNKNOWN'}"/></a></td>
                     </tr>
                 </c:forEach>
                 </tbody>
