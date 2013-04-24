@@ -54,6 +54,7 @@ public class GeoServerUploader {
         createGEBCOLayers(client, workspaceName);
         createDLCDClassLayer(client, workspaceName);
         createFireFrequencyLayer(client, workspaceName);
+        createCAPADLayers(client, workspaceName, namespaceUri);
         createIBRALayers(client, workspaceName, namespaceUri);
         createIMCRALayers(client, workspaceName, namespaceUri);
     }
@@ -235,6 +236,63 @@ public class GeoServerUploader {
             .param("coverageName", "fire-frequency-avhrr-1997-2009")
             .param("defaultStyle", "oztrack_fire-frequency")
             .param("styles", new String[] {"oztrack_fire-frequency"})
+            .replace();
+    }
+
+    private void createCAPADLayers(
+        GeoServerClient client,
+        final String workspaceName,
+        final String namespaceUri
+    ) throws Exception {
+        client
+            .datastore("workspaces/" + workspaceName + "/datastores/capad10_external_all")
+            .template("datastores/shapefile-datastore.xml.ftl")
+            .param("datastoreName", "capad10_external_all")
+            .param("shapefileUrl", "file:shapefiles/capad10_external_all/capad10_external_all.shp")
+            .param("shapefileCharset", "UTF-8")
+            .param("shapefileTimezone", "Australia/Brisbane")
+            .param("namespaceUri", namespaceUri)
+            .replace();
+        client
+            .datastore("workspaces/" + workspaceName + "/datastores/capad10_m_external_all")
+            .template("datastores/shapefile-datastore.xml.ftl")
+            .param("datastoreName", "capad10_m_external_all")
+            .param("shapefileUrl", "file:shapefiles/capad10_m_external_all/capad10_m_external_all.shp")
+            .param("shapefileCharset", "UTF-8")
+            .param("shapefileTimezone", "Australia/Brisbane")
+            .param("namespaceUri", namespaceUri)
+            .replace();
+        client
+            .featuretype("workspaces/" + workspaceName + "/datastores/" + "capad10_external_all" + "/featuretypes/capad10_external_all")
+            .template("featuretypes/capad10_external_all.xml.ftl")
+            .replace();
+        client
+            .featuretype("workspaces/" + workspaceName + "/datastores/" + "capad10_m_external_all" + "/featuretypes/capad10_m_external_all")
+            .template("featuretypes/capad10_m_external_all.xml.ftl")
+            .replace();
+        client
+            .style("styles/" + workspaceName + "_" + "capad")
+            .template("styles/capad.sld.ftl")
+            .replace();
+        client
+            .style("styles/" + workspaceName + "_" + "capad_m")
+            .template("styles/capad_m.sld.ftl")
+            .replace();
+        client
+            .layer("layers/capad10_external_all")
+            .template("layers/featuretype-layer.xml.ftl")
+            .param("layerName", "capad10_external_all")
+            .param("featuretypeName", "capad10_external_all")
+            .param("defaultStyle", "oztrack_capad")
+            .param("styles", new String[] {"oztrack_capad", "polygon"})
+            .replace();
+        client
+            .layer("layers/capad10_m_external_all")
+            .template("layers/featuretype-layer.xml.ftl")
+            .param("layerName", "capad10_m_external_all")
+            .param("featuretypeName", "capad10_m_external_all")
+            .param("defaultStyle", "oztrack_capad_m")
+            .param("styles", new String[] {"oztrack_capad_m", "polygon"})
             .replace();
     }
 

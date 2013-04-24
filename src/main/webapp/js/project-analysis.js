@@ -189,6 +189,48 @@
         );
         that.map.addLayer(that.fireFrequency);
 
+        that.capadLand = new OpenLayers.Layer.WMS(
+            'CAPAD',
+            '/geoserver/gwc/service/wms',
+            {
+                layers: 'oztrack:capad10_external_all',
+                format: 'image/png',
+                tiled: true
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true,
+                attribution:
+                    'CAPAD 2010' +
+                    ' <a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId={C4B70940-75BC-4114-B935-D28EE8A52937}">[1]</a>' +
+                    ' <a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId={0E24A4B5-BA44-48D5-AF2F-7F4749F4EA2D}">[2]</a>',
+                metadata: {category: 'environment'}
+            }
+        );
+        that.map.addLayer(that.capadLand);
+
+        that.capadMarine = new OpenLayers.Layer.WMS(
+            'CAPAD Marine',
+            '/geoserver/gwc/service/wms',
+            {
+                layers: 'oztrack:capad10_m_external_all',
+                format: 'image/png',
+                tiled: true
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true,
+                attribution:
+                    'CAPAD 2010 Marine' +
+                    ' <a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B4970516C-6F4A-4B1E-AF33-AB6BDE6B008A%7D">[1]</a>' +
+                    ' <a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B905AD083-39A0-41C6-B2F9-CBF5E0B86A3C%7D">[2]</a>',
+                metadata: {category: 'environment'}
+            }
+        );
+        that.map.addLayer(that.capadMarine);
+
         that.ibraRegions = new OpenLayers.Layer.WMS(
             'IBRA Regions',
             '/geoserver/gwc/service/wms',
@@ -281,6 +323,21 @@
             var round = function(n) {return (Math.round(x * 1000000) / 1000000);};
             return '(' + round(x) + ', ' + round(y) + ')';
         }
+        var capadPropertyNames = [
+            'NAME',
+            'TYPE',
+            'IUCN',
+            'GAZ_AREA',
+            'GIS_AREA'
+        ];
+        var capadSummary = function(feature) {
+            var areaInHa = (feature.attributes.GAZ_AREA || feature.attributes.GIS_AREA);
+            var areaInKm2 = areaInHa / 100.0;
+            var areaRounded = Math.round(areaInKm2 * 1000) / 1000.0;
+            return $('<span>')
+                .append(feature.attributes.NAME + ', ' + areaRounded + ' km<sup>2</sup><br />')
+                .append(feature.attributes.TYPE + ', IUCN Code ' + feature.attributes.IUCN);
+        };
         var getFeatureInfoControl = new OzTrack.OpenLayers.Control.WMSGetFeatureInfo({
             url: '/geoserver/wms',
             layerUrls: ['/geoserver/gwc/service/wms'],
@@ -324,6 +381,16 @@
                     summary: function(feature) {
                         return $('<span>').append('Fires per annum: ' + Math.floor(feature.attributes.GRAY_INDEX));
                     }
+                },
+                {
+                    layer: that.capadLand,
+                    propertyNames: capadPropertyNames,
+                    summary: capadSummary
+                },
+                {
+                    layer: that.capadMarine,
+                    propertyNames: capadPropertyNames,
+                    summary: capadSummary
                 },
                 {
                     layer: that.ibraRegions,
