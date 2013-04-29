@@ -274,6 +274,113 @@ public class GeoServerUploader {
             .param("defaultStyle", "oztrack_nvis-mvg")
             .param("styles", new String[] {"oztrack_nvis-mvg"})
             .replace();
+        client
+            .coveragestore("workspaces/" + workspaceName + "/coveragestores/nvis_4_1_aust_mvs")
+            .template("coveragestores/nvis_4_1_aust_mvs.xml.ftl")
+            .replace();
+        client
+            .coverage("workspaces/" + workspaceName + "/coveragestores/nvis_4_1_aust_mvs/coverages/nvis_4_1_aust_mvs")
+            .template("coverages/nvis_4_1_aust_mvs.xml.ftl")
+            .replace();
+        client
+            .style("styles/" + workspaceName + "_" + "nvis-mvs")
+            .template("styles/nvis-mvs.sld.ftl")
+            .param("mvsList", Arrays.asList(
+                new String[] {"1", "#DF7F7F", "Cool temperate rainforest"},
+                new String[] {"2", "#DF7F00", "Tropical or sub-tropical rainforest"},
+                new String[] {"3", "#005F00", "Eucalyptus (+/- tall) open forest with a dense broad-leaved and/or tree-fern understorey (wet sclerophyll)"},
+                new String[] {"4", "#007F00", "Eucalyptus open forests with a shrubby understorey"},
+                new String[] {"5", "#007F5F", "Eucalyptus open forests with a grassy understorey"},
+                new String[] {"6", "#DF7F5F", "Warm Temperate Rainforest"},
+                new String[] {"7", "#3FBF5F", "Tropical Eucalyptus forest and woodlands with a tall annual grassy understorey"},
+                new String[] {"8", "#9F9F00", "Eucalyptus woodlands with a shrubby understorey"},
+                new String[] {"9", "#9F9F5F", "Eucalyptus woodlands with a tussock grass understorey"},
+                new String[] {"10", "#9F9F7F", "Eucalyptus woodlands with a hummock grass understorey"},
+                new String[] {"11", "#9F7F3F", "Tropical mixed spp forests and woodlands"},
+                new String[] {"12", "#BFBF00", "Callitris forests and woodlands "},
+                new String[] {"13", "#DFBF00", "Brigalow (Acacia harpophylla) forests and woodlands"},
+                new String[] {"14", "#DFBF5F", "Other Acacia forests and woodlands"},
+                new String[] {"15", "#9FBFDF", "Melaleuca open forests and woodlands"},
+                new String[] {"16", "#9F7F7F", "Other forests and woodlands"},
+                new String[] {"17", "#7FBFBF", "Boulders/rock with algae, lichen or scattered plants, or alpine fjaeldmarks"},
+                new String[] {"18", "#9FBF9F", "Eucalyptus low open woodlands with hummock grass"},
+                new String[] {"19", "#9FBF7F", "Eucalyptus low open woodlands with tussock grass"},
+                new String[] {"20", "#DFBF3F", "Mulga (Acacia aneura) woodlands +/- tussock grass +/- forbs"},
+                new String[] {"21", "#DFDF5F", "Other Acacia tall open shrublands and [tall] shrublands"},
+                new String[] {"22", "#DFBF7F", "Acacia (+/- low) open woodlands and shrublands with chenopods"},
+                new String[] {"23", "#DFBF9F", "Acacia (+/- low) open woodlands and shrublands with hummock grass"},
+                new String[] {"24", "#DFBFBF", "Acacia (+/- low) open woodlands and shrublands +/- tussock grass"},
+                new String[] {"25", "#DFDFBF", "Acacia (+/- low) open woodlands and sparse shrublands with a shrubby understorey"},
+                new String[] {"26", "#BFBF7F", "Casuarina and Allocasuarina forests and woodlands"},
+                new String[] {"27", "#DF9FBF", "Mallee with hummock grass"},
+                new String[] {"28", "#FFBF5F", "Low closed forest or tall closed shrublands (including Acacia, Melaleuca and Banksia)"},
+                new String[] {"29", "#DF9F5F", "Mallee with a dense shrubby understorey"},
+                new String[] {"30", "#FF9F7F", "Heath"},
+                new String[] {"31", "#BFFFBF", "Saltbush and Bluebush shrublands"},
+                new String[] {"32", "#BFBF9F", "Other shrublands"},
+                new String[] {"33", "#FFFFDF", "Hummock grasslands"},
+                new String[] {"34", "#FFDF5F", "Mitchell grass (Astrebla) tussock grasslands"},
+                new String[] {"35", "#FFDF7F", "Blue grass (Dicanthium) and tall bunch grass (Vitiveria syn: Chrysopogon) tussock grasslands"},
+                new String[] {"36", "#FFDF9F", "Temperate tussock grasslands"},
+                new String[] {"37", "#FFDFBF", "Other tussock grasslands"},
+                new String[] {"38", "#7FFFBF", "Wet tussock grassland with herbs, sedges or rushes, herblands or ferns"},
+                new String[] {"39", "#BFDFFF", "Mixed chenopod, samphire +/- forbs"},
+                new String[] {"40", "#009FBF", "Mangroves"},
+                new String[] {"41", "#7FFF9F", "Saline or brackish sedgelands or grasslands"},
+                new String[] {"42", "#FFFF9F", "Naturally bare, sand, rock, claypan, mudflat"},
+                new String[] {"43", "#007FDF", "Salt lakes and lagoons"},
+                new String[] {"44", "#007FFF", "Freshwater, dams, lakes, lagoons or aquatic plants"},
+                new String[] {"45", "#DFDF7F", "Mulga (Acacia aneura) open woodlands and sparse shrublands +/- tussock grass"},
+                new String[] {"46", "#009FFF", "Sea, estuaries (includes seagrass)"},
+                new String[] {"47", "#9FBF00", "Eucalyptus open woodlands with shrubby understorey"},
+                new String[] {"48", "#9FBF3F", "Eucalyptus open woodlands with a grassy understorey"},
+                new String[] {"49", "#BFDFDF", "Melaleuca shrublands and open shrublands"},
+                new String[] {"50", "#9F7F5F", "Banksia woodlands"},
+                new String[] {"51", "#DFDF3F", "Mulga (Acacia aneura) woodlands and shrublands with hummock grass"},
+                new String[] {"52", "#D60039", "Mulga (Acacia aneura) open woodlands and sparse shrublands with hummock grass"},
+                new String[] {"53", "#C4BF5F", "Eucalyptus low open woodlands with a shrubby understorey"},
+                new String[] {"54", "#005F5F", "Eucalyptus tall open forest with a fine-leaved shrubby understorey"},
+                new String[] {"55", "#DF9F7F", "Mallee  with an open shrubby understorey"},
+                new String[] {"56", "#9FBFBF", "Eucalyptus (+/- low) open woodlands with a chenopod or samphire understorey"},
+                new String[] {"57", "#BFBFDF", "Lignum shrublands and wetlands"},
+                new String[] {"58", "#9F7F00", "Leptospermum forests and woodlands"},
+                new String[] {"59", "#9F9F9F", "Eucalyptus woodlands with ferns, herbs, sedges, rushes or wet tussock grassland"},
+                new String[] {"60", "#007F7F", "Eucalyptus tall open forests and open forests with ferns, herbs, sedges, rushes or wet tussock grasses"},
+                new String[] {"61", "#DF9F9F", "Mallee with a tussock grass understorey"},
+                new String[] {"62", "#DF7F3F", "Dry rainforest or vine thickets"},
+                new String[] {"63", "#7FFFDF", "Sedgelands, rushs or reeds"},
+                new String[] {"64", "#7FFF7F", "Other grasslands"},
+                new String[] {"65", "#9F9FBF", "Eucalyptus woodlands with a chenopod or samphire understorey"},
+                new String[] {"66", "#FFBFDF", "Open mallee woodlands and sparse mallee shrublands with a hummock grass understorey"},
+                new String[] {"67", "#FFBFBF", "Open mallee woodlands and sparse mallee shrublands with a tussock grass understorey"},
+                new String[] {"68", "#E1BF9F", "Open mallee woodlands and sparse mallee shrublands with an open shrubby understorey"},
+                new String[] {"69", "#FFBF7F", "Open mallee woodlands and sparse mallee shrublands with a dense shrubby understorey"},
+                new String[] {"70", "#BFBF3F", "Callitris open woodlands"},
+                new String[] {"71", "#BF9F3F", "Casuarina and Allocasuarina open woodlands with a tussock grass understorey"},
+                new String[] {"72", "#BF9F5F", "Casuarina and Allocasuarina open woodlands with a hummock grass understorey"},
+                new String[] {"73", "#BF9F9F", "Casuarina and Allocasuarina open woodlands with a chenopod shrub understorey"},
+                new String[] {"74", "#BF9F00", "Casuarina and Allocasuarina open woodlands with a shrubby understorey"},
+                new String[] {"75", "#BFBF5F", "Melaleuca open woodlands"},
+                new String[] {"79", "#BF9F7F", "Other open Woodlands"},
+                new String[] {"80", "#BFFFDF", "Other sparse shrublands and sparse heathlands "},
+                new String[] {"90", "#BF9FFF", "Regrowth or modified forests and woodlands"},
+                new String[] {"91", "#BF9FDF", "Regrowth or modified shrublands"},
+                new String[] {"92", "#BF9FBF", "Regrowth or modified graminoids"},
+                new String[] {"93", "#000000", "Regrowth or modified chenopod shrublands, samphire or forblands"},
+                new String[] {"96", "#7F7F7F", "Unclassified Forest"},
+                new String[] {"97", "#BFBFBF", "Unclassified native vegetation"},
+                new String[] {"98", "#DFDFDF", "Cleared, non-native vegetation, buildings"},
+                new String[] {"99", "#FFFFFF", "Unknown/No data"}
+            ))
+            .replace();
+        client
+            .layer("layers/nvis_4_1_aust_mvs")
+            .template("layers/coverage-layer.xml.ftl")
+            .param("layerName", "nvis_4_1_aust_mvs")
+            .param("coverageName", "nvis_4_1_aust_mvs")
+            .param("defaultStyle", "oztrack_nvis-mvs")
+            .param("styles", new String[] {"oztrack_nvis-mvs"})
+            .replace();
     }
 
     private void createFireFrequencyLayer(GeoServerClient client, final String workspaceName) throws Exception {
