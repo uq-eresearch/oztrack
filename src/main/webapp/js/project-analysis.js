@@ -183,7 +183,7 @@
                 visibility: false,
                 isBaseLayer: false,
                 wrapDateLine: true,
-                attribution: '<a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B116AACA6-9E11-43E6-AD68-75AE380504CD%7D">National Vegetation Information System 4.1 Major Vegetation Groups</a>',
+                attribution: '<a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B116AACA6-9E11-43E6-AD68-75AE380504CD%7D">NVIS 4.1 Major Vegetation Groups</a>',
                 metadata: {category: 'environment'}
             }
         );
@@ -201,7 +201,7 @@
                 visibility: false,
                 isBaseLayer: false,
                 wrapDateLine: true,
-                attribution: '<a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B245434BF-95D1-4C3E-8104-EC4B2988782D%7D">National Vegetation Information System 4.1 Major Vegetation Subgroups</a>',
+                attribution: '<a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B245434BF-95D1-4C3E-8104-EC4B2988782D%7D">NVIS 4.1 Major Vegetation Subgroups</a>',
                 metadata: {category: 'environment'}
             }
         );
