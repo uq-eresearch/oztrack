@@ -53,6 +53,7 @@ public class GeoServerUploader {
         createOzTrackLayers(client, workspaceName, namespaceUri);
         createGEBCOLayers(client, workspaceName);
         createDLCDClassLayer(client, workspaceName);
+        createNVISLayers(client, workspaceName);
         createFireFrequencyLayer(client, workspaceName);
         createCAPADLayers(client, workspaceName, namespaceUri);
         createNRMRegionsLayer(client, workspaceName, namespaceUri);
@@ -214,6 +215,64 @@ public class GeoServerUploader {
             .param("coverageName", "dlcd-class")
             .param("defaultStyle", "oztrack_dlcd-class")
             .param("styles", new String[] {"oztrack_dlcd-class"})
+            .replace();
+    }
+
+    private void createNVISLayers(GeoServerClient client, String workspaceName) throws Exception {
+        client
+            .coveragestore("workspaces/" + workspaceName + "/coveragestores/nvis_4_1_aust_mvg")
+            .template("coveragestores/nvis_4_1_aust_mvg.xml.ftl")
+            .replace();
+        client
+            .coverage("workspaces/" + workspaceName + "/coveragestores/nvis_4_1_aust_mvg/coverages/nvis_4_1_aust_mvg")
+            .template("coverages/nvis_4_1_aust_mvg.xml.ftl")
+            .replace();
+        client
+            .style("styles/" + workspaceName + "_" + "nvis-mvg")
+            .template("styles/nvis-mvg.sld.ftl")
+            .param("mvgList", Arrays.asList(
+                new String[] {"1", "#FF0000", "Rainforests and Vine Thickets"},
+                new String[] {"2", "#034D00", "Eucalypt Tall Open Forests"},
+                new String[] {"3", "#008200", "Eucalypt Open Forests"},
+                new String[] {"4", "#4CE600", "Eucalypt Low Open Forests"},
+                new String[] {"5", "#C1D6C8", "Eucalypt Woodlands"},
+                new String[] {"6", "#92AD2F", "Acacia Forests and Woodlands"},
+                new String[] {"7", "#90BA8D", "Callitris Forests and Woodlands"},
+                new String[] {"8", "#00D6A8", "Casuarina Forests and Woodlands"},
+                new String[] {"9", "#B2EBB2", "Melaleuca Forests and Woodlands"},
+                new String[] {"10", "#73FFDE", "Other Forests and Woodlands"},
+                new String[] {"11", "#E0FFEB", "Eucalypt Open Woodlands"},
+                new String[] {"12", "#C8C2FF", "Tropical Eucalypt Woodlands/Grasslands"},
+                new String[] {"13", "#F0E48D", "Acacia Open Woodlands"},
+                new String[] {"14", "#BDB66A", "Mallee Woodlands and Shrublands"},
+                new String[] {"15", "#8A7213", "Low Closed Forests and Tall Closed Shrublands"},
+                new String[] {"16", "#FABEBE", "Acacia Shrublands"},
+                new String[] {"17", "#8A7265", "Other Shrublands"},
+                new String[] {"18", "#FFA07A", "Heathlands"},
+                new String[] {"19", "#B8AB8D", "Tussock Grasslands"},
+                new String[] {"20", "#FFF8DB", "Hummock Grasslands"},
+                new String[] {"21", "#FCE4A7", "Other Grasslands, Herblands, Sedgelands and Rushlands"},
+                new String[] {"22", "#FCE4DC", "Chenopod Shrublands, Samphire Shrublands and Forblands"},
+                new String[] {"23", "#15A3AB", "Mangroves"},
+                new String[] {"24", "#006FFF", "Inland aquatic - freshwater, salt lakes, lagoons"},
+                new String[] {"25", "#FFFFFF", "Cleared, non-native vegetation, buildings"},
+                new String[] {"26", "#4F4F4F", "Unclassified native vegetation"},
+                new String[] {"27", "#CCCCCC", "Naturally bare - sand, rock, claypan, mudflat"},
+                new String[] {"28", "#96DBF2", "Sea and estuaries"},
+                new String[] {"29", "#9C9C9C", "Regrowth, modified native vegetation"},
+                new String[] {"30", "#FFAA00", "Unclassified Forest"},
+                new String[] {"31", "#D69DBC", "Other Open Woodlands"},
+                new String[] {"32", "#E0D988", "Mallee Open Woodlands and Sparse Mallee Shrublands"},
+                new String[] {"99", "#EBEBEB", "Unknown/no data"}
+            ))
+            .replace();
+        client
+            .layer("layers/nvis_4_1_aust_mvg")
+            .template("layers/coverage-layer.xml.ftl")
+            .param("layerName", "nvis_4_1_aust_mvg")
+            .param("coverageName", "nvis_4_1_aust_mvg")
+            .param("defaultStyle", "oztrack_nvis-mvg")
+            .param("styles", new String[] {"oztrack_nvis-mvg"})
             .replace();
     }
 

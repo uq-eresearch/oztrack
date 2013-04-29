@@ -171,6 +171,24 @@
         );
         that.map.addLayer(that.dlcdClass);
 
+        that.nvisGroups = new OpenLayers.Layer.WMS(
+            'NVIS Groups',
+            '/geoserver/gwc/service/wms',
+            {
+                layers: 'oztrack:nvis_4_1_aust_mvg',
+                format: 'image/png',
+                tiled: true
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true,
+                attribution: '<a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B116AACA6-9E11-43E6-AD68-75AE380504CD%7D">National Vegetation Information System 4.1 Major Vegetation Groups</a>',
+                metadata: {category: 'environment'}
+            }
+        );
+        that.map.addLayer(that.nvisGroups);
+
         that.fireFrequency = new OpenLayers.Layer.WMS(
             'Fire Frequency',
             '/geoserver/gwc/service/wms',
@@ -389,6 +407,15 @@
                     ],
                     summary: function(feature) {
                         return $('<span>').append('Class: ' + Math.floor(feature.attributes.GRAY_INDEX));
+                    }
+                },
+                {
+                    layer: that.nvisGroups,
+                    propertyNames: [
+                        'PALETTE_INDEX'
+                    ],
+                    summary: function(feature) {
+                        return $('<span>').append('MVG Number: ' + Math.floor(feature.attributes.PALETTE_INDEX));
                     }
                 },
                 {
