@@ -224,6 +224,7 @@ public class AnalysisController {
             transformer.transform(new StreamSource(kmlReader), new StreamResult(response.getOutputStream()));
         }
         catch (Exception e) {
+            logger.error("Error writing KML response", e);
             response.setStatus(500);
             writeResultError(response, "Error writing KML response.");
             return;
