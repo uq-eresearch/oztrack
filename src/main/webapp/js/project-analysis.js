@@ -497,10 +497,10 @@
                         if (feature.attributes.MPA_NAME) {
                             span.append(feature.attributes.MPA_NAME + ', ');
                         }
-                        if (feature.attributes.Network) {
-                            span.append(feature.attributes.Network + ', ');
-                        }
                         span.append(areaRounded + ' km<sup>2</sup><br />');
+                        if (feature.attributes.Network) {
+                            span.append('Network: ' + feature.attributes.Network + '<br />');
+                        }
                         span.append(feature.attributes.ZONE + ', IUCN Code ' + feature.attributes.IUCN);
                         return span;
                     }
