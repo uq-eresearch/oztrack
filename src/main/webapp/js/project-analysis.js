@@ -266,7 +266,25 @@
             }
         );
         that.map.addLayer(that.capadMarine);
-        
+
+        that.commonwealthMarineReserves = new OpenLayers.Layer.WMS(
+            'Commonwealth Marine Reserves',
+            '/geoserver/gwc/service/wms',
+            {
+                layers: 'oztrack:commonwealth_marine_reserves_2012',
+                format: 'image/png',
+                tiled: true
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true,
+                attribution: ' <a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId={052C61B4-3662-4842-8B4D-15DC57B355FE}">Commonwealth Marine Reserves 2012</a>',
+                metadata: {category: 'environment'}
+            }
+        );
+        that.map.addLayer(that.commonwealthMarineReserves);
+
         that.nrmRegions = new OpenLayers.Layer.WMS(
             'NRM Regions',
             '/geoserver/gwc/service/wms',
@@ -463,6 +481,29 @@
                     layer: that.capadMarine,
                     propertyNames: capadPropertyNames,
                     summary: capadSummary
+                },
+                {
+                    layer: that.commonwealthMarineReserves,
+                    propertyNames: [
+                        'Network',
+                        'MPA_NAME',
+                        'ZONE',
+                        'IUCN',
+                        'Area_km2'
+                    ],
+                    summary: function(feature) {
+                        var areaRounded = Math.round(feature.attributes.Area_km2 * 1000) / 1000.0
+                        var span = $('<span>');
+                        if (feature.attributes.MPA_NAME) {
+                            span.append(feature.attributes.MPA_NAME + ', ');
+                        }
+                        if (feature.attributes.Network) {
+                            span.append(feature.attributes.Network + ', ');
+                        }
+                        span.append(areaRounded + ' km<sup>2</sup><br />');
+                        span.append(feature.attributes.ZONE + ', IUCN Code ' + feature.attributes.IUCN);
+                        return span;
+                    }
                 },
                 {
                     layer: that.nrmRegions,

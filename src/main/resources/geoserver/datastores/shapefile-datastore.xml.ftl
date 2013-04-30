@@ -10,7 +10,9 @@
     <entry key="filetype">shapefile</entry>
     <entry key="url">${shapefileUrl}</entry>
     <entry key="charset">${shapefileCharset}</entry>
+    <#if shapefileTimezone??>
     <entry key="timezone">${shapefileTimezone}</entry>
+    </#if>
     <entry key="namespace">${namespaceUri}</entry>
   </connectionParameters>
 </dataStore>

@@ -55,7 +55,7 @@ public class GeoServerUploader {
         createDLCDClassLayer(client, workspaceName);
         createNVISLayers(client, workspaceName);
         createFireFrequencyLayer(client, workspaceName);
-        createCAPADLayers(client, workspaceName, namespaceUri);
+        createIUCNLayers(client, workspaceName, namespaceUri);
         createNRMRegionsLayer(client, workspaceName, namespaceUri);
         createIBRALayers(client, workspaceName, namespaceUri);
         createIMCRALayers(client, workspaceName, namespaceUri);
@@ -406,7 +406,7 @@ public class GeoServerUploader {
             .replace();
     }
 
-    private void createCAPADLayers(
+    private void createIUCNLayers(
         GeoServerClient client,
         final String workspaceName,
         final String namespaceUri
@@ -430,6 +430,14 @@ public class GeoServerUploader {
             .param("namespaceUri", namespaceUri)
             .replace();
         client
+            .datastore("workspaces/" + workspaceName + "/datastores/commonwealth_marine_reserves_2012")
+            .template("datastores/shapefile-datastore.xml.ftl")
+            .param("datastoreName", "commonwealth_marine_reserves_2012")
+            .param("shapefileUrl", "file:shapefiles/commonwealth_marine_reserves_network_2012/commonwealth_marine_reserves_network_2012.shp")
+            .param("shapefileCharset", "UTF-8")
+            .param("namespaceUri", namespaceUri)
+            .replace();
+        client
             .featuretype("workspaces/" + workspaceName + "/datastores/" + "capad10_external_all" + "/featuretypes/capad10_external_all")
             .template("featuretypes/capad10_external_all.xml.ftl")
             .replace();
@@ -438,28 +446,40 @@ public class GeoServerUploader {
             .template("featuretypes/capad10_m_external_all.xml.ftl")
             .replace();
         client
-            .style("styles/" + workspaceName + "_" + "capad")
-            .template("styles/capad.sld.ftl")
+            .featuretype("workspaces/" + workspaceName + "/datastores/commonwealth_marine_reserves_2012/featuretypes/commonwealth_marine_reserves_2012")
+            .template("featuretypes/commonwealth_marine_reserves_2012.xml.ftl")
             .replace();
         client
-            .style("styles/" + workspaceName + "_" + "capad_m")
-            .template("styles/capad_m.sld.ftl")
+            .style("styles/" + workspaceName + "_" + "iucn")
+            .template("styles/iucn.sld.ftl")
+            .replace();
+        client
+            .style("styles/" + workspaceName + "_" + "iucn_m")
+            .template("styles/iucn_m.sld.ftl")
             .replace();
         client
             .layer("layers/capad10_external_all")
             .template("layers/featuretype-layer.xml.ftl")
             .param("layerName", "capad10_external_all")
             .param("featuretypeName", "capad10_external_all")
-            .param("defaultStyle", "oztrack_capad")
-            .param("styles", new String[] {"oztrack_capad", "polygon"})
+            .param("defaultStyle", "oztrack_iucn")
+            .param("styles", new String[] {"oztrack_iucn", "polygon"})
             .replace();
         client
             .layer("layers/capad10_m_external_all")
             .template("layers/featuretype-layer.xml.ftl")
             .param("layerName", "capad10_m_external_all")
             .param("featuretypeName", "capad10_m_external_all")
-            .param("defaultStyle", "oztrack_capad_m")
-            .param("styles", new String[] {"oztrack_capad_m", "polygon"})
+            .param("defaultStyle", "oztrack_iucn_m")
+            .param("styles", new String[] {"oztrack_iucn_m", "polygon"})
+            .replace();
+        client
+            .layer("layers/commonwealth_marine_reserves_2012")
+            .template("layers/featuretype-layer.xml.ftl")
+            .param("layerName", "commonwealth_marine_reserves_2012")
+            .param("featuretypeName", "commonwealth_marine_reserves_2012")
+            .param("defaultStyle", "oztrack_iucn_m")
+            .param("styles", new String[] {"oztrack_iucn_m", "polygon"})
             .replace();
     }
 
