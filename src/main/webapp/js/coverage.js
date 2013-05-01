@@ -33,12 +33,8 @@
             var unprojectedPolygon = OpenLayers.Geometry.fromWKT(that.wkt);
             var projectedPolygon = unprojectedPolygon.clone().transform(that.projection4326, that.projection900913);
             if (that.crosses180) {
-                var primeMeridianLon = that.baseLayer.maxExtent.getCenterLonLat().lon;
-                var boundsWidth = that.baseLayer.maxExtent.getWidth();
                 $.each(projectedPolygon.getVertices(), function(i, projectedVertex) {
-                    if (projectedVertex.x < primeMeridianLon) {
-                        projectedVertex.x += boundsWidth;
-                    }
+                    projectedVertex.x = (projectedVertex.x + 40075016.68) % 40075016.68;
                 });
             }
             var featureVector = new OpenLayers.Feature.Vector(projectedPolygon);

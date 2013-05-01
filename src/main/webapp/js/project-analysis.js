@@ -17,9 +17,18 @@
             that.animalVisible[animalId] = true;
         });
         that.projectBounds = options.projectBounds.clone().transform(that.projection4326, that.projection900913);
+        if (that.crosses180) {
+            that.projectBounds.left = (that.projectBounds.left + 40075016.68) % 40075016.68;
+            that.projectBounds.right = (that.projectBounds.right + 40075016.68) % 40075016.68;
+        }
         that.animalBounds = {};
-        $.each(options.animalBounds, function(animalId, bounds) {
-            that.animalBounds[animalId] = bounds.clone().transform(that.projection4326, that.projection900913);
+        $.each(options.animalBounds, function(animalId, bounds4326) {
+            var bounds900913 = bounds4326.clone().transform(that.projection4326, that.projection900913);
+            if (that.crosses180) {
+                bounds900913.left = (bounds900913.left + 40075016.68) % 40075016.68;
+                bounds900913.right = (bounds900913.right + 40075016.68) % 40075016.68;
+            }
+            that.animalBounds[animalId] = bounds900913;
         });
         that.animalColours = options.animalColours;
         that.minDate = options.minDate;
