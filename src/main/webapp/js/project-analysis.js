@@ -392,7 +392,7 @@
         function coordString(geometry) {
             var x = geometry.x || geometry.lon;
             var y = geometry.y || geometry.lat;
-            var round = function(n) {return (Math.round(x * 1000000) / 1000000);};
+            var round = function(n) {return (Math.round(n * 1000000) / 1000000);};
             return '(' + round(x) + ', ' + round(y) + ')';
         }
         var capadPropertyNames = [
