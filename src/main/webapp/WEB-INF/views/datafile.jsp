@@ -12,9 +12,36 @@
     </jsp:attribute>
     <jsp:attribute name="tail">
         <script type="text/javascript">
+            function pollDataFile(dataFile) {
+                if (dataFile) {
+                    $('#numPositionFixes').text(dataFile.numPositionFixes || '');
+                    $('#status').text(dataFile.status || 'UNKNOWN');
+                    $('#statusMessage').text(dataFile.statusMessage || '');
+                    if ((dataFile.status == 'NEW') || (dataFile.status == 'PROCESSING')) {
+                        $('#status')
+                            .append(' ')
+                            .append($('<img>').attr('src', '${pageContext.request.contextPath}/img/ui-anim_basic_16x16.gif'));
+                        setTimeout(pollDataFile, 1000);
+                    }
+                }
+                else {
+                    $.get(
+                        '${pageContext.request.contextPath}/datafiles/${dataFile.id}',
+                        function(dataFile) {
+                            pollDataFile(dataFile);
+                        },
+                        'json'
+                    );
+                }
+            }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
                 $('#dataFileActionsView').addClass('active');
+                pollDataFile({
+                    numPositionFixes: ${dataFileDetectionCount},
+                    status: '${not empty dataFile.status ? dataFile.status : ""}',
+                    statusMessage: '${not empty dataFile.statusMessage ? dataFile.statusMessage : ""}'
+                });
             });
         </script>
     </jsp:attribute>
@@ -56,21 +83,16 @@
             <td><fmt:formatDate pattern="${dateTimeFormatPattern}" value="${dataFile.createDate}"/> by <c:out value="${dataFile.createUser.fullName}"/></td>
         </tr>
         <tr>
-            <th>Detection Count:</th>
-            <td><c:out value="${dataFileDetectionCount}"/></td>
-        </tr>
-        <tr>
             <th>Processing Status:</th>
-            <td>
-                <c:out value="${not empty dataFile.status ? dataFile.status : 'UNKNOWN'}"/>
-                <c:if test="${(dataFile.status == 'NEW') || (dataFile.status == 'PROCESSING')}">
-                (<a href="javascript:void(0)" onclick="window.location.reload(true);">refresh</a>)
-                </c:if>
-            </td>
+            <td id="status"></td>
         </tr>
         <tr>
             <th>Processing Messages:</th>
-            <td><c:out value="${dataFile.statusMessage}"/></td>
+            <td id="statusMessage"></td>
+        </tr>
+        <tr>
+            <th>Detection Count:</th>
+            <td id="numPositionFixes"></td>
         </tr>
         </table>
     </jsp:body>
