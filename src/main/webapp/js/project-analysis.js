@@ -51,7 +51,6 @@
 
         that.map = new OpenLayers.Map(div, {
             theme: null,
-            units : 'm',
             projection : that.projection900913,
             displayProjection : that.projection4326,
             controls: []
@@ -92,25 +91,39 @@
         that.loadingPanel = new OpenLayers.Control.LoadingPanel();
         that.map.addControl(that.loadingPanel);
 
-        that.googlePhysicalLayer = new OpenLayers.Layer.Google('Google Physical', {
-            type: google.maps.MapTypeId.TERRAIN,
-            metadata: {category: 'base'}
-        });
         that.googleSatelliteLayer = new OpenLayers.Layer.Google('Google Satellite', {
             type: google.maps.MapTypeId.SATELLITE,
+            sphericalMercator: true,
+            wrapDateLine: true,
             numZoomLevels: 22,
             metadata: {category: 'base'}
         });
+        that.map.addLayer(that.googleSatelliteLayer);
+
+        that.googlePhysicalLayer = new OpenLayers.Layer.Google('Google Physical', {
+            type: google.maps.MapTypeId.TERRAIN,
+            sphericalMercator: true,
+            wrapDateLine: true,
+            metadata: {category: 'base'}
+        });
+        that.map.addLayer(that.googlePhysicalLayer);
+
         that.googleStreetsLayer = new OpenLayers.Layer.Google('Google Streets', {
+            sphericalMercator: true,
+            wrapDateLine: true,
             numZoomLevels: 20,
             metadata: {category: 'base'}
         });
+        that.map.addLayer(that.googleStreetsLayer);
+
         that.googleHybridLayer = new OpenLayers.Layer.Google('Google Hybrid', {
             type: google.maps.MapTypeId.HYBRID,
+            sphericalMercator: true,
+            wrapDateLine: true,
             numZoomLevels: 20,
             metadata: {category: 'base'}
         });
-        that.map.addLayers([that.googleSatelliteLayer, that.googlePhysicalLayer, that.googleStreetsLayer, that.googleHybridLayer]);
+        that.map.addLayer(that.googleHybridLayer);
 
         that.osmLayer = new OpenLayers.Layer.OSM('OpenStreetMap', null, {
             metadata: {category: 'base'}
@@ -119,6 +132,7 @@
 
         that.emptyBaseLayer = new OpenLayers.Layer("None", {
             isBaseLayer: true,
+            wrapDateLine: true,
             numZoomLevels : 22,
             metadata: {category: 'base'}
         });
@@ -682,8 +696,15 @@
         });
         that.map.addControl(getFeatureInfoControl);
         getFeatureInfoControl.activate();
-        
-        that.map.zoomToExtent(that.projectBounds, false);
+
+        // Workaround because we can't use OpenLayers.Map.zoomToExtent:
+        // calling map.zoomToExtent(bounds, false) sometimes sets center to (0, 0).
+        function zoomToExtent(bounds) {
+            that.map.setCenter(bounds.getCenterLonLat().wrapDateLine(that.map.maxExtent));
+            that.map.zoomTo(that.map.getZoomForExtent(bounds, false));
+        }
+
+        zoomToExtent(that.projectBounds);
 
         function createPointStyleMap() {
             var styleContext = {
@@ -1218,7 +1239,7 @@
 
         that.zoomToAnimal = function(animalId) {
             if (that.animalBounds[animalId]) {
-                that.map.zoomToExtent(that.animalBounds[animalId], false);
+                zoomToExtent(that.animalBounds[animalId], false);
             }
         };
 
