@@ -148,7 +148,11 @@ public class PositionFixDaoImpl implements PositionFixDao {
             queryString += "    and id not in (:speedFilterPositionFixes)\n";
         }
         if (multiPolygon != null) {
-            queryString += "    and ST_Within(locationgeometry, ST_GeomFromText(:wkt, 4326))\n";
+            String unshiftedPointExpr = "locationgeometry";
+            String unshiftedMultiPolygonExpr = "ST_GeomFromText(:wkt, 4326)";
+            String pointExpr = project.getCrosses180() ? "ST_Shift_Longitude(" + unshiftedPointExpr + ")" : unshiftedPointExpr;
+            String multiPolygonExpr = project.getCrosses180() ? "ST_Shift_Longitude(" + unshiftedMultiPolygonExpr + ")" : unshiftedMultiPolygonExpr;
+            queryString += "    and ST_Within(" + pointExpr + ", " + multiPolygonExpr + ")\n";
         }
         queryString += ";";
         Query query = em.createNativeQuery(queryString);
@@ -180,6 +184,8 @@ public class PositionFixDaoImpl implements PositionFixDao {
             .setParameter("projectId", project.getId())
             .executeUpdate();
 
+        String unshiftedPointExpr = "positionfix.locationgeometry";
+        String pointExpr = project.getCrosses180() ? "ST_Shift_Longitude(" + unshiftedPointExpr + ")" : unshiftedPointExpr;
         em.createNativeQuery(
                 "insert into positionfixlayer(\n" +
                 "    id,\n" +
@@ -195,7 +201,7 @@ public class PositionFixDaoImpl implements PositionFixDao {
                 "    project.id as project_id,\n" +
                 "    positionfix.animal_id as animal_id,\n" +
                 "    positionfix.detectiontime as detectiontime,\n" +
-                "    positionfix.locationgeometry as locationgeometry,\n" +
+                "    " + pointExpr + " as locationgeometry,\n" +
                 "    positionfix.deleted as deleted,\n" +
                 "    animal.colour as colour\n" +
                 "from\n" +
@@ -253,6 +259,8 @@ public class PositionFixDaoImpl implements PositionFixDao {
             .setParameter("projectId", project.getId())
             .executeUpdate();
 
+        String unshiftedLineExpr = "ST_MakeLine(positionfix1.locationgeometry, positionfix2.locationgeometry)";
+        String lineExpr = project.getCrosses180() ? "ST_Shift_Longitude(" + unshiftedLineExpr + ")" : unshiftedLineExpr;
         em.createNativeQuery(
                 "insert into trajectorylayer(\n" +
                 "    id,\n" +
@@ -270,7 +278,7 @@ public class PositionFixDaoImpl implements PositionFixDao {
                 "    positionfix1.detectiontime as startdetectiontime,\n" +
                 "    positionfix2.detectiontime as enddetectiontime,\n" +
                 "    positionfix1.colour as colour,\n" +
-                "    ST_MakeLine(positionfix1.locationgeometry, positionfix2.locationgeometry) as trajectorygeometry\n" +
+                "    " + lineExpr + " as trajectorygeometry\n" +
                 "from\n" +
                 "    positionfixnumbered positionfix1\n" +
                 "    inner join positionfixnumbered positionfix2 on\n" +

@@ -160,6 +160,7 @@
                 onResize();
                 cleanseMap = new OzTrack.CleanseMap('projectMap', {
                     projectId: <c:out value="${project.id}"/>,
+                    crosses180: ${project.crosses180},
                     <c:if test="${(project.access == 'OPEN') and (project.dataLicence != null)}">
                     dataLicence: {
                         title: '${project.dataLicence.title}',

@@ -356,6 +356,7 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
          format: null,
          handler: null,
          formerViewPortDivTitle: null,
+         crosses180: false,
 
          /**
           * APIProperty: events
@@ -418,11 +419,26 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                  OpenLayers.Element.removeClass(this.map.viewPortDiv, "olCursorWait");
                  return;
              }
-             var wmsOptions = this.buildWMSOptions(evt.xy); 
-             var request = OpenLayers.Request.GET(wmsOptions);
+
+             var acc = {
+                 numPendingRequests: 1 + (this.crosses180 ? 1 : 0),
+                 features: []
+             };
+
+             var unshiftedExtent = this.map.getExtent();
+             var unshiftedWmsOptions = this.buildWMSOptions(evt.xy, unshiftedExtent, acc);
+             var unshiftedRequest = OpenLayers.Request.GET(unshiftedWmsOptions);
+
+             if (this.crosses180) {
+                 var shiftedExtent = unshiftedExtent.clone();
+                 shiftedExtent.left -= 20037508.34;
+                 shiftedExtent.right -= 20037508.34;
+                 var shiftedWmsOptions = this.buildWMSOptions(evt.xy, shiftedExtent, acc);
+                 var shiftedRequest = OpenLayers.Request.GET(shiftedWmsOptions);
+             }
          },
 
-         buildWMSOptions: function(clickPosition) {
+         buildWMSOptions: function(clickPosition, extent, acc) {
              var layerNames = [], styleNames = [], propertyNameParams = [], cqlFilterParams = [];
              for (var i = 0, len = this.layerDetails.length; i < len; i++) {
                  if (
@@ -448,8 +464,7 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                  version: firstLayer.params.VERSION,
                  request: "GetFeatureInfo",
                  exceptions: firstLayer.params.EXCEPTIONS,
-                 bbox: this.map.getExtent().toBBOX(null,
-                     firstLayer.reverseAxisOrder()),
+                 bbox: extent.toBBOX(null, firstLayer.reverseAxisOrder()),
                  feature_count: this.maxFeatures,
                  height: this.map.getSize().h,
                  width: this.map.getSize().w,
@@ -481,7 +496,7 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                  url: this.url,
                  params: OpenLayers.Util.upperCaseObject(params),
                  callback: function(request) {
-                     this.handleResponse(clickPosition, request, this.url);
+                     this.handleResponse(clickPosition, request, this.url, acc);
                  },
                  scope: this
              };
@@ -503,18 +518,20 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
              return styleNames;
          },
          
-         handleResponse: function(xy, request, url) {
+         handleResponse: function(xy, request, url, acc) {
              var doc = request.responseXML;
              if (!doc || !doc.documentElement) {
                  doc = request.responseText;
              }
              var features = this.format.read(doc);
-             this.events.triggerEvent("getfeatureinfo", {
-                 text: request.responseText,
-                 features: features,
-                 request: request,
-                 xy: xy
-             });
+             acc.features = acc.features.concat(features);
+             acc.numPendingRequests--;
+             if (acc.numPendingRequests == 0) {
+                 this.events.triggerEvent("getfeatureinfo", {
+                     features: acc.features,
+                     xy: xy
+                 });
+             }
              OpenLayers.Element.removeClass(this.map.viewPortDiv, "olCursorWait");
          },
 

@@ -10,6 +10,7 @@
         that.projection4326 = new OpenLayers.Projection('EPSG:4326');
 
         that.projectId = options.projectId;
+        that.crosses180 = options.crosses180;
         that.dataLicence = options.dataLicence;
         that.fromDate = options.fromDate;
         that.toDate = options.toDate;
@@ -19,9 +20,19 @@
             that.animalVisible[animalId] = true;
         });
         that.projectBounds = options.projectBounds.clone().transform(that.projection4326, that.projection900913);
+        if (that.crosses180) {
+            that.projectBounds.left = (that.projectBounds.left + 40075016.68) % 40075016.68;
+            that.projectBounds.right = (that.projectBounds.right + 40075016.68) % 40075016.68;
+        }
         that.onReset = options.onReset;
         that.onPolygonFeatureAdded = options.onPolygonFeatureAdded;
         that.onDeletePolygonFeature = options.onDeletePolygonFeature;
+
+        that.maxExtent = new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
+        if (that.crosses180) {
+            that.maxExtent.left += 20037508.34;
+            that.maxExtent.right += 20037508.34;
+        }
 
         that.map = new OpenLayers.Map(div, {
             theme: null,
@@ -63,25 +74,40 @@
 
         that.googlePhysicalLayer = new OpenLayers.Layer.Google('Google Physical', {
             type: google.maps.MapTypeId.TERRAIN,
+            sphericalMercator: true,
+            maxExtent: that.maxExtent,
+            wrapDateLine: true,
             metadata: {category: 'base'}
         });
         that.googleSatelliteLayer = new OpenLayers.Layer.Google('Google Satellite', {
             type: google.maps.MapTypeId.SATELLITE,
+            sphericalMercator: true,
+            maxExtent: that.maxExtent,
+            wrapDateLine: true,
             numZoomLevels: 22,
             metadata: {category: 'base'}
         });
         that.googleStreetsLayer = new OpenLayers.Layer.Google('Google Streets', {
+            sphericalMercator: true,
+            maxExtent: that.maxExtent,
+            wrapDateLine: true,
             numZoomLevels: 20,
             metadata: {category: 'base'}
         });
         that.googleHybridLayer = new OpenLayers.Layer.Google('Google Hybrid', {
             type: google.maps.MapTypeId.HYBRID,
+            sphericalMercator: true,
+            maxExtent: that.maxExtent,
+            wrapDateLine: true,
             numZoomLevels: 20,
             metadata: {category: 'base'}
         });
         that.map.addLayers([that.googleSatelliteLayer, that.googlePhysicalLayer, that.googleStreetsLayer, that.googleHybridLayer]);
 
         that.osmLayer = new OpenLayers.Layer.OSM('OpenStreetMap', null, {
+            sphericalMercator: true,
+            maxExtent: that.maxExtent,
+            wrapDateLine: true,
             metadata: {category: 'base'}
         });
         that.map.addLayer(that.osmLayer);
@@ -105,7 +131,14 @@
         });
         that.map.addControl(that.highlightControl);
 
-        that.map.zoomToExtent(that.projectBounds);
+        // Workaround because we can't use OpenLayers.Map.zoomToExtent:
+        // calling map.zoomToExtent(bounds, false) sometimes sets center to (0, 0).
+        function zoomToExtent(bounds) {
+            that.map.setCenter(bounds.getCenterLonLat().wrapDateLine(that.map.maxExtent));
+            that.map.zoomTo(that.map.getZoomForExtent(bounds, false));
+        }
+
+        zoomToExtent(that.projectBounds);
 
         that.reset = function() {
             updateFilter();

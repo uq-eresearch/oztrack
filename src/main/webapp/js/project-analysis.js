@@ -48,6 +48,11 @@
         that.analyses = {};
         that.projectMapLayerIdSeq = 0;
         that.wfsLayerIdSeq = 0;
+        that.maxExtent = new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
+        if (that.crosses180) {
+            that.maxExtent.left += 20037508.34;
+            that.maxExtent.right += 20037508.34;
+        }
 
         that.map = new OpenLayers.Map(div, {
             theme: null,
@@ -94,6 +99,7 @@
         that.googleSatelliteLayer = new OpenLayers.Layer.Google('Google Satellite', {
             type: google.maps.MapTypeId.SATELLITE,
             sphericalMercator: true,
+            maxExtent: that.maxExtent,
             wrapDateLine: true,
             numZoomLevels: 22,
             metadata: {category: 'base'}
@@ -103,6 +109,7 @@
         that.googlePhysicalLayer = new OpenLayers.Layer.Google('Google Physical', {
             type: google.maps.MapTypeId.TERRAIN,
             sphericalMercator: true,
+            maxExtent: that.maxExtent,
             wrapDateLine: true,
             metadata: {category: 'base'}
         });
@@ -110,6 +117,7 @@
 
         that.googleStreetsLayer = new OpenLayers.Layer.Google('Google Streets', {
             sphericalMercator: true,
+            maxExtent: that.maxExtent,
             wrapDateLine: true,
             numZoomLevels: 20,
             metadata: {category: 'base'}
@@ -119,6 +127,7 @@
         that.googleHybridLayer = new OpenLayers.Layer.Google('Google Hybrid', {
             type: google.maps.MapTypeId.HYBRID,
             sphericalMercator: true,
+            maxExtent: that.maxExtent,
             wrapDateLine: true,
             numZoomLevels: 20,
             metadata: {category: 'base'}
@@ -126,12 +135,14 @@
         that.map.addLayer(that.googleHybridLayer);
 
         that.osmLayer = new OpenLayers.Layer.OSM('OpenStreetMap', null, {
+            maxExtent: that.maxExtent,
             metadata: {category: 'base'}
         });
         that.map.addLayer(that.osmLayer);
 
         that.emptyBaseLayer = new OpenLayers.Layer("None", {
             isBaseLayer: true,
+            maxExtent: that.maxExtent,
             wrapDateLine: true,
             numZoomLevels : 22,
             metadata: {category: 'base'}
@@ -416,7 +427,7 @@
             var x = geometry.x || geometry.lon;
             var y = geometry.y || geometry.lat;
             var round = function(n) {return (Math.round(n * 1000000) / 1000000);};
-            return '(' + round(x) + ', ' + round(y) + ')';
+            return '(' + round((x > 180.0) ? (x - 360.0) : x) + ', ' + round(y) + ')';
         }
         var capadPropertyNames = [
             'NAME',
@@ -436,6 +447,7 @@
         var getFeatureInfoControl = new OzTrack.OpenLayers.Control.WMSGetFeatureInfo({
             url: '/geoserver/wms',
             layerUrls: ['/geoserver/gwc/service/wms'],
+            crosses180: that.crosses180,
             layerDetails: [
                 {
                     layer: that.bathymetryLayer,
@@ -935,15 +947,11 @@
                 that.loadingPanel.decreaseCounter();
                 if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
                     if (that.crosses180) {
-                        var primeMeridianLon = that.map.baseLayer.maxExtent.getCenterLonLat().lon;
-                        var boundsWidth = that.map.baseLayer.maxExtent.getWidth();
                         $.each(resp.features, function(i, feature) {
                             var geometries = feature.components || [feature.geometry];
                             $.each(geometries, function(j, geometry) {
                                 $.each(geometry.getVertices(), function(k, vertex) {
-                                    if (vertex.x < primeMeridianLon) {
-                                        vertex.x += boundsWidth;
-                                    }
+                                    vertex.x = (vertex.x + 40075016.68) % 40075016.68;
                                 });
                             });
                         });
