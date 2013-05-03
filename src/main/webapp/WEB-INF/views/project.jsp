@@ -40,6 +40,9 @@
             .searchLink {
                 display: inline-block;
             }
+            .searchLink img {
+                max-width: 45px;
+            }
             #searchOptions {
                 margin: 9px 0;
             }
@@ -601,8 +604,10 @@
 
         <h2>Search Related Sites</h2>
 
+        <p>Click the buttons below to find datasets on related websites.</p>
+
         <div id="searchLinks">
-            <a id="searchTernLink" class="searchLink" href="#"><img class="img-polaroid" src="${pageContext.request.contextPath}/img/tern-logo.gif" /></a>
+            <a id="searchTernLink" class="btn btn-small searchLink" href="#"><img src="${pageContext.request.contextPath}/img/tern-logo.gif" /></a>
         </div>
         <div id="searchOptions">
             <label class="checkbox"><input id="advancedSearch" type="checkbox" /> Advanced search</label>
