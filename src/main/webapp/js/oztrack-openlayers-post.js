@@ -3,6 +3,16 @@
 // http://dev.openlayers.org/apidocs/files/OpenLayers-js.html#OpenLayers.ImgPath
 OpenLayers.ImgPath = "/js/openlayers/img/";
 
+// This function in OpenLayers adjusts a requested zoom level so that the map
+// can not be wider than its baseLayer's maxExtent when wrapDateLine == true.
+// However, this is undesirable is OzTrack because it prevents the tracks for
+// wide ranging animals being viewed in their entirety. Making the function a
+// no-op by simply returning the requested zoom unaltered does not appear to
+// cause any problems: maps show correct wrapping of all layers.
+OpenLayers.Map.prototype.adjustZoom = function (zoom) {
+    return zoom;
+};
+
 (function(OzTrack) {
     OzTrack.OpenLayers = OzTrack.OpenLayers || {};
     OzTrack.OpenLayers.Control = OzTrack.OpenLayers.Control || {};
