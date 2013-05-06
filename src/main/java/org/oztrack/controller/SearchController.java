@@ -1,6 +1,7 @@
 package org.oztrack.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import org.oztrack.view.SearchQueryXLSView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
@@ -46,6 +48,9 @@ public class SearchController {
     @Autowired
     AnimalDao animalDao;
 
+    @Autowired
+    private OzTrackPermissionEvaluator permissionEvaluator;
+
     @InitBinder("project")
     public void initProjectBinder(WebDataBinder binder) {
         binder.setAllowedFields();
@@ -68,9 +73,16 @@ public class SearchController {
     }
 
     @ModelAttribute("searchQuery")
-    public SearchQuery getSearchQuery(@ModelAttribute(value="project") Project project) {
+    public SearchQuery getSearchQuery(
+        Authentication authentication,
+        @ModelAttribute(value="project") Project project,
+        @RequestParam(value="includeDeleted", required=false) Boolean includeDeleted
+    ) {
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setProject(project);
+        if (permissionEvaluator.hasPermission(authentication, project, "write")) {
+            searchQuery.setIncludeDeleted(includeDeleted);
+        }
         return searchQuery;
     }
 
@@ -89,12 +101,12 @@ public class SearchController {
     @PreAuthorize("hasPermission(#searchQuery.project, 'read')")
     public View handleRequest(
         Model model,
-        @ModelAttribute(value="searchQuery") SearchQuery searchQuery,
+        @ModelAttribute(value="searchQuery") final SearchQuery searchQuery,
         @RequestParam(value="format", defaultValue="xls") String format
     ) throws Exception {
         final List<PositionFix> positionFixes = positionFixDao.getProjectPositionFixList(searchQuery);
         if (format.equals("xls")) {
-            return new SearchQueryXLSView(searchQuery.getProject(), positionFixes);
+            return new SearchQueryXLSView(searchQuery.getProject(), positionFixes, (searchQuery.getIncludeDeleted() != null) && searchQuery.getIncludeDeleted());
         }
         else {
             return new View() {
@@ -108,15 +120,26 @@ public class SearchController {
                     response.setHeader("Content-Disposition", "attachment; filename=\"export.csv\"");
                     CSVWriter writer = new CSVWriter(response.getWriter());
                     try {
-                        writer.writeNext(new String[] {"ANIMALID", "DATE", "LONGITUDE", "LATITUDE"});
+                        ArrayList<String> headerLine = new ArrayList<String>();
+                        headerLine.add("ANIMALID");
+                        headerLine.add("DATE");
+                        headerLine.add("LONGITUDE");
+                        headerLine.add("LATITUDE");
+                        if ((searchQuery.getIncludeDeleted() != null) && searchQuery.getIncludeDeleted()) {
+                            headerLine.add("DELETED");
+                        }
+                        writer.writeNext(headerLine.toArray(new String[] {}));
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
                         for (PositionFix positionFix : positionFixes) {
-                            writer.writeNext(new String[] {
-                                positionFix.getAnimal().getProjectAnimalId(),
-                                dateFormat.format(positionFix.getDetectionTime()),
-                                String.valueOf(positionFix.getLocationGeometry().getX()),
-                                String.valueOf(positionFix.getLocationGeometry().getY())
-                            });
+                            ArrayList<String> valuesLine = new ArrayList<String>();
+                            valuesLine.add(positionFix.getAnimal().getProjectAnimalId());
+                            valuesLine.add(dateFormat.format(positionFix.getDetectionTime()));
+                            valuesLine.add(String.valueOf(positionFix.getLocationGeometry().getX()));
+                            valuesLine.add(String.valueOf(positionFix.getLocationGeometry().getY()));
+                            if ((searchQuery.getIncludeDeleted() != null) && searchQuery.getIncludeDeleted()) {
+                                valuesLine.add(((positionFix.getDeleted() != null) && positionFix.getDeleted()) ? "TRUE" : "FALSE");
+                            }
+                            writer.writeNext(valuesLine.toArray(new String[] {}));
                         }
                     }
                     finally {

@@ -5,6 +5,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ attribute name="positionFixPage" type="org.oztrack.data.access.Page" required="true" %>
 <%@ attribute name="individualAnimal" type="java.lang.Boolean" required="false" %>
+<%@ attribute name="includeDeleted" type="java.lang.Boolean" required="false" %>
 <c:set var="dateFormatPattern" value="yyyy-MM-dd"/>
 <c:set var="dateTimeFormatPattern" value="yyyy-MM-dd HH:mm:ss"/>
 <div class="searchResultsNav">
@@ -85,15 +86,18 @@
 
 <c:if test="${positionFixPage.objects != null}">
 <table class="table table-bordered table-condensed">
-    <col style="width: 110px;" />
-    <c:if test="${not individualAnimal}">
-    <col style="width: 60px;" />
     <col style="width: 150px;" />
+    <c:if test="${not individualAnimal}">
+    <col style="width: 90px;" />
+    <col style="width: 200px;" />
     </c:if>
-    <col style="width: 70px;" />
-    <col style="width: 70px;" />
+    <col style="width: 90px;" />
+    <col style="width: 90px;" />
     <sec:authorize access="hasPermission(#project, 'write')">
-    <col style="width: 70px;" />
+    <col style="width: 80px;" />
+    <c:if test="${includeDeleted}">
+    <col style="width: 50px;" />
+    </c:if>
     </sec:authorize>
     <thead>
         <tr>
@@ -106,6 +110,9 @@
             <th>Latitude</th>
             <sec:authorize access="hasPermission(#project, 'write')">
             <th>Uploaded</th>
+            <c:if test="${includeDeleted}">
+            <th>Deleted</th>
+            </c:if>
             </sec:authorize>
         </tr>
     </thead>
@@ -124,6 +131,11 @@
                 <a href="${pageContext.request.contextPath}/datafiles/${detection.dataFile.id}"
                 ><fmt:formatDate pattern="${dateFormatPattern}" value="${detection.dataFile.createDate}"/></a>
             </td>
+            <c:if test="${includeDeleted}">
+            <td>
+                ${detection.deleted ? 'Y' : 'N'}
+            </td>
+            </c:if>
             </sec:authorize>
         </tr>
         </c:forEach>

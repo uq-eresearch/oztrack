@@ -84,6 +84,9 @@ public class SearchQuery {
         if (getSortField() != null) {
             params.add("sortField=" + getSortField());
         }
+        if (getIncludeDeleted() != null) {
+            params.add("includeDeleted=" + getIncludeDeleted());
+        }
         return StringUtils.join(params, "&");
     }
 }

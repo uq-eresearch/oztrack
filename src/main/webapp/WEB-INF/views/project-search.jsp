@@ -78,12 +78,20 @@
                         </form:select>
                     </div>
                 </div>
+                <sec:authorize access="hasPermission(#project, 'write')">
+                <div class="control-group">
+                    <label class="control-label" for="includeDeleted">Include deleted:</label>
+                    <div class="controls">
+                        <input type="checkbox" name="includeDeleted" ${searchQuery.includeDeleted ?  'checked="checked"' : ''} value="true" />
+                    </div>
+                </div>
+                </sec:authorize>
             </fieldset>
             <div class="form-actions">
                 <input class="btn btn-primary" type="submit" value="Search"/>
             </div>
         </form:form>
 
-        <tags:search-results positionFixPage="${positionFixPage}"/>
+        <tags:search-results positionFixPage="${positionFixPage}" includeDeleted="${searchQuery.includeDeleted}"/>
     </jsp:body>
 </tags:page>

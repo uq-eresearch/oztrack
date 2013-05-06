@@ -25,10 +25,12 @@ public class SearchQueryXLSView extends AbstractExcelView {
     @SuppressWarnings("unused")
     private Project project;
     private List<PositionFix> positionFixes;
+    private boolean includeDeleted;
 
-    public SearchQueryXLSView(Project project, List<PositionFix> positionFixes) {
+    public SearchQueryXLSView(Project project, List<PositionFix> positionFixes, boolean includeDeleted) {
         this.project = project;
         this.positionFixes = positionFixes;
+        this.includeDeleted = includeDeleted;
     }
 
     @Override
@@ -55,6 +57,9 @@ public class SearchQueryXLSView extends AbstractExcelView {
             headerRow.createCell(colNum++).setCellValue("DATE");
             headerRow.createCell(colNum++).setCellValue("LATITUDE");
             headerRow.createCell(colNum++).setCellValue("LONGITUDE");
+            if (includeDeleted) {
+                headerRow.createCell(colNum++).setCellValue("DELETED");
+            }
         }
 
         CreationHelper createHelper = workbook.getCreationHelper();
@@ -86,6 +91,12 @@ public class SearchQueryXLSView extends AbstractExcelView {
                 lngCell.setCellType(Cell.CELL_TYPE_NUMERIC);
                 lngCell.setCellValue(Double.parseDouble(positionFix.getLongitude()));
                 lngCell.setCellStyle(latLngCellStyle);
+
+                if (includeDeleted) {
+                    HSSFCell deletedCell = row.createCell(colNum++);
+                    deletedCell.setCellType(Cell.CELL_TYPE_BOOLEAN);
+                    deletedCell.setCellValue((positionFix.getDeleted() != null) && positionFix.getDeleted());
+                }
             }
             catch (Exception e) {
                 logger.error("Error writing position fix " + positionFix.getId() + " to XLS", e);

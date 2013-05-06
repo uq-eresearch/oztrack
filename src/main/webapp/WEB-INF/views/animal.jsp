@@ -60,6 +60,6 @@
         </p>
         </c:if>
         </sec:authorize>
-        <tags:search-results positionFixPage="${positionFixPage}" individualAnimal="true"/>
+        <tags:search-results positionFixPage="${positionFixPage}" individualAnimal="true" includeDeleted="false"/>
     </jsp:body>
 </tags:page>
