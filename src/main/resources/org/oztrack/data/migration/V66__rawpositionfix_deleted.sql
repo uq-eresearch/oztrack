@@ -1,0 +1,1 @@
+alter table rawpositionfix add column deleted boolean not null default false;

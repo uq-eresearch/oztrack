@@ -37,6 +37,9 @@ public class RawPositionFix {
     @Type(type = "org.hibernatespatial.GeometryUserType")
     private Point locationGeometry;
 
+    @Column(nullable=false)
+    private Boolean deleted;
+
     public Long getId() {
         return id;
     }
@@ -83,5 +86,13 @@ public class RawPositionFix {
 
     public void setLocationGeometry(Point locationGeometry) {
         this.locationGeometry = locationGeometry;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

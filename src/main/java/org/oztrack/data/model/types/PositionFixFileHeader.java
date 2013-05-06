@@ -14,5 +14,6 @@ public enum PositionFixFileHeader {
     LONG,
     LON,
     ANIMALID,
-    ID
+    ID,
+    DELETED
 }

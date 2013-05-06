@@ -18,14 +18,16 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
                 " ,longitude" +
                 " ,animal_id" +
                 " ,datafile_id" +
-                " ,locationgeometry)" +
+                " ,locationgeometry" +
+                " ,deleted)" +
                 " SELECT rpf.id" +
                 " ,rpf.detectiontime" +
                 " ,rpf.latitude" +
                 " ,rpf.longitude" +
                 " ,ani.id" +
                 " ,?" +
-                " ,rpf.locationgeometry " +
+                " ,rpf.locationgeometry" +
+                " ,rpf.deleted" +
                 " FROM rawpositionfix rpf" +
                 " ,animal ani" ;
         if (dataFile.getSingleAnimalInFile()) {

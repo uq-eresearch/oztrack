@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -117,6 +118,8 @@ public class PositionFixFileLoader extends DataFileLoader {
                             case ANIMALID:
                                 animalIdFieldFound = true;
                                 break;
+                            case DELETED:
+                                break;
                             default:
                                 logger.debug("Unhandled positionFixFileHeader: " + positionFixFileHeader);
                                 break;
@@ -211,6 +214,9 @@ public class PositionFixFileLoader extends DataFileLoader {
                                     case ID:
                                     case ANIMALID:
                                         rawPositionFix.setAnimalId(dataRow[i]);
+                                        break;
+                                    case DELETED:
+                                        rawPositionFix.setDeleted(Boolean.valueOf(dataRow[i].toLowerCase(Locale.ENGLISH)));
                                         break;
                                     default:
                                         logger.debug("Unhandled positionFixFileHeader: " + positionFixFileHeader);
