@@ -671,7 +671,7 @@
         <div id="projectMapOptionsInner">
         <div id="projectMapOptionsTabs">
             <ul>
-                <li><a href="#animalPanel">Results</a></li>
+                <li><a href="#animalPanel">Animals</a></li>
                 <li><a href="#homeRangeCalculatorPanel">Analysis</a></li>
                 <li><a href="#previousAnalysesPanel">History</a></li>
             </ul>
