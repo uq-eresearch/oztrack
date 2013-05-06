@@ -174,6 +174,20 @@
                 font-weight: bold;
                 white-space: nowrap;
             }
+            #projectMapOptions #toggleSidebar {
+                display: block;
+                position: absolute;
+                top: 0;
+                right: 0;
+                text-align: center;
+            }
+            #projectMapOptions.minimised,
+            #projectMapOptions.minimised #toggleSidebar {
+                width: 16px;
+            }
+            #projectMapOptions.minimised #toggleSidebar {
+                background-color: #e6e6c0;
+            }
         </style>
     </jsp:attribute>
     <jsp:attribute name="tail">
@@ -457,6 +471,12 @@
                 $(window).resize(repositionSelectAnimalConfirmationBox);
                 $('#animalPanel').scroll(repositionSelectAnimalConfirmationBox);
                 repositionSelectAnimalConfirmationBox();
+                $('#toggleSidebar').click(function(e) {
+                    e.preventDefault();
+                    $(this).find('i').toggleClass('icon-chevron-left').toggleClass('icon-chevron-right');
+                    $('#projectMapOptions').toggleClass('minimised');
+                    onResize();
+                });
             });
             function addAnalysis(layerName, analysisUrl, analysisCreateDate, saved) {
                 var analysisContainer = $('<li class="analysis">');
@@ -644,6 +664,12 @@
             function onResize() {
                 var mainHeight = $(window).height() - $('#header').outerHeight();
                 $('#projectMapOptions').height(mainHeight);
+                $('#toggleSidebar').height(
+                    $('#projectMapOptions').hasClass('minimised')
+                    ? $('#projectMapOptions').innerHeight()
+                    : $('#projectMapOptionsTabs .ui-tabs-nav').innerHeight()
+                );
+                $('#toggleSidebar *').position({my: "center", at: "center", of: "#toggleSidebar"});
                 $('#projectMapOptions .ui-tabs-panel').height(
                     $('#projectMapOptions').innerHeight() -
                     $('#projectMapOptions .ui-tabs-nav').outerHeight() -
@@ -651,6 +677,7 @@
                     parseInt($('#projectMapOptions .ui-tabs-panel').css('padding-bottom'))
                 );
                 $('#projectMap').height(mainHeight);
+                $('#projectMap').width($(window).width() - $('#projectMapOptions').width());
                 if (analysisMap) {
                     analysisMap.updateSize();
                 }
@@ -911,6 +938,8 @@
                 <ul id="previousAnalysesList" class="icons" style="display: none;">
                 </ul>
             </div>
+
+            <a id="toggleSidebar" href="#toggleSidebar"><i class="icon-chevron-left"></i></a>
         </div>
         </div>
         </div>
