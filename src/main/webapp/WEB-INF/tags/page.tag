@@ -31,50 +31,52 @@
     <div class="container${fluid ? '-fluid' : ''}">
     <div id="banner">
         <div id="banner-left">
-            <c:if test="${!empty navExtra}">
-            <div id="nav-extra">
-                <jsp:invoke fragment="navExtra"/>
-            </div>
-            </c:if>
         </div>
         <div id="banner-right">
-            <div id="login">
-                <c:choose>
-                <c:when test="${currentUser != null}">
-                <div class="btn-group">
-                    <a class="btn btn-inverse dropdown-toggle" data-toggle="dropdown" href="#">
-                        <span><c:out value="${currentUser.fullName}"/></span>
-                        <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu pull-right">
-                        <li><a href="${pageContext.request.contextPath}/users/${currentUser.id}/edit">Edit profile</a></li>
-                        <c:if test="${currentUser.admin}">
-                        <li><a href="${pageContext.request.contextPath}/settings">Settings</a></li>
-                        </c:if>
-                        <li><a href="${pageContext.request.contextPath}/logout">Logout</a></li>
-                    </ul>
-                </div>
-                </c:when>
-                <c:otherwise>
-                <div>
-                    <a class="btn btn-inverse" href="${pageContext.request.contextPath}/users/new">Register</a>
-                    <a class="btn btn-inverse" href="${pageContext.request.contextPath}/login">Login</a>
-                </div>
-                </c:otherwise>
-                </c:choose>
-            </div>
         </div>
     </div>
     </div>
-    <div class="navbar navbar-inverse">
-      <div class="navbar-inner">
-        <ul class="nav">
-          <li id="navHome"><a href="${pageContext.request.contextPath}/">Home</a></li>
-          <li id="navTrack"><a href="${pageContext.request.contextPath}/projects">Projects</a></li>
-          <li id="navAbout"><a href="${pageContext.request.contextPath}/about">About</a></li>
-          <li id="navContact"><a href="${pageContext.request.contextPath}/contact">Contact</a></li>
-        </ul>
-      </div>
+    <div class="navbar-outer">
+        <c:if test="${!empty navExtra}">
+        <div id="nav-extra">
+            <jsp:invoke fragment="navExtra"/>
+        </div>
+        </c:if>
+        <div id="login">
+            <c:choose>
+            <c:when test="${currentUser != null}">
+            <div class="btn-group">
+                <a class="btn btn-inverse dropdown-toggle" data-toggle="dropdown" href="#">
+                    <span><c:out value="${currentUser.fullName}"/></span>
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu pull-right">
+                    <li><a href="${pageContext.request.contextPath}/users/${currentUser.id}/edit">Edit profile</a></li>
+                    <c:if test="${currentUser.admin}">
+                    <li><a href="${pageContext.request.contextPath}/settings">Settings</a></li>
+                    </c:if>
+                    <li><a href="${pageContext.request.contextPath}/logout">Logout</a></li>
+                </ul>
+            </div>
+            </c:when>
+            <c:otherwise>
+            <div>
+                <a class="btn btn-inverse" href="${pageContext.request.contextPath}/users/new">Register</a>
+                <a class="btn btn-inverse" href="${pageContext.request.contextPath}/login">Login</a>
+            </div>
+            </c:otherwise>
+            </c:choose>
+        </div>
+        <div class="navbar navbar-inverse">
+          <div class="navbar-inner">
+            <ul class="nav">
+              <li id="navHome"><a href="${pageContext.request.contextPath}/">Home</a></li>
+              <li id="navTrack"><a href="${pageContext.request.contextPath}/projects">Projects</a></li>
+              <li id="navAbout"><a href="${pageContext.request.contextPath}/about">About</a></li>
+              <li id="navContact"><a href="${pageContext.request.contextPath}/contact">Contact</a></li>
+            </ul>
+          </div>
+        </div>
     </div>
 </div>
 <div id="main">
