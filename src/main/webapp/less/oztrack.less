@@ -279,6 +279,9 @@ a.thumbnail:hover {
 
 #header {
   background-color: white;
+  background-image: url('../img/header_croc.jpg');
+  background-position: right top;
+  background-repeat: no-repeat;
 }
 
 @bannerLeftImageWidth: 152px;
@@ -303,9 +306,6 @@ a.thumbnail:hover {
 #banner-right {
   margin-left: @bannerLeftWidth;
   height: @bannerHeight;
-  background-image: url('../img/header_croc.jpg');
-  background-position: right center;
-  background-repeat: no-repeat;
 }
 
 .container-fluid #banner-right {
@@ -320,7 +320,7 @@ a.thumbnail:hover {
 
 #nav-extra {
   position: absolute;
-  top: @bannerHeight + 1px;
+  top: @bannerHeight + 5px;
   left: 5px;
 }
 
@@ -645,14 +645,6 @@ ul.icons li.artwork {background-image: url('../img/palette.png');}
     padding: 10px;
     overflow-y: scroll;
     overflow-x: auto;
-}
-
-#projectMapOptionsBack {
-  display: inline-block;
-  padding: 9px 0;
-  color: #fff;
-  font-weight: bold;
-  text-decoration: none;
 }
 
 .projectMapLogo {

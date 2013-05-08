@@ -10,7 +10,7 @@
         Edit data in the ${project.title} project.
     </jsp:attribute>
     <jsp:attribute name="navExtra">
-        <a id="projectMapOptionsBack" href="/projects/${project.id}"><span class="icon-chevron-left icon-white"></span> Back to project</a>
+        <a id="projectMapOptionsBack" class="btn btn-inverse" href="/projects/${project.id}"><span class="icon-chevron-left icon-white"></span> Back to project</a>
     </jsp:attribute>
     <jsp:attribute name="head">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/optimised/openlayers.css" type="text/css">

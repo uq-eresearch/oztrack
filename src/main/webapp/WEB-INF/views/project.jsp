@@ -504,7 +504,7 @@
         </c:set>
         <div class="row ${dataAccessRowClass}" style="margin-left: 0; padding: 0;">
 
-        <div class="span6" style="width: 449px; margin: 7px 20px 10px 10px;">
+        <div class="span6" style="width: 449px; margin: 7px 0px 0px 10px;">
         <c:choose>
         <c:when test="${project.access == 'OPEN'}">
         <p class="project-access-open-title">Open Access</p>
@@ -548,7 +548,7 @@
         </c:if>
         </sec:authorize>
         </div> <!--  .span6 -->
-        <div class="span3" style="width: 209px; margin: 7px 10px 10px 0;">
+        <div class="span3" style="width: 209px; margin: 7px 8px 0px 20px;">
         <dl>
             <dt>Contact</dt>
             <dd>
