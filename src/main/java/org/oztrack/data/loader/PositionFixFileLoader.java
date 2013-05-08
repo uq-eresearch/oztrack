@@ -153,6 +153,7 @@ public class PositionFixFileLoader extends DataFileLoader {
                 while ((dataRow = csvReader.readNext()) != null) {
                     lineNumber++;
                     RawPositionFix rawPositionFix= new RawPositionFix();
+                    rawPositionFix.setDeleted(false);
 
                     logger.debug("file linenumber: " + lineNumber);
 
