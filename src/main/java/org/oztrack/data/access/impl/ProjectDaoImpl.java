@@ -13,7 +13,6 @@ import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.time.DateUtils;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.oztrack.data.access.ProjectDao;
-import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.ProjectUser;
 import org.oztrack.data.model.User;
@@ -167,7 +166,7 @@ public class ProjectDaoImpl implements ProjectDao {
     }
 
     @Override
-    public HashMap<Long, Polygon> getBoundingBoxes(Project project, List<Animal> animals) {
+    public HashMap<Long, Polygon> getAnimalBoundingBoxes(Project project) {
         String geomExpr = project.getCrosses180()
             ? "ST_Shift_Longitude(positionfix.locationgeometry)"
             : "positionfix.locationgeometry";
