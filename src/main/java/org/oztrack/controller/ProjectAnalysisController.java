@@ -70,7 +70,7 @@ public class ProjectAnalysisController {
         model.addAttribute("analysisTypeList", AnalysisType.values());
         model.addAttribute("projectAnimalsList", projectAnimalsList);
         model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project));
-        model.addAttribute("animalBoundingBoxes", projectDao.getBoundingBoxes(project, projectAnimalsList));
+        model.addAttribute("animalBoundingBoxes", projectDao.getAnimalBoundingBoxes(project));
         model.addAttribute("animalDistances", positionFixDao.getAnimalDistances(project));
         model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, false));
         User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
