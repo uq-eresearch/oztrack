@@ -332,7 +332,7 @@
                     </div>
                 </div>
                 <div class="control-group" style="margin-bottom: 9px;">
-                    <label class="control-label" for="crosses180">Croses 180°</label>
+                    <label class="control-label" for="crosses180">Crosses 180°</label>
                     <div class="controls">
                         <p class="help-block" style="margin: 5px 0 9px 0;">
                             Check the following box if your project's trajectories cross the antimeridian (180° east or west longitude).
