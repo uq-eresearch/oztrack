@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 
 import org.oztrack.data.access.AnalysisDao;
 import org.oztrack.data.access.AnimalDao;
+import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.SrsDao;
 import org.oztrack.data.model.Animal;
@@ -38,6 +39,9 @@ public class ProjectAnalysisController {
     private AnimalDao animalDao;
 
     @Autowired
+    private PositionFixDao positionFixDao;
+
+    @Autowired
     private SrsDao srsDao;
 
     @Autowired
@@ -67,6 +71,7 @@ public class ProjectAnalysisController {
         model.addAttribute("projectAnimalsList", projectAnimalsList);
         model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project));
         model.addAttribute("animalBoundingBoxes", projectDao.getBoundingBoxes(project, projectAnimalsList));
+        model.addAttribute("animalDistances", positionFixDao.getAnimalDistances(project));
         model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, false));
         User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
         HttpSession currentSession = request.getSession(false);

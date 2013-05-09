@@ -30,6 +30,7 @@
             }
             that.animalBounds[animalId] = bounds900913;
         });
+        that.animalDistances = options.animalDistances;
         that.animalColours = options.animalColours;
         that.minDate = options.minDate;
         that.maxDate = options.maxDate;
@@ -1085,7 +1086,17 @@
             };
             that.projectMapLayers[layer.id] = layer;
             that.detectionLayers.push(layer);
-            updateAnimalInfoFromLayer(layer);
+            var layerAnimalIds = layer.getParams().animalIds ? layer.getParams().animalIds.split(',') : that.animalIds
+            for (var i = 0; i < layerAnimalIds.length; i++) {
+                that.onUpdateAnimalInfoFromLayer(
+                    layer.getTitle(),
+                    layer.id,
+                    layerAnimalIds[i],
+                    layer.getParams().fromDate || moment(that.minDate).format('YYYY-MM-DD'),
+                    layer.getParams().toDate || moment(that.maxDate).format('YYYY-MM-DD'),
+                    {}
+                );
+            }
             that.onAnalysisSuccess();
             return layer;
         }
@@ -1153,7 +1164,22 @@
             };
             that.projectMapLayers[layer.id] = layer;
             that.trajectoryLayers.push(layer);
-            updateAnimalInfoFromLayer(layer);
+            var layerAnimalIds = layer.getParams().animalIds ? layer.getParams().animalIds.split(',') : that.animalIds
+            $.each(layerAnimalIds, function(i, animalId) {
+                var layerAttrs = {};
+                if (that.animalDistances[animalId] && !params.fromDate && !params.toDate) {
+                    var distanceInKm = that.animalDistances[animalId] / 1000.0;
+                    layerAttrs['Distance'] = (Math.round(distanceInKm * 1000.0) / 1000.0) + ' ' + 'km';
+                }
+                that.onUpdateAnimalInfoFromLayer(
+                    layer.getTitle(),
+                    layer.id,
+                    animalId,
+                    layer.getParams().fromDate || moment(that.minDate).format('YYYY-MM-DD'),
+                    layer.getParams().toDate || moment(that.maxDate).format('YYYY-MM-DD'),
+                    layerAttrs
+                );
+            });
             that.onAnalysisSuccess();
             return layer;
         }
@@ -1209,19 +1235,6 @@
                         feature.attributes.toDate
                     );
                 }
-            }
-        }
-        
-        function updateAnimalInfoFromLayer(layer) {
-            var layerAnimalIds = layer.getParams().animalIds ? layer.getParams().animalIds.split(',') : that.animalIds
-            for (var i = 0; i < layerAnimalIds.length; i++) {
-                that.onUpdateAnimalInfoFromLayer(
-                    layer.getTitle(),
-                    layer.id,
-                    layerAnimalIds[i],
-                    layer.getParams().fromDate || moment(that.minDate).format('YYYY-MM-DD'),
-                    layer.getParams().toDate || moment(that.maxDate).format('YYYY-MM-DD')
-                );
             }
         }
         

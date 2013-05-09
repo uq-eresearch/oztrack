@@ -277,6 +277,12 @@
                         </c:if>
                         </c:forEach>
                     },
+                    animalDistances : {
+                        <c:forEach items="${animalDistances}" var="animalDistanceEntry" varStatus="animalDistanceEntryStatus">
+                        ${animalDistanceEntry.key}: ${animalDistanceEntry.value}<c:if test="${!animalDistanceEntryStatus.last}">,
+                        </c:if>
+                        </c:forEach>
+                    },
                     animalColours: {
                         <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
                         ${animal.id}: '${animal.colour}'<c:if test="${!animalStatus.last}">,
@@ -309,7 +315,7 @@
                         $('#projectMapCancel').fadeOut();
                         $('a[href="#animalPanel"]').trigger('click');
                     },
-                    onUpdateAnimalInfoFromLayer: function(layerName, layerId, animalId, fromDate, toDate) {
+                    onUpdateAnimalInfoFromLayer: function(layerName, layerId, animalId, fromDate, toDate, layerAttrs) {
                         var html = '<div class="layerInfoTitle">';
                         html += '<a class="layer-delete" href="javascript:analysisMap.deleteProjectMapLayer(' + layerId + ');">delete</a></span>';
                         html += layerName;
@@ -323,6 +329,12 @@
                         tableRowsHtml += '<td class="layerInfoLabel">Date To:</td>';
                         tableRowsHtml += '<td>' + toDate + '</td>';
                         tableRowsHtml += '</tr>';
+                        $.each(layerAttrs, function(key, value) {
+                            tableRowsHtml += '<tr>';
+                            tableRowsHtml += '<td class="layerInfoLabel">' + key + ':</td>';
+                            tableRowsHtml += '<td>' + value + '</td>';
+                            tableRowsHtml += '</tr>';
+                        });
                         if ((layerName == 'Detections') || (layerName == 'Trajectory')) {
                             var exportKmlUrl =
                                 '${pageContext.request.contextPath}/' +

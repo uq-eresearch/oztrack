@@ -2,8 +2,10 @@ package org.oztrack.data.access;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
@@ -27,4 +29,6 @@ public interface PositionFixDao {
         boolean deleted
     );
     void renumberPositionFixes(Project project);
+    Map<Long, Double> getAnimalDistances(Project project);
+    Double getAnimalDistance(Animal animal, Date startDetectionTime, Date endDetectionTime);
 }

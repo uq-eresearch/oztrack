@@ -1,7 +1,10 @@
 package org.oztrack.data.access.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -13,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.access.Page;
 import org.oztrack.data.access.PositionFixDao;
+import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
@@ -25,6 +29,8 @@ import com.vividsolutions.jts.io.WKTWriter;
 @Service
 public class PositionFixDaoImpl implements PositionFixDao {
     protected final Log logger = LogFactory.getLog(getClass());
+
+    private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     private EntityManager em;
 
@@ -290,5 +296,43 @@ public class PositionFixDaoImpl implements PositionFixDao {
             )
             .setParameter("projectId", project.getId())
             .executeUpdate();
+    }
+
+    @Override
+    public Map<Long, Double> getAnimalDistances(Project project) {
+        @SuppressWarnings("unchecked")
+        List<Object[]> resultList = em.createNativeQuery(
+                "select animal_id, sum(ST_Length_Spheroid(trajectorygeometry, 'SPHEROID[\"WGS 84\", 6378137, 298.257223563]'))\n" +
+                "from trajectorylayer\n" +
+                "where project_id = :projectId\n" +
+                "group by animal_id"
+            )
+            .setParameter("projectId", project.getId())
+            .getResultList();
+        HashMap<Long, Double> animalDistance = new HashMap<Long, Double>();
+        for (Object[] result : resultList) {
+            Long animalId = ((Number) result[0]).longValue();
+            Double distance = ((Number) result[1]).doubleValue();
+            animalDistance.put(animalId, distance);
+        }
+        return animalDistance;
+    }
+
+    @Override
+    public Double getAnimalDistance(Animal animal, Date startDetectionTime, Date endDetectionTime) {
+        @SuppressWarnings("unchecked")
+        List<Number> resultList = em.createNativeQuery(
+                "select sum(ST_Length_Spheroid(trajectorygeometry, 'SPHEROID[\"WGS 84\", 6378137, 298.257223563]'))\n" +
+                "from trajectorylayer\n" +
+                "where\n" +
+                "    animal_id = :animalId and\n" +
+                "    startdetectiontime >= DATE '" + isoDateFormat.format(startDetectionTime) + "' and\n" +
+                "    enddetectiontime <= DATE '" + isoDateFormat.format(endDetectionTime) + "'"
+            )
+            .setParameter("animalId", animal.getId())
+            .setParameter("startDetectionTime", startDetectionTime)
+            .setParameter("endDetectionTime", endDetectionTime)
+            .getResultList();
+        return resultList.isEmpty() ? null : resultList.get(0).doubleValue();
     }
 }
