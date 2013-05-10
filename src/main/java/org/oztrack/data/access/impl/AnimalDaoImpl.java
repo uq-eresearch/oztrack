@@ -93,7 +93,8 @@ public class AnimalDaoImpl implements AnimalDao {
                 "from Project\n" +
                 "where\n" +
                 "    (speciesCommonName is not null and speciesCommonName != '') or\n" +
-                "    (speciesScientificName is not null and speciesScientificName != '')"
+                "    (speciesScientificName is not null and speciesScientificName != '')\n" +
+                "order by 1"
             )
             .getResultList();
         return resultList;
