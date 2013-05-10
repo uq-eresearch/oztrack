@@ -89,7 +89,7 @@ public class AnimalDaoImpl implements AnimalDao {
     public List<String> getSpeciesList() {
         @SuppressWarnings("unchecked")
         List<String> resultList = em.createQuery(
-                "select distinct speciesCommonName || ' (' || speciesScientificName || ')'\n" +
+                "select distinct lower(speciesCommonName) || ' (' || lower(speciesScientificName) || ')'\n" +
                 "from Project\n" +
                 "where\n" +
                 "    (speciesCommonName is not null and speciesCommonName != '') or\n" +
