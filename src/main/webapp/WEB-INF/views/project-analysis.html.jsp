@@ -277,12 +277,6 @@
                         </c:if>
                         </c:forEach>
                     },
-                    animalDistances : {
-                        <c:forEach items="${animalDistances}" var="animalDistanceEntry" varStatus="animalDistanceEntryStatus">
-                        ${animalDistanceEntry.key}: ${animalDistanceEntry.value}<c:if test="${!animalDistanceEntryStatus.last}">,
-                        </c:if>
-                        </c:forEach>
-                    },
                     animalColours: {
                         <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
                         ${animal.id}: '${animal.colour}'<c:if test="${!animalStatus.last}">,

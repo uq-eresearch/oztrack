@@ -30,7 +30,6 @@
             }
             that.animalBounds[animalId] = bounds900913;
         });
-        that.animalDistances = options.animalDistances;
         that.animalColours = options.animalColours;
         that.minDate = options.minDate;
         that.maxDate = options.maxDate;
@@ -1086,7 +1085,7 @@
             };
             that.projectMapLayers[layer.id] = layer;
             that.detectionLayers.push(layer);
-            var layerAnimalIds = layer.getParams().animalIds ? layer.getParams().animalIds.split(',') : that.animalIds
+            var layerAnimalIds = layer.getParams().animalIds ? layer.getParams().animalIds.split(',') : that.animalIds;
             for (var i = 0; i < layerAnimalIds.length; i++) {
                 that.onUpdateAnimalInfoFromLayer(
                     layer.getTitle(),
@@ -1164,23 +1163,46 @@
             };
             that.projectMapLayers[layer.id] = layer;
             that.trajectoryLayers.push(layer);
-            var layerAnimalIds = layer.getParams().animalIds ? layer.getParams().animalIds.split(',') : that.animalIds
-            $.each(layerAnimalIds, function(i, animalId) {
-                var layerAttrs = {};
-                if (that.animalDistances[animalId] && !params.fromDate && !params.toDate) {
-                    var distanceInKm = that.animalDistances[animalId] / 1000.0;
-                    layerAttrs['Distance'] = (Math.round(distanceInKm * 1000.0) / 1000.0) + ' ' + 'km';
+            var layerAnimalIds = layer.getParams().animalIds ? layer.getParams().animalIds.split(',') : that.animalIds;
+            function updateAnimalInfoFromLayer(getLayerAttrs) {
+                $.each(layerAnimalIds, function(i, animalId) {
+                    that.onUpdateAnimalInfoFromLayer(
+                        layer.getTitle(),
+                        layer.id,
+                        animalId,
+                        layer.getParams().fromDate || moment(that.minDate).format('YYYY-MM-DD'),
+                        layer.getParams().toDate || moment(that.maxDate).format('YYYY-MM-DD'),
+                        getLayerAttrs(animalId)
+                    );
+                });
+                that.onAnalysisSuccess();
+            }
+            jQuery.ajax({
+                type: 'GET',
+                url: '/projects/' + that.projectId + '/trajectories',
+                dataType: 'json',
+                data: {
+                    fromDate: layer.getParams().fromDate,
+                    toDate: layer.getParams().toDate
+                },
+                success: function(animalTrajectories, textStatus, jqXHR) {
+                    updateAnimalInfoFromLayer(function(animalId) {
+                        if (!animalTrajectories[animalId]) {
+                            return {};
+                        }
+                        var animalTrajectory = animalTrajectories[animalId];
+                        var layerAttrs = {};
+                        if (animalTrajectory.distance) {
+                            var distanceInKm = animalTrajectory.distance / 1000.0; // m -> km
+                            layerAttrs['Distance'] = (Math.round(distanceInKm * 1000.0) / 1000.0) + ' ' + 'km';
+                        }
+                        return layerAttrs;
+                    });
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    updateAnimalInfoFromLayer(function(animalId) {return {};});
                 }
-                that.onUpdateAnimalInfoFromLayer(
-                    layer.getTitle(),
-                    layer.id,
-                    animalId,
-                    layer.getParams().fromDate || moment(that.minDate).format('YYYY-MM-DD'),
-                    layer.getParams().toDate || moment(that.maxDate).format('YYYY-MM-DD'),
-                    layerAttrs
-                );
             });
-            that.onAnalysisSuccess();
             return layer;
         }
         
