@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -77,7 +78,10 @@ public class TrajectoriesController {
         catch (ParseException e) {
             logger.error("Invalid toDate", e);
         }
+
+        Map<Long, Long> animalPositionFixCounts = positionFixDao.getAnimalPositionFixCounts(project, fromDate, toDate);
         Map<Long, Double> animalDistances = positionFixDao.getAnimalDistances(project, fromDate, toDate);
+        Map<Long, Range<Date>> animalStartEndDates = positionFixDao.getAnimalStartEndDates(project, fromDate, toDate);
 
         JSONWriter out = new JSONWriter(response.getWriter());
         out.object();
@@ -85,8 +89,20 @@ public class TrajectoriesController {
             out.key(animal.getId().toString());
             out.object();
             out.key("animalId").value(animal.getId());
+            if (animalPositionFixCounts.containsKey(animal.getId())) {
+                out.key("positionFixCount").value(animalPositionFixCounts.get(animal.getId()));
+            }
             if (animalDistances.containsKey(animal.getId())) {
                 out.key("distance").value(animalDistances.get(animal.getId()));
+            }
+            if (animalStartEndDates.containsKey(animal.getId())) {
+                Range<Date> startEndDates = animalStartEndDates.get(animal.getId());
+                if (startEndDates.getMinimum() != null) {
+                    out.key("startDate").value(isoDateFormat.format(startEndDates.getMinimum()));
+                }
+                if (startEndDates.getMaximum() != null) {
+                    out.key("endDate").value(isoDateFormat.format(startEndDates.getMaximum()));
+                }
             }
             out.endObject();
         }

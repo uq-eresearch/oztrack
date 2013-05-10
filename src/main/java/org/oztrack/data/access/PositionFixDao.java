@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.Range;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
@@ -28,5 +29,7 @@ public interface PositionFixDao {
         boolean deleted
     );
     void renumberPositionFixes(Project project);
+    Map<Long, Long> getAnimalPositionFixCounts(Project project, Date fromDate, Date toDate);
     Map<Long, Double> getAnimalDistances(Project project, Date fromDate, Date toDate);
+    Map<Long, Range<Date>> getAnimalStartEndDates(Project project, Date fromDate, Date toDate);
 }
