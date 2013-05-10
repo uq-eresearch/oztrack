@@ -12,6 +12,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.commons.lang3.Range;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.access.Page;
@@ -321,5 +322,32 @@ public class PositionFixDaoImpl implements PositionFixDao {
             animalDistance.put(animalId, distance);
         }
         return animalDistance;
+    }
+
+    @Override
+    public Map<Long, Range<Date>> getAnimalStartEndDates(Project project, Date fromDate, Date toDate) {
+        String queryString =
+            "select animal_id, min(startdetectiontime), max(enddetectiontime)\n" +
+            "from trajectorylayer\n" +
+            "where project_id = :projectId\n";
+        if (fromDate != null) {
+            queryString += " and startdetectiontime >= DATE '" + isoDateFormat.format(fromDate) + "'\n";
+        }
+        if (toDate != null) {
+            queryString += " and enddetectiontime <= DATE '" + isoDateFormat.format(toDate) + "'\n";
+        }
+        queryString += "group by animal_id";
+        @SuppressWarnings("unchecked")
+        List<Object[]> resultList = em.createNativeQuery(queryString)
+            .setParameter("projectId", project.getId())
+            .getResultList();
+        HashMap<Long, Range<Date>> animalStartEndDates = new HashMap<Long, Range<Date>>();
+        for (Object[] result : resultList) {
+            Long animalId = ((Number) result[0]).longValue();
+            Date startDate = (Date) result[1];
+            Date endDate = (Date) result[2];
+            animalStartEndDates.put(animalId, Range.between(startDate, endDate));
+        }
+        return animalStartEndDates;
     }
 }

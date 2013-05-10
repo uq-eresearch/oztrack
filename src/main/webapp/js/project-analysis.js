@@ -1164,15 +1164,24 @@
             that.projectMapLayers[layer.id] = layer;
             that.trajectoryLayers.push(layer);
             var layerAnimalIds = layer.getParams().animalIds ? layer.getParams().animalIds.split(',') : that.animalIds;
-            function updateAnimalInfoFromLayer(getLayerAttrs) {
+            function updateAnimalInfoFromLayer(options) {
                 $.each(layerAnimalIds, function(i, animalId) {
+                    var fromDate =
+                        (options.getFromDate && options.getFromDate(animalId)) ||
+                        layer.getParams().fromDate ||
+                        moment(that.minDate).format('YYYY-MM-DD');
+                    var toDate =
+                        (options.getToDate && options.getToDate(animalId)) ||
+                        layer.getParams().toDate ||
+                        moment(that.maxDate).format('YYYY-MM-DD');
+                    var layerAttrs = options.getLayerAttrs ? options.getLayerAttrs(animalId) : {};
                     that.onUpdateAnimalInfoFromLayer(
                         layer.getTitle(),
                         layer.id,
                         animalId,
-                        layer.getParams().fromDate || moment(that.minDate).format('YYYY-MM-DD'),
-                        layer.getParams().toDate || moment(that.maxDate).format('YYYY-MM-DD'),
-                        getLayerAttrs(animalId)
+                        fromDate,
+                        toDate,
+                        layerAttrs
                     );
                 });
                 that.onAnalysisSuccess();
@@ -1186,21 +1195,29 @@
                     toDate: layer.getParams().toDate
                 },
                 success: function(animalTrajectories, textStatus, jqXHR) {
-                    updateAnimalInfoFromLayer(function(animalId) {
-                        if (!animalTrajectories[animalId]) {
-                            return {};
+                    updateAnimalInfoFromLayer({
+                        getFromDate: function(animalId) {
+                            return animalTrajectories[animalId] && animalTrajectories[animalId].startDate;
+                        },
+                        getToDate: function(animalId) {
+                            return animalTrajectories[animalId] && animalTrajectories[animalId].endDate;
+                        },
+                        getLayerAttrs: function(animalId) {
+                            if (!animalTrajectories[animalId]) {
+                                return {};
+                            }
+                            var animalTrajectory = animalTrajectories[animalId];
+                            var layerAttrs = {};
+                            if (animalTrajectory.distance) {
+                                var distanceInKm = animalTrajectory.distance / 1000.0; // m -> km
+                                layerAttrs['Distance'] = (Math.round(distanceInKm * 1000.0) / 1000.0) + ' ' + 'km';
+                            }
+                            return layerAttrs;
                         }
-                        var animalTrajectory = animalTrajectories[animalId];
-                        var layerAttrs = {};
-                        if (animalTrajectory.distance) {
-                            var distanceInKm = animalTrajectory.distance / 1000.0; // m -> km
-                            layerAttrs['Distance'] = (Math.round(distanceInKm * 1000.0) / 1000.0) + ' ' + 'km';
-                        }
-                        return layerAttrs;
                     });
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    updateAnimalInfoFromLayer(function(animalId) {return {};});
+                    updateAnimalInfoFromLayer({});
                 }
             });
             return layer;
