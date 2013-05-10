@@ -84,4 +84,18 @@ public class AnimalDaoImpl implements AnimalDao {
     public void delete(Animal animal) {
         em.remove(animal);
     }
+
+    @Override
+    public List<String> getSpeciesList() {
+        @SuppressWarnings("unchecked")
+        List<String> resultList = em.createQuery(
+                "select distinct speciesCommonName || ' (' || speciesScientificName || ')'\n" +
+                "from Project\n" +
+                "where\n" +
+                "    (speciesCommonName is not null and speciesCommonName != '') or\n" +
+                "    (speciesScientificName is not null and speciesScientificName != '')"
+            )
+            .getResultList();
+        return resultList;
+    }
 }

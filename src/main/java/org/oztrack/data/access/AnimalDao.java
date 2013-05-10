@@ -14,4 +14,5 @@ public interface AnimalDao {
     void save(Animal object);
     Animal update(Animal object);
     void delete(Animal animal);
+    List<String> getSpeciesList();
 }

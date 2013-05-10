@@ -17,13 +17,18 @@
     <jsp:body>
         <h1>Usage Summary</h1>
         <p>
+            OzTrack usage summary as of
             <jsp:useBean id="now" class="java.util.Date" />
-            <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${now}" />
+            <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${now}" />.
         </p>
-        <h2>Users</h2>
-        <p>
-            Total of ${fn:length(users)} users.
-        </p>
+        <ul>
+            <li><a href="#users">Users</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#species">Species</a></li>
+            <li><a href="#overall">Overall Statistics</a></li>
+        </ul>
+        <h2 id="users">Users</h2>
+        <p>Total of ${fn:length(users)} users.</p>
         <table class="table table-bordered table-striped">
             <thead>
             <tr>
@@ -59,11 +64,12 @@
             </c:forEach>
             </tbody>
         </table>
-        <h2>Projects</h2>
-        <p>
-            Total of ${fn:length(projects)} projects.
-        </p>
+        <h2 id="projects">Projects</h2>
+        <p>Total of ${fn:length(projects)} projects.</p>
         <table class="table table-bordered table-striped">
+            <col style="width: 839px;" />
+            <col style="width: 150px;" />
+            <col style="width: 150px;" />
             <thead>
             <tr>
                 <th>Project</th>
@@ -76,13 +82,14 @@
             <tr>
                 <td>
                     <p style="font-weight: bold;">${project.title}</p>
+                    <p><c:if test="${not empty project.speciesCommonName or not empty project.speciesScientificName}"></p>
+                    <p>Species: ${project.speciesCommonName} <i>${project.speciesScientificName}</i></p>
+                    </c:if>
                     <p>${project.description}</p>
                 </td>
                 <td>
-                    <p>${fn:length(project.animals)} animals (${detectionCount[project]} position fixes)</p>
-                    <c:if test="${not empty project.speciesCommonName or not empty project.speciesScientificName}">
-                    <p>${project.speciesCommonName} <i>${project.speciesScientificName}</i></p>
-                    </c:if>
+                    <p>${fn:length(project.animals)} animals</p>
+                    <p>${detectionCount[project]} position fixes</p>
                 </td>
                 <td>
                     <p>
@@ -94,11 +101,21 @@
             </c:forEach>
             </tbody>
         </table>
-        <h2>Statistics</h2>
+        <h2 id="species">Species</h2>
+        <p>Total of ${fn:length(speciesList)} species.</p>
         <ul>
-            <li>Total of ${numAnimals} animals.</li>
-            <li>Total of ${numDataFiles} data files.</li>
-            <li>Total of ${numPositionFixes} position fixes.</li>
+            <c:forEach items="${speciesList}" var="species">
+            <li>${species}</li>
+            </c:forEach>
+        </ul>
+        <h2 id="overall">Overall Statistics</h2>
+        <ul>
+            <li>${fn:length(users)} users</li>
+            <li>${fn:length(projects)} projects</li>
+            <li>${numAnimals} animals</li>
+            <li>${fn:length(speciesList)} species</li>
+            <li>${numDataFiles} data files</li>
+            <li>${numPositionFixes} position fixes</li>
         </ul>
     </jsp:body>
 </tags:page>
