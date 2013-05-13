@@ -356,30 +356,6 @@
                         $('#animalInfo-' + animalId).append('<div class="layerInfo projectMapLayerInfo-' + layerId + '">' + html + '</div>');
                         initHelpPopover($('#layerInfoHelpPopover-' + animalId + '-' + layerId));
                     },
-                    onUpdateAnimalInfoFromStartEndLayer: function(layerName, layerId, animalId, fromDate, toDate) {
-                        $('input[id=select-animal-' + animalId + ']').attr('checked', 'checked');
-                        var html = '<div class="layerInfoTitle">';
-                        html += '<a class="layer-delete" href="javascript:analysisMap.deleteStartEndLayer(' + layerId + ');">delete</a></span>';
-                        html += layerName;
-                        html += '</div>';
-                        var tableRowsHtml = '';
-                        if (fromDate) {
-                            tableRowsHtml += '<tr>';
-                            tableRowsHtml += '<td class="layerInfoLabel">Date From:</td>';
-                            tableRowsHtml += '<td>' + fromDate + '</td>';
-                            tableRowsHtml += '</tr>';
-                        }
-                        if (toDate) {
-                            tableRowsHtml += '<tr>';
-                            tableRowsHtml += '<td class="layerInfoLabel">Date To:</td>';
-                            tableRowsHtml += '<td>' + toDate + '</td>';
-                            tableRowsHtml += '</tr>';
-                        }
-                        if (tableRowsHtml != '') {
-                            html += '<table>' + tableRowsHtml + '</table>';
-                        }
-                        $('#animalInfo-' + animalId).append('<div class="layerInfo startEndLayerInfo-' + layerId + '">' + html + '</div>');
-                    },
                     onUpdateAnimalInfoForAnalysis: function(layerName, animalId, analysis) {
                         var html = '<div class="layerInfoTitle">';
                         html += '<a class="layer-delete" href="javascript:analysisMap.deleteAnalysis(' + analysis.id + ');">delete</a></span>';

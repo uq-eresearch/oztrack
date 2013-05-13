@@ -36,7 +36,6 @@
         that.onAnalysisCreate = options.onAnalysisCreate;
         that.onAnalysisError = options.onAnalysisError;
         that.onAnalysisSuccess = options.onAnalysisSuccess;
-        that.onUpdateAnimalInfoFromStartEndLayer = options.onUpdateAnimalInfoFromStartEndLayer;
         that.onUpdateAnimalInfoFromLayer = options.onUpdateAnimalInfoFromLayer;
         that.onUpdateAnimalInfoForAnalysis = options.onUpdateAnimalInfoForAnalysis;
         that.onUpdateAnimalInfoFromKML = options.onUpdateAnimalInfoFromKML;
@@ -47,7 +46,6 @@
         that.startEndLayers = {};
         that.analyses = {};
         that.projectMapLayerIdSeq = 0;
-        that.startEndLayerIdSeq = 0;
         that.maxExtent = new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
         if (that.crosses180) {
             that.maxExtent.left += 20037508.34;
@@ -1008,23 +1006,18 @@
                 return;
             }
             if (that.projectMapLayers[id]) {
-                that.projectMapLayers[id].getWMSLayer().destroy();
+                if (that.projectMapLayers[id].destroy) {
+                    that.projectMapLayers[id].destroy();
+                }
+                else {
+                    that.projectMapLayers[id].getWMSLayer().destroy();
+                }
                 delete that.projectMapLayers[id];
             }
             that.detectionLayers = $.grep(that.detectionLayers, function(e, i) {return e.id != id});
             that.trajectoryLayers = $.grep(that.trajectoryLayers, function(e, i) {return e.id != id});
+            that.startEndLayers = $.grep(that.startEndLayers, function(e, i) {return e.id != id});
             $('.projectMapLayerInfo-' + id).fadeOut().remove();
-        };
-
-        that.deleteStartEndLayer = function(id) {
-            if (!confirm('This will delete the layer for all animals. Do you wish to continue?')) {
-                return;
-            }
-            if (that.startEndLayers[id]) {
-                that.startEndLayers[id].destroy();
-                delete that.startEndLayers[id];
-            }
-            $('.startEndLayerInfo-' + id).fadeOut().remove();
         };
 
         function createDetectionLayer(params, category) {
@@ -1277,7 +1270,7 @@
         function createStartEndLayer(params, category) {
             params['projectId'] = that.projectId;
             params['queryType'] = 'START_END';
-            var startEndLayerId = that.startEndLayerIdSeq++;
+            var startEndLayerId = that.projectMapLayerIdSeq++;
             var startEndLayer = new OpenLayers.Layer.Vector('Start and End Points', {
                 projection : that.projection4326,
                 protocol : new OpenLayers.Protocol.WFS.v1_1_0({
@@ -1298,6 +1291,7 @@
                 },
                 metadata: {category: category}
             });
+            that.projectMapLayers[startEndLayerId] = startEndLayer;
             that.startEndLayers[startEndLayerId] = startEndLayer;
             return startEndLayer;
         }
@@ -1312,12 +1306,13 @@
                     }
                     animalProcessed[feature.attributes.animalId] = true;
                     feature.renderIntent = "default";
-                    that.onUpdateAnimalInfoFromStartEndLayer(
+                    that.onUpdateAnimalInfoFromLayer(
                         startEndLayer.name,
                         startEndLayerId,
                         feature.attributes.animalId,
                         feature.attributes.fromDate,
-                        feature.attributes.toDate
+                        feature.attributes.toDate,
+                        {}
                     );
                 }
             }
