@@ -125,10 +125,10 @@ public class GeoServerUploader {
         client
             .layer("layers/startendlayer")
             .template("layers/featuretype-layer.xml.ftl")
-            .param("layerName", "startendlayerlayer")
-            .param("featuretypeName", "startendlayerlayer")
-            .param("defaultStyle", "oztrack_startendlayerlayer")
-            .param("styles", new String[] {"oztrack_startendlayerlayer", "point"})
+            .param("layerName", "startendlayer")
+            .param("featuretypeName", "startendlayer")
+            .param("defaultStyle", "oztrack_startendlayer")
+            .param("styles", new String[] {"oztrack_startendlayer", "point"})
             .replace();
     }
 
