@@ -38,6 +38,7 @@ import org.oztrack.view.AnimalStartEndFeatureBuilder;
 import org.oztrack.view.AnimalTrajectoryFeatureBuilder;
 import org.oztrack.view.ProjectsFeatureBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -64,6 +65,7 @@ public class WFSMapQueryController {
     @InitBinder("searchQuery")
     public void initSearchQueryBinder(WebDataBinder binder) {
         binder.setAllowedFields();
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd"), true));
     }
 
     @ModelAttribute("searchQuery")
