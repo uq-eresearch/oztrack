@@ -1110,27 +1110,33 @@
             }
             jQuery.ajax({
                 type: 'GET',
-                url: '/projects/' + that.projectId + '/trajectories',
+                url: '/projects/' + that.projectId + '/detections',
                 dataType: 'json',
                 data: {
                     fromDate: layer.getParams().fromDate,
                     toDate: layer.getParams().toDate
                 },
-                success: function(animalTrajectories, textStatus, jqXHR) {
+                success: function(animalDetectionsMap, textStatus, jqXHR) {
                     updateAnimalInfoFromLayer({
                         getFromDate: function(animalId) {
-                            return animalTrajectories[animalId] && animalTrajectories[animalId].startDate;
+                            return animalDetectionsMap[animalId] && animalDetectionsMap[animalId].startDate;
                         },
                         getToDate: function(animalId) {
-                            return animalTrajectories[animalId] && animalTrajectories[animalId].endDate;
+                            return animalDetectionsMap[animalId] && animalDetectionsMap[animalId].endDate;
                         },
                         getLayerAttrs: function(animalId) {
-                            if (!animalTrajectories[animalId]) {
+                            if (!animalDetectionsMap[animalId]) {
                                 return {};
                             }
-                            var animalTrajectory = animalTrajectories[animalId];
+                            var animalDetections = animalDetectionsMap[animalId];
+                            var positionFixDailyMeanRounded =
+                                animalDetections.positionFixDailyMean
+                                ? animalDetections.positionFixDailyMean.toFixed(1)
+                                : 0;
                             return {
-                                'Detections': animalTrajectory.positionFixCount || 0
+                                'Detections': animalDetections.positionFixCount || 0,
+                                'Mean per day': positionFixDailyMeanRounded,
+                                'Max per day': animalDetections.positionFixDailyMax || 0
                             };
                         }
                     });

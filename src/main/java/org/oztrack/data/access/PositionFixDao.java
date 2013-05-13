@@ -9,6 +9,8 @@ import org.apache.commons.lang3.Range;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
+import org.oztrack.data.model.types.PositionFixStats;
+import org.oztrack.data.model.types.TrajectoryStats;
 import org.springframework.stereotype.Service;
 
 import com.vividsolutions.jts.geom.MultiPolygon;
@@ -29,7 +31,7 @@ public interface PositionFixDao {
         boolean deleted
     );
     void renumberPositionFixes(Project project);
-    Map<Long, Long> getAnimalPositionFixCounts(Project project, Date fromDate, Date toDate);
-    Map<Long, Double> getAnimalDistances(Project project, Date fromDate, Date toDate);
+    Map<Long, PositionFixStats> getAnimalPositionFixStats(Project project, Date fromDate, Date toDate);
+    Map<Long, TrajectoryStats> getAnimalTrajectoryStats(Project project, Date fromDate, Date toDate);
     Map<Long, Range<Date>> getAnimalStartEndDates(Project project, Date fromDate, Date toDate);
 }

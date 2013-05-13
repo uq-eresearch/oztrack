@@ -8,7 +8,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,6 +17,8 @@ import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
+import org.oztrack.data.model.types.PositionFixStats;
+import org.oztrack.data.model.types.TrajectoryStats;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -51,58 +52,78 @@ public class TrajectoriesController {
         return projectDao.getProjectById(projectId);
     }
 
-    @RequestMapping(value="/projects/{projectId}/trajectories", method=RequestMethod.GET, produces="application/json")
-    @PreAuthorize("hasPermission(#project, 'read')")
-    public void handleJSON(
-        HttpServletResponse response,
-        @ModelAttribute(value="project") Project project,
-        @RequestParam(value="fromDate", required=false) String fromDateString,
-        @RequestParam(value="toDate", required=false) String toDateString
-    ) throws IOException, JSONException {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.setHeader("Cache-Control", "no-cache");
-        response.setHeader("Expires", "Thu, 01 Jan 1970 00:00:00 GMT");
-
+    @ModelAttribute("fromDate")
+    public Date getFromDate(@RequestParam(value="fromDate", required=false) String fromDateString) {
         Date fromDate = null;
-        Date toDate = null;
         try {
             fromDate = StringUtils.isNotBlank(fromDateString) ? isoDateFormat.parse(fromDateString) : null;
         }
         catch (ParseException e) {
             logger.error("Invalid fromDate", e);
         }
+        return fromDate;
+    }
+
+    @ModelAttribute("toDate")
+    public Date getToDate(@RequestParam(value="toDate", required=false) String toDateString) {
+        Date toDate = null;
         try {
             toDate = StringUtils.isNotBlank(toDateString) ? isoDateFormat.parse(toDateString) : null;
         }
         catch (ParseException e) {
             logger.error("Invalid toDate", e);
         }
+        return toDate;
+    }
 
-        Map<Long, Long> animalPositionFixCounts = positionFixDao.getAnimalPositionFixCounts(project, fromDate, toDate);
-        Map<Long, Double> animalDistances = positionFixDao.getAnimalDistances(project, fromDate, toDate);
-        Map<Long, Range<Date>> animalStartEndDates = positionFixDao.getAnimalStartEndDates(project, fromDate, toDate);
-
+    @RequestMapping(value="/projects/{projectId}/detections", method=RequestMethod.GET, produces="application/json")
+    @PreAuthorize("hasPermission(#project, 'read')")
+    public void handleDetectionsJSON(
+        HttpServletResponse response,
+        @ModelAttribute(value="project") Project project,
+        @ModelAttribute(value="fromDate") Date fromDate,
+        @ModelAttribute(value="toDate") Date toDate
+    ) throws IOException, JSONException {
+        Map<Long, PositionFixStats> animalPositionFixStats = positionFixDao.getAnimalPositionFixStats(project, fromDate, toDate);
         JSONWriter out = new JSONWriter(response.getWriter());
         out.object();
         for (Animal animal : project.getAnimals()) {
             out.key(animal.getId().toString());
             out.object();
             out.key("animalId").value(animal.getId());
-            if (animalPositionFixCounts.containsKey(animal.getId())) {
-                out.key("positionFixCount").value(animalPositionFixCounts.get(animal.getId()));
+            if (animalPositionFixStats.containsKey(animal.getId())) {
+                PositionFixStats stats = animalPositionFixStats.get(animal.getId());
+                out.key("startDate").value(isoDateFormat.format(stats.getStartDate()));
+                out.key("endDate").value(isoDateFormat.format(stats.getEndDate()));
+                out.key("positionFixCount").value(stats.getCount());
+                out.key("positionFixDailyMean").value(stats.getDailyMean());
+                out.key("positionFixDailyMax").value(stats.getDailyMax());
             }
-            if (animalDistances.containsKey(animal.getId())) {
-                out.key("distance").value(animalDistances.get(animal.getId()));
-            }
-            if (animalStartEndDates.containsKey(animal.getId())) {
-                Range<Date> startEndDates = animalStartEndDates.get(animal.getId());
-                if (startEndDates.getMinimum() != null) {
-                    out.key("startDate").value(isoDateFormat.format(startEndDates.getMinimum()));
-                }
-                if (startEndDates.getMaximum() != null) {
-                    out.key("endDate").value(isoDateFormat.format(startEndDates.getMaximum()));
-                }
+            out.endObject();
+        }
+        out.endObject();
+    }
+
+    @RequestMapping(value="/projects/{projectId}/trajectories", method=RequestMethod.GET, produces="application/json")
+    @PreAuthorize("hasPermission(#project, 'read')")
+    public void handleTrajectoriesJSON(
+        HttpServletResponse response,
+        @ModelAttribute(value="project") Project project,
+        @ModelAttribute(value="fromDate") Date fromDate,
+        @ModelAttribute(value="toDate") Date toDate
+    ) throws IOException, JSONException {
+        Map<Long, TrajectoryStats> animalTrajectoryStats = positionFixDao.getAnimalTrajectoryStats(project, fromDate, toDate);
+        JSONWriter out = new JSONWriter(response.getWriter());
+        out.object();
+        for (Animal animal : project.getAnimals()) {
+            out.key(animal.getId().toString());
+            out.object();
+            out.key("animalId").value(animal.getId());
+            if (animalTrajectoryStats.containsKey(animal.getId())) {
+                TrajectoryStats stats = animalTrajectoryStats.get(animal.getId());
+                out.key("startDate").value(isoDateFormat.format(stats.getStartDate()));
+                out.key("endDate").value(isoDateFormat.format(stats.getEndDate()));
+                out.key("distance").value(stats.getDistance());
             }
             out.endObject();
         }

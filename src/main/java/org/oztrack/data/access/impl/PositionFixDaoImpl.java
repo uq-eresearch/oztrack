@@ -1,5 +1,6 @@
 package org.oztrack.data.access.impl;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,6 +21,8 @@ import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
+import org.oztrack.data.model.types.PositionFixStats;
+import org.oztrack.data.model.types.TrajectoryStats;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -299,35 +302,72 @@ public class PositionFixDaoImpl implements PositionFixDao {
     }
 
     @Override
-    public Map<Long, Long> getAnimalPositionFixCounts(Project project, Date fromDate, Date toDate) {
-        String queryString =
-            "select animal_id, count(*)\n" +
+    public Map<Long, PositionFixStats> getAnimalPositionFixStats(Project project, Date fromDate, Date toDate) {
+        String totalQueryString =
+            "select\n" +
+            "    animal_id,\n" +
+            "    min(detectiontime),\n" +
+            "    max(detectiontime),\n" +
+            "    count(animal_id),\n" +
+            "    count(animal_id) / (extract(epoch from max(detectiontime) - min(detectiontime)) / (60 * 60 * 24))\n" +
             "from positionfixlayer\n" +
             "where project_id = :projectId\n";
         if (fromDate != null) {
-            queryString += " and detectiontime >= DATE '" + isoDateFormat.format(fromDate) + "'\n";
+            totalQueryString += " and detectiontime >= DATE '" + isoDateFormat.format(fromDate) + "'\n";
         }
         if (toDate != null) {
-            queryString += " and detectiontime <= DATE '" + isoDateFormat.format(toDate) + "'\n";
+            totalQueryString += " and detectiontime <= DATE '" + isoDateFormat.format(toDate) + "'\n";
         }
-        queryString += "group by animal_id";
+        totalQueryString += "group by animal_id";
         @SuppressWarnings("unchecked")
-        List<Object[]> resultList = em.createNativeQuery(queryString)
+        List<Object[]> totalResultList = em.createNativeQuery(totalQueryString)
             .setParameter("projectId", project.getId())
             .getResultList();
-        HashMap<Long, Long> animalPositionFixCounts = new HashMap<Long, Long>();
-        for (Object[] result : resultList) {
-            Long animalId = ((Number) result[0]).longValue();
-            Long detectionCount = ((Number) result[1]).longValue();
-            animalPositionFixCounts.put(animalId, detectionCount);
+        HashMap<Long, PositionFixStats> map = new HashMap<Long, PositionFixStats>();
+        for (Object[] totalResult : totalResultList) {
+            PositionFixStats stats = new PositionFixStats();
+            long animalId = ((Number) totalResult[0]).longValue();
+            stats.setAnimalId(animalId);
+            stats.setStartDate(new Date(((Timestamp) totalResult[1]).getTime()));
+            stats.setEndDate(new Date(((Timestamp) totalResult[2]).getTime()));
+            stats.setCount(((Number) totalResult[3]).longValue());
+            stats.setDailyMean(((Number) totalResult[4]).doubleValue());
+            map.put(animalId, stats);
         }
-        return animalPositionFixCounts;
+
+        String dailyQueryString =
+            "select distinct\n" +
+            "    animal_id,\n" +
+            "    max(count(date_trunc('day', detectiontime))) over (partition by animal_id)\n" +
+            "from positionfixlayer\n" +
+            "where project_id = :projectId\n";
+        if (fromDate != null) {
+            dailyQueryString += " and detectiontime >= DATE '" + isoDateFormat.format(fromDate) + "'\n";
+        }
+        if (toDate != null) {
+            dailyQueryString += " and detectiontime <= DATE '" + isoDateFormat.format(toDate) + "'\n";
+        }
+        dailyQueryString += "group by animal_id, date_trunc('day', detectiontime)";
+        @SuppressWarnings("unchecked")
+        List<Object[]> dailyResultList = em.createNativeQuery(dailyQueryString)
+            .setParameter("projectId", project.getId())
+            .getResultList();
+        for (Object[] dailyResult : dailyResultList) {
+            Long animalId = ((Number) dailyResult[0]).longValue();
+            map.get(animalId).setDailyMax(((Number) dailyResult[1]).longValue());
+        }
+
+        return map;
     }
 
     @Override
-    public Map<Long, Double> getAnimalDistances(Project project, Date fromDate, Date toDate) {
+    public Map<Long, TrajectoryStats> getAnimalTrajectoryStats(Project project, Date fromDate, Date toDate) {
         String queryString =
-            "select animal_id, sum(ST_Length_Spheroid(trajectorygeometry, 'SPHEROID[\"WGS 84\", 6378137, 298.257223563]'))\n" +
+            "select\n" +
+            "    animal_id,\n" +
+            "    min(startdetectiontime),\n" +
+            "    max(enddetectiontime),\n" +
+            "    sum(ST_Length_Spheroid(trajectorygeometry, 'SPHEROID[\"WGS 84\", 6378137, 298.257223563]'))\n" +
             "from trajectorylayer\n" +
             "where project_id = :projectId\n";
         if (fromDate != null) {
@@ -341,13 +381,17 @@ public class PositionFixDaoImpl implements PositionFixDao {
         List<Object[]> resultList = em.createNativeQuery(queryString)
             .setParameter("projectId", project.getId())
             .getResultList();
-        HashMap<Long, Double> animalDistance = new HashMap<Long, Double>();
+        HashMap<Long, TrajectoryStats> map = new HashMap<Long, TrajectoryStats>();
         for (Object[] result : resultList) {
             Long animalId = ((Number) result[0]).longValue();
-            Double distance = ((Number) result[1]).doubleValue();
-            animalDistance.put(animalId, distance);
+            TrajectoryStats stats = new TrajectoryStats();
+            stats.setAnimalId(animalId);
+            stats.setStartDate(new Date(((Timestamp) result[1]).getTime()));
+            stats.setEndDate(new Date(((Timestamp) result[2]).getTime()));
+            stats.setDistance(((Number) result[3]).doubleValue());
+            map.put(animalId, stats);
         }
-        return animalDistance;
+        return map;
     }
 
     @Override
