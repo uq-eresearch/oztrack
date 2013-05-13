@@ -356,10 +356,10 @@
                         $('#animalInfo-' + animalId).append('<div class="layerInfo projectMapLayerInfo-' + layerId + '">' + html + '</div>');
                         initHelpPopover($('#layerInfoHelpPopover-' + animalId + '-' + layerId));
                     },
-                    onUpdateAnimalInfoFromWFS: function(layerName, layerId, animalId, fromDate, toDate) {
+                    onUpdateAnimalInfoFromStartEndLayer: function(layerName, layerId, animalId, fromDate, toDate) {
                         $('input[id=select-animal-' + animalId + ']').attr('checked', 'checked');
                         var html = '<div class="layerInfoTitle">';
-                        html += '<a class="layer-delete" href="javascript:analysisMap.deleteWFSLayer(' + layerId + ');">delete</a></span>';
+                        html += '<a class="layer-delete" href="javascript:analysisMap.deleteStartEndLayer(' + layerId + ');">delete</a></span>';
                         html += layerName;
                         html += '</div>';
                         var tableRowsHtml = '';
@@ -378,7 +378,7 @@
                         if (tableRowsHtml != '') {
                             html += '<table>' + tableRowsHtml + '</table>';
                         }
-                        $('#animalInfo-' + animalId).append('<div class="layerInfo wfsLayerInfo-' + layerId + '">' + html + '</div>');
+                        $('#animalInfo-' + animalId).append('<div class="layerInfo startEndLayerInfo-' + layerId + '">' + html + '</div>');
                     },
                     onUpdateAnimalInfoForAnalysis: function(layerName, animalId, analysis) {
                         var html = '<div class="layerInfoTitle">';

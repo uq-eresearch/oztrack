@@ -36,7 +36,7 @@
         that.onAnalysisCreate = options.onAnalysisCreate;
         that.onAnalysisError = options.onAnalysisError;
         that.onAnalysisSuccess = options.onAnalysisSuccess;
-        that.onUpdateAnimalInfoFromWFS = options.onUpdateAnimalInfoFromWFS;
+        that.onUpdateAnimalInfoFromStartEndLayer = options.onUpdateAnimalInfoFromStartEndLayer;
         that.onUpdateAnimalInfoFromLayer = options.onUpdateAnimalInfoFromLayer;
         that.onUpdateAnimalInfoForAnalysis = options.onUpdateAnimalInfoForAnalysis;
         that.onUpdateAnimalInfoFromKML = options.onUpdateAnimalInfoFromKML;
@@ -44,10 +44,10 @@
         that.detectionLayers = [];
         that.trajectoryLayers = [];
         that.projectMapLayers = {};
-        that.wfsLayers = {};
+        that.startEndLayers = {};
         that.analyses = {};
         that.projectMapLayerIdSeq = 0;
-        that.wfsLayerIdSeq = 0;
+        that.startEndLayerIdSeq = 0;
         that.maxExtent = new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
         if (that.crosses180) {
             that.maxExtent.left += 20037508.34;
@@ -409,7 +409,7 @@
         );
         that.map.addLayer(that.imcraMesoscale);
 
-        that.startEndStyleMap = createStartEndPointsStyleMap();
+        that.startEndStyleMap = createStartEndStyleMap();
         that.polygonStyleMap = createPolygonStyleMap();
 
         that.allDetectionsLayer = createDetectionLayer({}, 'project');
@@ -418,10 +418,7 @@
         that.allTrajectoriesLayer = createTrajectoryLayer({}, 'project');
         that.map.addLayer(that.allTrajectoriesLayer.getWMSLayer());
 
-        that.map.addLayer(createWFSLayer('Start and End Points', 'StartEnd', {
-            projectId : that.projectId,
-            queryType : 'START_END'
-        }, that.startEndStyleMap, 'project'));
+        that.map.addLayer(createStartEndLayer({}, 'project'));
 
         function coordString(geometry) {
             var x = geometry.x || geometry.lon;
@@ -774,7 +771,7 @@
             return polygonStyleMap;
         }
 
-        function createStartEndPointsStyleMap() {
+        function createStartEndStyleMap() {
             var styleContext = {
                 getColour : function(feature) {
                     if (feature.attributes.identifier == "start") {
@@ -800,11 +797,11 @@
                 strokeOpacity : 0,
                 fillOpacity : 0
             };
-            var startEndPointsStyleMap = new OpenLayers.StyleMap({
+            var startEndStyleMap = new OpenLayers.StyleMap({
                 "default" : startEndPointsOnStyle,
                 "temporary" : startEndPointsOffStyle
             });
-            return startEndPointsStyleMap;
+            return startEndStyleMap;
         }
 
         that.addProjectMapLayer = function() {
@@ -845,7 +842,8 @@
                 that.map.addLayer(detectionLayer.getWMSLayer());
             }
             else if (queryTypeValue == "START_END") {
-                that.map.addLayer(createWFSLayer(layerName, 'StartEnd', params, that.startEndStyleMap, 'analysis'));
+                var startEndLayer = createStartEndLayer(params, 'analysis');
+                that.map.addLayer(startEndLayer);
             }
             else {
                 createAnalysisLayer(params, layerName);
@@ -1018,15 +1016,15 @@
             $('.projectMapLayerInfo-' + id).fadeOut().remove();
         };
 
-        that.deleteWFSLayer = function(id) {
+        that.deleteStartEndLayer = function(id) {
             if (!confirm('This will delete the layer for all animals. Do you wish to continue?')) {
                 return;
             }
-            if (that.wfsLayers[id]) {
-                that.wfsLayers[id].destroy();
-                delete that.wfsLayers[id];
+            if (that.startEndLayers[id]) {
+                that.startEndLayers[id].destroy();
+                delete that.startEndLayers[id];
             }
-            $('.wfsLayerInfo-' + id).fadeOut().remove();
+            $('.startEndLayerInfo-' + id).fadeOut().remove();
         };
 
         function createDetectionLayer(params, category) {
@@ -1276,45 +1274,47 @@
             }
         }
 
-        function createWFSLayer(layerName, featureType, params, styleMap, category) {
-            var wfsLayerId = that.wfsLayerIdSeq++;
-            var wfsLayer = new OpenLayers.Layer.Vector(layerName, {
+        function createStartEndLayer(params, category) {
+            params['projectId'] = that.projectId;
+            params['queryType'] = 'START_END';
+            var startEndLayerId = that.startEndLayerIdSeq++;
+            var startEndLayer = new OpenLayers.Layer.Vector('Start and End Points', {
                 projection : that.projection4326,
                 protocol : new OpenLayers.Protocol.WFS.v1_1_0({
                     url : "/mapQueryWFS",
                     params : params,
-                    featureType : featureType,
+                    featureType : 'StartEnd',
                     featureNS : "http://oztrack.org/xmlns#"
                 }),
                 strategies : [
                     new OpenLayers.Strategy.Fixed()
                 ],
-                styleMap : styleMap,
+                styleMap : that.startEndStyleMap,
                 eventListeners : {
                     loadend : function(e) {
-                        updateAnimalInfoFromWFS(e.object, wfsLayerId);
+                        updateAnimalInfoFromStartEndLayer(e.object, startEndLayerId);
                         that.onAnalysisSuccess();
                     }
                 },
                 metadata: {category: category}
             });
-            that.wfsLayers[wfsLayerId] = wfsLayer;
-            return wfsLayer;
+            that.startEndLayers[startEndLayerId] = startEndLayer;
+            return startEndLayer;
         }
         
-        function updateAnimalInfoFromWFS(wfsLayer, wfsLayerId) {
+        function updateAnimalInfoFromStartEndLayer(startEndLayer, startEndLayerId) {
             var animalProcessed = {};
-            for (var key in wfsLayer.features) {
-                var feature = wfsLayer.features[key];
+            for (var key in startEndLayer.features) {
+                var feature = startEndLayer.features[key];
                 if (feature.attributes && feature.attributes.animalId) {
                     if (animalProcessed[feature.attributes.animalId]) {
                         continue;
                     }
                     animalProcessed[feature.attributes.animalId] = true;
                     feature.renderIntent = "default";
-                    that.onUpdateAnimalInfoFromWFS(
-                        wfsLayer.name,
-                        wfsLayerId,
+                    that.onUpdateAnimalInfoFromStartEndLayer(
+                        startEndLayer.name,
+                        startEndLayerId,
                         feature.attributes.animalId,
                         feature.attributes.fromDate,
                         feature.attributes.toDate
