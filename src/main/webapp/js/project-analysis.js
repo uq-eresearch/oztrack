@@ -1129,14 +1129,10 @@
                                 return {};
                             }
                             var animalDetections = animalDetectionsMap[animalId];
-                            var positionFixDailyMeanRounded =
-                                animalDetections.positionFixDailyMean
-                                ? animalDetections.positionFixDailyMean.toFixed(1)
-                                : 0;
                             return {
-                                'Detections': animalDetections.positionFixCount || 0,
-                                'Mean per day': positionFixDailyMeanRounded,
-                                'Max per day': animalDetections.positionFixDailyMax || 0
+                                'Detections': animalDetections.count || 0,
+                                'Mean per day': animalDetections.dailyMean ? animalDetections.dailyMean.toFixed(1) : 0,
+                                'Max per day': animalDetections.dailyMax || 0
                             };
                         }
                     });
@@ -1255,13 +1251,13 @@
                                 return {};
                             }
                             var animalTrajectory = animalTrajectories[animalId];
-                            var distanceRounded = 0;
-                            if (animalTrajectory.distance) {
-                                var distanceInKm = animalTrajectory.distance / 1000.0; // m -> km
-                                distanceRounded = Math.round(distanceInKm * 1000.0) / 1000.0;
-                            }
+                            var distanceInKm = animalTrajectory.distance ? (animalTrajectory.distance / 1000.0) : 0;
+                            var meanStepDistanceInKm = animalTrajectory.meanStepDistance ? (animalTrajectory.meanStepDistance / 1000.0) : 0;
+                            var meanStepSpeedInKph = animalTrajectory.meanStepSpeed ? (animalTrajectory.meanStepSpeed / 1000.0 * (60 * 60)) : 0;
                             return {
-                                'Distance': distanceRounded + ' ' + 'km'
+                                'Distance': distanceInKm.toFixed(3) + ' ' + 'km',
+                                'Mean step length': meanStepDistanceInKm.toFixed(3) + ' ' + 'km',
+                                'Mean step speed': meanStepSpeedInKph.toFixed(3) + ' ' + 'km/h'
                             }
                         }
                     });

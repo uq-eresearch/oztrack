@@ -367,9 +367,16 @@ public class PositionFixDaoImpl implements PositionFixDao {
             "    animal_id,\n" +
             "    min(startdetectiontime),\n" +
             "    max(enddetectiontime),\n" +
-            "    sum(ST_Length_Spheroid(trajectorygeometry, 'SPHEROID[\"WGS 84\", 6378137, 298.257223563]'))\n" +
+            "    sum(ST_Length_Spheroid(trajectorygeometry, 'SPHEROID[\"WGS 84\", 6378137, 298.257223563]')),\n" +
+            "    avg(ST_Length_Spheroid(trajectorygeometry, 'SPHEROID[\"WGS 84\", 6378137, 298.257223563]')),\n" +
+            "    (\n" +
+            "        sum(ST_Length_Spheroid(trajectorygeometry, 'SPHEROID[\"WGS 84\", 6378137, 298.257223563]')) /\n" +
+            "        sum(extract(epoch from (enddetectiontime - startdetectiontime)))" +
+            "    )\n" +
             "from trajectorylayer\n" +
-            "where project_id = :projectId\n";
+            "where\n" +
+            "    project_id = :projectId and\n" +
+            "    enddetectiontime > startdetectiontime\n";
         if (fromDate != null) {
             queryString += " and startdetectiontime >= DATE '" + isoDateFormat.format(fromDate) + "'\n";
         }
@@ -389,6 +396,8 @@ public class PositionFixDaoImpl implements PositionFixDao {
             stats.setStartDate(new Date(((Timestamp) result[1]).getTime()));
             stats.setEndDate(new Date(((Timestamp) result[2]).getTime()));
             stats.setDistance(((Number) result[3]).doubleValue());
+            stats.setMeanStepDistance(((Number) result[4]).doubleValue());
+            stats.setMeanStepSpeed(((Number) result[5]).doubleValue());
             map.put(animalId, stats);
         }
         return map;

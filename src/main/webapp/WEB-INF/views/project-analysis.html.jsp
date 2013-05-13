@@ -95,7 +95,7 @@
                 background-color: #D8E0A8;
             }
             .layerInfoLabel {
-                width: 7em;
+                width: 120px;
             }
             a.layer-delete {
                 float: right;

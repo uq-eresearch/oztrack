@@ -95,9 +95,9 @@ public class TrajectoriesController {
                 PositionFixStats stats = animalPositionFixStats.get(animal.getId());
                 out.key("startDate").value(isoDateFormat.format(stats.getStartDate()));
                 out.key("endDate").value(isoDateFormat.format(stats.getEndDate()));
-                out.key("positionFixCount").value(stats.getCount());
-                out.key("positionFixDailyMean").value(stats.getDailyMean());
-                out.key("positionFixDailyMax").value(stats.getDailyMax());
+                out.key("count").value(stats.getCount());
+                out.key("dailyMean").value(stats.getDailyMean());
+                out.key("dailyMax").value(stats.getDailyMax());
             }
             out.endObject();
         }
@@ -124,6 +124,8 @@ public class TrajectoriesController {
                 out.key("startDate").value(isoDateFormat.format(stats.getStartDate()));
                 out.key("endDate").value(isoDateFormat.format(stats.getEndDate()));
                 out.key("distance").value(stats.getDistance());
+                out.key("meanStepDistance").value(stats.getMeanStepDistance());
+                out.key("meanStepSpeed").value(stats.getMeanStepSpeed());
             }
             out.endObject();
         }
