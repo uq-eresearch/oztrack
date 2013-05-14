@@ -355,7 +355,7 @@
                             exportHtml += '<a class="icon kml" href="' + exportKmlUrl + '">KML</a>';
                         }
                         if (exportHtml != '') {
-                            html += '<div class="layerInfoExport">Export as: ' + exportHtml + '</div>';
+                            html += '<div class="layerInfoExport">Download as: ' + exportHtml + '</div>';
                         }
                         $('#animalInfo-' + animalId).append('<div class="layerInfo projectMapLayerInfo-' + layerId + '">' + html + '</div>');
                     },
@@ -403,13 +403,13 @@
                         }
                         var exportHtml = '';
                         exportHtml += '<div class="layerInfoExport">';
-                        exportHtml += 'Export as: ';
+                        exportHtml += 'Download as: ';
                         exportHtml += '<a class="icon kml" href="' + analysis.resultUrl + '">KML</a>';
                         <c:if test="${project.crosses180}">
                         exportHtml += ', ';
                         exportHtml += '<a class="icon kml" href="' + analysis.resultUrl + '?fill=false">KML (outline only)</a>';
                         exportHtml += ' ';
-                        exportHtml += '<div id="analysisHelpPopover-' + animalId + '-' + analysis.id + '" class="help-popover" title="KML Export">';
+                        exportHtml += '<div id="analysisHelpPopover-' + animalId + '-' + analysis.id + '" class="help-popover" title="KML Download">';
                         exportHtml += '<p>Home range KML files are available in an outline-only version due to rendering issues ';
                         exportHtml += 'in some versions of Google Earth. If you find that polygons crossing 180° longitude are ';
                         exportHtml += 'being cut off or "wrapped", use the outline-only KML link.</p>';
