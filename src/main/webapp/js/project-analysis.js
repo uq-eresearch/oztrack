@@ -1319,8 +1319,10 @@
         }
         
         function updateAnimalInfoForAnalysis(layerName, analysis) {
+            var fromDate = moment(analysis.params.fromDate || that.minDate).format('YYYY-MM-DD');
+            var toDate = moment(analysis.params.toDate || that.maxDate).format('YYYY-MM-DD');
             for (var i = 0; i < analysis.params.animalIds.length; i++) {
-                that.onUpdateAnimalInfoForAnalysis(layerName, analysis.params.animalIds[i], analysis);
+                that.onUpdateAnimalInfoForAnalysis(layerName, analysis.params.animalIds[i], analysis, fromDate, toDate);
             }
         }
 

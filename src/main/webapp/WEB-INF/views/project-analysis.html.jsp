@@ -64,6 +64,7 @@
                 padding: 0;
                 height: 24px;
                 line-height: 24px;
+                margin-top: 10px;
                 margin-bottom: 0.5em;
             }
             .animalLabel {
@@ -77,22 +78,39 @@
                 text-decoration: none;
             }
             .animalInfo {
-                margin-left: 8px;
-                margin-right: 8px;
-                margin-top: 0;
-                margin-bottom: 0;
+                margin: 0 0 0 20px;
             }
             .animalInfo table {
                 margin-top: 5px;
             }
             .layerInfo {
-                margin: 0 0 0.5em 0;
-                padding: 5px;
+                margin: 9px 0;
+                padding: 6px 8px;
+                background-color: #dedcc0; //#e2e0c8;
+                border: 1px solid #ceccb0;
+                border-radius: 4px;
+                box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08);
             }
             .layerInfoTitle {
-                padding: 2px;
-                border-bottom: 1px solid #ccc;
-                background-color: #D8E0A8;
+                margin-bottom: 4px;
+            }
+            .layerInfoStats {
+                border-top: 1px solid #aaa;
+                padding-top: 4px;
+            }
+            .layerInfoStat {
+                font-size: 11px;
+                color: #666;
+                display: inline-block;
+                text-align: left;
+                padding-right: 5%;
+                min-width: 45%;
+            }
+            .layerInfoExport {
+                margin-top: 4px;
+                margin-bottom: 1px;
+                padding-top: 4px;
+                border-top: 1px solid #aaa;
             }
             .layerInfoLabel {
                 width: 120px;
@@ -314,21 +332,19 @@
                         html += '<a class="layer-delete" href="javascript:analysisMap.deleteProjectMapLayer(' + layerId + ');">delete</a></span>';
                         html += layerName;
                         html += '</div>';
-                        var tableRowsHtml = '';
-                        tableRowsHtml += '<tr>';
-                        tableRowsHtml += '<td class="layerInfoLabel">Date From:</td>';
-                        tableRowsHtml += '<td>' + fromDate + '</td>';
-                        tableRowsHtml += '</tr>';
-                        tableRowsHtml += '<tr>';
-                        tableRowsHtml += '<td class="layerInfoLabel">Date To:</td>';
-                        tableRowsHtml += '<td>' + toDate + '</td>';
-                        tableRowsHtml += '</tr>';
+                        var statsHtml = '';
+                        statsHtml += '<span class="layerInfoStat">';
+                        statsHtml += 'Dates: ' + fromDate + ' - ' + toDate;
+                        statsHtml += '</span>';
                         $.each(layerAttrs, function(key, value) {
-                            tableRowsHtml += '<tr>';
-                            tableRowsHtml += '<td class="layerInfoLabel">' + key + ':</td>';
-                            tableRowsHtml += '<td>' + value + '</td>';
-                            tableRowsHtml += '</tr>';
+                            statsHtml += '<span class="layerInfoStat">';
+                            statsHtml += key + ': ' + value;
+                            statsHtml += '</span>';
                         });
+                        if (statsHtml != '') {
+                            html += '<div class="layerInfoStats">' + statsHtml + '</div>';
+                        }
+                        var exportHtml = '';
                         if ((layerName == 'Detections') || (layerName == 'Trajectory')) {
                             var exportKmlUrl =
                                 '${pageContext.request.contextPath}/' +
@@ -336,90 +352,71 @@
                                 '?animalId=' + animalId +
                                 '&fromDate=' + fromDate +
                                 '&toDate=' + toDate;
-                            tableRowsHtml += '<tr>';
-                            tableRowsHtml += '<td class="layerInfoLabel">Export as: </td>';
-                            tableRowsHtml += '<td>';
-                            tableRowsHtml += '<a class="icon kml" href="' + exportKmlUrl + '">KML</a>';
-                            tableRowsHtml += '</td>';
-                            tableRowsHtml += '</tr>';
+                            exportHtml += '<a class="icon kml" href="' + exportKmlUrl + '">KML</a>';
                         }
-                        if (tableRowsHtml != '') {
-                            html += '<table>' + tableRowsHtml + '</table>';
+                        if (exportHtml != '') {
+                            html += '<div class="layerInfoExport">Export as: ' + exportHtml + '</div>';
                         }
                         $('#animalInfo-' + animalId).append('<div class="layerInfo projectMapLayerInfo-' + layerId + '">' + html + '</div>');
-                        initHelpPopover($('#layerInfoHelpPopover-' + animalId + '-' + layerId));
                     },
-                    onUpdateAnimalInfoForAnalysis: function(layerName, animalId, analysis) {
+                    onUpdateAnimalInfoForAnalysis: function(layerName, animalId, analysis, fromDate, toDate) {
                         var html = '<div class="layerInfoTitle">';
                         html += '<a class="layer-delete" href="javascript:analysisMap.deleteAnalysis(' + analysis.id + ');">delete</a></span>';
                         html += layerName;
                         html += '</div>';
-                        var tableRowsHtml = '';
-                        if (analysis.params.fromDate) {
-                            tableRowsHtml += '<tr>';
-                            tableRowsHtml += '<td class="layerInfoLabel">Date From:</td>';
-                            tableRowsHtml += '<td>' + analysis.params.fromDate + '</td>';
-                            tableRowsHtml += '</tr>';
-                        }
-                        if (analysis.params.toDate) {
-                            tableRowsHtml += '<tr>';
-                            tableRowsHtml += '<td class="layerInfoLabel">Date To:</td>';
-                            tableRowsHtml += '<td>' + analysis.params.toDate + '</td>';
-                            tableRowsHtml += '</tr>';
-                        }
+                        var statsHtml = '';
+                        statsHtml += '<span class="layerInfoStat">';
+                        statsHtml += 'Dates: ' + fromDate + ' - ' + toDate;
+                        statsHtml += '</span>';
                         <c:forEach items="${analysisTypeList}" var="analysisType">
                         if (analysis.params.queryType == '${analysisType}') {
                             <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
                             if (analysis.params.${parameterType.identifier}) {
-                                tableRowsHtml += '<tr>';
-                                tableRowsHtml += '<td class="layerInfoLabel">${parameterType.displayName}: </td>';
-                                tableRowsHtml += '<td>' + analysis.params.${parameterType.identifier} + ' ${parameterType.units}</td>';
-                                tableRowsHtml += '</tr>';
+                                statsHtml += '<span class="layerInfoStat">';
+                                statsHtml += '${parameterType.displayName}: ';
+                                statsHtml += analysis.params.${parameterType.identifier} + ' ${parameterType.units}';
+                                statsHtml += '</span>';
                             }
                             </c:forEach>
                         }
                         </c:forEach>
-                        html += '<table id="analysis-table-' + animalId + '-' + analysis.id + '" style="' + (tableRowsHtml ? '' : 'display: none;') + '">' + tableRowsHtml + '</table>';
-                        $('#animalInfo-' + animalId).append('<div class="layerInfo analysisInfo-' + analysis.id + '">' + html + '</div>');
+                        html += '<div id="analysis-stats-' + animalId + '-' + analysis.id + '" class="layerInfoStats" style="' + (statsHtml ? '' : 'display: none;') + '">' + statsHtml + '</table>';
+                        $('#animalInfo-' + animalId).append('<div id="analysisInfo-' + animalId + '-' + analysis.id + '" class="layerInfo analysisInfo-' + analysis.id + '">' + html + '</div>');
                     },
                     onUpdateAnimalInfoFromKML: function(animalId, analysis, area, hval) {
-                        var tableRowsHtml = '';
+                        var statsHtml = '';
                         if (area) {
                             var roundedArea = Math.round(area * 1000) / 1000;
-                            tableRowsHtml += '<tr>';
-                            tableRowsHtml += '<td class="layerInfoLabel">Area: </td>';
-                            tableRowsHtml += '<td>' + roundedArea + ' km<sup>2</sup></td>';
-                            tableRowsHtml += '</tr>';
+                            statsHtml += '<span class="layerInfoStat">';
+                            statsHtml += 'Area: ' + roundedArea + ' km<sup>2</sup>';
+                            statsHtml += '</span>';
                         }
                         if (hval) {
                             var roundedHval = Math.round(hval * 1000) / 1000;
-                            tableRowsHtml += '<tr>';
-                            tableRowsHtml += '<td class="layerInfoLabel">h value: </td>';
-                            tableRowsHtml += '<td>' + roundedHval + '</td>';
-                            tableRowsHtml += '</tr>';
+                            statsHtml += '<span class="layerInfoStat">';
+                            statsHtml += 'h value: ' + roundedHval;
+                            statsHtml += '</span>';
                         }
-                        tableRowsHtml += '<tr>';
-                        tableRowsHtml += '<td class="layerInfoLabel">Export as: </td>';
-                        tableRowsHtml += '<td>';
-                        tableRowsHtml += '<a class="icon kml" href="' + analysis.resultUrl + '">KML</a>';
-                        <c:if test="${project.crosses180}">
-                        tableRowsHtml += ', ';
-                        tableRowsHtml += '<a class="icon kml" href="' + analysis.resultUrl + '?fill=false">KML (outline only)</a>';
-                        </c:if>
-                        <c:if test="${project.crosses180}">
-                        tableRowsHtml += ' ';
-                        tableRowsHtml += '<div id="analysisHelpPopover-' + animalId + '-' + analysis.id + '" class="help-popover" title="KML Export">';
-                        tableRowsHtml += '<p>Home range KML files are available in an outline-only version due to rendering issues ';
-                        tableRowsHtml += 'in some versions of Google Earth. If you find that polygons crossing 180° longitude are ';
-                        tableRowsHtml += 'being cut off or "wrapped", use the outline-only KML link.</p>';
-                        </c:if>
-                        tableRowsHtml += '</div>';
-                        tableRowsHtml += '</td>';
-                        tableRowsHtml += '</tr>';
-                        if (tableRowsHtml) {
-                            $('#analysis-table-' + animalId + '-' + analysis.id).show().append(tableRowsHtml);
+                        if (statsHtml) {
+                            $('#analysis-stats-' + animalId + '-' + analysis.id).show().append(statsHtml);
                             initHelpPopover($('#analysisHelpPopover-' + animalId + '-' + analysis.id));
                         }
+                        var exportHtml = '';
+                        exportHtml += '<div class="layerInfoExport">';
+                        exportHtml += 'Export as: ';
+                        exportHtml += '<a class="icon kml" href="' + analysis.resultUrl + '">KML</a>';
+                        <c:if test="${project.crosses180}">
+                        exportHtml += ', ';
+                        exportHtml += '<a class="icon kml" href="' + analysis.resultUrl + '?fill=false">KML (outline only)</a>';
+                        exportHtml += ' ';
+                        exportHtml += '<div id="analysisHelpPopover-' + animalId + '-' + analysis.id + '" class="help-popover" title="KML Export">';
+                        exportHtml += '<p>Home range KML files are available in an outline-only version due to rendering issues ';
+                        exportHtml += 'in some versions of Google Earth. If you find that polygons crossing 180° longitude are ';
+                        exportHtml += 'being cut off or "wrapped", use the outline-only KML link.</p>';
+                        exportHtml += '</div>';
+                        </c:if>
+                        exportHtml += '</div>';
+                        $('#analysisInfo-' + animalId + '-' + analysis.id).append(exportHtml);
                     }
                 });
                 <c:forEach items="${savedAnalyses}" var="analysis">
@@ -674,7 +671,7 @@
                 <li><a href="#previousAnalysesPanel">History</a></li>
             </ul>
             <div id="animalPanel">
-                <div class="animalHeader" style="margin-bottom: 10px; border-bottom: 1px solid #ccc;">
+                <div class="animalHeader" style="margin-top: 0; border-bottom: 1px solid #ccc;">
                 <div class="animalCheckbox">
                     <input
                         id="select-animal-all"
@@ -730,8 +727,8 @@
                     <fieldset>
                     <div class="control-group" style="margin-bottom: 9px;">
                         <div style="margin-bottom: 9px; font-weight: bold;">
-                            <span>Date Range</span>
-                            <div class="help-popover" title="Date Range">
+                            <span>Dates</span>
+                            <div class="help-popover" title="Dates">
                                 Choose a date range from within your data file for analysis.
                                 If left blank, all data for the selected animals will be included in the analysis.
                             </div>

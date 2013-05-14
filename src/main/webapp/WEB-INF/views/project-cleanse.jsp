@@ -246,8 +246,8 @@
                 <fieldset>
                 <div class="control-group" style="margin-bottom: 9px;">
                     <div style="margin-bottom: 9px; font-weight: bold;">
-                        <span>Date Range</span>
-                        <div class="help-popover" title="Date Range">
+                        <span>Dates</span>
+                        <div class="help-popover" title="Dates">
                             <p>Filter detections to be deleted/restored by date range.</p>
                             <p>If left blank, all detections in the project will be included.</p>
                         </div>
@@ -262,7 +262,7 @@
                 <div class="control-group" style="margin-bottom: 9px;">
                     <div style="margin-bottom: 9px; font-weight: bold;">
                         <span>Animals</span>
-                        <div class="help-popover" title="Date Range">
+                        <div class="help-popover" title="Animals">
                             <p>Filter detections to be deleted/restored by animal.</p>
                             <p>Choose "Select all" to include all animals in the project.</p>
                         </div>
