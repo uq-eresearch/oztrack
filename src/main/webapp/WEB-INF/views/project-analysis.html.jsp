@@ -399,7 +399,6 @@
                         }
                         if (statsHtml) {
                             $('#analysis-stats-' + animalId + '-' + analysis.id).show().append(statsHtml);
-                            initHelpPopover($('#analysisHelpPopover-' + animalId + '-' + analysis.id));
                         }
                         var exportHtml = '';
                         exportHtml += '<div class="layerInfoExport">';
@@ -417,6 +416,9 @@
                         </c:if>
                         exportHtml += '</div>';
                         $('#analysisInfo-' + animalId + '-' + analysis.id).append(exportHtml);
+                        <c:if test="${project.crosses180}">
+                        initHelpPopover($('#analysisHelpPopover-' + animalId + '-' + analysis.id));
+                        </c:if>
                     }
                 });
                 <c:forEach items="${savedAnalyses}" var="analysis">
