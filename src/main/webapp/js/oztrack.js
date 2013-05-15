@@ -18,18 +18,6 @@ function deleteEntity(url, destUrl, message) {
     });
 }
 
-function initHelpPopover(helpPopover) {
-    $('<a class="help-popover-icon" href="javascript:void(0);">')
-        .insertBefore(helpPopover)
-        .popover({
-            container: 'body',
-            placement: 'right',
-            trigger: 'click',
-            html: true,
-            title: helpPopover.attr('title'),
-            content: helpPopover.html()
-        });
-}
 $(document).ready(function() {
     $.datepicker.setDefaults({
         dateFormat: 'yy-mm-dd',
@@ -47,8 +35,31 @@ $(document).ready(function() {
             $(altField).val('');
         }
     });
+});
+
+function initHelpPopover(helpPopover) {
+    $('<a class="help-popover-icon" href="javascript:void(0);">')
+        .insertBefore(helpPopover)
+        .popover({
+            container: 'body',
+            placement: 'right',
+            trigger: 'click',
+            html: true,
+            title: helpPopover.attr('title'),
+            content: helpPopover.html()
+        });
+}
+$(document).ready(function() {
     $('.help-popover').each(function() {initHelpPopover($(this));});
 });
-$(document).click(function (e) {
-    $('.help-popover-icon').filter(function(i) {return this !== e.target;}).popover('hide');
+$(document).click(function(e) {
+    // Hide popovers unless: clicking on one, because it might contain interactive elements;
+    if ($(e.target).closest('.popover').length !== 0) {
+        return;
+    }
+    // or clicking on a popover icon, in which case we rely in its natural show/hide behaviour. 
+    var popoversToHide = $('.help-popover-icon,.layer-opacity-popover-icon').filter(function(i) {
+        return this !== e.target;
+    });
+    popoversToHide.popover('hide');
 });

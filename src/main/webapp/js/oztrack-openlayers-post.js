@@ -83,6 +83,7 @@ OpenLayers.Map.prototype.adjustZoom = function (zoom) {
         },
 
         clearLayersArray: function(layersType) {
+            $('.layer-opacity-popover-icon').popover('hide').popover('destroy');
             for (categoryId in this.categories) {
                 var category = this.categories[categoryId];
                 category.layers = [];
@@ -160,7 +161,14 @@ OpenLayers.Map.prototype.adjustZoom = function (zoom) {
             }
         },
 
-        redraw: function() {
+        redraw: function(evt) {
+            if (evt) {
+                // Ignore changes in opacity - irrelevant to layer switcher
+                if ((evt.type === 'changelayer') && (evt.property === 'opacity')) {
+                    return;
+                }
+            }
+            
             this.clearLayersArray();
 
             var layers = this.map.layers.slice();
@@ -173,6 +181,56 @@ OpenLayers.Map.prototype.adjustZoom = function (zoom) {
 
                 var layerDiv = $('<div class="layerDiv">').get(0);
 
+                function addLayerOpacitySpan(map, layer) {
+                    function buildPopoverContent() {
+                        function updateLayerOpacity(value) {
+                            layer.setOpacity(value);
+                            percentDiv.text((value * 100).toFixed(0) + '%');
+                        }
+                        var percentDiv = $('<div>');
+                        var sliderDiv = $('<div>')
+                            .css('height', '100px')
+                            .css('margin', '10px')
+                            .slider({
+                                min: 0,
+                                max: 1.0,
+                                step: 0.05,
+                                value: layer.opacity,
+                                orientation: "vertical",
+                                change: function(event, ui) {
+                                    updateLayerOpacity(ui.value);
+                                }
+                            });
+                        updateLayerOpacity(layer.opacity);
+                        var popoverContent = $('<div>')
+                            .css('text-align', 'center')
+                            .append($('<div>')
+                                .append($('<div>')
+                                    .css('display', 'inline-block')
+                                    .append(sliderDiv)
+                                )
+                            )
+                            .append($('<div>')
+                                .append(percentDiv)
+                            );
+                        return popoverContent;
+                    }
+                    var span = $('<span>')
+                        .addClass('icon-white')
+                        .addClass('icon-wrench')
+                        .addClass('layer-opacity-popover-icon')
+                        .css('float', 'right')
+                        .css('cursor', 'pointer')
+                        .attr('title', 'Opacity')
+                        .popover({
+                            container: 'body',
+                            placement: 'left',
+                            trigger: 'click',
+                            html: true,
+                            content: buildPopoverContent
+                        });
+                    $(layerDiv).append(span);
+                }
                 function addLayerMoveSpan(map, layer, delta) {
                     var layerMoveSpan = $('<span>').addClass('icon-white').css('float', 'right');
                     layerMoveSpan.addClass((delta > 0) ? 'icon-arrow-down' : 'icon-arrow-up');
@@ -180,6 +238,7 @@ OpenLayers.Map.prototype.adjustZoom = function (zoom) {
                     if (targetLayer && (layer.metadata.category == targetLayer.metadata.category)) {
                         layerMoveSpan
                             .css('cursor', 'pointer')
+                            .attr('title', 'Move ' + ((delta > 0) ? 'down' : 'up'))
                             .click(function(e) {
                                 var targetLayer = map.layers[map.getLayerIndex(layer) + delta];
                                 if (targetLayer && (layer.metadata.category == targetLayer.metadata.category)) {
@@ -198,6 +257,7 @@ OpenLayers.Map.prototype.adjustZoom = function (zoom) {
                         .addClass('icon-info-sign')
                         .css('float', 'right')
                         .css('cursor', 'pointer')
+                        .attr('title', 'Information')
                         .click(function(e) {
                             var content = $('<div>').append($('<div>').addClass('layerInfoContent')
                                 .append($('<p>').addClass('layerInfoTitle').append(layer.name))
@@ -243,6 +303,7 @@ OpenLayers.Map.prototype.adjustZoom = function (zoom) {
                     $(layerDiv).append(span);
                 }
                 if (!layer.isBaseLayer) {
+                    addLayerOpacitySpan(this.map, layer);
                     addLayerMoveSpan(this.map, layer, 1);
                     addLayerMoveSpan(this.map, layer, -1);
                     addLayerInfoSpan(this.map, layer);
