@@ -1,8 +1,8 @@
-/*! jQuery UI - v1.10.1 - 2013-02-24
+/*! jQuery UI - v1.10.3 - 2013-05-14
 * http://jqueryui.com
-* Includes: jquery.ui.core.css, jquery.ui.resizable.css, jquery.ui.autocomplete.css, jquery.ui.button.css, jquery.ui.datepicker.css, jquery.ui.dialog.css, jquery.ui.menu.css, jquery.ui.tabs.css
+* Includes: jquery.ui.core.css, jquery.ui.resizable.css, jquery.ui.autocomplete.css, jquery.ui.button.css, jquery.ui.datepicker.css, jquery.ui.dialog.css, jquery.ui.menu.css, jquery.ui.slider.css, jquery.ui.tabs.css
 * To view and modify this theme, visit http://jqueryui.com/themeroller/?ffDefault=%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans-serif&fwDefault=normal&fsDefault=13px&cornerRadius=3px&bgColorHeader=e89b17&bgTextureHeader=highlight_soft&bgImgOpacityHeader=75&borderColorHeader=d4ccb0&fcHeader=333333&iconColorHeader=333333&bgColorContent=e6e6c0&bgTextureContent=flat&bgImgOpacityContent=50&borderColorContent=aaa&fcContent=333333&iconColorContent=333333&bgColorDefault=adbc6b&bgTextureDefault=inset_hard&bgImgOpacityDefault=30&borderColorDefault=aaa&fcDefault=333333&iconColorDefault=333333&bgColorHover=263f00&bgTextureHover=highlight_soft&bgImgOpacityHover=30&borderColorHover=aaa&fcHover=ffffff&iconColorHover=ffffff&bgColorActive=263f00&bgTextureActive=inset_hard&bgImgOpacityActive=30&borderColorActive=aaa&fcActive=ffffff&iconColorActive=ffffff&bgColorHighlight=fcf0ba&bgTextureHighlight=glass&bgImgOpacityHighlight=55&borderColorHighlight=e8e1b5&fcHighlight=363636&iconColorHighlight=8dc262&bgColorError=ffedad&bgTextureError=highlight_soft&bgImgOpacityError=95&borderColorError=e3a345&fcError=cd5c0a&iconColorError=cd0a0a&bgColorOverlay=2b2922&bgTextureOverlay=inset_soft&bgImgOpacityOverlay=15&opacityOverlay=90&bgColorShadow=cccccc&bgTextureShadow=highlight_hard&bgImgOpacityShadow=95&opacityShadow=20&thicknessShadow=12px&offsetTopShadow=-12px&offsetLeftShadow=-12px&cornerRadiusShadow=10px
-* Copyright (c) 2013 jQuery Foundation and other contributors Licensed MIT */
+* Copyright 2013 jQuery Foundation and other contributors Licensed MIT */
 
 /* Layout helpers
 ----------------------------------*/
@@ -506,6 +506,8 @@ button.ui-button::-moz-focus-inner {
 	margin: 0;
 	padding: 0;
 	width: 100%;
+	/* support: IE10, see #8844 */
+	list-style-image: url(data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7);
 }
 .ui-menu .ui-menu-divider {
 	margin: 5px -2px 5px -2px;
@@ -558,6 +560,69 @@ button.ui-button::-moz-focus-inner {
 	position: static;
 	float: right;
 }
+.ui-slider {
+	position: relative;
+	text-align: left;
+}
+.ui-slider .ui-slider-handle {
+	position: absolute;
+	z-index: 2;
+	width: 1.2em;
+	height: 1.2em;
+	cursor: default;
+}
+.ui-slider .ui-slider-range {
+	position: absolute;
+	z-index: 1;
+	font-size: .7em;
+	display: block;
+	border: 0;
+	background-position: 0 0;
+}
+
+/* For IE8 - See #6727 */
+.ui-slider.ui-state-disabled .ui-slider-handle,
+.ui-slider.ui-state-disabled .ui-slider-range {
+	filter: inherit;
+}
+
+.ui-slider-horizontal {
+	height: .8em;
+}
+.ui-slider-horizontal .ui-slider-handle {
+	top: -.3em;
+	margin-left: -.6em;
+}
+.ui-slider-horizontal .ui-slider-range {
+	top: 0;
+	height: 100%;
+}
+.ui-slider-horizontal .ui-slider-range-min {
+	left: 0;
+}
+.ui-slider-horizontal .ui-slider-range-max {
+	right: 0;
+}
+
+.ui-slider-vertical {
+	width: .8em;
+	height: 100px;
+}
+.ui-slider-vertical .ui-slider-handle {
+	left: -.3em;
+	margin-left: 0;
+	margin-bottom: -.6em;
+}
+.ui-slider-vertical .ui-slider-range {
+	left: 0;
+	width: 100%;
+}
+.ui-slider-vertical .ui-slider-range-min {
+	bottom: 0;
+}
+.ui-slider-vertical .ui-slider-range-max {
+	top: 0;
+}
 .ui-tabs {
 	position: relative;/* position: relative prevents IE scroll bug (element with position: relative inside container with overflow: auto appear as "fixed") */
 	padding: .2em;
@@ -572,7 +637,7 @@ button.ui-button::-moz-focus-inner {
 	position: relative;
 	top: 0;
 	margin: 1px .2em 0 0;
-	border-bottom: 0;
+	border-bottom-width: 0;
 	padding: 0;
 	white-space: nowrap;
 }
@@ -745,7 +810,6 @@ button.ui-button::-moz-focus-inner {
 .ui-icon {
 	width: 16px;
 	height: 16px;
-	background-position: 16px 16px;
 }
 .ui-icon,
 .ui-widget-content .ui-icon {
@@ -773,6 +837,7 @@ button.ui-button::-moz-focus-inner {
 }
 
 /* positioning */
+.ui-icon-blank { background-position: 16px 16px; }
 .ui-icon-carat-1-n { background-position: 0 0; }
 .ui-icon-carat-1-ne { background-position: -16px 0; }
 .ui-icon-carat-1-e { background-position: -32px 0; }
