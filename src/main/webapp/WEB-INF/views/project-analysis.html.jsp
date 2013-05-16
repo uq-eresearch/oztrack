@@ -92,11 +92,12 @@
                 box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08);
             }
             .layerInfoTitle {
-                margin-bottom: 4px;
             }
-            .layerInfoStats {
-                border-top: 1px solid #aaa;
+            .layerInfoStats,
+            .layerInfoExport {
+                margin-top: 4px;
                 padding-top: 4px;
+                border-top: 2px groove #EEECDE;
             }
             .layerInfoStat {
                 font-size: 11px;
@@ -107,10 +108,7 @@
                 min-width: 45%;
             }
             .layerInfoExport {
-                margin-top: 4px;
                 margin-bottom: 1px;
-                padding-top: 4px;
-                border-top: 1px solid #aaa;
             }
             .layerInfoLabel {
                 width: 120px;
