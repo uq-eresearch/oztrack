@@ -238,8 +238,15 @@ a.thumbnail:hover {
   border-color: #899e47;
 }
 
+.navbar-outer {
+  #gradient > .vertical(@navbarInverseBackgroundHighlight, @navbarInverseBackground);
+  border-width: 1px 0;
+  border-style: solid;
+  border-color: @navbarInverseBorder;
+}
+
 .navbar {
-  margin: 0;
+  margin: 0 250px;
 }
 
 .navbar-inner {
@@ -247,6 +254,16 @@ a.thumbnail:hover {
   min-height: 0;
   line-height: 0;
   text-align: center;
+}
+
+.navbar-inverse {
+  .navbar-inner {
+    padding-left: 0;
+    padding-right: 0;
+    background: none;
+    filter: none;
+    border: none;
+  }
 }
 
 .navbar .nav {
@@ -257,10 +274,14 @@ a.thumbnail:hover {
   margin: 0 auto;
 }
 
+.navbar-outer .btn {
+  padding: 2px 9px;
+}
+
 .navbar .nav > li > a {
   font-size: 13px;
   font-weight: bold;
-  padding: 8px 20px 7px 20px;
+  padding: 5px 20px;
 }
 
 .navbar-inverse .nav > li > a,
@@ -284,9 +305,6 @@ a.thumbnail:hover {
 
 #header {
   background-color: white;
-  background-image: url('../img/header_croc.jpg');
-  background-position: right top;
-  background-repeat: no-repeat;
 }
 
 @bannerLeftImageWidth: 114px;
@@ -311,22 +329,36 @@ a.thumbnail:hover {
 #banner-right {
   margin-left: @bannerLeftWidth;
   height: @bannerHeight;
-}
-
-.container-fluid #banner-right {
+  background-image: url('../img/header_croc.jpg');
   background-position: right center;
+  background-repeat: no-repeat;
 }
 
 #login {
-  position: absolute;
-  top: @bannerHeight + 3px;
-  right: 3px;
+  position: relative;
+  float: right;
+  text-align: right;
+  width: 250px;
+  top: 2px;
+  right: 0px;
 }
 
 #nav-extra {
-  position: absolute;
-  top: @bannerHeight + 3px;
-  left: 3px;
+  position: relative;
+  float: left;
+  text-align: left;
+  width: 250px;
+  top: 2px;
+  left: 0px;
+}
+
+.container-fluid {
+  #login {
+    right: 3px;
+  }
+  #nav-extra {
+    left: 3px;
+  }
 }
 
 #crumbs {
