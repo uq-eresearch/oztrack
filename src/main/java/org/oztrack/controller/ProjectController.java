@@ -24,6 +24,7 @@ import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.DataLicenceDao;
+import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.SrsDao;
 import org.oztrack.data.access.UserDao;
@@ -67,6 +68,9 @@ public class ProjectController {
     private ProjectDao projectDao;
 
     @Autowired
+    private PositionFixDao positionFixDao;
+
+    @Autowired
     private DataFileDao dataFileDao;
 
     @Autowired
@@ -90,7 +94,6 @@ public class ProjectController {
             "speciesCommonName",
             "speciesScientificName",
             "srsIdentifier",
-            "crosses180",
             "access",
             "rightsStatement"
         );
@@ -188,6 +191,7 @@ public class ProjectController {
         @ModelAttribute(value="project") Project project,
         BindingResult bindingResult,
         @RequestParam(value="embargoDate", required=false) String embargoDateString,
+        @RequestParam(value="crosses180", required=false, defaultValue="false") Boolean crosses180,
         @RequestParam(value="dataLicenceIdentifier", required=false) String dataLicenceIdentifier,
         HttpServletRequest request
     ) throws Exception {
@@ -205,6 +209,8 @@ public class ProjectController {
                 project.setEmbargoNotificationDate(null);
             }
         }
+        boolean shouldRenumberPositionFixes = !project.getCrosses180().equals(crosses180);
+        project.setCrosses180(crosses180);
         if (
             StringUtils.isNotBlank(dataLicenceIdentifier) &&
             (project.getAccess() != ProjectAccess.CLOSED)
@@ -225,6 +231,9 @@ public class ProjectController {
             return "project-form";
         }
         projectDao.update(project);
+        if (shouldRenumberPositionFixes) {
+            positionFixDao.renumberPositionFixes(project);
+        }
         return "redirect:/projects/" + project.getId();
     }
 
