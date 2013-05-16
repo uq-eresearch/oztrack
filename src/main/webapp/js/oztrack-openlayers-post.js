@@ -65,6 +65,7 @@ OpenLayers.Map.prototype.adjustZoom = function (zoom) {
         layersDiv: null,
         minimizeDiv: null,
         maximizeDiv: null,
+        layerInfoDialogs: {},
 
         initialize: function(options) {
             options = options || {};
@@ -162,13 +163,15 @@ OpenLayers.Map.prototype.adjustZoom = function (zoom) {
         },
 
         redraw: function(evt) {
+            var that = this;
+
             if (evt) {
                 // Ignore changes in opacity - irrelevant to layer switcher
                 if ((evt.type === 'changelayer') && (evt.property === 'opacity')) {
                     return;
                 }
             }
-            
+
             this.clearLayersArray();
 
             var layers = this.map.layers.slice();
@@ -259,46 +262,48 @@ OpenLayers.Map.prototype.adjustZoom = function (zoom) {
                         .css('cursor', 'pointer')
                         .attr('title', 'Information')
                         .click(function(e) {
-                            var content = $('<div>').append($('<div>').addClass('layerInfoContent')
-                                .append($('<p>').addClass('layerInfoTitle').append(layer.name))
-                                .append($('<p>')
-                                    .append('For general information about this layer see:<br />')
-                                    .append(layer.attribution)
-                                )
-                                .append($('<p>').css('font-weight', 'bold').append('Map legend'))
-                                .append($('<img>').attr('src',
-                                    '/geoserver/wms' +
-                                    '?REQUEST=GetLegendGraphic' +
-                                    '&VERSION=1.0.0' +
-                                    '&FORMAT=image/png' +
-                                    '&WIDTH=15' +
-                                    '&HEIGHT=15' +
-                                    '&LEGEND_OPTIONS=forceLabels:on' +
-                                    '&LAYER=' + layer.params.LAYERS +
-                                    '&STYLE=' + layer.params.STYLES
-                                )
-                            ));
-                            // Remove all other popups and then show our own.
-                            var popups = map.popups.slice(0);
-                            $.each(popups, function(i, popup) {
-                                if ($(popup.contentHTML).hasClass('layerInfoContent')) {
-                                    map.removePopup(popup);
+                            var dialog = that.layerInfoDialogs[layer.id];
+                            $.each(that.layerInfoDialogs, function(id, d) {
+                                if (d !== dialog) {
+                                    d.dialog('close');
                                 }
                             });
-                            var popup = new OpenLayers.Popup.FramedCloud(
-                                null,
-                                map.getLonLatFromPixel(new OpenLayers.Pixel(100, 20)),
-                                null,
-                                content.html(),
-                                null,
-                                true
-                            );
-                            popup.autoSize = true;
-                            popup.minSize = new OpenLayers.Size(420, map.getSize().h - 40);
-                            popup.calculateRelativePosition = function () {
-                                return 'br';
+                            if (dialog) {
+                                dialog.dialog('open');
                             }
-                            map.addPopup(popup);
+                            else {
+                                var content = $('<div>').append($('<div>').addClass('layerInfoContent')
+                                    .append($('<p>')
+                                        .append('For general information about this layer see:<br />')
+                                        .append(layer.attribution)
+                                    )
+                                    .append($('<p>').css('font-weight', 'bold').append('Map legend'))
+                                    .append($('<img>').attr('src',
+                                        '/geoserver/wms' +
+                                        '?REQUEST=GetLegendGraphic' +
+                                        '&VERSION=1.0.0' +
+                                        '&FORMAT=image/png' +
+                                        '&WIDTH=15' +
+                                        '&HEIGHT=15' +
+                                        '&LEGEND_OPTIONS=forceLabels:on' +
+                                        '&LAYER=' + layer.params.LAYERS +
+                                        '&STYLE=' + layer.params.STYLES
+                                    )
+                                ));
+                                that.layerInfoDialogs[layer.id] = content.dialog({
+                                    title: layer.name,
+                                    modal: false,
+                                    resizable: true,
+                                    dialogClass: 'layerInfoDialog',
+                                    width: 420,
+                                    maxWidth: map.getSize().w - (8 + 28 + 8) - (285 + 8),
+                                    maxHeight: map.getSize().h - 88,
+                                    position: {my: 'left top', at: 'left+44 top+8', of: map.div},
+                                    create: function(event, ui) {
+                                        $(event.target).closest('.ui-dialog').find('.ui-dialog-titlebar-close').text('×');
+                                    }
+                                });
+                            }
                         });
                     $(layerDiv).append(span);
                 }

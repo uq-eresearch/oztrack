@@ -17,13 +17,10 @@ function createSrsSelector(options) {
                     title: 'Select spatial reference system (SRS)',
                     modal: true,
                     resizable: false,
-                    buttons: {
-                        'Close': function() {
-                            $(this).dialog('close');
-                        }
-                    },
                     width: mapWidth + 25,
-                    height: mapHeight + 110
+                    create: function(event, ui) {
+                        $(event.target).closest('.ui-dialog').find('.ui-dialog-titlebar-close').text('×');
+                    }
                 });
                 var mapDiv = $('<div style="width: ' + mapWidth + 'px; height: ' + mapHeight + 'px;">').appendTo(dialogDiv);
 

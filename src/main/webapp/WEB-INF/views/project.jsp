@@ -235,12 +235,12 @@
                     title: 'Add image',
                     modal: true,
                     resizable: false,
+                    create: function(event, ui) {
+                        $(event.target).closest('.ui-dialog').find('.ui-dialog-titlebar-close').text('×');
+                    },
                     buttons: {
                         'Upload': function() {
                             $('#addImageForm').submit();
-                        },
-                        'Close': function() {
-                            $(this).dialog('close');
                         }
                     }
                 });

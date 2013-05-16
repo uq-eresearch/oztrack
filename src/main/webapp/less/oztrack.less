@@ -719,6 +719,10 @@ ul.icons li.artwork {background-image: url('../img/palette.png');}
   height: 308px;
 }
 
+.layerInfoDialog .ui-dialog-content {
+  background-color: white;
+}
+
 /* jquery-ui */
 
 .ui-front {
@@ -743,10 +747,20 @@ ul.icons li.artwork {background-image: url('../img/palette.png');}
   background: white url('../img/ui-anim_basic_16x16.gif') right center no-repeat;
 }
 
-/* Hide dialog close button because the 'x' is not shown in jquery-ui 1.10.1. */
-/* Add a Close button at the bottom of each dialog instead. */
+
+/*
+ * Set formatting for jquery-ui dialog close button.
+ *
+ * Note: we need to manually set the button's text for each dialog because jquery-ui 1.10.3
+ * leaves it blank by default. Register a handler for the 'create' event like this:
+ *
+ *    create: function(event, ui) {
+ *        $(event.target).closest('.ui-dialog').find('.ui-dialog-titlebar-close').text('×');
+ *    }
+ */
 .ui-dialog-titlebar-close {
-  display: none;
+  line-height: 16px;
+  font-weight: bold;
 }
 
 /* openlayers */
