@@ -17,7 +17,7 @@ fpdens2kml <- function(sdata,igrid,ssrs,scol,labsent=FALSE)
 #labsent=FALSE
 
   if(igrid < 10)
-   stop('Grid size too small, try increasing grid number.')
+   stop('Grid size must be at least 10 m.')
 
   sdata.proj <- spTransform(sdata, CRS(ssrs))
   
@@ -55,7 +55,7 @@ fpdens2kml <- function(sdata,igrid,ssrs,scol,labsent=FALSE)
 fldens2kml <- function(sdata,igrid,ssrs,scol,labsent=FALSE)
 {
   if(igrid < 10)
-    stop('Grid size too small, try increasing grid number.')
+    stop('Grid size must be at least 10 m.')
   
   sdata.proj <- spTransform(sdata,CRS(ssrs)) 
   
@@ -303,7 +303,7 @@ kmlPolygonRD <- function (obj = NULL, kmlfile = NULL, name = "R Polygon", descri
 oztrack_heatmap_point <- function(srs, gridSize, colours, labsent, kmlFile) {
   PPA <- try({fpdens2kml(sdata=positionFix.xy, igrid=gridSize, ssrs=paste('+init=', srs, sep=''), scol=colours, labsent=labsent)}, silent=TRUE)
   if (class(PPA) == 'try-error') {
-    stop('Grid size too small. Try increasing grid number.')
+    stop('Error running analysis. Try increasing grid size.')
   }
   polykml(sw=PPA, filename=kmlFile, kmlname=paste(unique(PPA$ID), '_point_density',sep=''),namefield=unique(PPA$ID))
 }
@@ -311,7 +311,7 @@ oztrack_heatmap_point <- function(srs, gridSize, colours, labsent, kmlFile) {
 oztrack_heatmap_line <- function(srs, gridSize, colours, labsent, kmlFile) {
   LPA <- try({fldens2kml(sdata=positionFix.xy, igrid=gridSize, ssrs=paste('+init=', srs, sep=''), scol=colours, labsent=labsent)}, silent=TRUE)
   if (class(LPA) == 'try-error') {
-    stop('Grid size too small. Try increasing grid number.')
+    stop('Error running analysis. Try increasing grid size.')
   }
   polykml(sw=LPA, filename=kmlFile, kmlname=paste(unique(LPA$ID), '_line_density', sep=''), namefield=unique(LPA$ID))
 }
