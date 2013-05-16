@@ -822,7 +822,7 @@
             if (toDate) {
                 params.toDate = toDate;
             }
-            params.animalIds = $('input[name=animal]:checked').map(function() {return $(this).val();}).toArray().join(',');
+            params.animalIds = $('input[name=animal]:not(:disabled):checked').map(function() {return $(this).val();}).toArray().join(',');
             $('.paramField-' + queryTypeValue).each(function() {
                 if ($(this).attr('type') == 'checkbox') {
                     params[$(this).attr('name')] = $(this).is(':checked') ? 'true' : 'false';

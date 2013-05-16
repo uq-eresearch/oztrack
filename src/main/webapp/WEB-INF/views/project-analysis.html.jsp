@@ -248,6 +248,7 @@
                 }
                 <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
                 $('input[id=select-animal-${animal.id}]').change(function() {
+                    $('#filter-animal-${animal.id}').prop('disabled', !this.checked);
                     analysisMap.toggleAllAnimalFeatures("${animal.id}", this.checked);
                     showAnimalSelectionDialog();
                 });
