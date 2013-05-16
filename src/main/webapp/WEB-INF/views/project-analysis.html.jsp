@@ -176,20 +176,6 @@
                 padding-top: 3px;
                 padding-bottom: 3px;
             }
-            #selectAnimalConfirmationBox {
-                display: none;
-                position: absolute;
-                background-color: #263F00;
-                color: white;
-                opacity: 0.80;
-                padding: 10px;
-                border-radius: 6px 6px 0 0;
-            }
-            #selectAnimalConfirmationLink {
-                color: white;
-                font-weight: bold;
-                white-space: nowrap;
-            }
             #projectMapOptions #toggleSidebar {
                 display: block;
                 position: absolute;
@@ -231,17 +217,41 @@
                     maxDate: new Date(${projectDetectionDateRange.maximum.time}),
                     defaultDate: new Date(${projectDetectionDateRange.maximum.time})
                 });
+                window.animalSelectionDialog = null;
+                function showAnimalSelectionDialog() {
+                    if (window.animalSelectionDialog) {
+                        window.animalSelectionDialog.dialog('open');
+                    }
+                    else {
+                        window.animalSelectionDialog = $('<div>')
+                            .append($('<p style="margin: 9px 0;">')
+                                .append('Please click \'Done\' to complete selecting animals.')
+                            )
+                            .append($('<p style="margin: 18px 0 0 0; font-size: 11px; color: #666;">')
+                                .append('<b>Why is this necessary?</b> ')
+                                .append('Animals are not refreshed instantly to prevent unnecessary loading of map data.')
+                            )
+                            .dialog({
+                                title: 'Animal selection',
+                                modal: false,
+                                resizable: false,
+                                dialogClass: 'no-close',
+                                width: 350,
+                                buttons: {
+                                    'Done': function() {
+                                        analysisMap.toggleAllAnimalFeaturesCommit();
+                                        $(this).dialog('close');
+                                    }
+                                }
+                            });
+                    }
+                }
                 <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
                 $('input[id=select-animal-${animal.id}]').change(function() {
                     analysisMap.toggleAllAnimalFeatures("${animal.id}", this.checked);
-                    $('#selectAnimalConfirmationBox').show();
-                    repositionSelectAnimalConfirmationBox();
+                    showAnimalSelectionDialog();
                 });
                 </c:forEach>
-                $('#selectAnimalConfirmationLink').click(function(e) {
-                    analysisMap.toggleAllAnimalFeaturesCommit();
-                    $('#selectAnimalConfirmationBox').fadeOut();
-                });
 
                 $('#select-animal-all').prop('checked', $('.select-animal:not(:checked)').length == 0);
                 $('.select-animal').change(function (e) {
@@ -439,9 +449,6 @@
                 );
                 </c:forEach>
                 $(window).resize(onResize);
-                $(window).resize(repositionSelectAnimalConfirmationBox);
-                $('#animalPanel').scroll(repositionSelectAnimalConfirmationBox);
-                repositionSelectAnimalConfirmationBox();
                 $('#toggleSidebar').click(function(e) {
                     e.preventDefault();
                     $(this).find('i').toggleClass('icon-chevron-left').toggleClass('icon-chevron-right');
@@ -653,13 +660,6 @@
                     analysisMap.updateSize();
                 }
             }
-            function repositionSelectAnimalConfirmationBox() {
-                $('#selectAnimalConfirmationBox').position({
-                    my: 'center bottom',
-                    at: 'center bottom',
-                    of: '#animalPanel'
-                });
-            }
         </script>
     </jsp:attribute>
     <jsp:body>
@@ -717,10 +717,6 @@
                     <div id="animalInfo-${animal.id}" class="animalInfo" style="display: ${showAnimalInfo ? 'block' : 'none'};">
                     </div>
                 </c:forEach>
-                
-                <div id="selectAnimalConfirmationBox">
-                    <a id="selectAnimalConfirmationLink" href="javascript:void(0);">Click to finish selecting animals</a>
-                </div>
             </div>
 
             <div id="homeRangeCalculatorPanel">
