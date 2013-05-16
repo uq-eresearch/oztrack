@@ -770,7 +770,7 @@
                                     type="checkbox"
                                     value="${animal.id}"
                                     style="width: 15px;"
-                                    <c:if test="${animalStatus.first}">checked="checked"</c:if> />
+                                    checked="checked" />
                             </div>
                             <div class="animalsFilterSmallSquare" style="background-color: ${animal.colour};"></div>
                             <div class="animalsFilterLabel">${animal.animalName}</div>
