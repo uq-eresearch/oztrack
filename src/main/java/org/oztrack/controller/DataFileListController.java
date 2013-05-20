@@ -12,6 +12,7 @@ import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.User;
+import org.oztrack.data.model.types.ArgosClass;
 import org.oztrack.data.model.types.DataFileStatus;
 import org.oztrack.data.model.types.PositionFixFileHeader;
 import org.oztrack.util.ExcelToCsvConverter;
@@ -92,6 +93,11 @@ public class DataFileListController {
             fileHeaders.add(h.toString());
         }
         model.addAttribute("fileHeaders", fileHeaders);
+        ArrayList<String> argosClassTitles = new ArrayList<String>();
+        for (ArgosClass a : ArgosClass.values()) {
+            argosClassTitles.add(a.getTitle());
+        }
+        model.addAttribute("argosClassTitles", argosClassTitles.toArray(new String[] {}));
         return "datafile-form";
     }
 

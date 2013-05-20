@@ -91,7 +91,7 @@
 
         <h2>Example data files</h2>
 
-        <p>CSV file containing a single animal:</p>
+        <p>CSV file containing a single animal, with separate columns for date and time:</p>
 <pre class="datafile">
 DATE,TIME,LATITUDE,LONGITUDE
 30/03/2010,5:46:35,-17.557141,146.089866
@@ -101,15 +101,15 @@ DATE,TIME,LATITUDE,LONGITUDE
 2/04/2010,22:17:23,-17.559016,146.087858
 </pre>
 
-        <p>Excel file containing several animals (note the extra <tt>ANIMALID</tt> column):</p>
+        <p>Excel file containing several animals (note the extra <tt>ANIMALID</tt> column - and optional <tt>ARGOSCLASS</tt> values):</p>
         <table class="table table-bordered table-condensed datafile">
-        <tr><th>ANIMALID</th><th>DATE</th><th>LONGITUDE</th><th>LATITUDE</th></tr>
-        <tr><td>Ernie</td><td>5/08/2009 11:16:00</td><td>142.17893</td><td>-12.38277</th></tr>
-        <tr><td>Ernie</td><td>11/08/2009 20:56:00</td><td>142.17896</td><td>-12.38248</th></tr>
-        <tr><td>Ernie</td><td>12/08/2009 5:56:00</td><td>142.10926</td><td>-12.31637</th></tr>
-        <tr><td>Bert</td><td>5/08/2009 11:16:00</td><td>142.17888</td><td>-12.38272</th></tr>
-        <tr><td>Bert</td><td>11/08/2009 20:56:00</td><td>142.17881</td><td>-12.3824</th></tr>
-        <tr><td>Bert</td><td>12/08/2009 2:55:00</td><td>142.10619</td><td>-12.32208</th></tr>
+        <tr><th>ANIMALID</th><th>DATE</th><th>LONGITUDE</th><th>LATITUDE</th><th>ARGOSCLASS</th></tr>
+        <tr><td>Ernie</td><td>5/08/2009 11:16:00</td><td>142.17893</td><td>-12.38277</td><td>B</td></tr>
+        <tr><td>Ernie</td><td>11/08/2009 20:56:00</td><td>142.17896</td><td>-12.38248</td><td>A</td></tr>
+        <tr><td>Ernie</td><td>12/08/2009 5:56:00</td><td>142.10926</td><td>-12.31637</td><td>2</td></tr>
+        <tr><td>Bert</td><td>5/08/2009 11:16:00</td><td>142.17888</td><td>-12.38272</td><td>3</td></tr>
+        <tr><td>Bert</td><td>11/08/2009 20:56:00</td><td>142.17881</td><td>-12.3824</td><td>0</td></tr>
+        <tr><td>Bert</td><td>12/08/2009 2:55:00</td><td>142.10619</td><td>-12.32208</td><td>1</td></tr>
         </table>
 
         <h2>File format</h2>
@@ -120,10 +120,11 @@ DATE,TIME,LATITUDE,LONGITUDE
         </p>
         <ul>
             <li><tt>DATE</tt>, <tt>UTCDATE</tt>, <tt>LOCDATE</tt>, or <tt>ACQUISITIONTIME</tt>: date or date/time value (required)</li>
-            <li><tt>TIME</tt> or <tt>UTCTIME</tt>: time value, if not included in date/time value (optional)</li>
+            <li><tt>TIME</tt> or <tt>UTCTIME</tt>: time value, if not included in date column (optional)</li>
             <li><tt>LATITUDE</tt>, <tt>LATT</tt>, or <tt>LAT</tt>: WGS84 latitude in decimal degrees (required)</li>
             <li><tt>LONGITUDE</tt>, <tt>LONG</tt>, or <tt>LON</tt>: WGS84 longitude in decimal degrees (required)</li>
-            <li><tt>ID</tt> or <tt>ANIMALID</tt>: Alphanumeric ID for animal, if file contains several animals (optional)</li>
+            <li><tt>ID</tt> or <tt>ANIMALID</tt>: alphanumeric ID for animal, if file contains several animals (optional)</li>
+            <li><tt>ARGOSCLASS</tt>: Argos location class (${fn:join(argosClassTitles, ', ')}) (optional)</li>
         </ul>
 
         <h3>Date and time formats</h3>

@@ -84,6 +84,12 @@
 </c:if>
 </div>
 
+<c:set var="inclArgos" value="false"/>
+<c:forEach items="${positionFixPage.objects}" var="detection">
+<c:if test="${not empty detection.argosClass}">
+<c:set var="inclArgos" value="true"/>
+</c:if>
+</c:forEach>
 <c:if test="${positionFixPage.objects != null}">
 <table class="table table-bordered table-condensed">
     <col style="width: 150px;" />
@@ -93,6 +99,9 @@
     </c:if>
     <col style="width: 90px;" />
     <col style="width: 90px;" />
+    <c:if test="${inclArgos}">
+    <col style="width: 60px;" />
+    </c:if>
     <sec:authorize access="hasPermission(#project, 'write')">
     <col style="width: 80px;" />
     <c:if test="${includeDeleted}">
@@ -108,6 +117,9 @@
             </c:if>
             <th>Longitude</th>
             <th>Latitude</th>
+            <c:if test="${inclArgos}">
+            <th>Argos</th>
+            </c:if>
             <sec:authorize access="hasPermission(#project, 'write')">
             <th>Uploaded</th>
             <c:if test="${includeDeleted}">
@@ -126,6 +138,9 @@
             </c:if>
             <td><c:out value="${detection.locationGeometry.x}"/></td>
             <td><c:out value="${detection.locationGeometry.y}"/></td>
+            <c:if test="${inclArgos}">
+            <td><c:out value="${not empty detection.argosClass ? detection.argosClass.title : ''}"/></td>
+            </c:if>
             <sec:authorize access="hasPermission(#project, 'write')">
             <td>
                 <a href="${pageContext.request.contextPath}/datafiles/${detection.dataFile.id}"

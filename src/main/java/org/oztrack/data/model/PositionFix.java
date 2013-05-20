@@ -1,9 +1,12 @@
 package org.oztrack.data.model;
 
+import static javax.persistence.EnumType.STRING;
+
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -11,6 +14,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Type;
+import org.oztrack.data.model.types.ArgosClass;
 
 import com.vividsolutions.jts.geom.Point;
 
@@ -38,12 +42,16 @@ public class PositionFix {
     @JoinColumn(nullable=false)
     private DataFile dataFile;
 
-    @Column(name = "locationgeometry", columnDefinition="GEOMETRY", nullable=false)
-    @Type(type = "org.hibernatespatial.GeometryUserType")
+    @Column(name="locationgeometry", columnDefinition="GEOMETRY", nullable=false)
+    @Type(type="org.hibernatespatial.GeometryUserType")
     private Point locationGeometry;
 
     @Column(nullable=false)
     private Boolean deleted;
+
+    @Enumerated(STRING)
+    @Column(name="argosclass", columnDefinition="text")
+    private ArgosClass argosClass;
 
     public Long getId() {
         return id;
@@ -107,5 +115,13 @@ public class PositionFix {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public ArgosClass getArgosClass() {
+        return argosClass;
+    }
+
+    public void setArgosClass(ArgosClass argosClass) {
+        this.argosClass = argosClass;
     }
 }

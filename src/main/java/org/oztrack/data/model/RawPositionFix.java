@@ -1,9 +1,12 @@
 package org.oztrack.data.model;
 
+import static javax.persistence.EnumType.STRING;
+
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,6 +15,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Type;
+import org.oztrack.data.model.types.ArgosClass;
 
 import com.vividsolutions.jts.geom.Point;
 
@@ -39,6 +43,10 @@ public class RawPositionFix {
 
     @Column(nullable=false)
     private Boolean deleted;
+
+    @Enumerated(STRING)
+    @Column(name="argosclass", columnDefinition="text")
+    private ArgosClass argosClass;
 
     public Long getId() {
         return id;
@@ -94,5 +102,13 @@ public class RawPositionFix {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public ArgosClass getArgosClass() {
+        return argosClass;
+    }
+
+    public void setArgosClass(ArgosClass argosClass) {
+        this.argosClass = argosClass;
     }
 }

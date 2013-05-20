@@ -16,12 +16,14 @@ import java.util.regex.Pattern;
 import javax.persistence.EntityManager;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.JdbcAccess;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.RawPositionFix;
+import org.oztrack.data.model.types.ArgosClass;
 import org.oztrack.data.model.types.PositionFixFileHeader;
 import org.oztrack.error.FileProcessingException;
 
@@ -119,6 +121,8 @@ public class PositionFixFileLoader extends DataFileLoader {
                                 animalIdFieldFound = true;
                                 break;
                             case DELETED:
+                                break;
+                            case ARGOSCLASS:
                                 break;
                             default:
                                 logger.debug("Unhandled positionFixFileHeader: " + positionFixFileHeader);
@@ -218,6 +222,15 @@ public class PositionFixFileLoader extends DataFileLoader {
                                         break;
                                     case DELETED:
                                         rawPositionFix.setDeleted(Boolean.valueOf(dataRow[i].toLowerCase(Locale.ENGLISH)));
+                                        break;
+                                    case ARGOSCLASS:
+                                        if (StringUtils.isNotBlank(dataRow[i])) {
+                                            ArgosClass argosClass = ArgosClass.fromTitle(dataRow[i]);
+                                            if (argosClass == null) {
+                                                throw new FileProcessingException("Invalid Argos class: " + dataRow[i]);
+                                            }
+                                            rawPositionFix.setArgosClass(argosClass);
+                                        }
                                         break;
                                     default:
                                         logger.debug("Unhandled positionFixFileHeader: " + positionFixFileHeader);
