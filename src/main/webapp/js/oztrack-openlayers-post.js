@@ -306,10 +306,10 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
 
                 var inputElem = document.createElement("input");
                 var checked = (layer.isBaseLayer) ? (layer == this.map.baseLayer) : layer.getVisibility();
-                inputElem.id = this.id + "_input_" + layer.name;
-                inputElem.name = (layer.isBaseLayer) ? this.id + "_baseLayers" : layer.name;
+                inputElem.id = this.id + "_input_" + layer.id;
+                inputElem.name = (layer.isBaseLayer) ? this.id + "_baseLayers" : layer.id;
                 inputElem.type = (layer.isBaseLayer) ? "radio" : "checkbox";
-                inputElem.value = layer.name;
+                inputElem.value = layer.id;
                 inputElem.checked = checked;
                 inputElem.defaultChecked = checked;
                 inputElem.className = "olButton";
