@@ -44,10 +44,10 @@
             <p><c:out value="${errorStr}"/></p>
 
             <table id="dataFileStatusTable" class="table table-bordered">
-                <col style="width: 200px;" />
+                <col style="width: 230px;" />
                 <col style="width: 300px;" />
                 <col style="width: 100px;" />
-                <col style="width: 100px;" />
+                <col style="width: 70px;" />
                 <thead>
                     <tr>
                         <th>File Name</th>
