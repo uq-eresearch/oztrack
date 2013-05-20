@@ -956,6 +956,12 @@
                         });
                     }
                     queryOverlay.addFeatures(resp.features);
+                    
+                    // Workaround: OpenLayers sometimes fails to draw polygons until map is panned.
+                    if (that.crosses180) {
+                        that.map.pan(1, 0, null);
+                        that.map.pan(-1, 0, null);
+                    }
 
                     updateAnimalInfoFromKML(analysis, resp.features);
                     that.onAnalysisSuccess();
