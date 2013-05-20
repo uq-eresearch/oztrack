@@ -956,6 +956,7 @@
                         });
                     }
                     queryOverlay.addFeatures(resp.features);
+
                     updateAnimalInfoFromKML(analysis, resp.features);
                     that.onAnalysisSuccess();
                 }
@@ -964,15 +965,9 @@
                 }
             };
             protocol.read({
-                callback : callback
+                callback: callback
             });
             that.map.addLayer(queryOverlay);
-
-            // Workaround: OpenLayers sometimes fails to draw polygons until map is panned.
-            if (that.crosses180) {
-                that.map.pan(1, 0, null);
-                that.map.pan(-1, 0, null);
-            }
         }
         
         that.deleteCurrentAnalysis = function() {
