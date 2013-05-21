@@ -401,7 +401,7 @@
                     <div class="accordion-group" style="margin-top: 15px;">
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-action" href="#accordion-body-delete-all">
-                                Delete all
+                                Delete all <span style="font-size: 11px; color: #888;">(applies only to selected dates and animals)</span>
                             </a>
                         </div>
                         <div id="accordion-body-delete-all" class="accordion-body collapse">
@@ -427,7 +427,7 @@
                     <div class="accordion-group">
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-action" href="#accordion-body-restore-all">
-                                Restore all
+                                Restore all <span style="font-size: 11px; color: #888;">(applies only to selected dates and animals)</span>
                             </a>
                         </div>
                         <div id="accordion-body-restore-all" class="accordion-body collapse">
