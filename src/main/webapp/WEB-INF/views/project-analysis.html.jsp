@@ -736,8 +736,8 @@
                         <div class="controls">
                             <input id="fromDate" type="hidden"/>
                             <input id="toDate" type="hidden"/>
-                            <input id="fromDateVisible" type="text" class="datepicker" placeholder="From" style="margin-bottom: 3px; width: 80px;"/> -
-                            <input id="toDateVisible" type="text" class="datepicker" placeholder="To" style="margin-bottom: 3px; width: 80px;"/>
+                            <input id="fromDateVisible" type="text" class="datepicker" placeholder="From" style="margin-bottom: 0px; width: 80px;"/> -
+                            <input id="toDateVisible" type="text" class="datepicker" placeholder="To" style="margin-bottom: 0px; width: 80px;"/>
                         </div>
                     </div>
                     <div class="control-group" style="margin-bottom: 9px;">

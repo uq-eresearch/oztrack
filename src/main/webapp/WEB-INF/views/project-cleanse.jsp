@@ -244,7 +244,7 @@
                 <li><a href="#dataCleansing">Edit Tracks</a></li>
             </ul>
             <div id="dataCleansing">
-                <form id="form-context" class="form-vertical" onsubmit="return false;">
+                <form id="form-context" class="form-vertical" style="margin: 0 0 9px 0;" onsubmit="return false;">
                 <fieldset>
                 <div class="control-group" style="margin-bottom: 9px;">
                     <div style="margin-bottom: 9px; font-weight: bold;">
@@ -257,8 +257,8 @@
                     <div class="controls">
                         <input id="fromDate" name="fromDate" type="hidden"/>
                         <input id="toDate" name="toDate" type="hidden"/>
-                        <input id="fromDateVisible" type="text" class="datepicker" placeholder="From" style="margin-bottom: 3px; width: 80px;"/> -
-                        <input id="toDateVisible" type="text" class="datepicker" placeholder="To" style="margin-bottom: 3px;  width: 80px;"/>
+                        <input id="fromDateVisible" type="text" class="datepicker" placeholder="From" style="margin-bottom: 0px; width: 80px;"/> -
+                        <input id="toDateVisible" type="text" class="datepicker" placeholder="To" style="margin-bottom: 0px;  width: 80px;"/>
                     </div>
                 </div>
                 <div class="control-group" style="margin-bottom: 9px;">
@@ -310,7 +310,7 @@
                         </div>
                         <div id="accordion-body-multi-polygon" class="accordion-body collapse in">
                             <div class="accordion-inner">
-                                <form id="form-multi-polygon" class="form-vertical" onsubmit="return false;">
+                                <form id="form-multi-polygon" class="form-vertical" style="margin: 0;" onsubmit="return false;">
                                 <fieldset>
                                 <div class="control-group">
                                     <p>
@@ -341,7 +341,7 @@
                         </div>
                         <div id="accordion-body-speed-filter" class="accordion-body collapse">
                             <div class="accordion-inner">
-                                <form id="form-speed-filter" class="form-vertical" onsubmit="return false;">
+                                <form id="form-speed-filter" class="form-vertical" style="margin: 0;" onsubmit="return false;">
                                 <fieldset>
                                 <div class="control-group">
                                     <p>
@@ -371,7 +371,7 @@
                         </div>
                         <div id="accordion-body-argos-class" class="accordion-body collapse">
                             <div class="accordion-inner">
-                                <form id="form-argos-class" class="form-vertical" onsubmit="return false;">
+                                <form id="form-argos-class" class="form-vertical" style="margin: 0;" onsubmit="return false;">
                                 <fieldset>
                                 <div class="control-group">
                                     <p>
@@ -405,7 +405,7 @@
                         </div>
                         <div id="accordion-body-delete-all" class="accordion-body collapse">
                             <div class="accordion-inner">
-                                <form id="form-delete-all" class="form-vertical" onsubmit="return false;">
+                                <form id="form-delete-all" class="form-vertical" style="margin: 0;" onsubmit="return false;">
                                 <fieldset>
                                 <div class="control-group">
                                     <p>
@@ -431,7 +431,7 @@
                         </div>
                         <div id="accordion-body-restore-all" class="accordion-body collapse">
                             <div class="accordion-inner">
-                                <form id="form-restore-all" class="form-vertical" onsubmit="return false;">
+                                <form id="form-restore-all" class="form-vertical" style="margin: 0;" onsubmit="return false;">
                                 <fieldset>
                                 <div class="control-group">
                                     <p>
