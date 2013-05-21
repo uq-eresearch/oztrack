@@ -166,7 +166,7 @@ public class PositionFixDaoImpl implements PositionFixDao {
             queryString += "    and ST_Within(" + pointExpr + ", " + multiPolygonExpr + ")\n";
         }
         if (minArgosClass != null) {
-            queryString += "    and argosclass >= :minArgosClass\n";
+            queryString += "    and argosclass < :minArgosClass\n";
         }
         queryString += ";";
         Query query = em.createNativeQuery(queryString);

@@ -376,7 +376,8 @@
                                 <div class="control-group">
                                     <p>
                                         Specify a minimum Argos location class.
-                                        All detections with classes representing a greater location error will be deleted.
+                                        All detections with classes representing a lower location accuracy will be deleted.
+                                        For example, selecting 1 will delete detections of class 0, A, B, or Z.
                                     </p>
                                     <div class="controls">
                                         <div class="input-append">
