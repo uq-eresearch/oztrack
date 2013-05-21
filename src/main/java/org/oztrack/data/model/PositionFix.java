@@ -1,11 +1,10 @@
 package org.oztrack.data.model;
 
-import static javax.persistence.EnumType.STRING;
-
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -49,8 +48,8 @@ public class PositionFix {
     @Column(nullable=false)
     private Boolean deleted;
 
-    @Enumerated(STRING)
-    @Column(name="argosclass", columnDefinition="text")
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name="argosclass")
     private ArgosClass argosClass;
 
     public Long getId() {

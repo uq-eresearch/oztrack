@@ -67,23 +67,23 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/optimised/openlayers.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/project-cleanse.js"></script>
         <script type="text/javascript">
-            function submitCleanseForm(operation) {
+            function submitCleanseForm(operation, mode) {
                 jQuery('.cleanse-response').hide();
                 jQuery.ajax({
                     url: '${pageContext.request.contextPath}/projects/${project.id}/cleanse',
                     type: 'POST',
-                    data: 'operation=' + operation + '&' + jQuery('#cleanseForm').serialize(),
+                    data: 'operation=' + operation + '&' + $('#form-context,#form-' + mode).serialize(),
                     beforeSend: function(jqXHR, settings) {
                         cleanseMap.increaseLoadingCounter();
                     },
                     success: function(data, textStatus, jqXHR) {
                         cleanseMap.reset();
                         var message = null;
-                        if ((operation == 'delete') || (operation == 'delete-all') || (operation == 'speed-filter')) {
+                        if ((operation == 'delete')) {
                             var numDeleted = jQuery(data).find('num-deleted').text();
                             message = numDeleted + ' detections deleted';
                         }
-                        else if ((operation == 'undelete') || (operation == 'undelete-all')) {
+                        else if ((operation == 'undelete')) {
                             var numUndeleted = jQuery(data).find('num-undeleted').text();
                             message = numUndeleted + ' detections restored';
                         }
@@ -93,9 +93,7 @@
                                 title: 'Complete',
                                 modal: true,
                                 resizable: false,
-                                create: function(event, ui) {
-                                    $(event.target).closest('.ui-dialog').find('.ui-dialog-titlebar-close').text('×');
-                                },
+                                dialogClass: 'no-close',
                                 buttons: {
                                     'Close': function() {
                                         $(this).dialog('close');
@@ -111,9 +109,7 @@
                                 title: 'Error',
                                 modal: true,
                                 resizable: false,
-                                create: function(event, ui) {
-                                    $(event.target).closest('.ui-dialog').find('.ui-dialog-titlebar-close').text('×');
-                                },
+                                dialogClass: 'no-close',
                                 buttons: {
                                     'Close': function() {
                                         $(this).dialog('close');
@@ -248,7 +244,7 @@
                 <li><a href="#dataCleansing">Edit Tracks</a></li>
             </ul>
             <div id="dataCleansing">
-                <form id="cleanseForm" class="form-veritcal" onsubmit="return false;">
+                <form id="form-context" class="form-vertical" onsubmit="return false;">
                 <fieldset>
                 <div class="control-group" style="margin-bottom: 9px;">
                     <div style="margin-bottom: 9px; font-weight: bold;">
@@ -302,47 +298,55 @@
                         </c:forEach>
                     </div>
                 </div>
+                </fieldset>
+                </form>
                 <div style="margin-bottom: 9px; font-weight: bold;">Action</div>
                 <div class="accordion" id="accordion-action">
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-action" href="#accordion-body-polygon">
-                                Polygon Selection
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-action" href="#accordion-body-multi-polygon">
+                                Polygon selection
                             </a>
                         </div>
-                        <div id="accordion-body-polygon" class="accordion-body collapse in">
+                        <div id="accordion-body-multi-polygon" class="accordion-body collapse in">
                             <div class="accordion-inner">
+                                <form id="form-multi-polygon" class="form-vertical" onsubmit="return false;">
+                                <fieldset>
                                 <div class="control-group">
                                     <p>
                                         Select detections for removal from the project by drawing polygons around them.
-                                        Click to start drawing and click again to draw each side of your selected area.
-                                        Double-click to finish drawing. You can draw as many polygons as are required.
+                                        Click to start drawing, click again to draw each side of your selected area,
+                                        and then double-click to finish drawing. You can draw as many polygons as are required.
                                     </p>
                                     <div class="controls">
                                         <select id="cleanse-select" name="polygon" multiple="multiple" style="display: none;">
                                         </select>
                                         <ul id="cleanse-list"></ul>
                                         <div>
-                                            <button class="btn btn-primary" onclick="submitCleanseForm('delete');">Delete selected</button>
-                                            <button class="btn" onclick="submitCleanseForm('undelete');">Restore selected</button>
+                                            <button class="btn btn-primary" onclick="submitCleanseForm('delete', 'multi-polygon');">Delete selected</button>
+                                            <button class="btn" onclick="submitCleanseForm('undelete', 'multi-polygon');">Restore selected</button>
                                         </div>
                                     </div>
                                 </div>
+                                </fieldset>
+                                </form>
                             </div>
                         </div>
                     </div>
                     <div class="accordion-group">
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-action" href="#accordion-body-speed-filter">
-                                Speed Filter
+                                Speed filter
                             </a>
                         </div>
                         <div id="accordion-body-speed-filter" class="accordion-body collapse">
                             <div class="accordion-inner">
+                                <form id="form-speed-filter" class="form-vertical" onsubmit="return false;">
+                                <fieldset>
                                 <div class="control-group">
                                     <p>
-                                        If you enter a maximum speed, only those detections implying
-                                        that the animal has exceeded the maximum speed will be deleted.
+                                        Specify a maximum speed.
+                                        All detections that imply the animal has exceeded the maximum speed will be deleted.
                                     </p>
                                     <div class="controls">
                                         <div class="input-append">
@@ -350,38 +354,102 @@
                                             <span class="add-on">km/h</span>
                                         </div>
                                         <div>
-                                            <button class="btn btn-primary" onclick="submitCleanseForm('speed-filter');">Apply filter</button>
+                                            <button class="btn btn-primary" onclick="submitCleanseForm('delete', 'speed-filter');">Apply filter</button>
                                         </div>
                                     </div>
                                 </div>
+                                </fieldset>
+                                </form>
                             </div>
                         </div>
                     </div>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-action" href="#accordion-body-bulk">
-                                Bulk Operation
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-action" href="#accordion-body-argos-class">
+                                Argos location class
                             </a>
                         </div>
-                        <div id="accordion-body-bulk" class="accordion-body collapse">
+                        <div id="accordion-body-argos-class" class="accordion-body collapse">
                             <div class="accordion-inner">
+                                <form id="form-argos-class" class="form-vertical" onsubmit="return false;">
+                                <fieldset>
                                 <div class="control-group">
                                     <p>
-                                        Delete or restore all detections satisfying the filter specified above.
+                                        Specify a minimum Argos location class.
+                                        All detections with classes representing a greater location error will be deleted.
                                     </p>
                                     <div class="controls">
+                                        <div class="input-append">
+                                            <select id="minArgosClass" name="minArgosClass" style="width: auto;">
+                                                <option value=""></option>
+                                                <c:forEach items="${argosClasses}" var="argosClass">
+                                                <option value="${argosClass.code}">${argosClass.code} - ${argosClass.description}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </div>
                                         <div>
-                                            <button class="btn btn-primary" onclick="submitCleanseForm('delete-all');">Delete all</button>
-                                            <button class="btn" onclick="submitCleanseForm('undelete-all');">Restore all</button>
+                                            <button class="btn btn-primary" onclick="submitCleanseForm('delete', 'argos-class');">Apply filter</button>
                                         </div>
                                     </div>
                                 </div>
+                                </fieldset>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-group" style="margin-top: 15px;">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-action" href="#accordion-body-delete-all">
+                                Delete all
+                            </a>
+                        </div>
+                        <div id="accordion-body-delete-all" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                                <form id="form-delete-all" class="form-vertical" onsubmit="return false;">
+                                <fieldset>
+                                <div class="control-group">
+                                    <p>
+                                        Delete all detections matching the selected dates and animals.
+                                        This will delete all points currently visible on the map but not others in the project.
+                                    </p>
+                                    <div class="controls">
+                                        <div>
+                                            <button class="btn btn-primary" onclick="submitCleanseForm('delete', 'delete-all');">Delete all</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                </fieldset>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-action" href="#accordion-body-restore-all">
+                                Restore all
+                            </a>
+                        </div>
+                        <div id="accordion-body-restore-all" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                                <form id="form-restore-all" class="form-vertical" onsubmit="return false;">
+                                <fieldset>
+                                <div class="control-group">
+                                    <p>
+                                        Restore all detections matching the selected dates and animals
+                                        This will restore all points currently visible on the map but not others in the project.
+                                    </p>
+                                    <div class="controls">
+                                        <div>
+                                            <button class="btn btn-primary" onclick="submitCleanseForm('undelete', 'restore-all');">Restore all</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                </fieldset>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-                </fieldset>
-                </form>
                 <p id="responseDialog"></div>
             </div>
         </div>

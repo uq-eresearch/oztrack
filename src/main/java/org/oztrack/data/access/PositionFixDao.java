@@ -9,6 +9,7 @@ import org.apache.commons.lang3.Range;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
+import org.oztrack.data.model.types.ArgosClass;
 import org.oztrack.data.model.types.PositionFixStats;
 import org.oztrack.data.model.types.TrajectoryStats;
 import org.springframework.stereotype.Service;
@@ -21,13 +22,14 @@ public interface PositionFixDao {
     int getNumPositionFixes();
     Page<PositionFix> getPage(SearchQuery searchQuery, int offset, int nbrObjectsPerPage);
     List<PositionFix> getProjectPositionFixList(SearchQuery searchQuery);
-    int setDeletedOnOverlappingPositionFixes(
+    int setDeleted(
         Project project,
         Date fromDate,
         Date toDate,
         List<Long> animalIds,
-        Set<PositionFix> speedFilterPositionFixes,
         MultiPolygon multiPolygon,
+        Set<PositionFix> speedFilterPositionFixes,
+        ArgosClass minArgosClass,
         boolean deleted
     );
     void renumberPositionFixes(Project project);

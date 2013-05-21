@@ -225,7 +225,7 @@ public class PositionFixFileLoader extends DataFileLoader {
                                         break;
                                     case ARGOSCLASS:
                                         if (StringUtils.isNotBlank(dataRow[i])) {
-                                            ArgosClass argosClass = ArgosClass.fromTitle(dataRow[i]);
+                                            ArgosClass argosClass = ArgosClass.fromCode(dataRow[i]);
                                             if (argosClass == null) {
                                                 throw new FileProcessingException("Invalid Argos class: " + dataRow[i]);
                                             }

@@ -93,11 +93,11 @@ public class DataFileListController {
             fileHeaders.add(h.toString());
         }
         model.addAttribute("fileHeaders", fileHeaders);
-        ArrayList<String> argosClassTitles = new ArrayList<String>();
+        ArrayList<String> argosClassCodes = new ArrayList<String>();
         for (ArgosClass a : ArgosClass.values()) {
-            argosClassTitles.add(a.getTitle());
+            argosClassCodes.add(a.getCode());
         }
-        model.addAttribute("argosClassTitles", argosClassTitles.toArray(new String[] {}));
+        model.addAttribute("argosClassCodes", argosClassCodes.toArray(new String[] {}));
         return "datafile-form";
     }
 

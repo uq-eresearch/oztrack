@@ -139,7 +139,7 @@
             <td><c:out value="${detection.locationGeometry.x}"/></td>
             <td><c:out value="${detection.locationGeometry.y}"/></td>
             <c:if test="${inclArgos}">
-            <td><c:out value="${not empty detection.argosClass ? detection.argosClass.title : ''}"/></td>
+            <td><c:out value="${not empty detection.argosClass ? detection.argosClass.code : ''}"/></td>
             </c:if>
             <sec:authorize access="hasPermission(#project, 'write')">
             <td>

@@ -21,6 +21,7 @@ import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
+import org.oztrack.data.model.types.ArgosClass;
 import org.oztrack.data.model.types.PositionFixStats;
 import org.oztrack.data.model.types.TrajectoryStats;
 import org.springframework.stereotype.Service;
@@ -131,13 +132,14 @@ public class PositionFixDaoImpl implements PositionFixDao {
 
     @Override
     @Transactional
-    public int setDeletedOnOverlappingPositionFixes(
+    public int setDeleted(
         Project project,
         Date fromDate,
         Date toDate,
         List<Long> animalIds,
-        Set<PositionFix> speedFilterPositionFixes,
         MultiPolygon multiPolygon,
+        Set<PositionFix> speedFilterPositionFixes,
+        ArgosClass minArgosClass,
         boolean deleted
     ) {
         String queryString =
@@ -163,6 +165,9 @@ public class PositionFixDaoImpl implements PositionFixDao {
             String multiPolygonExpr = project.getCrosses180() ? "ST_Shift_Longitude(" + unshiftedMultiPolygonExpr + ")" : unshiftedMultiPolygonExpr;
             queryString += "    and ST_Within(" + pointExpr + ", " + multiPolygonExpr + ")\n";
         }
+        if (minArgosClass != null) {
+            queryString += "    and argosclass >= :minArgosClass\n";
+        }
         queryString += ";";
         Query query = em.createNativeQuery(queryString);
         query.setParameter("projectId", project.getId());
@@ -179,6 +184,9 @@ public class PositionFixDaoImpl implements PositionFixDao {
         }
         if (multiPolygon != null) {
             query.setParameter("wkt", new WKTWriter().write(multiPolygon));
+        }
+        if (minArgosClass != null) {
+            query.setParameter("minArgosClass", minArgosClass.ordinal());
         }
         return query.executeUpdate();
     }

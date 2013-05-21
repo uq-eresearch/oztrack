@@ -124,7 +124,7 @@ DATE,TIME,LATITUDE,LONGITUDE
             <li><tt>LATITUDE</tt>, <tt>LATT</tt>, or <tt>LAT</tt>: WGS84 latitude in decimal degrees (required)</li>
             <li><tt>LONGITUDE</tt>, <tt>LONG</tt>, or <tt>LON</tt>: WGS84 longitude in decimal degrees (required)</li>
             <li><tt>ID</tt> or <tt>ANIMALID</tt>: alphanumeric ID for animal, if file contains several animals (optional)</li>
-            <li><tt>ARGOSCLASS</tt>: Argos location class (${fn:join(argosClassTitles, ', ')}) (optional)</li>
+            <li><tt>ARGOSCLASS</tt>: Argos location class (${fn:join(argosClassCodes, ', ')}) (optional)</li>
         </ul>
 
         <h3>Date and time formats</h3>

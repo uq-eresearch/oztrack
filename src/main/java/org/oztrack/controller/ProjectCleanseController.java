@@ -28,6 +28,7 @@ import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
+import org.oztrack.data.model.types.ArgosClass;
 import org.oztrack.error.RserveInterfaceException;
 import org.oztrack.util.RserveInterface;
 import org.rosuda.REngine.Rserve.RConnection;
@@ -84,6 +85,7 @@ public class ProjectCleanseController {
         model.addAttribute("projectAnimalsList", projectAnimalsList);
         model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project));
         model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, true));
+        model.addAttribute("argosClasses", ArgosClass.values());
         return "project-cleanse";
     }
 
@@ -91,11 +93,12 @@ public class ProjectCleanseController {
     @PreAuthorize("hasPermission(#project, 'write')")
     public void processCleanse(
         @ModelAttribute(value="project") Project project,
+        @RequestParam(value="operation", required=true) String operation,
         @RequestParam(value="fromDate", required=false) String fromDateString,
         @RequestParam(value="toDate", required=false) String toDateString,
-        @RequestParam(value="maxSpeed", required=false) Double maxSpeed,
-        @RequestParam(value="operation", defaultValue="delete") String operation,
         @RequestParam(value="animal") List<Long> animalIds,
+        @RequestParam(value="maxSpeed", required=false) Double maxSpeed,
+        @RequestParam(value="minArgosClass", required=false) String minArgosClassCode,
         HttpServletRequest request,
         HttpServletResponse response
     ) throws IOException, RserveInterfaceException {
@@ -118,47 +121,61 @@ public class ProjectCleanseController {
             response.setStatus(200);
             return;
         }
-        Hints hints = new Hints();
-        hints.put(Hints.CRS, DefaultGeographicCRS.WGS84);
-        GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(hints);
-        WKTReader reader = new WKTReader(geometryFactory);
+
+        MultiPolygon multiPolygon = null;
         String[] polygonsWkt = request.getParameterValues("polygon");
-        if (polygonsWkt == null) {
-            polygonsWkt = new String[0];
-        }
-        ArrayList<Polygon> polygons = new ArrayList<Polygon>();
-        for (String polygonWkt : polygonsWkt) {
-            try {
-                Polygon polygon = (Polygon) reader.read(polygonWkt);
-                polygons.add(polygon);
-            }
-            catch (ParseException e) {
-                throw new RuntimeException("Error reading polygon: " + polygonWkt, e);
-            }
-        }
-        MultiPolygon multiPolygon = geometryFactory.createMultiPolygon(polygons.toArray(new Polygon[0]));
-        if (operation.equals("speed-filter")) {
-            Set<PositionFix> speedFilterPositionFixes = null;
-            if (maxSpeed != null) {
-                speedFilterPositionFixes = new HashSet<PositionFix>();
-                SearchQuery searchQuery = new SearchQuery();
-                searchQuery.setProject(project);
-                searchQuery.setFromDate(fromDate);
-                searchQuery.setToDate(toDate);
-                searchQuery.setAnimalIds(animalIds);
-                List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-                RserveInterface rserveInterface = new RserveInterface(rserveConnectionPool);
-                Map<Long, Set<Date>> animalDates = rserveInterface.runSpeedFilter(project, positionFixList, maxSpeed);
-                for (PositionFix positionFix : positionFixList) {
-                    Set<Date> dates = animalDates.get(positionFix.getAnimal().getId());
-                    // Need to create new java.util.Date here because positionFix.detectionTime is a java.sql.Timestamp.
-                    // Date and Timestamp have same hashCode but their equals methods differ, breaking contains call.
-                    if ((dates != null) && dates.contains(new Date(positionFix.getDetectionTime().getTime()))) {
-                        speedFilterPositionFixes.add(positionFix);
-                    }
+        if ((polygonsWkt != null) && (polygonsWkt.length > 0)) {
+            Hints hints = new Hints();
+            hints.put(Hints.CRS, DefaultGeographicCRS.WGS84);
+            GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(hints);
+            WKTReader reader = new WKTReader(geometryFactory);
+            ArrayList<Polygon> polygons = new ArrayList<Polygon>();
+            for (String polygonWkt : polygonsWkt) {
+                try {
+                    Polygon polygon = (Polygon) reader.read(polygonWkt);
+                    polygons.add(polygon);
+                }
+                catch (ParseException e) {
+                    throw new RuntimeException("Error reading polygon: " + polygonWkt, e);
                 }
             }
-            int numDeleted = positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, speedFilterPositionFixes, null, true);
+            multiPolygon = geometryFactory.createMultiPolygon(polygons.toArray(new Polygon[0]));
+        }
+
+        Set<PositionFix> speedFilterPositionFixes = null;
+        if (maxSpeed != null) {
+            speedFilterPositionFixes = new HashSet<PositionFix>();
+            SearchQuery searchQuery = new SearchQuery();
+            searchQuery.setProject(project);
+            searchQuery.setFromDate(fromDate);
+            searchQuery.setToDate(toDate);
+            searchQuery.setAnimalIds(animalIds);
+            List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
+            RserveInterface rserveInterface = new RserveInterface(rserveConnectionPool);
+            Map<Long, Set<Date>> animalDates = rserveInterface.runSpeedFilter(project, positionFixList, maxSpeed);
+            for (PositionFix positionFix : positionFixList) {
+                Set<Date> dates = animalDates.get(positionFix.getAnimal().getId());
+                // Need to create new java.util.Date here because positionFix.detectionTime is a java.sql.Timestamp.
+                // Date and Timestamp have same hashCode but their equals methods differ, breaking contains call.
+                if ((dates != null) && dates.contains(new Date(positionFix.getDetectionTime().getTime()))) {
+                    speedFilterPositionFixes.add(positionFix);
+                }
+            }
+        }
+
+        ArgosClass minArgosClass = ArgosClass.fromCode(minArgosClassCode);
+
+        if (operation.equals("delete")) {
+            int numDeleted = positionFixDao.setDeleted(
+                project,
+                fromDate,
+                toDate,
+                animalIds,
+                multiPolygon,
+                speedFilterPositionFixes,
+                minArgosClass,
+                true
+            );
             positionFixDao.renumberPositionFixes(project);
             PrintWriter out = response.getWriter();
             out.append("<?xml version=\"1.0\"?>\n");
@@ -168,25 +185,17 @@ public class ProjectCleanseController {
             response.setStatus(200);
             return;
         }
-        else if (operation.equals("delete") || operation.equals("delete-all")) {
-            int numDeleted =
-                operation.equals("delete-all")
-                ? positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, null, null, true)
-                : positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, null, multiPolygon, true);
-            positionFixDao.renumberPositionFixes(project);
-            PrintWriter out = response.getWriter();
-            out.append("<?xml version=\"1.0\"?>\n");
-            out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");
-            out.append("    <num-deleted>" + numDeleted + "</num-deleted>\n");
-            out.append("</cleanse-response>\n");
-            response.setStatus(200);
-            return;
-        }
-        else if (operation.equals("undelete") || operation.equals("undelete-all")) {
-            int numUndeleted =
-                operation.equals("undelete-all")
-                ? positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, null, null, false)
-                : positionFixDao.setDeletedOnOverlappingPositionFixes(project, fromDate, toDate, animalIds, null, multiPolygon, false);
+        else if (operation.equals("undelete")) {
+            int numUndeleted = positionFixDao.setDeleted(
+                project,
+                fromDate,
+                toDate,
+                animalIds,
+                multiPolygon,
+                speedFilterPositionFixes,
+                minArgosClass,
+                false
+            );
             positionFixDao.renumberPositionFixes(project);
             PrintWriter out = response.getWriter();
             out.append("<?xml version=\"1.0\"?>\n");

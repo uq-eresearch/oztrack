@@ -9,18 +9,18 @@ public enum ArgosClass {
     CLASS_2("2", "Estimated error less than 500 m", 500d),
     CLASS_3("3", "Estimated error less than 250 m", 250d);
 
-    private final String title;
+    private final String code;
     private final String description;
     private final Double radius;
 
-    ArgosClass(String title, String description, Double radius) {
-        this.title = title;
+    ArgosClass(String code, String description, Double radius) {
+        this.code = code;
         this.description = description;
         this.radius = radius;
     }
 
-    public String getTitle() {
-        return title;
+    public String getCode() {
+        return code;
     }
 
     public String getDescription() {
@@ -31,9 +31,9 @@ public enum ArgosClass {
         return radius;
     }
 
-    public static ArgosClass fromTitle(String title) {
+    public static ArgosClass fromCode(String code) {
         for (ArgosClass argosClass : values()) {
-            if (argosClass.getTitle().equals(title)) {
+            if (argosClass.getCode().equals(code)) {
                 return argosClass;
             }
         }
