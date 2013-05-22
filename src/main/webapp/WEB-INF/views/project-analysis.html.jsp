@@ -198,8 +198,8 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/project-analysis.js"></script>
         <script type="text/javascript">
             function showParamTable(queryType) {
-                $('.paramTableDiv').hide();
-                $('#paramTableDiv-' + queryType).fadeIn('slow');
+                $('.paramTableDiv').not('#paramTableDiv-' + queryType).hide();
+                $('#paramTableDiv-' + queryType).fadeToggle();
             }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
