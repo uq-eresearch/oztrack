@@ -37,24 +37,22 @@
                 height: 180px;
                 margin-top: 11px; /* to match h2 */
             }
-            .searchLink {
+            .searchButton {
                 display: inline-block;
             }
-            .searchLink img {
-                max-width: 45px;
-            }
-            #searchOptions {
-                margin: 9px 0;
+            .searchButton img {
+                max-height: 36px;
             }
             .searchForm {
                 display: none;
                 margin: 18px 0;
                 padding-bottom: 1px;
             }
-            #searchOutput {
-                margin: 18px 0;
+            .searchOutput {
+                display: none;
+                margin-bottom: 18px;
             }
-            #searchOutput h3 {
+            .searchOutput h3 {
                 font-size: 1em;
                 padding-bottom: 4px;
                 color: #333;
@@ -302,52 +300,76 @@
                             $.isArray(data.response.item) ? data.response.item : // array of results
                             data.response.item ? [data.response.item] :          // single result => convert to array
                             [];                                                  // no results => create empty array
-                        var output = $('<div>').attr('id', 'searchTernOutput');
-                        output.append($('<h3>')
-                            .append($('<button type="button" class="close">×</button>').click(function(e) {
-                                e.preventDefault();
-                                $('#searchTernOutput').fadeOut().remove();
-                            }))
-                            .append('TERN search results'));
+                        var output = $('#searchTernOutput').empty();
+                        output.append($('<h3>').append('Search results'));
                         if (items.length > 0) {
                             output.append($('<ol>').append($.map(items, function(item) {
-                                return $('<li>').append([
-                                    $('<a>')
-                                        .attr('target', '_blank')
-                                        .attr('href', item.link)
-                                        .attr('title', item.description)
-                                        .text(item.title),
-                                    $('<span>').text(' (' + item.temporal + ')')
-                                ]);
+                                var a = $('<a>')
+                                    .attr('target', '_blank')
+                                    .attr('href', item.link)
+                                    .text(item.title);
+                                if (item.description) {
+                                    a.attr('title', item.description);
+                                }
+                                var li = $('<li>').append(a);
+                                if (item.temporal) {
+                                    li.append($('<span>').text(' (' + item.temporal + ')'));
+                                }
+                                return li;
                             })));
                         }
                         else {
                             output.append($('<p>').text('No results found'));
                         }
-                        $('#searchOutput').empty().append(output);
+                        $('#searchTernForm').append(output.fadeIn());
                         $('body').animate({scrollTop: output.offset().top});
                     }
                 });
             }
-            $('#searchTernButton').click(function(e) {
+            function searchAla() {
+                $.ajax({
+                    url: 'http://bie.ala.org.au/search.json',
+                    data: $('#searchAlaForm').serialize(),
+                    dataType: "jsonp",
+                    success: function(data, textStatus, jqXHR) {
+                        var results = data.searchResults.results;
+                        var output = $('#searchAlaOutput').empty();
+                        output.append($('<h3>').append('Search results'));
+                        if (results.length > 0) {
+                            output.append($('<ol>').append($.map(results, function(result) {
+                                var a = $('<a>')
+                                    .attr('target', '_blank')
+                                    .attr('href', 'http://bie.ala.org.au/species/' + result.guid)
+                                    .text(result.name);
+                                if (result.description) {
+                                    a.attr('title', result.description);
+                                }
+                                return $('<li>').append(a);
+                            })));
+                        }
+                        else {
+                            output.append($('<p>').text('No results found'));
+                        }
+                        $('#searchAlaForm').append(output.fadeIn());
+                        $('body').animate({scrollTop: output.offset().top});
+                    }
+                });
+            }
+            $('#searchTernForm').submit(function(e) {
                 e.preventDefault();
                 searchTern();
             });
-            $('#searchTernLink').click(function(e) {
+            $('#searchAlaForm').submit(function(e) {
                 e.preventDefault();
-                $('#advancedSearch').is(':checked') && $('#searchTernForm').slideToggle() || searchTern();
+                searchAla();
             });
-            $('#advancedSearch').change(function (e) {
-                // We only have the TERN search form at the moment; if we add other search forms,
-                // we'll need to keep track of the "current" form and specifically show/hide that one.
-                var form = $('#searchTernForm');
-                if ($(this).is(':checked')) {
-                    form.slideDown();
-                    $('body').animate({scrollTop: form.offset().top});
-                }
-                else {
-                    form.slideUp();
-                }
+            $('#searchTernButton').click(function(e) {
+                $('.searchForm').not('#searchTernForm').hide();
+                $('#searchTernForm').fadeToggle();
+            });
+            $('#searchAlaButton').click(function(e) {
+                $('.searchForm').not('#searchAlaForm').hide();
+                $('#searchAlaForm').fadeToggle();
             });
         </script>
     </jsp:attribute>
@@ -606,22 +628,25 @@
 
         <p>Click the buttons below to find datasets on related websites.</p>
 
-        <div id="searchLinks">
-            <a id="searchTernLink" class="btn btn-small searchLink" href="#"><img src="${pageContext.request.contextPath}/img/tern-logo.gif" /></a>
+        <div id="searchButtons">
+            <button id="searchTernButton" class="btn btn-small searchButton"
+                title="Terrestrial Ecosystem Research Network (TERN)"
+                ><img src="${pageContext.request.contextPath}/img/tern-logo.gif" /></button>
+            <button id="searchAlaButton" class="btn btn-small searchButton"
+                title="Atlas of Living Australia (ALA)"
+                ><img src="${pageContext.request.contextPath}/img/ala-logo.png" /></button>
         </div>
-        <div id="searchOptions">
-            <label class="checkbox"><input id="advancedSearch" type="checkbox" /> Advanced search</label>
-        </div>
+        <c:set var="defaultSearchQuery" value="${not empty project.speciesScientificName ? project.speciesScientificName : project.speciesCommonName}"/>
         <form id="searchTernForm" class="searchForm form-horizontal form-bordered">
             <fieldset>
                 <div class="legend">
-                    <button type="button" class="close" onclick="$('#advancedSearch').prop('checked', false).trigger('change');">×</button>
+                    <button type="button" class="close" onclick="$('.searchForm').fadeOut();">×</button>
                     Search TERN
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="term">Term</label>
                     <div class="controls">
-                        <input id="term" class="input-xxlarge" name="term" type="text" placeholder="e.g. ${project.title}" value="${project.title}"/>
+                        <input id="term" class="input-xxlarge" name="term" type="text" placeholder="e.g. ${defaultSearchQuery}" value="${defaultSearchQuery}"/>
                     </div>
                 </div>
                 <div class="control-group">
@@ -662,10 +687,31 @@
                 <input type="hidden" name="format" value="json" />
             </fieldset>
             <div class="form-actions">
-                <button id="searchTernButton" type="submit" class="btn btn-primary">Search</button>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+            <div id="searchTernOutput" class="searchOutput">
             </div>
         </form>
-        <div id="searchOutput">
-        </div>
+        <form id="searchAlaForm" class="searchForm form-horizontal form-bordered">
+            <fieldset>
+                <div class="legend">
+                    <button type="button" class="close" onclick="$('.searchForm').fadeOut();">×</button>
+                    Search ALA
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="q">Species</label>
+                    <div class="controls">
+                        <input id="q" class="input-xxlarge" name="q" type="text" placeholder="e.g. ${defaultSearchQuery}" value="${defaultSearchQuery}"/>
+                    </div>
+                </div>
+                <input type="hidden" name="pageSize" value="10" />
+                <input type="hidden" name="idxType" value="TAXON" />
+            </fieldset>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+            <div id="searchAlaOutput" class="searchOutput">
+            </div>
+        </form>
     </jsp:body>
 </tags:page>
