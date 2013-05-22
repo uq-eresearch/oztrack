@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.sql.DataSource;
 
 import org.apache.commons.lang3.Range;
 import org.apache.commons.logging.Log;
@@ -24,6 +25,8 @@ import org.oztrack.data.model.SearchQuery;
 import org.oztrack.data.model.types.ArgosClass;
 import org.oztrack.data.model.types.PositionFixStats;
 import org.oztrack.data.model.types.TrajectoryStats;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,9 +41,16 @@ public class PositionFixDaoImpl implements PositionFixDao {
 
     private EntityManager em;
 
+    private DataSource dataSource;
+
     @PersistenceContext
     public void setEntityManger(EntityManager em) {
         this.em = em;
+    }
+
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override
@@ -194,6 +204,12 @@ public class PositionFixDaoImpl implements PositionFixDao {
     @Override
     @Transactional
     public void renumberPositionFixes(Project project) {
+        // Object locks on all tables to avoid deadlock
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        jdbcTemplate.execute("select * from positionfixlayer where project_id = " + project.getId() + " for update");
+        jdbcTemplate.execute("select * from positionfixnumbered where project_id = " + project.getId() + " for update");
+        jdbcTemplate.execute("select * from trajectorylayer where project_id = " + project.getId() + " for update");
+
         em.createNativeQuery(
                 "delete from positionfixlayer\n" +
                 "where project_id = :projectId"

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
+import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,6 +28,9 @@ public class AnalysisRunner {
     private EntityManagerFactory entityManagerFactory;
 
     @Autowired
+    private DataSource dataSource;
+
+    @Autowired
     private ObjectPool<RConnection> rserveConnectionPool;
 
     public AnalysisRunner() {
@@ -40,6 +44,7 @@ public class AnalysisRunner {
         analysisDao.setEntityManger(entityManager);
         PositionFixDaoImpl positionFixDao = new PositionFixDaoImpl();
         positionFixDao.setEntityManger(entityManager);
+        positionFixDao.setDataSource(dataSource);
         try {
             entityManager.getTransaction().begin();
             Analysis analysis = analysisDao.getAnalysisById(analysisId);
