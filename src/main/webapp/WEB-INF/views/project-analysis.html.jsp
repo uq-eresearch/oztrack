@@ -19,9 +19,12 @@
             #main {
                 padding-bottom: 0;
             }
-            #mapToolForm {
+            #form-context {
                 padding-left:0px;
                 padding-top:0px;
+            }
+            #homeRangeCalculatorPanel .accordion {
+                margin-bottom: 9px;
             }
             #animalsFilter {
                 height: 90px;
@@ -119,11 +122,12 @@
                 font-size: 11px;
                 color: #666;
             }
+            .layerExplanationExpander {
+                display: block;
+                padding-top: 4px;
+            }
             .paramTableDiv {
-                margin: 5px 0 10px 0;
-                padding: 5px;
-                border-radius: 4px;
-                border: 1px solid #d0d0a0;
+                margin: 9px 0;
             }
             .paramTableDiv table {
                 width: 100%;
@@ -272,6 +276,46 @@
 
                 $('#queryTypeSelect-MCP').trigger('click');
 
+                $('.layerExplanationExpander').click(function(e) {
+                    e.preventDefault();
+                    var prev = $(this).prev();
+                    var maxHeight = prev.css('max-height');
+                    var newMaxHeight = (maxHeight === 'none') ? '54px' : 'none';
+                    prev.css('max-height', newMaxHeight);
+                });
+                
+                $('#homeRangeCalculatorPanel .accordion .collapse').on('show', function() {
+                    $('#homeRangeCalculatorPanel .accordion')
+                        .not($(this).closest('.accordion'))
+                        .find('.collapse.in')
+                        .collapse('hide');
+                });
+
+                $('.form-projectLayer').submit(function(e) {
+                    e.preventDefault();
+                    analysisMap.addProjectMapLayer(
+                        'project',
+                        $(e.target).find('input[name="queryTypeValue"]').val(),
+                        $(e.target).find('input[name="queryTypeLabel"]').val()
+                    );
+                });
+                $('.form-analysisLayer').submit(function(e) {
+                    e.preventDefault();
+                    $(e.target).find('button[type="submit"]')
+                        .prop('disabled', true)
+                        .after($('#projectMapCancel').fadeIn());
+                    analysisMap.addProjectMapLayer(
+                        'analysis',
+                        $(e.target).find('input[name="queryTypeValue"]').val(),
+                        $(e.target).find('input[name="queryTypeLabel"]').val()
+                    );
+                });
+                $('#projectMapCancel').click(function() {
+                    analysisMap.deleteCurrentAnalysis();
+                    $(this).prev().prop('disabled', false);
+                    $('#projectMapCancel').fadeOut();
+                });
+
                 var projectBounds = new OpenLayers.Bounds(
                     ${projectBoundingBox.envelopeInternal.minX}, ${projectBoundingBox.envelopeInternal.minY},
                     ${projectBoundingBox.envelopeInternal.maxX}, ${projectBoundingBox.envelopeInternal.maxY}
@@ -316,8 +360,7 @@
                         addAnalysis(layerName, analysisUrl, new Date(), false);
                     },
                     onAnalysisError: function(message) {
-                        $('#projectMapSubmit').prop('disabled', false);
-                        $('#projectMapCancel').fadeOut();
+                        $('#projectMapCancel').fadeOut().prev().prop('disabled', false);
                         jQuery('#errorDialog')
                             .text(message)
                             .dialog({
@@ -335,8 +378,7 @@
                             });
                     },
                     onAnalysisSuccess: function() {
-                        $('#projectMapSubmit').prop('disabled', false);
-                        $('#projectMapCancel').fadeOut();
+                        $('#projectMapCancel').fadeOut().prev().prop('disabled', false);
                         $('a[href="#animalPanel"]').trigger('click');
                     },
                     onUpdateAnimalInfoFromLayer: function(layerName, layerId, animalId, fromDate, toDate, layerAttrs) {
@@ -722,17 +764,17 @@
 
             <div id="homeRangeCalculatorPanel">
 
-                <form id="mapToolForm" class="form-vertical" method="POST" onsubmit="return false;">
+                <form id="form-context" class="form-vertical" style="margin: 0;" method="POST" onsubmit="return false;">
                     <input id="projectId" type="hidden" value="${project.id}"/>
                     <fieldset>
-                    <div class="control-group" style="margin-bottom: 9px;">
-                        <div style="margin-bottom: 9px; font-weight: bold;">
-                            <span>Dates</span>
-                            <div class="help-popover" title="Dates">
-                                Choose a date range from within your data file for analysis.
-                                If left blank, all data for the selected animals will be included in the analysis.
-                            </div>
+                    <div style="margin-bottom: 9px; font-weight: bold;">
+                        <span>Dates</span>
+                        <div class="help-popover" title="Dates">
+                            Choose a date range from within your data file for analysis.
+                            If left blank, all data for the selected animals will be included in the analysis.
                         </div>
+                    </div>
+                    <div class="control-group" style="margin-bottom: 9px;">
                         <div class="controls">
                             <input id="fromDate" type="hidden"/>
                             <input id="toDate" type="hidden"/>
@@ -740,15 +782,15 @@
                             <input id="toDateVisible" type="text" class="datepicker" placeholder="To" style="margin-bottom: 0px; width: 80px;"/>
                         </div>
                     </div>
-                    <div class="control-group" style="margin-bottom: 9px;">
-                        <div style="margin-bottom: 9px; font-weight: bold;">
-                            <span>Animals</span>
-                            <div class="help-popover" title="Animals">
-                                Choose one or more animals for analysis and visualisation.
-                                OzTrack can generate layers for multiple animals at a time; however, the processing time is
-                                positively related to the number of animals and location fixes included in the analysis.
-                            </div>
+                    <div style="margin-bottom: 9px; font-weight: bold;">
+                        <span>Animals</span>
+                        <div class="help-popover" title="Animals">
+                            Choose one or more animals for analysis and visualisation.
+                            OzTrack can generate layers for multiple animals at a time; however, the processing time is
+                            positively related to the number of animals and location fixes included in the analysis.
                         </div>
+                    </div>
+                    <div class="control-group" style="margin-bottom: 9px;">
                         <div id="animalsFilter" class="controls">
                             <div style="background-color: #d8e0a8;">
                             <div class="animalsFilterCheckbox">
@@ -778,124 +820,140 @@
                             </c:forEach>
                         </div>
                     </div>
-                    <div class="control-group" style="margin-bottom: 9px;">
-                        <div style="margin-bottom: 9px; font-weight: bold;">Layer Type</div>
-                        <div class="controls">
-                            <table class="queryType" style="width: 100%;">
-                                <c:forEach items="${mapLayerTypeList}" var="mapLayerType">
-                                <tr>
-                                    <td style="padding: 0 5px; vertical-align: top;">
-                                        <input type="radio"
-                                            name="queryTypeSelect"
-                                            id="queryTypeSelect-${mapLayerType}"
-                                            value="${mapLayerType}"
-                                            onClick="showParamTable('${mapLayerType}')"
-                                        />
-                                    </td>
-                                    <td id="${mapLayerType}">
-                                        <label style="display: inline-block; margin: 2px 0 0 0;" for="queryTypeSelect-${mapLayerType}">${mapLayerType.displayName}</label>
-                                        <c:if test="${not empty mapLayerType.explanation}">
-                                        <div class="help-popover" title="${mapLayerType.displayName}">
-                                            ${mapLayerType.explanation}
-                                        </div>
-                                        </c:if>
-                                    </td>
-                                </tr>
-                                </c:forEach>
-                                <c:forEach items="${analysisTypeList}" var="analysisType">
-                                <tr>
-                                    <td style="padding: 0 5px; vertical-align: top; width: 16px;">
-                                        <input type="radio"
-                                            name="queryTypeSelect"
-                                            id="queryTypeSelect-${analysisType}"
-                                            value="${analysisType}"
-                                            onClick="showParamTable('${analysisType}')"
-                                        />
-                                    </td>
-                                    <td id="${analysisType}">
-                                        <label style="display: inline-block; margin: 2px 0 0 0;" for="queryTypeSelect-${analysisType}">${analysisType.displayName}</label>
-                                        <c:if test="${not empty analysisType.explanation}">
-                                        <div class="help-popover" title="${analysisType.displayName}">
-                                            ${analysisType.explanation}
-                                        </div>
-                                        </c:if>
-                                        <div id="paramTableDiv-${analysisType}" class="paramTableDiv" style="display: none;">
-                                        <table>
-                                            <c:set var="foundAdvancedParameterType" value="false"/>
-                                            <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
-                                            <c:if test="${!foundAdvancedParameterType and parameterType.advanced}">
-                                            <c:set var="foundAdvancedParameterType" value="true"/>
-                                            <tr>
-                                                <td colspan="2">
-                                                    <div style="margin-bottom: 3px;">
-                                                        <a href="javascript:void(0);" onclick="$(this).closest('tr').nextAll().fadeToggle();">Advanced parameters</a>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            </c:if>
-                                            <tr <c:if test="${parameterType.advanced}">style="display: none;"</c:if>>
-                                                <td style="white-space: nowrap; width: 10px;">${parameterType.displayName}</td>
-                                                <td class="${(not empty parameterType.units) ? 'input-append' : ''}" style="margin: 0;">
-                                                    <c:choose>
-                                                    <c:when test="${parameterType.options != null}">
-                                                    <select class="paramField-${analysisType}" style="width: 180px;" name="${parameterType.identifier}">
-                                                    <c:forEach items="${parameterType.options}" var="option">
-                                                    <option
-                                                        value="${option.value}"
-                                                        <c:if test="${parameterType.defaultValue == option.value}">selected="selected"</c:if>
-                                                        >${option.title}</option>
-                                                    </c:forEach>
-                                                    </select>
-                                                    </c:when>
-                                                    <c:when test="${parameterType.dataType == 'boolean'}">
-                                                    <input
-                                                        class="paramField-${analysisType} checkbox"
-                                                        name="${parameterType.identifier}"
-                                                        type="checkbox"
-                                                        <c:if test="${parameterType.defaultValue == 'true'}">checked="checked"</c:if>
-                                                        value="true"
-                                                        style="margin: 4px 1px;" />
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                    <input
-                                                        class="paramField-${analysisType} input-mini"
-                                                        name="${parameterType.identifier}"
-                                                        type="text"
-                                                        <c:if test="${not empty parameterType.defaultValue}">
-                                                        value="${parameterType.defaultValue}"
-                                                        </c:if>
-                                                        style="margin-bottom: 3px; text-align: right;"/>
-                                                    <c:if test="${not empty parameterType.units}">
-                                                    <span class="add-on">${parameterType.units}</span>
-                                                    </c:if>
-                                                    </c:otherwise>
-                                                    </c:choose>
-                                                </td>
-                                                <td style="width: 10px;">
-                                                    <c:if test="${not empty parameterType.explanation}">
-                                                    <div class="help-popover" title="${parameterType.displayName}">
-                                                        ${parameterType.explanation}
-                                                    </div>
-                                                    </c:if>
-                                                </td>
-                                            </tr>
-                                            </c:forEach>
-                                        </table>
-                                        </div>
-                                    </td>
-                                </tr>
-                                </c:forEach>
-                            </table>
+                    </fieldset>
+                </form>
+
+                <div style="margin-bottom: 9px; font-weight: bold;">Project layers</div>
+                <div class="accordion" id="accordion-projectLayers">
+                    <c:forEach items="${mapLayerTypeList}" var="mapLayerType">
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-projectLayers" href="#accordion-body-${mapLayerType}">
+                                ${mapLayerType.displayName}
+                            </a>
+                        </div>
+                        <div id="accordion-body-${mapLayerType}" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                                <form id="form-${mapLayerType}" class="form-projectLayer form-vertical" style="margin: 0;">
+                                <input type="hidden" name="queryTypeValue" value="${mapLayerType}" />
+                                <input type="hidden" name="queryTypeLabel" value="${mapLayerType.displayName}" />
+                                <fieldset>
+                                <div class="control-group" style="margin-bottom: 9px;">
+                                <div class="controls">
+                                    <div class="layerExplanation">
+                                        ${mapLayerType.explanation}
+                                    </div>
+                                </div>
+                                </div>
+                                <div>
+                                    <button class="btn btn-primary" type="submit">Show layer</button>
+                                </div>
+                                </fieldset>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                    </fieldset>
-                    <div style="margin-top: 18px;">
-                        <input id="projectMapSubmit" class="btn btn-primary" type="button" value="Calculate"
-                            onclick="$('#projectMapSubmit').prop('disabled', true); $('#projectMapCancel').fadeIn(); analysisMap.addProjectMapLayer();" />
-                        <input id="projectMapCancel" class="btn" style="display: none;" type="button" value="Cancel"
-                            onclick="analysisMap.deleteCurrentAnalysis(); $('#projectMapSubmit').prop('disabled', false); $('#projectMapCancel').fadeOut();" />
+                    </c:forEach>
+                </div>
+
+                <div style="margin-bottom: 9px; font-weight: bold;">Analysis layers</div>
+                <div class="accordion" id="accordion-analysisLayers">
+                    <c:forEach items="${analysisTypeList}" var="analysisType">
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-analysisLayers" href="#accordion-body-${analysisType}">
+                                ${analysisType.displayName}
+                            </a>
+                        </div>
+                        <div id="accordion-body-${analysisType}" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                                <form id="form-${analysisType}" class="form-analysisLayer form-vertical" style="margin: 0;">
+                                <input type="hidden" name="queryTypeValue" value="${analysisType}" />
+                                <input type="hidden" name="queryTypeLabel" value="${analysisType.displayName}" />
+                                <fieldset>
+                                <div class="control-group" style="margin-bottom: 9px;">
+                                <div class="controls">
+                                    <div class="layerExplanation" style="max-height: 54px; overflow-y: hidden;">
+                                        ${analysisType.explanation}
+                                    </div>
+                                    <a class="layerExplanationExpander" href="#read-more">
+                                        Read more
+                                    </a>
+                                    <div id="paramTableDiv-${analysisType}" class="paramTableDiv">
+                                    <table>
+                                        <c:set var="foundAdvancedParameterType" value="false"/>
+                                        <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
+                                        <c:if test="${!foundAdvancedParameterType and parameterType.advanced}">
+                                        <c:set var="foundAdvancedParameterType" value="true"/>
+                                        <tr>
+                                            <td colspan="2">
+                                                <div style="margin-bottom: 3px;">
+                                                    <a href="javascript:void(0);" onclick="$(this).closest('tr').nextAll().fadeToggle();">Advanced parameters</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </c:if>
+                                        <tr <c:if test="${parameterType.advanced}">style="display: none;"</c:if>>
+                                            <td style="white-space: nowrap; width: 10px;">${parameterType.displayName}</td>
+                                            <td class="${(not empty parameterType.units) ? 'input-append' : ''}" style="margin: 0;">
+                                                <c:choose>
+                                                <c:when test="${parameterType.options != null}">
+                                                <select class="paramField-${analysisType}" style="width: 180px;" name="${parameterType.identifier}">
+                                                <c:forEach items="${parameterType.options}" var="option">
+                                                <option
+                                                    value="${option.value}"
+                                                    <c:if test="${parameterType.defaultValue == option.value}">selected="selected"</c:if>
+                                                    >${option.title}</option>
+                                                </c:forEach>
+                                                </select>
+                                                </c:when>
+                                                <c:when test="${parameterType.dataType == 'boolean'}">
+                                                <input
+                                                    class="paramField-${analysisType} checkbox"
+                                                    name="${parameterType.identifier}"
+                                                    type="checkbox"
+                                                    <c:if test="${parameterType.defaultValue == 'true'}">checked="checked"</c:if>
+                                                    value="true"
+                                                    style="margin: 4px 1px;" />
+                                                </c:when>
+                                                <c:otherwise>
+                                                <input
+                                                    class="paramField-${analysisType} input-mini"
+                                                    name="${parameterType.identifier}"
+                                                    type="text"
+                                                    <c:if test="${not empty parameterType.defaultValue}">
+                                                    value="${parameterType.defaultValue}"
+                                                    </c:if>
+                                                    style="margin-bottom: 3px; text-align: right;"/>
+                                                <c:if test="${not empty parameterType.units}">
+                                                <span class="add-on">${parameterType.units}</span>
+                                                </c:if>
+                                                </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td style="width: 10px;">
+                                                <c:if test="${not empty parameterType.explanation}">
+                                                <div class="help-popover" title="${parameterType.displayName}">
+                                                    ${parameterType.explanation}
+                                                </div>
+                                                </c:if>
+                                            </td>
+                                        </tr>
+                                        </c:forEach>
+                                    </table>
+                                    </div>
+                                </div>
+                                </div>
+                                <div>
+                                    <button class="btn btn-primary" type="submit">Calculate</button>
+                                </div>
+                                </fieldset>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                </form>
+                    </c:forEach>
+                </div>
             </div>
 
             <div id="previousAnalysesPanel">
@@ -919,5 +977,7 @@
         </div>
         
         <div id="errorDialog"></div>
+        
+        <input id="projectMapCancel" class="btn" style="display: none; margin-left: 0.5em;" type="button" value="Cancel" />
     </jsp:body>
 </tags:page>

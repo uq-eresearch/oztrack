@@ -802,13 +802,7 @@
             return startEndStyleMap;
         }
 
-        that.addProjectMapLayer = function() {
-            var queryType = $('input[name=queryTypeSelect]:checked');
-            var queryTypeValue = queryType.val();
-            var queryTypeLabel = $('label[for="' + queryType.attr('id') + '"]').text();
-            if (queryTypeValue == null) {
-                alert("Please set a Layer Type.");
-            }
+        that.addProjectMapLayer = function(layerType, queryTypeValue, queryTypeLabel) {
             var layerName = queryTypeLabel;
             var params = {
                 queryType : queryTypeValue,

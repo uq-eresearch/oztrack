@@ -244,7 +244,7 @@
                 <li><a href="#dataCleansing">Edit Tracks</a></li>
             </ul>
             <div id="dataCleansing">
-                <form id="form-context" class="form-vertical" style="margin: 0 0 9px 0;" onsubmit="return false;">
+                <form id="form-context" class="form-vertical" style="margin: 0;" onsubmit="return false;">
                 <fieldset>
                 <div class="control-group" style="margin-bottom: 9px;">
                     <div style="margin-bottom: 9px; font-weight: bold;">
