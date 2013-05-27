@@ -380,7 +380,7 @@
                                         For example, selecting 1 will delete detections of class 0, A, B, or Z.
                                     </p>
                                     <div class="controls">
-                                        <div class="input-append">
+                                        <div>
                                             <select id="minArgosClass" name="minArgosClass" style="width: auto;">
                                                 <option value=""></option>
                                                 <c:forEach items="${argosClasses}" var="argosClass">
@@ -390,6 +390,46 @@
                                         </div>
                                         <div>
                                             <button class="btn btn-primary" onclick="submitCleanseForm('delete', 'argos-class');">Apply filter</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                </fieldset>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-action" href="#accordion-body-dop">
+                                Dilution of Precision (DOP)
+                            </a>
+                        </div>
+                        <div id="accordion-body-dop" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                                <form id="form-dop" class="form-vertical" style="margin: 0;" onsubmit="return false;">
+                                <fieldset>
+                                <div class="control-group">
+                                    <p>
+                                        Specify a maximum Dilution of Precision (DOP) value.
+                                        All detections with DOP values higher than this maximum will be deleted.
+                                    </p>
+                                    <div class="controls">
+                                        <div>
+                                            <input id="maxDop" name="maxDop" type="text" class="input-small" placeholder="Max DOP" >
+                                            <div class="help-popover" title="DOP values">
+                                                <p>
+                                                    The Dilution of Precision (DOP) value represents the expected error of a GPS position
+                                                    based on the position of GPS satellites relative to the receiver's location.
+                                                    DOP values can be interpreted as:
+                                                    ideal (&lt; 1); excellent (1-2); good (2-5);
+                                                    moderate (5-10); fair (10-20); poor (&gt; 20).
+                                                </p>
+                                                <p>
+                                                    For more information see <a target="_blank" href="https://en.wikipedia.org/wiki/Dilution_of_precision_(GPS)">Wikipedia</a>.
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-primary" onclick="submitCleanseForm('delete', 'dop');">Apply filter</button>
                                         </div>
                                     </div>
                                 </div>

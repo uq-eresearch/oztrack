@@ -47,6 +47,9 @@ public class RawPositionFix {
     @Column(name="argosclass")
     private ArgosClass argosClass;
 
+    @Column(name="dop", columnDefinition="numeric")
+    private Double dop;
+
     public Long getId() {
         return id;
     }
@@ -109,5 +112,13 @@ public class RawPositionFix {
 
     public void setArgosClass(ArgosClass argosClass) {
         this.argosClass = argosClass;
+    }
+
+    public Double getDop() {
+        return dop;
+    }
+
+    public void setDop(Double dop) {
+        this.dop = dop;
     }
 }

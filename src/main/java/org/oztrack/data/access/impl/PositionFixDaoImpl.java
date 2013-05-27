@@ -150,6 +150,7 @@ public class PositionFixDaoImpl implements PositionFixDao {
         MultiPolygon multiPolygon,
         Set<PositionFix> speedFilterPositionFixes,
         ArgosClass minArgosClass,
+        Double maxDop,
         boolean deleted
     ) {
         String queryString =
@@ -178,6 +179,9 @@ public class PositionFixDaoImpl implements PositionFixDao {
         if (minArgosClass != null) {
             queryString += "    and argosclass < :minArgosClass\n";
         }
+        if (maxDop != null) {
+            queryString += "    and dop > :maxDop\n";
+        }
         queryString += ";";
         Query query = em.createNativeQuery(queryString);
         query.setParameter("projectId", project.getId());
@@ -197,6 +201,9 @@ public class PositionFixDaoImpl implements PositionFixDao {
         }
         if (minArgosClass != null) {
             query.setParameter("minArgosClass", minArgosClass.ordinal());
+        }
+        if (maxDop != null) {
+            query.setParameter("maxDop", maxDop);
         }
         return query.executeUpdate();
     }

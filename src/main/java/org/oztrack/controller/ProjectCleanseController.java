@@ -99,6 +99,7 @@ public class ProjectCleanseController {
         @RequestParam(value="animal") List<Long> animalIds,
         @RequestParam(value="maxSpeed", required=false) Double maxSpeed,
         @RequestParam(value="minArgosClass", required=false) String minArgosClassCode,
+        @RequestParam(value="maxDop", required=false) Double maxDop,
         HttpServletRequest request,
         HttpServletResponse response
     ) throws IOException, RserveInterfaceException {
@@ -174,6 +175,7 @@ public class ProjectCleanseController {
                 multiPolygon,
                 speedFilterPositionFixes,
                 minArgosClass,
+                maxDop,
                 true
             );
             positionFixDao.renumberPositionFixes(project);
@@ -194,6 +196,7 @@ public class ProjectCleanseController {
                 multiPolygon,
                 speedFilterPositionFixes,
                 minArgosClass,
+                maxDop,
                 false
             );
             positionFixDao.renumberPositionFixes(project);

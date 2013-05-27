@@ -85,11 +85,12 @@
 </div>
 
 <c:set var="inclArgos" value="false"/>
+<c:set var="inclDop" value="false"/>
 <c:forEach items="${positionFixPage.objects}" var="detection">
-<c:if test="${not empty detection.argosClass}">
-<c:set var="inclArgos" value="true"/>
-</c:if>
+<c:set var="inclArgos" value="${inclArgos || (not empty detection.argosClass)}"/>
+<c:set var="inclDop" value="${inclDop || (not empty detection.dop)}"/>
 </c:forEach>
+
 <c:if test="${positionFixPage.objects != null}">
 <table class="table table-bordered table-condensed">
     <col style="width: 150px;" />
@@ -100,6 +101,9 @@
     <col style="width: 90px;" />
     <col style="width: 90px;" />
     <c:if test="${inclArgos}">
+    <col style="width: 60px;" />
+    </c:if>
+    <c:if test="${inclDop}">
     <col style="width: 60px;" />
     </c:if>
     <sec:authorize access="hasPermission(#project, 'write')">
@@ -119,6 +123,9 @@
             <th>Latitude</th>
             <c:if test="${inclArgos}">
             <th>Argos</th>
+            </c:if>
+            <c:if test="${inclDop}">
+            <th>DOP</th>
             </c:if>
             <sec:authorize access="hasPermission(#project, 'write')">
             <th>Uploaded</th>
@@ -140,6 +147,9 @@
             <td><c:out value="${detection.locationGeometry.y}"/></td>
             <c:if test="${inclArgos}">
             <td><c:out value="${not empty detection.argosClass ? detection.argosClass.code : ''}"/></td>
+            </c:if>
+            <c:if test="${inclDop}">
+            <td><fmt:formatNumber pattern="0.000" value="${detection.dop}"/></td>
             </c:if>
             <sec:authorize access="hasPermission(#project, 'write')">
             <td>

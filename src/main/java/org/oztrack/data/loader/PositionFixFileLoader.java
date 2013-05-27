@@ -124,6 +124,8 @@ public class PositionFixFileLoader extends DataFileLoader {
                                 break;
                             case ARGOSCLASS:
                                 break;
+                            case DOP:
+                                break;
                             default:
                                 logger.debug("Unhandled positionFixFileHeader: " + positionFixFileHeader);
                                 break;
@@ -163,83 +165,87 @@ public class PositionFixFileLoader extends DataFileLoader {
 
                     // loop through the dataRow elements
                     for (int i = 0; i < dataRow.length; i++) {
-
-                        // if data in this cell
-                        if (dataRow[i] != null || !dataRow[i].isEmpty()) {
-
-                            // retrieve the header for this column and use it to determine which field to update
-                            if (headerMap.get(i) != null ) {
-                                PositionFixFileHeader positionFixFileHeader = headerMap.get(i);
-                                switch (positionFixFileHeader) {
-                                    case ACQUISITIONTIME:
-                                    case UTCDATE:
-                                    case LOCDATE:
-                                    case DATE:
-                                        try {
-                                            if (lineNumber == 2) {
-                                                FindDateFormatResult findDateFormatResult = findDateFormat(dataRow[i]);
-                                                dateFormat = findDateFormatResult.dateFormat;
-                                                dateIncludesTime = findDateFormatResult.includesTime;
-                                            }
-                                            Calendar calendar = Calendar.getInstance();
-                                            try {
-                                                calendar.setTime(dateFormat.parse(dataRow[i]));
-                                                if (dateIncludesTime && dataFile.getLocalTimeConversionRequired()) {
-                                                    calendar.add(Calendar.HOUR, dataFile.getLocalTimeConversionHours().intValue());
-                                                }
-                                            }
-                                            catch (ParseException e) {
-                                                throw new FileProcessingException("Date Parsing error. ");
-                                            }
-                                            rawPositionFix.setDetectionTime(calendar.getTime());
+                        if (StringUtils.isBlank(dataRow[i])) {
+                            continue;
+                        }
+                        if (headerMap.get(i) == null) {
+                            continue;
+                        }
+                        PositionFixFileHeader positionFixFileHeader = headerMap.get(i);
+                        switch (positionFixFileHeader) {
+                            case ACQUISITIONTIME:
+                            case UTCDATE:
+                            case LOCDATE:
+                            case DATE:
+                                try {
+                                    if (lineNumber == 2) {
+                                        FindDateFormatResult findDateFormatResult = findDateFormat(dataRow[i]);
+                                        dateFormat = findDateFormatResult.dateFormat;
+                                        dateIncludesTime = findDateFormatResult.includesTime;
+                                    }
+                                    Calendar calendar = Calendar.getInstance();
+                                    try {
+                                        calendar.setTime(dateFormat.parse(dataRow[i]));
+                                        if (dateIncludesTime && dataFile.getLocalTimeConversionRequired()) {
+                                            calendar.add(Calendar.HOUR, dataFile.getLocalTimeConversionHours().intValue());
                                         }
-                                        catch (FileProcessingException e) {
-                                            throw new FileProcessingException(e.toString() + "Using date: "+ dataRow[i] + " from line : "  + lineNumber);
-                                        }
-                                        break;
-                                    case UTCTIME:
-                                    case TIME:
-                                        try {
-                                            rawPositionFix.setDetectionTime(timeHandler(rawPositionFix.getDetectionTime(),dataRow[i]));
-                                        }
-                                        catch (FileProcessingException e) {
-                                            throw new FileProcessingException("Unable to read time format on line " + lineNumber + ": " + dataRow[i], e);
-                                        }
-                                        break;
-                                    case LATITUDE:
-                                    case LATT:
-                                    case LAT:
-                                        rawPositionFix.setLatitude(dataRow[i]);
-                                        break;
-                                    case LONGITUDE:
-                                    case LONG:
-                                    case LON:
-                                         rawPositionFix.setLongitude(dataRow[i]);
-                                         break;
-                                    case ID:
-                                    case ANIMALID:
-                                        rawPositionFix.setAnimalId(dataRow[i]);
-                                        break;
-                                    case DELETED:
-                                        rawPositionFix.setDeleted(Boolean.valueOf(dataRow[i].toLowerCase(Locale.ENGLISH)));
-                                        break;
-                                    case ARGOSCLASS:
-                                        if (StringUtils.isNotBlank(dataRow[i])) {
-                                            ArgosClass argosClass = ArgosClass.fromCode(dataRow[i]);
-                                            if (argosClass == null) {
-                                                throw new FileProcessingException("Invalid Argos class: " + dataRow[i]);
-                                            }
-                                            rawPositionFix.setArgosClass(argosClass);
-                                        }
-                                        break;
-                                    default:
-                                        logger.debug("Unhandled positionFixFileHeader: " + positionFixFileHeader);
-                                        break;
+                                    }
+                                    catch (ParseException e) {
+                                        throw new FileProcessingException("Date Parsing error. ");
+                                    }
+                                    rawPositionFix.setDetectionTime(calendar.getTime());
                                 }
-                            }
+                                catch (FileProcessingException e) {
+                                    throw new FileProcessingException(e.toString() + "Using date: "+ dataRow[i] + " from line : "  + lineNumber);
+                                }
+                                break;
+                            case UTCTIME:
+                            case TIME:
+                                try {
+                                    rawPositionFix.setDetectionTime(timeHandler(rawPositionFix.getDetectionTime(),dataRow[i]));
+                                }
+                                catch (FileProcessingException e) {
+                                    throw new FileProcessingException("Unable to read time format on line " + lineNumber + ": " + dataRow[i], e);
+                                }
+                                break;
+                            case LATITUDE:
+                            case LATT:
+                            case LAT:
+                                rawPositionFix.setLatitude(dataRow[i]);
+                                break;
+                            case LONGITUDE:
+                            case LONG:
+                            case LON:
+                                 rawPositionFix.setLongitude(dataRow[i]);
+                                 break;
+                            case ID:
+                            case ANIMALID:
+                                rawPositionFix.setAnimalId(dataRow[i]);
+                                break;
+                            case DELETED:
+                                rawPositionFix.setDeleted(Boolean.valueOf(dataRow[i].toLowerCase(Locale.ENGLISH)));
+                                break;
+                            case ARGOSCLASS:
+                                ArgosClass argosClass = ArgosClass.fromCode(dataRow[i]);
+                                if (argosClass == null) {
+                                    throw new FileProcessingException("Invalid Argos class: " + dataRow[i]);
+                                }
+                                rawPositionFix.setArgosClass(argosClass);
+                                break;
+                            case DOP:
+                                try {
+                                    Double dop = Double.valueOf(dataRow[i]);
+                                    rawPositionFix.setDop(dop);
+                                }
+                                catch (Exception e) {
+                                    throw new FileProcessingException("Invalid DOP value: " + dataRow[i]);
+                                }
+                                break;
+                            default:
+                                logger.debug("Unhandled positionFixFileHeader: " + positionFixFileHeader);
+                                break;
                         }
                     }
-
 
                     if ((rawPositionFix.getLatitude() != null) && (rawPositionFix.getLongitude() != null)) {
                         try {

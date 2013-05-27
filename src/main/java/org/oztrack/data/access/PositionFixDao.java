@@ -30,6 +30,7 @@ public interface PositionFixDao {
         MultiPolygon multiPolygon,
         Set<PositionFix> speedFilterPositionFixes,
         ArgosClass minArgosClass,
+        Double maxDop,
         boolean deleted
     );
     void renumberPositionFixes(Project project);
