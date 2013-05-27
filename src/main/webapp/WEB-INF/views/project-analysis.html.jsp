@@ -135,6 +135,11 @@
             .paramTableDiv table td {
                 padding: 2px;
             }
+            .featureInfoTitle {
+                padding: 2px;
+                border-bottom: 1px solid #ccc;
+                background-color: #D8E0A8;
+            }
             #savedAnalysesList .analysis-header {
                 padding: 2px 4px;
                 border-bottom: 1px solid #ccc;

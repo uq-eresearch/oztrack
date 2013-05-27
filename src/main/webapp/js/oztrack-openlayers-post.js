@@ -475,7 +475,7 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
          getInfoForClick: function(evt) {
              // Ignore click event unless on a layer: prevent events "bubbling up"
              // when user clicks on attribution links, layer reordering arrows, etc.
-             if ($(evt.srcElement).closest('.olLayerDiv').length == 0) {
+             if ($(evt.target).closest('.olLayerDiv').length == 0) {
                  return;
              }
              this.events.triggerEvent("beforegetfeatureinfo", {xy: evt.xy});

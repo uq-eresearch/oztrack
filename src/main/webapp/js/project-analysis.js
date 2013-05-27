@@ -651,7 +651,7 @@
                     innerContent.append($('<p>')
                         .css('font-weight', 'bold')
                         .css('width', '400px')
-                        .append('Layer Information at ' + coordString(lonlat4326))
+                        .append('Feature info at ' + coordString(lonlat4326))
                     );
                     if (event.features && (event.features.length > 0)) {
                         innerContent.append($.map(control.layerDetails, function(layerDetail) {
@@ -683,7 +683,7 @@
                                 }
                             });
                             return (uniqueSummaries.length == 0) ? [] : [
-                                $('<div>').addClass('layerInfoTitle').css('margin-bottom', '4px').text(layerDetail.layer.name).get(0),
+                                $('<div>').addClass('featureInfoTitle').css('margin-bottom', '4px').text(layerDetail.layer.name).get(0),
                                 $('<ul>').append($.map(uniqueSummaries, function(summary) {
                                     return $('<li>').append(summary);
                                 })).get(0)
