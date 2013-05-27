@@ -463,14 +463,23 @@
         <sec:authorize access="hasPermission(#project, 'read')">
         <div class="span3">
         <dl>
-            <dt>Detections</dt>
-            <dd>
-                <p><a href="${pageContext.request.contextPath}/projects/${project.id}/search">${projectDetectionCount} detections</a></p>
-            </dd>
             <c:if test="${not empty projectAnimalsList}">
             <dt>Animals</dt>
             <dd>
                 <p><a href="${pageContext.request.contextPath}/projects/${project.id}/animals">${fn:length(projectAnimalsList)} animals</a></p>
+            </dd>
+            </c:if>
+            <dt>Detections</dt>
+            <dd>
+                <p><a href="${pageContext.request.contextPath}/projects/${project.id}/search">${projectDetectionCount} detections</a></p>
+            </dd>
+            <c:if test="${not empty project.srsIdentifier}">
+            <dt>Spatial Reference System</dt>
+            <dd>
+                <c:url var="srsHref" value="http://spatialreference.org/ref/">
+                    <c:param name="search">${project.srsIdentifier}</c:param>
+                </c:url>
+                <p><a href="${srsHref}"><c:out value="${project.srsIdentifier}"/></a></p>
             </dd>
             </c:if>
         </dl>
