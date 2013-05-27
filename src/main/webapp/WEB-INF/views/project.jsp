@@ -479,7 +479,7 @@
                 <c:url var="srsHref" value="http://spatialreference.org/ref/">
                     <c:param name="search">${project.srsIdentifier}</c:param>
                 </c:url>
-                <p><a href="${srsHref}"><c:out value="${project.srsIdentifier}"/></a></p>
+                <p><a target="_blank" href="${srsHref}"><c:out value="${project.srsIdentifier}"/></a></p>
             </dd>
             </c:if>
         </dl>
