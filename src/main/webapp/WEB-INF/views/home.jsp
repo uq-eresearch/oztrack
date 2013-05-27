@@ -49,7 +49,7 @@
                 padding: 0 10px;
             }
             .home-popup-title {
-                margin-botom: 1em;
+                margin-bottom: 1em;
                 font-size: 15px;
                 font-weight: bold;
             }
@@ -59,6 +59,9 @@
             }
             .home-popup-attr-value {
                 margin-bottom: 0.75em;
+            }
+            .home-popup-footer {
+                margin-top: 1em;
             }
         </style>
     </jsp:attribute>
