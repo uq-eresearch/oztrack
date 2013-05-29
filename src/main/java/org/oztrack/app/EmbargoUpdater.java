@@ -20,6 +20,7 @@ import org.oztrack.data.model.types.ProjectAccess;
 import org.oztrack.util.EmailBuilder;
 import org.oztrack.util.EmailBuilderFactory;
 import org.oztrack.util.EmbargoUtils;
+import org.oztrack.util.EmbargoUtils.EmbargoInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -93,8 +94,6 @@ public class EmbargoUpdater implements Runnable {
         }
     }
 
-    // Note: successive calls to this method should be performed with earlier expiry dates first.
-    // See code below that skips notification for a project if one already sent for an equal or shorter period.
     private void sendNotifications(EntityManager entityManager, ProjectDaoImpl projectDao, Date currentDate) {
         Calendar expiryCalendar = new GregorianCalendar();
         expiryCalendar.setTime(currentDate);
@@ -128,7 +127,7 @@ public class EmbargoUpdater implements Runnable {
                 emailBuilder.subject("OzTrack project embargo ending");
                 String projectLink = configuration.getBaseUrl() + "/projects/" + project.getId();
                 String projectEditLink = projectLink + "/edit";
-                int extensionYears = EmbargoUtils.maxEmbargoYearsExtn - EmbargoUtils.maxEmbargoYearsNorm;
+
                 StringBuilder htmlMsgContent = new StringBuilder();
                 htmlMsgContent.append("<p>\n");
                 htmlMsgContent.append("    Please note that your OzTrack project,\n");
@@ -138,9 +137,42 @@ public class EmbargoUpdater implements Runnable {
                 htmlMsgContent.append("<p>\n");
                 htmlMsgContent.append("    Starting from this date, data in the project will be made publicly available in OzTrack.\n");
                 htmlMsgContent.append("</p>");
-                htmlMsgContent.append("<p>\n");
-                htmlMsgContent.append("    If necessary, you can extend the embargo period by up to a further " + extensionYears + " years.\n");
-                htmlMsgContent.append("</p>\n");
+                EmbargoInfo embargoInfo = EmbargoUtils.getEmbargoInfo(project.getCreateDate(), project.getEmbargoDate());
+                if (project.getEmbargoDate().before(embargoInfo.getMaxEmbargoDate())) {
+                    htmlMsgContent.append("<p style=\"color: #666;\">\n");
+                    htmlMsgContent.append("    <b>Extending the embargo period</b>\n");
+                    htmlMsgContent.append("</p>\n");
+                    if (project.getCreateDate().before(configuration.getNonIncrementalEmbargoDisableDate())) {
+                        htmlMsgContent.append("<p>\n");
+                        htmlMsgContent.append("    If necessary, you can extend the embargo period up to \n");
+                        htmlMsgContent.append("    " + isoDateFormat.format(embargoInfo.getMaxEmbargoDate()) + ".\n");
+                        htmlMsgContent.append("</p>\n");
+                    }
+                    else if (embargoInfo.getMaxIncrementalEmbargoDate().before(embargoInfo.getMaxEmbargoDate())) {
+                        htmlMsgContent.append("<p>\n");
+                        htmlMsgContent.append("    If necessary, you can extend the embargo period by another year \n");
+                        htmlMsgContent.append("    (up to " + isoDateFormat.format(embargoInfo.getMaxIncrementalEmbargoDate()) + ").\n");
+                        htmlMsgContent.append("</p>\n");
+                        htmlMsgContent.append("<p>\n");
+                        htmlMsgContent.append("    Project embargoes can be renewed annually up to a maximum of 3 years.\n");
+                        htmlMsgContent.append("</p>\n");
+                    }
+                    else {
+                        htmlMsgContent.append("<p>\n");
+                        htmlMsgContent.append("    If necessary, you can extend the embargo period up to \n");
+                        htmlMsgContent.append("    " + isoDateFormat.format(embargoInfo.getMaxEmbargoDate()) + ".\n");
+                        htmlMsgContent.append("</p>\n");
+                        htmlMsgContent.append("<p>\n");
+                        htmlMsgContent.append("    This is the final renewal permitted by OzTrack, taking the embargo period up to 3 years.\n");
+                        htmlMsgContent.append("</p>\n");
+                    }
+                }
+                else {
+                    htmlMsgContent.append("<p>\n");
+                    htmlMsgContent.append("    This embargo period has been the maximum permitted by OzTrack (3 years),");
+                    htmlMsgContent.append("    so cannot be renewed.\n");
+                    htmlMsgContent.append("</p>\n");
+                }
                 htmlMsgContent.append("<p>\n");
                 htmlMsgContent.append("    To view your project, click here:\n");
                 htmlMsgContent.append("    <a href=\"" + projectLink + "\">" + projectLink + "</a>\n");

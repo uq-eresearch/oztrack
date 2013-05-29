@@ -40,6 +40,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ProjectListController {
     protected final Log logger = LogFactory.getLog(getClass());
 
+    private final GregorianCalendar currentCalendar = new GregorianCalendar();
+
     @Autowired
     private OzTrackConfiguration configuration;
 
@@ -91,6 +93,7 @@ public class ProjectListController {
     public Project getProject() {
         Project project = new Project();
         project.setAccess(ProjectAccess.OPEN);
+        project.setEmbargoDate(DateUtils.addYears(currentCalendar.getTime(), 1));
         project.setSrsIdentifier("EPSG:3577");
         return project;
     }
@@ -139,22 +142,20 @@ public class ProjectListController {
         // Note that two or more values is handled correctly (e.g. ["a, b", "c"]).
         String[] publicationReferenceParam = request.getParameterValues("publicationReference");
         String[] publicationUrlParam = request.getParameterValues("publicationUrl");
-
-        if (
-            (project.getAccess() != ProjectAccess.CLOSED) &&
-            (dataLicenceIdentifier != null)
-        ) {
+        if (!project.getAccess().equals(ProjectAccess.EMBARGO)) {
+            project.setEmbargoDate(null);
+            project.setEmbargoNotificationDate(null);
+        }
+        if ((project.getAccess() != ProjectAccess.CLOSED) && (dataLicenceIdentifier != null)) {
             project.setDataLicence(dataLicenceDao.getByIdentifier(dataLicenceIdentifier));
         }
         else {
             project.setDataLicence(null);
         }
         ProjectController.setProjectPublications(project, bindingResult, publicationReferenceParam, publicationUrlParam);
-        new ProjectFormValidator().validate(project, bindingResult);
-        if (projectDao.getProjectByTitle(project.getTitle()) != null) {
-            bindingResult.rejectValue("title", "error.empty.field", "Project with same title already exists.");
-        }
+        new ProjectFormValidator(projectDao, null).validate(project, bindingResult);
         if (bindingResult.hasErrors()) {
+            project.setEmbargoDate(DateUtils.addYears(currentCalendar.getTime(), 1));
             addFormAttributes(model);
             return "project-form";
         }
@@ -166,27 +167,41 @@ public class ProjectListController {
     private void addFormAttributes(Model model) {
         model.addAttribute("dataLicences", dataLicenceDao.getAll());
         model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
-        model.addAttribute("currentYear", (new GregorianCalendar()).get(Calendar.YEAR));
-        model.addAttribute("currentDate", new Date());
-        model.addAttribute("closedAccessDisableDate", configuration.getClosedAccessDisableDate());
-        addEmbargoDateFormAttributes(model);
+        model.addAttribute("currentYear", currentCalendar.get(Calendar.YEAR));
+        model.addAttribute("currentDate", currentCalendar.getTime());
+        boolean beforeClosedAccessDisableDate =
+            (configuration.getClosedAccessDisableDate() == null) ||
+            (currentCalendar.getTime().before(configuration.getClosedAccessDisableDate()));
+        model.addAttribute("beforeClosedAccessDisableDate", beforeClosedAccessDisableDate);
+        addEmbargoDateFormAttributes(model, currentCalendar.getTime());
     }
 
-    private void addEmbargoDateFormAttributes(Model model) {
-        final Date truncatedCurrentDate = DateUtils.truncate(new Date(), Calendar.DATE);
+    private void addEmbargoDateFormAttributes(Model model, Date currentDate) {
+        final Date truncatedCurrentDate = DateUtils.truncate(currentDate, Calendar.DATE);
         final Date truncatedCreateDate = truncatedCurrentDate;
 
-        EmbargoUtils.EmbargoInfo embargoInfo = EmbargoUtils.getEmbargoInfo(truncatedCreateDate);
+        EmbargoUtils.EmbargoInfo embargoInfo = EmbargoUtils.getEmbargoInfo(truncatedCreateDate, null);
+
+        boolean beforeNonIncrementalEmbargoDisableDate =
+            (configuration.getNonIncrementalEmbargoDisableDate() == null) ||
+            (currentDate.before(configuration.getNonIncrementalEmbargoDisableDate()));
+        model.addAttribute("beforeNonIncrementalEmbargoDisableDate", beforeNonIncrementalEmbargoDisableDate);
 
         model.addAttribute("minEmbargoDate", truncatedCurrentDate);
-        model.addAttribute("maxEmbargoDate", embargoInfo.getMaxEmbargoDateNorm());
-        model.addAttribute("maxEmbargoYears", EmbargoUtils.maxEmbargoYearsNorm);
+        model.addAttribute("maxEmbargoDate", embargoInfo.getMaxEmbargoDate());
+        model.addAttribute("maxEmbargoYears", embargoInfo.getMaxEmbargoYears());
+        model.addAttribute("maxIncrementalEmbargoDate", embargoInfo.getMaxIncrementalEmbargoDate());
 
         LinkedHashMap<String, Date> presetEmbargoDates = new LinkedHashMap<String, Date>();
-        for (int years = 1; years <= EmbargoUtils.maxEmbargoYearsNorm; years++) {
-            String key = years + " " + ((years == 1) ? "year" : "years");
-            Date value = DateUtils.addYears(truncatedCreateDate, years);
-            presetEmbargoDates.put(key, value);
+        if (beforeNonIncrementalEmbargoDisableDate) {
+            for (int years = 1; years <= embargoInfo.getMaxEmbargoYears(); years++) {
+                String key = years + " " + ((years == 1) ? "year" : "years");
+                Date value = DateUtils.addYears(truncatedCreateDate, years);
+                presetEmbargoDates.put(key, value);
+            }
+        }
+        else {
+            presetEmbargoDates.put("Annual renewal", embargoInfo.getMaxIncrementalEmbargoDate());
         }
         model.addAttribute("presetEmbargoDates", presetEmbargoDates);
         model.addAttribute("otherEmbargoDate", null);

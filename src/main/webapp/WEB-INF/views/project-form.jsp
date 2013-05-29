@@ -7,7 +7,6 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <c:set var="dataSpaceEnabled"><%= OzTrackApplication.getApplicationContext().isDataSpaceEnabled() %></c:set>
 <c:set var="isoDateFormatPattern" value="yyyy-MM-dd"/>
-<c:set var="dateFormatPattern" value="yyyy-MM-dd"/>
 <tags:page>
     <jsp:attribute name="title">
         <c:choose>
@@ -201,7 +200,7 @@
                 $('#otherEmbargoDateInput').datepicker({
                     altField: "#otherEmbargoDate",
                     minDate: new Date(${minEmbargoDate.time}),
-                    maxDate: new Date(${maxEmbargoDate.time})
+                    maxDate: new Date(${beforeNonIncrementalEmbargoDisableDate ? maxEmbargoDate.time : maxIncrementalEmbargoDate.time})
                 });
 
                 var publications = [];
@@ -396,7 +395,14 @@
                                 are made publicly available for all projects in OzTrack.
                             </div>
                             <div style="margin: 0.5em 0;">
+                                <c:choose>
+                                <c:when test="${beforeNonIncrementalEmbargoDisableDate}">
                                 Note: maximum embargo period is ${maxEmbargoYears} years from the project's creation date.
+                                </c:when>
+                                <c:otherwise>
+                                The embargo period can be renewed annually up to a maximum of ${maxEmbargoYears} years.
+                                </c:otherwise>
+                                </c:choose>
                             </div>
                         </label>
                         <c:if test="${minEmbargoDate.time <= maxEmbargoDate.time}">
@@ -408,7 +414,14 @@
                                     <jsp:attribute name="disabled">${presetEmbargoDate.value.time < minEmbargoDate.time}</jsp:attribute>
                                 </form:radiobutton>
                                 <span>${presetEmbargoDate.key}</span>
-                                <span style="font-size: 11px;">(expires <fmt:formatDate pattern="${dateFormatPattern}" value="${presetEmbargoDate.value}"/>)</span>
+                                <span style="font-size: 11px;">
+                                    (expires <fmt:formatDate pattern="${isoDateFormatPattern}" value="${presetEmbargoDate.value}"
+                                    /><c:if test="${
+                                    !beforeNonIncrementalEmbargoDisableDate &&
+                                    (presetEmbargoDate.value.time < maxEmbargoDate.time)}">;
+                                    renewable up to <fmt:formatDate pattern="${isoDateFormatPattern}" value="${maxEmbargoDate}"/>
+                                    </c:if>)
+                                </span>
                             </label>
                             </c:forEach>
                             <label for="otherEmbargoDate" class="radio">
@@ -416,18 +429,17 @@
                                     <jsp:attribute name="value"><fmt:formatDate pattern="${isoDateFormatPattern}" value="${otherEmbargoDate}"/></jsp:attribute>
                                 </form:radiobutton>
                                 <span>Other date</span>
+                                <c:if test="${!beforeNonIncrementalEmbargoDisableDate}">
+                                <span style="font-size: 11px;">(before <fmt:formatDate pattern="${isoDateFormatPattern}" value="${maxIncrementalEmbargoDate}"/>)</span>
+                                </c:if>
                                 <input id="otherEmbargoDateInput" class="input-small datepicker" type="text"
-                                    value="<fmt:formatDate pattern="${dateFormatPattern}" value="${otherEmbargoDate}"/>"
+                                    value="<fmt:formatDate pattern="${isoDateFormatPattern}" value="${otherEmbargoDate}"/>"
                                     onclick="$('#otherEmbargoDate').click(); return false;"/>
                             </label>
                             <form:errors path="embargoDate" element="div" cssClass="help-block formErrors"/>
                         </div>
                         </c:if>
-                        <c:if test="${
-                            (closedAccessDisableDate == null) ||
-                            ((project.createDate != null) && (project.createDate.time < closedAccessDisableDate.time)) ||
-                            ((project.createDate == null) && (currentDate.time < closedAccessDisableDate.time))
-                        }">
+                        <c:if test="${beforeClosedAccessDisableDate}">
                         <label for="accessClosed" class="radio">
                             <form:radiobutton id="accessClosed" path="access" value="CLOSED" onclick="
                                 $('#embargo-date-control-group').fadeOut();

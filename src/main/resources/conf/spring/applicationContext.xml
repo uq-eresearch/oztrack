@@ -59,6 +59,7 @@
         <property name="recaptchaPublicKey" value="${application.recaptchaPublicKey}"/>
         <property name="recaptchaPrivateKey" value="${application.recaptchaPrivateKey}"/>
         <property name="closedAccessDisableDateString" value="${application.closedAccessDisableDate}"/>
+        <property name="nonIncrementalEmbargoDisableDateString" value="${application.nonIncrementalEmbargoDisableDate}"/>
     </bean>
 
     <bean id="ozTrackApplication" class="org.oztrack.app.OzTrackApplication">

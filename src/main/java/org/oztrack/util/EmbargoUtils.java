@@ -5,38 +5,17 @@ import java.util.Date;
 
 import org.apache.commons.lang3.time.DateUtils;
 
-/**
- * Normal embargo is a maximum of 3 years, but can be extended up to 5 years.
- *
- * Extensions are only allowed when a project is within 2 months of its embargo date:
- * this prevents an overly long embargo period being selected when creating a project,
- * but, if necessary, allows it to be extended as the embargo deadline approaches.
- */
 public class EmbargoUtils {
-    public static final int maxEmbargoYearsNorm = 3;
-    public static final int maxEmbargoYearsExtn = 5;
+    public static final int maxEmbargoYears = 3;
     public static final int embargoNotificationMonths = 2;
 
     public static class EmbargoInfo {
-        private Date maxEmbargoDateNorm;
-        private Date maxEmbargoDateExtn;
-        private Date embargoNotificationDate;
         private int maxEmbargoYears;
         private Date maxEmbargoDate;
+        private Date embargoNotificationDate;
+        private Date maxIncrementalEmbargoDate;
 
         private EmbargoInfo() {
-        }
-
-        public Date getMaxEmbargoDateNorm() {
-            return maxEmbargoDateNorm;
-        }
-
-        public Date getMaxEmbargoDateExtn() {
-            return maxEmbargoDateExtn;
-        }
-
-        public Date getEmbargoNotificationDate() {
-            return embargoNotificationDate;
         }
 
         public int getMaxEmbargoYears() {
@@ -46,18 +25,54 @@ public class EmbargoUtils {
         public Date getMaxEmbargoDate() {
             return maxEmbargoDate;
         }
+
+        public Date getMaxIncrementalEmbargoDate() {
+            return maxIncrementalEmbargoDate;
+        }
+
+        public Date getEmbargoNotificationDate() {
+            return embargoNotificationDate;
+        }
     }
 
-    public static EmbargoInfo getEmbargoInfo(Date createDate) {
+    public static EmbargoInfo getEmbargoInfo(Date createDate, Date prevEmbargoDate) {
         final Date truncatedCurrentDate = DateUtils.truncate(new Date(), Calendar.DATE);
         final Date truncatedCreateDate = DateUtils.truncate(createDate, Calendar.DATE);
+
         EmbargoInfo embargoInfo = new EmbargoInfo();
-        embargoInfo.maxEmbargoDateNorm = DateUtils.addYears(truncatedCreateDate, maxEmbargoYearsNorm);
-        embargoInfo.maxEmbargoDateExtn = DateUtils.addYears(truncatedCreateDate, maxEmbargoYearsExtn);
-        embargoInfo.embargoNotificationDate = DateUtils.addMonths(embargoInfo.maxEmbargoDateNorm, -1 * embargoNotificationMonths);
-        boolean canExtend = !truncatedCurrentDate.before(embargoInfo.embargoNotificationDate);
-        embargoInfo.maxEmbargoYears = canExtend ? maxEmbargoYearsExtn : maxEmbargoYearsNorm;
-        embargoInfo.maxEmbargoDate = canExtend ? embargoInfo.maxEmbargoDateExtn : embargoInfo.maxEmbargoDateNorm;
+        embargoInfo.maxEmbargoYears = maxEmbargoYears;
+        embargoInfo.maxEmbargoDate = DateUtils.addYears(truncatedCreateDate, maxEmbargoYears);
+
+        // Send notification N months before embargo period ends.
+        if (prevEmbargoDate != null) {
+            embargoInfo.embargoNotificationDate = DateUtils.addMonths(prevEmbargoDate, -1 * embargoNotificationMonths);
+        }
+        else {
+            embargoInfo.embargoNotificationDate = null;
+        }
+
+        // At any time, a user can extend a project's embargo period by 1 year from the current date.
+        // As a special case, if the user has received a notification about an embargo period ending,
+        // then they can extend the embargo period by 1 year from the current embargo end date. This
+        // allows extension of the embargo period by slightly more than 1 year (an extra N months,
+        // depending on the EmbargoUtils.embargoNotificationMonths setting).
+        if ((embargoInfo.embargoNotificationDate != null) && !truncatedCurrentDate.before(embargoInfo.embargoNotificationDate)) {
+            embargoInfo.maxIncrementalEmbargoDate = DateUtils.addYears(prevEmbargoDate, 1);
+        }
+        else {
+            embargoInfo.maxIncrementalEmbargoDate = DateUtils.addYears(truncatedCurrentDate, 1);
+        }
+
+        // Limit incremental embargo date to at least be embargo date.
+        if ((prevEmbargoDate != null) && embargoInfo.maxIncrementalEmbargoDate.before(prevEmbargoDate)) {
+            embargoInfo.maxIncrementalEmbargoDate = prevEmbargoDate;
+        }
+
+        // Limit incremental embargo date to system-wide maximum.
+        if (embargoInfo.maxIncrementalEmbargoDate.after(embargoInfo.maxEmbargoDate)) {
+            embargoInfo.maxIncrementalEmbargoDate = embargoInfo.maxEmbargoDate;
+        }
+
         return embargoInfo;
     }
 }

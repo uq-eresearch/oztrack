@@ -7,6 +7,7 @@ import java.util.Date;
 import org.apache.commons.lang3.time.DateUtils;
 import org.geotools.referencing.CRS;
 import org.oztrack.app.OzTrackApplication;
+import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.types.ProjectAccess;
 import org.oztrack.util.EmbargoUtils;
@@ -16,6 +17,14 @@ import org.springframework.validation.Validator;
 
 public class ProjectFormValidator implements Validator {
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+    private final ProjectDao projectDao;
+    private final Date prevEmbargoDate;
+
+    public ProjectFormValidator(ProjectDao projectDao, Date prevEmbargoDate) {
+        this.projectDao = projectDao;
+        this.prevEmbargoDate = prevEmbargoDate;
+    }
 
     @Override
     public boolean supports(@SuppressWarnings("rawtypes") Class clazz) {
@@ -44,9 +53,17 @@ public class ProjectFormValidator implements Validator {
                 if (project.getEmbargoDate().before(DateUtils.truncate(currentDate, Calendar.DATE))) {
                     errors.rejectValue("embargoDate", "error.embargoDate", "Embargo date must be today's date or later.");
                 }
-                EmbargoUtils.EmbargoInfo embargoInfo = EmbargoUtils.getEmbargoInfo(createDate);
-                if (project.getEmbargoDate().after(embargoInfo.getMaxEmbargoDate())) {
-                    errors.rejectValue("embargoDate", "error.embargoDate", "Embargo date must be " + dateFormat.format(embargoInfo.getMaxEmbargoDate()) + " or earlier.");
+                EmbargoUtils.EmbargoInfo embargoInfo = EmbargoUtils.getEmbargoInfo(createDate, prevEmbargoDate);
+                Date nonIncrementalEmbargoDisableDate = OzTrackApplication.getApplicationContext().getNonIncrementalEmbargoDisableDate();
+                if ((nonIncrementalEmbargoDisableDate == null) || createDate.before(nonIncrementalEmbargoDisableDate)) {
+                    if (project.getEmbargoDate().after(embargoInfo.getMaxEmbargoDate())) {
+                        errors.rejectValue("embargoDate", "error.embargoDate", "Embargo date must be " + dateFormat.format(embargoInfo.getMaxEmbargoDate()) + " or earlier.");
+                    }
+                }
+                else {
+                    if (project.getEmbargoDate().after(embargoInfo.getMaxIncrementalEmbargoDate())) {
+                        errors.rejectValue("embargoDate", "error.embargoDate", "Embargo period can only be extended up to 1 year at a time.");
+                    }
                 }
             }
         }
@@ -63,6 +80,11 @@ public class ProjectFormValidator implements Validator {
         }
         catch (Exception e) {
             errors.rejectValue("srsIdentifier", "error.srsidentifier", "Please enter a valid SRS code.");
+        }
+
+        Project projectWithSameTitle = projectDao.getProjectByTitle(project.getTitle());
+        if ((projectWithSameTitle != null) && (projectWithSameTitle.getId() != project.getId())) {
+            errors.rejectValue("title", "error.duplicateTitle", "Project with same title already exists.");
         }
     }
 }

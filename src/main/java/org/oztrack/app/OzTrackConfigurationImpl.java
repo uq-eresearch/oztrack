@@ -23,6 +23,7 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
     private String recaptchaPublicKey;
     private String recaptchaPrivateKey;
     private Date closedAccessDisableDate;
+    private Date nonIncrementalEmbargoDisableDate;
 
     @Override
     public String getBaseUrl() {
@@ -174,5 +175,22 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
 
     public void setClosedAccessDisableDateString(String closedAccessDisableDateString) throws ParseException {
         this.closedAccessDisableDate = isoDateTimeFormat.parse(closedAccessDisableDateString);
+    }
+
+    @Override
+    public Date getNonIncrementalEmbargoDisableDate() {
+        return nonIncrementalEmbargoDisableDate;
+    }
+
+    public void setNonIncrementalEmbargoDisableDate(Date nonIncrementalEmbargoDisableDate) {
+        this.nonIncrementalEmbargoDisableDate = nonIncrementalEmbargoDisableDate;
+    }
+
+    public String getNonIncrementalEmbargoDisableDateString() {
+        return isoDateTimeFormat.format(nonIncrementalEmbargoDisableDate);
+    }
+
+    public void setNonIncrementalEmbargoDisableDateString(String nonIncrementalEmbargoDisableDateString) throws ParseException {
+        this.nonIncrementalEmbargoDisableDate = isoDateTimeFormat.parse(nonIncrementalEmbargoDisableDateString);
     }
 }

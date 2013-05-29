@@ -202,38 +202,44 @@ public class ProjectController {
         String[] publicationReferenceParam = request.getParameterValues("publicationReference");
         String[] publicationUrlParam = request.getParameterValues("publicationUrl");
 
-        if (StringUtils.isNotBlank(embargoDateString)) {
+        Date prevEmbargoDate = project.getEmbargoDate();
+        if (project.getAccess().equals(ProjectAccess.EMBARGO) && StringUtils.isNotBlank(embargoDateString)) {
             Date embargoDate = isoDateFormat.parse(embargoDateString);
             if (!embargoDate.equals(project.getEmbargoDate())) {
                 project.setEmbargoDate(embargoDate);
                 project.setEmbargoNotificationDate(null);
             }
         }
-        boolean shouldRenumberPositionFixes = !project.getCrosses180().equals(crosses180);
-        project.setCrosses180(crosses180);
-        if (
-            StringUtils.isNotBlank(dataLicenceIdentifier) &&
-            (project.getAccess() != ProjectAccess.CLOSED)
-        ) {
+        else {
+            project.setEmbargoDate(null);
+            project.setEmbargoNotificationDate(null);
+        }
+
+        if ((project.getAccess() != ProjectAccess.CLOSED) && StringUtils.isNotBlank(dataLicenceIdentifier)) {
             project.setDataLicence(dataLicenceDao.getByIdentifier(dataLicenceIdentifier));
         }
         else {
             project.setDataLicence(null);
         }
+
+        boolean shouldRenumberPositionFixes = !project.getCrosses180().equals(crosses180);
+        project.setCrosses180(crosses180);
+
         setProjectPublications(project, bindingResult, publicationReferenceParam, publicationUrlParam);
-        new ProjectFormValidator().validate(project, bindingResult);
-        Project projectWithSameTitle = projectDao.getProjectByTitle(project.getTitle());
-        if ((projectWithSameTitle != null) && (projectWithSameTitle.getId() != project.getId())) {
-            bindingResult.rejectValue("title", "error.empty.field", "Project with same title already exists.");
-        }
+
+        new ProjectFormValidator(projectDao, prevEmbargoDate).validate(project, bindingResult);
+
         if (bindingResult.hasErrors()) {
+            project.setEmbargoDate(prevEmbargoDate);
             addFormAttributes(model, project);
             return "project-form";
         }
+
         projectDao.update(project);
         if (shouldRenumberPositionFixes) {
             positionFixDao.renumberPositionFixes(project);
         }
+
         return "redirect:/projects/" + project.getId();
     }
 
@@ -290,46 +296,66 @@ public class ProjectController {
     }
 
     private void addFormAttributes(Model model, Project project) {
+        GregorianCalendar currentCalendar = new GregorianCalendar();
         model.addAttribute("dataLicences", dataLicenceDao.getAll());
         model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
-        model.addAttribute("currentYear", (new GregorianCalendar()).get(Calendar.YEAR));
-        model.addAttribute("currentDate", new Date());
-        model.addAttribute("closedAccessDisableDate", configuration.getClosedAccessDisableDate());
-        addEmbargoDateFormAttributes(model, project);
+        model.addAttribute("currentYear", currentCalendar.get(Calendar.YEAR));
+        model.addAttribute("currentDate", currentCalendar.getTime());
+        boolean beforeClosedAccessDisableDate =
+            (configuration.getClosedAccessDisableDate() == null) ||
+            (project.getCreateDate().before(configuration.getClosedAccessDisableDate()));
+        model.addAttribute("beforeClosedAccessDisableDate", beforeClosedAccessDisableDate);
+        addEmbargoDateFormAttributes(model, project, currentCalendar.getTime());
     }
 
-    private void addEmbargoDateFormAttributes(Model model, Project project) {
-        final Date truncatedCurrentDate = DateUtils.truncate(new Date(), Calendar.DATE);
+    private void addEmbargoDateFormAttributes(Model model, Project project, Date currentDate) {
+        final Date truncatedCurrentDate = DateUtils.truncate(currentDate, Calendar.DATE);
         final Date truncatedCreateDate = DateUtils.truncate(project.getCreateDate(), Calendar.DATE);
 
-        EmbargoUtils.EmbargoInfo embargoInfo = EmbargoUtils.getEmbargoInfo(project.getCreateDate());
+        EmbargoUtils.EmbargoInfo embargoInfo = EmbargoUtils.getEmbargoInfo(project.getCreateDate(), project.getEmbargoDate());
+
+        boolean beforeNonIncrementalEmbargoDisableDate =
+            (configuration.getNonIncrementalEmbargoDisableDate() == null) ||
+            (project.getCreateDate().before(configuration.getNonIncrementalEmbargoDisableDate()));
+        model.addAttribute("beforeNonIncrementalEmbargoDisableDate", beforeNonIncrementalEmbargoDisableDate);
 
         model.addAttribute("minEmbargoDate", truncatedCurrentDate);
         model.addAttribute("maxEmbargoDate", embargoInfo.getMaxEmbargoDate());
         model.addAttribute("maxEmbargoYears", embargoInfo.getMaxEmbargoYears());
+        model.addAttribute("maxIncrementalEmbargoDate", embargoInfo.getMaxIncrementalEmbargoDate());
 
         LinkedHashMap<String, Date> presetEmbargoDates = new LinkedHashMap<String, Date>();
-        for (int years = 1; years <= embargoInfo.getMaxEmbargoYears(); years++) {
-            String key =
-                ((years > EmbargoUtils.maxEmbargoYearsNorm) ? "Extension: " : "") +
-                years + " " + ((years == 1) ? "year" : "years");
-            Date value = DateUtils.addYears(truncatedCreateDate, years);
-            presetEmbargoDates.put(key, value);
-        }
-        model.addAttribute("presetEmbargoDates", presetEmbargoDates);
-
-        // Only set otherEmbargoDate field if it doesn't match any of the presets
         Date otherEmbargoDate = null;
-        if (project.getEmbargoDate() != null) {
-            otherEmbargoDate = project.getEmbargoDate();
-            DateUtils.truncate(project.getEmbargoDate(), Calendar.DATE);
-            for (Date presetEmbargoDate : presetEmbargoDates.values()) {
-                if (otherEmbargoDate.getTime() == presetEmbargoDate.getTime()) {
-                    otherEmbargoDate = null;
-                    break;
+        if (beforeNonIncrementalEmbargoDisableDate) {
+            for (int years = 1; years <= embargoInfo.getMaxEmbargoYears(); years++) {
+                String key = years + " " + ((years == 1) ? "year" : "years");
+                Date value = DateUtils.addYears(truncatedCreateDate, years);
+                presetEmbargoDates.put(key, value);
+            }
+            // Set otherEmbargoDate field if it doesn't match any of the presets
+            if (project.getEmbargoDate() != null) {
+                otherEmbargoDate = project.getEmbargoDate();
+                DateUtils.truncate(project.getEmbargoDate(), Calendar.DATE);
+                for (Date presetEmbargoDate : presetEmbargoDates.values()) {
+                    if (otherEmbargoDate.getTime() == presetEmbargoDate.getTime()) {
+                        otherEmbargoDate = null;
+                        break;
+                    }
                 }
             }
         }
+        else {
+            presetEmbargoDates.put("Current embargo", project.getEmbargoDate());
+            if (project.getEmbargoDate().before(embargoInfo.getMaxIncrementalEmbargoDate())) {
+                if (embargoInfo.getMaxIncrementalEmbargoDate().before(embargoInfo.getMaxEmbargoDate())) {
+                    presetEmbargoDates.put("Extend by 1 year", embargoInfo.getMaxIncrementalEmbargoDate());
+                }
+                else {
+                    presetEmbargoDates.put("Extend to " + embargoInfo.getMaxEmbargoYears() + " year limit", embargoInfo.getMaxEmbargoDate());
+                }
+            }
+        }
+        model.addAttribute("presetEmbargoDates", presetEmbargoDates);
         model.addAttribute("otherEmbargoDate", otherEmbargoDate);
     }
 
