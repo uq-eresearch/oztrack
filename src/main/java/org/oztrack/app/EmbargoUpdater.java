@@ -151,7 +151,7 @@ public class EmbargoUpdater implements Runnable {
                     else if (embargoInfo.getMaxIncrementalEmbargoDate().before(embargoInfo.getMaxEmbargoDate())) {
                         htmlMsgContent.append("<p>\n");
                         htmlMsgContent.append("    If necessary, you can extend the embargo period by another year \n");
-                        htmlMsgContent.append("    (up to " + isoDateFormat.format(embargoInfo.getMaxIncrementalEmbargoDate()) + ").\n");
+                        htmlMsgContent.append("    to " + isoDateFormat.format(embargoInfo.getMaxIncrementalEmbargoDate()) + ".\n");
                         htmlMsgContent.append("</p>\n");
                         htmlMsgContent.append("<p>\n");
                         htmlMsgContent.append("    Project embargoes can be renewed annually up to a maximum of 3 years.\n");
