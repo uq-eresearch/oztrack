@@ -242,7 +242,11 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                     $(layerDiv).append(layerMoveSpan);
                 }
                 function addLayerInfoSpan(map, layer) {
-                    if (layer.metadata.category != 'environment') {
+                    if (!layer.metadata.showInformation) {
+                        return;
+                    }
+                    if (!(layer.attribution) &&
+                        !(layer.params && layer.params.LAYERS && layer.params.STYLES)) {
                         return;
                     }
                     var span = $('<span>')
@@ -262,24 +266,28 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                                 dialog.dialog('open');
                             }
                             else {
-                                var content = $('<div>').append($('<div>').addClass('layerInfoContent')
-                                    .append($('<p>')
+                                var content = $('<div>').append($('<div>').addClass('layerInfoContent'));
+                                if (layer.attribution) {
+                                    content.append($('<p>')
                                         .append('For general information about this layer see:<br />')
                                         .append(layer.attribution)
-                                    )
-                                    .append($('<p>').css('font-weight', 'bold').append('Map legend'))
-                                    .append($('<img>').attr('src',
-                                        '/geoserver/wms' +
-                                        '?REQUEST=GetLegendGraphic' +
-                                        '&VERSION=1.0.0' +
-                                        '&FORMAT=image/png' +
-                                        '&WIDTH=15' +
-                                        '&HEIGHT=15' +
-                                        '&LEGEND_OPTIONS=forceLabels:on' +
-                                        '&LAYER=' + layer.params.LAYERS +
-                                        '&STYLE=' + layer.params.STYLES
-                                    )
-                                ));
+                                    );
+                                }
+                                if (layer.params && layer.params.LAYERS && layer.params.STYLES) {
+                                    content
+                                        .append($('<p>').css('font-weight', 'bold').append('Map legend'))
+                                        .append($('<img>').attr('src',
+                                            '/geoserver/wms' +
+                                            '?REQUEST=GetLegendGraphic' +
+                                            '&VERSION=1.0.0' +
+                                            '&FORMAT=image/png' +
+                                            '&WIDTH=15' +
+                                            '&HEIGHT=15' +
+                                            '&LEGEND_OPTIONS=forceLabels:on' +
+                                            '&LAYER=' + layer.params.LAYERS +
+                                            '&STYLE=' + layer.params.STYLES
+                                        ));
+                                }
                                 that.layerInfoDialogs[layer.id] = content.dialog({
                                     title: layer.name,
                                     modal: false,
@@ -301,8 +309,8 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                     addLayerOpacitySpan(this.map, layer);
                     addLayerMoveSpan(this.map, layer, 1);
                     addLayerMoveSpan(this.map, layer, -1);
-                    addLayerInfoSpan(this.map, layer);
                 }
+                addLayerInfoSpan(this.map, layer);
 
                 var inputElem = document.createElement("input");
                 var checked = (layer.isBaseLayer) ? (layer == this.map.baseLayer) : layer.getVisibility();

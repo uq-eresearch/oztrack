@@ -84,7 +84,8 @@
         that.layerSwitcher = new OzTrack.OpenLayers.Control.OzTrackLayerSwitcher({
             categoryLabels: {
                 'base': 'Base layer',
-                'environment': 'Environmental layers',
+                'terrestrial': 'Terrestrial layers',
+                'marine': 'Marine layers',
                 'project': 'Project layers',
                 'analysis': 'Analysis layers'
             }
@@ -100,7 +101,10 @@
             maxExtent: that.maxExtent,
             wrapDateLine: true,
             numZoomLevels: 22,
-            metadata: {category: 'base'}
+            metadata: {
+                category: 'base',
+                showInformation: false
+            }
         });
         that.map.addLayer(that.googleSatelliteLayer);
 
@@ -109,7 +113,10 @@
             sphericalMercator: true,
             maxExtent: that.maxExtent,
             wrapDateLine: true,
-            metadata: {category: 'base'}
+            metadata: {
+                category: 'base',
+                showInformation: false
+            }
         });
         that.map.addLayer(that.googlePhysicalLayer);
 
@@ -118,7 +125,10 @@
             maxExtent: that.maxExtent,
             wrapDateLine: true,
             numZoomLevels: 20,
-            metadata: {category: 'base'}
+            metadata: {
+                category: 'base',
+                showInformation: false
+            }
         });
         that.map.addLayer(that.googleStreetsLayer);
 
@@ -128,13 +138,19 @@
             maxExtent: that.maxExtent,
             wrapDateLine: true,
             numZoomLevels: 20,
-            metadata: {category: 'base'}
+            metadata: {
+                category: 'base',
+                showInformation: false
+            }
         });
         that.map.addLayer(that.googleHybridLayer);
 
         that.osmLayer = new OpenLayers.Layer.OSM('OpenStreetMap', null, {
             maxExtent: that.maxExtent,
-            metadata: {category: 'base'}
+            metadata: {
+                category: 'base',
+                showInformation: false
+            }
         });
         that.map.addLayer(that.osmLayer);
 
@@ -143,7 +159,10 @@
             maxExtent: that.maxExtent,
             wrapDateLine: true,
             numZoomLevels : 22,
-            metadata: {category: 'base'}
+            metadata: {
+                category: 'base',
+                showInformation: false
+            }
         });
         that.map.addLayer(that.emptyBaseLayer);
 
@@ -161,7 +180,10 @@
                 isBaseLayer: false,
                 wrapDateLine: true,
                 attribution: '<a target="_blank" href="http://www.gebco.net/">The GEBCO_08 Grid, version 20091120 (bathymetry)</a>',
-                metadata: {category: 'environment'}
+                metadata: {
+                    category: 'marine',
+                    showInformation: true
+                }
             }
         );
         that.map.addLayer(that.bathymetryLayer);
@@ -180,7 +202,10 @@
                 isBaseLayer: false,
                 wrapDateLine: true,
                 attribution: '<a target="_blank" href="http://www.gebco.net/">The GEBCO_08 Grid, version 20091120 (elevation)</a>',
-                metadata: {category: 'environment'}
+                metadata: {
+                    category: 'terrestrial',
+                    showInformation: true
+                }
             }
         );
         that.map.addLayer(that.elevationLayer);
@@ -198,7 +223,10 @@
                 isBaseLayer: false,
                 wrapDateLine: true,
                 attribution: '<a target="_blank" href="http://www.ga.gov.au/earth-observation/landcover.html">Dynamic Land Cover Dataset</a>',
-                metadata: {category: 'environment'}
+                metadata: {
+                    category: 'terrestrial',
+                    showInformation: true
+                }
             }
         );
         that.map.addLayer(that.dlcdClass);
@@ -216,7 +244,10 @@
                 isBaseLayer: false,
                 wrapDateLine: true,
                 attribution: '<a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B116AACA6-9E11-43E6-AD68-75AE380504CD%7D">NVIS 4.1 Major Vegetation Groups</a>',
-                metadata: {category: 'environment'}
+                metadata: {
+                    category: 'terrestrial',
+                    showInformation: true
+                }
             }
         );
         that.map.addLayer(that.nvisGroups);
@@ -234,7 +265,10 @@
                 isBaseLayer: false,
                 wrapDateLine: true,
                 attribution: '<a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B245434BF-95D1-4C3E-8104-EC4B2988782D%7D">NVIS 4.1 Major Vegetation Subgroups</a>',
-                metadata: {category: 'environment'}
+                metadata: {
+                    category: 'terrestrial',
+                    showInformation: true
+                }
             }
         );
         that.map.addLayer(that.nvisSubgroups);
@@ -252,7 +286,10 @@
                 isBaseLayer: false,
                 wrapDateLine: true,
                 attribution: '<a target="_blank" href="http://data.auscover.org.au/geonetwork/srv/en/main.home?uuid=3535a8c1-940e-4f60-b55b-24185730acba">Fire Frequency - AVHRR</a>',
-                metadata: {category: 'environment'}
+                metadata: {
+                category: 'terrestrial',
+                showInformation: true
+            }
             }
         );
         that.map.addLayer(that.fireFrequency);
@@ -273,7 +310,10 @@
                     'CAPAD 2010' +
                     ' <a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId={C4B70940-75BC-4114-B935-D28EE8A52937}">[1]</a>' +
                     ' <a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId={0E24A4B5-BA44-48D5-AF2F-7F4749F4EA2D}">[2]</a>',
-                metadata: {category: 'environment'}
+                metadata: {
+                    category: 'terrestrial',
+                    showInformation: true
+                }
             }
         );
         that.map.addLayer(that.capadLand);
@@ -294,7 +334,10 @@
                     'CAPAD 2010 Marine' +
                     ' <a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B4970516C-6F4A-4B1E-AF33-AB6BDE6B008A%7D">[1]</a>' +
                     ' <a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B905AD083-39A0-41C6-B2F9-CBF5E0B86A3C%7D">[2]</a>',
-                metadata: {category: 'environment'}
+                metadata: {
+                    category: 'marine',
+                    showInformation: true
+                }
             }
         );
         that.map.addLayer(that.capadMarine);
@@ -312,7 +355,10 @@
                 isBaseLayer: false,
                 wrapDateLine: true,
                 attribution: ' <a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId={052C61B4-3662-4842-8B4D-15DC57B355FE}">Commonwealth Marine Reserves 2012</a>',
-                metadata: {category: 'environment'}
+                metadata: {
+                    category: 'marine',
+                    showInformation: true
+                }
             }
         );
         that.map.addLayer(that.commonwealthMarineReserves);
@@ -330,7 +376,10 @@
                 isBaseLayer: false,
                 wrapDateLine: true,
                 attribution: '<a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId={FA68F769-550B-4605-A0D5-50B10ECD0EB9}">NRM Regions 2010</a>',
-                metadata: {category: 'environment'}
+                metadata: {
+                    category: 'terrestrial',
+                    showInformation: true
+                }
             }
         );
         that.map.addLayer(that.nrmRegions);
@@ -348,7 +397,10 @@
                 isBaseLayer: false,
                 wrapDateLine: true,
                 attribution: '<a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B573FA186-1997-4F8B-BCF8-58B5876A156B%7D">IBRA 7 Regions</a>',
-                metadata: {category: 'environment'}
+                metadata: {
+                    category: 'terrestrial',
+                    showInformation: true
+                }
             }
         );
         that.map.addLayer(that.ibraRegions);
@@ -366,7 +418,10 @@
                 isBaseLayer: false,
                 wrapDateLine: true,
                 attribution: '<a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7BC88F4317-42B0-4D4B-AC5D-47F6ACF1A24F%7D">IBRA 7 Subregions</a>',
-                metadata: {category: 'environment'}
+                metadata: {
+                    category: 'terrestrial',
+                    showInformation: true
+                }
             }
         );
         that.map.addLayer(that.ibraSubregions);
@@ -384,7 +439,10 @@
                 isBaseLayer: false,
                 wrapDateLine: true,
                 attribution: '<a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B30DA5FD4-AE08-405B-9F55-7E1833C230A4%7D">IMCRA 4 Provincial Bioregions</a>',
-                metadata: {category: 'environment'}
+                metadata: {
+                    category: 'marine',
+                    showInformation: true
+                }
             }
         );
         that.map.addLayer(that.imcraProvincial);
@@ -402,7 +460,10 @@
                 isBaseLayer: false,
                 wrapDateLine: true,
                 attribution: '<a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7BA0D9F8EE-4261-438A-8ADE-EFF664EFF55C%7D">IMCRA 4 Meso-scale Bioregions</a>',
-                metadata: {category: 'environment'}
+                metadata: {
+                    category: 'marine',
+                    showInformation: true
+                }
             }
         );
         that.map.addLayer(that.imcraMesoscale);
@@ -920,7 +981,10 @@
             }
             var queryOverlay = new OpenLayers.Layer.Vector(layerName, {
                 styleMap : styleMap,
-                metadata: {category: 'analysis'}
+                metadata: {
+                category: 'analysis',
+                showInformation: false
+            }
             });
             if (that.analyses[analysis.id]) {
                 that.analyses[analysis.id].layer = queryOverlay;
@@ -1051,7 +1115,10 @@
                 {
                     isBaseLayer: false,
                     tileSize: new OpenLayers.Size(512,512),
-                    metadata: {category: category}
+                    metadata: {
+                        category: category,
+                        showInformation: false
+                    }
                 }
             );
             var layer = {
@@ -1173,7 +1240,10 @@
                 {
                     isBaseLayer: false,
                     tileSize: new OpenLayers.Size(512,512),
-                    metadata: {category: category}
+                    metadata: {
+                        category: category,
+                        showInformation: false
+                    }
                 }
             );
             var layer = {
@@ -1284,7 +1354,10 @@
                         that.onAnalysisSuccess();
                     }
                 },
-                metadata: {category: category}
+                metadata: {
+                    category: category,
+                    showInformation: false
+                }
             });
             that.projectMapLayers[startEndLayerId] = startEndLayer;
             that.startEndLayers[startEndLayerId] = startEndLayer;
