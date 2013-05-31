@@ -15,9 +15,9 @@
               </sld:GrayChannel>
             </sld:ChannelSelection>
             <sld:ColorMap>
-              <!-- scale factor: 0.0006485282224222911; add_offset: 21.25 -->
-              <!-- PSU = band * 0.0006485282224222911 + 21.25 -->
-              <!-- band = (PSU - 21.25) / 0.0006485282224222911 -->
+              <!-- scale_factor=0.0006485282224222911; add_offset=21.25 -->
+              <!-- quantity = band * 0.0006485282224222911 + 21.25 -->
+              <!-- band = (quantity - 21.25) / 0.0006485282224222911 -->
               <sld:ColorMapEntry color="#FFFFFF" quantity="-32767" opacity="0"/>
               <sld:ColorMapEntry color="#F2CCF2" quantity="15034.0411764706" label="31 PSU"/>
               <sld:ColorMapEntry color="#AE73D8" quantity="16575.9941176471" label="32 PSU"/>

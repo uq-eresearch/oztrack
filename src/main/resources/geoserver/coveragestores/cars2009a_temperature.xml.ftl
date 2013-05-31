@@ -1,0 +1,9 @@
+<coverageStore>
+  <name>cars2009a_temperature</name>
+  <type>GeoTIFF</type>
+  <enabled>true</enabled>
+  <workspace>
+    <name>oztrack</name>
+  </workspace>
+  <url>file:coverages/cars2009a_temperature/cars2009a_temperature.tif</url>
+</coverageStore>

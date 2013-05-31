@@ -382,27 +382,52 @@
         that.map.addLayer(that.bathymetryLayer);
         
         that.salinityLayer = new OpenLayers.Layer.WMS(
-                'Salinity',
-                '/geoserver/gwc/service/wms',
-                {
-                    layers: 'oztrack:cars2009a_salinity',
-                    styles: 'oztrack_cars2009a_salinity',
-                    format: 'image/png',
-                    tiled: true
-                },
-                {
-                    visibility: false,
-                    isBaseLayer: false,
-                    wrapDateLine: true,
-                    attribution: '<a target="_blank" href="http://www.marine.csiro.au/~dunn/cars2009/">CARS 2009a (salinity)</a>',
-                    metadata: {
-                        category: 'marine',
-                        description: '<p>Mean sea surface salinity.</p>',
-                        showInformation: true
-                    }
+            'Salinity',
+            '/geoserver/wms',
+            {
+                layers: 'oztrack:cars2009a_salinity',
+                styles: 'oztrack_cars2009a_salinity',
+                format: 'image/png',
+                tiled: true,
+                transparent: true
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true,
+                attribution: '<a target="_blank" href="http://www.marine.csiro.au/~dunn/cars2009/">CARS 2009a (salinity)</a>',
+                metadata: {
+                    category: 'marine',
+                    description: '<p>Mean sea surface salinity.</p>',
+                    showInformation: true
                 }
-            );
-            that.map.addLayer(that.salinityLayer);
+            }
+        );
+        that.map.addLayer(that.salinityLayer);
+
+        that.sstLayer = new OpenLayers.Layer.WMS(
+            'Sea Surface Temperature',
+            '/geoserver/wms',
+            {
+                layers: 'oztrack:cars2009a_temperature',
+                styles: 'oztrack_cars2009a_temperature',
+                format: 'image/png',
+                tiled: true,
+                transparent: true
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true,
+                attribution: '<a target="_blank" href="http://www.marine.csiro.au/~dunn/cars2009/">CARS 2009a (temperature)</a>',
+                metadata: {
+                    category: 'marine',
+                    description: '<p>Mean sea surface temperature.</p>',
+                    showInformation: true
+                }
+            }
+        );
+        that.map.addLayer(that.sstLayer);
 
         that.capadMarine = new OpenLayers.Layer.WMS(
             'CAPAD Marine',
@@ -545,9 +570,21 @@
                         'Band1'
                     ],
                     summary: function(feature) {
-                        // scale factor: 0.0006485282224222911; add_offset: 21.25
+                        // scale_factor=0.0006485282224222911; add_offset=21.25
                         return (feature.attributes.Band1 && feature.attributes.Band1 != -32767)
                             ? $('<span>').append('Salinity: ' + (feature.attributes.Band1 * 0.0006485282224222911 + 21.25).toFixed(2) + ' PSU')
+                            : $();
+                    }
+                },
+                {
+                    layer: that.sstLayer,
+                    propertyNames: [
+                        'Band1'
+                    ],
+                    summary: function(feature) {
+                        // scale_factor=0.0005798605282834602; add_offset=13
+                        return (feature.attributes.Band1 && feature.attributes.Band1 != -32767)
+                            ? $('<span>').append('Temperature: ' + (feature.attributes.Band1 * 0.0005798605282834602 + 13).toFixed(2) + ' °C')
                             : $();
                     }
                 },
