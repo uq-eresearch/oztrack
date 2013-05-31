@@ -1,0 +1,9 @@
+<coverageStore>
+  <name>cars2009a_salinity</name>
+  <type>GeoTIFF</type>
+  <enabled>true</enabled>
+  <workspace>
+    <name>oztrack</name>
+  </workspace>
+  <url>file:coverages/cars2009a_salinity/cars2009a_salinity.tif</url>
+</coverageStore>

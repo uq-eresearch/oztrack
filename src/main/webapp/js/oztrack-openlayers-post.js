@@ -267,6 +267,9 @@ OpenLayers.ImgPath = "/js/openlayers/img/";
                             }
                             else {
                                 var content = $('<div>').append($('<div>').addClass('layerInfoContent'));
+                                if (layer.metadata.description) {
+                                    content.append(layer.metadata.description);
+                                }
                                 if (layer.attribution) {
                                     content.append($('<p>')
                                         .append('For general information about this layer see:<br />')

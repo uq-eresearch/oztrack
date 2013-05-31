@@ -52,6 +52,7 @@ public class GeoServerUploader {
 
         createOzTrackLayers(client, workspaceName, namespaceUri);
         createGEBCOLayers(client, workspaceName);
+        createCARSLayers(client, workspaceName);
         createDLCDClassLayer(client, workspaceName);
         createNVISLayers(client, workspaceName);
         createFireFrequencyLayer(client, workspaceName);
@@ -156,6 +157,29 @@ public class GeoServerUploader {
             .param("coverageName", "gebco_08")
             .param("defaultStyle", "oztrack_bathymetry")
             .param("styles", new String[] {"oztrack_bathymetry", "oztrack_elevation"})
+            .replace();
+    }
+
+    private void createCARSLayers(GeoServerClient client, final String workspaceName) throws Exception {
+        client
+            .coveragestore("workspaces/" + workspaceName + "/coveragestores/cars2009a_salinity")
+            .template("coveragestores/cars2009a_salinity.xml.ftl")
+            .replace();
+        client
+            .coverage("workspaces/" + workspaceName + "/coveragestores/cars2009a_salinity/coverages/cars2009a_salinity")
+            .template("coverages/cars2009a_salinity.xml.ftl")
+            .replace();
+        client
+            .style("styles/" + workspaceName + "_" + "cars2009a_salinity")
+            .template("styles/cars2009a_salinity.sld.ftl")
+            .replace();
+        client
+            .layer("layers/cars2009a_salinity")
+            .template("layers/coverage-layer.xml.ftl")
+            .param("layerName", "cars2009a_salinity")
+            .param("coverageName", "cars2009a_salinity")
+            .param("defaultStyle", "oztrack_cars2009a_salinity")
+            .param("styles", new String[] {"oztrack_cars2009a_salinity"})
             .replace();
     }
 

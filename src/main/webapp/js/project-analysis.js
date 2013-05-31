@@ -166,28 +166,6 @@
         });
         that.map.addLayer(that.emptyBaseLayer);
 
-        that.bathymetryLayer = new OpenLayers.Layer.WMS(
-            'Bathymetry',
-            '/geoserver/gwc/service/wms',
-            {
-                layers: 'oztrack:gebco_08',
-                styles: 'oztrack_bathymetry',
-                format: 'image/png',
-                tiled: true
-            },
-            {
-                visibility: false,
-                isBaseLayer: false,
-                wrapDateLine: true,
-                attribution: '<a target="_blank" href="http://www.gebco.net/">The GEBCO_08 Grid, version 20091120 (bathymetry)</a>',
-                metadata: {
-                    category: 'marine',
-                    showInformation: true
-                }
-            }
-        );
-        that.map.addLayer(that.bathymetryLayer);
-
         that.elevationLayer = new OpenLayers.Layer.WMS(
             'Elevation',
             '/geoserver/gwc/service/wms',
@@ -201,7 +179,7 @@
                 visibility: false,
                 isBaseLayer: false,
                 wrapDateLine: true,
-                attribution: '<a target="_blank" href="http://www.gebco.net/">The GEBCO_08 Grid, version 20091120 (elevation)</a>',
+                attribution: '<a target="_blank" href="http://www.gebco.net/">GEBCO_08 Grid 20091120 (elevation)</a>',
                 metadata: {
                     category: 'terrestrial',
                     showInformation: true
@@ -318,51 +296,6 @@
         );
         that.map.addLayer(that.capadLand);
 
-        that.capadMarine = new OpenLayers.Layer.WMS(
-            'CAPAD Marine',
-            '/geoserver/gwc/service/wms',
-            {
-                layers: 'oztrack:capad10_m_external_all',
-                format: 'image/png',
-                tiled: true
-            },
-            {
-                visibility: false,
-                isBaseLayer: false,
-                wrapDateLine: true,
-                attribution:
-                    'CAPAD 2010 Marine' +
-                    ' <a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B4970516C-6F4A-4B1E-AF33-AB6BDE6B008A%7D">[1]</a>' +
-                    ' <a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B905AD083-39A0-41C6-B2F9-CBF5E0B86A3C%7D">[2]</a>',
-                metadata: {
-                    category: 'marine',
-                    showInformation: true
-                }
-            }
-        );
-        that.map.addLayer(that.capadMarine);
-
-        that.commonwealthMarineReserves = new OpenLayers.Layer.WMS(
-            'Commonwealth Marine Reserves',
-            '/geoserver/gwc/service/wms',
-            {
-                layers: 'oztrack:commonwealth_marine_reserves_2012',
-                format: 'image/png',
-                tiled: true
-            },
-            {
-                visibility: false,
-                isBaseLayer: false,
-                wrapDateLine: true,
-                attribution: ' <a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId={052C61B4-3662-4842-8B4D-15DC57B355FE}">Commonwealth Marine Reserves 2012</a>',
-                metadata: {
-                    category: 'marine',
-                    showInformation: true
-                }
-            }
-        );
-        that.map.addLayer(that.commonwealthMarineReserves);
-
         that.nrmRegions = new OpenLayers.Layer.WMS(
             'NRM Regions',
             '/geoserver/gwc/service/wms',
@@ -425,6 +358,96 @@
             }
         );
         that.map.addLayer(that.ibraSubregions);
+
+        that.bathymetryLayer = new OpenLayers.Layer.WMS(
+            'Bathymetry',
+            '/geoserver/gwc/service/wms',
+            {
+                layers: 'oztrack:gebco_08',
+                styles: 'oztrack_bathymetry',
+                format: 'image/png',
+                tiled: true
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true,
+                attribution: '<a target="_blank" href="http://www.gebco.net/">GEBCO_08 Grid 20091120 (bathymetry)</a>',
+                metadata: {
+                    category: 'marine',
+                    showInformation: true
+                }
+            }
+        );
+        that.map.addLayer(that.bathymetryLayer);
+        
+        that.salinityLayer = new OpenLayers.Layer.WMS(
+                'Salinity',
+                '/geoserver/gwc/service/wms',
+                {
+                    layers: 'oztrack:cars2009a_salinity',
+                    styles: 'oztrack_cars2009a_salinity',
+                    format: 'image/png',
+                    tiled: true
+                },
+                {
+                    visibility: false,
+                    isBaseLayer: false,
+                    wrapDateLine: true,
+                    attribution: '<a target="_blank" href="http://www.marine.csiro.au/~dunn/cars2009/">CARS 2009a (salinity)</a>',
+                    metadata: {
+                        category: 'marine',
+                        description: '<p>Mean sea surface salinity.</p>',
+                        showInformation: true
+                    }
+                }
+            );
+            that.map.addLayer(that.salinityLayer);
+
+        that.capadMarine = new OpenLayers.Layer.WMS(
+            'CAPAD Marine',
+            '/geoserver/gwc/service/wms',
+            {
+                layers: 'oztrack:capad10_m_external_all',
+                format: 'image/png',
+                tiled: true
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true,
+                attribution:
+                    'CAPAD 2010 Marine' +
+                    ' <a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B4970516C-6F4A-4B1E-AF33-AB6BDE6B008A%7D">[1]</a>' +
+                    ' <a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B905AD083-39A0-41C6-B2F9-CBF5E0B86A3C%7D">[2]</a>',
+                metadata: {
+                    category: 'marine',
+                    showInformation: true
+                }
+            }
+        );
+        that.map.addLayer(that.capadMarine);
+
+        that.commonwealthMarineReserves = new OpenLayers.Layer.WMS(
+            'Commonwealth Marine Reserves',
+            '/geoserver/gwc/service/wms',
+            {
+                layers: 'oztrack:commonwealth_marine_reserves_2012',
+                format: 'image/png',
+                tiled: true
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true,
+                attribution: ' <a target="_blank" href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId={052C61B4-3662-4842-8B4D-15DC57B355FE}">Commonwealth Marine Reserves 2012</a>',
+                metadata: {
+                    category: 'marine',
+                    showInformation: true
+                }
+            }
+        );
+        that.map.addLayer(that.commonwealthMarineReserves);
 
         that.imcraProvincial = new OpenLayers.Layer.WMS(
             'IMCRA Provincial Bioregions',
@@ -513,6 +536,18 @@
                     summary: function(feature) {
                         return (feature.attributes.GRAY_INDEX < 0)
                             ? $('<span>').append('Depth: ' + (-1 * feature.attributes.GRAY_INDEX) + ' m')
+                            : $();
+                    }
+                },
+                {
+                    layer: that.salinityLayer,
+                    propertyNames: [
+                        'Band1'
+                    ],
+                    summary: function(feature) {
+                        // scale factor: 0.0006485282224222911; add_offset: 21.25
+                        return (feature.attributes.Band1 && feature.attributes.Band1 != -32767)
+                            ? $('<span>').append('Salinity: ' + (feature.attributes.Band1 * 0.0006485282224222911 + 21.25).toFixed(2) + ' PSU')
                             : $();
                     }
                 },
