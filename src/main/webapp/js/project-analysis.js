@@ -383,7 +383,7 @@
         
         that.salinityLayer = new OpenLayers.Layer.WMS(
             'Salinity',
-            '/geoserver/gwc/service/wms',
+            '/geoserver/wms',
             {
                 layers: 'oztrack:cars2009a_salinity',
                 styles: 'oztrack_cars2009a_salinity',
