@@ -243,7 +243,7 @@
                 cqlFilter += ' and detectiontime >= \'' + moment(new Date(fromDate)).format('YYYY-MM-DD') + '\'';
             }
             if (toDate) {
-                cqlFilter += ' and detectiontime <= \'' + moment(new Date(toDate)).format('YYYY-MM-DD') + '\'';
+                cqlFilter += ' and detectiontime < \'' + moment(new Date(toDate)).add('days', 1).format('YYYY-MM-DD') + '\'';
             }
             return cqlFilter;
         }

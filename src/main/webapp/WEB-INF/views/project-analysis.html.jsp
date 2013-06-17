@@ -396,9 +396,11 @@
                         statsHtml += 'Dates: ' + fromDate + ' - ' + toDate;
                         statsHtml += '</span>';
                         $.each(layerAttrs, function(key, value) {
-                            statsHtml += '<span class="layerInfoStat">';
-                            statsHtml += key + ': ' + value;
-                            statsHtml += '</span>';
+                            if (value !== null && value !== undefined) {
+                                statsHtml += '<span class="layerInfoStat">';
+                                statsHtml += key + ': ' + value;
+                                statsHtml += '</span>';
+                            }
                         });
                         if (statsHtml != '') {
                             html += '<div class="layerInfoStats">' + statsHtml + '</div>';

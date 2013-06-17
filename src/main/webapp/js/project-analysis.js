@@ -1169,7 +1169,7 @@
                     cqlFilter += ' and detectiontime >= \'' + moment(new Date(params.fromDate)).format('YYYY-MM-DD') + '\'';
                 }
                 if (params.toDate) {
-                    cqlFilter += ' and detectiontime <= \'' + moment(new Date(params.toDate)).format('YYYY-MM-DD') + '\'';
+                    cqlFilter += ' and detectiontime < \'' + moment(new Date(params.toDate)).add('days', 1).format('YYYY-MM-DD') + '\'';
                 }
                 return cqlFilter;
             }
@@ -1256,7 +1256,7 @@
                             var animalDetections = animalDetectionsMap[animalId];
                             return {
                                 'Detections': animalDetections.count || 0,
-                                'Mean per day': animalDetections.dailyMean ? animalDetections.dailyMean.toFixed(1) : 0,
+                                'Mean per day': animalDetections.dailyMean ? animalDetections.dailyMean.toFixed(1) : null,
                                 'Max per day': animalDetections.dailyMax || 0
                             };
                         }
@@ -1294,7 +1294,7 @@
                     cqlFilter += ' and startdetectiontime >= \'' + moment(new Date(params.fromDate)).format('YYYY-MM-DD') + '\'';
                 }
                 if (params.toDate) {
-                    cqlFilter += ' and enddetectiontime <= \'' + moment(new Date(params.toDate)).format('YYYY-MM-DD') + '\'';
+                    cqlFilter += ' and enddetectiontime < \'' + moment(new Date(params.toDate)).add('days', 1).format('YYYY-MM-DD') + '\'';
                 }
                 return cqlFilter;
             }

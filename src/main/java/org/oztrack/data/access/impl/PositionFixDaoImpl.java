@@ -2,6 +2,7 @@ package org.oztrack.data.access.impl;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ import javax.persistence.Query;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.Range;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.access.Page;
@@ -84,43 +86,40 @@ public class PositionFixDaoImpl implements PositionFixDao {
     }
 
     public Query buildQuery(SearchQuery searchQuery, boolean count) {
-
-        String select = (count ? "count(o) " : "o ");
-        String orderBy = (count ? "" : " order by o.animal.id, o.detectionTime ");
-
-        String sql = "select " + select
-                   + "from PositionFix o "
-                   + "where o.dataFile in "
-                   + "(select d from datafile d where d.project.id = :projectId) ";
-
+        StringBuilder queryString = new StringBuilder();
+        queryString.append("select " + (count ? "count(o)" : "o") + "\n");
+        queryString.append("from PositionFix o " + "\n");
+        queryString.append("where o.dataFile in (select d from datafile d where d.project.id = :projectId)\n");
         if ((searchQuery.getIncludeDeleted() == null) || !searchQuery.getIncludeDeleted()) {
-            sql = sql + "and o.deleted = false ";
+            queryString.append("and o.deleted = false\n");
         }
         if (searchQuery.getFromDate() != null) {
-            sql = sql + "and o.detectionTime >= :fromDate ";
+            queryString.append("and o.detectionTime >= :fromDate\n");
         }
         if (searchQuery.getToDate() != null) {
-            sql = sql + "and o.detectionTime <= :toDate ";
+            queryString.append("and o.detectionTime < :toDateExcl\n");
         }
         if (searchQuery.getAnimalIds() != null) {
-            String animalClause = "and o.animal.id in (";
+            queryString.append("and o.animal.id in (");
             for (int i = 0; i < searchQuery.getAnimalIds().size(); i++) {
-                animalClause = animalClause + ":animal" + i + ",";
+                queryString.append(":animal" + i);
+                if (i < searchQuery.getAnimalIds().size() - 1) {
+                    queryString.append(",");
+                }
             }
-            animalClause = animalClause.substring(0, animalClause.length() - 1) + ")";
-            sql = sql + animalClause;
+            queryString.append(")\n");
         }
-
-
-        sql = sql + orderBy;
-        Query query = em.createQuery(sql);
+        queryString.append((count ? "" : "order by o.animal.id, o.detectionTime"));
+        Query query = em.createQuery(queryString.toString());
         query.setParameter("projectId", searchQuery.getProject().getId());
-
         if (searchQuery.getFromDate() != null) {
-            query.setParameter("fromDate", searchQuery.getFromDate());
+            Date fromDateTrunc = DateUtils.truncate(searchQuery.getFromDate(), Calendar.DATE);
+            query.setParameter("fromDate", fromDateTrunc);
         }
         if (searchQuery.getToDate() != null) {
-            query.setParameter("toDate", searchQuery.getToDate());
+            Date toDateTrunc = DateUtils.truncate(searchQuery.getToDate(), Calendar.DATE);
+            Date toDateTruncExcl = DateUtils.addDays(toDateTrunc, 1);
+            query.setParameter("toDateExcl", toDateTruncExcl);
         }
         if (searchQuery.getAnimalIds() != null) {
             for (int i=0; i < searchQuery.getAnimalIds().size(); i++) {
@@ -128,7 +127,6 @@ public class PositionFixDaoImpl implements PositionFixDao {
                 query.setParameter(paramName, searchQuery.getAnimalIds().get(i));
             }
         }
-
         return query;
     }
 
@@ -164,7 +162,7 @@ public class PositionFixDaoImpl implements PositionFixDao {
             queryString += "    and detectionTime >= :fromDate\n";
         }
         if (toDate != null) {
-            queryString += "    and detectionTime <= :toDate\n";
+            queryString += "    and detectionTime < :toDateExcl\n";
         }
         if (speedFilterPositionFixes != null) {
             queryString += "    and id not in (:speedFilterPositionFixes)\n";
@@ -188,11 +186,14 @@ public class PositionFixDaoImpl implements PositionFixDao {
         query.setParameter("animalIds", animalIds);
         query.setParameter("deleted", deleted);
         if (fromDate != null) {
-            query.setParameter("fromDate", fromDate);
+            Date fromDateTrunc = DateUtils.truncate(fromDate, Calendar.DATE);
+            query.setParameter("fromDate", fromDateTrunc);
         }
         if (toDate != null) {
-            query.setParameter("toDate", toDate);
-        };
+            Date toDateTrunc = DateUtils.truncate(toDate, Calendar.DATE);
+            Date toDateTruncExcl = DateUtils.addDays(toDateTrunc, 1);
+            query.setParameter("toDateExcl", toDateTruncExcl);
+        }
         if (speedFilterPositionFixes != null) {
             query.setParameter("speedFilterPositionFixes", speedFilterPositionFixes);
         }
@@ -340,14 +341,21 @@ public class PositionFixDaoImpl implements PositionFixDao {
             "    min(detectiontime),\n" +
             "    max(detectiontime),\n" +
             "    count(animal_id),\n" +
-            "    count(animal_id) / (extract(epoch from max(detectiontime) - min(detectiontime)) / (60 * 60 * 24))\n" +
+            "    case" +
+            "        when extract(epoch from max(detectiontime) - min(detectiontime)) > 0\n" +
+            "        then count(animal_id) / (extract(epoch from max(detectiontime) - min(detectiontime)) / (60 * 60 * 24))\n" +
+            "        else null\n" +
+            "    end\n" +
             "from positionfixlayer\n" +
             "where project_id = :projectId\n";
         if (fromDate != null) {
-            totalQueryString += " and detectiontime >= DATE '" + isoDateFormat.format(fromDate) + "'\n";
+            Date fromDateTrunc = DateUtils.truncate(fromDate, Calendar.DATE);
+            totalQueryString += " and detectiontime >= DATE '" + isoDateFormat.format(fromDateTrunc) + "'\n";
         }
         if (toDate != null) {
-            totalQueryString += " and detectiontime <= DATE '" + isoDateFormat.format(toDate) + "'\n";
+            Date toDateTrunc = DateUtils.truncate(toDate, Calendar.DATE);
+            Date toDateTruncExcl = DateUtils.addDays(toDateTrunc, 1);
+            totalQueryString += " and detectiontime < DATE '" + isoDateFormat.format(toDateTruncExcl) + "'\n";
         }
         totalQueryString += "group by animal_id";
         @SuppressWarnings("unchecked")
@@ -362,7 +370,7 @@ public class PositionFixDaoImpl implements PositionFixDao {
             stats.setStartDate(new Date(((Timestamp) totalResult[1]).getTime()));
             stats.setEndDate(new Date(((Timestamp) totalResult[2]).getTime()));
             stats.setCount(((Number) totalResult[3]).longValue());
-            stats.setDailyMean(((Number) totalResult[4]).doubleValue());
+            stats.setDailyMean((totalResult[4] != null) ? ((Number) totalResult[4]).doubleValue() : null);
             map.put(animalId, stats);
         }
 
@@ -373,10 +381,13 @@ public class PositionFixDaoImpl implements PositionFixDao {
             "from positionfixlayer\n" +
             "where project_id = :projectId\n";
         if (fromDate != null) {
-            dailyQueryString += " and detectiontime >= DATE '" + isoDateFormat.format(fromDate) + "'\n";
+            Date fromDateTrunc = DateUtils.truncate(fromDate, Calendar.DATE);
+            dailyQueryString += " and detectiontime >= DATE '" + isoDateFormat.format(fromDateTrunc) + "'\n";
         }
         if (toDate != null) {
-            dailyQueryString += " and detectiontime <= DATE '" + isoDateFormat.format(toDate) + "'\n";
+            Date toDateTrunc = DateUtils.truncate(toDate,  Calendar.DATE);
+            Date toDateTruncExcl = DateUtils.addDays(toDateTrunc, 1);
+            dailyQueryString += " and detectiontime < DATE '" + isoDateFormat.format(toDateTruncExcl) + "'\n";
         }
         dailyQueryString += "group by animal_id, date_trunc('day', detectiontime)";
         @SuppressWarnings("unchecked")
@@ -409,10 +420,13 @@ public class PositionFixDaoImpl implements PositionFixDao {
             "    project_id = :projectId and\n" +
             "    enddetectiontime > startdetectiontime\n";
         if (fromDate != null) {
-            queryString += " and startdetectiontime >= DATE '" + isoDateFormat.format(fromDate) + "'\n";
+            Date fromDateTrunc = DateUtils.truncate(fromDate, Calendar.DATE);
+            queryString += " and startdetectiontime >= DATE '" + isoDateFormat.format(fromDateTrunc) + "'\n";
         }
         if (toDate != null) {
-            queryString += " and enddetectiontime <= DATE '" + isoDateFormat.format(toDate) + "'\n";
+            Date toDateTrunc = DateUtils.truncate(toDate, Calendar.DATE);
+            Date toDateTruncExcl = DateUtils.addDays(toDateTrunc, 1);
+            queryString += " and enddetectiontime < DATE '" + isoDateFormat.format(toDateTruncExcl) + "'\n";
         }
         queryString += "group by animal_id";
         @SuppressWarnings("unchecked")
@@ -441,10 +455,13 @@ public class PositionFixDaoImpl implements PositionFixDao {
             "from trajectorylayer\n" +
             "where project_id = :projectId\n";
         if (fromDate != null) {
-            queryString += " and startdetectiontime >= DATE '" + isoDateFormat.format(fromDate) + "'\n";
+            Date fromDateTrunc = DateUtils.truncate(fromDate, Calendar.DATE);
+            queryString += " and startdetectiontime >= DATE '" + isoDateFormat.format(fromDateTrunc) + "'\n";
         }
         if (toDate != null) {
-            queryString += " and enddetectiontime <= DATE '" + isoDateFormat.format(toDate) + "'\n";
+            Date toDateTrunc = DateUtils.truncate(toDate, Calendar.DATE);
+            Date toDateTruncExcl = DateUtils.addDays(toDateTrunc, 1);
+            queryString += " and enddetectiontime < DATE '" + isoDateFormat.format(toDateTruncExcl) + "'\n";
         }
         queryString += "group by animal_id";
         @SuppressWarnings("unchecked")
