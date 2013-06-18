@@ -3,6 +3,30 @@
 // http://dev.openlayers.org/apidocs/files/OpenLayers-js.html#OpenLayers.ImgPath
 OpenLayers.ImgPath = "/js/openlayers/img/";
 
+// Hack to LoadingPanel control: create svg element instead of div so we can use pointer-events.
+// The pointer-events CSS property was originally from SVG and is supported as an experimental
+// property for HTML elements in Firefox and Chrome; however, Internet Explorer apparently have
+// no plans to support it except on SVG elements. We use pointer-events: none so that operations
+// can still be performed on the map even when the loading panel is overlayed.
+OpenLayers.Control.LoadingPanel.prototype.draw = function(px) {
+    if (this.div == null) {
+        this.div = document.createElement('svg');
+        this.div.id = this.id;
+        this.div.style.position = 'absolute';
+        this.div.className = this.displayClass;
+        if (!this.allowSelection) {
+            this.div.className += " olControlNoSelect";
+            this.div.setAttribute("unselectable", "on", 0);
+            this.div.onselectstart = OpenLayers.Function.False; 
+        }    
+        if (this.title != "") {
+            this.div.title = this.title;
+        }
+    }
+    OpenLayers.Control.prototype.draw.apply(this, arguments);
+    return this.div;
+};
+
 (function(OzTrack) {
     OzTrack.OpenLayers = OzTrack.OpenLayers || {};
     OzTrack.OpenLayers.Control = OzTrack.OpenLayers.Control || {};
