@@ -162,6 +162,27 @@ public class GeoServerUploader {
 
     private void createCARSLayers(GeoServerClient client, final String workspaceName) throws Exception {
         client
+            .coveragestore("workspaces/" + workspaceName + "/coveragestores/cars2009_silicate")
+            .template("coveragestores/cars2009_silicate.xml.ftl")
+            .replace();
+        client
+            .coverage("workspaces/" + workspaceName + "/coveragestores/cars2009_silicate/coverages/cars2009_silicate")
+            .template("coverages/cars2009_silicate.xml.ftl")
+            .replace();
+        client
+            .style("styles/" + workspaceName + "_" + "cars2009_silicate")
+            .template("styles/cars2009_silicate.sld.ftl")
+            .replace();
+        client
+            .layer("layers/cars2009_silicate")
+            .template("layers/coverage-layer.xml.ftl")
+            .param("layerName", "cars2009_silicate")
+            .param("coverageName", "cars2009_silicate")
+            .param("defaultStyle", "oztrack_cars2009_silicate")
+            .param("styles", new String[] {"oztrack_cars2009_silicate"})
+            .replace();
+
+        client
             .coveragestore("workspaces/" + workspaceName + "/coveragestores/cars2009a_salinity")
             .template("coveragestores/cars2009a_salinity.xml.ftl")
             .replace();

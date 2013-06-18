@@ -1,4 +1,3 @@
-
 <coverage>
   <name>cars2009a_salinity</name>
   <nativeName>cars2009a_salinity</nativeName>

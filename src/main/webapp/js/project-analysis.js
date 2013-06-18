@@ -429,6 +429,30 @@
         );
         that.map.addLayer(that.sstLayer);
 
+        that.silicateLayer = new OpenLayers.Layer.WMS(
+            'Silicate',
+            '/geoserver/gwc/service/wms',
+            {
+                layers: 'oztrack:cars2009_silicate',
+                styles: 'oztrack_cars2009_silicate',
+                format: 'image/png',
+                tiled: true,
+                transparent: true
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true,
+                attribution: '<a target="_blank" href="http://www.marine.csiro.au/~dunn/cars2009/">CARS 2009 (silicate)</a>',
+                metadata: {
+                    category: 'marine',
+                    description: '<p>Mean sea surface silicate.</p>',
+                    showInformation: true
+                }
+            }
+        );
+        that.map.addLayer(that.silicateLayer);
+
         that.capadMarine = new OpenLayers.Layer.WMS(
             'CAPAD Marine',
             '/geoserver/gwc/service/wms',
@@ -567,24 +591,36 @@
                 {
                     layer: that.salinityLayer,
                     propertyNames: [
-                        'Band1'
+                        'GRAY_INDEX'
                     ],
                     summary: function(feature) {
                         // scale_factor=0.0006485282224222911; add_offset=21.25
-                        return (feature.attributes.Band1 && feature.attributes.Band1 != -32767)
-                            ? $('<span>').append('Salinity: ' + (feature.attributes.Band1 * 0.0006485282224222911 + 21.25).toFixed(2) + ' PSU')
+                        return (feature.attributes.GRAY_INDEX && feature.attributes.GRAY_INDEX != -32767)
+                            ? $('<span>').append('Salinity: ' + (feature.attributes.GRAY_INDEX * 0.0006485282224222911 + 21.25).toFixed(2) + ' PSU')
                             : $();
                     }
                 },
                 {
                     layer: that.sstLayer,
                     propertyNames: [
-                        'Band1'
+                        'GRAY_INDEX'
                     ],
                     summary: function(feature) {
                         // scale_factor=0.0005798605282834602; add_offset=13
-                        return (feature.attributes.Band1 && feature.attributes.Band1 != -32767)
-                            ? $('<span>').append('Temperature: ' + (feature.attributes.Band1 * 0.0005798605282834602 + 13).toFixed(2) + ' °C')
+                        return (feature.attributes.GRAY_INDEX && feature.attributes.GRAY_INDEX != -32767)
+                            ? $('<span>').append('Temperature: ' + (feature.attributes.GRAY_INDEX * 0.0005798605282834602 + 13).toFixed(2) + ' °C')
+                            : $();
+                    }
+                },
+                {
+                    layer: that.silicateLayer,
+                    propertyNames: [
+                        'GRAY_INDEX'
+                    ],
+                    summary: function(feature) {
+                        // scale_factor=0.003662277020737644; add_offset=115
+                        return (feature.attributes.GRAY_INDEX && feature.attributes.GRAY_INDEX != -32767)
+                            ? $('<span>').append('Silicate: ' + (feature.attributes.GRAY_INDEX * 0.003662277020737644 + 115).toFixed(2) + ' μmol/L')
                             : $();
                     }
                 },

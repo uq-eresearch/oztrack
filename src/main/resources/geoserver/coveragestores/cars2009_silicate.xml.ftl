@@ -1,0 +1,9 @@
+<coverageStore>
+  <name>cars2009_silicate</name>
+  <type>GeoTIFF</type>
+  <enabled>true</enabled>
+  <workspace>
+    <name>oztrack</name>
+  </workspace>
+  <url>file:coverages/cars2009_silicate/cars2009_silicate.tif</url>
+</coverageStore>
