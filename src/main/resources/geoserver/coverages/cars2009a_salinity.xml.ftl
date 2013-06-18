@@ -1,3 +1,4 @@
+
 <coverage>
   <name>cars2009a_salinity</name>
   <nativeName>cars2009a_salinity</nativeName>
@@ -11,34 +12,31 @@
     <string>GeoTIFF</string>
     <string>cars2009a_salinity</string>
   </keywords>
-  <nativeCRS class="org.geotools.referencing.crs.DefaultEngineeringCRS">LOCAL_CS[&quot;Wildcard 2D cartesian plane in metric unit&quot;, 
-  LOCAL_DATUM[&quot;Unknown&quot;, 0], 
-  UNIT[&quot;m&quot;, 1.0], 
-  AXIS[&quot;x&quot;, EAST], 
-  AXIS[&quot;y&quot;, NORTH], 
-  AUTHORITY[&quot;EPSG&quot;,&quot;404000&quot;]]</nativeCRS>
-  <srs>EPSG:4326</srs>
-  <nativeBoundingBox>
-    <minx>-180.0</minx>
-    <maxx>180.0</maxx>
-    <miny>-75.0</miny>
-    <maxy>90.0</maxy>
-    <crs class="org.geotools.referencing.crs.DefaultEngineeringCRS">EPSG:404000</crs>
-  </nativeBoundingBox>
-  <latLonBoundingBox>
-    <minx>-180.0</minx>
-    <maxx>180.0</maxx>
-    <miny>-75.0</miny>
-    <maxy>90.0</maxy>
-    <crs>GEOGCS[&quot;WGS84(DD)&quot;, 
-  DATUM[&quot;WGS84&quot;, 
-    SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], 
-  PRIMEM[&quot;Greenwich&quot;, 0.0], 
+  <nativeCRS>GEOGCS[&quot;WGS 84&quot;, 
+  DATUM[&quot;World Geodetic System 1984&quot;, 
+    SPHEROID[&quot;WGS 84&quot;, 6378137.0, 298.257223563, AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]], 
+    AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]], 
+  PRIMEM[&quot;Greenwich&quot;, 0.0, AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]], 
   UNIT[&quot;degree&quot;, 0.017453292519943295], 
   AXIS[&quot;Geodetic longitude&quot;, EAST], 
-  AXIS[&quot;Geodetic latitude&quot;, NORTH]]</crs>
+  AXIS[&quot;Geodetic latitude&quot;, NORTH], 
+  AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]]</nativeCRS>
+  <srs>EPSG:4326</srs>
+  <nativeBoundingBox>
+    <minx>-180.25</minx>
+    <maxx>180.25</maxx>
+    <miny>-75.25</miny>
+    <maxy>90.25</maxy>
+    <crs>EPSG:4326</crs>
+  </nativeBoundingBox>
+  <latLonBoundingBox>
+    <minx>-180.25</minx>
+    <maxx>180.25</maxx>
+    <miny>-75.25</miny>
+    <maxy>90.25</maxy>
+    <crs>EPSG:4326</crs>
   </latLonBoundingBox>
-  <projectionPolicy>FORCE_DECLARED</projectionPolicy>
+  <projectionPolicy>REPROJECT_TO_DECLARED</projectionPolicy>
   <enabled>true</enabled>
   <metadata>
     <entry key="cachingEnabled">false</entry>
@@ -51,15 +49,15 @@
   <grid dimension="2">
     <range>
       <low>0 0</low>
-      <high>720 330</high>
+      <high>721 331</high>
     </range>
     <transform>
       <scaleX>0.5</scaleX>
       <scaleY>-0.5</scaleY>
       <shearX>0.0</shearX>
       <shearY>0.0</shearY>
-      <translateX>-179.75</translateX>
-      <translateY>89.75</translateY>
+      <translateX>-180.0</translateX>
+      <translateY>90.0</translateY>
     </transform>
     <crs>EPSG:4326</crs>
   </grid>
@@ -85,10 +83,10 @@
     </coverageDimension>
   </dimensions>
   <requestSRS>
-    <string>EPSG:404000</string>
+    <string>EPSG:4326</string>
   </requestSRS>
   <responseSRS>
-    <string>EPSG:404000</string>
+    <string>EPSG:4326</string>
   </responseSRS>
   <parameters>
     <entry>
