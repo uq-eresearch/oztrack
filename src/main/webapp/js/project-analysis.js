@@ -526,7 +526,7 @@
         that.map.addLayer(that.silicateLayer);
 
         that.hgt2000Layer = new OpenLayers.Layer.WMS(
-            'Dynamic height (wrt 2000m)',
+            'Dynamic height (2000 m)',
             '/geoserver/gwc/service/wms',
             {
                 layers: 'oztrack:cars2009a_hgt2000',
@@ -542,7 +542,7 @@
                 attribution: '<a target="_blank" href="http://www.marine.csiro.au/~dunn/cars2009/">CARS 2009 (dynamic height)</a>',
                 metadata: {
                     category: 'marine',
-                    description: '<p>Dynamic height wrt 2000m.</p>',
+                    description: '<p>Dynamic height (2000 m).</p>',
                     showInformation: true
                 }
             }
