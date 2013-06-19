@@ -111,7 +111,8 @@ public class RserveInterface {
             createRPositionFixDataFrame(positionFixList, srs);
             safeEval("srs <- '+init=" + srs + "'");
             safeEval("max.speed <- " + maxSpeed);
-            REXP rexp = safeEval("fspeedfilter(sinputfile=positionFix, sinputssrs=srs, max.speed=max.speed)");
+            safeEval("is180 <- " + (project.getCrosses180() ? "TRUE" : "FALSE"));
+            REXP rexp = safeEval("fspeedfilter(sinputfile=positionFix, sinputssrs=srs, max.speed=max.speed, is180=is180)");
             RList data = rexp.getAttribute("data").asList();
             String[] idStrings = data.at("ID").asStrings();
             double[] dateDoubles = ((REXPDouble) data.at("Date")).asDoubles();
