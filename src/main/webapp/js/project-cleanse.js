@@ -62,9 +62,9 @@
         }
 
         that.layerSwitcher = new OzTrack.OpenLayers.Control.OzTrackLayerSwitcher({
-            categoryLabels: {
-                'base': 'Base layer',
-                'project': 'Project layers'
+            categories: {
+                'base': {label: 'Base layer'},
+                'project': {label: 'Project layers'}
             }
         });
         that.map.addControl(that.layerSwitcher);

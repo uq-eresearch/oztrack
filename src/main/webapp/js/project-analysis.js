@@ -82,12 +82,12 @@
         that.map.addControl(new OzTrackNavToolbar());
 
         that.layerSwitcher = new OzTrack.OpenLayers.Control.OzTrackLayerSwitcher({
-            categoryLabels: {
-                'base': 'Base layer',
-                'terrestrial': 'Terrestrial layers',
-                'marine': 'Marine layers',
-                'project': 'Project layers',
-                'analysis': 'Analysis layers'
+            categories: {
+                'base': {label: 'Base layer'},
+                'terrestrial': {label: 'Terrestrial layers', initMinimized: true},
+                'marine': {label: 'Marine layers', initMinimized: true},
+                'project': {label: 'Project layers'},
+                'analysis': {label: 'Analysis layers'}
             }
         });
         that.map.addControl(that.layerSwitcher);

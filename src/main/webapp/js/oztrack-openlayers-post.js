@@ -84,10 +84,11 @@ OpenLayers.Control.LoadingPanel.prototype.draw = function(px) {
         initialize: function(options) {
             options = options || {};
             this.categories = {};
-            for (categoryId in options.categoryLabels) {
-                var categoryLabel = options.categoryLabels[categoryId];
+            for (categoryId in options.categories) {
+                var category = options.categories[categoryId];
                 this.categories[categoryId] = {
-                    label: categoryLabel,
+                    label: category.label,
+                    initMinimized: !!category.initMinimized,
                     layers: [],
                     labelDiv: null,
                     layersDiv: null
@@ -410,12 +411,12 @@ OpenLayers.Control.LoadingPanel.prototype.draw = function(px) {
             this.layersDiv = $('<div id="' + this.id + '_layersDiv" class="layersDiv">')[0];
             var layersHeading = $('<div class="layersHeading">Show/hide map layers</div>')[0];
             this.layersDiv.appendChild(layersHeading);
-            
+
             for (categoryId in this.categories) {
                 var category = this.categories[categoryId];
                 category.labelDiv = $('<div class="categoryLabelDiv">')
                     .append($('<span>')
-                        .addClass('icon-chevron-up')
+                        .addClass('icon-chevron-' + (category.initMinimized ? 'down' : 'up'))
                         .addClass('icon-white')
                         .css('float', 'right')
                         .css('cursor', 'pointer')
@@ -428,7 +429,9 @@ OpenLayers.Control.LoadingPanel.prototype.draw = function(px) {
                     )
                     .append(category.label)
                     .get(0);
-                category.layersDiv = $('<div class="categoryLayersDiv">')[0];
+                category.layersDiv = $('<div class="categoryLayersDiv">')
+                    .css('display', category.initMinimized ? 'none' : '')
+                    .get(0);
                 this.layersDiv.appendChild(category.labelDiv);
                 this.layersDiv.appendChild(category.layersDiv);
             }
