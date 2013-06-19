@@ -525,6 +525,30 @@
         );
         that.map.addLayer(that.silicateLayer);
 
+        that.hgt2000Layer = new OpenLayers.Layer.WMS(
+            'Dynamic height (wrt 2000m)',
+            '/geoserver/gwc/service/wms',
+            {
+                layers: 'oztrack:cars2009a_hgt2000',
+                styles: 'oztrack_cars2009a_hgt2000',
+                format: 'image/png',
+                tiled: true,
+                transparent: true
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true,
+                attribution: '<a target="_blank" href="http://www.marine.csiro.au/~dunn/cars2009/">CARS 2009 (dynamic height)</a>',
+                metadata: {
+                    category: 'marine',
+                    description: '<p>Dynamic height wrt 2000m.</p>',
+                    showInformation: true
+                }
+            }
+        );
+        that.map.addLayer(that.hgt2000Layer);
+
         that.capadMarine = new OpenLayers.Layer.WMS(
             'CAPAD Marine',
             '/geoserver/gwc/service/wms',
@@ -723,6 +747,17 @@
                     summary: function(feature) {
                         return (feature.attributes.GRAY_INDEX && feature.attributes.GRAY_INDEX != -32767)
                             ? $('<span>').append('Silicate: ' + (feature.attributes.GRAY_INDEX * 0.003662277020737644 + 115).toFixed(2) + ' μmol/L')
+                            : $();
+                    }
+                },
+                {
+                    layer: that.hgt2000Layer,
+                    propertyNames: [
+                        'GRAY_INDEX'
+                    ],
+                    summary: function(feature) {
+                        return (feature.attributes.GRAY_INDEX && feature.attributes.GRAY_INDEX != -32767)
+                            ? $('<span>').append('Dynamic height: ' + (feature.attributes.GRAY_INDEX * 0.001 + 0).toFixed(2) + ' m')
                             : $();
                     }
                 },

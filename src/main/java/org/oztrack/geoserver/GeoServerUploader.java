@@ -298,6 +298,29 @@ public class GeoServerUploader {
             .param("defaultStyle", "oztrack_cars2009a_temperature")
             .param("styles", new String[] {"oztrack_cars2009a_temperature"})
             .replace();
+
+        client
+            .coveragestore("workspaces/" + workspaceName + "/coveragestores/cars2009a_hgt2000")
+            .template("coveragestores/cars2009.xml.ftl")
+            .param("coverageName", "cars2009a_hgt2000")
+            .replace();
+        client
+            .coverage("workspaces/" + workspaceName + "/coveragestores/cars2009a_hgt2000/coverages/cars2009a_hgt2000")
+            .template("coverages/cars2009.xml.ftl")
+            .param("coverageName", "cars2009a_hgt2000")
+            .replace();
+        client
+            .style("styles/" + workspaceName + "_" + "cars2009a_hgt2000")
+            .template("styles/cars2009a_hgt2000.sld.ftl")
+            .replace();
+        client
+            .layer("layers/cars2009a_hgt2000")
+            .template("layers/coverage-layer.xml.ftl")
+            .param("layerName", "cars2009a_hgt2000")
+            .param("coverageName", "cars2009a_hgt2000")
+            .param("defaultStyle", "oztrack_cars2009a_hgt2000")
+            .param("styles", new String[] {"oztrack_cars2009a_hgt2000"})
+            .replace();
     }
 
     private void createDLCDClassLayer(GeoServerClient client, String workspaceName) throws Exception {
