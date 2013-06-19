@@ -1,15 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <coverage>
-  <name>cars2009a_temperature</name>
-  <nativeName>cars2009a_temperature</nativeName>
+  <name>${coverageName}</name>
+  <nativeName>${coverageName}</nativeName>
   <namespace>
     <name>oztrack</name>
   </namespace>
-  <title>cars2009a_temperature</title>
+  <title>${coverageName}</title>
   <description>Generated from GeoTIFF</description>
   <keywords>
     <string>WCS</string>
     <string>GeoTIFF</string>
-    <string>cars2009a_temperature</string>
+    <string>${coverageName}</string>
   </keywords>
   <nativeCRS>GEOGCS[&quot;WGS 84&quot;, 
   DATUM[&quot;World Geodetic System 1984&quot;, 
@@ -39,10 +40,10 @@
   <enabled>true</enabled>
   <metadata>
     <entry key="cachingEnabled">false</entry>
-    <entry key="dirName">cars2009a_temperature_cars2009a_temperature</entry>
+    <entry key="dirName">${coverageName}_${coverageName}</entry>
   </metadata>
   <store class="coverageStore">
-    <name>cars2009a_temperature</name>
+    <name>${coverageName}</name>
   </store>
   <nativeFormat>GeoTIFF</nativeFormat>
   <grid dimension="2">

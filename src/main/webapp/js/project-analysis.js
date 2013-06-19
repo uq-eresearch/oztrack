@@ -429,6 +429,30 @@
         );
         that.map.addLayer(that.sstLayer);
 
+        that.phosphateLayer = new OpenLayers.Layer.WMS(
+            'Phosphate',
+            '/geoserver/gwc/service/wms',
+            {
+                layers: 'oztrack:cars2009_phosphate',
+                styles: 'oztrack_cars2009_phosphate',
+                format: 'image/png',
+                tiled: true,
+                transparent: true
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true,
+                attribution: '<a target="_blank" href="http://www.marine.csiro.au/~dunn/cars2009/">CARS 2009 (phosphate)</a>',
+                metadata: {
+                    category: 'marine',
+                    description: '<p>Mean sea surface phosphate.</p>',
+                    showInformation: true
+                }
+            }
+        );
+        that.map.addLayer(that.phosphateLayer);
+
         that.silicateLayer = new OpenLayers.Layer.WMS(
             'Silicate',
             '/geoserver/gwc/service/wms',
@@ -609,6 +633,18 @@
                         // scale_factor=0.0005798605282834602; add_offset=13
                         return (feature.attributes.GRAY_INDEX && feature.attributes.GRAY_INDEX != -32767)
                             ? $('<span>').append('Temperature: ' + (feature.attributes.GRAY_INDEX * 0.0005798605282834602 + 13).toFixed(2) + ' °C')
+                            : $();
+                    }
+                },
+                {
+                    layer: that.phosphateLayer,
+                    propertyNames: [
+                        'GRAY_INDEX'
+                    ],
+                    summary: function(feature) {
+                        // scale_factor=0.0001602246196572719; add_offset=5.2
+                        return (feature.attributes.GRAY_INDEX && feature.attributes.GRAY_INDEX != -32767)
+                            ? $('<span>').append('Phosphate: ' + (feature.attributes.GRAY_INDEX * 0.0001602246196572719 + 5.2).toFixed(2) + ' μmol/L')
                             : $();
                     }
                 },

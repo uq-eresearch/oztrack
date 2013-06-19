@@ -162,12 +162,37 @@ public class GeoServerUploader {
 
     private void createCARSLayers(GeoServerClient client, final String workspaceName) throws Exception {
         client
+            .coveragestore("workspaces/" + workspaceName + "/coveragestores/cars2009_phosphate")
+            .template("coveragestores/cars2009.xml.ftl")
+            .param("coverageName", "cars2009_phosphate")
+            .replace();
+        client
+            .coverage("workspaces/" + workspaceName + "/coveragestores/cars2009_phosphate/coverages/cars2009_phosphate")
+            .template("coverages/cars2009.xml.ftl")
+            .param("coverageName", "cars2009_phosphate")
+            .replace();
+        client
+            .style("styles/" + workspaceName + "_" + "cars2009_phosphate")
+            .template("styles/cars2009_phosphate.sld.ftl")
+            .replace();
+        client
+            .layer("layers/cars2009_phosphate")
+            .template("layers/coverage-layer.xml.ftl")
+            .param("layerName", "cars2009_phosphate")
+            .param("coverageName", "cars2009_phosphate")
+            .param("defaultStyle", "oztrack_cars2009_phosphate")
+            .param("styles", new String[] {"oztrack_cars2009_phosphate"})
+            .replace();
+
+        client
             .coveragestore("workspaces/" + workspaceName + "/coveragestores/cars2009_silicate")
-            .template("coveragestores/cars2009_silicate.xml.ftl")
+            .template("coveragestores/cars2009.xml.ftl")
+            .param("coverageName", "cars2009_silicate")
             .replace();
         client
             .coverage("workspaces/" + workspaceName + "/coveragestores/cars2009_silicate/coverages/cars2009_silicate")
-            .template("coverages/cars2009_silicate.xml.ftl")
+            .template("coverages/cars2009.xml.ftl")
+            .param("coverageName", "cars2009_silicate")
             .replace();
         client
             .style("styles/" + workspaceName + "_" + "cars2009_silicate")
@@ -184,11 +209,13 @@ public class GeoServerUploader {
 
         client
             .coveragestore("workspaces/" + workspaceName + "/coveragestores/cars2009a_salinity")
-            .template("coveragestores/cars2009a_salinity.xml.ftl")
+            .template("coveragestores/cars2009.xml.ftl")
+            .param("coverageName", "cars2009a_salinity")
             .replace();
         client
             .coverage("workspaces/" + workspaceName + "/coveragestores/cars2009a_salinity/coverages/cars2009a_salinity")
-            .template("coverages/cars2009a_salinity.xml.ftl")
+            .template("coverages/cars2009.xml.ftl")
+            .param("coverageName", "cars2009a_salinity")
             .replace();
         client
             .style("styles/" + workspaceName + "_" + "cars2009a_salinity")
@@ -205,11 +232,13 @@ public class GeoServerUploader {
 
         client
             .coveragestore("workspaces/" + workspaceName + "/coveragestores/cars2009a_temperature")
-            .template("coveragestores/cars2009a_temperature.xml.ftl")
+            .template("coveragestores/cars2009.xml.ftl")
+            .param("coverageName", "cars2009a_temperature")
             .replace();
         client
             .coverage("workspaces/" + workspaceName + "/coveragestores/cars2009a_temperature/coverages/cars2009a_temperature")
-            .template("coverages/cars2009a_temperature.xml.ftl")
+            .template("coverages/cars2009.xml.ftl")
+            .param("coverageName", "cars2009a_temperature")
             .replace();
         client
             .style("styles/" + workspaceName + "_" + "cars2009a_temperature")
