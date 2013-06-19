@@ -380,6 +380,30 @@
             }
         );
         that.map.addLayer(that.bathymetryLayer);
+
+        that.sstLayer = new OpenLayers.Layer.WMS(
+            'Sea Surface Temperature',
+            '/geoserver/gwc/service/wms',
+            {
+                layers: 'oztrack:cars2009a_temperature',
+                styles: 'oztrack_cars2009a_temperature',
+                format: 'image/png',
+                tiled: true,
+                transparent: true
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true,
+                attribution: '<a target="_blank" href="http://www.marine.csiro.au/~dunn/cars2009/">CARS 2009a (temperature)</a>',
+                metadata: {
+                    category: 'marine',
+                    description: '<p>Mean sea surface temperature.</p>',
+                    showInformation: true
+                }
+            }
+        );
+        that.map.addLayer(that.sstLayer);
         
         that.salinityLayer = new OpenLayers.Layer.WMS(
             'Salinity',
@@ -405,30 +429,6 @@
         );
         that.map.addLayer(that.salinityLayer);
 
-        that.sstLayer = new OpenLayers.Layer.WMS(
-            'Sea Surface Temperature',
-            '/geoserver/gwc/service/wms',
-            {
-                layers: 'oztrack:cars2009a_temperature',
-                styles: 'oztrack_cars2009a_temperature',
-                format: 'image/png',
-                tiled: true,
-                transparent: true
-            },
-            {
-                visibility: false,
-                isBaseLayer: false,
-                wrapDateLine: true,
-                attribution: '<a target="_blank" href="http://www.marine.csiro.au/~dunn/cars2009/">CARS 2009a (temperature)</a>',
-                metadata: {
-                    category: 'marine',
-                    description: '<p>Mean sea surface temperature.</p>',
-                    showInformation: true
-                }
-            }
-        );
-        that.map.addLayer(that.sstLayer);
-
         that.oxygenLayer = new OpenLayers.Layer.WMS(
             'Oxygen',
             '/geoserver/gwc/service/wms',
@@ -452,6 +452,30 @@
             }
         );
         that.map.addLayer(that.oxygenLayer);
+
+        that.nitrateLayer = new OpenLayers.Layer.WMS(
+            'Nitrate',
+            '/geoserver/gwc/service/wms',
+            {
+                layers: 'oztrack:cars2009_nitrate',
+                styles: 'oztrack_cars2009_nitrate',
+                format: 'image/png',
+                tiled: true,
+                transparent: true
+            },
+            {
+                visibility: false,
+                isBaseLayer: false,
+                wrapDateLine: true,
+                attribution: '<a target="_blank" href="http://www.marine.csiro.au/~dunn/cars2009/">CARS 2009 (nitrate)</a>',
+                metadata: {
+                    category: 'marine',
+                    description: '<p>Mean sea surface nitrate.</p>',
+                    showInformation: true
+                }
+            }
+        );
+        that.map.addLayer(that.nitrateLayer);
 
         that.phosphateLayer = new OpenLayers.Layer.WMS(
             'Phosphate',
@@ -637,17 +661,6 @@
                     }
                 },
                 {
-                    layer: that.salinityLayer,
-                    propertyNames: [
-                        'GRAY_INDEX'
-                    ],
-                    summary: function(feature) {
-                        return (feature.attributes.GRAY_INDEX && feature.attributes.GRAY_INDEX != -32767)
-                            ? $('<span>').append('Salinity: ' + (feature.attributes.GRAY_INDEX * 0.0006485282224222911 + 21.25).toFixed(2) + ' PSU')
-                            : $();
-                    }
-                },
-                {
                     layer: that.sstLayer,
                     propertyNames: [
                         'GRAY_INDEX'
@@ -659,6 +672,17 @@
                     }
                 },
                 {
+                    layer: that.salinityLayer,
+                    propertyNames: [
+                        'GRAY_INDEX'
+                    ],
+                    summary: function(feature) {
+                        return (feature.attributes.GRAY_INDEX && feature.attributes.GRAY_INDEX != -32767)
+                            ? $('<span>').append('Salinity: ' + (feature.attributes.GRAY_INDEX * 0.0006485282224222911 + 21.25).toFixed(2) + ' PSU')
+                            : $();
+                    }
+                },
+                {
                     layer: that.oxygenLayer,
                     propertyNames: [
                         'GRAY_INDEX'
@@ -666,6 +690,17 @@
                     summary: function(feature) {
                         return (feature.attributes.GRAY_INDEX && feature.attributes.GRAY_INDEX != -32767)
                             ? $('<span>').append('Oxygen: ' + (feature.attributes.GRAY_INDEX * 0.000153357850243389 + 5).toFixed(2) + ' mL/L')
+                            : $();
+                    }
+                },
+                {
+                    layer: that.nitrateLayer,
+                    propertyNames: [
+                        'GRAY_INDEX'
+                    ],
+                    summary: function(feature) {
+                        return (feature.attributes.GRAY_INDEX && feature.attributes.GRAY_INDEX != -32767)
+                            ? $('<span>').append('Nitrate: ' + (feature.attributes.GRAY_INDEX * 0.0009155692551844109 + 28).toFixed(2) + ' μmol/L')
                             : $();
                     }
                 },
