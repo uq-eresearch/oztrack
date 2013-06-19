@@ -416,18 +416,20 @@ OpenLayers.Control.LoadingPanel.prototype.draw = function(px) {
                 var category = this.categories[categoryId];
                 category.labelDiv = $('<div class="categoryLabelDiv">')
                     .append($('<span>')
+                        .addClass('categoryLabelMinimizer')
                         .addClass('icon-chevron-' + (category.initMinimized ? 'down' : 'up'))
                         .addClass('icon-white')
                         .css('float', 'right')
                         .css('cursor', 'pointer')
-                        .click(function(e) {
-                            $(this)
-                                .toggleClass('icon-chevron-up')
-                                .toggleClass('icon-chevron-down')
-                                .closest('.categoryLabelDiv').next().slideToggle();
-                        })
                     )
                     .append(category.label)
+                    .click(function(e) {
+                        $(this)
+                            .find('.categoryLabelMinimizer')
+                            .toggleClass('icon-chevron-up')
+                            .toggleClass('icon-chevron-down');
+                        $(this).next().slideToggle();
+                    })
                     .get(0);
                 category.layersDiv = $('<div class="categoryLayersDiv">')
                     .css('display', category.initMinimized ? 'none' : '')
