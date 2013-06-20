@@ -68,14 +68,57 @@
                 dataLicence: that.dataLicence
             }));
         }
-        
+
+        var measureControlStyle = new OpenLayers.Style(
+            {
+                strokeWidth: 2,
+                strokeColor: OpenLayers.Feature.Vector.style.default.strokeColor,
+                fontColor: OpenLayers.Feature.Vector.style.default.strokeColor,
+                fontWeight: 'bold',
+                labelAlign: 'rb',
+                labelXOffset: -8,
+                label: '${getMeasure}'
+            },
+            {
+                context: {
+                    getMeasure: function(f) {
+                        if (!f.attributes.measure || !f.attributes.units) {
+                            return '';
+                        }
+                        return (Math.round(f.attributes.measure * 1000) / 1000) + ' ' + f.attributes.units;
+                    }
+                }
+            }
+        );
+        var measureControlStyleMap = new OpenLayers.StyleMap({"default": measureControlStyle});
+        var measureControl = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, {
+            geodesic: true,
+            persist: true,
+            handlerOptions: {
+                maxVertices: 2,
+                layerOptions: {
+                    styleMap: measureControlStyleMap
+                }
+            }
+        });
+        measureControl.events.on({
+            measure: function(e) {
+                e.object.handler.line.attributes.measure = e.measure;
+                e.object.handler.line.attributes.units = e.units;
+                e.object.handler.line.layer.redraw();
+            },
+            measurepartial: function(e) {
+                e.object.handler.line.attributes.measure = null;
+            }
+        });
         var OzTrackNavToolbar = OpenLayers.Class(OpenLayers.Control.NavToolbar, {
             initialize: function() { 
                 OpenLayers.Control.Panel.prototype.initialize.apply(this, [options]);
                 this.addControls([
                     new OpenLayers.Control.Navigation(),
                     new OpenLayers.Control.ZoomBox(),
-                    new OzTrack.OpenLayers.Control.ZoomToExtent({extent: that.projectBounds})
+                    new OzTrack.OpenLayers.Control.ZoomToExtent({extent: that.projectBounds}),
+                    measureControl
                 ])
             }
         });
