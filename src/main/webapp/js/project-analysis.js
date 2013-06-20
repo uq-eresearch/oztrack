@@ -95,20 +95,30 @@
             geodesic: true,
             persist: true,
             handlerOptions: {
-                maxVertices: 2,
                 layerOptions: {
                     styleMap: measureControlStyleMap
                 }
             }
         });
+        function handleMeasure(e) {
+            e.object.handler.line.attributes.measure = e.measure;
+            e.object.handler.line.attributes.units = e.units;
+            e.object.handler.line.layer.redraw();
+        }
         measureControl.events.on({
-            measure: function(e) {
-                e.object.handler.line.attributes.measure = e.measure;
-                e.object.handler.line.attributes.units = e.units;
-                e.object.handler.line.layer.redraw();
+            measure: handleMeasure,
+            measurepartial: handleMeasure,
+            activate: function(e) {
+                this.formerViewPortDivTitle = $(that.map.viewPortDiv).attr('title');
+                $(that.map.viewPortDiv).attr('title', 'Double click to finish path');
             },
-            measurepartial: function(e) {
-                e.object.handler.line.attributes.measure = null;
+            deactivate: function(e) {
+                if (this.formerViewPortDivTitle) {
+                    $(that.map.viewPortDiv).attr('title', this.formerViewPortDivTitle);
+                }
+                else {
+                    $(that.map.viewPortDiv).removeAttr('title');
+                }
             }
         });
         var OzTrackNavToolbar = OpenLayers.Class(OpenLayers.Control.NavToolbar, {
