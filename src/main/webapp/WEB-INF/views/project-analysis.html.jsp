@@ -444,22 +444,37 @@
                         html += '<div id="analysis-stats-' + animalId + '-' + analysis.id + '" class="layerInfoStats" style="' + (statsHtml ? '' : 'display: none;') + '">' + statsHtml + '</table>';
                         $('#animalInfo-' + animalId).append('<div id="analysisInfo-' + animalId + '-' + analysis.id + '" class="layerInfo analysisInfo-' + analysis.id + '">' + html + '</div>');
                     },
-                    onUpdateAnimalInfoFromKML: function(animalId, analysis, area, hval) {
+                    onUpdateAnimalInfoFromKML: function(animalId, analysis, attributes) {
                         var statsHtml = '';
-                        if (area) {
-                            var roundedArea = Math.round(area * 1000) / 1000;
-                            statsHtml += '<span class="layerInfoStat">';
-                            statsHtml += 'Area: ' + roundedArea + ' km<sup>2</sup>';
-                            statsHtml += '</span>';
+                        <c:forEach items="${analysisTypeList}" var="analysisType">
+                        if (analysis.params.queryType == '${analysisType}') {
+                            <c:forEach items="${analysisType.resultAttributeTypes}" var="resultAttributeType">
+                            if (attributes.${resultAttributeType.identifier} && attributes.${resultAttributeType.identifier}.value) {
+                                statsHtml += '<span class="layerInfoStat">';
+                                statsHtml += '${resultAttributeType.displayName}: ';
+                                <c:choose>
+                                <c:when test="${resultAttributeType.dataType == 'double' && not empty resultAttributeType.numDecimalPlaces}">
+                                statsHtml += parseFloat(attributes.${resultAttributeType.identifier}.value).toFixed(${resultAttributeType.numDecimalPlaces});
+                                </c:when>
+                                <c:otherwise>
+                                statsHtml += attributes.${resultAttributeType.identifier}.value;
+                                </c:otherwise>
+                                </c:choose>
+                                <c:if test="${not empty resultAttributeType.units}">
+                                statsHtml += ' ${resultAttributeType.units}';
+                                </c:if>
+                                statsHtml += '</span>';
+                            }
+                            </c:forEach>
                         }
-                        if (hval) {
-                            var roundedHval = Math.round(hval * 1000) / 1000;
-                            statsHtml += '<span class="layerInfoStat">';
-                            statsHtml += 'h value: ' + roundedHval;
-                            statsHtml += '</span>';
-                        }
+                        </c:forEach>
                         if (statsHtml) {
-                            $('#analysis-stats-' + animalId + '-' + analysis.id).show().append(statsHtml);
+                            var statsParent = $('#analysis-stats-' + animalId + '-' + analysis.id);
+                            if (statsParent.is(':not(:empty)')) {
+                                statsParent.append($('<div>').css('margin', '4px 0').css('border-bottom', '1px dashed #aaa'));
+                            }
+                            statsParent.append(statsHtml);
+                            statsParent.show();
                         }
                         var exportHtml = '';
                         exportHtml += '<div class="layerInfoExport">';

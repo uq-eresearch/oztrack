@@ -36,6 +36,15 @@ public enum AnalysisType {
                 false,
                 null
             )
+        ),
+        Arrays.asList(
+            new AnalysisResultAttributeType(
+                "area",
+                "Area",
+                "double",
+                "km<sup>2</sup>",
+                3
+            )
         )
     ),
     KUD(
@@ -171,6 +180,22 @@ public enum AnalysisType {
                 true,
                 null
             )
+        ),
+        Arrays.asList(
+            new AnalysisResultAttributeType(
+                "area",
+                "Area",
+                "double",
+                "km<sup>2</sup>",
+                3
+            ),
+            new AnalysisResultAttributeType(
+                "hval",
+                "h value",
+                "double",
+                null,
+                3
+            )
         )
     ),
     KBB(
@@ -296,6 +321,15 @@ public enum AnalysisType {
                 true,
                 null
             )
+        ),
+        Arrays.asList(
+            new AnalysisResultAttributeType(
+                "area",
+                "Area",
+                "double",
+                "km<sup>2</sup>",
+                3
+            )
         )
     ),
     AHULL(
@@ -329,6 +363,15 @@ public enum AnalysisType {
                 "100",
                 false,
                 null
+            )
+        ),
+        Arrays.asList(
+            new AnalysisResultAttributeType(
+                "area",
+                "Area",
+                "double",
+                "km<sup>2</sup>",
+                3
             )
         )
     ),
@@ -399,7 +442,8 @@ public enum AnalysisType {
                 false,
                 null
             )
-        )
+        ),
+        Arrays.<AnalysisResultAttributeType>asList()
     ),
     HEATMAP_POINT(
         "Heat Map (Point Intensity)",
@@ -412,7 +456,8 @@ public enum AnalysisType {
         "\n" +
         "<p>Baddeley, A. & Turner, R. (2005) spatstat: An R package for analyzing spatial point patterns. " +
         "Journal of Statistical Software, 12,6</p>",
-        buildHeatmapParameterTypes()
+        buildHeatmapParameterTypes(),
+        Arrays.<AnalysisResultAttributeType>asList()
     ),
     HEATMAP_LINE(
         "Heat Map (Line Intensity)",
@@ -425,17 +470,25 @@ public enum AnalysisType {
         "\n" +
         "<p>Baddeley, A. & Turner, R. (2005) spatstat: An R package for analyzing spatial point patterns. " +
         "Journal of Statistical Software, 12,6</p>",
-        buildHeatmapParameterTypes()
+        buildHeatmapParameterTypes(),
+        Arrays.<AnalysisResultAttributeType>asList()
     );
 
     private final String displayName;
     private final String explanation;
     private final List<AnalysisParameterType> parameterTypes;
+    private final List<AnalysisResultAttributeType> resultAttributeTypes;
 
-    private AnalysisType(String display, String explanation, List<AnalysisParameterType> parameterTypes) {
+    private AnalysisType(
+        String display,
+        String explanation,
+        List<AnalysisParameterType> parameterTypes,
+        List<AnalysisResultAttributeType> resultAttributeTypes
+    ) {
         this.displayName = display;
         this.explanation = explanation;
         this.parameterTypes = parameterTypes;
+        this.resultAttributeTypes = resultAttributeTypes;
     }
 
     public String getDisplayName() {
@@ -448,6 +501,10 @@ public enum AnalysisType {
 
     public List<AnalysisParameterType> getParameterTypes() {
         return parameterTypes;
+    }
+
+    public List<AnalysisResultAttributeType> getResultAttributeTypes() {
+        return resultAttributeTypes;
     }
 
     public AnalysisParameterType getParameterType(String identifier) {

@@ -1709,8 +1709,7 @@
                 that.onUpdateAnimalInfoFromKML(
                     animalId,
                     analysis,
-                    (animalFeature && animalFeature.attributes.area) ? animalFeature.attributes.area.value : null,
-                    (animalFeature && !analysis.params.hValue && animalFeature.attributes.hval) ? animalFeature.attributes.hval.value : null
+                    animalFeature ? animalFeature.attributes : null
                 );
             }
         }
