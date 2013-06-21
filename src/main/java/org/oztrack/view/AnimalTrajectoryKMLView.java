@@ -55,7 +55,7 @@ public class AnimalTrajectoryKMLView extends AbstractView{
 
         PrintWriter writer = response.getWriter();
         writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-        writer.append("<kml xmlns=\"http://earth.google.com/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\">\n");
+        writer.append("<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\">\n");
         writer.append("<Document>\n");
         writer.append("  <description>\n");
         writer.append("    <p>\n");

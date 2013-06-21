@@ -17,7 +17,7 @@ fpdens2kml <- function(sdata,igrid,ssrs,scol,labsent=FALSE)
 #labsent=FALSE
 
   if(igrid < 10)
-   stop('Grid size must be at least 10 m.')
+    stop('Grid size must be at least 10 m.')
 
   sdata.proj <- spTransform(sdata, CRS(ssrs))
   
@@ -25,8 +25,7 @@ fpdens2kml <- function(sdata,igrid,ssrs,scol,labsent=FALSE)
   mybb1 <- c(round_any(mybb[,1],igrid, f = floor),round_any(mybb[,2], igrid, f = ceiling))
 
   pF1.p <- data.frame(sdata.proj)  
-  myppp <- ppp(pF1.p$X,pF1.p$Y,
-               window=owin(c(mybb1[1],mybb1[3]),c(mybb1[2],mybb1[4])))
+  myppp <- ppp(pF1.p$X,pF1.p$Y, window=owin(c(mybb1[1],mybb1[3]),c(mybb1[2],mybb1[4])))
   
   Z <- pixellate(myppp, eps=igrid) ##
 #  image(Z)
@@ -87,30 +86,30 @@ fldens2kml <- function(sdata,igrid,ssrs,scol,labsent=FALSE)
 
 ###
 # Generates kml from polygon heatmap
-polykml <- function(sw, filename, kmlname, namefield, kmldesc="Created using OzTrack" ) 
+polykml <- function(sw, filename, namefield, kmldesc="Created using OzTrack" ) 
 {
  # sw=Z_ppp_SPDF
 #  filename=paste(KMLdir,"pointpatternplay.kml",sep="")
-#  kmlname="myRpolygon"
 #  namefield=6
 #  kmldesc="Created using OzTrack"  
   out <- sapply(slot(sw, "polygons"),
-                function(x) 
-                {
-                  #x=slot(sw, "polygons")[1]
-                  kmlPolygonRD(x,
-                             name=as(sw, "data.frame")[slot(x, "ID"), 1],
-                             col=as(sw, "data.frame")[slot(x, "ID"), 2], 
-                             lwd=1, border='white')#, 
-                  #description=as(sw,"data.frame")[slot(x, "ID"), desc] )
-                }
+    function(x) 
+    {
+      #x=slot(sw, "polygons")[1]
+      kmlPolygonRD(
+        x,
+        name=as(sw, "data.frame")[slot(x, "ID"), 1],
+        col=as(sw, "data.frame")[slot(x, "ID"), 2],
+        lwd=1,
+        border='white'
+      )
+    }
   )
   kmlFile <- file(filename, "w")
-  cat(kmlPolygon(kmlname=kmlname, kmldescription=kmldesc)$header,
-      file=kmlFile, sep="\n")
+  cat(kmlPolygonRD()$header, file=kmlFile, sep="\n")
   cat(unlist(out["style",]), file=kmlFile, sep="\n")
   cat(unlist(out["content",]), file=kmlFile, sep="\n")
-  cat(kmlPolygon()$footer, file=kmlFile, sep="\n")
+  cat(kmlPolygonRD()$footer, file=kmlFile, sep="\n")
   close(kmlFile)
   # optional, to make a kmz, I do not know how to make this generic for all systems
   #  kmz <- basename(filename)
@@ -217,17 +216,21 @@ Grid2PolygonsRD <- function (grd, zcol = 1, level = FALSE, at, cuts = 20, pretty
   sp.polys.df
 }
 
-kmlPolygonRD <- function (obj = NULL, kmlfile = NULL, name = "R Polygon", description = "", 
-                          col = NULL, visibility = 1, lwd = 1, border = 1, kmlname = "",
-                          kmldescription = "") 
+kmlPolygonRD <- function (obj = NULL, kmlfile = NULL, name = "R Polygon",
+                          col = NULL, visibility = 1, lwd = 1, border = 1)
 {
   if (is.null(obj)) 
-    return(list(header = c("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", 
-                           "<kml xmlns=\"http://earth.google.com/kml/2.2\">", 
-                           "<Document>", paste("<name>", kmlname, "</name>", 
-                                               sep = ""), paste("<description><![CDATA[", kmldescription, 
-                                                                "]]></description>", sep = "")), footer = c("</Document>", 
-                                                                                                            "</kml>")))
+    return(list(
+      header = c(
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+        "<kml xmlns=\"http://www.opengis.net/kml/2.2\">",
+        "<Document>"
+      ),
+      footer = c(
+        "</Document>",
+        "</kml>"
+      )
+    ))
   if (class(obj) != "Polygons" && class(obj) != "SpatialPolygonsDataFrame") 
     stop("obj must be of class 'Polygons' or 'SpatialPolygonsDataFrame' [package 'sp']")
   if (class(obj) == "SpatialPolygonsDataFrame") {
@@ -237,21 +240,18 @@ kmlPolygonRD <- function (obj = NULL, kmlfile = NULL, name = "R Polygon", descri
                     sep = ""))
     obj <- obj@polygons[[1]]
   }
-  col2kmlcolor <- function(col) paste(rev(sapply(col2rgb(col, 
-                                                         TRUE), function(x) sprintf("%02x", x))), collapse = "")
+  col2kmlcolor <- function(col) paste(rev(sapply(col2rgb(col, TRUE), function(x) sprintf("%02x", x))), collapse = "")
   kml <- kmlStyle <- ""
-  kmlHeader <- c("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", 
-                 "<kml xmlns=\"http://earth.google.com/kml/2.2\">", "<Document>", 
-                 paste("<name>", kmlname, "</name>", sep = ""), paste("<description><![CDATA[", 
-                                                                      kmldescription, "]]></description>", sep = ""))
+  kmlHeader <- c(
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>", 
+    "<kml xmlns=\"http://www.opengis.net/kml/2.2\">",
+    "<Document>"
+  )
   kmlFooter <- c("</Document>", "</kml>")
-  kmlStyle <- append(kmlStyle, paste("<Style id=\"", obj@ID, 
-                                     "\">", sep = ""))
+  kmlStyle <- append(kmlStyle, paste("<Style id=\"", obj@ID, "\">", sep = ""))
   kmlStyle <- append(kmlStyle, "<LineStyle>")
-  kmlStyle <- append(kmlStyle, paste("<width>", lwd, "</width>", 
-                                     sep = ""))
-  kmlStyle <- append(kmlStyle, paste("<color>", col2kmlcolor(border), 
-                                     "</color>", sep = ""))
+  kmlStyle <- append(kmlStyle, paste("<width>", lwd, "</width>", sep = ""))
+  kmlStyle <- append(kmlStyle, paste("<color>", col2kmlcolor(border), "</color>", sep = ""))
   kmlStyle <- append(kmlStyle, "</LineStyle>")
   kmlStyle <- append(kmlStyle, "<PolyStyle>")
   if (is.null(col)) {
@@ -260,43 +260,33 @@ kmlPolygonRD <- function (obj = NULL, kmlfile = NULL, name = "R Polygon", descri
   else {
     mycol <- col2kmlcolor(col)
     mycol <- sub("ff", "7f", mycol) # make 50% transparent
-    kmlStyle <- append(kmlStyle, paste("<color>", mycol, 
-                                       "</color>", sep = ""))
+    kmlStyle <- append(kmlStyle, paste("<color>", mycol, "</color>", sep = ""))
     kmlStyle <- append(kmlStyle, "<fill>1</fill>")
   }
   kmlStyle <- append(kmlStyle, "</PolyStyle>")
   kmlStyle <- append(kmlStyle, "</Style>")
   kml <- append(kml, "<Placemark>")
   kml <- append(kml, paste("<name>", name, "</name>", sep = ""))
-  kml <- append(kml, paste("<description><![CDATA[", description, 
-                           "]]></description>", sep = ""))
-  kml <- append(kml, paste("<styleUrl>#", obj@ID, "</styleUrl>", 
-                           sep = ""))
-  kml <- append(kml, paste("<visibility>", as.integer(visibility), 
-                           "</visibility>", sep = ""))
+  kml <- append(kml, paste("<styleUrl>#", obj@ID, "</styleUrl>", sep = ""))
+  kml <- append(kml, paste("<visibility>", as.integer(visibility), "</visibility>", sep = ""))
   kml <- append(kml, "<MultiGeometry>")
   holeFlag <- FALSE
   for (i in 1:length(obj@Polygons)) {
     if (!holeFlag) 
       kml <- append(kml, "<Polygon>")
-    kml <- append(kml, ifelse(obj@Polygons[[i]]@hole, "<innerBoundaryIs>", 
-                              "<outerBoundaryIs>"))
+    kml <- append(kml, ifelse(obj@Polygons[[i]]@hole, "<innerBoundaryIs>", "<outerBoundaryIs>"))
     kml <- append(kml, c("<LinearRing>", "<coordinates>"))
-    kml <- append(kml, paste(coordinates(obj@Polygons[[i]])[, 
-                                                            1], coordinates(obj@Polygons[[i]])[, 2], sep = ","))
+    kml <- append(kml, paste(coordinates(obj@Polygons[[i]])[, 1], coordinates(obj@Polygons[[i]])[, 2], sep = ","))
     kml <- append(kml, c("</coordinates>", "</LinearRing>"))
-    kml <- append(kml, ifelse(obj@Polygons[[i]]@hole, "</innerBoundaryIs>", 
-                              "</outerBoundaryIs>"))
-    holeFlag <- ifelse((i + 1L) <= length(obj@Polygons), 
-                       obj@Polygons[[i + 1L]]@hole, FALSE)
+    kml <- append(kml, ifelse(obj@Polygons[[i]]@hole, "</innerBoundaryIs>", "</outerBoundaryIs>"))
+    holeFlag <- ifelse((i + 1L) <= length(obj@Polygons), obj@Polygons[[i + 1L]]@hole, FALSE)
     if (!holeFlag) 
       kml <- append(kml, "</Polygon>")
   }
   kml <- append(kml, "</MultiGeometry>")
   kml <- append(kml, "</Placemark>")
   if (!is.null(kmlfile)) 
-    cat(paste(c(kmlHeader, kmlStyle, kml, kmlFooter), sep = "", 
-              collapse = "\n"), "\n", file = kmlfile, sep = "")
+    cat(paste(c(kmlHeader, kmlStyle, kml, kmlFooter), sep = "", collapse = "\n"), "\n", file = kmlfile, sep = "")
   else list(style = kmlStyle, content = kml)
 }
 
@@ -305,7 +295,7 @@ oztrack_heatmap_point <- function(srs, gridSize, colours, labsent, kmlFile) {
   if (class(PPA) == 'try-error') {
     stop('Error running analysis. Try increasing grid size.')
   }
-  polykml(sw=PPA, filename=kmlFile, kmlname=paste(unique(PPA$ID), '_point_density',sep=''),namefield=unique(PPA$ID))
+  polykml(sw=PPA, filename=kmlFile, namefield=unique(PPA$ID))
 }
 
 oztrack_heatmap_line <- function(srs, gridSize, colours, labsent, kmlFile) {
@@ -313,5 +303,5 @@ oztrack_heatmap_line <- function(srs, gridSize, colours, labsent, kmlFile) {
   if (class(LPA) == 'try-error') {
     stop('Error running analysis. Try increasing grid size.')
   }
-  polykml(sw=LPA, filename=kmlFile, kmlname=paste(unique(LPA$ID), '_line_density', sep=''), namefield=unique(LPA$ID))
+  polykml(sw=LPA, filename=kmlFile, namefield=unique(LPA$ID))
 }
