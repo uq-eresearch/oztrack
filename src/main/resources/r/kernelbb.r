@@ -102,7 +102,7 @@ oztrack_kernelbb <- function(srs, sig1, sig2, gridSize, extent, percent, kmlFile
                         imypercent=percent,isig1=sig1,isig2=sig2,
                         imygrid=gridSize,imyextent=extent)
   if(class(myKerBB)=='SpatialPolygonsDataFrame'){
-    fOZkmlPolygons(OzSPDF=myKerBB, kmlFileName=kmlFile, folderName='KBB')
+    fOZkmlPolygons(OzSPDF=myKerBB, kmlFileName=kmlFile)
   }else{ stop('KBB unable to generate under these parameters. Try increasing the alpha value.')   
   }
 }

@@ -1,7 +1,7 @@
 ### This function is an edited version of the kmlPolygon() function in package maptools
 ### Functionality has been extended so that details from the @data slot in the SPDF are returned in the kml
 
-fOZkmlHeader <- function(folderName, fieldNames, fieldTypes) {
+fOZkmlHeader <- function(fieldNames, fieldTypes) {
   headers <- c("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
   headers <- append(headers, "<kml xmlns=\"http://www.opengis.net/kml/2.2\">")
   headers <- append(headers, "<Document>")
@@ -10,13 +10,11 @@ fOZkmlHeader <- function(folderName, fieldNames, fieldTypes) {
     headers <- append(headers, paste('<SimpleField name="', fieldNames[i], '" type="', fieldTypes[i], '"/>', sep=''))
   }
   headers <- append(headers, "</Schema>")
-  headers <- append(headers, "<Folder>")
-  headers <- append(headers, paste('<name>',folderName,'</name>',sep = ""))
+  headers <- append(headers, "<open>1</open>")
 }
 
 fOZkmlFooter <- function() {
-  c("</Folder>",
-    "</Document>",
+  c("</Document>",
     "</kml>")
 }
 
@@ -92,7 +90,7 @@ fOZkmlValue <- function(rValue) {
 
 #  This function extends the fOZkmlPlacemark function to accept a SpatialPolygonsDataFrame object, 
 #  Labels are based on attributes in the dataframe of the SpatialPolygonsDataFrame object
-fOZkmlPolygons <- function(OzSPDF, kmlFileName, folderName) {
+fOZkmlPolygons <- function(OzSPDF, kmlFileName) {
   fieldNames <- names(as(OzSPDF, "data.frame"))
   fieldTypes <- sapply(fieldNames, function(name) {fOZkmlType(class(as(OzSPDF, "data.frame")[[name]]))})
   
@@ -106,7 +104,7 @@ fOZkmlPolygons <- function(OzSPDF, kmlFileName, folderName) {
     })
   
   kmlFile <- file(kmlFileName, "w")
-  cat(fOZkmlHeader(folderName=folderName, fieldNames=fieldNames, fieldTypes=fieldTypes), file=kmlFile, sep="\n")
+  cat(fOZkmlHeader(fieldNames=fieldNames, fieldTypes=fieldTypes), file=kmlFile, sep="\n")
   cat(unlist(kmlPlacemarks), file=kmlFile, sep="\n")
   cat(fOZkmlFooter(), file=kmlFile, sep="\n")
   close(kmlFile)

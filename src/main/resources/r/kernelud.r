@@ -120,5 +120,5 @@ oztrack_kernelud <- function(srs, h, gridSize, extent, percent, kmlFile, is180=F
                          imypercent=percent,smyh=h,
                          imygrid=gridSize,imyextent=extent)
   
-  fOZkmlPolygons(OzSPDF=myKer, kmlFileName=kmlFile, folderName='KUD')
+  fOZkmlPolygons(OzSPDF=myKer, kmlFileName=kmlFile)
 }

@@ -90,7 +90,7 @@ oztrack_locoh <- function(srs, r=NULL, k=NULL, percent, kmlFile, is180=FALSE) {
                         imypercent=percent,ik=k,ir=r)
 
   if(class(myLoCoH)=='SpatialPolygonsDataFrame'){
-    fOZkmlPolygons(OzSPDF=myLoCoH, kmlFileName=kmlFile, folderName='LoCoH')
+    fOZkmlPolygons(OzSPDF=myLoCoH, kmlFileName=kmlFile)
   }else{ 
     if(is.null(r) & !is.null(k)){
       print('LoCoH unable to generate under these parameters. Try a different r value.') 

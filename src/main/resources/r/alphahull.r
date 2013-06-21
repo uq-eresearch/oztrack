@@ -219,7 +219,7 @@ oztrack_alphahull <- function(srs, alpha, kmlFile, is180=FALSE,rnd=2) {
     myAhull <- fmyalphahullAM(sinputfile=positionFix, sinputssrs=paste('+init=', srs, sep=''), ialpha=alpha,rnd=rnd)
   
   if(class(myAhull)=='SpatialPolygonsDataFrame'){
-    fOZkmlPolygons(OzSPDF=myAhull,kmlFileName=kmlFile,folderName='AHULL')
+    fOZkmlPolygons(OzSPDF=myAhull,kmlFileName=kmlFile)
   }else{ print('Alpha hull unable to generate under these parameters. Try increasing the alpha value.')   
   }
 }

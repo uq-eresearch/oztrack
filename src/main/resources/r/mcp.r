@@ -67,5 +67,5 @@ oztrack_mcp <- function(srs, percent, kmlFile, is180=FALSE) {
   if(is180==TRUE)
     mcp.obj <- fmymcpAM(sinputfile=positionFix, sinputssrs=paste('+init=', srs, sep=''),imypercent=percent)
   
-  fOZkmlPolygons(OzSPDF=mcp.obj, kmlFileName=kmlFile, folderName='MCP')
+  fOZkmlPolygons(OzSPDF=mcp.obj, kmlFileName=kmlFile)
 }
