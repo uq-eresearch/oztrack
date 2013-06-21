@@ -1271,14 +1271,8 @@
         }
 
         function addAnalysisResultLayer(analysis, layerName) {
-            var styleMap = that.polygonStyleMap;
-            var extractStyles = false;
-            if ((analysis.params.queryType == "HEATMAP_POINT") || (analysis.params.queryType == "HEATMAP_LINE")) {
-                styleMap = null;
-                extractStyles = true;
-            }
             var queryOverlay = new OpenLayers.Layer.Vector(layerName, {
-                styleMap : styleMap,
+                styleMap : analysis.hasAnimalFeatures ? that.polygonStyleMap : null,
                 metadata: {
                 category: 'analysis',
                 showInformation: false
@@ -1290,7 +1284,7 @@
             var protocol = new OpenLayers.Protocol.HTTP({
                 url : analysis.resultUrl,
                 format : new OpenLayers.Format.KML({
-                    extractStyles: extractStyles,
+                    extractStyles: !analysis.hasAnimalFeatures,
                     extractAttributes: true,
                     maxDepth: 2,
                     internalProjection: that.projection900913,

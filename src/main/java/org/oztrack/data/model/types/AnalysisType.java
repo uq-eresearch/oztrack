@@ -21,6 +21,7 @@ public enum AnalysisType {
         "\n" +
         "<p>Worton, B.J. (1995) A convex hull-based estimator of home-range size. " +
         "Biometrics, 51, 1206-1215.</p>",
+        true,
         Arrays.asList(
             new AnalysisParameterType(
                 "percent",
@@ -77,6 +78,7 @@ public enum AnalysisType {
         "\n" +
         "<p>Worton, B.J. (1989) Kernel methods for estimating the utilization " +
         "distribution in home-range studies. Ecology 70: 164-168</p>",
+        true,
         Arrays.asList(
             new AnalysisParameterType(
                 "percent",
@@ -233,6 +235,7 @@ public enum AnalysisType {
         "Gaillard J.M., Moorcroft P.R. 2010. The home-range concept: are traditional " +
         "estimators still relevant with modern telemetry technology? Phil. Trans. R. Soc. " +
         "B 365, 2221–2231</p>",
+        true,
         Arrays.asList(
             new AnalysisParameterType(
                 "percent",
@@ -351,6 +354,7 @@ public enum AnalysisType {
         "<p>Burgman, M.A. &amp; Fox, J.C. (2003) Bias in species range estimates from minimum " +
         "convex polygons: implications for conservation and options for improved planning. " +
         "Animal Conservation, 6, 19-28.</p>",
+        true,
         Arrays.asList(
             new AnalysisParameterType(
                 "alpha",
@@ -396,6 +400,7 @@ public enum AnalysisType {
         "<p>Getz, W.M. & Wilmers, C.C. (2004). A local nearest-neighbor convex-hull construction of home ranges and utilization distributions. Ecography, 27, 489–505.</p>\n" +
         "\n" +
         "<p>Getz, W.M., Fortmann-Roe, S.B, Lyons, A., Ryan, S., Cross, P. (2007). LoCoH methods for the construction of home ranges and utilization distributions. PLoS ONE, 2: 1–11.</p>",
+        true,
         Arrays.asList(
             new AnalysisParameterType(
                 "percent",
@@ -456,6 +461,7 @@ public enum AnalysisType {
         "\n" +
         "<p>Baddeley, A. & Turner, R. (2005) spatstat: An R package for analyzing spatial point patterns. " +
         "Journal of Statistical Software, 12,6</p>",
+        false,
         buildHeatmapParameterTypes(),
         Arrays.<AnalysisResultAttributeType>asList()
     ),
@@ -470,23 +476,27 @@ public enum AnalysisType {
         "\n" +
         "<p>Baddeley, A. & Turner, R. (2005) spatstat: An R package for analyzing spatial point patterns. " +
         "Journal of Statistical Software, 12,6</p>",
+        false,
         buildHeatmapParameterTypes(),
         Arrays.<AnalysisResultAttributeType>asList()
     );
 
     private final String displayName;
     private final String explanation;
+    private final Boolean returnsAnimalFeatures;
     private final List<AnalysisParameterType> parameterTypes;
     private final List<AnalysisResultAttributeType> resultAttributeTypes;
 
     private AnalysisType(
         String display,
         String explanation,
+        Boolean returnsAnimalFeatures,
         List<AnalysisParameterType> parameterTypes,
         List<AnalysisResultAttributeType> resultAttributeTypes
     ) {
         this.displayName = display;
         this.explanation = explanation;
+        this.returnsAnimalFeatures = returnsAnimalFeatures;
         this.parameterTypes = parameterTypes;
         this.resultAttributeTypes = resultAttributeTypes;
     }
@@ -497,6 +507,10 @@ public enum AnalysisType {
 
     public String getExplanation() {
         return explanation;
+    }
+
+    public Boolean getReturnsAnimalFeatures() {
+        return returnsAnimalFeatures;
     }
 
     public List<AnalysisParameterType> getParameterTypes() {
