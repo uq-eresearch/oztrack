@@ -24,6 +24,8 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
     private String recaptchaPrivateKey;
     private Date closedAccessDisableDate;
     private Date nonIncrementalEmbargoDisableDate;
+    private String rserveLogFile;
+    private Integer rserveOomAdj;
 
     @Override
     public String getBaseUrl() {
@@ -192,5 +194,23 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
 
     public void setNonIncrementalEmbargoDisableDateString(String nonIncrementalEmbargoDisableDateString) throws ParseException {
         this.nonIncrementalEmbargoDisableDate = isoDateTimeFormat.parse(nonIncrementalEmbargoDisableDateString);
+    }
+
+    @Override
+    public String getRserveLogFile() {
+        return rserveLogFile;
+    }
+
+    public void setRserveLogFile(String rserveLogFile) {
+        this.rserveLogFile = rserveLogFile;
+    }
+
+    @Override
+    public Integer getRserveOomAdj() {
+        return rserveOomAdj;
+    }
+
+    public void setRserveOomAdj(Integer rserveOomAdj) {
+        this.rserveOomAdj = rserveOomAdj;
     }
 }

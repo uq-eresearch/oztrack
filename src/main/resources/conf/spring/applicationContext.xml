@@ -60,6 +60,8 @@
         <property name="recaptchaPrivateKey" value="${application.recaptchaPrivateKey}"/>
         <property name="closedAccessDisableDateString" value="${application.closedAccessDisableDate}"/>
         <property name="nonIncrementalEmbargoDisableDateString" value="${application.nonIncrementalEmbargoDisableDate}"/>
+        <property name="rserveLogFile" value="${application.rserveLogFile}"/>
+        <property name="rserveOomAdj" value="${application.rserveOomAdj}"/>
     </bean>
 
     <bean id="ozTrackApplication" class="org.oztrack.app.OzTrackApplication">

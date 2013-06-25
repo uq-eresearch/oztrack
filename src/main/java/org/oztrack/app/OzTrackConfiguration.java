@@ -20,4 +20,6 @@ public interface OzTrackConfiguration {
     String getRecaptchaPrivateKey();
     Date getClosedAccessDisableDate();
     Date getNonIncrementalEmbargoDisableDate();
+    String getRserveLogFile();
+    Integer getRserveOomAdj();
 }

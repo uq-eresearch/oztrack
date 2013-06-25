@@ -7,9 +7,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.apache.log4j.Logger;
+import org.oztrack.app.OzTrackApplication;
+import org.oztrack.app.OzTrackConfiguration;
 import org.rosuda.REngine.Rserve.RConnection;
 
-/** helper class that consumes output of a process. In addition, it filter output of the REG command on Windows to look for InstallPath registry entry which specifies the location of R. */
+/**
+ * helper class that consumes output of a process. In addition, it filter output of the REG
+ * command on Windows to look for InstallPath registry entry which specifies the location of R.
+ */
 class StreamHog extends Thread {
 
     private static Logger logger = Logger.getLogger(OzTrackUtil.class);
@@ -58,15 +63,22 @@ class StreamHog extends Thread {
     }
 }
 
-/** simple class that start Rserve locally if it's not running already - see mainly <code>checkLocalRserve</code> method. It spits out quite some debugging outout of the console, so feel free to modify it for your application if desired.<p>
- <i>Important:</i> All applications should shutdown every Rserve that they started! Never leave Rserve running if you started it after your application quits since it may pose a security risk. Inform the user if you started an Rserve instance.
+/**
+ * simple class that start Rserve locally if it's not running already - see mainly
+ * <code>checkLocalRserve</code> method. It spits out quite some debugging output of the console,
+ * so feel free to modify it for your application if desired.<p>
+ *
+ * <i>Important:</i> All applications should shutdown every Rserve that they started! Never leave
+ * Rserve running if you started it after your application quits since it may pose a security risk.
+ * Inform the user if you started an Rserve instance.
  */
 public class RserveUtils {
-
-
     private static Logger logger = Logger.getLogger(OzTrackUtil.class);
-    /** shortcut to <code>launchRserve(cmd, "--no-save --slave", "--no-save --slave", false)</code> */
-    public static boolean launchRserve(String cmd) { return launchRserve(cmd, "--no-save --slave","--no-save --slave",false); }
+
+    /** shortcut with default args */
+    public static boolean launchRserve(String cmd) {
+        return launchRserve(cmd, "--no-save --slave", "--no-save --slave", false);
+    }
 
     /** attempt to start Rserve. Note: parameters are <b>not</b> quoted, so avoid using any quotes in arguments
      @param cmd command necessary to start R
@@ -88,12 +100,15 @@ public class RserveUtils {
                 @SuppressWarnings("unused")
                 StreamHog outputHog = new StreamHog(p.getInputStream(), false);
             } else /* unix startup */ {
-                String rserveLogFile = "/dev/null";
+                OzTrackConfiguration configuration = OzTrackApplication.getApplicationContext();
+                String rserveLogFile = configuration.getRserveLogFile();
+                Integer rserveOomAdj = configuration.getRserveOomAdj();
                 p = Runtime.getRuntime().exec(new String[] {
                     "/bin/sh", "-c",
+                    ((rserveOomAdj != null) ? "echo " + rserveOomAdj + " > /proc/self/oom_adj; " : "") +
                     "echo 'library(Rserve); Rserve("+(debug?"TRUE":"FALSE")+",args=\""+rsrvargs+"\")' " +
                     "| " + cmd + " " + rargs + " " +
-                    "> " + rserveLogFile + " 2>&1"
+                    "> " + ((rserveLogFile != null) ? rserveLogFile : "/dev/null") + " 2>&1"
                 });
             }
             logger.debug("waiting for Rserve to start ... ("+p+")");
@@ -125,7 +140,12 @@ public class RserveUtils {
         return Runtime.getRuntime().exec("killall --verbose --signal KILL --regexp Rserve");
     }
 
-    /** checks whether Rserve is running and if that's not the case it attempts to start it using the defaults for the platform where it is run on. This method is meant to be set-and-forget and cover most default setups. For special setups you may get more control over R with <<code>launchRserve</code> instead. */
+    /**
+     * checks whether Rserve is running and if that's not the case it attempts to start it using
+     * the defaults for the platform where it is run on. This method is meant to be set-and-forget
+     * and cover most default setups. For special setups you may get more control over R with
+     * <code>launchRserve</code> instead.
+     */
     public static boolean checkLocalRserve() {
         if (isRserveRunning()) return true;
         String osname = System.getProperty("os.name");
