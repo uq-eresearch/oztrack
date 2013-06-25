@@ -38,7 +38,8 @@ public class ProjectFormValidator implements Validator {
         Date createDate = (project.getCreateDate() != null) ? project.getCreateDate() : currentDate;
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "title", "error.empty.field", "Please enter a short project title.");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "error.empty.field", "Please enter a description for the project.");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "spatialCoverageDescr", "error.empty.field", "Please give a location description.");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "spatialCoverageDescr", "error.empty.field", "Please enter a location description.");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "speciesScientificName", "error.empty.field", "Please enter at least the Scientific Name of the species.");
 
         if (project.getAccess() == ProjectAccess.OPEN) {
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "dataLicence", "error.empty.field", "A Data Licence must be selected for Open Access projects.");

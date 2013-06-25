@@ -345,8 +345,10 @@ public class ProjectController {
             }
         }
         else {
-            presetEmbargoDates.put("Current embargo", project.getEmbargoDate());
-            if (project.getEmbargoDate().before(embargoInfo.getMaxIncrementalEmbargoDate())) {
+            if (project.getEmbargoDate() != null) {
+                presetEmbargoDates.put("Current embargo", project.getEmbargoDate());
+            }
+            if ((project.getEmbargoDate() == null) || project.getEmbargoDate().before(embargoInfo.getMaxIncrementalEmbargoDate())) {
                 if (embargoInfo.getMaxIncrementalEmbargoDate().before(embargoInfo.getMaxEmbargoDate())) {
                     presetEmbargoDates.put("Extend by 1 year", embargoInfo.getMaxIncrementalEmbargoDate());
                 }

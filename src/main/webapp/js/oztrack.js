@@ -18,14 +18,26 @@ function deleteEntity(url, destUrl, message) {
     });
 }
 
+$.datepicker.setDefaults({
+    dateFormat: 'yy-mm-dd',
+    altFormat: 'yy-mm-dd',
+    changeMonth: true,
+    changeYear: true,
+    firstDay: 1 // make first day of week Monday (default is Sunday)
+});
+
+// Render HTML in jQuery autocomplete results
+//
+// Taken from code by Scott González:
+// https://github.com/scottgonzalez/jquery-ui-extensions/blob/master/autocomplete/jquery.ui.autocomplete.html.js
+$.ui.autocomplete.prototype._renderItem = function( ul, item) {
+    return $('<li></li>')
+        .data('item.autocomplete', item)
+        .append($('<a></a>').html(item.label))
+        .appendTo(ul);
+};
+
 $(document).ready(function() {
-    $.datepicker.setDefaults({
-        dateFormat: 'yy-mm-dd',
-        altFormat: 'yy-mm-dd',
-        changeMonth: true,
-        changeYear: true,
-        firstDay: 1 // make first day of week Monday (default is Sunday)
-    });
     // Fix bug where clearing field doesn't clear alt field
     // http://bugs.jqueryui.com/ticket/5734
     // http://stackoverflow.com/questions/3922592/jquery-ui-datepicker-clearing-the-altfield-when-the-primary-field-is-cleared

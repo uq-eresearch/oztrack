@@ -440,10 +440,14 @@
             <dt>Species</dt>
             <dd>
                 <p>
-                    <c:out value="${project.speciesCommonName}"/>
                     <c:if test="${!empty project.speciesScientificName}">
-                    <br/>
                     <i><c:out value="${project.speciesScientificName}"/></i>
+                    <c:if test="${!empty project.speciesCommonName}">
+                    <br/>
+                    </c:if>
+                    </c:if>
+                    <c:if test="${!empty project.speciesCommonName}">
+                    <c:out value="${project.speciesCommonName}"/>
                     </c:if>
                 </p>
             </dd>

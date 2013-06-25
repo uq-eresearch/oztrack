@@ -210,6 +210,53 @@
                 $.each(publications, function(i, publication) {
                     addPublication(publication);
                 });
+
+                $('#searchSpeciesName').autocomplete({
+                    source: function(request, response) {
+                        $.ajax({
+                            url: 'http://bie.ala.org.au/search/auto.json',
+                            data: {
+                                q: request.term,
+                                idxType: 'TAXON',
+                                limit: 10
+                            },
+                            dataType: "jsonp",
+                            success: function(data, textStatus, jqXHR) {
+                                response($.map(data.autoCompleteList, function(item) {
+                                    // The label property is displayed in the suggestion menu.
+                                    var label = $.trim(item.scientificNameMatches[0] || item.name || '');
+                                    if (item.commonNameMatches && item.commonNameMatches.length > 0) {
+                                        label += ' (' + item.commonNameMatches.join(', ') + ')';
+                                    }
+                                    else if (item.commonName) {
+                                        label += ' (' + $.trim(item.commonName) + ')';
+                                    }
+                                    // The value will be inserted into the input element when a user selects an item.
+                                    var value = $.trim(item.name || '');
+                                    if (item.commonName) {
+                                        value += ' (' + $.trim(item.commonName) + ')';
+                                    }
+                                    return {
+                                        label: label.replace(/\s+/g, ' '),
+                                        value: value.replace(/\s+/g, ' '),
+                                        speciesScientificName: $.trim((item.name || '').replace(/\s+/g, ' ')),
+                                        speciesCommonName: $.trim((item.commonName || '').replace(/\s+/g, ' '))
+                                    };
+                                }));
+                            }
+                        });
+                    },
+                    minLength: 2,
+                    select: function(event, ui) {
+                        jQuery('#speciesScientificName').val(ui.item ? ui.item.speciesScientificName : '');
+                        jQuery('#speciesCommonName').val(ui.item ? ui.item.speciesCommonName : '');
+                    }
+                });
+                $('#overrideSpeciesCheckbox').change(function(e) {
+                    var readonly = !e.target.checked;
+                    $('#speciesScientificName').prop('readonly', readonly);
+                    $('#speciesCommonName').prop('readonly', readonly);
+                });
             });
         </script>
     </jsp:attribute>
@@ -292,18 +339,42 @@
             </fieldset>
             <fieldset>
                <div class="legend">Species</div>
-                <div class="control-group">
-                    <label class="control-label" for="speciesCommonName">Common Name</label>
+               <div class="control-group">
+                    <label class="control-label" for="searchSpeciesName">Search species name</label>
                     <div class="controls">
-                        <form:input path="speciesCommonName" id="speciesCommonName" cssClass="input-xxlarge"/>
-                        <form:errors path="speciesCommonName" element="div" cssClass="help-block formErrors"/>
+                        <input id="searchSpeciesName" class="input-xxlarge" type="text" placeholder="Search Atlas of Living Australia"/>
+                        <div class="help-inline">
+                            <div class="help-popover" title="Search species name">
+                                <p>
+                                    Start typing a species name to search the
+                                    <a href="http://www.ala.org.au/australias-species/">Atlas of Living Australia</a>
+                                    species database.
+                                </p>
+                                <p>If your desired species name isn't returned, it can be manually entered below.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group" style="margin-bottom: 9px;">
+                    <div class="controls">
+                        <label class="checkbox">
+                            <input type="checkbox" id="overrideSpeciesCheckbox" />
+                            Manually enter or override species name
+                        </label>
+                    </div>
+                </div>
+                <div class="control-group" style="margin-bottom: 9px;">
+                    <label class="control-label" for="speciesScientificName">Scientific Name</label>
+                    <div class="controls">
+                        <form:input path="speciesScientificName" id="speciesScientificName" cssClass="input-xxlarge" readonly="true"/>
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="speciesScientificName">Scientific Name</label>
+                    <label class="control-label" for="speciesCommonName">Common Name</label>
                     <div class="controls">
-                        <form:input path="speciesScientificName" id="speciesScientificName" cssClass="input-xxlarge"/>
+                        <form:input path="speciesCommonName" id="speciesCommonName" cssClass="input-xxlarge" readonly="true"/>
                         <form:errors path="speciesScientificName" element="div" cssClass="help-block formErrors"/>
+                        <form:errors path="speciesCommonName" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
             </fieldset>
