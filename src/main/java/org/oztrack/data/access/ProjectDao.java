@@ -12,6 +12,7 @@ import org.oztrack.data.model.types.ProjectAccess;
 import org.oztrack.data.model.types.Role;
 import org.springframework.stereotype.Service;
 
+import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
 @Service
@@ -24,8 +25,10 @@ public interface ProjectDao {
     void delete(Project project);
     void create(Project project, User currentUser) throws Exception;
     Range<Date> getDetectionDateRange(Project project, boolean includeDeleted);
+    HashMap<Long, Range<Date>> getProjectDetectionDateRanges(boolean includeDeleted);
     int getDetectionCount(Project project, boolean includeDeleted);
     Polygon getBoundingBox(Project project);
+    HashMap<Long, Point> getProjectCentroids(boolean shiftLongitudes);
     HashMap<Long, Polygon> getAnimalBoundingBoxes(Project project);
     List<Project> getProjectsByAccess(ProjectAccess access);
     List<ProjectUser> getProjectUsersWithRole(Project project, Role role);

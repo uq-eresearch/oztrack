@@ -48,7 +48,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.Point;
 
 @Controller
 public class WFSMapQueryController {
@@ -99,14 +99,13 @@ public class WFSMapQueryController {
     @PreAuthorize("permitAll")
     public void handleProjectsWFS(HttpServletResponse response) {
         List<Project> projects = projectDao.getAll();
-        HashMap<Project, Range<Date>> dateRangeMap = new HashMap<Project, Range<Date>>();
-        HashMap<Project, Polygon> boundingBoxMap = new HashMap<Project, Polygon>();
-        for (Project project : projects) {
-            dateRangeMap.put(project, projectDao.getDetectionDateRange(project, false));
-            boundingBoxMap.put(project, projectDao.getBoundingBox(project));
-        }
-        SimpleFeatureCollection featureCollection =
-            new ProjectsFeatureBuilder(projects, dateRangeMap, boundingBoxMap).buildFeatureCollection();
+        HashMap<Long, Range<Date>> projectDetectionDateRangeMap = projectDao.getProjectDetectionDateRanges(false);
+        HashMap<Long, Point> projectCentroidMap = projectDao.getProjectCentroids(false);
+        SimpleFeatureCollection featureCollection = new ProjectsFeatureBuilder(
+            projects,
+            projectDetectionDateRangeMap,
+            projectCentroidMap
+        ).buildFeatureCollection();
         writeWFSResponse(response, featureCollection);
     }
 

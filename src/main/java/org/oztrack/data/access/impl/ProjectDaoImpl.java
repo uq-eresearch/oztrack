@@ -21,7 +21,9 @@ import org.oztrack.data.model.types.Role;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.WKTReader;
 
@@ -124,6 +126,30 @@ public class ProjectDaoImpl implements ProjectDao {
     }
 
     @Override
+    public HashMap<Long, Range<Date>> getProjectDetectionDateRanges(boolean includeDeleted) {
+        String sql =
+            "select p.id, min(o.detectionTime), max(o.detectionTime)\n" +
+            "from org.oztrack.data.model.Project p\n" +
+            "left join p.dataFiles d\n" +
+            "left join d.positionFixes o\n" +
+            "where ((o.deleted = false) or (:includeDeleted = true))\n" +
+            "group by p.id";
+        Query query = em.createQuery(sql);
+        query.setParameter("includeDeleted", includeDeleted);
+        @SuppressWarnings("unchecked")
+        List<Object[]> resultList = query.getResultList();
+        HashMap<Long, Range<Date>> map = new HashMap<Long, Range<Date>>();
+        for (Object[] result : resultList) {
+            Long projectId = ((Number) result[0]).longValue();
+            Date fromDate = (Date) result[1];
+            Date toDate = (Date) result[2];
+            Range<Date> dateRange = ((fromDate == null) || (toDate == null)) ? null : Range.between(fromDate, toDate);
+            map.put(projectId, dateRange);
+        }
+        return map;
+    }
+
+    @Override
     public int getDetectionCount(Project project, boolean includeDeleted) {
         String sql =
             "select count(*)\n" +
@@ -134,6 +160,45 @@ public class ProjectDaoImpl implements ProjectDao {
         query.setParameter("projectId", project.getId());
         query.setParameter("includeDeleted", includeDeleted);
         return ((Number) query.getSingleResult()).intValue();
+    }
+
+    @Override
+    public HashMap<Long, Point> getProjectCentroids(boolean shiftLongitudes) {
+        Query query = em.createNativeQuery(
+            "select project.id, ST_AsText(ST_Centroid(ST_Collect(\n" +
+            "    case\n" +
+            "        when project.crosses180 then ST_Shift_Longitude(positionfix.locationgeometry)\n" +
+            "        else positionfix.locationgeometry\n" +
+            "    end" +
+            ")))\n" +
+            "from project, datafile, positionfix\n" +
+            "where datafile.project_id = project.id\n" +
+            "and positionfix.datafile_id = datafile.id\n" +
+            "and not(positionfix.deleted)\n" +
+            "group by project.id"
+        );
+        @SuppressWarnings("unchecked")
+        List<Object[]> resultList = query.getResultList();
+        GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
+        WKTReader reader = new WKTReader(geometryFactory);
+        HashMap<Long, Point> map = new HashMap<Long, Point>();
+        for (Object[] result : resultList) {
+            Long projectId = ((Number) result[0]).longValue();
+            String wkt = (String) result[1];
+            Point point = null;
+            if (wkt != null) {
+                try {
+                    point = (Point) reader.read(wkt);
+                    if (!shiftLongitudes && point.getX() > 180d) {
+                        point = geometryFactory.createPoint(new Coordinate(point.getX() - 360d, point.getY()));
+                    }
+                }
+                catch (Exception e) {
+                }
+            }
+            map.put(projectId, point);
+        }
+        return map;
     }
 
     @Override

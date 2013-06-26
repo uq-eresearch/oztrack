@@ -47,6 +47,7 @@
             .home-popup {
                 margin-top: 0;
                 padding: 0 10px;
+                width: 400px;
             }
             .home-popup-title {
                 margin-bottom: 1em;

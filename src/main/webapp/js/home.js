@@ -147,7 +147,7 @@ function createProjectClickControl(map, projectPointsLayer) {
 }
 
 function buildClusterPopup(map, cf) {
-    var content = $('<div class="home-popup">')
+    var content = $('<div>').append($('<div class="home-popup">')
         .append($('<div class="home-popup-title">').append(cf.cluster.length + ' projects'))
         .append($('<ul>').append(
             $.map(cf.cluster, function(f, i) {
@@ -157,7 +157,8 @@ function buildClusterPopup(map, cf) {
                     .append(f.attributes.projectTitle);
                 return $('<li>').append(link)[0];
             })
-        ));
+        ))
+    );
     var lonlat = cf.geometry.getBounds().getCenterLonLat();
     if ((cf.cluster[0].attributes.crosses180 === 'true') && (lonlat.lon < 0)) {
         lonlat.lon += 20037508.34 * 2;
@@ -177,22 +178,28 @@ function buildClusterPopup(map, cf) {
 }
 
 function buildProjectPopup(f) {
-    var content = $('<div class="home-popup">');
+    var div = $('<div>');
+    var content = $('<div class="home-popup">').appendTo(div);
     content.append($('<div class="home-popup-title">').append(f.attributes.projectTitle));
-    var pairs = [
-        ['Species', f.attributes.speciesCommonName],
-        ['Coverage', f.attributes.spatialCoverageDescr],
-        ['Date range', f.attributes.firstDetectionDate + ' to ' + f.attributes.lastDetectionDate],
-        ['Data access',
-            (f.attributes.access == 'OPEN')
-            ? '<span style="font-weight: bold; color: green;">Open Access</span>'
-            : (f.attributes.access == 'EMBARGO')
-            ? '<span style="font-weight: bold; color: orange;">Delayed Open Access</span>'
-            : '<span style="font-weight: bold; color: red;">Closed Access</span>']
-    ];
+    var pairs = [];
+    pairs.push(['Species',
+        ((f.attributes.speciesScientificName) ? ('<i>' + f.attributes.speciesScientificName + '</i>') : '') +
+        ((f.attributes.speciesCommonName) ? ('<br />' + f.attributes.speciesCommonName) : '')
+    ]);
+    pairs.push(['Coverage', f.attributes.spatialCoverageDescr]);
+    pairs.push(['Date range', f.attributes.firstDetectionDate + ' to ' + f.attributes.lastDetectionDate]);
+    pairs.push(['Data access',
+        (f.attributes.access == 'OPEN')
+        ? '<span style="font-weight: bold; color: green;">Open Access</span>'
+        : (f.attributes.access == 'EMBARGO')
+        ? '<span style="font-weight: bold; color: orange;">Delayed Open Access</span>'
+        : '<span style="font-weight: bold; color: red;">Closed Access</span>'
+    ]);
     $.each(pairs, function(i, p) {
-        content.append($('<div class="home-popup-attr-name">').append(p[0] + ':'));
-        content.append($('<div class="home-popup-attr-value">').append(p[1]));
+        if (p[0] && p[1]) {
+            content.append($('<div class="home-popup-attr-name">').append(p[0] + ':'));
+            content.append($('<div class="home-popup-attr-value">').append(p[1]));
+        }
     });
     var footer = $('<div class="home-popup-footer">');
     footer.append('<a href="projects/' + f.attributes.projectId + '">View details</a>')
@@ -209,7 +216,7 @@ function buildProjectPopup(f) {
         f.id + '_popup',
         lonlat,
         null,
-        content.html(),
+        div.html(),
         null,
         true
     );
