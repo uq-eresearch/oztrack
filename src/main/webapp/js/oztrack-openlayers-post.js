@@ -1,4 +1,5 @@
 /*global OpenLayers*/
+
 // Configure OpenLayers image path; needed because we use wro4j.
 // http://dev.openlayers.org/apidocs/files/OpenLayers-js.html#OpenLayers.ImgPath
 OpenLayers.ImgPath = "/js/openlayers/img/";
@@ -25,6 +26,27 @@ OpenLayers.Control.LoadingPanel.prototype.draw = function(px) {
     }
     OpenLayers.Control.prototype.draw.apply(this, arguments);
     return this.div;
+};
+
+// Hack to XYZ layer (extended by OSM): hard-code -20037508.34 as left extent for calculation of
+// tile x coordinate instead of using this.maxExtent.left. The calculation of x fails if we use
+// a different maxExtent, e.g., for longitudes 0..40075016.68 as we do for projects crossing the
+// antimeridian. Hard-coding -20037508.34 works for maps of either -20037508.34..20037508.34 or
+// 0..40075016.68 as it only affects calculation of x and leaves this.maxExtent untouched.
+OpenLayers.Layer.XYZ.prototype.getXYZ = function(bounds) {
+    var res = this.getServerResolution();
+    var x = Math.round((bounds.left - -20037508.34) /
+        (res * this.tileSize.w));
+    var y = Math.round((this.maxExtent.top - bounds.top) /
+        (res * this.tileSize.h));
+    var z = this.getServerZoom();
+
+    if (this.wrapDateLine) {
+        var limit = Math.pow(2, z);
+        x = ((x % limit) + limit) % limit;
+    }
+
+    return {'x': x, 'y': y, 'z': z};
 };
 
 (function(OzTrack) {
