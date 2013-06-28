@@ -24,10 +24,10 @@ public class AnalysisParameter {
     @JoinColumn(name="analysis_id", nullable=false)
     private Analysis analysis;
 
-    @Column(name="name", nullable=false)
+    @Column(name="name", nullable=false, columnDefinition="text")
     private String name;
 
-    @Column(name="value", nullable=false)
+    @Column(name="value", nullable=false, columnDefinition="text")
     private String value;
 
     public Long getId() {
