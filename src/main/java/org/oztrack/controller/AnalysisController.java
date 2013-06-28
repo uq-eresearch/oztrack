@@ -6,6 +6,8 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,6 +44,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import freemarker.cache.ClassTemplateLoader;
+import freemarker.template.Configuration;
+import freemarker.template.DefaultObjectWrapper;
+import freemarker.template.Template;
 
 @Controller
 public class AnalysisController {
@@ -215,24 +222,40 @@ public class AnalysisController {
         response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
         response.setContentType("application/vnd.google-earth.kml+xml");
         response.setCharacterEncoding("UTF-8");
-        Reader kmlReader = null;
-        Reader xslReader = null;
         try {
-            kmlReader = new FileReader(analysis.getAbsoluteResultFilePath());
-            xslReader = buildXslReader(analysis, fill);
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer(new StreamSource(xslReader));
-            transformer.transform(new StreamSource(kmlReader), new StreamResult(response.getOutputStream()));
+            if (!analysis.getResultFeatures().isEmpty()) {
+                Configuration freemarkerConfiguration = new Configuration();
+                DefaultObjectWrapper objectWrapper = new DefaultObjectWrapper();
+                objectWrapper.setExposeFields(true);
+                freemarkerConfiguration.setObjectWrapper(objectWrapper);
+                freemarkerConfiguration.setTemplateLoader(new ClassTemplateLoader(this.getClass(), "/org/oztrack/view"));
+                Template template = freemarkerConfiguration.getTemplate("analysis.kml.ftl");
+                Map<String, Object> datamodel = new HashMap<String, Object>();
+                datamodel.put("baseUrl", this.configuration.getBaseUrl());
+                datamodel.put("analysis", analysis);
+                template.process(datamodel, response.getWriter());
+            }
+            else {
+                Reader kmlReader = null;
+                Reader xslReader = null;
+                try {
+                    kmlReader = new FileReader(analysis.getAbsoluteResultFilePath());
+                    xslReader = buildXslReader(analysis, fill);
+                    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                    Transformer transformer = transformerFactory.newTransformer(new StreamSource(xslReader));
+                    transformer.transform(new StreamSource(kmlReader), new StreamResult(response.getOutputStream()));
+                }
+                finally {
+                    IOUtils.closeQuietly(kmlReader);
+                    IOUtils.closeQuietly(xslReader);
+                }
+            }
         }
         catch (Exception e) {
             logger.error("Error writing KML response", e);
             response.setStatus(500);
             writeResultError(response, "Error writing KML response.");
             return;
-        }
-        finally {
-            IOUtils.closeQuietly(kmlReader);
-            IOUtils.closeQuietly(xslReader);
         }
     }
 

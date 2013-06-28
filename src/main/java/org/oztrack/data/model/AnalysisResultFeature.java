@@ -95,7 +95,7 @@ public class AnalysisResultFeature {
         return null;
     }
 
-    public Object getResultAttributeValue(String name, boolean useDefault) {
+    public Object getResultAttributeValue(String name) {
         AnalysisResultAttributeType resultAttributeType = analysis.getAnalysisType().getResultAttributeType(name);
         AnalysisResultAttribute resultAttribute = getAttribute(resultAttributeType.getIdentifier());
         if (resultAttribute == null) {
