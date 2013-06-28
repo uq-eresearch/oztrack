@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.feature.FeatureCollections;
+import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.JTSFactoryFinder;
@@ -42,7 +42,7 @@ public class AnimalDetectionsFeatureBuilder {
     public SimpleFeatureCollection buildFeatureCollection() {
         List<AnimalDetections> animalDetectionsList = buildAnimalDetectionsList();
         SimpleFeatureType featureType = buildFeatureType(4326);
-        SimpleFeatureCollection featureCollection = FeatureCollections.newCollection();
+        DefaultFeatureCollection featureCollection = new DefaultFeatureCollection();
         for (AnimalDetections animalDetections : animalDetectionsList) {
             featureCollection.add(buildFeature(featureType, animalDetections, false));
             if (includeDeleted) {

@@ -13,9 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.map.DefaultMapContext;
 import org.geotools.map.FeatureLayer;
-import org.geotools.map.MapContext;
+import org.geotools.map.MapContent;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Graphic;
@@ -125,8 +124,8 @@ public class ProjectMapImageController {
         mapBounds.expandBy(mapBounds.getWidth() * padding, mapBounds.getHeight() * padding);
 
         ArrayList<BufferedImage> imageLayers = new ArrayList<BufferedImage>();
-        MapContext mapContext = new DefaultMapContext();
-        mapContext.setAreaOfInterest(mapBounds);
+        MapContent mapContext = new MapContent();
+        mapContext.getViewport().setBounds(mapBounds);
         for (String layerName : layerNames) {
             if (layerName.equals("base")) {
                 imageLayers.add(buildBaseLayerImage(mapBounds, mapDimension));

@@ -12,21 +12,21 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.map.MapContext;
+import org.geotools.map.MapContent;
 import org.geotools.referencing.CRS;
 import org.geotools.renderer.GTRenderer;
 import org.geotools.renderer.lite.StreamingRenderer;
 
 public class MapUtils {
-    public static BufferedImage getBufferedImage(MapContext mapContext, Dimension mapDimension) {
+    public static BufferedImage getBufferedImage(MapContent mapContent, Dimension mapDimension) {
         BufferedImage image = new BufferedImage(mapDimension.width, mapDimension.height, BufferedImage.TYPE_4BYTE_ABGR);
         Map<RenderingHints.Key, Object> renderingHintsMap = new HashMap<RenderingHints.Key, Object>();
         renderingHintsMap.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         RenderingHints hints = new RenderingHints(renderingHintsMap);
         GTRenderer renderer = new StreamingRenderer();
         renderer.setJava2DHints(hints);
-        renderer.setContext(mapContext);
-        renderer.paint(image.createGraphics(), new Rectangle(mapDimension), mapContext.getAreaOfInterest());
+        renderer.setMapContent(mapContent);
+        renderer.paint(image.createGraphics(), new Rectangle(mapDimension), mapContent.getViewport().getBounds());
         return image;
     }
 

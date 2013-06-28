@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.Range;
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.feature.FeatureCollections;
+import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.opengis.feature.simple.SimpleFeature;
@@ -36,7 +36,7 @@ public class ProjectsFeatureBuilder {
 
     public SimpleFeatureCollection buildFeatureCollection() {
         SimpleFeatureType featureType = buildFeatureType();
-        SimpleFeatureCollection featureCollection = FeatureCollections.newCollection();
+        DefaultFeatureCollection featureCollection = new DefaultFeatureCollection();
         for (Project project : projectList) {
             if (projectCentroidMap.get(project.getId()) == null) {
                 continue;

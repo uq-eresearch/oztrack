@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.feature.FeatureCollections;
+import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.opengis.feature.simple.SimpleFeature;
@@ -86,7 +86,7 @@ public class AnimalStartEndFeatureBuilder {
     }
 
     private SimpleFeatureCollection buildFeatureCollection(SimpleFeatureType featureType, HashMap<Long, AnimalStartEnd> startEndByAnimal) {
-        SimpleFeatureCollection featureCollection = FeatureCollections.newCollection();
+        DefaultFeatureCollection featureCollection = new DefaultFeatureCollection();
         for (AnimalStartEnd startEnd: startEndByAnimal.values()) {
             featureCollection.add(buildFeature(featureType, startEnd, "start"));
             featureCollection.add(buildFeature(featureType, startEnd, "end"));
