@@ -80,6 +80,9 @@ public class Analysis extends OzTrackBaseEntity {
     @Column(name="resultfilepath", columnDefinition="text")
     private String resultFilePath;
 
+    @OneToMany(mappedBy="analysis", cascade=CascadeType.ALL, orphanRemoval=true, fetch=FetchType.EAGER)
+    private Set<AnalysisResultFeature> resultFeatures;
+
     @Column(name="saved", nullable=false)
     private boolean saved;
 
@@ -190,6 +193,14 @@ public class Analysis extends OzTrackBaseEntity {
             : parameterType.getDataType().equals("double") ? Double.valueOf(stringValue)
             : parameterType.getDataType().equals("boolean") ?  Boolean.valueOf(stringValue)
             : stringValue;
+    }
+
+    public Set<AnalysisResultFeature> getResultFeatures() {
+        return resultFeatures;
+    }
+
+    public void setResultFeatures(Set<AnalysisResultFeature> resultFeatures) {
+        this.resultFeatures = resultFeatures;
     }
 
     public String getResultFilePath() {

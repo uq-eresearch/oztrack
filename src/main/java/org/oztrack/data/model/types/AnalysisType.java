@@ -517,14 +517,23 @@ public enum AnalysisType {
         return parameterTypes;
     }
 
-    public List<AnalysisResultAttributeType> getResultAttributeTypes() {
-        return resultAttributeTypes;
-    }
-
     public AnalysisParameterType getParameterType(String identifier) {
         for (AnalysisParameterType parameterType : parameterTypes) {
             if (parameterType.getIdentifier().equals(identifier)) {
                 return parameterType;
+            }
+        }
+        return null;
+    }
+
+    public List<AnalysisResultAttributeType> getResultAttributeTypes() {
+        return resultAttributeTypes;
+    }
+
+    public AnalysisResultAttributeType getResultAttributeType(String identifier) {
+        for (AnalysisResultAttributeType resultAttributeType : resultAttributeTypes) {
+            if (resultAttributeType.getIdentifier().equals(identifier)) {
+                return resultAttributeType;
             }
         }
         return null;
