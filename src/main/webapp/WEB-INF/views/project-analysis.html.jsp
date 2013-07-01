@@ -416,7 +416,7 @@
                             exportHtml += '<a class="icon kml" href="' + exportKmlUrl + '">KML</a>';
                         }
                         if (exportHtml != '') {
-                            html += '<div class="layerInfoExport">Download as: ' + exportHtml + '</div>';
+                            html += '<div class="layerInfoExport">Download: ' + exportHtml + '</div>';
                         }
                         $('#animalInfo-' + animalId).append('<div class="layerInfo projectMapLayerInfo-' + layerId + '">' + html + '</div>');
                     },
@@ -449,7 +449,7 @@
                         <c:forEach items="${analysisTypeList}" var="analysisType">
                         if (analysis.params.queryType == '${analysisType}') {
                             <c:forEach items="${analysisType.resultAttributeTypes}" var="resultAttributeType">
-                            if (attributes.${resultAttributeType.identifier} && attributes.${resultAttributeType.identifier}.value) {
+                            if (attributes && attributes.${resultAttributeType.identifier} && attributes.${resultAttributeType.identifier}.value) {
                                 statsHtml += '<span class="layerInfoStat">';
                                 statsHtml += '${resultAttributeType.displayName}: ';
                                 <c:choose>
@@ -478,18 +478,19 @@
                         }
                         var exportHtml = '';
                         exportHtml += '<div class="layerInfoExport">';
-                        exportHtml += 'Download as: ';
-                        exportHtml += '<a class="icon kml" href="' + analysis.resultUrl + '">KML</a>';
+                        exportHtml += 'Download: ';
                         <c:if test="${project.crosses180}">
-                        exportHtml += ', ';
-                        exportHtml += '<a class="icon kml" href="' + analysis.resultUrl + '?fill=false">KML (outline only)</a>';
-                        exportHtml += ' ';
+                        exportHtml += '<div style="float: right;">';
                         exportHtml += '<div id="analysisHelpPopover-' + animalId + '-' + analysis.id + '" class="help-popover" title="KML Download">';
                         exportHtml += '<p>Home range KML files are available in an outline-only version due to rendering issues ';
                         exportHtml += 'in some versions of Google Earth. If you find that polygons crossing 180° longitude are ';
                         exportHtml += 'being cut off or "wrapped", use the outline-only KML link.</p>';
                         exportHtml += '</div>';
+                        exportHtml += '</div>';
                         </c:if>
+                        exportHtml += $.map(analysis.resultFiles, function(r) {
+                            return '<a class="icon ' + r.format + '" href="' + r.url + '">' + r.title + '</a>';
+                        }).join(', ');
                         exportHtml += '</div>';
                         $('#analysisInfo-' + animalId + '-' + analysis.id).append(exportHtml);
                         <c:if test="${project.crosses180}">

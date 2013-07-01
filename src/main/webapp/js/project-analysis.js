@@ -1281,8 +1281,9 @@
             if (that.analyses[analysis.id]) {
                 that.analyses[analysis.id].layer = queryOverlay;
             }
+            var kmlResultFile = $.grep(analysis.resultFiles, function(r) {return r.format === 'kml';})[0];
             var protocol = new OpenLayers.Protocol.HTTP({
-                url : analysis.resultUrl,
+                url : kmlResultFile.url,
                 format : new OpenLayers.Format.KML({
                     extractStyles: !analysis.hasAnimalFeatures,
                     extractAttributes: true,

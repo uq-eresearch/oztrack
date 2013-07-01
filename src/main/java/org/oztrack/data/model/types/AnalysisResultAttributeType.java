@@ -1,5 +1,7 @@
 package org.oztrack.data.model.types;
 
+import org.springframework.util.StringUtils;
+
 public class AnalysisResultAttributeType {
     private final String identifier;
     private final String displayName;
@@ -31,6 +33,15 @@ public class AnalysisResultAttributeType {
 
     public String getDataType() {
         return dataType;
+    }
+
+    public Class<?> getDataTypeClass() {
+        try {
+            return Class.forName("java.lang." + StringUtils.capitalize(getDataType()));
+        }
+        catch (ClassNotFoundException e) {
+        }
+        return Object.class;
     }
 
     public String getUnits() {
