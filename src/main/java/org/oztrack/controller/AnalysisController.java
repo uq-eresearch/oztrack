@@ -168,23 +168,25 @@ public class AnalysisController {
         if (analysis.getStatus() == AnalysisStatus.COMPLETE) {
             String resultBaseUrl = String.format("%s/projects/%d/analyses/%d/result", request.getContextPath(), analysis.getProject().getId(), analysis.getId());
             out.key("resultFiles").array();
-            out.object();
-            out.key("title").value("KML");
-            out.key("format").value("kml");
-            out.key("url").value(resultBaseUrl + ".kml");
-            out.endObject();
+            {
+                out.object();
+                out.key("title").value("KML");
+                out.key("format").value("kml");
+                out.key("url").value(resultBaseUrl + "?format=kml");
+                out.endObject();
+            }
             if (analysis.getProject().getCrosses180()) {
                 out.object();
                 out.key("title").value("KML (outline)");
                 out.key("format").value("kml");
-                out.key("url").value(resultBaseUrl + ".kml?fill=false");
+                out.key("url").value(resultBaseUrl + "?format=kml&fill=false");
                 out.endObject();
             }
             if (!analysis.getResultFeatures().isEmpty()) {
                 out.object();
                 out.key("title").value("SHP");
                 out.key("format").value("shp");
-                out.key("url").value(resultBaseUrl + ".shp.zip");
+                out.key("url").value(resultBaseUrl + "?format=shp");
                 out.endObject();
             }
             out.endArray();
@@ -231,57 +233,91 @@ public class AnalysisController {
         response.setStatus(204);
     }
 
-    @RequestMapping(value="/projects/{projectId}/analyses/{analysisId}/result.kml", method=RequestMethod.GET, produces="application/vnd.google-earth.kml+xml")
+    @RequestMapping(
+        value="/projects/{projectId}/analyses/{analysisId}/result",
+        method=RequestMethod.GET,
+        produces={
+            "application/vnd.google-earth.kml+xml",
+            "application/zip"
+        }
+    )
     @PreAuthorize("permitAll")
-    public void handleResultKML(
+    public void handleResult(
         Authentication authentication,
         HttpServletRequest request,
         HttpServletResponse response,
         @ModelAttribute(value="analysis") Analysis analysis,
+        @RequestParam(value="format", defaultValue="kml") String format,
         @RequestParam(value="fill", defaultValue="true") Boolean fill
     ) {
-        if (!checkResultPermissionAndStatus(authentication, request, response, analysis)) {
+        if (!hasPermission(authentication, request, analysis, "read")) {
+            response.setStatus(403);
             return;
         }
+        if (analysis.getStatus() == AnalysisStatus.FAILED) {
+            response.setStatus(500);
+            writeResultError(response, analysis.getMessage());
+            return;
+        }
+        if ((analysis.getStatus() == AnalysisStatus.NEW) || (analysis.getStatus() == AnalysisStatus.PROCESSING)) {
+            response.setStatus(404);
+            writeResultError(response, "Processing");
+            return;
+        }
+        try {
+            if (format.equals("kml")) {
+                writeResultKml(response, analysis, fill);
+            }
+            else if (format.equals("shp")) {
+                writeResultShp(response, analysis);
+            }
+        }
+        catch (Exception e) {
+            String msg = "Error writing analysis result";
+            logger.error(msg, e);
+            response.setStatus(500);
+            writeResultError(response, msg);
+            return;
+        }
+    }
+
+    private void writeResultKml(
+        HttpServletResponse response,
+        Analysis analysis,
+        Boolean fill
+    )
+    throws Exception {
         String fileName = "analysis-" + analysis.getId() + ".kml";
         response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
         response.setContentType("application/vnd.google-earth.kml+xml");
         response.setCharacterEncoding("UTF-8");
-        try {
-            if (!analysis.getResultFeatures().isEmpty()) {
-                Configuration freemarkerConfiguration = new Configuration();
-                DefaultObjectWrapper objectWrapper = new DefaultObjectWrapper();
-                objectWrapper.setExposeFields(true);
-                freemarkerConfiguration.setObjectWrapper(objectWrapper);
-                freemarkerConfiguration.setTemplateLoader(new ClassTemplateLoader(this.getClass(), "/org/oztrack/view"));
-                Template template = freemarkerConfiguration.getTemplate("analysis.kml.ftl");
-                Map<String, Object> datamodel = new HashMap<String, Object>();
-                datamodel.put("baseUrl", this.configuration.getBaseUrl());
-                datamodel.put("analysis", analysis);
-                datamodel.put("fill", fill);
-                template.process(datamodel, response.getWriter());
-            }
-            else {
-                Reader kmlReader = null;
-                Reader xslReader = null;
-                try {
-                    kmlReader = new FileReader(analysis.getAbsoluteResultFilePath());
-                    xslReader = buildXslReader(analysis, fill);
-                    TransformerFactory transformerFactory = TransformerFactory.newInstance();
-                    Transformer transformer = transformerFactory.newTransformer(new StreamSource(xslReader));
-                    transformer.transform(new StreamSource(kmlReader), new StreamResult(response.getOutputStream()));
-                }
-                finally {
-                    IOUtils.closeQuietly(kmlReader);
-                    IOUtils.closeQuietly(xslReader);
-                }
-            }
+        if (!analysis.getResultFeatures().isEmpty()) {
+            Configuration freemarkerConfiguration = new Configuration();
+            DefaultObjectWrapper objectWrapper = new DefaultObjectWrapper();
+            objectWrapper.setExposeFields(true);
+            freemarkerConfiguration.setObjectWrapper(objectWrapper);
+            freemarkerConfiguration.setTemplateLoader(new ClassTemplateLoader(this.getClass(), "/org/oztrack/view"));
+            Template template = freemarkerConfiguration.getTemplate("analysis.kml.ftl");
+            Map<String, Object> datamodel = new HashMap<String, Object>();
+            datamodel.put("baseUrl", this.configuration.getBaseUrl());
+            datamodel.put("analysis", analysis);
+            datamodel.put("fill", fill);
+            template.process(datamodel, response.getWriter());
         }
-        catch (Exception e) {
-            logger.error("Error writing KML response", e);
-            response.setStatus(500);
-            writeResultError(response, "Error writing KML response.");
-            return;
+        else {
+            Reader kmlReader = null;
+            Reader xslReader = null;
+            try {
+                kmlReader = new FileReader(analysis.getAbsoluteResultFilePath());
+                xslReader = buildXslReader(analysis, fill);
+                TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                Transformer transformer = transformerFactory.newTransformer(new StreamSource(xslReader));
+                transformer.transform(new StreamSource(kmlReader), new StreamResult(response.getOutputStream()));
+            }
+            finally {
+                IOUtils.closeQuietly(kmlReader);
+                IOUtils.closeQuietly(xslReader);
+            }
         }
     }
 
@@ -352,104 +388,59 @@ public class AnalysisController {
         return new StringReader(xslBuilder.toString());
     }
 
-    @RequestMapping(value="/projects/{projectId}/analyses/{analysisId}/result.shp.zip", method=RequestMethod.GET, produces="application/zip")
-    @PreAuthorize("permitAll")
-    public void handleResultSHP(
-        Authentication authentication,
-        HttpServletRequest request,
-        HttpServletResponse response,
-        @ModelAttribute(value="analysis") Analysis analysis
-    ) {
-        if (!checkResultPermissionAndStatus(authentication, request, response, analysis)) {
-            return;
-        }
-        if (analysis.getResultFeatures().isEmpty()) {
-            writeResultError(response, "No results found");
-            return;
-        }
-        String fileName = "analysis-" + analysis.getId() + ".shp.zip";
+    private void writeResultShp(HttpServletResponse response, Analysis analysis) throws Exception {
+        String fileName = "analysis-" + analysis.getId() + ".zip";
         response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
         response.setContentType("application/zip");
         response.setCharacterEncoding("UTF-8");
+        AnalysisResultFeatureBuilder featureBuilder = new AnalysisResultFeatureBuilder(analysis);
+        SimpleFeatureCollection featureCollection = featureBuilder.buildFeatureCollection();
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        File tmpFile = File.createTempFile("analysis-" + analysis.getId() + "-", null);
+        File tmpDir = new File(tmpFile.getPath() + "dir");
         try {
-            AnalysisResultFeatureBuilder featureBuilder = new AnalysisResultFeatureBuilder(analysis);
-            SimpleFeatureCollection featureCollection = featureBuilder.buildFeatureCollection();
-            HashMap<String, Object> params = new HashMap<String, Object>();
-            File tmpFile = File.createTempFile("analysis-" + analysis.getId() + "-", null);
-            File tmpDir = new File(tmpFile.getPath() + "dir");
+            tmpDir.mkdir();
+            File shpFile = new File(tmpDir, "analysis-" + analysis.getId() + ".shp");
+            params.put("url", shpFile.toURI().toURL());
+            params.put("charset", Charset.forName("UTF-8"));
+            ShapefileDataStore dataStore = (ShapefileDataStore) (new ShapefileDataStoreFactory()).createNewDataStore(params);
+            dataStore.createSchema(featureCollection.getSchema());
+            Transaction transaction = new DefaultTransaction();
+            String typeName = dataStore.getTypeNames()[0];
+            SimpleFeatureSource featureSource = dataStore.getFeatureSource(typeName);
+            SimpleFeatureStore featureStore = (SimpleFeatureStore) featureSource;
+            featureStore.setTransaction(transaction);
             try {
-                tmpDir.mkdir();
-                File shpFile = new File(tmpDir, "analysis-" + analysis.getId() + ".shp");
-                params.put("url", shpFile.toURI().toURL());
-                params.put("charset", Charset.forName("UTF-8"));
-                ShapefileDataStore dataStore = (ShapefileDataStore) (new ShapefileDataStoreFactory()).createNewDataStore(params);
-                dataStore.createSchema(featureCollection.getSchema());
-                Transaction transaction = new DefaultTransaction();
-                String typeName = dataStore.getTypeNames()[0];
-                SimpleFeatureSource featureSource = dataStore.getFeatureSource(typeName);
-                SimpleFeatureStore featureStore = (SimpleFeatureStore) featureSource;
-                featureStore.setTransaction(transaction);
-                try {
-                    featureStore.addFeatures(featureCollection);
-                    transaction.commit();
-                }
-                catch (Exception e) {
-                    transaction.rollback();
-                    throw e;
-                }
-                finally {
-                    transaction.close();
-                }
-                ZipOutputStream zipOutputStream = new ZipOutputStream(response.getOutputStream());
-                try {
-                    for (String fileURL: new ShpFiles(shpFile).getFileNames().values()) {
-                        File file = new File(URI.create(fileURL));
-                        if (file.exists()) {
-                            ZipEntry zipEntry = new ZipEntry(file.getName());
-                            zipOutputStream.putNextEntry(zipEntry);
-                            IOUtils.copy(new FileInputStream(file), zipOutputStream);
-                            zipOutputStream.closeEntry();
-                        }
+                featureStore.addFeatures(featureCollection);
+                transaction.commit();
+            }
+            catch (Exception e) {
+                transaction.rollback();
+                throw e;
+            }
+            finally {
+                transaction.close();
+            }
+            ZipOutputStream zipOutputStream = new ZipOutputStream(response.getOutputStream());
+            try {
+                for (String fileURL: new ShpFiles(shpFile).getFileNames().values()) {
+                    File file = new File(URI.create(fileURL));
+                    if (file.exists()) {
+                        ZipEntry zipEntry = new ZipEntry(file.getName());
+                        zipOutputStream.putNextEntry(zipEntry);
+                        IOUtils.copy(new FileInputStream(file), zipOutputStream);
+                        zipOutputStream.closeEntry();
                     }
-                }
-                finally {
-                    zipOutputStream.close();
                 }
             }
             finally {
-                try {FileUtils.deleteDirectory(tmpDir);} catch (Exception e) {};
-                try {tmpFile.delete();} catch (Exception e) {};
+                zipOutputStream.close();
             }
         }
-        catch (Exception e) {
-            logger.error("Error writing KML response", e);
-            response.setStatus(500);
-            writeResultError(response, "Error writing KML response.");
-            return;
+        finally {
+            try {FileUtils.deleteDirectory(tmpDir);} catch (Exception e) {};
+            try {tmpFile.delete();} catch (Exception e) {};
         }
-    }
-
-    private boolean checkResultPermissionAndStatus(
-        Authentication authentication,
-        HttpServletRequest request,
-        HttpServletResponse response,
-        Analysis analysis
-    ) {
-        if (!hasPermission(authentication, request, analysis, "read")) {
-            response.setStatus(403);
-            return false;
-        }
-        if (analysis.getStatus() == AnalysisStatus.FAILED) {
-            response.setStatus(500);
-            writeResultError(response, analysis.getMessage());
-            return false;
-        }
-        if ((analysis.getStatus() == AnalysisStatus.NEW) || (analysis.getStatus() == AnalysisStatus.PROCESSING)) {
-            response.setStatus(404);
-            writeResultError(response, "Processing");
-            return false;
-        }
-        return true;
     }
 
     private static void writeResultError(HttpServletResponse response, String error) {
