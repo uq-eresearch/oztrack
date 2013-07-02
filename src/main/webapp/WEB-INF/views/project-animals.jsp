@@ -50,15 +50,7 @@
                     </td>
                     <td style="padding: 5px 5px 0 5px; vertical-align: top;">
                         <p>
-                            <a href="${pageContext.request.contextPath}/animals/${animal.id}" style="text-decoration: none; font-weight: bold; color: #333;"><c:out value="${animal.animalName}"/></a>
-                            <c:if test="${not empty project.speciesCommonName}">
-                            <span style="padding-left: 10px;">
-                                <c:out value="${project.speciesCommonName}"/>
-                                <c:if test="${not empty project.speciesScientificName}">
-                                (<i>${project.speciesScientificName}</i>)
-                                </c:if>
-                            </span>
-                            </c:if>
+                            <a href="${pageContext.request.contextPath}/animals/${animal.id}" style="font-weight: bold;"><c:out value="${animal.animalName}"/></a>
                             <sec:authorize access="hasPermission(#project, 'write')">
                             <span style="padding-left: 10px; font-style: italic;">
                                 <a href="${pageContext.request.contextPath}/animals/${animal.id}/edit"><img src="${pageContext.request.contextPath}/img/page_white_edit.png" /></a>
@@ -72,6 +64,19 @@
                             </span>
                             </sec:authorize>
                         </p>
+                        <c:if test="${not empty project.speciesScientificName || not empty project.speciesCommonName}">
+                        <p style="color: #666;">
+                            <c:if test="${not empty project.speciesScientificName}">
+                            <i><c:out value="${project.speciesScientificName}"/></i>
+                            <c:if test="${not empty project.speciesCommonName}">
+                            <br />
+                            </c:if>
+                            </c:if>
+                            <c:if test="${not empty project.speciesCommonName}">
+                            <c:out value="${project.speciesCommonName}"/>
+                            </c:if>
+                        </p>
+                        </c:if>
                         <c:if test="${not empty animal.animalDescription}">
                         <p>
                             <c:out value="${animal.animalDescription}"/>

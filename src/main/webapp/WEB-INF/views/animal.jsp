@@ -40,11 +40,16 @@
                 </td>
             </tr>
         </table>
-        <c:if test="${not empty project.speciesCommonName}">
-        <p>
-            <c:out value="${project.speciesCommonName}"/>
+        <c:if test="${not empty project.speciesScientificName || not empty project.speciesCommonName}">
+        <p style="color: #666;">
             <c:if test="${not empty project.speciesScientificName}">
-            (<i>${project.speciesScientificName}</i>)
+            <i><c:out value="${project.speciesScientificName}"/></i>
+            <c:if test="${not empty project.speciesCommonName}">
+            <br />
+            </c:if>
+            </c:if>
+            <c:if test="${not empty project.speciesCommonName}">
+            <c:out value="${project.speciesCommonName}"/>
             </c:if>
         </p>
         </c:if>
