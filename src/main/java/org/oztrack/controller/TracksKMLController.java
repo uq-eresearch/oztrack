@@ -31,6 +31,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -82,7 +83,7 @@ public class TracksKMLController {
     }
 
     @RequestMapping(
-        value="/detections",
+        value="/{path:detections|trajectory}",
         method=RequestMethod.GET,
         produces={
             "application/vnd.google-earth.kml+xml",
@@ -90,20 +91,27 @@ public class TracksKMLController {
         }
     )
     @PreAuthorize("hasPermission(#project, 'read')")
-    public View getDetectionsView(
+    public View getView(
         @ModelAttribute(value="project") Project project,
         @ModelAttribute(value="searchQuery") SearchQuery searchQuery,
+        @PathVariable(value="path") String path,
         @RequestParam(value="format", defaultValue="kml") String format
     ) throws Exception {
         searchQuery.setProject(project);
         List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
         if (format.equals("kml")) {
             List<Animal> animals = animalDao.getAnimalsById(searchQuery.getAnimalIds());
-            return new DetectionsKMLView(configuration, animals, positionFixList);
+            return
+                path.equals("detections") ? new DetectionsKMLView(configuration, animals, positionFixList) :
+                path.equals("trajectory") ? new TrajectoryKMLView(configuration, animals, positionFixList) :
+                null;
         }
         else if (format.equals("shp")) {
-            final AnimalDetectionsFeatureBuilder featureBuilder = new AnimalDetectionsFeatureBuilder(positionFixList, true);
-            final SimpleFeatureCollection featureCollection = featureBuilder.buildFeatureCollection();
+            final String baseFileName = path;
+            final SimpleFeatureCollection featureCollection =
+                path.equals("detections") ? (new AnimalDetectionsFeatureBuilder(positionFixList, false)).buildFeatureCollection() :
+                path.equals("trajectory") ? (new AnimalTrajectoryFeatureBuilder(positionFixList)).buildFeatureCollection() :
+                null;
             return new AbstractView() {
                 @Override
                 protected void renderMergedOutputModel(
@@ -112,53 +120,10 @@ public class TracksKMLController {
                     HttpServletResponse response
                 )
                 throws Exception {
-                    response.setHeader("Content-Disposition", "attachment; filename=\"detections.zip\"");
+                    response.setHeader("Content-Disposition", "attachment; filename=\"" + baseFileName + ".zip\"");
                     response.setContentType("application/zip");
                     response.setCharacterEncoding("UTF-8");
-                    ShpUtils.writeShpZip(featureCollection, "detections", response.getOutputStream());
-                }
-            };
-        }
-        else {
-            return null;
-        }
-    }
-
-    @RequestMapping(
-        value="/trajectory",
-        method=RequestMethod.GET,
-        produces={
-            "application/vnd.google-earth.kml+xml",
-            "application/zip"
-        }
-    )
-    @PreAuthorize("hasPermission(#project, 'read')")
-    public View getTrajectoryView(
-        @ModelAttribute(value="project") Project project,
-        @ModelAttribute(value="searchQuery") SearchQuery searchQuery,
-        @RequestParam(value="format", defaultValue="kml") String format
-    ) throws Exception {
-        searchQuery.setProject(project);
-        List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-        if (format.equals("kml")) {
-            List<Animal> animals = animalDao.getAnimalsById(searchQuery.getAnimalIds());
-            return new TrajectoryKMLView(configuration, animals, positionFixList);
-        }
-        else if (format.equals("shp")) {
-            final AnimalTrajectoryFeatureBuilder featureBuilder = new AnimalTrajectoryFeatureBuilder(positionFixList);
-            final SimpleFeatureCollection featureCollection = featureBuilder.buildFeatureCollection();
-            return new AbstractView() {
-                @Override
-                protected void renderMergedOutputModel(
-                    Map<String, Object> model,
-                    HttpServletRequest request,
-                    HttpServletResponse response
-                )
-                throws Exception {
-                    response.setHeader("Content-Disposition", "attachment; filename=\"trajectory.zip\"");
-                    response.setContentType("application/zip");
-                    response.setCharacterEncoding("UTF-8");
-                    ShpUtils.writeShpZip(featureCollection, "trajectory", response.getOutputStream());
+                    ShpUtils.writeShpZip(featureCollection, baseFileName, response.getOutputStream());
                 }
             };
         }
