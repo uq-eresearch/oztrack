@@ -388,7 +388,7 @@
                             spatial data are interpreted as real-world locations on the Earth's surface.
                             The system you select here will be used by the analysis features of OzTrack,
                             such as home range calculators, and will affect the accuracy of results.
-                            Click the link below to select an Australian SRS based on the location of your tracking data.
+                            Click the link below to select an Australian or New Zealand SRS based on the location of your tracking data.
                             If in doubt, enter <tt>EPSG:3577</tt> for the
                             <a target="_blank" href="http://spatialreference.org/ref/epsg/3577/">Australian Albers Equal Area Projection</a>,
                             an Australia-wide system suitable for geoscience and statistical mapping.
@@ -396,7 +396,7 @@
                         <form:input id="srsIdentifier" path="srsIdentifier" type="text" class="input-medium"/>
                         <form:errors path="srsIdentifier" element="div" cssClass="help-block formErrors"/>
                         <div class="help-block">
-                            <a href="javascript:void(0)" onclick="srsSelector.showDialog();">Select Australian SRS</a><br>
+                            <a href="javascript:void(0)" onclick="srsSelector.showDialog();">Select Australian or New Zealand SRS</a><br>
                             <a href="javascript:void(0)" onclick="window.open('http://spatialreference.org/ref/', 'popup', 'width=800,height=600,scrollbars=yes');">Search for international SRS codes</a>
                         </div>
                     </div>
