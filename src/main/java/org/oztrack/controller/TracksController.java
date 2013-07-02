@@ -39,7 +39,7 @@ import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.AbstractView;
 
 @Controller
-public class TracksKMLController {
+public class TracksController {
     protected final Log logger = LogFactory.getLog(getClass());
 
     private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
