@@ -383,7 +383,7 @@
                 <div class="control-group" style="margin-bottom: 9px;">
                     <label class="control-label" for="srsIdentifier">SRS Code</label>
                     <div class="controls">
-                        <p class="help-block" style="margin: 5px 0 18px 0;">
+                        <p class="help-block" style="margin: 5px 0 9px 0;">
                             A <strong>Spatial Reference System (SRS)</strong> specifies how the coordinates used to represent
                             spatial data are interpreted as real-world locations on the Earth's surface.
                             The system you select here will be used by the analysis features of OzTrack,
@@ -392,6 +392,9 @@
                             If in doubt, enter <tt>EPSG:3577</tt> for the
                             <a target="_blank" href="http://spatialreference.org/ref/epsg/3577/">Australian Albers Equal Area Projection</a>,
                             an Australia-wide system suitable for geoscience and statistical mapping.
+                        </p>
+                        <p class="help-block" style="margin: 0 0 18px 0;">
+                            Note: The selected SRS must be in units of metres to support area calculations.
                         </p>
                         <form:input id="srsIdentifier" path="srsIdentifier" type="text" class="input-medium"/>
                         <form:errors path="srsIdentifier" element="div" cssClass="help-block formErrors"/>
