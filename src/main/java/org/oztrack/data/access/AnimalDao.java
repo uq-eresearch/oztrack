@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 public interface AnimalDao {
     int getNumAnimals();
     List<Animal> getAnimalsByProjectId(Long projectId);
-    Animal getAnimal(String animalId, Long projectId);
     Animal getAnimalById(Long id);
+    List<Animal> getAnimalsById(List<Long> ids);
     void save(Animal object);
     Animal update(Animal object);
     void delete(Animal animal);

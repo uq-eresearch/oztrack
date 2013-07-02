@@ -1447,6 +1447,7 @@
                         layer.getTitle(),
                         layer.id,
                         animalId,
+                        layerAnimalIds,
                         fromDate,
                         toDate,
                         layerAttrs
@@ -1572,6 +1573,7 @@
                         layer.getTitle(),
                         layer.id,
                         animalId,
+                        layerAnimalIds,
                         fromDate,
                         toDate,
                         layerAttrs
@@ -1671,6 +1673,7 @@
                         startEndLayer.name,
                         startEndLayerId,
                         feature.attributes.animalId,
+                        [feature.attributes.animalId],
                         feature.attributes.fromDate,
                         feature.attributes.toDate,
                         {}

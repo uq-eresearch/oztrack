@@ -1,5 +1,6 @@
 package org.oztrack.data.access.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -41,28 +42,32 @@ public class AnimalDaoImpl implements AnimalDao {
     }
 
     @Override
-    public Animal getAnimal(String animalId, Long projectId) {
-        Query query = em.createQuery("select o from Animal o where o.project.id=:projectId and o.projectAnimalId=:animalId");
-        query.setParameter("projectId", projectId);
-        query.setParameter("animalId", animalId);
-        try {
-            return (Animal) query.getSingleResult();
-        } catch (NoResultException ex) {
-            return null;
-        }
-
+    public Animal getAnimalById(Long id) {
+        @SuppressWarnings("unchecked")
+        List<Animal> resultList = em
+            .createQuery("from Animal where id = :id")
+            .setParameter("id", id)
+            .getResultList();
+        return resultList.isEmpty() ? null : resultList.get(0);
     }
 
     @Override
-    public Animal getAnimalById(Long id) {
-        Query query = em.createQuery("SELECT o FROM Animal o WHERE o.id = :id");
-        query.setParameter("id", id);
-        try {
-            return (Animal) query.getSingleResult();
-        } catch (NoResultException ex) {
-            return null;
+    public List<Animal> getAnimalsById(List<Long> ids) {
+        @SuppressWarnings("unchecked")
+        List<Animal> resultList = em
+            .createQuery("from Animal where id in :ids")
+            .setParameter("ids", ids)
+            .getResultList();
+        ArrayList<Animal> orderedList = new ArrayList<Animal>(ids.size());
+        for (Long id : ids) {
+            for (Animal animal : resultList) {
+                if (animal.getId().equals(id)) {
+                    orderedList.add(animal);
+                    break;
+                }
+            }
         }
-
+        return orderedList;
     }
 
     @Override

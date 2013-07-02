@@ -1,7 +1,6 @@
 package org.oztrack.controller;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -10,11 +9,13 @@ import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.PositionFixDao;
+import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
+import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
-import org.oztrack.view.AnimalDetectionsKMLView;
-import org.oztrack.view.AnimalTrajectoryKMLView;
+import org.oztrack.view.DetectionsKMLView;
+import org.oztrack.view.TrajectoryKMLView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.View;
 
 @Controller
-public class AnimalKMLController {
+public class TracksKMLController {
     protected final Log logger = LogFactory.getLog(getClass());
 
     private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -37,28 +38,32 @@ public class AnimalKMLController {
     private OzTrackConfiguration configuration;
 
     @Autowired
+    private ProjectDao projectDao;
+
+    @Autowired
     private AnimalDao animalDao;
 
     @Autowired
     private PositionFixDao positionFixDao;
 
-    @InitBinder("animal")
-    public void initAnimalBinder(WebDataBinder binder) {
+    @InitBinder("project")
+    public void initProjectBinder(WebDataBinder binder) {
         binder.setAllowedFields();
+    }
+
+    @ModelAttribute("project")
+    public Project getProject(@RequestParam(value="projectId") Long projectId) {
+        return projectDao.getProjectById(projectId);
     }
 
     @InitBinder
     public void initSearchQueryBinder(WebDataBinder binder) {
         binder.setAllowedFields(
             "fromDate",
-            "toDate"
+            "toDate",
+            "animalIds"
         );
         binder.registerCustomEditor(Date.class, new CustomDateEditor(isoDateFormat, true));
-    }
-
-    @ModelAttribute("animal")
-    public Animal getAnimal(@RequestParam(value="animalId") Long animalId) {
-        return animalDao.getAnimalById(animalId);
     }
 
     @ModelAttribute("searchQuery")
@@ -68,26 +73,26 @@ public class AnimalKMLController {
     }
 
     @RequestMapping(value="/detections", method=RequestMethod.GET)
-    @PreAuthorize("hasPermission(#animal.project, 'read')")
+    @PreAuthorize("hasPermission(#project, 'read')")
     public View getDetectionsView(
-        @ModelAttribute(value="animal") Animal animal,
+        @ModelAttribute(value="project") Project project,
         @ModelAttribute(value="searchQuery") SearchQuery searchQuery
     ) throws Exception {
-        searchQuery.setProject(animal.getProject());
-        searchQuery.setAnimalIds(Arrays.asList(animal.getId()));
+        searchQuery.setProject(project);
+        List<Animal> animals = animalDao.getAnimalsById(searchQuery.getAnimalIds());
         List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-        return new AnimalDetectionsKMLView(configuration, animal, positionFixList);
+        return new DetectionsKMLView(configuration, animals, positionFixList);
     }
 
     @RequestMapping(value="/trajectory", method=RequestMethod.GET)
-    @PreAuthorize("hasPermission(#animal.project, 'read')")
+    @PreAuthorize("hasPermission(#project, 'read')")
     public View getTrajectoryView(
-        @ModelAttribute(value="animal") Animal animal,
+        @ModelAttribute(value="project") Project project,
         @ModelAttribute(value="searchQuery") SearchQuery searchQuery
     ) throws Exception {
-        searchQuery.setProject(animal.getProject());
-        searchQuery.setAnimalIds(Arrays.asList(animal.getId()));
+        searchQuery.setProject(project);
+        List<Animal> animals = animalDao.getAnimalsById(searchQuery.getAnimalIds());
         List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-        return new AnimalTrajectoryKMLView(configuration, animal, positionFixList);
+        return new TrajectoryKMLView(configuration, animals, positionFixList);
     }
 }

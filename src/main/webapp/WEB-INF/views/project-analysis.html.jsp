@@ -386,7 +386,7 @@
                         $('#projectMapCancel').fadeOut().prev().prop('disabled', false);
                         $('a[href="#animalPanel"]').trigger('click');
                     },
-                    onUpdateAnimalInfoFromLayer: function(layerName, layerId, animalId, fromDate, toDate, layerAttrs) {
+                    onUpdateAnimalInfoFromLayer: function(layerName, layerId, animalId, animalIds, fromDate, toDate, layerAttrs) {
                         var html = '<div class="layerInfoTitle">';
                         html += '<a class="layer-delete" href="javascript:analysisMap.deleteProjectMapLayer(' + layerId + ');">delete</a></span>';
                         html += layerName;
@@ -410,7 +410,8 @@
                             var exportKmlUrl =
                                 '${pageContext.request.contextPath}/' +
                                 ((layerName == 'Detections') ? 'detections' : 'trajectory') +
-                                '?animalId=' + animalId +
+                                '?projectId=' + ${project.id} +
+                                '&animalIds=' + animalIds.join(',') +
                                 '&fromDate=' + fromDate +
                                 '&toDate=' + toDate;
                             exportHtml += '<a class="icon kml" href="' + exportKmlUrl + '">KML</a>';
