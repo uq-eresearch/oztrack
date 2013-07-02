@@ -71,12 +71,10 @@ public class AnimalDetectionsFeatureBuilder {
                 }
                 animalDetections.toDate = positionFix.getDetectionTime();
             }
-            if (positionFix.getDeleted()) {
-                animalDetections.deletedCoordinates.add(positionFix.getLocationGeometry().getCoordinate());
-            }
-            else {
-                animalDetections.nondeletedCoordinates.add(positionFix.getLocationGeometry().getCoordinate());
-            }
+            List<Coordinate> coordinates = positionFix.getDeleted()
+                ? animalDetections.deletedCoordinates
+                : animalDetections.nondeletedCoordinates;
+            coordinates.add(positionFix.getLocationGeometry().getCoordinate());
         }
         return animalDetectionsList;
     }
@@ -88,7 +86,9 @@ public class AnimalDetectionsFeatureBuilder {
         featureTypeBuilder.add("animalId", Long.class);
         featureTypeBuilder.add("fromDate", String.class);
         featureTypeBuilder.add("toDate", String.class);
-        featureTypeBuilder.add("deleted", Boolean.class);
+        if (includeDeleted) {
+            featureTypeBuilder.add("deleted", Boolean.class);
+        }
         featureTypeBuilder.add("multiPoint", MultiPoint.class, srid);
         SimpleFeatureType featureType = featureTypeBuilder.buildFeatureType();
         return featureType;
@@ -99,10 +99,15 @@ public class AnimalDetectionsFeatureBuilder {
         featureBuilder.set("animalId", animalDetections.animal.getId());
         featureBuilder.set("fromDate", (animalDetections.fromDate == null) ? null : isoDateFormat.format(animalDetections.fromDate));
         featureBuilder.set("toDate", (animalDetections.toDate == null) ? null : isoDateFormat.format(animalDetections.toDate));
-        featureBuilder.set("deleted", deleted);
+        if (includeDeleted) {
+            featureBuilder.set("deleted", deleted);
+        }
         List<Coordinate> coordinates = deleted ? animalDetections.deletedCoordinates : animalDetections.nondeletedCoordinates;
         featureBuilder.set("multiPoint", geometryFactory.createMultiPoint(coordinates.toArray(new Coordinate[] {})));
-        String featureId = animalDetections.animal.getId().toString() + "-" + (deleted ? "deleted" : "nondeleted");
+        String featureId = animalDetections.animal.getId().toString();
+        if (includeDeleted) {
+             featureId += "-" + (deleted ? "deleted" : "nondeleted");
+        }
         return featureBuilder.buildFeature(featureId);
     }
 }
