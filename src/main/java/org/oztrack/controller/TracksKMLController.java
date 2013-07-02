@@ -3,9 +3,14 @@ package org.oztrack.controller;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.geotools.data.simple.SimpleFeatureCollection;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.PositionFixDao;
@@ -14,6 +19,9 @@ import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
+import org.oztrack.util.ShpUtils;
+import org.oztrack.view.AnimalDetectionsFeatureBuilder;
+import org.oztrack.view.AnimalTrajectoryFeatureBuilder;
 import org.oztrack.view.DetectionsKMLView;
 import org.oztrack.view.TrajectoryKMLView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.AbstractView;
 
 @Controller
 public class TracksKMLController {
@@ -72,27 +81,89 @@ public class TracksKMLController {
         return searchQuery;
     }
 
-    @RequestMapping(value="/detections", method=RequestMethod.GET, produces="application/vnd.google-earth.kml+xml")
+    @RequestMapping(
+        value="/detections",
+        method=RequestMethod.GET,
+        produces={
+            "application/vnd.google-earth.kml+xml",
+            "application/zip"
+        }
+    )
     @PreAuthorize("hasPermission(#project, 'read')")
     public View getDetectionsView(
         @ModelAttribute(value="project") Project project,
-        @ModelAttribute(value="searchQuery") SearchQuery searchQuery
+        @ModelAttribute(value="searchQuery") SearchQuery searchQuery,
+        @RequestParam(value="format", defaultValue="kml") String format
     ) throws Exception {
         searchQuery.setProject(project);
-        List<Animal> animals = animalDao.getAnimalsById(searchQuery.getAnimalIds());
         List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-        return new DetectionsKMLView(configuration, animals, positionFixList);
+        if (format.equals("kml")) {
+            List<Animal> animals = animalDao.getAnimalsById(searchQuery.getAnimalIds());
+            return new DetectionsKMLView(configuration, animals, positionFixList);
+        }
+        else if (format.equals("shp")) {
+            final AnimalDetectionsFeatureBuilder featureBuilder = new AnimalDetectionsFeatureBuilder(positionFixList, true);
+            final SimpleFeatureCollection featureCollection = featureBuilder.buildFeatureCollection();
+            return new AbstractView() {
+                @Override
+                protected void renderMergedOutputModel(
+                    Map<String, Object> model,
+                    HttpServletRequest request,
+                    HttpServletResponse response
+                )
+                throws Exception {
+                    response.setHeader("Content-Disposition", "attachment; filename=\"detections.zip\"");
+                    response.setContentType("application/zip");
+                    response.setCharacterEncoding("UTF-8");
+                    ShpUtils.writeShpZip(featureCollection, "detections", response.getOutputStream());
+                }
+            };
+        }
+        else {
+            return null;
+        }
     }
 
-    @RequestMapping(value="/trajectory", method=RequestMethod.GET, produces="application/vnd.google-earth.kml+xml")
+    @RequestMapping(
+        value="/trajectory",
+        method=RequestMethod.GET,
+        produces={
+            "application/vnd.google-earth.kml+xml",
+            "application/zip"
+        }
+    )
     @PreAuthorize("hasPermission(#project, 'read')")
     public View getTrajectoryView(
         @ModelAttribute(value="project") Project project,
-        @ModelAttribute(value="searchQuery") SearchQuery searchQuery
+        @ModelAttribute(value="searchQuery") SearchQuery searchQuery,
+        @RequestParam(value="format", defaultValue="kml") String format
     ) throws Exception {
         searchQuery.setProject(project);
-        List<Animal> animals = animalDao.getAnimalsById(searchQuery.getAnimalIds());
         List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-        return new TrajectoryKMLView(configuration, animals, positionFixList);
+        if (format.equals("kml")) {
+            List<Animal> animals = animalDao.getAnimalsById(searchQuery.getAnimalIds());
+            return new TrajectoryKMLView(configuration, animals, positionFixList);
+        }
+        else if (format.equals("shp")) {
+            final AnimalTrajectoryFeatureBuilder featureBuilder = new AnimalTrajectoryFeatureBuilder(positionFixList);
+            final SimpleFeatureCollection featureCollection = featureBuilder.buildFeatureCollection();
+            return new AbstractView() {
+                @Override
+                protected void renderMergedOutputModel(
+                    Map<String, Object> model,
+                    HttpServletRequest request,
+                    HttpServletResponse response
+                )
+                throws Exception {
+                    response.setHeader("Content-Disposition", "attachment; filename=\"trajectory.zip\"");
+                    response.setContentType("application/zip");
+                    response.setCharacterEncoding("UTF-8");
+                    ShpUtils.writeShpZip(featureCollection, "trajectory", response.getOutputStream());
+                }
+            };
+        }
+        else {
+            return null;
+        }
     }
 }

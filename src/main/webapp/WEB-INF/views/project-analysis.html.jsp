@@ -407,14 +407,15 @@
                         }
                         var exportHtml = '';
                         if ((layerName == 'Detections') || (layerName == 'Trajectory')) {
-                            var exportKmlUrl =
+                            var exportBaseUrl =
                                 '${pageContext.request.contextPath}/' +
                                 ((layerName == 'Detections') ? 'detections' : 'trajectory') +
                                 '?projectId=' + ${project.id} +
                                 '&animalIds=' + animalIds.join(',') +
                                 '&fromDate=' + fromDate +
                                 '&toDate=' + toDate;
-                            exportHtml += '<a class="icon kml" href="' + exportKmlUrl + '">KML</a>';
+                            exportHtml += '<a class="icon kml" href="' + exportBaseUrl + '&format=kml">KML</a>, ';
+                            exportHtml += '<a class="icon shp" href="' + exportBaseUrl + '&format=shp">SHP</a>';
                         }
                         if (exportHtml != '') {
                             html += '<div class="layerInfoExport">Download: ' + exportHtml + '</div>';

@@ -1,22 +1,17 @@
 package org.oztrack.controller;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
-import java.net.URI;
-import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -25,19 +20,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.geotools.data.DefaultTransaction;
-import org.geotools.data.Transaction;
-import org.geotools.data.shapefile.ShapefileDataStore;
-import org.geotools.data.shapefile.ShapefileDataStoreFactory;
-import org.geotools.data.shapefile.ShpFiles;
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.simple.SimpleFeatureSource;
-import org.geotools.data.simple.SimpleFeatureStore;
 import org.json.JSONException;
 import org.json.JSONWriter;
 import org.oztrack.app.OzTrackConfiguration;
@@ -47,6 +34,7 @@ import org.oztrack.data.model.AnalysisParameter;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.AnalysisStatus;
+import org.oztrack.util.ShpUtils;
 import org.oztrack.view.AnalysisResultFeatureBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -389,58 +377,15 @@ public class AnalysisController {
     }
 
     private void writeResultShp(HttpServletResponse response, Analysis analysis) throws Exception {
-        String fileName = "analysis-" + analysis.getId() + ".zip";
+        String baseFileName = "analysis-" + analysis.getId();
+        String fileName = baseFileName + ".zip";
         response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
         response.setContentType("application/zip");
         response.setCharacterEncoding("UTF-8");
         AnalysisResultFeatureBuilder featureBuilder = new AnalysisResultFeatureBuilder(analysis);
         SimpleFeatureCollection featureCollection = featureBuilder.buildFeatureCollection();
-        HashMap<String, Object> params = new HashMap<String, Object>();
-        File tmpFile = File.createTempFile("analysis-" + analysis.getId() + "-", null);
-        File tmpDir = new File(tmpFile.getPath() + "dir");
-        try {
-            tmpDir.mkdir();
-            File shpFile = new File(tmpDir, "analysis-" + analysis.getId() + ".shp");
-            params.put("url", shpFile.toURI().toURL());
-            params.put("charset", Charset.forName("UTF-8"));
-            ShapefileDataStore dataStore = (ShapefileDataStore) (new ShapefileDataStoreFactory()).createNewDataStore(params);
-            dataStore.createSchema(featureCollection.getSchema());
-            Transaction transaction = new DefaultTransaction();
-            String typeName = dataStore.getTypeNames()[0];
-            SimpleFeatureSource featureSource = dataStore.getFeatureSource(typeName);
-            SimpleFeatureStore featureStore = (SimpleFeatureStore) featureSource;
-            featureStore.setTransaction(transaction);
-            try {
-                featureStore.addFeatures(featureCollection);
-                transaction.commit();
-            }
-            catch (Exception e) {
-                transaction.rollback();
-                throw e;
-            }
-            finally {
-                transaction.close();
-            }
-            ZipOutputStream zipOutputStream = new ZipOutputStream(response.getOutputStream());
-            try {
-                for (String fileURL: new ShpFiles(shpFile).getFileNames().values()) {
-                    File file = new File(URI.create(fileURL));
-                    if (file.exists()) {
-                        ZipEntry zipEntry = new ZipEntry(file.getName());
-                        zipOutputStream.putNextEntry(zipEntry);
-                        IOUtils.copy(new FileInputStream(file), zipOutputStream);
-                        zipOutputStream.closeEntry();
-                    }
-                }
-            }
-            finally {
-                zipOutputStream.close();
-            }
-        }
-        finally {
-            try {FileUtils.deleteDirectory(tmpDir);} catch (Exception e) {};
-            try {tmpFile.delete();} catch (Exception e) {};
-        }
+        ServletOutputStream out = response.getOutputStream();
+        ShpUtils.writeShpZip(featureCollection, baseFileName, out);
     }
 
     private static void writeResultError(HttpServletResponse response, String error) {
