@@ -72,7 +72,7 @@ public class TracksKMLController {
         return searchQuery;
     }
 
-    @RequestMapping(value="/detections", method=RequestMethod.GET)
+    @RequestMapping(value="/detections", method=RequestMethod.GET, produces="application/vnd.google-earth.kml+xml")
     @PreAuthorize("hasPermission(#project, 'read')")
     public View getDetectionsView(
         @ModelAttribute(value="project") Project project,
@@ -84,7 +84,7 @@ public class TracksKMLController {
         return new DetectionsKMLView(configuration, animals, positionFixList);
     }
 
-    @RequestMapping(value="/trajectory", method=RequestMethod.GET)
+    @RequestMapping(value="/trajectory", method=RequestMethod.GET, produces="application/vnd.google-earth.kml+xml")
     @PreAuthorize("hasPermission(#project, 'read')")
     public View getTrajectoryView(
         @ModelAttribute(value="project") Project project,
