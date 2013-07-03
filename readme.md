@@ -33,7 +33,7 @@ and `libproj-dev`, also required by `rgdal`:
 
     sudo apt-get install libgeos-dev libgdal1-dev libproj-dev
 
-### Installing R (including Rserve)
+### Installing R (including Rserve and other packages)
 
 Install R:
 
@@ -66,6 +66,30 @@ Install the R packages used by OzTrack, including Rserve:
         dependencies=TRUE
     )
 
+### Installing GeoServer
+
+[GeoServer](http://geoserver.org/) is an open-source GIS server used to render map layers in OzTrack.
+
+OzTrack has been tested with GeoServer version 2.3.1, which can be downloaded from <http://geoserver.org/display/GEOS/GeoServer+2.3.1>.
+
+For complete installation instructions, see the [GeoServer user manual](http://docs.geoserver.org/stable/en/user/).
+
+The following commands install the GeoServer WAR file to Tomcat:
+
+    sudo apt-get install tomcat6
+    sudo service tomcat6 stop
+    unzip -d /tmp/geoserver /tmp/geoserver-2.3.1-war.zip
+    sudo unzip -d /var/lib/tomcat6/webapps/geoserver/ /tmp/geoserver/geoserver.war 
+    sudo chown -R tomcat6: /var/lib/tomcat6/webapps/geoserver/
+    sudo service tomcat6 start
+
+Log in to the GeoServer web administation interface at <http://localhost:8080/geoserver/web/>
+using the default username/password of "admin"/"geoserver" and follow the instructions for configuring security.
+
+### Completing installation
+
+See the *Installing and configuring OzTrack* section below.
+
 ## Installing on Red Hat Linux
 
 ### Setting up the database
@@ -78,7 +102,7 @@ To install PostgreSQL, use the following commands:
 
 To install PostGIS, you need the EPEL repository. The URL used in the
 following command depends on the version of Red Hat that you're running: see
-instructions on http://fedoraproject.org/wiki/EPEL.
+instructions on <http://fedoraproject.org/wiki/EPEL>.
 
     rpm -Uvh 'http://mirror.iprimus.com.au/epel/6/i386/epel-release-6-7.noarch.rpm'
     yum install postgis
@@ -118,7 +142,7 @@ Run something like the following commands:
 
     # Our own tables should be created on first run by Hibernate
 
-See http://postgis.refractions.net/documentation/manual-1.5/ch02.html#id2565921
+See <http://postgis.refractions.net/documentation/manual-1.5/ch02.html#id2565921>
 
 ### Installing GIS Packages
 
@@ -126,7 +150,7 @@ These packages are required for both PostGIS and R spatial functionality.
 
 First, add the Enterprise Linux GIS (ELGIS) yum repository. The URL used in the
 following command depends on the version of Red Hat that you're running: see
-instructions on http://elgis.argeo.org/.
+instructions on <http://elgis.argeo.org/>.
 
     rpm -Uvh http://elgis.argeo.org/repos/6/elgis-release-6-6_0.noarch.rpm
 
@@ -142,7 +166,7 @@ To test successful installation, on the commmand line you should get a response 
     gdal-config
     proj
 
-### Installing R (including Rserve)
+### Installing R (including Rserve and other packages)
 
 You can just install R from the EPEL package repository on CentOS:
 
@@ -185,47 +209,66 @@ You will need the `gdal` Red Hat package installed in order to install the
 `rgdal` R package (ie run `yum install gdal`). You'll also need the `libxml2-devel`
 Red Hat package installed before installing the `plotKML` R package.
 
-## General notes
+### Installing GeoServer
 
-### Running Rserve
+[GeoServer](http://geoserver.org/) is an open-source GIS server used to render map layers in OzTrack.
 
-To run the Rserve daemon, execute the following from your Linux console:
+OzTrack has been tested with GeoServer version 2.3.1, which can be downloaded from http://geoserver.org/display/GEOS/GeoServer+2.3.1.
 
-    R CMD Rserve
+For complete installation instructions, see the [GeoServer user manual](http://docs.geoserver.org/stable/en/user/).
 
-The resulting Rserve process will listen on port 6311.
+The following commands install the GeoServer WAR file to Tomcat:
 
-See http://www.rforge.net/Rserve/faq.html#start
+    sudo apt-get install tomcat6
+    sudo service tomcat6 stop
+    unzip -d /tmp/geoserver /tmp/geoserver-2.3.1-war.zip
+    sudo unzip -d /var/lib/tomcat6/webapps/geoserver/ /tmp/geoserver/geoserver.war 
+    sudo chown -R tomcat: /var/lib/tomcat6/webapps/geoserver/
+    sudo service tomcat6 start
 
-### Setting up Properties
+Log in to the GeoServer web administation interface at http://localhost:8080/geoserver/web/
+using the default username/password of "admin"/"geoserver" and follow the instructions for configuring security.
 
-The `application.properties` file contains some important values that need to be
-set for OzTrack to run correctly.
+### Completing installation
 
-* `dataDir`: Used to store files. Ensure that such a directory is available and
-  can be written to.
-* `dataSpaceUrl`: This is the URL that project collection records will be written
-  to. A username and password must be provided in this file for the functionality
-  to work.
+See the *Installing and configuring OzTrack* section below.
 
-To create the data directory for OzTrack with appropriate ownership:
+## Installing and configuring OzTrack
 
-    sudo mkdir /var/local/oztrack
-    sudo chown $USER: /var/local/oztrack # or chown tomcat, etc
+### Installing OzTrack
 
-To set the `dataDir` property in `application.properties`:
+OzTrack can be compiled from source into a WAR file by running `mvn package`.
 
-    --- src/main/resources/conf/properties/application.properties.1 2012-05-01 19:19:40.154649903 +1000
-    +++ src/main/resources/conf/properties/application.properties   2012-05-01 19:19:49.954698504 +1000
-    @@ -4,7 +4,7 @@
-     application.title=OzTrack
-     application.email=placeholder@test
-     application.rights=All Rights reserved
-    -application.dataDir=
-    +application.dataDir=/var/local/oztrack
-     dataSpaceUrl=http://dataspace-uat.metadata.net/
-     dataSpaceUsername=
-     dataSpacePassword=alternatively,
+The OzTrack WAR file can be run using any Java Servlet container.
+
+Alternatively, it can be run as a normal Java application via the `org.oztrack.app.OzTrackJettyServer` class.
+
+### Configuring OzTrack
+
+OzTrack can be configured via a range of properties. The `application.properties` file included in the
+distribution contains the complete list of properties together with their default values.
+
+To override these default values, either edit `application.properties` or supply values via Java system properties.
+
+System properties can be set as arguments to the `java` command (i.e. `java -Dapplication.dataDir=/var/local/oztrack ...`).
+When deploying to Tomcat, these arguments can be added to the `JAVA_OPTS` variable used in the startup script.
+
+The following are key properties that should be configured for all applications:
+
+* `application.baseUrl`: Base URL for the deployed application, minus trailing slash (default "http://localhost").
+* `application.dataDir`: Directory used to store tracking data files - ensure that this directory exists and can be written to by the application (default "/var/local/oztrack").
+* `application.databaseUsername`: Username for PostgreSQL database (default "oztrack").
+* `application.databasePassword`: Password for PostgreSQL database (default "changeme" - replace with configured password).
+* `application.geoServerUsername`: Username for Geoserver admin user (default "admin").
+* `application.geoServerPassword`: Password for GeoServer admin user (default "changeme" - replace with configured password).
+* `application.mailServerHostName`: SMTP host name for sending mail notifications (no default value).
+* `application.mailServerPort`: SMTP host port number for sending mail notifications (no default value).
+* `application.mailFromName`: Name in From field for mail notifications (default "OzTrack").
+* `application.mailFromEmail`: Email address in From field for mail notifications (no default value).
+
+OzTrack automatically configures layers in GeoServer. Login to OzTrack as admin, go to `/settings/geoserver`, and click the 'Update GeoServer' button.
+
+## Developer notes
 
 ### Upgrading jQuery UI theme
 
