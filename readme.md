@@ -249,22 +249,21 @@ OzTrack can be configured via a range of properties. The `application.properties
 distribution contains the complete list of properties together with their default values.
 
 To override these default values, either edit `application.properties` or supply values via Java system properties.
-
-System properties can be set as arguments to the `java` command (i.e. `java -Dapplication.dataDir=/var/local/oztrack ...`).
-When deploying to Tomcat, these arguments can be added to the `JAVA_OPTS` variable used in the startup script.
+System properties can be set as arguments to the `java` command (e.g. `-Dapplication.dataDir=/var/local/oztrack`).
+When deploying to Tomcat, arguments can be added to the `JAVA_OPTS` variable used in the startup script.
 
 The following are key properties that should be configured for all applications:
 
-* `application.baseUrl`: Base URL for the deployed application, minus trailing slash (default "http://localhost").
 * `application.dataDir`: Directory used to store tracking data files - ensure that this directory exists and can be written to by the application (default "/var/local/oztrack").
 * `application.databaseUsername`: Username for PostgreSQL database (default "oztrack").
-* `application.databasePassword`: Password for PostgreSQL database (default "changeme" - replace with configured password).
+* `application.databasePassword`: Password for PostgreSQL database.
 * `application.geoServerUsername`: Username for Geoserver admin user (default "admin").
-* `application.geoServerPassword`: Password for GeoServer admin user (default "changeme" - replace with configured password).
-* `application.mailServerHostName`: SMTP host name for sending mail notifications (no default value).
-* `application.mailServerPort`: SMTP host port number for sending mail notifications (no default value).
+* `application.geoServerPassword`: Password for GeoServer admin user.
+* `application.baseUrl`: Base URL for application, minus trailing slash (default "http://localhost").
+* `application.mailServerHostName`: SMTP host name for sending mail notifications.
+* `application.mailServerPort`: SMTP host port number for sending mail notifications.
 * `application.mailFromName`: Name in From field for mail notifications (default "OzTrack").
-* `application.mailFromEmail`: Email address in From field for mail notifications (no default value).
+* `application.mailFromEmail`: Email address in From field for mail notifications.
 
 OzTrack automatically configures layers in GeoServer. Login to OzTrack as admin, go to `/settings/geoserver`, and click the 'Update GeoServer' button.
 
