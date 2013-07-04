@@ -39,9 +39,9 @@ Install the following packages:
 ### Installing R (including Rserve and other packages)
 
 Install R.
-OzTrack has been tested with R version 2.15.2.
+OzTrack has been tested with R versions 2.15.2 and 3.0.1.
 
-    sudo apt-get install r-base
+    sudo apt-get install r-base-core --no-install-recommends
 
 Install the R packages used by OzTrack, including Rserve.
 Note that the following command takes a while (e.g. 10 minutes) because it
@@ -186,7 +186,7 @@ Install the following packages:
 ### Installing R (including Rserve and other packages)
 
 Install R from the EPEL repository.
-OzTrack has been tested with R version 2.15.2.
+OzTrack has been tested with R versions 2.15.2 and 3.0.1.
 
     sudo yum install R
 
