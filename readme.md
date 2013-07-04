@@ -30,9 +30,9 @@ Setup the OzTrack database, including PostGIS:
 
 Install the following packages:
 
-* `libgdal-dev`: required by `rgdal` R package;
+* `libgdal-dev`: required by `rgdal` R package.
 * `libproj-dev`: required by `rgdal` R package.
-* `libxml2-devel`: required by `plotKML` R package.
+* `libxml2-dev`: required by `plotKML` R package.
 
     sudo apt-get install libgdal-dev libproj-dev libxml2-dev
 
@@ -73,7 +73,6 @@ downloads, compiles, tests, and installs a large number of dependencies.
 
 [GeoServer](http://geoserver.org/) is an open-source GIS server used to render map layers in OzTrack.
 OzTrack has been tested with [GeoServer version 2.3.1](http://geoserver.org/display/GEOS/GeoServer+2.3.1).
-
 For complete installation instructions, see the [GeoServer user manual](http://docs.geoserver.org/stable/en/user/).
 
 The following commands install the GeoServer WAR distribution to Tomcat:
@@ -159,8 +158,8 @@ instructions on <http://elgis.argeo.org/>.
 
 Install the following packages:
 
-* `gdal-devel`: required by `rgdal` R package;
-* `proj-devel`: required by `rgdal` R package;
+* `gdal-devel`: required by `rgdal` R package.
+* `proj-devel`: required by `rgdal` R package.
 * `libxml2-devel`: required by `plotKML` R package.
 
     sudo yum install gdal-devel proj-devel libxml2-devel
@@ -202,7 +201,6 @@ downloads, compiles, tests, and installs a large number of dependencies.
 
 [GeoServer](http://geoserver.org/) is an open-source GIS server used to render map layers in OzTrack.
 OzTrack has been tested with [GeoServer version 2.3.1](http://geoserver.org/display/GEOS/GeoServer+2.3.1).
-
 For complete installation instructions, see the [GeoServer user manual](http://docs.geoserver.org/stable/en/user/).
 
 The following commands install the GeoServer WAR distribution to Tomcat:
