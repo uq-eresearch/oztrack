@@ -34,7 +34,7 @@ Install the following packages:
 * `libproj-dev`: required by `rgdal` R package.
 * `libxml2-dev`: required by `plotKML` R package.
 
-    sudo apt-get install libgdal-dev libproj-dev libxml2-dev
+<pre>sudo apt-get install libgdal-dev libproj-dev libxml2-dev</pre>
 
 ### Installing R (including Rserve and other packages)
 
@@ -81,7 +81,7 @@ The following commands install the GeoServer WAR distribution to Tomcat:
     wget 'http://downloads.sourceforge.net/geoserver/geoserver-2.3.1-war.zip' -P /tmp/
     unzip -d /tmp/geoserver /tmp/geoserver-2.3.1-war.zip
     sudo service tomcat6 stop
-    sudo unzip -d /var/lib/tomcat6/webapps/geoserver/ /tmp/geoserver/geoserver.war 
+    sudo unzip -d /var/lib/tomcat6/webapps/geoserver/ /tmp/geoserver/geoserver.war
     sudo chown -R tomcat6: /var/lib/tomcat6/webapps/geoserver/
     sudo service tomcat6 start
 
@@ -162,8 +162,8 @@ Install the following packages:
 * `proj-devel`: required by `rgdal` R package.
 * `libxml2-devel`: required by `plotKML` R package.
 
-    sudo yum install gdal-devel proj-devel libxml2-devel
- 
+<pre>sudo yum install gdal-devel proj-devel libxml2-devel</pre>
+
 ### Installing R (including Rserve and other packages)
 
 Install R from the EPEL repository.
@@ -209,7 +209,7 @@ The following commands install the GeoServer WAR distribution to Tomcat:
     wget 'http://downloads.sourceforge.net/geoserver/geoserver-2.3.1-war.zip' -P /tmp/
     unzip -d /tmp/geoserver /tmp/geoserver-2.3.1-war.zip
     sudo service tomcat6 stop
-    sudo unzip -d /var/lib/tomcat6/webapps/geoserver/ /tmp/geoserver/geoserver.war 
+    sudo unzip -d /var/lib/tomcat6/webapps/geoserver/ /tmp/geoserver/geoserver.war
     sudo chown -R tomcat: /var/lib/tomcat6/webapps/geoserver/
     sudo service tomcat6 start
 
