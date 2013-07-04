@@ -252,7 +252,15 @@ The following are key properties that should be configured for all applications:
 * `application.mailFromName`: Name in From field for mail notifications (default "OzTrack").
 * `application.mailFromEmail`: Email address in From field for mail notifications.
 
-OzTrack automatically configures layers in GeoServer. Log in to OzTrack as admin, go to `/settings/geoserver`, and click the 'Update GeoServer' button.
+OzTrack defines a default admin user with the username/password "admin"/"oztrack".
+To log into OzTrack, click the 'Login' button at the top-right of screen. You should change the default
+admin password immediately by selecting 'Edit profile' from within the user menu at the top-right of screen.
+
+The admin user, unlike ordinary users in OzTrack, also has a 'Settings' link under the user menu;
+the settings page allows various aspects of the OzTrack application to be configured.
+
+OzTrack automatically creates and updates layers in GeoServer.
+Log in to OzTrack as admin, go the Settings page, and click the 'Update GeoServer' button.
 
 ## Developer notes
 
