@@ -88,6 +88,25 @@ The following commands install the GeoServer WAR distribution to Tomcat:
 Log in to the GeoServer web administation interface at <http://localhost:8080/geoserver/web/>
 using the default username/password, "admin"/"geoserver", and follow the instructions for configuring security.
 
+### Installing Apache
+
+This step is optional - it's only needed to avoid blocking of cross-site requests if you intend to run
+GeoServer and the OzTrack web application on different ports. The following commands install the Apache
+HTTP server and configure reverse proxying from port 80 to GeoServer (port 8080) and OzTrack (port 8181).
+
+    sudo apt-get install apache2
+    sudo a2enmod proxy_http
+    sudo service apache2 restart
+    sudo cat > /etc/apache2/sites-available/oztrack << EOF
+    ProxyPreserveHost on
+    ProxyPass /geoserver http://localhost:8080/geoserver nocanon retry=0
+    ProxyPassReverse /geoserver http://localhost:8080/geoserver
+    ProxyPass / http://localhost:8181/ nocanon retry=0
+    ProxyPassReverse / http://localhost:8181/
+    EOF
+    sudo a2ensite oztrack
+    sudo service apache2 reload
+
 ### Completing installation
 
 See the *Installing and configuring OzTrack* section below.
@@ -206,15 +225,32 @@ For complete installation instructions, see the [GeoServer user manual](http://d
 The following commands install the GeoServer WAR distribution to Tomcat:
 
     sudo apt-get install tomcat6
+    sudo chkconfig tomcat6 on
     wget 'http://downloads.sourceforge.net/geoserver/geoserver-2.3.1-war.zip' -P /tmp/
     unzip -d /tmp/geoserver /tmp/geoserver-2.3.1-war.zip
-    sudo service tomcat6 stop
     sudo unzip -d /var/lib/tomcat6/webapps/geoserver/ /tmp/geoserver/geoserver.war
     sudo chown -R tomcat: /var/lib/tomcat6/webapps/geoserver/
     sudo service tomcat6 start
 
 Log in to the GeoServer web administation interface at <http://localhost:8080/geoserver/web/>
 using the default username/password, "admin"/"geoserver", and follow the instructions for configuring security.
+
+### Installing Apache
+
+This step is optional - it's only needed to avoid blocking of cross-site requests if you intend to run
+GeoServer and the OzTrack web application on different ports. The following commands install the Apache
+HTTP server and configure reverse proxying from port 80 to GeoServer (port 8080) and OzTrack (port 8181).
+
+    sudo yum install httpd
+    sudo chkconfig httpd on
+    sudo cat > /etc/httpd/conf.d/oztrack.conf << EOF
+    ProxyPreserveHost on
+    ProxyPass /geoserver http://localhost:8080/geoserver nocanon retry=0
+    ProxyPassReverse /geoserver http://localhost:8080/geoserver
+    ProxyPass / http://localhost:8181/ nocanon retry=0
+    ProxyPassReverse / http://localhost:8181/
+    EOF
+    sudo service apache2 start
 
 ### Completing installation
 
