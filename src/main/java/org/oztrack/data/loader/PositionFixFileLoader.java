@@ -186,17 +186,17 @@ public class PositionFixFileLoader extends DataFileLoader {
                                     Calendar calendar = Calendar.getInstance();
                                     try {
                                         calendar.setTime(dateFormat.parse(dataRow[i]));
-                                        if (dateIncludesTime && dataFile.getLocalTimeConversionRequired()) {
-                                            calendar.add(Calendar.HOUR, dataFile.getLocalTimeConversionHours().intValue());
-                                        }
                                     }
                                     catch (ParseException e) {
-                                        throw new FileProcessingException("Date Parsing error. ");
+                                        throw new FileProcessingException("Date Parsing error");
+                                    }
+                                    if (dateIncludesTime && dataFile.getLocalTimeConversionRequired()) {
+                                        calendar.add(Calendar.HOUR, dataFile.getLocalTimeConversionHours().intValue());
                                     }
                                     rawPositionFix.setDetectionTime(calendar.getTime());
                                 }
                                 catch (FileProcessingException e) {
-                                    throw new FileProcessingException(e.toString() + "Using date: "+ dataRow[i] + " from line : "  + lineNumber);
+                                    throw new FileProcessingException(e.getMessage() + ": " + dataRow[i] + " on line "  + lineNumber);
                                 }
                                 break;
                             case UTCTIME:
@@ -302,25 +302,32 @@ public class PositionFixFileLoader extends DataFileLoader {
             " H:m:s",
             " H:m:s.S"
         };
-        for (int dateIndex = 0; dateIndex < dateRegexes.length; dateIndex++) {
+        FindDateFormatResult result = null;
+        dateTimeSearch: for (int dateIndex = 0; dateIndex < dateRegexes.length; dateIndex++) {
             // Try matching just a date value
             if (dateString.matches(dateRegexes[dateIndex])) {
-                FindDateFormatResult result = new FindDateFormatResult();
+                result = new FindDateFormatResult();
                 result.dateFormat = new SimpleDateFormat(datePatterns[dateIndex]);
                 result.includesTime = false;
-                return result;
+                break dateTimeSearch;
             }
             // Try matching a date value followed by a time value
             for (int timeIndex = 0; timeIndex < timeRegexes.length; timeIndex++) {
                 if (dateString.matches(dateRegexes[dateIndex] + timeRegexes[timeIndex])) {
-                    FindDateFormatResult result = new FindDateFormatResult();
+                    result = new FindDateFormatResult();
                     result.dateFormat = new SimpleDateFormat(datePatterns[dateIndex] + timePatterns[timeIndex]);
                     result.includesTime = true;
-                    return result;
+                    break dateTimeSearch;
                 }
             }
         }
-        throw new FileProcessingException("Could not handle this date format: " + dateString + ". Please see the help screen.");
+        if (result != null) {
+            result.dateFormat.setLenient(false);
+            return result;
+        }
+        else {
+            throw new FileProcessingException("Could not handle this date format: " + dateString + ". Please see the help screen.");
+        }
      }
 
     private Date timeHandler(Date date, String timeString) throws FileProcessingException {
