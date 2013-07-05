@@ -79,7 +79,7 @@ public class DetectionsKMLView extends AbstractView{
                 writer.append("</Style>\n");
             }
             writer.append("<Folder>\n");
-            writer.append("<name>" + animal.getId() + "</name>\n");
+            writer.append("<name>" + animal.getAnimalName() + "</name>\n");
             for (PositionFix positionFix : positionFixList) {
                 if (!positionFix.getAnimal().equals(animal)) {
                     continue;

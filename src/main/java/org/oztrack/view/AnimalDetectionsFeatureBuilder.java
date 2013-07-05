@@ -84,6 +84,7 @@ public class AnimalDetectionsFeatureBuilder {
         featureTypeBuilder.setName("Detections");
         featureTypeBuilder.setNamespaceURI(Constants.namespaceURI);
         featureTypeBuilder.add("animalId", Long.class);
+        featureTypeBuilder.add("animalName", String.class);
         featureTypeBuilder.add("fromDate", String.class);
         featureTypeBuilder.add("toDate", String.class);
         if (includeDeleted) {
@@ -97,6 +98,7 @@ public class AnimalDetectionsFeatureBuilder {
     private SimpleFeature buildFeature(SimpleFeatureType featureType, AnimalDetections animalDetections, boolean deleted) {
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
         featureBuilder.set("animalId", animalDetections.animal.getId());
+        featureBuilder.set("animalName", animalDetections.animal.getAnimalName());
         featureBuilder.set("fromDate", (animalDetections.fromDate == null) ? null : isoDateFormat.format(animalDetections.fromDate));
         featureBuilder.set("toDate", (animalDetections.toDate == null) ? null : isoDateFormat.format(animalDetections.toDate));
         if (includeDeleted) {

@@ -68,7 +68,7 @@ public class TrajectoryKMLView extends AbstractView{
             String kmlNormalColour = "cc" + kmlBaseColour;
             String kmlHighlightColour = "ff" + kmlBaseColour;
             writer.append("<Placemark>\n");
-            writer.append("<name>" + animal.getId() + "</name>\n");
+            writer.append("<name>" + animal.getAnimalName() + "</name>\n");
             writer.append("<StyleMap>\n");
             writer.append("<Pair>\n");
             writer.append("  <key>normal</key>\n");

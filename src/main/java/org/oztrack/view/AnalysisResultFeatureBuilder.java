@@ -37,6 +37,7 @@ public class AnalysisResultFeatureBuilder {
         featureTypeBuilder.setName(analysis.getAnalysisType().name());
         featureTypeBuilder.setNamespaceURI(Constants.namespaceURI);
         featureTypeBuilder.add("animalId", Long.class);
+        featureTypeBuilder.add("animalName", String.class);
         for (AnalysisResultAttributeType resultAttributeType : analysis.getAnalysisType().getResultAttributeTypes()) {
             featureTypeBuilder.add(resultAttributeType.getIdentifier(), resultAttributeType.getDataTypeClass());
         }
@@ -48,6 +49,7 @@ public class AnalysisResultFeatureBuilder {
     private SimpleFeature buildFeature(SimpleFeatureType featureType, AnalysisResultFeature resultFeature) {
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
         featureBuilder.set("animalId", resultFeature.getAnimal().getId());
+        featureBuilder.set("animalName", resultFeature.getAnimal().getAnimalName());
         for (AnalysisResultAttributeType resultAttributeType : analysis.getAnalysisType().getResultAttributeTypes()) {
             Object value = resultFeature.getAttribute(resultAttributeType.getIdentifier()).getValue();
             featureBuilder.set(resultAttributeType.getIdentifier(), value);

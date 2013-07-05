@@ -65,20 +65,22 @@ public class AnimalTrajectoryFeatureBuilder {
     }
 
     private SimpleFeatureType buildFeatureType(Integer srid) {
-        SimpleFeatureTypeBuilder simpleFeatureTypeBuilder = new SimpleFeatureTypeBuilder();
-        simpleFeatureTypeBuilder.setName("Trajectory");
-        simpleFeatureTypeBuilder.setNamespaceURI(Constants.namespaceURI);
-        simpleFeatureTypeBuilder.add("animalId", Long.class);
-        simpleFeatureTypeBuilder.add("fromDate", String.class);
-        simpleFeatureTypeBuilder.add("toDate", String.class);
-        simpleFeatureTypeBuilder.add("lineString", LineString.class, srid);
-        SimpleFeatureType featureType = simpleFeatureTypeBuilder.buildFeatureType();
+        SimpleFeatureTypeBuilder featureTypeBuilder = new SimpleFeatureTypeBuilder();
+        featureTypeBuilder.setName("Trajectory");
+        featureTypeBuilder.setNamespaceURI(Constants.namespaceURI);
+        featureTypeBuilder.add("animalId", Long.class);
+        featureTypeBuilder.add("animalName", String.class);
+        featureTypeBuilder.add("fromDate", String.class);
+        featureTypeBuilder.add("toDate", String.class);
+        featureTypeBuilder.add("lineString", LineString.class, srid);
+        SimpleFeatureType featureType = featureTypeBuilder.buildFeatureType();
         return featureType;
     }
 
     private SimpleFeature buildFeature(SimpleFeatureType featureType, AnimalTrajectory animalTrajectory) {
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
         featureBuilder.set("animalId", animalTrajectory.animal.getId());
+        featureBuilder.set("animalName", animalTrajectory.animal.getAnimalName());
         featureBuilder.set("fromDate", (animalTrajectory.fromDate == null) ? null : isoDateFormat.format(animalTrajectory.fromDate));
         featureBuilder.set("toDate", (animalTrajectory.toDate == null) ? null : isoDateFormat.format(animalTrajectory.toDate));
         LineString lineString = null;
