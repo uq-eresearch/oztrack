@@ -117,9 +117,9 @@ See the *Installing and configuring OzTrack* section below.
 
 To install PostgreSQL, use the following commands:
 
-    sudo yum install postgresql.x86_64
-    sudo yum install postgresql-server.x86_64
-    sudo yum install postgresql-devel.x86_64
+    sudo yum install postgresql
+    sudo yum install postgresql-server
+    sudo yum install postgresql-devel
 
 To install PostGIS, you need the EPEL repository. The URL used in the
 following command depends on the version of Red Hat that you're running: see
@@ -130,7 +130,7 @@ instructions on <http://fedoraproject.org/wiki/EPEL>.
 
 Sort out PostgreSQL authentication:
 
-    sudo $EDITOR /var/lib/pgsql/data/pg_hba.conf
+<pre>sudo $EDITOR /var/lib/pgsql/data/pg_hba.conf</pre>
 
     # TYPE  DATABASE    USER        CIDR-ADDRESS          METHOD
     local   all         postgres                          ident
