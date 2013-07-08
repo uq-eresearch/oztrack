@@ -31,6 +31,15 @@
     <div class="container${fluid ? '-fluid' : ''}">
         <div id="banner">
             <div id="banner-left">
+                <c:if test="${testServer}">
+                <div id="banner-msg">
+                    <div style="font-weight: bold; color: red; margin-bottom: 3px;">OzTrack Testing</div>
+                    <div>
+                        This site is a pre-release version of OzTrack made available for testing.<br>
+                        Warning: any data uploaded to this site may be deleted without notice.
+                    </div>
+                </div>
+                </c:if>
             </div>
             <div id="banner-right">
             </div>

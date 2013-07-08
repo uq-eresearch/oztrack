@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.SettingsDao;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Settings;
@@ -22,9 +23,13 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  * <ul>
  *     <li>currentUser: based on user ID obtained from Spring Security</li>
  *     <li>customJs: based on setting from database</li>
+ *     <li>testServer: whether this instance of OzTrack is running as a test server</li>
  * </ul>
  */
 public class DefaultModelAttributesInterceptor extends HandlerInterceptorAdapter {
+    @Autowired
+    private OzTrackConfiguration configuration;
+
     @Autowired
     private UserDao userDao;
 
@@ -46,5 +51,6 @@ public class DefaultModelAttributesInterceptor extends HandlerInterceptorAdapter
         if (StringUtils.isNotBlank(settings.getCustomJs())) {
             model.put("customJs", settings.getCustomJs());
         }
+        model.put("testServer", configuration.getTestServer());
     }
 }

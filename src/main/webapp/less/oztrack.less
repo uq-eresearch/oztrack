@@ -314,29 +314,38 @@ a.thumbnail:hover {
 
 @bannerLeftImageWidth: 114px;
 @bannerLeftImageHeight: 60px;
-@bannerLeftHorizontalPadding: 5px;
-@bannerLeftVerticalPadding: 5px;
-@bannerLeftWidth: @bannerLeftImageWidth + (2 * @bannerLeftHorizontalPadding);
-@bannerHeight: @bannerLeftImageHeight + (2 * @bannerLeftVerticalPadding);
+@bannerLeftImageHorizontalPadding: 5px;
+@bannerLeftImageVerticalPadding: 5px;
+@bannerLeftImagePaddedWidth: @bannerLeftImageWidth + (2 * @bannerLeftImageHorizontalPadding);
+@bannerHeight: @bannerLeftImageHeight + (2 * @bannerLeftImageVerticalPadding);
 
 #banner {
 }
 
 #banner-left {
   float: left;
-  width: @bannerLeftWidth;
+  min-width: @bannerLeftImagePaddedWidth;
   height: @bannerHeight;
   background-image: url('../img/header_logo.png');
-  background-position: @bannerLeftHorizontalPadding center;
+  background-position: @bannerLeftImageHorizontalPadding center;
   background-repeat: no-repeat;
 }
 
 #banner-right {
-  margin-left: @bannerLeftWidth;
   height: @bannerHeight;
   background-image: url('../img/header_croc.jpg');
   background-position: right center;
   background-repeat: no-repeat;
+}
+
+#banner-left #banner-msg {
+  margin: 6px 0px 6px (@bannerLeftImagePaddedWidth + 12px);
+  padding: 4px 6px;
+  background-color: #ffb;
+  border: 1px solid #ccb;
+  box-shadow: -1px 2px 3px #ddb;
+  font-size: 11px;
+  line-height: 15px;
 }
 
 #login {
