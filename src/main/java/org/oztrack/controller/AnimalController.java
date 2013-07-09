@@ -1,6 +1,7 @@
 package org.oztrack.controller;
 
 import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -82,15 +83,16 @@ public class AnimalController {
             return "animal-form";
         }
         animalDao.update(animal);
-        positionFixDao.renumberPositionFixes(animal.getProject());
+        positionFixDao.renumberPositionFixes(animal.getProject(), Arrays.asList(animal.getId()));
         return "redirect:/projects/" + animal.getProject().getId() + "/animals";
     }
 
     @RequestMapping(value="/animals/{id}", method=RequestMethod.DELETE)
     @PreAuthorize("hasPermission(#animal.project, 'manage')")
     public void processDelete(@ModelAttribute(value="animal") Animal animal, HttpServletResponse response) {
+        List<Long> animalIds = Arrays.asList(animal.getId());
         animalDao.delete(animal);
-        positionFixDao.renumberPositionFixes(animal.getProject());
+        positionFixDao.renumberPositionFixes(animal.getProject(), animalIds);
         response.setStatus(204);
     }
 }

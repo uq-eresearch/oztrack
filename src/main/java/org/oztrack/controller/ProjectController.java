@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -237,7 +238,11 @@ public class ProjectController {
 
         projectDao.update(project);
         if (shouldRenumberPositionFixes) {
-            positionFixDao.renumberPositionFixes(project);
+            ArrayList<Long> animalIds = new ArrayList<Long>();
+            for (Animal animal : project.getAnimals()) {
+                animalIds.add(animal.getId());
+            }
+            positionFixDao.renumberPositionFixes(project, animalIds);
         }
 
         return "redirect:/projects/" + project.getId();
@@ -368,7 +373,12 @@ public class ProjectController {
             response.setStatus(403);
             return;
         }
+        ArrayList<Long> animalIds = new ArrayList<Long>();
+        for (Animal animal : project.getAnimals()) {
+            animalIds.add(animal.getId());
+        }
         projectDao.delete(project);
+        positionFixDao.renumberPositionFixes(project, animalIds);
         response.setStatus(204);
     }
 

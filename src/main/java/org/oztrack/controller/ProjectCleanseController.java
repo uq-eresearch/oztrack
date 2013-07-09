@@ -178,7 +178,7 @@ public class ProjectCleanseController {
                 maxDop,
                 true
             );
-            positionFixDao.renumberPositionFixes(project);
+            positionFixDao.renumberPositionFixes(project, animalIds);
             PrintWriter out = response.getWriter();
             out.append("<?xml version=\"1.0\"?>\n");
             out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");
@@ -199,7 +199,7 @@ public class ProjectCleanseController {
                 maxDop,
                 false
             );
-            positionFixDao.renumberPositionFixes(project);
+            positionFixDao.renumberPositionFixes(project, animalIds);
             PrintWriter out = response.getWriter();
             out.append("<?xml version=\"1.0\"?>\n");
             out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");

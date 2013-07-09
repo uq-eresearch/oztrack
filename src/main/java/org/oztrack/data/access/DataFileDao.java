@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.Range;
+import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,8 @@ public interface DataFileDao {
     int getNumDataFiles();
     DataFile getDataFileById(Long id);
     DataFile getNextDataFile();
-    ArrayList<String> getAllAnimalIds(DataFile datafile);
+    ArrayList<String> getRawProjectAnimalIds(DataFile datafile);
+    List<Animal> getAnimals(DataFile dataFile);
     Range<Date> getDetectionDateRange(DataFile dataFile, boolean includeDeleted);
     int getDetectionCount(DataFile dataFile, boolean includeDeleted);
     List<DataFile> getDataFilesByProject(Project project);

@@ -33,7 +33,7 @@ public interface PositionFixDao {
         Double maxDop,
         boolean deleted
     );
-    void renumberPositionFixes(Project project);
+    void renumberPositionFixes(Project project, List<Long> animalIds);
     Map<Long, PositionFixStats> getAnimalPositionFixStats(Project project, Date fromDate, Date toDate);
     Map<Long, TrajectoryStats> getAnimalTrajectoryStats(Project project, Date fromDate, Date toDate);
     Map<Long, Range<Date>> getAnimalStartEndDates(Project project, Date fromDate, Date toDate);

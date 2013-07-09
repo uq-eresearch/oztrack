@@ -16,6 +16,7 @@ import javax.persistence.Query;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.Range;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -214,18 +215,29 @@ public class PositionFixDaoImpl implements PositionFixDao {
 
     @Override
     @Transactional
-    public void renumberPositionFixes(Project project) {
+    public void renumberPositionFixes(Project project, List<Long> animalIds) {
+        if ((project == null) || (animalIds == null) || animalIds.isEmpty()) {
+            return;
+        }
+
         // Object locks on all tables to avoid deadlock
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.execute("select * from positionfixlayer where project_id = " + project.getId() + " for update");
-        jdbcTemplate.execute("select * from positionfixnumbered where project_id = " + project.getId() + " for update");
-        jdbcTemplate.execute("select * from trajectorylayer where project_id = " + project.getId() + " for update");
+        String lockWhere =
+            "where \n" +
+            "    project_id = " + project.getId() + " and \n" +
+            "    animal_id in (" + StringUtils.join(animalIds, ",") + ")";
+        jdbcTemplate.execute("select * from positionfixlayer " + lockWhere + " for update");
+        jdbcTemplate.execute("select * from positionfixnumbered " + lockWhere + " for update");
+        jdbcTemplate.execute("select * from trajectorylayer " + lockWhere + " for update");
 
         em.createNativeQuery(
                 "delete from positionfixlayer\n" +
-                "where project_id = :projectId"
+                "where\n" +
+                "    project_id = :projectId and\n" +
+                "    animal_id in (:animalIds)"
             )
             .setParameter("projectId", project.getId())
+            .setParameter("animalIds", animalIds)
             .executeUpdate();
 
         String unshiftedPointExpr = "positionfix.locationgeometry";
@@ -255,16 +267,21 @@ public class PositionFixDaoImpl implements PositionFixDao {
                 "where\n" +
                 "    positionfix.animal_id = animal.id and\n" +
                 "    animal.project_id = project.id and\n" +
-                "    project.id = :projectId"
+                "    project.id = :projectId and\n" +
+                "    animal.id in (:animalIds)"
             )
             .setParameter("projectId", project.getId())
+            .setParameter("animalIds", animalIds)
             .executeUpdate();
 
         em.createNativeQuery(
                 "delete from positionfixnumbered\n" +
-                "where project_id = :projectId"
+                "where\n" +
+                "    project_id = :projectId and\n" +
+                "    animal_id in (:animalIds)"
             )
             .setParameter("projectId", project.getId())
+            .setParameter("animalIds", animalIds)
             .executeUpdate();
 
         em.createNativeQuery(
@@ -291,16 +308,21 @@ public class PositionFixDaoImpl implements PositionFixDao {
                 "    inner join project on animal.project_id = project.id\n" +
                 "where\n" +
                 "    project.id = :projectId and\n" +
-                "    not(positionfix.deleted)"
+                "    not(positionfix.deleted) and\n" +
+                "    animal.id in (:animalIds)"
             )
             .setParameter("projectId", project.getId())
+            .setParameter("animalIds", animalIds)
             .executeUpdate();
 
         em.createNativeQuery(
                 "delete from trajectorylayer\n" +
-                "where project_id = :projectId"
+                "where\n" +
+                "    project_id = :projectId and\n" +
+                "    animal_id in (:animalIds)"
             )
             .setParameter("projectId", project.getId())
+            .setParameter("animalIds", animalIds)
             .executeUpdate();
 
         String unshiftedLineExpr = "ST_MakeLine(positionfix1.locationgeometry, positionfix2.locationgeometry)";
@@ -330,9 +352,11 @@ public class PositionFixDaoImpl implements PositionFixDao {
                 "        positionfix1.animal_id = positionfix2.animal_id and\n" +
                 "        positionfix1.row_number + 1 = positionfix2.row_number\n" +
                 "where\n" +
-                "    positionfix1.project_id = :projectId"
+                "    positionfix1.project_id = :projectId and\n" +
+                "    positionfix1.animal_id in (:animalIds)"
             )
             .setParameter("projectId", project.getId())
+            .setParameter("animalIds", animalIds)
             .executeUpdate();
     }
 

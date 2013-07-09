@@ -1,10 +1,14 @@
 package org.oztrack.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONWriter;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.PositionFixDao;
+import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.DataFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -60,8 +64,13 @@ public class DataFileController {
     @RequestMapping(value="/datafiles/{id}", method=RequestMethod.DELETE)
     @PreAuthorize("hasPermission(#dataFile.project, 'write')")
     public void processDelete(@ModelAttribute(value="dataFile") DataFile dataFile, HttpServletResponse response) {
+        List<Animal> animals = dataFileDao.getAnimals(dataFile);
+        ArrayList<Long> animalIds = new ArrayList<Long>();
+        for (Animal animal : animals) {
+            animalIds.add(animal.getId());
+        }
         dataFileDao.delete(dataFile);
-        positionFixDao.renumberPositionFixes(dataFile.getProject());
+        positionFixDao.renumberPositionFixes(dataFile.getProject(), animalIds);
         response.setStatus(204);
     }
 }

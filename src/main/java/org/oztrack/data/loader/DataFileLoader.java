@@ -2,6 +2,7 @@ package org.oztrack.data.loader;
 
 import static org.oztrack.util.OzTrackUtil.removeDuplicateLinesFromFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -119,34 +120,23 @@ public abstract class DataFileLoader {
             animalDao.update(animal);
         }
         else {
-            // get a list of the animal IDs in the raw file just loaded
-            List<String> newAnimalIdList = this.dataFileDao.getAllAnimalIds(this.dataFile);
-
-            // all the animals for this project
+            List<String> newAnimalIdList = this.dataFileDao.getRawProjectAnimalIds(this.dataFile);
             List<Animal> projectAnimalList = animalDao.getAnimalsByProjectId(this.dataFile.getProject().getId());
-            boolean animalFound;
-            String projectAnimalId;
-
-            for (String newAnimalId  : newAnimalIdList) {
-                 animalFound=false;
+            forNewAnimalId: for (String newAnimalId  : newAnimalIdList) {
                  for (Animal projectAnimal : projectAnimalList) {
-                     projectAnimalId = projectAnimal.getProjectAnimalId();
-                     if (newAnimalId.equals(projectAnimalId))   {
-                         animalFound=true;
+                     if (newAnimalId.equals(projectAnimal.getProjectAnimalId()))   {
+                         continue forNewAnimalId;
                      }
                  }
-
-                 if (!animalFound) {
-                     Animal animal = new Animal();
-                     animal.setProjectAnimalId(newAnimalId);
-                     animal.setAnimalName(newAnimalId);
-                     animal.setAnimalDescription(null);
-                     animal.setProject(dataFile.getProject());
-                     animal.setCreateDate(new java.util.Date());
-                     animalDao.save(animal);
-                     animal.setColour(colours[(int) (animal.getId() % colours.length)]);
-                     animalDao.update(animal);
-                 }
+                 Animal newAnimal = new Animal();
+                 newAnimal.setProjectAnimalId(newAnimalId);
+                 newAnimal.setAnimalName(newAnimalId);
+                 newAnimal.setAnimalDescription(null);
+                 newAnimal.setProject(dataFile.getProject());
+                 newAnimal.setCreateDate(new java.util.Date());
+                 animalDao.save(newAnimal);
+                 newAnimal.setColour(colours[(int) (newAnimal.getId() % colours.length)]);
+                 animalDao.update(newAnimal);
             }
         }
     }
@@ -156,7 +146,12 @@ public abstract class DataFileLoader {
             jdbcAccess.loadObservations(dataFile);
             dataFileDao.update(dataFile);
             jdbcAccess.truncateRawObservations(dataFile);
-            positionFixDao.renumberPositionFixes(dataFile.getProject());
+            List<Animal> animals = dataFileDao.getAnimals(dataFile);
+            ArrayList<Long> animalIds = new ArrayList<Long>();
+            for (Animal animal : animals) {
+                animalIds.add(animal.getId());
+            }
+            positionFixDao.renumberPositionFixes(dataFile.getProject(), animalIds);
         }
         catch (Exception e) {
             jdbcAccess.truncateRawObservations(dataFile);

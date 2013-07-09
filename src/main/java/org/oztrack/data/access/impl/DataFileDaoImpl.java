@@ -12,6 +12,7 @@ import javax.persistence.Query;
 
 import org.apache.commons.lang3.Range;
 import org.oztrack.data.access.DataFileDao;
+import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
 import org.springframework.stereotype.Service;
@@ -57,35 +58,35 @@ public class DataFileDaoImpl implements DataFileDao {
     }
 
     @Override
-    public ArrayList<String> getAllAnimalIds(DataFile dataFile) {
-
-        String entityName = "RawPositionFix";
-
-        Query query = em.createQuery("SELECT animalId from " + entityName);
-        try {
-
-            @SuppressWarnings("unchecked")
-            List<String> animalIdList = query.getResultList();
-            ArrayList<String> finalList = new ArrayList<String>();
-
-            // implement distinct here because hibernate won't play nice
-            HashSet<String> hashSet = new HashSet<String>(10000);
-            for (String animalId : animalIdList) {
-                if (!hashSet.contains(animalId)) {
-                    hashSet.add(animalId);
-                }
-            }
-
-            for (String animalId : hashSet) {
-                finalList.add(animalId);
-            }
-
-            return finalList;
-
-        } catch (NoResultException ex) {
-            return null;
+    public ArrayList<String> getRawProjectAnimalIds(DataFile dataFile) {
+        Query query = em.createQuery("SELECT animalId from RawPositionFix");
+        @SuppressWarnings("unchecked")
+        List<String> animalIdList = query.getResultList();
+        // implement distinct here because hibernate won't play nice
+        HashSet<String> hashSet = new HashSet<String>();
+        for (String animalId : animalIdList) {
+            hashSet.add(animalId);
         }
+        ArrayList<String> finalList = new ArrayList<String>();
+        for (String animalId : hashSet) {
+            finalList.add(animalId);
+        }
+        return finalList;
+    }
 
+    @Override
+    public List<Animal> getAnimals(DataFile dataFile) {
+        @SuppressWarnings("unchecked")
+        List<Animal> resultList = em
+            .createQuery(
+                "select distinct animal\n" +
+                "from Animal as animal\n" +
+                "inner join animal.positionFixes as positionFix\n" +
+                "where positionFix.dataFile = :dataFile"
+            )
+            .setParameter("dataFile", dataFile)
+            .getResultList();
+        return resultList;
     }
 
     @Override
