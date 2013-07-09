@@ -10,7 +10,7 @@ import org.oztrack.data.model.User;
 public class EmailBuilder {
     HtmlEmail email;
     String firstName;
-    DataSourceClassPathResolver imageResolver = new DataSourceClassPathResolver("/images");
+    DataSourceClassPathResolver imageResolver = new DataSourceClassPathResolver("/org/oztrack/images");
 
     public EmailBuilder(String hostName, Integer smtpPort, String fromEmail, String fromName)
     throws EmailException {
