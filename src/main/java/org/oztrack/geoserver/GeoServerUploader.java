@@ -5,7 +5,7 @@ import java.util.Arrays;
 import org.oztrack.app.Constants;
 
 public class GeoServerUploader {
-    private final String templateBasePath = "/geoserver";
+    private final String templateBasePath = "/org/oztrack/geoserver";
 
     private final String geoServerUsername;
     private final String geoServerPassword;
