@@ -272,21 +272,21 @@ OzTrack can be configured via a range of properties. The `application.properties
 distribution contains the complete list of properties together with their default values.
 
 To override these default values, either edit `application.properties` or supply values via Java system properties.
-System properties can be set as arguments to the `java` command (e.g. `-Dapplication.dataDir=/var/local/oztrack`).
+System properties can be set as arguments to the `java` command (e.g. `-Dorg.oztrack.conf.dataDir=/var/local/oztrack`).
 When deploying to Tomcat, arguments can be added to the `JAVA_OPTS` variable used in the startup script.
 
 The following are key properties that should be configured for all applications:
 
-* `application.dataDir`: Directory used to store tracking data files - ensure that this directory exists and can be written to by the application (default "/var/local/oztrack").
-* `application.databaseUsername`: Username for PostgreSQL database (default "oztrack").
-* `application.databasePassword`: Password for PostgreSQL database.
-* `application.geoServerUsername`: Username for Geoserver admin user (default "admin").
-* `application.geoServerPassword`: Password for GeoServer admin user.
-* `application.baseUrl`: Base URL for application, minus trailing slash (default "http://localhost").
-* `application.mailServerHostName`: SMTP host name for sending mail notifications.
-* `application.mailServerPort`: SMTP host port number for sending mail notifications.
-* `application.mailFromName`: Name in From field for mail notifications (default "OzTrack").
-* `application.mailFromEmail`: Email address in From field for mail notifications.
+* `org.oztrack.conf.dataDir`: Directory used to store tracking data files - ensure that this directory exists and can be written to by the application (default "/var/local/oztrack").
+* `org.oztrack.conf.databaseUsername`: Username for PostgreSQL database (default "oztrack").
+* `org.oztrack.conf.databasePassword`: Password for PostgreSQL database.
+* `org.oztrack.conf.geoServerUsername`: Username for Geoserver admin user (default "admin").
+* `org.oztrack.conf.geoServerPassword`: Password for GeoServer admin user.
+* `org.oztrack.conf.baseUrl`: Base URL for application, minus trailing slash (default "http://localhost").
+* `org.oztrack.conf.mailServerHostName`: SMTP host name for sending mail notifications.
+* `org.oztrack.conf.mailServerPort`: SMTP host port number for sending mail notifications.
+* `org.oztrack.conf.mailFromName`: Name in From field for mail notifications (default "OzTrack").
+* `org.oztrack.conf.mailFromEmail`: Email address in From field for mail notifications.
 
 OzTrack defines a default admin user with the username/password "admin"/"oztrack".
 To log into OzTrack, click the 'Login' button at the top-right of screen. You should change the default

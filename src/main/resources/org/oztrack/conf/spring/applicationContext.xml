@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.1.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+    <context:property-placeholder location="classpath:/org/oztrack/conf/application.properties"/>
+
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetObject" value="#{@systemProperties}" />
+        <property name="targetMethod" value="putAll" />
+        <property name="arguments">
+            <util:properties>
+                <prop key="org.geotools.referencing.forceXY">true</prop>
+            </util:properties>
+        </property>
+    </bean>
+
+    <bean id="log4jInitialization"
+          class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetClass" value="org.springframework.util.Log4jConfigurer"/>
+        <property name="targetMethod" value="initLogging"/>
+        <property name="arguments">
+            <list>
+                <value>classpath:log4j.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <context:component-scan base-package="org.oztrack"/>
+
+    <import resource="applicationContext-security.xml"/>
+    <import resource="applicationContext-data.xml"/>
+    <import resource="applicationContext-quartz.xml"/>
+    <import resource="applicationContext-task.xml"/>
+
+    <bean id="applicationContext" class="org.oztrack.app.OzTrackConfigurationImpl">
+        <property name="baseUrl" value="${org.oztrack.conf.baseUrl}"/>
+        <property name="testServer" value="${org.oztrack.conf.testServer}"/>
+        <property name="geoServerLocalUrl" value="${org.oztrack.conf.geoServerLocalUrl}"/>
+        <property name="dataSpaceEnabled" value="${org.oztrack.conf.dataSpaceEnabled}"/>
+        <property name="dataSpaceUrl" value="${org.oztrack.conf.dataSpaceUrl}"/>
+        <property name="dataSpaceUsername" value="${org.oztrack.conf.dataSpaceUsername}"/>
+        <property name="dataSpacePassword" value="${org.oztrack.conf.dataSpacePassword}"/>
+        <property name="dataDir" value="${org.oztrack.conf.dataDir}"/>
+        <property name="mailFromName" value="${org.oztrack.conf.mailFromName}"/>
+        <property name="mailFromEmail" value="${org.oztrack.conf.mailFromEmail}"/>
+        <property name="mailServerHostName" value="${org.oztrack.conf.mailServerHostName}"/>
+        <property name="mailServerPort" value="${org.oztrack.conf.mailServerPort}"/>
+        <property name="passwordResetExpiryDays" value="${org.oztrack.conf.passwordResetExpiryDays}"/>
+        <property name="aafEnabled" value="${org.oztrack.conf.aafEnabled}"/>
+        <property name="recaptchaPublicKey" value="${org.oztrack.conf.recaptchaPublicKey}"/>
+        <property name="recaptchaPrivateKey" value="${org.oztrack.conf.recaptchaPrivateKey}"/>
+        <property name="closedAccessDisableDateString" value="${org.oztrack.conf.closedAccessDisableDate}"/>
+        <property name="nonIncrementalEmbargoDisableDateString" value="${org.oztrack.conf.nonIncrementalEmbargoDisableDate}"/>
+        <property name="rserveLogFile" value="${org.oztrack.conf.rserveLogFile}"/>
+        <property name="rserveOomAdj" value="${org.oztrack.conf.rserveOomAdj}"/>
+    </bean>
+
+    <bean id="ozTrackApplication" class="org.oztrack.app.OzTrackApplication">
+        <property name="applicationContext" ref="applicationContext"/>
+    </bean>
+    
+    <bean id="geoServerUploader" class="org.oztrack.geoserver.GeoServerUploader">
+        <constructor-arg name="geoServerUsername" value="${org.oztrack.conf.geoServerUsername}"/>
+        <constructor-arg name="geoServerPassword" value="${org.oztrack.conf.geoServerPassword}"/>
+        <constructor-arg name="geoServerBaseUrl" value="${org.oztrack.conf.geoServerLocalUrl}"/>
+        <constructor-arg name="databaseHost" value="${org.oztrack.conf.databaseHost}"/>
+        <constructor-arg name="databasePort" value="${org.oztrack.conf.databasePort}"/>
+        <constructor-arg name="databaseName" value="${org.oztrack.conf.databaseName}"/>
+        <constructor-arg name="databaseUsername" value="${org.oztrack.conf.databaseUsername}"/>
+        <constructor-arg name="databasePassword" value="${org.oztrack.conf.databasePassword}"/>
+    </bean>
+    
+    <bean id="rserveConnectionPool" class="org.oztrack.util.RserveConnectionPoolFactoryBean">
+        <constructor-arg name="numConnections" value="${org.oztrack.conf.numRConnections}"/>
+    </bean>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="100000000"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+    </bean>
+</beans>

@@ -10,7 +10,7 @@
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:/conf/spring/applicationContext.xml</param-value>
+        <param-value>classpath:/org/oztrack/conf/spring/applicationContext.xml</param-value>
     </context-param>
 
     <listener>
