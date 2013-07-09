@@ -108,7 +108,7 @@ public class RserveConnectionFactory extends BasePoolableObjectFactory<RConnecti
         for (String scriptFileName : scriptFileNames) {
             String scriptString = null;
             try {
-                scriptString = IOUtils.toString(getClass().getResourceAsStream("/r/" + scriptFileName), "UTF-8");
+                scriptString = IOUtils.toString(getClass().getResourceAsStream("/org/oztrack/r/" + scriptFileName), "UTF-8");
             }
             catch (Exception e) {
                 throw new RserveInterfaceException("Error reading '" + scriptFileName + "' script.", e);
