@@ -68,7 +68,7 @@ public class DataSpaceCollection {
         Reader templateReader;
         try {
             templateReader = new InputStreamReader((
-                    new ClassPathResource("org/oztrack/view/agent.mustache.atom")
+                    new ClassPathResource("org/oztrack/view/agent.atom.mustache")
                     ).getInputStream());
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -80,7 +80,7 @@ public class DataSpaceCollection {
         //Reader templateReader;
         try {
             templateReader = new InputStreamReader((
-                    new ClassPathResource("org/oztrack/view/collection.mustache.atom")
+                    new ClassPathResource("org/oztrack/view/collection.atom.mustache")
                     ).getInputStream());
         } catch (IOException e) {
             throw new RuntimeException(e);
