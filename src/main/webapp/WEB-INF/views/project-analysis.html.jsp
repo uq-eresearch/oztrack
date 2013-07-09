@@ -898,12 +898,14 @@
                                 <fieldset>
                                 <div class="control-group" style="margin-bottom: 9px;">
                                 <div class="controls">
+                                    <c:if test="${not empty analysisType.explanation}">
                                     <div class="layerExplanation" style="max-height: 54px; overflow-y: hidden;">
                                         ${analysisType.explanation}
                                     </div>
                                     <a class="layerExplanationExpander" href="#read-more">
                                         Read more
                                     </a>
+                                    </c:if>
                                     <div id="paramTableDiv-${analysisType}" class="paramTableDiv">
                                     <table>
                                         <c:set var="foundAdvancedParameterType" value="false"/>
