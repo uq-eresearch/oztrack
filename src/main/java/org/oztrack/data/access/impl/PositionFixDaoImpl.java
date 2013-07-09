@@ -151,6 +151,9 @@ public class PositionFixDaoImpl implements PositionFixDao {
         Double maxDop,
         boolean deleted
     ) {
+        if ((animalIds == null) || animalIds.isEmpty()) {
+            return 0;
+        }
         String queryString =
             "update positionfix\n" +
             "set deleted = :deleted\n" +

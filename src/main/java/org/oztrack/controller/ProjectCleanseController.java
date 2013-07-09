@@ -96,7 +96,7 @@ public class ProjectCleanseController {
         @RequestParam(value="operation", required=true) String operation,
         @RequestParam(value="fromDate", required=false) String fromDateString,
         @RequestParam(value="toDate", required=false) String toDateString,
-        @RequestParam(value="animal") List<Long> animalIds,
+        @RequestParam(value="animal", required=false) List<Long> animalIds,
         @RequestParam(value="maxSpeed", required=false) Double maxSpeed,
         @RequestParam(value="minArgosClass", required=false) String minArgosClassCode,
         @RequestParam(value="maxDop", required=false) Double maxDop,
