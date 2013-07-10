@@ -215,17 +215,26 @@
                 $('#projectMenuAnalysis').addClass('active');
                 $("#projectMapOptionsTabs").tabs();
                 $('#fromDateVisible').datepicker({
-                    altField: "#fromDate",
+                    altField: '#fromDate',
                     minDate: new Date(${projectDetectionDateRange.minimum.time}),
                     maxDate: new Date(${projectDetectionDateRange.maximum.time}),
                     defaultDate: new Date(${projectDetectionDateRange.minimum.time})
                 });
                 $('#toDateVisible').datepicker({
-                    altField: "#toDate",
+                    altField: '#toDate',
                     minDate: new Date(${projectDetectionDateRange.minimum.time}),
                     maxDate: new Date(${projectDetectionDateRange.maximum.time}),
                     defaultDate: new Date(${projectDetectionDateRange.maximum.time})
                 });
+                <c:forEach items="${analysisTypeList}" var="analysisType">
+                <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
+                <c:if test="${parameterType.dataType == 'date'}">
+                $('#${parameterType.identifier}Visible').datepicker({
+                    altField: '#${parameterType.identifier}'
+                });
+                </c:if>
+                </c:forEach>
+                </c:forEach>
                 window.animalSelectionDialog = null;
                 function showAnimalSelectionDialog() {
                     if (window.animalSelectionDialog) {
@@ -942,6 +951,18 @@
                                                     <c:if test="${parameterType.defaultValue == 'true'}">checked="checked"</c:if>
                                                     value="true"
                                                     style="margin: 4px 1px;" />
+                                                </c:when>
+                                                <c:when test="${parameterType.dataType == 'date'}">
+                                                <input
+                                                    type="hidden"
+                                                    id="${parameterType.identifier}"
+                                                    class="paramField-${analysisType}"
+                                                    name="${parameterType.identifier}" />
+                                                <input
+                                                    type="text"
+                                                    id="${parameterType.identifier}Visible"
+                                                    class="datepicker input-mini"
+                                                    style="margin-bottom: 3px; width: 80px;" />
                                                 </c:when>
                                                 <c:otherwise>
                                                 <input

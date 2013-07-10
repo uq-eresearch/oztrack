@@ -26,7 +26,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.apache.commons.lang3.StringUtils;
 import org.oztrack.data.model.types.AnalysisParameterType;
 import org.oztrack.data.model.types.AnalysisStatus;
 import org.oztrack.data.model.types.AnalysisType;
@@ -184,15 +183,7 @@ public class Analysis extends OzTrackBaseEntity {
         if ((parameter == null) || !parameterType.isValid(parameter.getValue())) {
             return null;
         }
-        String stringValue =
-            StringUtils.isNotBlank(parameter.getValue()) ? parameter.getValue()
-            : useDefault ? parameterType.getDefaultValue()
-            : null;
-        return
-            (stringValue == null) ? null
-            : parameterType.getDataType().equals("double") ? Double.valueOf(stringValue)
-            : parameterType.getDataType().equals("boolean") ?  Boolean.valueOf(stringValue)
-            : stringValue;
+        return parameterType.getParameterValueObject(parameter.getValue(), useDefault);
     }
 
     public Set<AnalysisResultFeature> getResultFeatures() {

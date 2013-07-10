@@ -1,8 +1,14 @@
 package org.oztrack.data.model.types;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class AnalysisParameterType {
+    private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
     private final String identifier;
     private final String displayName;
     private final String explanation;
@@ -91,6 +97,40 @@ public class AnalysisParameterType {
         if (dataType.equals("string")) {
             return true;
         }
+        if (dataType.equals("date")) {
+            try {
+                isoDateFormat.parse(value);
+                return true;
+            }
+            catch (Exception e) {
+                return false;
+            }
+        }
         return false;
+    }
+
+    public Object getParameterValueObject(String valueString, boolean useDefault) {
+        String stringValue =
+            StringUtils.isNotBlank(valueString) ? valueString
+            : useDefault ? getDefaultValue()
+            : null;
+        if (stringValue == null) {
+            return null;
+        }
+        if (getDataType().equals("double")) {
+            return Double.valueOf(stringValue);
+        }
+        if (getDataType().equals("boolean")) {
+            return Boolean.valueOf(stringValue);
+        }
+        if (getDataType().equals("date")) {
+            try {
+                return isoDateFormat.parse(stringValue);
+            }
+            catch (ParseException e) {
+                return null;
+            }
+        }
+        return stringValue;
     }
 }
