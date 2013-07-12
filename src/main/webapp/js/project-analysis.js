@@ -8,31 +8,21 @@
         that.projection900913 = new OpenLayers.Projection("EPSG:900913");
         that.projection4326 = new OpenLayers.Projection("EPSG:4326");
 
-        that.projectId = options.projectId;
-        that.crosses180 = options.crosses180;
-        that.dataLicence = options.dataLicence;
-        that.animalIds = options.animalIds;
-        that.animalVisible = {};
-        $.each(that.animalIds, function(i, animalId) {
-            that.animalVisible[animalId] = true;
-        });
-        that.projectBounds = options.projectBounds.clone().transform(that.projection4326, that.projection900913);
-        if (that.crosses180) {
-            that.projectBounds.left = (that.projectBounds.left + 40075016.68) % 40075016.68;
-            that.projectBounds.right = (that.projectBounds.right + 40075016.68) % 40075016.68;
+        that.project = options.project;
+        that.project.bounds.transform(that.projection4326, that.projection900913);
+        if (that.project.crosses180) {
+            that.project.bounds.left = (that.project.bounds.left + 40075016.68) % 40075016.68;
+            that.project.bounds.right = (that.project.bounds.right + 40075016.68) % 40075016.68;
         }
-        that.animalBounds = {};
-        $.each(options.animalBounds, function(animalId, bounds4326) {
-            var bounds900913 = bounds4326.clone().transform(that.projection4326, that.projection900913);
-            if (that.crosses180) {
-                bounds900913.left = (bounds900913.left + 40075016.68) % 40075016.68;
-                bounds900913.right = (bounds900913.right + 40075016.68) % 40075016.68;
+        that.animals = options.animals;
+        $.each(that.animals, function(i, animal) {
+            animal.bounds.transform(that.projection4326, that.projection900913);
+            if (that.project.crosses180) {
+                animal.bounds.left = (animal.bounds.left + 40075016.68) % 40075016.68;
+                animal.bounds.right = (animal.bounds.right + 40075016.68) % 40075016.68;
             }
-            that.animalBounds[animalId] = bounds900913;
+            animal.visible = true;
         });
-        that.animalColours = options.animalColours;
-        that.minDate = options.minDate;
-        that.maxDate = options.maxDate;
         that.onAnalysisCreate = options.onAnalysisCreate;
         that.onAnalysisError = options.onAnalysisError;
         that.onAnalysisSuccess = options.onAnalysisSuccess;
@@ -47,7 +37,7 @@
         that.analyses = {};
         that.projectMapLayerIdSeq = 0;
         that.maxExtent = new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
-        if (that.crosses180) {
+        if (that.project.crosses180) {
             that.maxExtent.left += 20037508.34;
             that.maxExtent.right += 20037508.34;
         }
@@ -63,9 +53,9 @@
         that.map.addControl(new OpenLayers.Control.Attribution());
         that.map.addControl(new OpenLayers.Control.ScaleLine());
         that.map.addControl(new OpenLayers.Control({displayClass: 'projectMapLogo'}));
-        if (that.dataLicence) {
+        if (that.project.dataLicence) {
             that.map.addControl(new OzTrack.OpenLayers.Control.OzTrackDataLicence({
-                dataLicence: that.dataLicence
+                dataLicence: that.project.dataLicence
             }));
         }
 
@@ -127,7 +117,7 @@
                 this.addControls([
                     new OpenLayers.Control.Navigation(),
                     new OpenLayers.Control.ZoomBox(),
-                    new OzTrack.OpenLayers.Control.ZoomToExtent({extent: that.projectBounds}),
+                    new OzTrack.OpenLayers.Control.ZoomToExtent({extent: that.project.bounds}),
                     measureControl
                 ])
             }
@@ -724,7 +714,7 @@
         var getFeatureInfoControl = new OzTrack.OpenLayers.Control.WMSGetFeatureInfo({
             url: '/geoserver/wms',
             layerUrls: ['/geoserver/gwc/service/wms'],
-            crosses180: that.crosses180,
+            crosses180: that.project.crosses180,
             layerDetails: [
                 {
                     layer: that.bathymetryLayer,
@@ -1066,6 +1056,10 @@
         that.map.addControl(getFeatureInfoControl);
         getFeatureInfoControl.activate();
 
+        function getAnimal(id) {
+            return $.grep(that.animals, function(x) {return x.id == id;})[0];
+        }
+
         // Workaround because we can't use OpenLayers.Map.zoomToExtent:
         // calling map.zoomToExtent(bounds, false) sometimes sets center to (0, 0).
         function zoomToExtent(bounds) {
@@ -1073,12 +1067,13 @@
             that.map.zoomTo(that.map.getZoomForExtent(bounds, false));
         }
 
-        zoomToExtent(that.projectBounds);
+        zoomToExtent(that.project.bounds);
 
         function createPointStyleMap() {
             var styleContext = {
                 getColour : function(feature) {
-                    return that.animalColours[feature.attributes.animalId];
+                    var featureAnimalId = feature.attributes.animalId || feature.attributes.id.value || null;
+                    return getAnimal(featureAnimalId).colour;
                 }
             };
             var pointOnStyle = new OpenLayers.Style({
@@ -1105,7 +1100,8 @@
         function createPolygonStyleMap() {
             var styleContext = {
                 getColour : function(feature) {
-                    return that.animalColours[feature.attributes.id.value];
+                    var featureAnimalId = feature.attributes.animalId || feature.attributes.id.value || null;
+                    return getAnimal(featureAnimalId).colour;
                 }
             };
             var polygonOnStyle = new OpenLayers.Style({
@@ -1203,7 +1199,7 @@
 
         function createAnalysisLayer(params, layerName) {
             $.ajax({
-                url: '/projects/' + that.projectId + '/analyses',
+                url: '/projects/' + that.project.id + '/analyses',
                 type: 'POST',
                 data: params,
                 error: function(xhr, textStatus, errorThrown) {
@@ -1274,9 +1270,9 @@
             var queryOverlay = new OpenLayers.Layer.Vector(layerName, {
                 styleMap : analysis.hasAnimalFeatures ? that.polygonStyleMap : null,
                 metadata: {
-                category: 'analysis',
-                showInformation: false
-            }
+                    category: 'analysis',
+                    showInformation: false
+                }
             });
             if (that.analyses[analysis.id]) {
                 that.analyses[analysis.id].layer = queryOverlay;
@@ -1296,7 +1292,7 @@
             var callback = function(resp) {
                 that.loadingPanel.decreaseCounter();
                 if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
-                    if (that.crosses180) {
+                    if (that.project.crosses180) {
                         $.each(resp.features, function(i, feature) {
                             var geometries = feature.components || [feature.geometry];
                             $.each(geometries, function(j, geometry) {
@@ -1309,7 +1305,7 @@
                     queryOverlay.addFeatures(resp.features);
                     
                     // Workaround: OpenLayers sometimes fails to draw polygons until map is panned.
-                    if (that.crosses180) {
+                    if (that.project.crosses180) {
                         that.map.pan(1, 0, null);
                         that.map.pan(-1, 0, null);
                     }
@@ -1375,16 +1371,18 @@
         function createDetectionLayer(params, category) {
             function buildFilter(params) {
                 // If supplied, use param to filter animals; otherwise, include all animals.
-                var cqlFilterAnimalIds = params.animalIds ? params.animalIds.split(',') : that.animalIds;
+                var cqlFilterAnimalIds =
+                    params.animalIds ? params.animalIds.split(',')
+                    : $.map(that.animals, function(animal) {return animal.id});
                 
                 // Exclude animals not currently visible on the map.
-                cqlFilterAnimalIds = $.grep(cqlFilterAnimalIds, function(e, i) {return that.animalVisible[e]});
+                cqlFilterAnimalIds = $.grep(cqlFilterAnimalIds, function(id) {return getAnimal(id).visible;});
                 
                 // If filter is empty, include dummy ID (i.e. -1) that will never be matched.
                 // This prevents the CQL_FILTER parameter from being syntactically invalid.
                 cqlFilterAnimalIds = (cqlFilterAnimalIds.length > 0) ? cqlFilterAnimalIds : [-1];
                 
-                var cqlFilter = 'project_id = ' + that.projectId + ' and deleted = false';
+                var cqlFilter = 'project_id = ' + that.project.id + ' and deleted = false';
                 cqlFilter += ' and animal_id in (' + cqlFilterAnimalIds.join(',') + ')';
                 if (params.fromDate) {
                     cqlFilter += ' and detectiontime >= \'' + moment(new Date(params.fromDate)).format('YYYY-MM-DD') + '\'';
@@ -1431,17 +1429,20 @@
             };
             that.projectMapLayers[layer.id] = layer;
             that.detectionLayers.push(layer);
-            var layerAnimalIds = layer.getParams().animalIds ? layer.getParams().animalIds.split(',') : that.animalIds;
+            var layerAnimalIds =
+                layer.getParams().animalIds
+                ? layer.getParams().animalIds.split(',')
+                : $.map(that.animals, function(animal) {return animal.id;});
             function updateAnimalInfoFromLayer(options) {
                 $.each(layerAnimalIds, function(i, animalId) {
                     var fromDate =
                         (options.getFromDate && options.getFromDate(animalId)) ||
                         layer.getParams().fromDate ||
-                        moment(that.minDate).format('YYYY-MM-DD');
+                        moment(that.project.minDate).format('YYYY-MM-DD');
                     var toDate =
                         (options.getToDate && options.getToDate(animalId)) ||
                         layer.getParams().toDate ||
-                        moment(that.maxDate).format('YYYY-MM-DD');
+                        moment(that.project.maxDate).format('YYYY-MM-DD');
                     var layerAttrs = options.getLayerAttrs ? options.getLayerAttrs(animalId) : {};
                     that.onUpdateAnimalInfoFromLayer(
                         layer.getTitle(),
@@ -1457,7 +1458,7 @@
             }
             jQuery.ajax({
                 type: 'GET',
-                url: '/projects/' + that.projectId + '/detections',
+                url: '/projects/' + that.project.id + '/detections',
                 dataType: 'json',
                 data: {
                     fromDate: layer.getParams().fromDate,
@@ -1501,16 +1502,19 @@
         function createTrajectoryLayer(params, category) {
             function buildFilter(params) {
                 // If supplied, use param to filter animals; otherwise, include all animals.
-                var cqlFilterAnimalIds = params.animalIds ? params.animalIds.split(',') : that.animalIds;
+                var cqlFilterAnimalIds =
+                    params.animalIds
+                    ? params.animalIds.split(',')
+                    : $.map(that.animals, function(animal) {return animal.id;});
                 
                 // Exclude animals not currently visible on the map.
-                cqlFilterAnimalIds = $.grep(cqlFilterAnimalIds, function(e, i) {return that.animalVisible[e]});
+                cqlFilterAnimalIds = $.grep(cqlFilterAnimalIds, function(id) {return getAnimal(id).visible;});
                 
                 // If filter is empty, include dummy ID (i.e. -1) that will never be matched.
                 // This prevents the CQL_FILTER parameter from being syntactically invalid.
                 cqlFilterAnimalIds = (cqlFilterAnimalIds.length > 0) ? cqlFilterAnimalIds : [-1];
 
-                var cqlFilter = 'project_id = ' + that.projectId;
+                var cqlFilter = 'project_id = ' + that.project.id;
                 cqlFilter += ' and animal_id in (' + cqlFilterAnimalIds.join(',') + ')';
                 if (params.fromDate) {
                     cqlFilter += ' and startdetectiontime >= \'' + moment(new Date(params.fromDate)).format('YYYY-MM-DD') + '\'';
@@ -1557,17 +1561,20 @@
             };
             that.projectMapLayers[layer.id] = layer;
             that.trajectoryLayers.push(layer);
-            var layerAnimalIds = layer.getParams().animalIds ? layer.getParams().animalIds.split(',') : that.animalIds;
+            var layerAnimalIds =
+                layer.getParams().animalIds
+                ? layer.getParams().animalIds.split(',')
+                : $.map(that.animals, function(animal) {return animal.id});
             function updateAnimalInfoFromLayer(options) {
                 $.each(layerAnimalIds, function(i, animalId) {
                     var fromDate =
                         (options.getFromDate && options.getFromDate(animalId)) ||
                         layer.getParams().fromDate ||
-                        moment(that.minDate).format('YYYY-MM-DD');
+                        moment(that.project.minDate).format('YYYY-MM-DD');
                     var toDate =
                         (options.getToDate && options.getToDate(animalId)) ||
                         layer.getParams().toDate ||
-                        moment(that.maxDate).format('YYYY-MM-DD');
+                        moment(that.project.maxDate).format('YYYY-MM-DD');
                     var layerAttrs = options.getLayerAttrs ? options.getLayerAttrs(animalId) : {};
                     that.onUpdateAnimalInfoFromLayer(
                         layer.getTitle(),
@@ -1583,7 +1590,7 @@
             }
             jQuery.ajax({
                 type: 'GET',
-                url: '/projects/' + that.projectId + '/trajectories',
+                url: '/projects/' + that.project.id + '/trajectories',
                 dataType: 'json',
                 data: {
                     fromDate: layer.getParams().fromDate,
@@ -1628,7 +1635,7 @@
         }
 
         function createStartEndLayer(params, category) {
-            params['projectId'] = that.projectId;
+            params['projectId'] = that.project.id;
             params['queryType'] = 'START_END';
             var startEndLayerId = that.projectMapLayerIdSeq++;
             var startEndLayer = new OpenLayers.Layer.Vector('Start and End Points', {
@@ -1683,8 +1690,8 @@
         }
         
         function updateAnimalInfoForAnalysis(layerName, analysis) {
-            var fromDate = moment(analysis.params.fromDate || that.minDate).format('YYYY-MM-DD');
-            var toDate = moment(analysis.params.toDate || that.maxDate).format('YYYY-MM-DD');
+            var fromDate = moment(analysis.params.fromDate || that.project.minDate).format('YYYY-MM-DD');
+            var toDate = moment(analysis.params.toDate || that.project.maxDate).format('YYYY-MM-DD');
             for (var i = 0; i < analysis.params.animalIds.length; i++) {
                 that.onUpdateAnimalInfoForAnalysis(layerName, analysis.params.animalIds[i], analysis, fromDate, toDate);
             }
@@ -1713,13 +1720,14 @@
         }
 
         that.zoomToAnimal = function(animalId) {
-            if (that.animalBounds[animalId]) {
-                zoomToExtent(that.animalBounds[animalId], false);
+            var animal = getAnimal(animalId);
+            if (animal.bounds) {
+                zoomToExtent(animal.bounds, false);
             }
         };
 
         that.toggleAllAnimalFeatures = function(animalId, visible) {
-            that.animalVisible[animalId] = visible;
+            getAnimal(animalId).visible = visible;
             $("#animalInfo-" + animalId).find(':checkbox').attr("checked", visible);
         };
 
@@ -1738,19 +1746,16 @@
                 return vectorLayers;
             }
             var vectorLayers = getVectorLayers();
-            for (i = 0; i < that.animalIds.length; i++) {
-                var animalId = that.animalIds[i];
+            for (i = 0; i < that.animals.length; i++) {
+                var animal = that.animals[i];
                 for (var l in vectorLayers) {
                     var layer = vectorLayers[l];
                     var layerName = layer.name;
                     for (var f in layer.features) {
                         var feature = layer.features[f];
-                        var featureAnimalId =
-                            (feature.attributes.animalId) ? feature.attributes.animalId :
-                            (feature.attributes.id.value) ? feature.attributes.id.value :
-                            null;
-                        if (featureAnimalId == animalId) {
-                            feature.renderIntent = that.animalVisible[animalId] ? 'default' : 'temporary';
+                        var featureAnimalId = feature.attributes.animalId || feature.attributes.id.value || null;
+                        if (featureAnimalId == animal.id) {
+                            feature.renderIntent = animal.visible ? 'default' : 'temporary';
                             feature.layer.drawFeature(feature);
                         }
                     }

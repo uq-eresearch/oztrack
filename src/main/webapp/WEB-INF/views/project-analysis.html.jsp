@@ -337,39 +337,34 @@
                 analysisMap = null;
                 onResize();
                 analysisMap = new OzTrack.AnalysisMap('projectMap', {
-                    projectId: <c:out value="${project.id}"/>,
-                    crosses180: ${project.crosses180},
-                    <c:if test="${(project.access == 'OPEN') and (project.dataLicence != null)}">
-                    dataLicence: {
-                        title: '${project.dataLicence.title}',
-                        infoUrl: '${project.dataLicence.infoUrl}',
-                        imageUrl: '${pageContext.request.scheme}://${fn:substringAfter(project.dataLicence.imageUrl, "://")}'
+                    project: {
+                        id: <c:out value="${project.id}"/>,
+                        <c:if test="${(project.access == 'OPEN') and (project.dataLicence != null)}">
+                        dataLicence: {
+                            title: '${project.dataLicence.title}',
+                            infoUrl: '${project.dataLicence.infoUrl}',
+                            imageUrl: '${pageContext.request.scheme}://${fn:substringAfter(project.dataLicence.imageUrl, "://")}'
+                        },
+                        </c:if>
+                        crosses180: ${project.crosses180},
+                        bounds: projectBounds,
+                        minDate: new Date(${projectDetectionDateRange.minimum.time}),
+                        maxDate: new Date(${projectDetectionDateRange.maximum.time})
                     },
-                    </c:if>
-                    animalIds: [
+                    animals: [
                         <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
-                        ${animal.id}<c:if test="${!animalStatus.last}">,
+                        <c:set var="animalBoundingBox" value="${animalBoundingBoxes[animal.id]}"/>
+                        {
+                            id: ${animal.id},
+                            <c:if test="${animalBoundingBox != null}">
+                            <c:set var="env" value="${animalBoundingBox.envelopeInternal}"/>
+                            bounds: new OpenLayers.Bounds(${env.minX}, ${env.minY}, ${env.maxX}, ${env.maxY}),
+                            </c:if>
+                            colour: '${animal.colour}'
+                        }<c:if test="${!animalStatus.last}">,
                         </c:if>
                         </c:forEach>
                     ],
-                    projectBounds: projectBounds,
-                    animalBounds: {
-                        <c:forEach items="${animalBoundingBoxes}" var="animalBoundingBoxEntry" varStatus="animalBoundingBoxEntryStatus">
-                        ${animalBoundingBoxEntry.key}: new OpenLayers.Bounds(
-                            ${animalBoundingBoxEntry.value.envelopeInternal.minX}, ${animalBoundingBoxEntry.value.envelopeInternal.minY},
-                            ${animalBoundingBoxEntry.value.envelopeInternal.maxX}, ${animalBoundingBoxEntry.value.envelopeInternal.maxY}
-                        )<c:if test="${!animalBoundingBoxEntryStatus.last}">,
-                        </c:if>
-                        </c:forEach>
-                    },
-                    animalColours: {
-                        <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
-                        ${animal.id}: '${animal.colour}'<c:if test="${!animalStatus.last}">,
-                        </c:if>
-                        </c:forEach>
-                    },
-                    minDate: new Date(${projectDetectionDateRange.minimum.time}),
-                    maxDate: new Date(${projectDetectionDateRange.maximum.time}),
                     onAnalysisCreate: function(layerName, analysisUrl) {
                         addAnalysis(layerName, analysisUrl, new Date(), false);
                     },

@@ -161,27 +161,31 @@
                 cleanseMap = null;
                 onResize();
                 cleanseMap = new OzTrack.CleanseMap('projectMap', {
-                    projectId: <c:out value="${project.id}"/>,
-                    crosses180: ${project.crosses180},
-                    <c:if test="${(project.access == 'OPEN') and (project.dataLicence != null)}">
-                    dataLicence: {
-                        title: '${project.dataLicence.title}',
-                        infoUrl: '${project.dataLicence.infoUrl}',
-                        imageUrl: '${pageContext.request.scheme}://${fn:substringAfter(project.dataLicence.imageUrl, "://")}'
+                    project: {
+                        id: <c:out value="${project.id}"/>,
+                        <c:if test="${(project.access == 'OPEN') and (project.dataLicence != null)}">
+                        dataLicence: {
+                            title: '${project.dataLicence.title}',
+                            infoUrl: '${project.dataLicence.infoUrl}',
+                            imageUrl: '${pageContext.request.scheme}://${fn:substringAfter(project.dataLicence.imageUrl, "://")}'
+                        },
+                        </c:if>
+                        crosses180: ${project.crosses180},
+                        bounds: new OpenLayers.Bounds(
+                            ${projectBoundingBox.envelopeInternal.minX}, ${projectBoundingBox.envelopeInternal.minY},
+                            ${projectBoundingBox.envelopeInternal.maxX}, ${projectBoundingBox.envelopeInternal.maxY}
+                        ),
+                        minDate: new Date(${projectDetectionDateRange.minimum.time}),
+                        maxDate: new Date(${projectDetectionDateRange.maximum.time})
                     },
-                    </c:if>
-                    fromDate: new Date(${projectDetectionDateRange.minimum.time}),
-                    toDate: new Date(${projectDetectionDateRange.maximum.time}),
-                    animalIds: [
+                    animals: [
                         <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
-                        ${animal.id}<c:if test="${!animalStatus.last}">,
+                        {
+                            id: ${animal.id}
+                        }<c:if test="${!animalStatus.last}">,
                         </c:if>
                         </c:forEach>
                     ],
-                    projectBounds: new OpenLayers.Bounds(
-                        ${projectBoundingBox.envelopeInternal.minX}, ${projectBoundingBox.envelopeInternal.minY},
-                        ${projectBoundingBox.envelopeInternal.maxX}, ${projectBoundingBox.envelopeInternal.maxY}
-                    ),
                     onReset: function() {
                         jQuery('#cleanse-select').children().remove();
                         jQuery('#cleanse-list').children().remove();
