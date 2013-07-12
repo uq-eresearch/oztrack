@@ -128,7 +128,6 @@ public class AnalysisController {
         out.key("id").value(analysis.getId());
         out.key("params").object();
         out.key("queryType").value(analysis.getAnalysisType());
-        out.key("hasAnimalFeatures").value(analysis.getAnalysisType().getReturnsAnimalFeatures());
         if (analysis.getFromDate() != null) {
             out.key("fromDate").value(isoDateFormat.format(analysis.getFromDate()));
         }
@@ -178,6 +177,7 @@ public class AnalysisController {
                 out.endObject();
             }
             out.endArray();
+            out.key("hasAnimalFeatures").value(analysis.getAnalysisType().getReturnsAnimalFeatures());
         }
         if (analysis.getDescription() != null) {
             out.key("description").value(analysis.getDescription());
