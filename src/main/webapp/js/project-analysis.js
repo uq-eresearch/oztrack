@@ -41,60 +41,6 @@
 
         that.analyses = {};
 
-        var measureControlStyle = new OpenLayers.Style(
-            {
-                strokeWidth: 2,
-                strokeColor: OpenLayers.Feature.Vector.style.default.strokeColor,
-                fontColor: OpenLayers.Feature.Vector.style.default.strokeColor,
-                fontWeight: 'bold',
-                labelAlign: 'rb',
-                labelXOffset: -8,
-                label: '${getMeasure}'
-            },
-            {
-                context: {
-                    getMeasure: function(f) {
-                        if (!f.attributes.measure || !f.attributes.units) {
-                            return '';
-                        }
-                        return (Math.round(f.attributes.measure * 1000) / 1000) + ' ' + f.attributes.units;
-                    }
-                }
-            }
-        );
-        var measureControlStyleMap = new OpenLayers.StyleMap({'default': measureControlStyle});
-        var measureControl = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, {
-            geodesic: true,
-            persist: true,
-            handlerOptions: {
-                layerOptions: {
-                    styleMap: measureControlStyleMap
-                }
-            }
-        });
-        function handleMeasure(e) {
-            e.object.handler.line.attributes.measure = e.measure;
-            e.object.handler.line.attributes.units = e.units;
-            e.object.handler.line.layer.redraw();
-        }
-        measureControl.events.on({
-            measure: handleMeasure,
-            measurepartial: handleMeasure,
-            activate: function(e) {
-                this.formerViewPortDivTitle = $(e.map.viewPortDiv).attr('title');
-                $(e.map.viewPortDiv).attr('title', 'Double click to finish path');
-            },
-            deactivate: function(e) {
-                if (this.formerViewPortDivTitle) {
-                    $(e.map.viewPortDiv).attr('title', this.formerViewPortDivTitle);
-                }
-                else {
-                    $(e.map.viewPortDiv).removeAttr('title');
-                }
-            }
-        });
-        that.projectMap.addControl(measureControl);
-
         function getAnimal(id) {
             return $.grep(that.animals, function(x) {return x.id == id;})[0];
         }
