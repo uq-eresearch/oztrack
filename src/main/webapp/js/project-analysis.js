@@ -7,24 +7,8 @@
         }
         var that = this;
 
-        that.projection900913 = new OpenLayers.Projection('EPSG:900913');
-        that.projection4326 = new OpenLayers.Projection('EPSG:4326');
-
         that.project = options.project;
-        that.project.bounds.transform(that.projection4326, that.projection900913);
-        if (that.project.crosses180) {
-            that.project.bounds.left = (that.project.bounds.left + 40075016.68) % 40075016.68;
-            that.project.bounds.right = (that.project.bounds.right + 40075016.68) % 40075016.68;
-        }
         that.animals = options.animals;
-        $.each(that.animals, function(i, animal) {
-            animal.bounds.transform(that.projection4326, that.projection900913);
-            if (that.project.crosses180) {
-                animal.bounds.left = (animal.bounds.left + 40075016.68) % 40075016.68;
-                animal.bounds.right = (animal.bounds.right + 40075016.68) % 40075016.68;
-            }
-            animal.visible = true;
-        });
         that.onAnalysisCreate = options.onAnalysisCreate;
         that.onAnalysisError = options.onAnalysisError;
         that.onLayerSuccess = options.onLayerSuccess;
@@ -172,8 +156,8 @@
                     extractStyles: !analysis.hasAnimalFeatures,
                     extractAttributes: true,
                     maxDepth: 2,
-                    internalProjection: that.projection900913,
-                    externalProjection: that.projection4326,
+                    internalProjection: that.projectMap.map.projection,
+                    externalProjection: that.projectMap.map.displayProjection,
                     kmlns: 'http://oztrack.org/xmlns#'
                 })
             });
