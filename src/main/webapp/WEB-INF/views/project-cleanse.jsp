@@ -5,6 +5,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
+<%@ taglib uri="/WEB-INF/functions.tld" prefix="oztrack" %>
 <tags:page title="${project.title}: Edit Data" fluid="true">
     <jsp:attribute name="description">
         Edit data in the ${project.title} project.
@@ -181,7 +182,8 @@
                     animals: [
                         <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
                         {
-                            id: ${animal.id}
+                            id: ${animal.id},
+                            name: '${oztrack:escapeJS(animal.animalName)}'
                         }<c:if test="${!animalStatus.last}">,
                         </c:if>
                         </c:forEach>

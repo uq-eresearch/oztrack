@@ -5,6 +5,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
+<%@ taglib uri="/WEB-INF/functions.tld" prefix="oztrack" %>
 <c:set var="isoDateFormatPattern" value="yyyy-MM-dd"/>
 <tags:page title="${project.title}: View Tracks" fluid="true">
     <jsp:attribute name="description">
@@ -204,6 +205,7 @@
     <jsp:attribute name="tail">
         <script src="${pageContext.request.scheme}://maps.google.com/maps/api/js?v=3.9&sensor=false"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/optimised/openlayers.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/project-map.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/project-analysis.js"></script>
         <script type="text/javascript">
             function showParamTable(queryType) {
@@ -243,14 +245,14 @@
                     else {
                         window.animalSelectionDialog = $('<div>')
                             .append($('<p style="margin: 9px 0;">')
-                                .append('Please click \'Done\' to complete selecting animals.')
+                                .append('Continue selecting animals and click \'Done\' to finish.')
                             )
                             .append($('<p style="margin: 18px 0 0 0; font-size: 11px; color: #666;">')
                                 .append('<b>Why is this necessary?</b> ')
                                 .append('Animals are not refreshed instantly to prevent unnecessary loading of map data.')
                             )
                             .dialog({
-                                title: 'Animal selection',
+                                title: 'Complete selection',
                                 modal: false,
                                 resizable: false,
                                 dialogClass: 'no-close',
@@ -356,6 +358,7 @@
                         <c:set var="animalBoundingBox" value="${animalBoundingBoxes[animal.id]}"/>
                         {
                             id: ${animal.id},
+                            name: '${oztrack:escapeJS(animal.animalName)}',
                             <c:if test="${animalBoundingBox != null}">
                             <c:set var="env" value="${animalBoundingBox.envelopeInternal}"/>
                             bounds: new OpenLayers.Bounds(${env.minX}, ${env.minY}, ${env.maxX}, ${env.maxY}),
@@ -386,7 +389,7 @@
                                 }
                             });
                     },
-                    onAnalysisSuccess: function() {
+                    onLayerSuccess: function() {
                         $('#projectMapCancel').fadeOut().prev().prop('disabled', false);
                         $('a[href="#animalPanel"]').trigger('click');
                     },
