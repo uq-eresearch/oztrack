@@ -25,8 +25,8 @@
             }
             animal.visible = true;
         });
-        that.onUpdateAnimalInfoFromLayer = options.onUpdateAnimalInfoFromLayer;
         that.onLayerSuccess = options.onLayerSuccess;
+        that.onUpdateAnimalInfoFromLayer = options.onUpdateAnimalInfoFromLayer;
 
         that.detectionLayers = [];
         that.trajectoryLayers = [];

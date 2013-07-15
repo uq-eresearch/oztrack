@@ -19,15 +19,11 @@
         that.projectMap = new OzTrack.ProjectMap(div, {
             project: that.project,
             animals: that.animals,
-            onUpdateAnimalInfoFromLayer: that.onUpdateAnimalInfoFromLayer,
-            onLayerSuccess: that.onLayerSuccess
+            onLayerSuccess: that.onLayerSuccess,
+            onUpdateAnimalInfoFromLayer: that.onUpdateAnimalInfoFromLayer
         });
 
         that.analyses = {};
-
-        function getAnimal(id) {
-            return $.grep(that.animals, function(x) {return x.id == id;})[0];
-        }
 
         that.addProjectMapLayer = function(layerType, queryTypeValue, queryTypeLabel) {
             var layerName = queryTypeLabel;
