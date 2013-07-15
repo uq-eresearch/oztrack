@@ -10,169 +10,62 @@
         that.projection4326 = new OpenLayers.Projection('EPSG:4326');
 
         that.project = options.project;
-        that.project.bounds.transform(that.projection4326, that.projection900913);
-        if (that.project.crosses180) {
-            that.project.bounds.left = (that.project.bounds.left + 40075016.68) % 40075016.68;
-            that.project.bounds.right = (that.project.bounds.right + 40075016.68) % 40075016.68;
-        }
         that.animals = options.animals;
-        $.each(that.animals, function(i, animal) {
-            animal.visible = true;
-        });
-        that.fromDate = new Date(that.project.minDate.getTime());
-        that.toDate = new Date(that.project.maxDate.getTime());
         that.onReset = options.onReset;
         that.onPolygonFeatureAdded = options.onPolygonFeatureAdded;
         that.onDeletePolygonFeature = options.onDeletePolygonFeature;
 
-        that.maxExtent = new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
-        if (that.project.crosses180) {
-            that.maxExtent.left += 20037508.34;
-            that.maxExtent.right += 20037508.34;
-        }
+        that.projectMap = new OzTrack.ProjectMap(div, {
+            project: that.project,
+            animals: that.animals,
+            showAllDetections: true,
+            showAllTrajectories: true,
+            showAllStartEnd: false,
+            includeDeleted: true,
+            extraCategories: {'cleanse': {label: 'Selection layers'}},
+        });
 
-        that.map = new OpenLayers.Map(div, {
-            theme: null,
-            units: 'm',
-            projection: that.projection900913,
-            displayProjection: that.projection4326
-        });
-        var OzTrackNavToolbar = OpenLayers.Class(OpenLayers.Control.NavToolbar, {
-            initialize: function() { 
-                OpenLayers.Control.Panel.prototype.initialize.apply(this, [options]);
-                this.addControls([
-                    new OpenLayers.Control.Navigation(),
-                    new OpenLayers.Control.ZoomBox(),
-                    new OzTrack.OpenLayers.Control.ZoomToExtent({extent: that.project.bounds})
-                ])
-            }
-        });
-        that.navToolbar = new OzTrackNavToolbar();
-        that.map.addControl(that.navToolbar);
-        that.map.addControl(new OpenLayers.Control.ScaleLine());
-        that.map.addControl(new OpenLayers.Control({displayClass: 'dataLicence'}));
-        that.map.addControl(new OpenLayers.Control({displayClass: 'projectMapLogo'}));
-        if (that.project.dataLicence) {
-            that.map.addControl(new OzTrack.OpenLayers.Control.OzTrackDataLicence({
-                dataLicence: that.project.dataLicence
-            }));
-        }
-
-        that.layerSwitcher = new OzTrack.OpenLayers.Control.OzTrackLayerSwitcher({
-            categories: {
-                'base': {label: 'Base layer'},
-                'project': {label: 'Project layers'}
-            }
-        });
-        that.map.addControl(that.layerSwitcher);
-        that.layerSwitcher.maximizeControl();
-        that.loadingPanel = new OpenLayers.Control.LoadingPanel();
-        that.map.addControl(that.loadingPanel);
-
-        that.googlePhysicalLayer = new OpenLayers.Layer.Google('Google Physical', {
-            type: google.maps.MapTypeId.TERRAIN,
-            sphericalMercator: true,
-            maxExtent: that.maxExtent,
-            wrapDateLine: true,
-            metadata: {category: 'base'}
-        });
-        that.googleSatelliteLayer = new OpenLayers.Layer.Google('Google Satellite', {
-            type: google.maps.MapTypeId.SATELLITE,
-            sphericalMercator: true,
-            maxExtent: that.maxExtent,
-            wrapDateLine: true,
-            numZoomLevels: 22,
-            metadata: {category: 'base'}
-        });
-        that.googleStreetsLayer = new OpenLayers.Layer.Google('Google Streets', {
-            sphericalMercator: true,
-            maxExtent: that.maxExtent,
-            wrapDateLine: true,
-            numZoomLevels: 20,
-            metadata: {category: 'base'}
-        });
-        that.googleHybridLayer = new OpenLayers.Layer.Google('Google Hybrid', {
-            type: google.maps.MapTypeId.HYBRID,
-            sphericalMercator: true,
-            maxExtent: that.maxExtent,
-            wrapDateLine: true,
-            numZoomLevels: 20,
-            metadata: {category: 'base'}
-        });
-        that.map.addLayers([that.googleSatelliteLayer, that.googlePhysicalLayer, that.googleStreetsLayer, that.googleHybridLayer]);
-
-        that.osmLayer = new OpenLayers.Layer.OSM('OpenStreetMap', null, {
-            sphericalMercator: true,
-            maxExtent: that.maxExtent,
-            wrapDateLine: true,
-            metadata: {category: 'base'}
-        });
-        that.map.addLayer(that.osmLayer);
-
-        that.allDetectionsLayer = createAllDetectionsLayer(that.project.id);
         that.polygonLayer = new OpenLayers.Layer.Vector('Polygon selections', {
-            metadata: {category: 'project'}
+            metadata: {category: 'cleanse'}
         });
-        that.map.addLayers([that.allDetectionsLayer, that.polygonLayer]);
+        that.projectMap.addLayer(that.polygonLayer);
 
         that.polygonFeatures = [];
-        that.polygonControl = new OpenLayers.Control.DrawFeature(that.polygonLayer, OpenLayers.Handler.Polygon);
-        that.polygonControl.events.register('featureadded', null, polygonFeatureAdded);
-        that.navToolbar.addControls(that.polygonControl);
-        that.navToolbar.activateControl(that.polygonControl);
 
-        that.highlightControl = new OpenLayers.Control.SelectFeature([that.polygonLayer], {
+        that.polygonControl = new OpenLayers.Control.DrawFeature(that.polygonLayer, OpenLayers.Handler.Polygon, {
+            title: 'Draw polygons'
+        });
+        that.polygonControl.events.register('featureadded', null, polygonFeatureAdded);
+        that.polygonControl.events.on({
+            activate: function(e) {
+                this.formerViewPortDivTitle = $(e.object.map.viewPortDiv).attr('title');
+                $(e.object.map.viewPortDiv).attr('title', 'Double click to finish polygon');
+            },
+            deactivate: function(e) {
+                if (this.formerViewPortDivTitle) {
+                    $(e.object.map.viewPortDiv).attr('title', this.formerViewPortDivTitle);
+                }
+                else {
+                    $(e.object.map.viewPortDiv).removeAttr('title');
+                }
+            }
+        });
+        that.projectMap.addControl(that.polygonControl, true);
+        that.projectMap.activateControl(that.polygonControl);
+
+        that.highlightPolygonControl = new OpenLayers.Control.SelectFeature([that.polygonLayer], {
             hover: true,
             highlightOnly: true,
             renderIntent: 'temporary'
         });
-        that.map.addControl(that.highlightControl);
-
-        function getAnimal(id) {
-            return $.grep(that.animals, function(x) {return x.id == id;})[0];
-        }
-
-        // Workaround because we can't use OpenLayers.Map.zoomToExtent:
-        // calling map.zoomToExtent(bounds, false) sometimes sets center to (0, 0).
-        function zoomToExtent(bounds) {
-            that.map.setCenter(bounds.getCenterLonLat().wrapDateLine(that.map.maxExtent));
-            that.map.zoomTo(that.map.getZoomForExtent(bounds, false));
-        }
-
-        zoomToExtent(that.project.bounds);
+        that.projectMap.addControl(that.highlightPolygonControl, false);
 
         that.reset = function() {
-            updateFilter();
+            that.projectMap.updateLayers();
             while (that.polygonFeatures.length > 0) {
                 that.polygonFeatures.shift().destroy();
             }
-            if (that.onReset) {
-                that.onReset();
-            }
-        };
-
-        function updateFilter() {
-            that.allDetectionsLayer.params['CQL_FILTER'] = buildAllDetectionsFilter();
-            that.allDetectionsLayer.redraw(true);
-        }
-        
-        that.updateSize = function() {
-            that.map.updateSize();
-        };
-
-        that.setFromDate = function(date) {
-            that.fromDate = date;
-            updateFilter();
-        };
-
-        that.setToDate = function(date) {
-            that.toDate = date;
-            updateFilter();
-        };
-
-        that.setAnimalVisible = function(animalId, visible) {
-            getAnimal(animalId).visible = visible;
-            updateFilter();
+            that.onReset && that.onReset();
         };
 
         function polygonFeatureAdded(e) {
@@ -195,7 +88,7 @@
         that.selectPolygonFeature = function(id, selected) {
             for (var i = 0; i < that.polygonFeatures.length; i++) {
                 if (that.polygonFeatures[i].id == id) {
-                    that.highlightControl[selected ? 'select' : 'unselect'](that.polygonFeatures[i]);
+                    that.highlightPolygonControl[selected ? 'select' : 'unselect'](that.polygonFeatures[i]);
                     break;
                 }
             }
@@ -213,55 +106,13 @@
                 }
             }
         };
-        
-        that.increaseLoadingCounter = function() {
-            that.loadingPanel.increaseCounter();
-        };
-        
-        that.decreaseLoadingCounter = function() {
-            that.loadingPanel.decreaseCounter();
-        };
 
-        function buildAllDetectionsFilter() {
-            var visibleAnimals = $.grep(that.animals, function(x) {return x.visible;});
-            var visibleAnimalIds = $.map(visibleAnimals, function(x) {return x.id;});
-            // Include bogus animal ID (e.g. -1) that will never be matched.
-            // This covers the case where no animals are selected to be visible,
-            // preventing the CQL_FILTER parameter from being syntactically invalid.
-            if (visibleAnimalIds.length == 0) {
-                visibleAnimalIds.push(-1);
-            }
-            var cqlFilter =
-                'project_id = ' + that.project.id +
-                ' and animal_id in (' + visibleAnimalIds.join(', ') + ')';
-            var fromDate = jQuery('#fromDate').val();
-            var toDate = jQuery('#toDate').val();
-            if (fromDate) {
-                cqlFilter += ' and detectiontime >= \'' + moment(new Date(fromDate)).format('YYYY-MM-DD') + '\'';
-            }
-            if (toDate) {
-                cqlFilter += ' and detectiontime < \'' + moment(new Date(toDate)).add('days', 1).format('YYYY-MM-DD') + '\'';
-            }
-            return cqlFilter;
-        }
-
-        function createAllDetectionsLayer() {
-            return new OpenLayers.Layer.WMS(
-                'Detections',
-                '/geoserver/wms',
-                {
-                    layers: 'oztrack:positionfixlayer',
-                    styles: 'oztrack_positionfixlayer',
-                    cql_filter: buildAllDetectionsFilter(),
-                    format: 'image/png',
-                    transparent: true
-                },
-                {
-                    isBaseLayer: false,
-                    tileSize: new OpenLayers.Size(512,512),
-                    metadata: {category: 'project'}
-                }
-            );
-        }
+        // Delegate to properties/functions of OzTrack.ProjectMap
+        that.updateSize = that.projectMap.updateSize;
+        that.increaseLoadingCounter = that.projectMap.increaseLoadingCounter;
+        that.decreaseLoadingCounter = that.projectMap.decreaseLoadingCounter;
+        that.setFromDate = that.projectMap.setFromDate;
+        that.setToDate = that.projectMap.setToDate;
+        that.setAnimalVisible = that.projectMap.setAnimalVisible;
     };
 }(window.OzTrack = window.OzTrack || {}));

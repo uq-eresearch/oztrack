@@ -19,6 +19,7 @@
         that.projectMap = new OzTrack.ProjectMap(div, {
             project: that.project,
             animals: that.animals,
+            extraCategories: {'analysis': {label: 'Analysis layers'}},
             onLayerSuccess: that.onLayerSuccess,
             onUpdateAnimalInfoFromLayer: that.onUpdateAnimalInfoFromLayer
         });
@@ -96,7 +97,7 @@
                         that.analyses[analysis.id] = analysis;
                         currentAnalysisId = analysis.id;
                         updateAnimalInfoFromAnalysisCreate(layerName, analysis);
-                        that.loadingPanel.increaseCounter();
+                        that.projectMap.increaseLoadingCounter();
                         pollAnalysisLayer(analysisUrl, layerName);
                     }
                 }
@@ -108,14 +109,14 @@
                 url: analysisUrl,
                 type: 'GET',
                 error: function(xhr, textStatus, errorThrown) {
-                    that.loadingPanel.decreaseCounter();
+                    that.projectMap.decreaseLoadingCounter();
                     that.onAnalysisError($(xhr.responseText).find('error').text() || 'Error getting analysis');
                 },
                 complete: function (xhr, textStatus) {
                     if (textStatus == 'success') {
                         var analysis = $.parseJSON(xhr.responseText);
                         if (!that.analyses[analysis.id]) {
-                            that.loadingPanel.decreaseCounter();
+                            that.projectMap.decreaseLoadingCounter();
                             return;
                         }
                         that.analyses[analysis.id] = analysis;
@@ -126,7 +127,7 @@
                             setTimeout(function () {pollAnalysisLayer(analysisUrl, layerName);}, 1000);
                         }
                         else {
-                            that.loadingPanel.decreaseCounter();
+                            that.projectMap.decreaseLoadingCounter();
                             that.onAnalysisError(analysis.message || 'Error running analysis');
                         }
                     }
@@ -158,7 +159,7 @@
                 })
             });
             var callback = function(resp) {
-                that.loadingPanel.decreaseCounter();
+                that.projectMap.decreaseLoadingCounter();
                 if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
                     if (that.project.crosses180) {
                         $.each(resp.features, function(i, feature) {
@@ -247,7 +248,6 @@
         }
 
         // Delegate to properties/functions of OzTrack.ProjectMap
-        that.loadingPanel = that.projectMap.loadingPanel;
         that.polygonStyleMap = that.projectMap.polygonStyleMap;
         that.updateSize = that.projectMap.updateSize;
         that.zoomToAnimal = that.projectMap.zoomToAnimal;
@@ -255,10 +255,6 @@
             that.projectMap.deleteProjectMapLayer(id);
             $('.projectMapLayerInfo-' + id).fadeOut().remove();
         };
-        that.toggleAllAnimalFeatures = function(animalId, visible) {
-            that.projectMap.toggleAllAnimalFeatures(animalId, visible);
-            $('#animalInfo-' + animalId).find(':checkbox').attr('checked', visible);
-        };
-        that.toggleAllAnimalFeaturesCommit = that.projectMap.toggleAllAnimalFeaturesCommit;
+        that.setAnimalVisible = that.projectMap.setAnimalVisible;
     };
 }(window.OzTrack = window.OzTrack || {}));

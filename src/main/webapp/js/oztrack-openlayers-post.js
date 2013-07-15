@@ -542,7 +542,7 @@ OpenLayers.Layer.XYZ.prototype.getXYZ = function(bounds) {
              }
              this.events.triggerEvent("beforegetfeatureinfo", {xy: evt.xy});
              OpenLayers.Element.addClass(this.map.viewPortDiv, "olCursorWait");
-             if (this.layerDetails.length == 0) {
+             if ($.grep(this.layerDetails, function(x) {return x.layer;}).length == 0) {
                  this.events.triggerEvent("nogetfeatureinfo");
                  OpenLayers.Element.removeClass(this.map.viewPortDiv, "olCursorWait");
                  return;
@@ -570,6 +570,7 @@ OpenLayers.Layer.XYZ.prototype.getXYZ = function(bounds) {
              var layerNames = [], styleNames = [], propertyNameParams = [], cqlFilterParams = [];
              for (var i = 0, len = this.layerDetails.length; i < len; i++) {
                  if (
+                     (this.layerDetails[i].layer) &&
                      (this.layerDetails[i].layer.params.LAYERS != null) &&
                      (!this.queryVisible || this.layerDetails[i].layer.getVisibility())
                  ) {
@@ -579,7 +580,7 @@ OpenLayers.Layer.XYZ.prototype.getXYZ = function(bounds) {
                      cqlFilterParams.push(this.layerDetails[i].layer.params.CQL_FILTER || 'include');
                  }
              }
-             var firstLayer = this.layerDetails[0].layer;
+             var firstLayer = $.grep(this.layerDetails, function(x) {return x.layer;})[0].layer;
              // use the firstLayer's projection if it matches the map projection -
              // this assumes that all layers will be available in this projection
              var projection = this.map.getProjection();

@@ -18,13 +18,22 @@
         }
         that.animals = options.animals;
         $.each(that.animals, function(i, animal) {
-            animal.bounds.transform(that.projection4326, that.projection900913);
-            if (that.project.crosses180) {
-                animal.bounds.left = (animal.bounds.left + 40075016.68) % 40075016.68;
-                animal.bounds.right = (animal.bounds.right + 40075016.68) % 40075016.68;
+            if (animal.bounds) {
+                animal.bounds.transform(that.projection4326, that.projection900913);
+                if (that.project.crosses180) {
+                    animal.bounds.left = (animal.bounds.left + 40075016.68) % 40075016.68;
+                    animal.bounds.right = (animal.bounds.right + 40075016.68) % 40075016.68;
+                }
             }
             animal.visible = true;
         });
+        that.fromDate = new Date(that.project.minDate.getTime());
+        that.toDate = new Date(that.project.maxDate.getTime());
+        that.showAllDetections = (options.showAllDetections !== undefined) ? options.showAllDetections : true;
+        that.showAllTrajectories = (options.showAllTrajectories !== undefined) ? options.showAllTrajectories : true;
+        that.showAllStartEnd = (options.showAllStartEnd !== undefined) ? options.showAllStartEnd : true;
+        that.includeDeleted = (options.includeDeleted !== undefined) ? options.includeDeleted : false;
+        that.extraCategories = (options.extraCategories !== undefined) ? options.extraCategories : {};
         that.onLayerSuccess = options.onLayerSuccess;
         that.onUpdateAnimalInfoFromLayer = options.onUpdateAnimalInfoFromLayer;
 
@@ -46,7 +55,7 @@
             controls: []
         });
         that.map.Z_INDEX_BASE.Popup = 1500;
-        that.map.addControl(new OpenLayers.Control.Zoom());
+        that.map.addControl(new OpenLayers.Control.Zoom({title: 'Zoom in/out'}));
         that.map.addControl(new OpenLayers.Control.Attribution());
         that.map.addControl(new OpenLayers.Control.ScaleLine());
         that.map.addControl(new OpenLayers.Control({displayClass: 'projectMapLogo'}));
@@ -56,28 +65,16 @@
             }));
         }
 
-        var OzTrackNavToolbar = OpenLayers.Class(OpenLayers.Control.NavToolbar, {
-            initialize: function() { 
-                OpenLayers.Control.Panel.prototype.initialize.apply(this, [options]);
-                this.addControls([
-                    new OpenLayers.Control.Navigation(),
-                    new OpenLayers.Control.ZoomBox(),
-                    new OzTrack.OpenLayers.Control.ZoomToExtent({extent: that.project.bounds}),
-                    createMeasureControl()
-                ])
-            }
-        });
-        var ozTrackNavToolbar = new OzTrackNavToolbar();
-        that.map.addControl(ozTrackNavToolbar);
-
         that.layerSwitcher = new OzTrack.OpenLayers.Control.OzTrackLayerSwitcher({
-            categories: {
-                'base': {label: 'Base layer'},
-                'terrestrial': {label: 'Terrestrial layers', initMinimized: true},
-                'marine': {label: 'Marine layers', initMinimized: true},
-                'project': {label: 'Project layers'},
-                'analysis': {label: 'Analysis layers'}
-            }
+            categories: $.extend(
+                {
+                    'base': {label: 'Base layer'},
+                    'terrestrial': {label: 'Terrestrial layers', initMinimized: true},
+                    'marine': {label: 'Marine layers', initMinimized: true},
+                    'project': {label: 'Project layers'}
+                },
+                that.extraCategories
+            )
         });
         that.map.addControl(that.layerSwitcher);
         that.layerSwitcher.maximizeControl();
@@ -646,14 +643,15 @@
                 // This prevents the CQL_FILTER parameter from being syntactically invalid.
                 cqlFilterAnimalIds = (cqlFilterAnimalIds.length > 0) ? cqlFilterAnimalIds : [-1];
 
-                var cqlFilter = 'project_id = ' + that.project.id + ' and deleted = false';
+                var cqlFilter = 'project_id = ' + that.project.id;
+                if (!that.includeDeleted) {
+                    cqlFilter += ' and deleted = false';
+                }
                 cqlFilter += ' and animal_id in (' + cqlFilterAnimalIds.join(',') + ')';
-                if (params.fromDate) {
-                    cqlFilter += ' and detectiontime >= \'' + moment(new Date(params.fromDate)).format('YYYY-MM-DD') + '\'';
-                }
-                if (params.toDate) {
-                    cqlFilter += ' and detectiontime < \'' + moment(new Date(params.toDate)).add('days', 1).format('YYYY-MM-DD') + '\'';
-                }
+                var fromDate = (params.fromDate && params.fromDate.getTime() > fromDate.getTime()) ? params.fromDate : that.fromDate;
+                var toDate = (params.toDate && params.toDate.getTime() < toDate.getTime()) ? params.toDate : that.toDate;
+                cqlFilter += ' and detectiontime >= \'' + moment(new Date(fromDate)).format('YYYY-MM-DD') + '\'';
+                cqlFilter += ' and detectiontime < \'' + moment(new Date(toDate)).add('days', 1).format('YYYY-MM-DD') + '\'';
                 return cqlFilter;
             }
             var title = 'Detections';
@@ -708,7 +706,7 @@
                         layer.getParams().toDate ||
                         moment(that.project.maxDate).format('YYYY-MM-DD');
                     var layerAttrs = options.getLayerAttrs ? options.getLayerAttrs(animalId) : {};
-                    that.onUpdateAnimalInfoFromLayer(
+                    that.onUpdateAnimalInfoFromLayer && that.onUpdateAnimalInfoFromLayer(
                         layer.getTitle(),
                         layer.id,
                         animalId,
@@ -718,7 +716,7 @@
                         layerAttrs
                     );
                 });
-                that.onLayerSuccess();
+                that.onLayerSuccess && that.onLayerSuccess();
             }
             jQuery.ajax({
                 type: 'GET',
@@ -759,7 +757,7 @@
         function updateDetectionLayers() {
             for (var i = 0; i < that.detectionLayers.length; i++) {
                 that.detectionLayers[i].getWMSLayer().params['CQL_FILTER'] = that.detectionLayers[i].getCQLFilter();
-                that.detectionLayers[i].getWMSLayer().redraw();
+                that.detectionLayers[i].getWMSLayer().redraw(true);
             }
         }
 
@@ -780,12 +778,10 @@
 
                 var cqlFilter = 'project_id = ' + that.project.id;
                 cqlFilter += ' and animal_id in (' + cqlFilterAnimalIds.join(',') + ')';
-                if (params.fromDate) {
-                    cqlFilter += ' and startdetectiontime >= \'' + moment(new Date(params.fromDate)).format('YYYY-MM-DD') + '\'';
-                }
-                if (params.toDate) {
-                    cqlFilter += ' and enddetectiontime < \'' + moment(new Date(params.toDate)).add('days', 1).format('YYYY-MM-DD') + '\'';
-                }
+                var fromDate = (params.fromDate && params.fromDate.getTime() > fromDate.getTime()) ? params.fromDate : that.fromDate;
+                var toDate = (params.toDate && params.toDate.getTime() < toDate.getTime()) ? params.toDate : that.toDate;
+                cqlFilter += ' and startdetectiontime >= \'' + moment(new Date(fromDate)).format('YYYY-MM-DD') + '\'';
+                cqlFilter += ' and enddetectiontime < \'' + moment(new Date(toDate)).add('days', 1).format('YYYY-MM-DD') + '\'';
                 return cqlFilter;
             }
             var title = 'Trajectory';
@@ -840,7 +836,7 @@
                         layer.getParams().toDate ||
                         moment(that.project.maxDate).format('YYYY-MM-DD');
                     var layerAttrs = options.getLayerAttrs ? options.getLayerAttrs(animalId) : {};
-                    that.onUpdateAnimalInfoFromLayer(
+                    that.onUpdateAnimalInfoFromLayer && that.onUpdateAnimalInfoFromLayer(
                         layer.getTitle(),
                         layer.id,
                         animalId,
@@ -850,7 +846,7 @@
                         layerAttrs
                     );
                 });
-                that.onLayerSuccess();
+                that.onLayerSuccess && that.onLayerSuccess();
             }
             jQuery.ajax({
                 type: 'GET',
@@ -894,7 +890,7 @@
         function updateTrajectoryLayers() {
             for (var i = 0; i < that.trajectoryLayers.length; i++) {
                 that.trajectoryLayers[i].getWMSLayer().params['CQL_FILTER'] = that.trajectoryLayers[i].getCQLFilter();
-                that.trajectoryLayers[i].getWMSLayer().redraw();
+                that.trajectoryLayers[i].getWMSLayer().redraw(true);
             }
         }
 
@@ -917,7 +913,7 @@
                 eventListeners : {
                     loadend : function(e) {
                         that.updateAnimalInfoFromStartEndLayer(e.object, startEndLayerId);
-                        that.onLayerSuccess();
+                        that.onLayerSuccess && that.onLayerSuccess();
                     }
                 },
                 metadata: {
@@ -939,7 +935,7 @@
                     }
                     animalProcessed[feature.attributes.animalId] = true;
                     feature.renderIntent = 'default';
-                    that.onUpdateAnimalInfoFromLayer(
+                    that.onUpdateAnimalInfoFromLayer && that.onUpdateAnimalInfoFromLayer(
                         startEndLayer.name,
                         startEndLayerId,
                         feature.attributes.animalId,
@@ -952,13 +948,17 @@
             }
         };
 
-        that.allDetectionsLayer = that.createDetectionLayer({}, 'project');
-        that.map.addLayer(that.allDetectionsLayer.getWMSLayer());
-
-        that.allTrajectoriesLayer = that.createTrajectoryLayer({}, 'project');
-        that.map.addLayer(that.allTrajectoriesLayer.getWMSLayer());
-
-        that.map.addLayer(that.createStartEndLayer({}, 'project'));
+        if (that.showAllDetections) {
+            that.allDetectionsLayer = that.createDetectionLayer({}, 'project');
+            that.map.addLayer(that.allDetectionsLayer.getWMSLayer());
+        }
+        if (that.showAllTrajectories) {
+            that.allTrajectoriesLayer = that.createTrajectoryLayer({}, 'project');
+            that.map.addLayer(that.allTrajectoriesLayer.getWMSLayer());
+        }
+        if (that.showAllStartEnd) {
+            that.map.addLayer(that.createStartEndLayer({}, 'project'));
+        }
 
         function coordString(geometry) {
             var x = geometry.x || geometry.lon;
@@ -1226,7 +1226,7 @@
                      }
                 },
                 {
-                    layer: that.allDetectionsLayer.getWMSLayer(),
+                    layer: that.allDetectionsLayer && that.allDetectionsLayer.getWMSLayer(),
                     propertyNames: [
                         'animal_id',
                         'detectiontime',
@@ -1240,7 +1240,7 @@
                     }
                 },
                 {
-                    layer: that.allTrajectoriesLayer.getWMSLayer(),
+                    layer: that.allTrajectoriesLayer && that.allTrajectoriesLayer.getWMSLayer(),
                     propertyNames: [
                         'animal_id',
                         'startdetectiontime',
@@ -1324,7 +1324,30 @@
             }
         });
         that.map.addControl(getFeatureInfoControl);
-        getFeatureInfoControl.activate();
+
+        var navigationControl = new OpenLayers.Control.Navigation({title: 'Drag map'});
+        navigationControl.events.on({
+            activate: function(e) {
+                getFeatureInfoControl.activate();
+            },
+            deactivate: function(e) {
+                getFeatureInfoControl.deactivate();
+            }
+        });
+
+        var OzTrackNavToolbar = OpenLayers.Class(OpenLayers.Control.NavToolbar, {
+            initialize: function() { 
+                OpenLayers.Control.Panel.prototype.initialize.apply(this, [options]);
+                this.addControls([
+                    navigationControl,
+                    new OpenLayers.Control.ZoomBox({title: 'Zoom to selection'}),
+                    new OzTrack.OpenLayers.Control.ZoomToExtent({extent: that.project.bounds}),
+                    createMeasureControl()
+                ])
+            }
+        });
+        var ozTrackNavToolbar = new OzTrackNavToolbar();
+        that.map.addControl(ozTrackNavToolbar);
 
         // Workaround because we can't use OpenLayers.Map.zoomToExtent:
         // calling map.zoomToExtent(bounds, false) sometimes sets center to (0, 0).
@@ -1332,6 +1355,7 @@
             that.map.setCenter(bounds.getCenterLonLat().wrapDateLine(that.map.maxExtent));
             that.map.zoomTo(that.map.getZoomForExtent(bounds, false));
         };
+        that.zoomToExtent(that.project.bounds);
 
         // Workaround used where OpenLayers fails to render features or goes to incorrect zoom.
         that.nudge = function() {
@@ -1339,14 +1363,34 @@
             that.map.pan(-1, 0, null);
         };
 
-        that.zoomToExtent(that.project.bounds);
+        that.addControl = function(control, shouldAddToToolbar) {
+            (shouldAddToToolbar ? ozTrackNavToolbar : that.map).addControls([control]);
+        };
 
-        that.addControl = function(control) {
-            ozTrackNavToolbar.addControls([control]);
+        that.activateControl = function(control) {
+            ozTrackNavToolbar.activateControl(control);
         };
 
         that.addLayer = function(layer) {
             that.map.addLayer(layer);
+        };
+
+        that.increaseLoadingCounter = function() {
+            that.loadingPanel.increaseCounter();
+        };
+
+        that.decreaseLoadingCounter = function() {
+            that.loadingPanel.decreaseCounter();
+        };
+
+        that.setFromDate = function(date) {
+            that.fromDate = date;
+            that.updateLayers();
+        };
+
+        that.setToDate = function(date) {
+            that.toDate = date;
+            that.updateLayers();
         };
 
         function createMeasureControl() {
@@ -1373,6 +1417,7 @@
             );
             var measureControlStyleMap = new OpenLayers.StyleMap({'default': measureControlStyle});
             var measureControl = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, {
+                title: 'Measure distance',
                 geodesic: true,
                 persist: true,
                 handlerOptions: {
@@ -1384,7 +1429,7 @@
             function handleMeasure(e) {
                 e.object.handler.line.attributes.measure = e.measure;
                 e.object.handler.line.attributes.units = e.units;
-                e.object.handler.line.layer.redraw();
+                e.object.handler.line.layer.redraw(true);
             }
             measureControl.events.on({
                 measure: handleMeasure,
@@ -1408,7 +1453,10 @@
         function createPointStyleMap() {
             var styleContext = {
                 getColour : function(feature) {
-                    var featureAnimalId = feature.attributes.animalId || feature.attributes.id.value || null;
+                    var featureAnimalId =
+                        feature.attributes.animalId ||
+                        (feature.attributes.id && feature.attributes.id.value) ||
+                        null;
                     return getAnimal(featureAnimalId).colour;
                 }
             };
@@ -1436,7 +1484,10 @@
         function createPolygonStyleMap() {
             var styleContext = {
                 getColour : function(feature) {
-                    var featureAnimalId = feature.attributes.animalId || feature.attributes.id.value || null;
+                    var featureAnimalId =
+                        feature.attributes.animalId ||
+                        (feature.attributes.id && feature.attributes.id.value) ||
+                        null;
                     return getAnimal(featureAnimalId).colour;
                 }
             };
@@ -1527,13 +1578,41 @@
             that.nudge();
         };
 
-        that.toggleAllAnimalFeatures = function(animalId, visible) {
+        that.setAnimalVisible = function(animalId, visible) {
             getAnimal(animalId).visible = visible;
+            showAnimalSelectionDialog();
         };
 
-        that.toggleAllAnimalFeaturesCommit = function() {
-            updateDetectionLayers();
-            updateTrajectoryLayers();
+        function showAnimalSelectionDialog() {
+            if (that.animalSelectionDialog) {
+                that.animalSelectionDialog.dialog('open');
+            }
+            else {
+                that.animalSelectionDialog = $('<div>')
+                    .append($('<p style="margin: 9px 0;">')
+                        .append('Continue selecting animals and click \'Done\' to finish.')
+                    )
+                    .append($('<p style="margin: 18px 0 0 0; font-size: 11px; color: #666;">')
+                        .append('<b>Why is this necessary?</b> ')
+                        .append('Animals are not refreshed instantly to prevent unnecessary loading of map data.')
+                    )
+                    .dialog({
+                        title: 'Complete selection',
+                        modal: false,
+                        resizable: false,
+                        dialogClass: 'no-close',
+                        width: 350,
+                        buttons: {
+                            'Done': function() {
+                                that.updateLayers();
+                                $(this).dialog('close');
+                            }
+                        }
+                    });
+            }
+        }
+
+        function updateVectorLayers() {
             function getVectorLayers() {
                 var vectorLayers = [];
                 if (that.map.layers) {
@@ -1553,7 +1632,10 @@
                     var layerName = layer.name;
                     for (var f in layer.features) {
                         var feature = layer.features[f];
-                        var featureAnimalId = feature.attributes.animalId || feature.attributes.id.value || null;
+                        var featureAnimalId =
+                            feature.attributes.animalId ||
+                            (feature.attributes.id && feature.attributes.id.value) ||
+                            null;
                         if (featureAnimalId == animal.id) {
                             feature.renderIntent = animal.visible ? 'default' : 'temporary';
                             feature.layer.drawFeature(feature);
@@ -1561,6 +1643,12 @@
                     }
                 }
             }
+        }
+
+        that.updateLayers = function() {
+            updateDetectionLayers();
+            updateTrajectoryLayers();
+            updateVectorLayers();
         };
     }
 }(window.OzTrack = window.OzTrack || {}));

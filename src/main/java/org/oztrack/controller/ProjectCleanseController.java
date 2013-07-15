@@ -86,7 +86,7 @@ public class ProjectCleanseController {
         model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project));
         model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, true));
         model.addAttribute("argosClasses", ArgosClass.values());
-        return "project-cleanse";
+        return "project-cleanse.html";
     }
 
     @RequestMapping(value="/projects/{id}/cleanse", method=RequestMethod.POST, produces="application/xml")

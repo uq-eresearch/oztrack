@@ -136,11 +136,6 @@
             .paramTableDiv table td {
                 padding: 2px;
             }
-            .featureInfoTitle {
-                padding: 2px;
-                border-bottom: 1px solid #ccc;
-                background-color: #D8E0A8;
-            }
             #savedAnalysesList .analysis-header {
                 padding: 2px 4px;
                 border-bottom: 1px solid #ccc;
@@ -237,40 +232,10 @@
                 </c:if>
                 </c:forEach>
                 </c:forEach>
-                window.animalSelectionDialog = null;
-                function showAnimalSelectionDialog() {
-                    if (window.animalSelectionDialog) {
-                        window.animalSelectionDialog.dialog('open');
-                    }
-                    else {
-                        window.animalSelectionDialog = $('<div>')
-                            .append($('<p style="margin: 9px 0;">')
-                                .append('Continue selecting animals and click \'Done\' to finish.')
-                            )
-                            .append($('<p style="margin: 18px 0 0 0; font-size: 11px; color: #666;">')
-                                .append('<b>Why is this necessary?</b> ')
-                                .append('Animals are not refreshed instantly to prevent unnecessary loading of map data.')
-                            )
-                            .dialog({
-                                title: 'Complete selection',
-                                modal: false,
-                                resizable: false,
-                                dialogClass: 'no-close',
-                                width: 350,
-                                buttons: {
-                                    'Done': function() {
-                                        analysisMap.toggleAllAnimalFeaturesCommit();
-                                        $(this).dialog('close');
-                                    }
-                                }
-                            });
-                    }
-                }
                 <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
                 $('input[id=select-animal-${animal.id}]').change(function() {
                     $('#filter-animal-${animal.id}').prop('disabled', !this.checked);
-                    analysisMap.toggleAllAnimalFeatures("${animal.id}", this.checked);
-                    showAnimalSelectionDialog();
+                    analysisMap.setAnimalVisible("${animal.id}", this.checked);
                 });
                 </c:forEach>
 
