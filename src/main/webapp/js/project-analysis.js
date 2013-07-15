@@ -29,8 +29,8 @@
         that.onAnalysisError = options.onAnalysisError;
         that.onLayerSuccess = options.onLayerSuccess;
         that.onUpdateAnimalInfoFromLayer = options.onUpdateAnimalInfoFromLayer;
-        that.onUpdateAnimalInfoForAnalysis = options.onUpdateAnimalInfoForAnalysis;
-        that.onUpdateAnimalInfoFromKML = options.onUpdateAnimalInfoFromKML;
+        that.onUpdateAnimalInfoFromAnalysisCreate = options.onUpdateAnimalInfoFromAnalysisCreate;
+        that.onUpdateAnimalInfoFromAnalysisSuccess = options.onUpdateAnimalInfoFromAnalysisSuccess;
 
         that.projectMap = new OzTrack.ProjectMap(div, {
             project: that.project,
@@ -115,7 +115,7 @@
                         var analysis = $.parseJSON(xhr.responseText);
                         that.analyses[analysis.id] = analysis;
                         currentAnalysisId = analysis.id;
-                        updateAnimalInfoForAnalysis(layerName, analysis);
+                        updateAnimalInfoFromAnalysisCreate(layerName, analysis);
                         that.loadingPanel.increaseCounter();
                         pollAnalysisLayer(analysisUrl, layerName);
                     }
@@ -197,7 +197,7 @@
                         that.projectMap.nudge();
                     }
 
-                    updateAnimalInfoFromKML(analysis, resp.features);
+                    updateAnimalInfoFromAnalysisSuccess(analysis, resp.features);
                     that.onLayerSuccess();
                 }
                 else {
@@ -236,15 +236,15 @@
             $('.analysisInfo-' + id).fadeOut().remove();
         };
 
-        function updateAnimalInfoForAnalysis(layerName, analysis) {
+        function updateAnimalInfoFromAnalysisCreate(layerName, analysis) {
             var fromDate = moment(analysis.params.fromDate || that.project.minDate).format('YYYY-MM-DD');
             var toDate = moment(analysis.params.toDate || that.project.maxDate).format('YYYY-MM-DD');
             for (var i = 0; i < analysis.params.animalIds.length; i++) {
-                that.onUpdateAnimalInfoForAnalysis(layerName, analysis.params.animalIds[i], analysis, fromDate, toDate);
+                that.onUpdateAnimalInfoFromAnalysisCreate(layerName, analysis.params.animalIds[i], analysis, fromDate, toDate);
             }
         }
 
-        function updateAnimalInfoFromKML(analysis, features) {
+        function updateAnimalInfoFromAnalysisSuccess(analysis, features) {
             for (i = 0; i < analysis.params.animalIds.length; i++) {
                 var animalId = analysis.params.animalIds[i];
                 var animalFeature = null;
@@ -258,7 +258,7 @@
                     animalFeature.renderIntent = 'default';
                     animalFeature.layer.drawFeature(animalFeature);
                 }
-                that.onUpdateAnimalInfoFromKML(
+                that.onUpdateAnimalInfoFromAnalysisSuccess(
                     animalId,
                     analysis,
                     animalFeature ? animalFeature.attributes : null

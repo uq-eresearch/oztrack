@@ -429,7 +429,7 @@
                         }
                         $('#animalInfo-' + animalId).append('<div class="layerInfo projectMapLayerInfo-' + layerId + '">' + html + '</div>');
                     },
-                    onUpdateAnimalInfoForAnalysis: function(layerName, animalId, analysis, fromDate, toDate) {
+                    onUpdateAnimalInfoFromAnalysisCreate: function(layerName, animalId, analysis, fromDate, toDate) {
                         var html = '<div class="layerInfoTitle">';
                         html += '<a class="layer-delete" href="javascript:analysisMap.deleteAnalysis(' + analysis.id + ');">delete</a></span>';
                         html += layerName;
@@ -453,7 +453,7 @@
                         html += '<div id="analysis-stats-' + animalId + '-' + analysis.id + '" class="layerInfoStats" style="' + (statsHtml ? '' : 'display: none;') + '">' + statsHtml + '</table>';
                         $('#animalInfo-' + animalId).append('<div id="analysisInfo-' + animalId + '-' + analysis.id + '" class="layerInfo analysisInfo-' + analysis.id + '">' + html + '</div>');
                     },
-                    onUpdateAnimalInfoFromKML: function(animalId, analysis, attributes) {
+                    onUpdateAnimalInfoFromAnalysisSuccess: function(animalId, analysis, attributes) {
                         var statsHtml = '';
                         <c:forEach items="${analysisTypeList}" var="analysisType">
                         if (analysis.params.queryType == '${analysisType}') {
