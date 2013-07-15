@@ -1,4 +1,5 @@
 /*global OpenLayers, google*/
+
 (function(OzTrack) {
     OzTrack.CleanseMap = function(div, options) {
         if (!(this instanceof OzTrack.CleanseMap)) {
