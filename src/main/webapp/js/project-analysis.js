@@ -26,7 +26,7 @@
 
         that.analyses = {};
 
-        that.addProjectMapLayer = function(layerType, queryTypeValue, queryTypeLabel) {
+        that.addProjectMapLayer = function(queryTypeValue, queryTypeLabel) {
             var layerName = queryTypeLabel;
             var params = {
                 queryType : queryTypeValue,
@@ -137,7 +137,7 @@
 
         function addAnalysisResultLayer(analysis, layerName) {
             var queryOverlay = new OpenLayers.Layer.Vector(layerName, {
-                styleMap : analysis.hasAnimalFeatures ? that.polygonStyleMap : null,
+                styleMap : (analysis.resultType === 'HOME_RANGE') ? that.polygonStyleMap : null,
                 metadata: {
                     category: 'analysis',
                     showInformation: false
@@ -150,7 +150,7 @@
             var protocol = new OpenLayers.Protocol.HTTP({
                 url : kmlResultFile.url,
                 format : new OpenLayers.Format.KML({
-                    extractStyles: !analysis.hasAnimalFeatures,
+                    extractStyles: (analysis.resultType === 'HEAT_MAP') || (analysis.resultType === 'FILTER'),
                     extractAttributes: true,
                     maxDepth: 2,
                     internalProjection: that.projectMap.map.projection,

@@ -21,7 +21,7 @@ public enum AnalysisType {
         "\n" +
         "<p>Worton, B.J. (1995) A convex hull-based estimator of home-range size. " +
         "Biometrics, 51, 1206-1215.</p>",
-        true,
+        AnalysisResultType.HOME_RANGE,
         Arrays.asList(
             new AnalysisParameterType(
                 "percent",
@@ -38,6 +38,7 @@ public enum AnalysisType {
                 null
             )
         ),
+        Arrays.<AnalysisResultAttributeType>asList(),
         Arrays.asList(
             new AnalysisResultAttributeType(
                 "area",
@@ -78,7 +79,7 @@ public enum AnalysisType {
         "\n" +
         "<p>Worton, B.J. (1989) Kernel methods for estimating the utilization " +
         "distribution in home-range studies. Ecology 70: 164-168</p>",
-        true,
+        AnalysisResultType.HOME_RANGE,
         Arrays.asList(
             new AnalysisParameterType(
                 "percent",
@@ -183,6 +184,7 @@ public enum AnalysisType {
                 null
             )
         ),
+        Arrays.<AnalysisResultAttributeType>asList(),
         Arrays.asList(
             new AnalysisResultAttributeType(
                 "area",
@@ -235,7 +237,7 @@ public enum AnalysisType {
         "Gaillard J.M., Moorcroft P.R. 2010. The home-range concept: are traditional " +
         "estimators still relevant with modern telemetry technology? Phil. Trans. R. Soc. " +
         "B 365, 2221–2231</p>",
-        true,
+        AnalysisResultType.HOME_RANGE,
         Arrays.asList(
             new AnalysisParameterType(
                 "percent",
@@ -325,6 +327,7 @@ public enum AnalysisType {
                 null
             )
         ),
+        Arrays.<AnalysisResultAttributeType>asList(),
         Arrays.asList(
             new AnalysisResultAttributeType(
                 "area",
@@ -354,7 +357,7 @@ public enum AnalysisType {
         "<p>Burgman, M.A. &amp; Fox, J.C. (2003) Bias in species range estimates from minimum " +
         "convex polygons: implications for conservation and options for improved planning. " +
         "Animal Conservation, 6, 19-28.</p>",
-        true,
+        AnalysisResultType.HOME_RANGE,
         Arrays.asList(
             new AnalysisParameterType(
                 "alpha",
@@ -369,6 +372,7 @@ public enum AnalysisType {
                 null
             )
         ),
+        Arrays.<AnalysisResultAttributeType>asList(),
         Arrays.asList(
             new AnalysisResultAttributeType(
                 "area",
@@ -400,7 +404,7 @@ public enum AnalysisType {
         "<p>Getz, W.M. & Wilmers, C.C. (2004). A local nearest-neighbor convex-hull construction of home ranges and utilization distributions. Ecography, 27, 489–505.</p>\n" +
         "\n" +
         "<p>Getz, W.M., Fortmann-Roe, S.B, Lyons, A., Ryan, S., Cross, P. (2007). LoCoH methods for the construction of home ranges and utilization distributions. PLoS ONE, 2: 1–11.</p>",
-        true,
+        AnalysisResultType.HOME_RANGE,
         Arrays.asList(
             new AnalysisParameterType(
                 "percent",
@@ -448,6 +452,7 @@ public enum AnalysisType {
                 null
             )
         ),
+        Arrays.<AnalysisResultAttributeType>asList(),
         Arrays.<AnalysisResultAttributeType>asList()
     ),
     HEATMAP_POINT(
@@ -461,8 +466,9 @@ public enum AnalysisType {
         "\n" +
         "<p>Baddeley, A. & Turner, R. (2005) spatstat: An R package for analyzing spatial point patterns. " +
         "Journal of Statistical Software, 12,6</p>",
-        false,
+        AnalysisResultType.HEAT_MAP,
         buildHeatmapParameterTypes(),
+        Arrays.<AnalysisResultAttributeType>asList(),
         Arrays.<AnalysisResultAttributeType>asList()
     ),
     HEATMAP_LINE(
@@ -476,29 +482,132 @@ public enum AnalysisType {
         "\n" +
         "<p>Baddeley, A. & Turner, R. (2005) spatstat: An R package for analyzing spatial point patterns. " +
         "Journal of Statistical Software, 12,6</p>",
-        false,
+        AnalysisResultType.HEAT_MAP,
         buildHeatmapParameterTypes(),
+        Arrays.<AnalysisResultAttributeType>asList(),
         Arrays.<AnalysisResultAttributeType>asList()
+    ),
+    KALMAN(
+        "Kalman Filter",
+        null,
+        AnalysisResultType.FILTER,
+        Arrays.asList(
+            new AnalysisParameterType(
+                "startDate",
+                "Start date",
+                null,
+                "date",
+                null,
+                null,
+                false,
+                null
+            ),
+            new AnalysisParameterType(
+                "startX",
+                "Start longitude",
+                null,
+                "double",
+                "°",
+                null,
+                false,
+                null
+            ),
+            new AnalysisParameterType(
+                "startY",
+                "Start latitude",
+                null,
+                "double",
+                "°",
+                null,
+                false,
+                null
+            ),
+            new AnalysisParameterType(
+                "endDate",
+                "End date",
+                null,
+                "date",
+                null,
+                null,
+                false,
+                null
+            ),
+            new AnalysisParameterType(
+                "endX",
+                "End longitude",
+                null,
+                "double",
+                "°",
+                null,
+                false,
+                null
+            ),
+            new AnalysisParameterType(
+                "endY",
+                "End latitude",
+                null,
+                "double",
+                "°",
+                null,
+                false,
+                null
+            )
+        ),
+        Arrays.asList(
+            new AnalysisResultAttributeType(
+                "uValue",
+                "u value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "uStdDev",
+                "u std dev",
+                "double",
+                null,
+                6
+            )
+        ),
+        Arrays.<AnalysisResultAttributeType>asList(
+            new AnalysisResultAttributeType(
+                "varLon",
+                "var lon",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "varLat",
+                "var lat",
+                "double",
+                null,
+                6
+            )
+        )
     );
 
     private final String displayName;
     private final String explanation;
-    private final Boolean returnsAnimalFeatures;
+    private final AnalysisResultType resultType;
     private final List<AnalysisParameterType> parameterTypes;
-    private final List<AnalysisResultAttributeType> resultAttributeTypes;
+    private final List<AnalysisResultAttributeType> overallResultAttributeTypes;
+    private final List<AnalysisResultAttributeType> featureResultAttributeTypes;
 
     private AnalysisType(
         String display,
         String explanation,
-        Boolean returnsAnimalFeatures,
+        AnalysisResultType resultType,
         List<AnalysisParameterType> parameterTypes,
-        List<AnalysisResultAttributeType> resultAttributeTypes
+        List<AnalysisResultAttributeType> overallResultAttributeTypes,
+        List<AnalysisResultAttributeType> featureResultAttributeTypes
     ) {
         this.displayName = display;
         this.explanation = explanation;
-        this.returnsAnimalFeatures = returnsAnimalFeatures;
+        this.resultType = resultType;
         this.parameterTypes = parameterTypes;
-        this.resultAttributeTypes = resultAttributeTypes;
+        this.overallResultAttributeTypes = overallResultAttributeTypes;
+        this.featureResultAttributeTypes = featureResultAttributeTypes;
     }
 
     public String getDisplayName() {
@@ -509,8 +618,8 @@ public enum AnalysisType {
         return explanation;
     }
 
-    public Boolean getReturnsAnimalFeatures() {
-        return returnsAnimalFeatures;
+    public AnalysisResultType getResultType() {
+        return resultType;
     }
 
     public List<AnalysisParameterType> getParameterTypes() {
@@ -526,12 +635,25 @@ public enum AnalysisType {
         return null;
     }
 
-    public List<AnalysisResultAttributeType> getResultAttributeTypes() {
-        return resultAttributeTypes;
+    public List<AnalysisResultAttributeType> getOverallResultAttributeTypes() {
+        return overallResultAttributeTypes;
     }
 
-    public AnalysisResultAttributeType getResultAttributeType(String identifier) {
-        for (AnalysisResultAttributeType resultAttributeType : resultAttributeTypes) {
+    public AnalysisResultAttributeType getOverallResultAttributeType(String identifier) {
+        for (AnalysisResultAttributeType resultAttributeType : overallResultAttributeTypes) {
+            if (resultAttributeType.getIdentifier().equals(identifier)) {
+                return resultAttributeType;
+            }
+        }
+        return null;
+    }
+
+    public List<AnalysisResultAttributeType> getFeatureResultAttributeTypes() {
+        return featureResultAttributeTypes;
+    }
+
+    public AnalysisResultAttributeType getFeatureResultAttributeType(String identifier) {
+        for (AnalysisResultAttributeType resultAttributeType : featureResultAttributeTypes) {
             if (resultAttributeType.getIdentifier().equals(identifier)) {
                 return resultAttributeType;
             }

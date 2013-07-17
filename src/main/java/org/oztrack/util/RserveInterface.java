@@ -32,6 +32,8 @@ import org.rosuda.REngine.Rserve.RserveException;
 public class RserveInterface {
     protected final Log logger = LogFactory.getLog(getClass());
 
+    private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
     private ObjectPool<RConnection> rConnectionPool;
     private RConnection rConnection;
 
@@ -77,6 +79,9 @@ public class RserveInterface {
                     break;
                 case HEATMAP_LINE:
                     writeLineHeatmapKmlFile(analysis, srs);
+                    break;
+                case KALMAN:
+                    writeKalmanKmlFile(analysis);
                     break;
                 default:
                     throw new RserveInterfaceException("Unhandled AnalysisType: " + analysis.getAnalysisType());
@@ -330,6 +335,33 @@ public class RserveInterface {
         safeEval("labsent <- " + (showAbsence ? "TRUE" : "FALSE"));
         safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
         safeEval("oztrack_heatmap_line(srs=srs, gridSize=gridSize, colours=colours, labsent=labsent, kmlFile=kmlFile)");
+    }
+
+    private void writeKalmanKmlFile(Analysis analysis) throws RserveInterfaceException {
+        Boolean is180 = analysis.getProject().getCrosses180();
+        Date startDate = (Date) analysis.getParameterValue("startDate", false);
+        Double startX = (Double) analysis.getParameterValue("startX", false);
+        Double startY = (Double) analysis.getParameterValue("startY", false);
+        Date endDate = (Date) analysis.getParameterValue("endDate", false);
+        Double endX = (Double) analysis.getParameterValue("endX", false);
+        Double endY = (Double) analysis.getParameterValue("endY", false);
+        safeEval("is.AM <- " + (is180 ? "TRUE" : "FALSE"));
+        safeEval("startdate <- " + ((startDate != null) ? ("'" + isoDateFormat.format(startDate) + "'") : "NULL"));
+        safeEval("startX <- " + ((startX != null) ? startX : "NULL"));
+        safeEval("startY <- " + ((startY != null) ? startY : "NULL"));
+        safeEval("enddate <- " + ((endDate != null) ? ("'" + isoDateFormat.format(endDate) + "'") : "NULL"));
+        safeEval("endX <- " + ((endX != null) ? endX : "NULL"));
+        safeEval("endY <- " + ((endY != null) ? endY : "NULL"));
+        safeEval("kmlFileName <- '" + analysis.getAbsoluteResultFilePath() + "'");
+        safeEval("write.table(positionFix, '/tmp/positionFix.txt', sep=',')");
+        safeEval(
+            "oztrack_kalman(\n" +
+            "  sinputfile=positionFix,is.AM=is.AM,\n" +
+            "  startdate=startdate,startX=startX,startY=startY,\n"+
+            "  enddate=enddate,endX=endX,endY=endY,\n" +
+            "  kmlFileName=kmlFileName\n" +
+            ")"
+        );
     }
 
     // Wraps an R statement inside a try({...}, silent=TRUE) so we can catch any exception

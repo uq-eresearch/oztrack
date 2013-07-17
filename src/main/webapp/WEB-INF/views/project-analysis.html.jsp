@@ -275,7 +275,6 @@
                 $('.form-projectLayer').submit(function(e) {
                     e.preventDefault();
                     analysisMap.addProjectMapLayer(
-                        'project',
                         $(e.target).find('input[name="queryTypeValue"]').val(),
                         $(e.target).find('input[name="queryTypeLabel"]').val()
                     );
@@ -286,7 +285,6 @@
                         .prop('disabled', true)
                         .after($('#projectMapCancel').fadeIn());
                     analysisMap.addProjectMapLayer(
-                        'analysis',
                         $(e.target).find('input[name="queryTypeValue"]').val(),
                         $(e.target).find('input[name="queryTypeLabel"]').val()
                     );
@@ -422,7 +420,7 @@
                         var statsHtml = '';
                         <c:forEach items="${analysisTypeList}" var="analysisType">
                         if (analysis.params.queryType == '${analysisType}') {
-                            <c:forEach items="${analysisType.resultAttributeTypes}" var="resultAttributeType">
+                            <c:forEach items="${analysisType.featureResultAttributeTypes}" var="resultAttributeType">
                             if (attributes && attributes.${resultAttributeType.identifier} && attributes.${resultAttributeType.identifier}.value) {
                                 statsHtml += '<span class="layerInfoStat">';
                                 statsHtml += '${resultAttributeType.displayName}: ';

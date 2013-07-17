@@ -1,6 +1,6 @@
 package org.oztrack.data.model.types;
 
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class AnalysisResultAttributeType {
     private final String identifier;
@@ -50,5 +50,14 @@ public class AnalysisResultAttributeType {
 
     public Integer getNumDecimalPlaces() {
         return numDecimalPlaces;
+    }
+
+    public Object getAttributeValueObject(String value) {
+        String stringValue = StringUtils.isNotBlank(value) ? value : null;
+        return
+            (stringValue == null) ? null
+            : getDataType().equals("double") ? Double.valueOf(stringValue)
+            : getDataType().equals("boolean") ?  Boolean.valueOf(stringValue)
+            : stringValue;
     }
 }

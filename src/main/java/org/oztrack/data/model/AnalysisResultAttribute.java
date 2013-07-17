@@ -21,7 +21,11 @@ public class AnalysisResultAttribute {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="feature_id", nullable=false)
+    @JoinColumn(name="analysis_id", nullable=true)
+    private Analysis analysis;
+
+    @ManyToOne
+    @JoinColumn(name="feature_id", nullable=true)
     private AnalysisResultFeature feature;
 
     @Column(name="name", nullable=false, columnDefinition="text")
@@ -36,6 +40,14 @@ public class AnalysisResultAttribute {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Analysis getAnalysis() {
+        return analysis;
+    }
+
+    public void setAnalysis(Analysis analysis) {
+        this.analysis = analysis;
     }
 
     public AnalysisResultFeature getFeature() {

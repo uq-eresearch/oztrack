@@ -21,12 +21,14 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.oztrack.data.model.types.AnalysisParameterType;
+import org.oztrack.data.model.types.AnalysisResultAttributeType;
 import org.oztrack.data.model.types.AnalysisStatus;
 import org.oztrack.data.model.types.AnalysisType;
 
@@ -76,11 +78,15 @@ public class Analysis extends OzTrackBaseEntity {
     @OneToMany(mappedBy="analysis", cascade=CascadeType.ALL, orphanRemoval=true, fetch=FetchType.EAGER)
     private Set<AnalysisParameter> parameters;
 
+    @OneToMany(mappedBy="analysis", cascade=CascadeType.ALL, orphanRemoval=true, fetch=FetchType.EAGER)
+    private Set<AnalysisResultAttribute> resultAttributes;
+
     @Column(name="resultfilepath", columnDefinition="text")
     private String resultFilePath;
 
-    @OneToMany(mappedBy="analysis", cascade=CascadeType.ALL, orphanRemoval=true, fetch=FetchType.EAGER)
-    private Set<AnalysisResultFeature> resultFeatures;
+    @OneToMany(mappedBy="analysis", cascade=CascadeType.ALL, orphanRemoval=true, fetch=FetchType.LAZY)
+    @OrderBy("dateTime")
+    private List<AnalysisResultFeature> resultFeatures;
 
     @Column(name="saved", nullable=false)
     private boolean saved;
@@ -186,11 +192,37 @@ public class Analysis extends OzTrackBaseEntity {
         return parameterType.getParameterValueObject(parameter.getValue(), useDefault);
     }
 
-    public Set<AnalysisResultFeature> getResultFeatures() {
+    public Set<AnalysisResultAttribute> getResultAttributes() {
+        return resultAttributes;
+    }
+
+    public void setResultAttributes(Set<AnalysisResultAttribute> resultAttributes) {
+        this.resultAttributes = resultAttributes;
+    }
+
+    public AnalysisResultAttribute getResultAttribute(String name) {
+        for (AnalysisResultAttribute attribute : resultAttributes) {
+            if (attribute.getName().equals(name)) {
+                return attribute;
+            }
+        }
+        return null;
+    }
+
+    public Object getResultAttributeValue(String name) {
+        AnalysisResultAttributeType attributeType = getAnalysisType().getOverallResultAttributeType(name);
+        AnalysisResultAttribute resultAttribute = getResultAttribute(attributeType.getIdentifier());
+        if (resultAttribute == null) {
+            return null;
+        }
+        return attributeType.getAttributeValueObject(resultAttribute.getValue());
+    }
+
+    public List<AnalysisResultFeature> getResultFeatures() {
         return resultFeatures;
     }
 
-    public void setResultFeatures(Set<AnalysisResultFeature> resultFeatures) {
+    public void setResultFeatures(List<AnalysisResultFeature> resultFeatures) {
         this.resultFeatures = resultFeatures;
     }
 

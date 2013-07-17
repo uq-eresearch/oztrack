@@ -1,30 +1,35 @@
 package org.oztrack.data.model;
 
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.Type;
 import org.oztrack.data.model.types.AnalysisResultAttributeType;
 
-import com.vividsolutions.jts.geom.MultiPolygon;
-
 @Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="resulttype", discriminatorType=DiscriminatorType.STRING)
 @Table(name="analysis_result_feature", uniqueConstraints=@UniqueConstraint(columnNames={"analysis_id", "animal_id"}))
-public class AnalysisResultFeature {
+public abstract class AnalysisResultFeature {
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="analysis_result_feature_id_seq")
     @SequenceGenerator(name="analysis_result_feature_id_seq", sequenceName="analysis_result_feature_id_seq", allocationSize=1)
@@ -38,10 +43,10 @@ public class AnalysisResultFeature {
     @ManyToOne
     @JoinColumn(name="animal_id", nullable=false)
     private Animal animal;
-
-    @Column(name="the_geom", columnDefinition="GEOMETRY")
-    @Type(type="org.hibernatespatial.GeometryUserType")
-    private MultiPolygon geometry;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="datetime", nullable=true)
+    private Date dateTime;
 
     @OneToMany(mappedBy="feature", cascade=CascadeType.ALL, orphanRemoval=true, fetch=FetchType.EAGER)
     private Set<AnalysisResultAttribute> attributes;
@@ -70,12 +75,12 @@ public class AnalysisResultFeature {
         this.animal = animal;
     }
 
-    public MultiPolygon getGeometry() {
-        return geometry;
+    public Date getDateTime() {
+        return dateTime;
     }
 
-    public void setGeometry(MultiPolygon geometry) {
-        this.geometry = geometry;
+    public void setDateTime(Date dateTime) {
+        this.dateTime = dateTime;
     }
 
     public Set<AnalysisResultAttribute> getAttributes() {
@@ -95,17 +100,12 @@ public class AnalysisResultFeature {
         return null;
     }
 
-    public Object getResultAttributeValue(String name) {
-        AnalysisResultAttributeType resultAttributeType = analysis.getAnalysisType().getResultAttributeType(name);
-        AnalysisResultAttribute resultAttribute = getAttribute(resultAttributeType.getIdentifier());
+    public Object getAttributeValue(String name) {
+        AnalysisResultAttributeType attributeType = analysis.getAnalysisType().getFeatureResultAttributeType(name);
+        AnalysisResultAttribute resultAttribute = getAttribute(attributeType.getIdentifier());
         if (resultAttribute == null) {
             return null;
         }
-        String stringValue = StringUtils.isNotBlank(resultAttribute.getValue()) ? resultAttribute.getValue() : null;
-        return
-            (stringValue == null) ? null
-            : resultAttributeType.getDataType().equals("double") ? Double.valueOf(stringValue)
-            : resultAttributeType.getDataType().equals("boolean") ?  Boolean.valueOf(stringValue)
-            : stringValue;
+        return attributeType.getAttributeValueObject(resultAttribute.getValue());
     }
 }

@@ -81,7 +81,9 @@ public class RserveConnectionFactory extends BasePoolableObjectFactory<RConnecti
             "RColorBrewer",
             "googleVis",
             "spacetime",
-            "plotKML"
+            "plotKML",
+            "kftrack",
+            "ukfsst"
         };
         for (String library : libraries) {
             try {
@@ -103,7 +105,10 @@ public class RserveConnectionFactory extends BasePoolableObjectFactory<RConnecti
             "alphahull.r",
             "locoh.r",
             "heatmap.r",
-            "speedfilter.r"
+            "speedfilter.r",
+            "kftrack.r",
+            "kalman.r",
+            "kfsst.r"
         };
         for (String scriptFileName : scriptFileNames) {
             String scriptString = null;

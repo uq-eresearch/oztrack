@@ -47,26 +47,39 @@ Install the R packages used by OzTrack, including Rserve.
 Note that the following command takes a while (e.g. 10 minutes) because it
 downloads, compiles, tests, and installs a large number of dependencies.
 
-    sudo R --interactive << EOF
-    install.packages(c(
-        "Rserve",
-        "sp",
-        "ade4",
-        "adehabitatHR",
-        "adehabitatMA",
-        "maptools",
-        "shapefiles",
-        "rgdal",
-        "alphahull",
-        "raster",
-        "plyr",
-        "spatstat",
-        "Grid2Polygons",
-        "RColorBrewer",
-        "googleVis",
-        "spacetime",
-        "plotKML"
-    ))
+    sudo R --no-save << EOF
+    install.packages(
+        c(
+            "Rserve",
+            "sp",
+            "ade4",
+            "adehabitatHR",
+            "adehabitatMA",
+            "maptools",
+            "shapefiles",
+            "rgdal",
+            "alphahull",
+            "raster",
+            "plyr",
+            "spatstat",
+            "Grid2Polygons",
+            "RColorBrewer",
+            "googleVis",
+            "spacetime",
+            "plotKML"
+        ),
+        repos='http://cran.csiro.au/'
+    )
+    EOF
+
+The `kftrack` and `ukfsst` packages need to be downloaded and installed from files.
+
+    wget 'https://geolocation.googlecode.com/files/kftrack_0.70-x64.tar.gz'
+    wget 'https://geolocation.googlecode.com/files/ukfsst_0.3-x64.tar.gz'
+    sudo R --no-save << EOF
+    install.packages('kftrack_0.70-x64.tar.gz', repos=NULL)
+    install.packages('date', repos='http://cran.csiro.au/')
+    install.packages('ukfsst_0.3-x64.tar.gz', repos=NULL)
     EOF
 
 ### Installing GeoServer
@@ -194,26 +207,39 @@ Install the R packages used by OzTrack, including Rserve.
 Note that the following command takes a while (e.g. 10 minutes) because it
 downloads, compiles, tests, and installs a large number of dependencies.
 
-    sudo R --interactive << EOF
-    install.packages(c(
-        "Rserve",
-        "sp",
-        "ade4",
-        "adehabitatHR",
-        "adehabitatMA",
-        "maptools",
-        "shapefiles",
-        "rgdal",
-        "alphahull",
-        "raster",
-        "plyr",
-        "spatstat",
-        "Grid2Polygons",
-        "RColorBrewer",
-        "googleVis",
-        "spacetime",
-        "plotKML"
-    ))
+    sudo R --no-save << EOF
+    install.packages(
+        c(
+            "Rserve",
+            "sp",
+            "ade4",
+            "adehabitatHR",
+            "adehabitatMA",
+            "maptools",
+            "shapefiles",
+            "rgdal",
+            "alphahull",
+            "raster",
+            "plyr",
+            "spatstat",
+            "Grid2Polygons",
+            "RColorBrewer",
+            "googleVis",
+            "spacetime",
+            "plotKML"
+        ),
+        repos='http://cran.csiro.au/'
+    )
+    EOF
+
+The `kftrack` and `ukfsst` packages need to be downloaded and installed from files.
+
+    wget 'https://geolocation.googlecode.com/files/kftrack_0.70-x64.tar.gz'
+    wget 'https://geolocation.googlecode.com/files/ukfsst_0.3-x64.tar.gz'
+    sudo R --no-save << EOF
+    install.packages('kftrack_0.70-x64.tar.gz', repos=NULL)
+    install.packages('date', repos='http://cran.csiro.au/')
+    install.packages('ukfsst_0.3-x64.tar.gz', repos=NULL)
     EOF
 
 ### Installing GeoServer

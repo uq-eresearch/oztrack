@@ -18,7 +18,7 @@
     </#list>
     <Schema name="Analysis" id="Analysis">
       <SimpleField name="id" type="string"/>
-      <#list analysis.analysisType.resultAttributeTypes as resultAttributeType>
+      <#list analysis.analysisType.featureResultAttributeTypes as resultAttributeType>
       <SimpleField name="${resultAttributeType.identifier}" type="${resultAttributeType.dataType}"/>
       </#list>
     </Schema>
@@ -30,8 +30,8 @@
       <ExtendedData>
         <SchemaData schemaUrl="#Analysis">
           <SimpleData name="id">${resultFeature.animal.id?c}</SimpleData>
-          <#list analysis.analysisType.resultAttributeTypes as resultAttributeType>
-          <SimpleData name="${resultAttributeType.identifier}">${resultFeature.getResultAttributeValue(resultAttributeType.identifier)?c}</SimpleData>
+          <#list analysis.analysisType.featureResultAttributeTypes as resultAttributeType>
+          <SimpleData name="${resultAttributeType.identifier}">${resultFeature.getAttributeValue(resultAttributeType.identifier)?c}</SimpleData>
           </#list>
         </SchemaData>
       </ExtendedData>
