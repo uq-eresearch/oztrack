@@ -155,14 +155,12 @@ public class AnalysisController {
         if (analysis.getStatus() == AnalysisStatus.COMPLETE) {
             String resultBaseUrl = String.format("%s/projects/%d/analyses/%d/result", request.getContextPath(), analysis.getProject().getId(), analysis.getId());
             out.key("resultFiles").array();
+            out.object();
+            out.key("title").value("KML");
+            out.key("format").value("kml");
+            out.key("url").value(resultBaseUrl + "?format=kml");
+            out.endObject();
             if (analysis.getAnalysisType().getResultType() == AnalysisResultType.HOME_RANGE) {
-                {
-                    out.object();
-                    out.key("title").value("KML");
-                    out.key("format").value("kml");
-                    out.key("url").value(resultBaseUrl + "?format=kml");
-                    out.endObject();
-                }
                 if (analysis.getProject().getCrosses180()) {
                     out.object();
                     out.key("title").value("KML (outline)");
@@ -177,25 +175,6 @@ public class AnalysisController {
                     out.key("url").value(resultBaseUrl + "?format=shp");
                     out.endObject();
                 }
-            }
-            if (analysis.getAnalysisType().getResultType() == AnalysisResultType.HEAT_MAP) {
-                out.object();
-                out.key("title").value("KML");
-                out.key("format").value("kml");
-                out.key("url").value(resultBaseUrl + "?format=kml");
-                out.endObject();
-            }
-            if (analysis.getAnalysisType().getResultType() == AnalysisResultType.FILTER) {
-                out.object();
-                out.key("title").value("KML (trajectory)");
-                out.key("format").value("kml");
-                out.key("url").value(resultBaseUrl + "?type=trajectory&format=kml");
-                out.endObject();
-                out.object();
-                out.key("title").value("KML (detections)");
-                out.key("format").value("kml");
-                out.key("url").value(resultBaseUrl + "?type=detections&format=kml");
-                out.endObject();
             }
             out.endArray();
             out.key("resultType").value(analysis.getAnalysisType().getResultType().name());
@@ -256,7 +235,6 @@ public class AnalysisController {
         HttpServletRequest request,
         HttpServletResponse response,
         @ModelAttribute(value="analysis") Analysis analysis,
-        @RequestParam(value="type", required=false) String type,
         @RequestParam(value="format", defaultValue="kml") String format,
         @RequestParam(value="fill", defaultValue="true") Boolean fill
     ) {
@@ -276,7 +254,7 @@ public class AnalysisController {
         }
         try {
             if (format.equals("kml")) {
-                writeResultKml(response, analysis, type, fill);
+                writeResultKml(response, analysis, fill);
             }
             else if (format.equals("shp")) {
                 writeResultShp(response, analysis);
@@ -294,7 +272,6 @@ public class AnalysisController {
     private void writeResultKml(
         HttpServletResponse response,
         Analysis analysis,
-        String type,
         Boolean fill
     )
     throws Exception {
@@ -329,10 +306,7 @@ public class AnalysisController {
                     templateName = "home-range.kml.ftl";
                     break;
                 case FILTER:
-                    templateName =
-                        type.equals("detections")
-                        ? "kalman-filter-detections.kml.ftl"
-                        : "kalman-filter-trajectory.kml.ftl";
+                    templateName = "kalman-filter.kml.ftl";
                     break;
                 case HEAT_MAP:
                     throw new RuntimeException("Unsupported analysis type");
