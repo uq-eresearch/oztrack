@@ -228,21 +228,26 @@
         function updateAnimalInfoFromAnalysisSuccess(analysis, features) {
             for (i = 0; i < analysis.params.animalIds.length; i++) {
                 var animalId = analysis.params.animalIds[i];
-                var animalFeature = null;
+                var singleAnimalFeature = null;
                 for (j = 0; j < features.length; j++) {
                     if (features[j].attributes.id && features[j].attributes.id.value == animalId) {
-                        animalFeature = features[j];
-                        break;
+                        if (singleAnimalFeature === null) {
+                            singleAnimalFeature = features[j];
+                        }
+                        else {
+                            singleAnimalFeature = null;
+                            break;
+                        }
                     }
                 }
-                if (animalFeature) {
-                    animalFeature.renderIntent = 'default';
-                    animalFeature.layer.drawFeature(animalFeature);
+                if (singleAnimalFeature) {
+                    singleAnimalFeature.renderIntent = 'default';
+                    singleAnimalFeature.layer.drawFeature(singleAnimalFeature);
                 }
                 that.onUpdateAnimalInfoFromAnalysisSuccess(
                     animalId,
                     analysis,
-                    animalFeature ? animalFeature.attributes : null
+                    singleAnimalFeature ? singleAnimalFeature.attributes : null
                 );
             }
         }
