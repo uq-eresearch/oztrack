@@ -162,19 +162,21 @@ public class AnalysisController {
                 out.key("url").value(resultBaseUrl + "?format=kml");
                 out.endObject();
             }
-            if (analysis.getProject().getCrosses180() && (analysis.getAnalysisType().getResultType() == AnalysisResultType.HOME_RANGE)) {
-                out.object();
-                out.key("title").value("KML (outline)");
-                out.key("format").value("kml");
-                out.key("url").value(resultBaseUrl + "?format=kml&fill=false");
-                out.endObject();
-            }
-            if (!analysis.getResultFeatures().isEmpty()) {
-                out.object();
-                out.key("title").value("SHP");
-                out.key("format").value("shp");
-                out.key("url").value(resultBaseUrl + "?format=shp");
-                out.endObject();
+            if (analysis.getAnalysisType().getResultType() == AnalysisResultType.HOME_RANGE) {
+                if (analysis.getProject().getCrosses180()) {
+                    out.object();
+                    out.key("title").value("KML (outline)");
+                    out.key("format").value("kml");
+                    out.key("url").value(resultBaseUrl + "?format=kml&fill=false");
+                    out.endObject();
+                }
+                if (!analysis.getResultFeatures().isEmpty()) {
+                    out.object();
+                    out.key("title").value("SHP");
+                    out.key("format").value("shp");
+                    out.key("url").value(resultBaseUrl + "?format=shp");
+                    out.endObject();
+                }
             }
             out.endArray();
             out.key("resultType").value(analysis.getAnalysisType().getResultType().name());
@@ -300,12 +302,16 @@ public class AnalysisController {
             objectWrapper.setExposeFields(true);
             freemarkerConfiguration.setObjectWrapper(objectWrapper);
             freemarkerConfiguration.setTemplateLoader(new ClassTemplateLoader(this.getClass(), "/org/oztrack/view"));
-            String templateName =
-                (analysis.getAnalysisType().getResultType() == AnalysisResultType.HOME_RANGE) ? "home-range.kml.ftl" :
-                (analysis.getAnalysisType().getResultType() == AnalysisResultType.FILTER) ? "kalman-filter.kml.ftl" :
-                null;
-            if (templateName == null) {
-                throw new RuntimeException("Unsupported analysis type");
+            String templateName = null;
+            switch (analysis.getAnalysisType().getResultType()) {
+                case HOME_RANGE:
+                    templateName = "home-range.kml.ftl";
+                    break;
+                case FILTER:
+                    templateName = "kalman-filter-trajectory.kml.ftl";
+                    break;
+                case HEAT_MAP:
+                    throw new RuntimeException("Unsupported analysis type");
             }
             Template template = freemarkerConfiguration.getTemplate(templateName);
             Map<String, Object> datamodel = new HashMap<String, Object>();

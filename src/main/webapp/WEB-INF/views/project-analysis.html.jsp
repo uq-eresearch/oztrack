@@ -452,13 +452,15 @@
                         exportHtml += '<div class="layerInfoExport">';
                         exportHtml += 'Download: ';
                         <c:if test="${project.crosses180}">
-                        exportHtml += '<div style="float: right;">';
-                        exportHtml += '<div id="analysisHelpPopover-' + animalId + '-' + analysis.id + '" class="help-popover" title="KML Download">';
-                        exportHtml += '<p>Home range KML files are available in an outline-only version due to rendering issues ';
-                        exportHtml += 'in some versions of Google Earth. If you find that polygons crossing 180° longitude are ';
-                        exportHtml += 'being cut off or "wrapped", use the outline-only KML link.</p>';
-                        exportHtml += '</div>';
-                        exportHtml += '</div>';
+                        if (analysis.resultType === 'HOME_RANGE') {
+                            exportHtml += '<div style="float: right;">';
+                            exportHtml += '<div id="analysisHelpPopover-' + animalId + '-' + analysis.id + '" class="help-popover" title="KML Download">';
+                            exportHtml += '<p>Home range KML files are available in an outline-only version due to rendering issues ';
+                            exportHtml += 'in some versions of Google Earth. If you find that polygons crossing 180° longitude are ';
+                            exportHtml += 'being cut off or "wrapped", use the outline-only KML link.</p>';
+                            exportHtml += '</div>';
+                            exportHtml += '</div>';
+                        }
                         </c:if>
                         exportHtml += $.map(analysis.resultFiles, function(r) {
                             return '<a class="icon ' + r.format + '" href="' + r.url + '">' + r.title + '</a>';
@@ -466,7 +468,9 @@
                         exportHtml += '</div>';
                         $('#analysisInfo-' + animalId + '-' + analysis.id).append(exportHtml);
                         <c:if test="${project.crosses180}">
-                        initHelpPopover($('#analysisHelpPopover-' + animalId + '-' + analysis.id));
+                        if (analysis.resultType === 'HOME_RANGE') {
+                            initHelpPopover($('#analysisHelpPopover-' + animalId + '-' + analysis.id));
+                        }
                         </c:if>
                     }
                 });
