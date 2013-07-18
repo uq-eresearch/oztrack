@@ -79,7 +79,7 @@ public class AnalysisListController {
         Authentication authentication,
         HttpServletRequest request,
         @PathVariable(value="projectId") Long projectId,
-        @RequestParam(value="queryType", required=true) AnalysisType analysisType,
+        @RequestParam(value="analysisType", required=true) AnalysisType analysisType,
         @RequestParam(value="fromDate", required=false) String fromDateString,
         @RequestParam(value="toDate", required=false) String toDateString,
         @RequestParam(value="animalIds", required=false) List<Long> animalIds

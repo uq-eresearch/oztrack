@@ -126,8 +126,8 @@ public class AnalysisController {
         JSONWriter out = new JSONWriter(response.getWriter());
         out.object();
         out.key("id").value(analysis.getId());
+        out.key("analysisType").value(analysis.getAnalysisType());
         out.key("params").object();
-        out.key("queryType").value(analysis.getAnalysisType());
         if (analysis.getFromDate() != null) {
             out.key("fromDate").value(isoDateFormat.format(analysis.getFromDate()));
         }

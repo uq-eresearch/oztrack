@@ -113,7 +113,7 @@ public class WFSMapQueryController {
     @PreAuthorize("hasPermission(#searchQuery.project, 'read')")
     public void handleQueryWFS(
         @ModelAttribute(value="searchQuery") SearchQuery searchQuery,
-        @RequestParam(value="queryType", required=true) MapLayerType mapLayerType,
+        @RequestParam(value="layerType", required=true) MapLayerType mapLayerType,
         HttpServletResponse response
     ) {
         SimpleFeatureCollection featureCollection = null;

@@ -203,9 +203,9 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/project-map.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/project-analysis.js"></script>
         <script type="text/javascript">
-            function showParamTable(queryType) {
-                $('.paramTableDiv').not('#paramTableDiv-' + queryType).hide();
-                $('#paramTableDiv-' + queryType).fadeToggle();
+            function showParamTable(analysisType) {
+                $('.paramTableDiv').not('#paramTableDiv-' + analysisType).hide();
+                $('#paramTableDiv-' + analysisType).fadeToggle();
             }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
@@ -255,7 +255,7 @@
                     $('.filter-animal').prop('checked', $(this).prop('checked'));
                 });
 
-                $('#queryTypeSelect-MCP').trigger('click');
+                $('#layerTypeSelect-MCP').trigger('click');
 
                 $('.layerExplanationExpander').click(function(e) {
                     e.preventDefault();
@@ -275,8 +275,8 @@
                 $('.form-projectLayer').submit(function(e) {
                     e.preventDefault();
                     analysisMap.addProjectMapLayer(
-                        $(e.target).find('input[name="queryTypeValue"]').val(),
-                        $(e.target).find('input[name="queryTypeLabel"]').val()
+                        $(e.target).find('input[name="layerTypeValue"]').val(),
+                        $(e.target).find('input[name="layerTypeLabel"]').val()
                     );
                 });
                 $('.form-analysisLayer').submit(function(e) {
@@ -285,8 +285,8 @@
                         .prop('disabled', true)
                         .after($('#projectMapCancel').fadeIn());
                     analysisMap.addProjectMapLayer(
-                        $(e.target).find('input[name="queryTypeValue"]').val(),
-                        $(e.target).find('input[name="queryTypeLabel"]').val()
+                        $(e.target).find('input[name="layerTypeValue"]').val(),
+                        $(e.target).find('input[name="layerTypeLabel"]').val()
                     );
                 });
                 $('#projectMapCancel').click(function() {
@@ -402,7 +402,7 @@
                         statsHtml += 'Dates: ' + fromDate + ' - ' + toDate;
                         statsHtml += '</span>';
                         <c:forEach items="${analysisTypeList}" var="analysisType">
-                        if (analysis.params.queryType == '${analysisType}') {
+                        if (analysis.analysisType == '${analysisType}') {
                             <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
                             if (analysis.params.${parameterType.identifier}) {
                                 statsHtml += '<span class="layerInfoStat">';
@@ -419,7 +419,7 @@
                     onUpdateAnimalInfoFromAnalysisSuccess: function(animalId, analysis, attributes) {
                         var statsHtml = '';
                         <c:forEach items="${analysisTypeList}" var="analysisType">
-                        if (analysis.params.queryType == '${analysisType}') {
+                        if (analysis.analysisType == '${analysisType}') {
                             <c:forEach items="${analysisType.featureResultAttributeTypes}" var="resultAttributeType">
                             if (attributes && attributes.${resultAttributeType.identifier} && attributes.${resultAttributeType.identifier}.value) {
                                 statsHtml += '<span class="layerInfoStat">';
@@ -603,7 +603,7 @@
                                 '</tr>'
                             );
                             <c:forEach items="${analysisTypeList}" var="analysisType">
-                            if (analysis.params.queryType == '${analysisType}') {
+                            if (analysis.analysisType == '${analysisType}') {
                                 <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
                                 if (analysis.params.${parameterType.identifier}) {
                                     paramsTable.append(
@@ -834,8 +834,8 @@
                         <div id="accordion-body-${mapLayerType}" class="accordion-body collapse">
                             <div class="accordion-inner">
                                 <form id="form-${mapLayerType}" class="form-projectLayer form-vertical" style="margin: 0;">
-                                <input type="hidden" name="queryTypeValue" value="${mapLayerType}" />
-                                <input type="hidden" name="queryTypeLabel" value="${mapLayerType.displayName}" />
+                                <input type="hidden" name="layerTypeValue" value="${mapLayerType}" />
+                                <input type="hidden" name="layerTypeLabel" value="${mapLayerType.displayName}" />
                                 <fieldset>
                                 <div class="control-group" style="margin-bottom: 9px;">
                                 <div class="controls">
@@ -867,8 +867,8 @@
                         <div id="accordion-body-${analysisType}" class="accordion-body collapse">
                             <div class="accordion-inner">
                                 <form id="form-${analysisType}" class="form-analysisLayer form-vertical" style="margin: 0;">
-                                <input type="hidden" name="queryTypeValue" value="${analysisType}" />
-                                <input type="hidden" name="queryTypeLabel" value="${analysisType.displayName}" />
+                                <input type="hidden" name="layerTypeValue" value="${analysisType}" />
+                                <input type="hidden" name="layerTypeLabel" value="${analysisType.displayName}" />
                                 <fieldset>
                                 <div class="control-group" style="margin-bottom: 9px;">
                                 <div class="controls">

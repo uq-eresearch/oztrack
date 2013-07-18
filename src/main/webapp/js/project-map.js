@@ -896,7 +896,7 @@
 
         that.createStartEndLayer = function(params, category) {
             params['projectId'] = that.project.id;
-            params['queryType'] = 'START_END';
+            params['layerType'] = 'START_END';
             var startEndLayerId = that.projectMapLayerIdSeq++;
             var startEndLayer = new OpenLayers.Layer.Vector('Start and End Points', {
                 projection : that.projection4326,

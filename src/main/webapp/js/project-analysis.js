@@ -26,22 +26,19 @@
 
         that.analyses = {};
 
-        that.addProjectMapLayer = function(queryTypeValue, queryTypeLabel) {
-            var layerName = queryTypeLabel;
+        that.addProjectMapLayer = function(layerTypeValue, layerTypeLabel) {
+            var layerName = layerTypeLabel;
             var params = {
-                queryType : queryTypeValue,
-                projectId : $('#projectId').val()
+                projectId: $('#projectId').val(),
+                fromDate: $('#fromDate').val(),
+                toDate: $('#toDate').val(),
+                animalIds:
+                    $('input[name=animal]:not(:disabled):checked')
+                        .map(function() {return $(this).val();})
+                        .toArray()
+                        .join(',')
             };
-            var fromDate = $('#fromDate').val();
-            if (fromDate) {
-                params.fromDate = fromDate;
-            }
-            var toDate = $('#toDate').val();
-            if (toDate) {
-                params.toDate = toDate;
-            }
-            params.animalIds = $('input[name=animal]:not(:disabled):checked').map(function() {return $(this).val();}).toArray().join(',');
-            $('.paramField-' + queryTypeValue).each(function() {
+            $('.paramField-' + layerTypeValue).each(function() {
                 if ($(this).attr('type') == 'checkbox') {
                     params[$(this).attr('name')] = $(this).is(':checked') ? 'true' : 'false';
                 }
@@ -49,19 +46,20 @@
                     params[$(this).attr('name')] = $(this).val();
                 }
             });
-            if (queryTypeValue == 'LINES') {
+            if (layerTypeValue == 'LINES') {
                 var trajectoryLayer = that.projectMap.createTrajectoryLayer(params, 'analysis');
                 that.projectMap.addLayer(trajectoryLayer.getWMSLayer());
             }
-            else if (queryTypeValue == 'POINTS') {
+            else if (layerTypeValue == 'POINTS') {
                 var detectionLayer = that.projectMap.createDetectionLayer(params, 'analysis');
                 that.projectMap.addLayer(detectionLayer.getWMSLayer());
             }
-            else if (queryTypeValue == 'START_END') {
+            else if (layerTypeValue == 'START_END') {
                 var startEndLayer = that.projectMap.createStartEndLayer(params, 'analysis');
                 that.projectMap.addLayer(startEndLayer);
             }
             else {
+                params.analysisType = layerTypeValue;
                 createAnalysisLayer(params, layerName);
             }
         };
