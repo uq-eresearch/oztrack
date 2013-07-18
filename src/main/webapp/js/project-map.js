@@ -1255,6 +1255,23 @@
                             .append(' to ' + moment(feature.attributes.enddetectiontime, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
                             .append(' ' + coordString(feature.geometry.components[1]));
                     }
+                },
+                {
+                    layerName: 'Start and End Points',
+                    propertyNames: [
+                        'animalId',
+                        'fromDate',
+                        'toDate',
+                        'identifier'
+                    ],
+                    summary: function(feature) {
+                        var date = (feature.attributes.identier === 'start') ? feature.attributes.fromDate : feature.attributes.toDate;
+                        return $('<span>')
+                            .append(getAnimal(feature.attributes.animalId).name)
+                            .append(' ' + feature.attributes.identifier)
+                            .append(' ' + moment(date, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
+                            .append(' ' + coordString(feature.geometry.clone().transform(that.projection900913, that.projection4326)));
+                    }
                 }
             ],
             queryVisible: true,
@@ -1265,6 +1282,23 @@
                     var control = this;
                     var lonlat900913 = that.map.getLonLatFromPixel(event.xy);
                     var lonlat4326 = lonlat900913.clone().transform(that.projection900913, that.projection4326);
+                    
+                    // Add vector features
+                    var tolerance = 3;
+                    var leftBottom = event.xy.clone(); leftBottom.x -= 3; leftBottom.y -= 3;
+                    var rightTop = event.xy.clone(); rightTop.x += 3; rightTop.y += 3;
+                    var bounds = new OpenLayers.Bounds();
+                    bounds.extend(that.map.getLonLatFromPixel(leftBottom));
+                    bounds.extend(that.map.getLonLatFromPixel(rightTop));
+                    var vectorLayers = that.map.getLayersByClass('OpenLayers.Layer.Vector');
+                    $.each(vectorLayers, function(i, vectorLayer) {
+                        $.each(vectorLayer.features, function(i, f) {
+                            if (bounds.toGeometry().intersects(f.geometry)) {
+                                event.features.push(f);
+                            }
+                        });
+                    });
+                    
                     var content = $('<div>');
                     var innerContent = $('<div>').addClass('featureInfoContent').appendTo(content);
                     innerContent.append($('<p>')
@@ -1274,8 +1308,18 @@
                     );
                     if (event.features && (event.features.length > 0)) {
                         innerContent.append($.map(control.layerDetails, function(layerDetail) {
-                            var layerFeatures = $.grep(event.features, function(feature) {
-                                return layerDetail.layer.params.LAYERS === (feature.gml.featureNSPrefix + ':' + feature.gml.featureType);
+                            var layerFeatures = [];
+                            $.each(event.features, function(i, feature) {
+                                var matchesWmsLayer =
+                                    layerDetail.layer && feature.gml &&
+                                    (layerDetail.layer.CLASS_NAME === 'OpenLayers.Layer.WMS') &&
+                                    (layerDetail.layer.params.LAYERS === (feature.gml.featureNSPrefix + ':' + feature.gml.featureType));
+                                var matchesLayerName =
+                                    layerDetail.layerName && feature.layer &&
+                                    layerDetail.layerName === feature.layer.name;
+                                if (matchesWmsLayer || matchesLayerName) {
+                                    layerFeatures.push(feature);
+                                }
                             });
                             var summaries = $.map(layerFeatures, function(feature) {
                                 return layerDetail.summary(feature);
@@ -1302,7 +1346,11 @@
                                 }
                             });
                             return (uniqueSummaries.length == 0) ? [] : [
-                                $('<div>').addClass('featureInfoTitle').css('margin-bottom', '4px').text(layerDetail.layer.name).get(0),
+                                $('<div>')
+                                    .addClass('featureInfoTitle')
+                                    .css('margin-bottom', '4px')
+                                    .text(layerDetail.layerName || layerDetail.layer.name)
+                                    .get(0),
                                 $('<ul>').append($.map(uniqueSummaries, function(summary) {
                                     return $('<li>').append(summary);
                                 })).get(0)
