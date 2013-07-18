@@ -100,7 +100,7 @@ public class PositionFixDaoImpl implements PositionFixDao {
         if (searchQuery.getToDate() != null) {
             queryString.append("and o.detectionTime < :toDateExcl\n");
         }
-        if (searchQuery.getAnimalIds() != null) {
+        if ((searchQuery.getAnimalIds() != null) && !searchQuery.getAnimalIds().isEmpty()) {
             queryString.append("and o.animal.id in (");
             for (int i = 0; i < searchQuery.getAnimalIds().size(); i++) {
                 queryString.append(":animal" + i);
@@ -122,7 +122,7 @@ public class PositionFixDaoImpl implements PositionFixDao {
             Date toDateTruncExcl = DateUtils.addDays(toDateTrunc, 1);
             query.setParameter("toDateExcl", toDateTruncExcl);
         }
-        if (searchQuery.getAnimalIds() != null) {
+        if ((searchQuery.getAnimalIds() != null) && !searchQuery.getAnimalIds().isEmpty()) {
             for (int i=0; i < searchQuery.getAnimalIds().size(); i++) {
                 String paramName = "animal" + i;
                 query.setParameter(paramName, searchQuery.getAnimalIds().get(i));
