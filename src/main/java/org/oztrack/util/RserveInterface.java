@@ -338,6 +338,9 @@ public class RserveInterface {
     }
 
     private void writeKalmanKmlFile(Analysis analysis) throws RserveInterfaceException {
+        if (analysis.getAnimals().size() > 1) {
+            throw new RserveInterfaceException("The Kalman Filter can only be run on one animal at a time.");
+        }
         Boolean is180 = analysis.getProject().getCrosses180();
         Date startDate = (Date) analysis.getParameterValue("startDate", false);
         Double startX = (Double) analysis.getParameterValue("startX", false);
