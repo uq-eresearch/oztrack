@@ -37,7 +37,11 @@
       <ExtendedData>
         <SchemaData schemaUrl="#Overall">
           <#list analysis.analysisType.overallResultAttributeTypes as resultAttributeType>
-          <SimpleData name="${resultAttributeType.identifier}">${analysis.getResultAttributeValue(resultAttributeType.identifier)?c}</SimpleData>
+          <SimpleData name="${resultAttributeType.identifier}"><#rt>
+          <#if (analysis.getResultAttributeValue(resultAttributeType.identifier)??)><#t>
+          ${analysis.getResultAttributeValue(resultAttributeType.identifier)?c}<#t>
+          </#if><#t>
+          </SimpleData><#lt>
           </#list>
         </SchemaData>
       </ExtendedData>
@@ -62,7 +66,11 @@
           <SchemaData schemaUrl="#Feature">
             <SimpleData name="id">${resultFeature.animal.id?c}</SimpleData>
             <#list analysis.analysisType.featureResultAttributeTypes as resultAttributeType>
-            <SimpleData name="${resultAttributeType.identifier}">${resultFeature.getAttributeValue(resultAttributeType.identifier)?c}</SimpleData>
+            <SimpleData name="${resultAttributeType.identifier}"><#rt>
+            <#if (resultFeature.getAttributeValue(resultAttributeType.identifier)??)><#t>
+            ${resultFeature.getAttributeValue(resultAttributeType.identifier)?c}<#t>
+            </#if><#t>
+            </SimpleData><#lt>
             </#list>
           </SchemaData>
         </ExtendedData>
