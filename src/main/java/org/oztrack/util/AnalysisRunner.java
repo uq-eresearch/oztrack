@@ -3,6 +3,7 @@ package org.oztrack.util;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -16,9 +17,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.pool.ObjectPool;
 import org.geotools.geometry.jts.JTSFactoryFinder;
-import org.geotools.kml.v22.KMLConfiguration;
-import org.geotools.xml.Parser;
-import org.opengis.feature.simple.SimpleFeature;
 import org.oztrack.data.access.impl.AnalysisDaoImpl;
 import org.oztrack.data.access.impl.PositionFixDaoImpl;
 import org.oztrack.data.model.Analysis;
@@ -35,15 +33,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.MultiPolygon;
 
+import de.micromata.opengis.kml.v_2_2_0.Boundary;
+import de.micromata.opengis.kml.v_2_2_0.Coordinate;
 import de.micromata.opengis.kml.v_2_2_0.Document;
 import de.micromata.opengis.kml.v_2_2_0.Feature;
+import de.micromata.opengis.kml.v_2_2_0.Folder;
+import de.micromata.opengis.kml.v_2_2_0.Geometry;
 import de.micromata.opengis.kml.v_2_2_0.Kml;
+import de.micromata.opengis.kml.v_2_2_0.MultiGeometry;
 import de.micromata.opengis.kml.v_2_2_0.Placemark;
 import de.micromata.opengis.kml.v_2_2_0.Point;
+import de.micromata.opengis.kml.v_2_2_0.Polygon;
 import de.micromata.opengis.kml.v_2_2_0.SchemaData;
 import de.micromata.opengis.kml.v_2_2_0.SimpleData;
 import de.micromata.opengis.kml.v_2_2_0.TimeStamp;
@@ -52,7 +54,7 @@ import de.micromata.opengis.kml.v_2_2_0.TimeStamp;
 public class AnalysisRunner {
     protected final Log logger = LogFactory.getLog(getClass());
 
-    private final GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
+    private final GeometryFactory jtsGeometryFactory = JTSFactoryFinder.getGeometryFactory(null);
     
     private final SimpleDateFormat isoDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'");
 
@@ -116,27 +118,37 @@ public class AnalysisRunner {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void readHomeRangeResult(Analysis analysis) throws Exception {
-        Parser parser = new Parser(new KMLConfiguration());
         InputStream inputStream = null;
         try {
             inputStream = new FileInputStream(analysis.getAbsoluteResultFilePath());
-            SimpleFeature document = (SimpleFeature) parser.parse(inputStream);
-            List<SimpleFeature> documentFeatures = (List<SimpleFeature>) document.getAttribute("Feature");
+            Kml kml = Kml.unmarshal(inputStream);
+            Document document = (Document) kml.getFeature();
+            List<Feature> documentFeatures = document.getFeature();
             if (documentFeatures.isEmpty()) {
                 return;
             }
 
             // Get list of Placemark features: under either /Document/Folder or just /Document.
-            List<SimpleFeature> placemarks =
-                documentFeatures.get(0).getFeatureType().getName().getLocalPart().equals("folder")
-                ? (List<SimpleFeature>) documentFeatures.get(0).getAttribute("Feature")
+            List<Feature> features =
+                (documentFeatures.get(0) instanceof Folder)
+                ? ((Folder) documentFeatures.get(0)).getFeature()
                 : documentFeatures;
 
             analysis.getResultFeatures().clear();
-            for (SimpleFeature placemark : placemarks) {
-                Long animalId = Long.valueOf((String) placemark.getAttribute("id"));
+            for (Feature feature : features) {
+                Placemark placemark = (Placemark) feature;
+                SchemaData placemarkSchemaData = placemark.getExtendedData().getSchemaData().get(0);
+                Long animalId = null;
+                for (SimpleData simpleData : placemarkSchemaData.getSimpleData()) {
+                    if (simpleData.getName().equals("id")) {
+                        animalId = Long.valueOf(simpleData.getValue());
+                        break;
+                    }
+                }
+                if (animalId == null) {
+                    continue;
+                }
                 HomeRangeResultFeature resultFeature = new HomeRangeResultFeature();
                 resultFeature.setAnalysis(analysis);
                 for (Animal animal : analysis.getAnimals()) {
@@ -145,15 +157,22 @@ public class AnalysisRunner {
                         break;
                     }
                 }
-                resultFeature.setGeometry((MultiPolygon) placemark.getDefaultGeometry());
+                MultiGeometry kmlMultiGeometry = (MultiGeometry) placemark.getGeometry();
+                resultFeature.setGeometry(convertKmlMultiGeometryToJtsMultiPolygon(kmlMultiGeometry));
                 HashSet<AnalysisResultAttribute> resultAttributes = new HashSet<AnalysisResultAttribute>();
                 for (AnalysisResultAttributeType attributeType : analysis.getAnalysisType().getFeatureResultAttributeTypes()) {
-                    Object value = placemark.getAttribute(attributeType.getIdentifier());
+                    String value = null;
+                    for (SimpleData simpleData : placemarkSchemaData.getSimpleData()) {
+                        if (simpleData.getName().equals(attributeType.getIdentifier())) {
+                            value = simpleData.getValue();
+                            break;
+                        }
+                    }
                     if (value != null) {
                         AnalysisResultAttribute resultAttribute = new AnalysisResultAttribute();
                         resultAttribute.setFeature(resultFeature);
                         resultAttribute.setName(attributeType.getIdentifier());
-                        resultAttribute.setValue((value != null) ? String.valueOf(value) : null);
+                        resultAttribute.setValue(value);
                         resultAttributes.add(resultAttribute);
                     }
                 }
@@ -164,6 +183,34 @@ public class AnalysisRunner {
         finally {
             IOUtils.closeQuietly(inputStream);
         }
+    }
+
+    private com.vividsolutions.jts.geom.MultiPolygon convertKmlMultiGeometryToJtsMultiPolygon(MultiGeometry kmlMultiGeometry) {
+        ArrayList<com.vividsolutions.jts.geom.Polygon> jtsPolygons = new ArrayList<com.vividsolutions.jts.geom.Polygon>();
+        for (Geometry kmlGeometry: kmlMultiGeometry.getGeometry()) {
+            jtsPolygons.add(convertKmlPolygonToJtsPolygon((Polygon) kmlGeometry));
+        }
+        return jtsGeometryFactory.createMultiPolygon(jtsPolygons.toArray(new com.vividsolutions.jts.geom.Polygon[] {}));
+    }
+
+    private com.vividsolutions.jts.geom.Polygon convertKmlPolygonToJtsPolygon(Polygon kmlPolygon) {
+        com.vividsolutions.jts.geom.LinearRing jtsShell = convertKmlBoundaryToJtsLinearRing(kmlPolygon.getOuterBoundaryIs());
+        ArrayList<com.vividsolutions.jts.geom.LinearRing> jtsHoles = new ArrayList<com.vividsolutions.jts.geom.LinearRing>();
+        for (Boundary jtsInnerBoundary : kmlPolygon.getInnerBoundaryIs()) {
+            jtsHoles.add(convertKmlBoundaryToJtsLinearRing(jtsInnerBoundary));
+        }
+        return jtsGeometryFactory.createPolygon(jtsShell, jtsHoles.toArray(new com.vividsolutions.jts.geom.LinearRing[] {}));
+    }
+
+    private com.vividsolutions.jts.geom.LinearRing convertKmlBoundaryToJtsLinearRing(Boundary jtsBoundary) {
+        ArrayList<com.vividsolutions.jts.geom.Coordinate> jtsCoordinates = new ArrayList<com.vividsolutions.jts.geom.Coordinate>();
+        for (Coordinate kmlCoordinate : jtsBoundary.getLinearRing().getCoordinates()) {
+            jtsCoordinates.add(new com.vividsolutions.jts.geom.Coordinate(
+                kmlCoordinate.getLongitude(),
+                kmlCoordinate.getLatitude()
+            ));
+        }
+        return jtsGeometryFactory.createLinearRing(jtsCoordinates.toArray(new com.vividsolutions.jts.geom.Coordinate[] {}));
     }
 
     private void readFilterResult(Analysis analysis) throws Exception {
@@ -203,7 +250,7 @@ public class AnalysisRunner {
                 TimeStamp timeStamp = (TimeStamp) placemark.getTimePrimitive();
                 resultFeature.setDateTime(isoDateTimeFormat.parse(timeStamp.getWhen()));
                 Point point = (Point) placemark.getGeometry();
-                resultFeature.setGeometry(geometryFactory.createPoint(new Coordinate(
+                resultFeature.setGeometry(jtsGeometryFactory.createPoint(new com.vividsolutions.jts.geom.Coordinate(
                     point.getCoordinates().get(0).getLongitude(),
                     point.getCoordinates().get(0).getLatitude()
                 )));

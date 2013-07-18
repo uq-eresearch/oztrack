@@ -415,22 +415,6 @@
             <version>${geotools.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.geotools.xsd</groupId>
-            <artifactId>gt-xsd-kml</artifactId>
-            <version>${geotools.version}</version>
-            <exclusions>
-                <!--
-                    The target deployment path 'xml-apis/xml-apis-xerces/2.7.1/xml-apis-xerces-2.7.1.pom'
-                    does not match the POM's expected path prefix 'xml-apis/xml-apis/xerces-2.7.1'.
-                    We include the xerces:xercesImpl dependency instead.
-                -->
-                <exclusion>
-                    <groupId>xml-apis</groupId>
-                    <artifactId>xml-apis-xerces</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-xml</artifactId>
             <version>${geotools.version}</version>
