@@ -199,9 +199,14 @@
                     },
                     animals: [
                         <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
+                        <c:set var="animalBoundingBox" value="${animalBoundingBoxes[animal.id]}"/>
                         {
                             id: ${animal.id},
-                            name: '${oztrack:escapeJS(animal.animalName)}'
+                            name: '${oztrack:escapeJS(animal.animalName)}',
+                            <c:if test="${animalBoundingBox != null}">
+                            <c:set var="env" value="${animalBoundingBox.envelopeInternal}"/>
+                            bounds: new OpenLayers.Bounds(${env.minX}, ${env.minY}, ${env.maxX}, ${env.maxY})
+                            </c:if>
                         }<c:if test="${!animalStatus.last}">,
                         </c:if>
                         </c:forEach>
@@ -306,6 +311,7 @@
                         </div>
                         <div style="clear: both;"></div>
                         <c:forEach items="${projectAnimalsList}" var="animal">
+                        <a style="display: inline-block; float: right;" href="javascript:cleanseMap.zoomToAnimal(${animal.id});"><i class="icon-zoom-in"></i></a>
                         <div class="animalCheckbox">
                             <input
                                 id="select-animal-${animal.id}"

@@ -85,6 +85,7 @@ public class ProjectCleanseController {
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
         model.addAttribute("projectAnimalsList", projectAnimalsList);
         model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project));
+        model.addAttribute("animalBoundingBoxes", projectDao.getAnimalBoundingBoxes(project));
         model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, true));
         model.addAttribute("kalmanAnalysisType", AnalysisType.KALMAN);
         model.addAttribute("argosClasses", ArgosClass.values());

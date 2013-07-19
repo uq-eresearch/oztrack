@@ -110,6 +110,7 @@
 
         // Delegate to properties/functions of OzTrack.ProjectMap
         that.updateSize = that.projectMap.updateSize;
+        that.zoomToAnimal = that.projectMap.zoomToAnimal;
         that.increaseLoadingCounter = that.projectMap.increaseLoadingCounter;
         that.decreaseLoadingCounter = that.projectMap.decreaseLoadingCounter;
         that.setFromDate = that.projectMap.setFromDate;

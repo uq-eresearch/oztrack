@@ -822,6 +822,7 @@
                             </div>
                             <div style="clear: both;"></div>
                             <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
+                            <a style="display: inline-block; float: right;" href="javascript:analysisMap.zoomToAnimal(${animal.id});"><i class="icon-zoom-in"></i></a>
                             <div class="animalsFilterCheckbox">
                                 <input
                                     id="filter-animal-${animal.id}"
