@@ -28,6 +28,7 @@ import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
+import org.oztrack.data.model.types.AnalysisType;
 import org.oztrack.data.model.types.ArgosClass;
 import org.oztrack.error.RserveInterfaceException;
 import org.oztrack.util.RserveInterface;
@@ -85,6 +86,7 @@ public class ProjectCleanseController {
         model.addAttribute("projectAnimalsList", projectAnimalsList);
         model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project));
         model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, true));
+        model.addAttribute("kalmanAnalysisType", AnalysisType.KALMAN);
         model.addAttribute("argosClasses", ArgosClass.values());
         return "project-cleanse.html";
     }
@@ -96,7 +98,7 @@ public class ProjectCleanseController {
         @RequestParam(value="operation", required=true) String operation,
         @RequestParam(value="fromDate", required=false) String fromDateString,
         @RequestParam(value="toDate", required=false) String toDateString,
-        @RequestParam(value="animal", required=false) List<Long> animalIds,
+        @RequestParam(value="animalIds", required=false) List<Long> animalIds,
         @RequestParam(value="maxSpeed", required=false) Double maxSpeed,
         @RequestParam(value="minArgosClass", required=false) String minArgosClassCode,
         @RequestParam(value="maxDop", required=false) Double maxDop,

@@ -53,7 +53,7 @@
             }
             else {
                 params.analysisType = layerTypeValue;
-                that.projectMap.createAnalysisLayer(params, layerName);
+                that.projectMap.createAnalysisLayer(params, layerName, 'analysis');
             }
         };
 

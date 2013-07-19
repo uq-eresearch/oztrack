@@ -636,7 +636,8 @@
 
         that.createDetectionLayer = function(params, category) {
             function buildFilter(params) {
-                // If supplied, use param to filter animals; otherwise, include all animals.
+                // If supplied, use param to filter animals; otherwise, include
+                // all animals.
                 var cqlFilterAnimalIds =
                     params.animalIds ? params.animalIds.split(',')
                     : $.map(that.animals, function(animal) {return animal.id});
@@ -644,8 +645,10 @@
                 // Exclude animals not currently visible on the map.
                 cqlFilterAnimalIds = $.grep(cqlFilterAnimalIds, function(id) {return getAnimal(id).visible;});
 
-                // If filter is empty, include dummy ID (i.e. -1) that will never be matched.
-                // This prevents the CQL_FILTER parameter from being syntactically invalid.
+                // If filter is empty, include dummy ID (i.e. -1) that will
+                // never be matched.
+                // This prevents the CQL_FILTER parameter from being
+                // syntactically invalid.
                 cqlFilterAnimalIds = (cqlFilterAnimalIds.length > 0) ? cqlFilterAnimalIds : [-1];
 
                 var cqlFilter = 'project_id = ' + that.project.id;
@@ -768,7 +771,8 @@
 
         that.createTrajectoryLayer = function(params, category) {
             function buildFilter(params) {
-                // If supplied, use param to filter animals; otherwise, include all animals.
+                // If supplied, use param to filter animals; otherwise, include
+                // all animals.
                 var cqlFilterAnimalIds =
                     params.animalIds
                     ? params.animalIds.split(',')
@@ -777,8 +781,10 @@
                 // Exclude animals not currently visible on the map.
                 cqlFilterAnimalIds = $.grep(cqlFilterAnimalIds, function(id) {return getAnimal(id).visible;});
 
-                // If filter is empty, include dummy ID (i.e. -1) that will never be matched.
-                // This prevents the CQL_FILTER parameter from being syntactically invalid.
+                // If filter is empty, include dummy ID (i.e. -1) that will
+                // never be matched.
+                // This prevents the CQL_FILTER parameter from being
+                // syntactically invalid.
                 cqlFilterAnimalIds = (cqlFilterAnimalIds.length > 0) ? cqlFilterAnimalIds : [-1];
 
                 var cqlFilter = 'project_id = ' + that.project.id;
@@ -1332,16 +1338,24 @@
                             var nonEmptySummaries = $.grep(summaries, function(summary) {
                                 return summary.length > 0;
                             });
-                            // Filter summaries for uniqueness because GetFeatureInfo may return
-                            // identical features from different layers having the same feature type.
+                            // Filter summaries for uniqueness because
+                            // GetFeatureInfo may return
+                            // identical features from different layers having
+                            // the same feature type.
                             //
-                            // In this case, we expect only one summary function in layerDetails to
-                            // return a non-empty result for each such feature; this means, though,
-                            // that one layerDetail will return N summaries for N identical features.
+                            // In this case, we expect only one summary function
+                            // in layerDetails to
+                            // return a non-empty result for each such feature;
+                            // this means, though,
+                            // that one layerDetail will return N summaries for
+                            // N identical features.
                             //
-                            // Example: the Bathymetry and Elevation layers are both from the gebco_08
-                            // feature type, differing only by style; without this uniqueness filter,
-                            // we would get two lines of either "Depth: X m" or "Elevation: X m".
+                            // Example: the Bathymetry and Elevation layers are
+                            // both from the gebco_08
+                            // feature type, differing only by style; without
+                            // this uniqueness filter,
+                            // we would get two lines of either "Depth: X m" or
+                            // "Elevation: X m".
                             var uniqueSummaries = [], summaryFound = {};
                             $.each(nonEmptySummaries, function(i, summary) {
                                 var summaryHtml = $('<div>').append(summary).html();
@@ -1403,14 +1417,16 @@
         that.map.addControl(ozTrackNavToolbar);
 
         // Workaround because we can't use OpenLayers.Map.zoomToExtent:
-        // calling map.zoomToExtent(bounds, false) sometimes sets center to (0, 0).
+        // calling map.zoomToExtent(bounds, false) sometimes sets center to (0,
+        // 0).
         that.zoomToExtent = function(bounds) {
             that.map.setCenter(bounds.getCenterLonLat().wrapDateLine(that.map.maxExtent));
             that.map.zoomTo(that.map.getZoomForExtent(bounds, false));
         };
         that.zoomToExtent(that.project.bounds);
 
-        // Workaround used where OpenLayers fails to render features or goes to incorrect zoom.
+        // Workaround used where OpenLayers fails to render features or goes to
+        // incorrect zoom.
         that.nudge = function() {
             that.map.pan(1, 0, null);
             that.map.pan(-1, 0, null);
@@ -1626,7 +1642,8 @@
 
             // Workaround zooming bug:
             // Map resize displays google layer at incorrect zoom level
-            // Calling pan results in zoom levels for all layers getting back in synch
+            // Calling pan results in zoom levels for all layers getting back in
+            // synch
             // http://gis.stackexchange.com/questions/30075/map-resize-displays-google-layer-at-incorrect-zoom-level
             that.nudge();
         };
@@ -1704,30 +1721,52 @@
             updateVectorLayers();
         };
 
-        that.createAnalysisLayer = function(params, layerName) {
+        function showAnalysisError(message) {
+            if (that.errorDialog) {
+                that.errorDialog.dialog('destroy').remove();
+            }
+            that.errorDialog = $('<div>')
+                .text(message)
+                .dialog({
+                    title: 'Error',
+                    modal: true,
+                    resizable: false,
+                    create: function(event, ui) {
+                        $(event.target).closest('.ui-dialog').find('.ui-dialog-titlebar-close').text('×');
+                    },
+                    buttons: {
+                        'Close': function() {
+                            $(this).dialog('close');
+                        }
+                    }
+                });
+            that.onAnalysisError && that.onAnalysisError(message);
+        }
+
+        that.createAnalysisLayer = function(params, layerName, category) {
             $.ajax({
                 url: '/projects/' + that.project.id + '/analyses',
                 type: 'POST',
                 data: params,
                 error: function(xhr, textStatus, errorThrown) {
-                    that.onAnalysisError($(xhr.responseText).find('error').text() || 'Error processing request');
+                    showAnalysisError($(xhr.responseText).find('error').text() || 'Error processing request');
                 },
                 complete: function (xhr, textStatus) {
                     if (textStatus == 'success') {
                         var analysisUrl = xhr.getResponseHeader('Location');
-                        that.onAnalysisCreate(layerName, analysisUrl);
-                        that.addAnalysisLayer(analysisUrl, layerName);
+                        that.onAnalysisCreate && that.onAnalysisCreate(layerName, analysisUrl);
+                        that.addAnalysisLayer(analysisUrl, layerName, category);
                     }
                 }
             });
         };
 
-        that.addAnalysisLayer = function(analysisUrl, layerName) {
+        that.addAnalysisLayer = function(analysisUrl, layerName, category) {
             $.ajax({
                 url: analysisUrl,
                 type: 'GET',
                 error: function(xhr, textStatus, errorThrown) {
-                    that.onAnalysisError($(xhr.responseText).find('error').text() || 'Error getting analysis');
+                    showAnalysisError($(xhr.responseText).find('error').text() || 'Error getting analysis');
                 },
                 complete: function (xhr, textStatus) {
                     if (textStatus == 'success') {
@@ -1736,19 +1775,19 @@
                         currentAnalysisId = analysis.id;
                         updateAnimalInfoFromAnalysisCreate(layerName, analysis);
                         that.increaseLoadingCounter();
-                        pollAnalysisLayer(analysisUrl, layerName);
+                        pollAnalysisLayer(analysisUrl, layerName, category);
                     }
                 }
             });
         };
 
-        function pollAnalysisLayer(analysisUrl, layerName) {
+        function pollAnalysisLayer(analysisUrl, layerName, category) {
             $.ajax({
                 url: analysisUrl,
                 type: 'GET',
                 error: function(xhr, textStatus, errorThrown) {
                     that.decreaseLoadingCounter();
-                    that.onAnalysisError($(xhr.responseText).find('error').text() || 'Error getting analysis');
+                    showAnalysisError($(xhr.responseText).find('error').text() || 'Error getting analysis');
                 },
                 complete: function (xhr, textStatus) {
                     if (textStatus == 'success') {
@@ -1759,25 +1798,25 @@
                         }
                         that.analyses[analysis.id] = analysis;
                         if (analysis.status == 'COMPLETE') {
-                            addAnalysisResultLayer(analysis, layerName);
+                            addAnalysisResultLayer(analysis, layerName, category);
                         }
                         else if ((analysis.status == 'NEW') || (analysis.status == 'PROCESSING')) {
-                            setTimeout(function () {pollAnalysisLayer(analysisUrl, layerName);}, 1000);
+                            setTimeout(function () {pollAnalysisLayer(analysisUrl, layerName, category);}, 1000);
                         }
                         else {
                             that.decreaseLoadingCounter();
-                            that.onAnalysisError(analysis.message || 'Error running analysis');
+                            showAnalysisError(analysis.message || 'Error running analysis');
                         }
                     }
                 }
             });
         }
 
-        function addAnalysisResultLayer(analysis, layerName) {
+        function addAnalysisResultLayer(analysis, layerName, category) {
             var queryOverlay = new OpenLayers.Layer.Vector(layerName, {
                 styleMap : (analysis.result.type === 'HOME_RANGE') ? that.polygonStyleMap : null,
                 metadata: {
-                    category: 'analysis',
+                    category: category,
                     showInformation: false
                 }
             });
@@ -1811,16 +1850,17 @@
                     }
                     queryOverlay.addFeatures(resp.features);
 
-                    // Workaround: OpenLayers sometimes fails to draw polygons until map is panned.
+                    // Workaround: OpenLayers sometimes fails to draw polygons
+                    // until map is panned.
                     if (that.project.crosses180) {
                         that.nudge();
                     }
 
                     updateAnimalInfoFromAnalysisSuccess(analysis, resp.features);
-                    that.onLayerSuccess();
+                    that.onLayerSuccess && that.onLayerSuccess();
                 }
                 else {
-                    that.onAnalysisError(jQuery(resp.priv.responseText).find('error').text() || 'Error processing request');
+                    showAnalysisError(jQuery(resp.priv.responseText).find('error').text() || 'Error processing request');
                 }
             };
             protocol.read({
@@ -1856,10 +1896,12 @@
         };
 
         function updateAnimalInfoFromAnalysisCreate(layerName, analysis) {
-            var fromDate = moment(analysis.params.fromDate || that.project.minDate).format('YYYY-MM-DD');
-            var toDate = moment(analysis.params.toDate || that.project.maxDate).format('YYYY-MM-DD');
-            for (var i = 0; i < analysis.params.animalIds.length; i++) {
-                that.onUpdateAnimalInfoFromAnalysisCreate(layerName, analysis.params.animalIds[i], analysis, fromDate, toDate);
+            if (that.onUpdateAnimalInfoFromAnalysisCreate) {
+                var fromDate = moment(analysis.params.fromDate || that.project.minDate).format('YYYY-MM-DD');
+                var toDate = moment(analysis.params.toDate || that.project.maxDate).format('YYYY-MM-DD');
+                for (var i = 0; i < analysis.params.animalIds.length; i++) {
+                    that.onUpdateAnimalInfoFromAnalysisCreate(layerName, analysis.params.animalIds[i], analysis, fromDate, toDate);
+                }
             }
         }
 
@@ -1882,6 +1924,7 @@
                     singleAnimalFeature.renderIntent = 'default';
                     singleAnimalFeature.layer.drawFeature(singleAnimalFeature);
                 }
+                that.onUpdateAnimalInfoFromAnalysisSuccess &&
                 that.onUpdateAnimalInfoFromAnalysisSuccess(
                     animalId,
                     analysis,

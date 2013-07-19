@@ -69,6 +69,23 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/project-map.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/project-cleanse.js"></script>
         <script type="text/javascript">
+            function submitKalmanFilter() {
+                var params = {
+                    projectId: ${project.id},
+                    analysisType: 'KALMAN',
+                    fromDate: $('#fromDate').val(),
+                    toDate: $('#toDate').val(),
+                    animalIds:
+                        $('input[name=animalIds]:not(:disabled):checked')
+                            .map(function() {return $(this).val();})
+                            .toArray()
+                            .join(',')
+                };
+                $.each($('#form-kalman-filter').serializeArray(), function(i, pair) {
+                    params[pair.name] = pair.value;
+                });
+                cleanseMap.createAnalysisLayer(params, 'Kalman Filter', 'filter');
+            }
             function submitCleanseForm(operation, mode) {
                 jQuery('.cleanse-response').hide();
                 jQuery.ajax({
@@ -293,7 +310,7 @@
                             <input
                                 id="select-animal-${animal.id}"
                                 class="select-animal"
-                                name="animal"
+                                name="animalIds"
                                 type="checkbox"
                                 value="${animal.id}"
                                 style="width: 15px;"
@@ -362,6 +379,29 @@
                                         </div>
                                         <div>
                                             <button class="btn btn-primary" onclick="submitCleanseForm('delete', 'speed-filter');">Apply filter</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                </fieldset>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-action" href="#accordion-body-kalman-filter">
+                                Kalman filter
+                            </a>
+                        </div>
+                        <div id="accordion-body-kalman-filter" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                                <form id="form-kalman-filter" class="form-vertical" style="margin: 0;" onsubmit="return false;">
+                                <fieldset>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <tags:analysis-param-fields analysisType="${kalmanAnalysisType}"/>
+                                        <div>
+                                            <button class="btn btn-primary" onclick="submitKalmanFilter();">Apply filter</button>
                                         </div>
                                     </div>
                                 </div>

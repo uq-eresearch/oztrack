@@ -23,11 +23,11 @@
             showAllTrajectories: true,
             showAllStartEnd: false,
             includeDeleted: true,
-            extraCategories: {'cleanse': {label: 'Selection layers'}},
+            extraCategories: {'filter': {label: 'Filter layers'}}
         });
 
-        that.polygonLayer = new OpenLayers.Layer.Vector('Polygon selections', {
-            metadata: {category: 'cleanse'}
+        that.polygonLayer = new OpenLayers.Layer.Vector('Polygon Selections', {
+            metadata: {category: 'filter'}
         });
         that.projectMap.addLayer(that.polygonLayer);
 
@@ -115,5 +115,6 @@
         that.setFromDate = that.projectMap.setFromDate;
         that.setToDate = that.projectMap.setToDate;
         that.setAnimalVisible = that.projectMap.setAnimalVisible;
+        that.createAnalysisLayer = that.projectMap.createAnalysisLayer;
     };
 }(window.OzTrack = window.OzTrack || {}));
