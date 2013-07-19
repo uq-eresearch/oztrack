@@ -33,7 +33,10 @@
     <Placemark>
       <name>Trajectory</name>
       <styleUrl>#animal-${animal.id?c}-trajectory</styleUrl>
-      <visibility>1</visibility>
+      <TimeSpan>
+        <begin>${analysis.resultFeatures?first.dateTime?iso_local_nz}</begin>
+        <end>${analysis.resultFeatures?last.dateTime?iso_local_nz}</end>
+      </TimeSpan>
       <ExtendedData>
         <SchemaData schemaUrl="#Overall">
           <#list analysis.analysisType.overallResultAttributeTypes as resultAttributeType>
@@ -58,7 +61,6 @@
       <#list analysis.resultFeatures as resultFeature>
       <Placemark>
         <styleUrl>#animal-${resultFeature.animal.id?c}-detection</styleUrl>
-        <visibility>1</visibility>
         <TimeStamp>
           <when>${resultFeature.dateTime?iso_local_nz}</when>
         </TimeStamp>
