@@ -1735,7 +1735,7 @@
                         that.analyses[analysis.id] = analysis;
                         currentAnalysisId = analysis.id;
                         updateAnimalInfoFromAnalysisCreate(layerName, analysis);
-                        that.projectMap.increaseLoadingCounter();
+                        that.increaseLoadingCounter();
                         pollAnalysisLayer(analysisUrl, layerName);
                     }
                 }
@@ -1747,14 +1747,14 @@
                 url: analysisUrl,
                 type: 'GET',
                 error: function(xhr, textStatus, errorThrown) {
-                    that.projectMap.decreaseLoadingCounter();
+                    that.decreaseLoadingCounter();
                     that.onAnalysisError($(xhr.responseText).find('error').text() || 'Error getting analysis');
                 },
                 complete: function (xhr, textStatus) {
                     if (textStatus == 'success') {
                         var analysis = $.parseJSON(xhr.responseText);
                         if (!that.analyses[analysis.id]) {
-                            that.projectMap.decreaseLoadingCounter();
+                            that.decreaseLoadingCounter();
                             return;
                         }
                         that.analyses[analysis.id] = analysis;
@@ -1765,7 +1765,7 @@
                             setTimeout(function () {pollAnalysisLayer(analysisUrl, layerName);}, 1000);
                         }
                         else {
-                            that.projectMap.decreaseLoadingCounter();
+                            that.decreaseLoadingCounter();
                             that.onAnalysisError(analysis.message || 'Error running analysis');
                         }
                     }
@@ -1775,7 +1775,7 @@
 
         function addAnalysisResultLayer(analysis, layerName) {
             var queryOverlay = new OpenLayers.Layer.Vector(layerName, {
-                styleMap : (analysis.resultType === 'HOME_RANGE') ? that.polygonStyleMap : null,
+                styleMap : (analysis.result.type === 'HOME_RANGE') ? that.polygonStyleMap : null,
                 metadata: {
                     category: 'analysis',
                     showInformation: false
@@ -1784,20 +1784,20 @@
             if (that.analyses[analysis.id]) {
                 that.analyses[analysis.id].layer = queryOverlay;
             }
-            var kmlResultFile = $.grep(analysis.resultFiles, function(r) {return r.format === 'kml';})[0];
+            var kmlResultFile = $.grep(analysis.result.files, function(r) {return r.format === 'kml';})[0];
             var protocol = new OpenLayers.Protocol.HTTP({
                 url : kmlResultFile.url,
                 format : new OpenLayers.Format.KML({
-                    extractStyles: (analysis.resultType === 'HEAT_MAP') || (analysis.resultType === 'FILTER'),
+                    extractStyles: (analysis.result.type === 'HEAT_MAP') || (analysis.result.type === 'FILTER'),
                     extractAttributes: true,
                     maxDepth: 2,
-                    internalProjection: that.projectMap.map.projection,
-                    externalProjection: that.projectMap.map.displayProjection,
+                    internalProjection: that.map.projection,
+                    externalProjection: that.map.displayProjection,
                     kmlns: 'http://oztrack.org/xmlns#'
                 })
             });
             var callback = function(resp) {
-                that.projectMap.decreaseLoadingCounter();
+                that.decreaseLoadingCounter();
                 if (resp.code == OpenLayers.Protocol.Response.SUCCESS) {
                     if (that.project.crosses180) {
                         $.each(resp.features, function(i, feature) {
@@ -1813,7 +1813,7 @@
 
                     // Workaround: OpenLayers sometimes fails to draw polygons until map is panned.
                     if (that.project.crosses180) {
-                        that.projectMap.nudge();
+                        that.nudge();
                     }
 
                     updateAnimalInfoFromAnalysisSuccess(analysis, resp.features);
@@ -1826,7 +1826,7 @@
             protocol.read({
                 callback: callback
             });
-            that.projectMap.addLayer(queryOverlay);
+            that.addLayer(queryOverlay);
         }
 
         that.deleteCurrentAnalysis = function() {

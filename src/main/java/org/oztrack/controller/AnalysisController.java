@@ -32,6 +32,7 @@ import org.oztrack.data.model.Analysis;
 import org.oztrack.data.model.AnalysisParameter;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.User;
+import org.oztrack.data.model.types.AnalysisResultAttributeType;
 import org.oztrack.data.model.types.AnalysisResultType;
 import org.oztrack.data.model.types.AnalysisStatus;
 import org.oztrack.util.ShpUtils;
@@ -153,8 +154,16 @@ public class AnalysisController {
             out.key("message").value(analysis.getMessage());
         }
         if (analysis.getStatus() == AnalysisStatus.COMPLETE) {
+            out.key("result").object();
+            out.key("type").value(analysis.getAnalysisType().getResultType().name());
+            out.key("attributes").object();
+            for (AnalysisResultAttributeType attributeType : analysis.getAnalysisType().getOverallResultAttributeTypes()) {
+                out.key(attributeType.getIdentifier());
+                out.value(analysis.getResultAttributeValue(attributeType.getIdentifier()));
+            }
+            out.endObject();
             String resultBaseUrl = String.format("%s/projects/%d/analyses/%d/result", request.getContextPath(), analysis.getProject().getId(), analysis.getId());
-            out.key("resultFiles").array();
+            out.key("files").array();
             out.object();
             out.key("title").value("KML");
             out.key("format").value("kml");
@@ -177,7 +186,7 @@ public class AnalysisController {
                 }
             }
             out.endArray();
-            out.key("resultType").value(analysis.getAnalysisType().getResultType().name());
+            out.endObject();
         }
         if (analysis.getDescription() != null) {
             out.key("description").value(analysis.getDescription());
