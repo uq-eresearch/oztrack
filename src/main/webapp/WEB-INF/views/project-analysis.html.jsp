@@ -379,7 +379,7 @@
                     },
                     onUpdateAnimalInfoFromAnalysisCreate: function(layerName, animalId, analysis, fromDate, toDate) {
                         var html = '<div class="layerInfoTitle">';
-                        html += '<a class="layer-delete" href="javascript:analysisMap.deleteAnalysis(' + analysis.id + ');">delete</a></span>';
+                        html += '<a class="layer-delete" href="javascript:analysisMap.deleteAnalysis(' + analysis.id + ', true);">delete</a></span>';
                         html += layerName;
                         html += '</div>';
                         var statsHtml = '';

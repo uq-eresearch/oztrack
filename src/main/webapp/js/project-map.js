@@ -1871,17 +1871,19 @@
 
         that.deleteCurrentAnalysis = function() {
             if (currentAnalysisId) {
-                that.deleteAnalysis(currentAnalysisId);
+                that.deleteAnalysis(currentAnalysisId, false);
             }
         };
 
-        that.deleteAnalysis = function(id) {
-            var confirmMessage =
-                (that.analyses[id] && (that.analyses[id].params.animalIds.length > 1))
-                ? 'This will delete the analysis for all animals. Do you wish to continue?'
-                : 'Are you sure you wish to delete this analysis?';
-            if (!confirm(confirmMessage)) {
-                return;
+        that.deleteAnalysis = function(id, shouldConfirm) {
+            if (shouldConfirm) {
+                var confirmMessage =
+                    (that.analyses[id] && (that.analyses[id].params.animalIds.length > 1))
+                    ? 'This will delete the analysis for all animals. Do you wish to continue?'
+                    : 'Are you sure you wish to delete this analysis?';
+                if (!confirm(confirmMessage)) {
+                    return;
+                }
             }
             if (that.analyses[id]) {
                 if (that.analyses[id].layer) {

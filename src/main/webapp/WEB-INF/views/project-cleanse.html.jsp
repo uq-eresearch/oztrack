@@ -177,6 +177,15 @@
                     cleanseMap.setAnimalVisible("${animal.id}", checked);
                     </c:forEach>
                 });
+                $('#kalmanFilterApply').click(function(e) {
+                    $(this).prop('disabled', true);
+                    $('#kalmanFilterCancel').fadeIn();
+                });
+                $('#kalmanFilterCancel').click(function() {
+                    $(this).fadeOut();
+                    cleanseMap.deleteCurrentAnalysis();
+                    $('#kalmanFilterApply').prop('disabled', false);
+                });
                 cleanseMap = null;
                 onResize();
                 cleanseMap = new OzTrack.CleanseMap('projectMap', {
@@ -211,6 +220,14 @@
                         </c:if>
                         </c:forEach>
                     ],
+                    onAnalysisError: function(message) {
+                        $('#kalmanFilterCancel').fadeOut();
+                        $('#kalmanFilterApply').prop('disabled', false);
+                    },
+                    onLayerSuccess: function() {
+                        $('#kalmanFilterCancel').fadeOut();
+                        $('#kalmanFilterApply').prop('disabled', false);
+                    },
                     onReset: function() {
                         jQuery('#cleanse-select').children().remove();
                         jQuery('#cleanse-list').children().remove();
@@ -407,7 +424,8 @@
                                     <div class="controls">
                                         <tags:analysis-param-fields analysisType="${kalmanAnalysisType}"/>
                                         <div>
-                                            <button class="btn btn-primary" onclick="submitKalmanFilter();">Apply filter</button>
+                                            <button id="kalmanFilterApply" class="btn btn-primary" onclick="submitKalmanFilter();">Apply filter</button>
+                                            <button id="kalmanFilterCancel" class="btn" style="display: none; margin-left: 0.5em;">Cancel</button>
                                         </div>
                                     </div>
                                 </div>

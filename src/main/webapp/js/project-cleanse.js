@@ -23,7 +23,10 @@
             showAllTrajectories: true,
             showAllStartEnd: false,
             includeDeleted: true,
-            extraCategories: {'filter': {label: 'Filter layers'}}
+            extraCategories: {'filter': {label: 'Filter layers'}},
+            onLayerSuccess: options.onLayerSuccess,
+            onAnalysisCreate: options.onAnalysisCreate,
+            onAnalysisError: options.onAnalysisError
         });
 
         that.polygonLayer = new OpenLayers.Layer.Vector('Polygon Selections', {
@@ -117,5 +120,6 @@
         that.setToDate = that.projectMap.setToDate;
         that.setAnimalVisible = that.projectMap.setAnimalVisible;
         that.createAnalysisLayer = that.projectMap.createAnalysisLayer;
+        that.deleteCurrentAnalysis = that.projectMap.deleteCurrentAnalysis;
     };
 }(window.OzTrack = window.OzTrack || {}));
