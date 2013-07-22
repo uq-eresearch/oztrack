@@ -69,8 +69,8 @@ public class ProjectAnalysisController {
         model.addAttribute("mapLayerTypeList", MapLayerType.values());
         model.addAttribute("analysisTypeList", AnalysisType.values());
         model.addAttribute("projectAnimalsList", projectAnimalsList);
-        model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project));
-        model.addAttribute("animalBoundingBoxes", projectDao.getAnimalBoundingBoxes(project));
+        model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project, false));
+        model.addAttribute("animalBoundingBoxes", projectDao.getAnimalBoundingBoxes(project, false));
         model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, false));
         User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
         HttpSession currentSession = request.getSession(false);

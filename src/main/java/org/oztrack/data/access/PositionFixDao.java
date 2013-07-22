@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.Range;
+import org.oztrack.data.model.Analysis;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
@@ -18,7 +19,8 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 
 @Service
 public interface PositionFixDao {
-    PositionFix update(PositionFix object);
+    void save(PositionFix positionFix);
+    PositionFix update(PositionFix positionFix);
     int getNumPositionFixes();
     Page<PositionFix> getPage(SearchQuery searchQuery, int offset, int nbrObjectsPerPage);
     List<PositionFix> getProjectPositionFixList(SearchQuery searchQuery);
@@ -33,6 +35,7 @@ public interface PositionFixDao {
         Double maxDop,
         boolean deleted
     );
+    void applyKalmanFilter(Analysis analysis);
     void renumberPositionFixes(Project project, List<Long> animalIds);
     Map<Long, PositionFixStats> getAnimalPositionFixStats(Project project, Date fromDate, Date toDate);
     Map<Long, TrajectoryStats> getAnimalTrajectoryStats(Project project, Date fromDate, Date toDate);

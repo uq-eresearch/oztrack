@@ -93,7 +93,7 @@ public class DataSpaceInterface {
         String collectionURI = project.getDataSpaceURI();
 
         Range<Date> dateRange = projectDao.getDetectionDateRange(project, false);
-        Polygon boundingBox = projectDao.getBoundingBox(project);
+        Polygon boundingBox = projectDao.getBoundingBox(project, false);
         DataSpaceCollection dsi = new DataSpaceCollection(project, dateRange, boundingBox);
 
         boolean doAgentPost = false;

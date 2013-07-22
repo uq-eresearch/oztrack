@@ -5,7 +5,6 @@ import static javax.persistence.EnumType.STRING;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -66,13 +65,16 @@ public class Project extends OzTrackBaseEntity {
     private List<Publication> publications = new ArrayList<Publication>();
 
     @OneToMany(mappedBy="project", cascade={CascadeType.ALL}, orphanRemoval=true, fetch=FetchType.EAGER)
-    private List<ProjectUser> projectUsers = new LinkedList<ProjectUser>();
+    private List<ProjectUser> projectUsers = new ArrayList<ProjectUser>();
 
     @OneToMany(mappedBy="project", cascade=CascadeType.ALL, orphanRemoval=true, fetch=FetchType.LAZY)
-    private List<Animal> animals = new LinkedList<Animal>();
+    private List<Animal> animals = new ArrayList<Animal>();
 
     @OneToMany(mappedBy="project", cascade=CascadeType.ALL, orphanRemoval=true, fetch=FetchType.LAZY)
-    private List<DataFile> dataFiles = new LinkedList<DataFile>();
+    private List<PositionFix> positionFixes = new ArrayList<PositionFix>();
+
+    @OneToMany(mappedBy="project", cascade=CascadeType.ALL, orphanRemoval=true, fetch=FetchType.LAZY)
+    private List<DataFile> dataFiles = new ArrayList<DataFile>();
 
     private String speciesCommonName;
 

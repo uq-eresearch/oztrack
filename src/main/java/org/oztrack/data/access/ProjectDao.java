@@ -27,9 +27,9 @@ public interface ProjectDao {
     Range<Date> getDetectionDateRange(Project project, boolean includeDeleted);
     HashMap<Long, Range<Date>> getProjectDetectionDateRanges(boolean includeDeleted);
     int getDetectionCount(Project project, boolean includeDeleted);
-    Polygon getBoundingBox(Project project);
+    Polygon getBoundingBox(Project project, boolean includeDeleted);
     HashMap<Long, Point> getProjectCentroids(boolean shiftLongitudes);
-    HashMap<Long, Polygon> getAnimalBoundingBoxes(Project project);
+    HashMap<Long, Polygon> getAnimalBoundingBoxes(Project project, boolean includeDeleted);
     List<Project> getProjectsByAccess(ProjectAccess access);
     List<ProjectUser> getProjectUsersWithRole(Project project, Role role);
     List<Project> getProjectsWithExpiredEmbargo(Date expiryDate);

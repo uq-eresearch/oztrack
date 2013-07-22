@@ -32,14 +32,6 @@
             onLayerSuccess: options.onKalmanFilterSuccess
         });
 
-        that.deleteKalmanFilterAnalysis = function() {
-            if (!that.kalmanFilterAnalysis) {
-                return;
-            }
-            that.projectMap.deleteAnalysis(that.kalmanFilterAnalysis.id);
-            that.kalmanFilterAnalysis = null;
-        };
-
         that.submitCleanseRequest = function(operation, params) {
             $.ajax({
                 url: '/projects/' + that.project.id + '/cleanse',
@@ -83,8 +75,8 @@
                 },
                 success: function(data, textStatus, jqXHR) {
                     that.reset();
-                    //var message = TODO;
-                    //that.projectMap.showMessage('Complete', message);
+                    var message = "Successfully applied Kalman Filter";
+                    that.projectMap.showMessage('Complete', message);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     var message = $(jqXHR.responseText).find('error').text() || 'Error applying filter';
@@ -95,6 +87,14 @@
                 }
             });
             that.deleteKalmanFilterAnalysis();
+        };
+
+        that.deleteKalmanFilterAnalysis = function() {
+            if (!that.kalmanFilterAnalysis) {
+                return;
+            }
+            that.projectMap.deleteAnalysis(that.kalmanFilterAnalysis.id);
+            that.kalmanFilterAnalysis = null;
         };
 
         that.polygonLayer = new OpenLayers.Layer.Vector('Polygon Selections', {

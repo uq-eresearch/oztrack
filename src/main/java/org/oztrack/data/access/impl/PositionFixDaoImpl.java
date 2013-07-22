@@ -2,6 +2,7 @@ package org.oztrack.data.access.impl;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,6 +23,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.access.Page;
 import org.oztrack.data.access.PositionFixDao;
+import org.oztrack.data.model.Analysis;
+import org.oztrack.data.model.AnalysisResultFeature;
+import org.oztrack.data.model.Animal;
+import org.oztrack.data.model.FilterResultFeature;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
@@ -58,8 +63,14 @@ public class PositionFixDaoImpl implements PositionFixDao {
 
     @Override
     @Transactional
-    public PositionFix update(PositionFix object) {
-        return em.merge(object);
+    public void save(PositionFix positionFix) {
+        em.persist(positionFix);
+    }
+
+    @Override
+    @Transactional
+    public PositionFix update(PositionFix positionFix) {
+        return em.merge(positionFix);
     }
 
     @Override
@@ -90,7 +101,7 @@ public class PositionFixDaoImpl implements PositionFixDao {
         StringBuilder queryString = new StringBuilder();
         queryString.append("select " + (count ? "count(o)" : "o") + "\n");
         queryString.append("from PositionFix o " + "\n");
-        queryString.append("where o.dataFile in (select d from datafile d where d.project.id = :projectId)\n");
+        queryString.append("where o.project.id = :projectId\n");
         if ((searchQuery.getIncludeDeleted() == null) || !searchQuery.getIncludeDeleted()) {
             queryString.append("and o.deleted = false\n");
         }
@@ -160,7 +171,7 @@ public class PositionFixDaoImpl implements PositionFixDao {
             "set deleted = :deleted\n" +
             "where\n" +
             "    deleted = not(:deleted)\n" +
-            "    and datafile_id in (select id from datafile where project_id = :projectId)\n" +
+            "    and project_id = :projectId\n" +
             "    and animal_id in (:animalIds)\n";
         if (fromDate != null) {
             queryString += "    and detectionTime >= :fromDate\n";
@@ -215,6 +226,56 @@ public class PositionFixDaoImpl implements PositionFixDao {
 
     @Override
     @Transactional
+    public void applyKalmanFilter(Analysis analysis) {
+        // Delete existing position fixes
+        String queryString =
+            "update positionfix\n" +
+            "set deleted = true\n" +
+            "where\n" +
+            "    datafile_id in (select id from datafile where project_id = :projectId)\n" +
+            "    and animal_id in (:animalIds)\n";
+        if (analysis.getFromDate() != null) {
+            queryString += "    and detectionTime >= :fromDate\n";
+        }
+        if (analysis.getToDate() != null) {
+            queryString += "    and detectionTime < :toDateExcl\n";
+        }
+        queryString += ";";
+        Query query = em.createNativeQuery(queryString);
+        query.setParameter("projectId", analysis.getProject().getId());
+        ArrayList<Long> animalIds = new ArrayList<Long>();
+        for (Animal animal : analysis.getAnimals()) {
+            animalIds.add(animal.getId());
+        }
+        query.setParameter("animalIds", animalIds);
+        if (analysis.getFromDate() != null) {
+            Date fromDateTrunc = DateUtils.truncate(analysis.getFromDate(), Calendar.DATE);
+            query.setParameter("fromDate", fromDateTrunc);
+        }
+        if (analysis.getToDate() != null) {
+            Date toDateTrunc = DateUtils.truncate(analysis.getToDate(), Calendar.DATE);
+            Date toDateTruncExcl = DateUtils.addDays(toDateTrunc, 1);
+            query.setParameter("toDateExcl", toDateTruncExcl);
+        }
+        query.executeUpdate();
+        
+        // Replace with Kalman Filter output
+        for (AnalysisResultFeature resultFeature : analysis.getResultFeatures()) {
+            FilterResultFeature f = (FilterResultFeature) resultFeature;
+            PositionFix positionFix = new PositionFix();
+            positionFix.setProject(analysis.getProject());
+            positionFix.setAnimal(f.getAnimal());
+            positionFix.setDetectionTime(f.getDateTime());
+            positionFix.setLocationGeometry(f.getGeometry());
+            positionFix.setLongitude(String.valueOf(f.getGeometry().getX()));
+            positionFix.setLatitude(String.valueOf(f.getGeometry().getY()));
+            positionFix.setProbable(true);
+            save(positionFix);
+        }
+    }
+
+    @Override
+    @Transactional
     public void renumberPositionFixes(Project project, List<Long> animalIds) {
         if ((project == null) || (animalIds == null) || animalIds.isEmpty()) {
             return;
@@ -250,24 +311,24 @@ public class PositionFixDaoImpl implements PositionFixDao {
                 "    detectiontime,\n" +
                 "    locationgeometry,\n" +
                 "    deleted,\n" +
+                "    probable,\n" +
                 "    colour\n" +
                 ")\n" +
                 "select\n" +
                 "    positionfix.id as id,\n" +
-                "    project.id as project_id,\n" +
+                "    positionfix.project_id as project_id,\n" +
                 "    positionfix.animal_id as animal_id,\n" +
                 "    positionfix.detectiontime as detectiontime,\n" +
                 "    " + pointExpr + " as locationgeometry,\n" +
                 "    positionfix.deleted as deleted,\n" +
+                "    positionfix.probable as probable,\n" +
                 "    animal.colour as colour\n" +
                 "from\n" +
                 "    positionfix,\n" +
-                "    animal,\n" +
-                "    project\n" +
+                "    animal\n" +
                 "where\n" +
+                "    positionfix.project_id = :projectId and\n" +
                 "    positionfix.animal_id = animal.id and\n" +
-                "    animal.project_id = project.id and\n" +
-                "    project.id = :projectId and\n" +
                 "    animal.id in (:animalIds)"
             )
             .setParameter("projectId", project.getId())
@@ -296,18 +357,17 @@ public class PositionFixDaoImpl implements PositionFixDao {
                 ")\n" +
                 "select\n" +
                 "    positionfix.id as id,\n" +
-                "    project.id as project_id,\n" +
+                "    positionfix.project_id as project_id,\n" +
                 "    positionfix.animal_id as animal_id,\n" +
                 "    positionfix.detectiontime as detectiontime,\n" +
                 "    positionfix.locationgeometry as locationgeometry,\n" +
                 "    animal.colour as colour,\n" +
-                "    row_number() over (partition by project.id, positionfix.animal_id order by positionfix.detectiontime) as row_number\n" +
+                "    row_number() over (partition by positionfix.project_id, positionfix.animal_id order by positionfix.detectiontime) as row_number\n" +
                 "from\n" +
                 "    positionfix positionfix\n" +
                 "    inner join animal on positionfix.animal_id = animal.id\n" +
-                "    inner join project on animal.project_id = project.id\n" +
                 "where\n" +
-                "    project.id = :projectId and\n" +
+                "    positionfix.project_id = :projectId and\n" +
                 "    not(positionfix.deleted) and\n" +
                 "    animal.id in (:animalIds)"
             )

@@ -107,7 +107,7 @@ public class ProjectMapImageController {
             layerNames = Arrays.asList("base", "trajectory", "detections", "startEnd");
         }
 
-        ReferencedEnvelope mapBounds = new ReferencedEnvelope(projectDao.getBoundingBox(project).getEnvelopeInternal(), CRS.decode("EPSG:4326"));
+        ReferencedEnvelope mapBounds = new ReferencedEnvelope(projectDao.getBoundingBox(project, false).getEnvelopeInternal(), CRS.decode("EPSG:4326"));
 
         // Expand either width or height of bounding box to match aspect ratio of image
         double mapDimensionWidthToHeightRatio = mapDimension.getWidth() / mapDimension.getHeight();

@@ -84,8 +84,8 @@ public class ProjectCleanseController {
     public String getCleanseView(Model model, @ModelAttribute(value="project") Project project) {
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
         model.addAttribute("projectAnimalsList", projectAnimalsList);
-        model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project));
-        model.addAttribute("animalBoundingBoxes", projectDao.getAnimalBoundingBoxes(project));
+        model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project, true));
+        model.addAttribute("animalBoundingBoxes", projectDao.getAnimalBoundingBoxes(project, true));
         model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, true));
         model.addAttribute("kalmanAnalysisType", AnalysisType.KALMAN);
         model.addAttribute("argosClasses", ArgosClass.values());

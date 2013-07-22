@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -28,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONWriter;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.AnalysisDao;
+import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.Analysis;
 import org.oztrack.data.model.AnalysisParameter;
 import org.oztrack.data.model.Animal;
@@ -35,6 +37,7 @@ import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.AnalysisResultAttributeType;
 import org.oztrack.data.model.types.AnalysisResultType;
 import org.oztrack.data.model.types.AnalysisStatus;
+import org.oztrack.error.RserveInterfaceException;
 import org.oztrack.util.ShpUtils;
 import org.oztrack.view.HomeRangeResultFeatureBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +71,9 @@ public class AnalysisController {
 
     @Autowired
     private AnalysisDao analysisDao;
+
+    @Autowired
+    private PositionFixDao positionFixDao;
 
     @Autowired
     private OzTrackPermissionEvaluator permissionEvaluator;
@@ -414,6 +420,25 @@ public class AnalysisController {
         else {
             throw new RuntimeException("Unsupported analysis type");
         }
+    }
+
+    @RequestMapping(
+        value="/projects/{projectId}/analyses/{analysisId}/apply",
+        method=RequestMethod.POST,
+        produces="application/xml"
+    )
+    @PreAuthorize("hasPermission(#analysis.project, 'write')")
+    public void processCleanse(
+        @ModelAttribute(value="analysis") Analysis analysis,
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) throws IOException, RserveInterfaceException {
+        positionFixDao.applyKalmanFilter(analysis);
+        ArrayList<Long> animalIds = new ArrayList<Long>();
+        for (Animal animal : analysis.getAnimals()) {
+            animalIds.add(animal.getId());
+        }
+        positionFixDao.renumberPositionFixes(analysis.getProject(), animalIds);
     }
 
     private static void writeResultError(HttpServletResponse response, String error) {

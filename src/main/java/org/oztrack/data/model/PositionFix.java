@@ -6,9 +6,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -20,6 +23,8 @@ import com.vividsolutions.jts.geom.Point;
 @Entity(name="PositionFix")
 public class PositionFix {
     @Id
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="positionfixid_seq")
+    @SequenceGenerator(name="positionfixid_seq", sequenceName="positionfixid_seq", allocationSize=1)
     @Column(nullable=false)
     private Long id;
 
@@ -34,11 +39,15 @@ public class PositionFix {
     private String longitude;
 
     @ManyToOne
-    @JoinColumn(nullable=false)
+    @JoinColumn(name="animal_id", nullable=false)
     private Animal animal;
 
     @ManyToOne
-    @JoinColumn(nullable=false)
+    @JoinColumn(name="project_id", nullable=false)
+    private Project project;
+
+    @ManyToOne
+    @JoinColumn(name="datafile_id", nullable=true)
     private DataFile dataFile;
 
     @Column(name="locationgeometry", columnDefinition="GEOMETRY", nullable=false)
@@ -46,7 +55,10 @@ public class PositionFix {
     private Point locationGeometry;
 
     @Column(nullable=false)
-    private Boolean deleted;
+    private Boolean deleted = Boolean.FALSE;
+
+    @Column(nullable=false)
+    private Boolean probable = Boolean.FALSE;
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name="argosclass")
@@ -95,6 +107,14 @@ public class PositionFix {
         this.animal = animal;
     }
 
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
     public DataFile getDataFile() {
         return dataFile;
     }
@@ -117,6 +137,14 @@ public class PositionFix {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public Boolean getProbable() {
+        return probable;
+    }
+
+    public void setProbable(Boolean probable) {
+        this.probable = probable;
     }
 
     public ArgosClass getArgosClass() {

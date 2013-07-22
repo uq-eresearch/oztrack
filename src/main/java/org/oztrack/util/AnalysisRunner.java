@@ -250,10 +250,16 @@ public class AnalysisRunner {
                 TimeStamp timeStamp = (TimeStamp) placemark.getTimePrimitive();
                 resultFeature.setDateTime(isoDateTimeFormat.parse(timeStamp.getWhen()));
                 Point point = (Point) placemark.getGeometry();
-                resultFeature.setGeometry(jtsGeometryFactory.createPoint(new com.vividsolutions.jts.geom.Coordinate(
-                    point.getCoordinates().get(0).getLongitude(),
+                double longitude = point.getCoordinates().get(0).getLongitude();
+                if (analysis.getProject().getCrosses180() && (longitude > 180d)) {
+                    longitude -= 360d;
+                }
+                com.vividsolutions.jts.geom.Point geometry = jtsGeometryFactory.createPoint(new com.vividsolutions.jts.geom.Coordinate(
+                    longitude,
                     point.getCoordinates().get(0).getLatitude()
-                )));
+                ));
+                geometry.setSRID(4326);
+                resultFeature.setGeometry(geometry);
                 HashSet<AnalysisResultAttribute> featureResultAttributes = new HashSet<AnalysisResultAttribute>();
                 SchemaData placemarkSchemaData = placemark.getExtendedData().getSchemaData().get(0);
                 for (AnalysisResultAttributeType attributeType : analysis.getAnalysisType().getFeatureResultAttributeTypes()) {

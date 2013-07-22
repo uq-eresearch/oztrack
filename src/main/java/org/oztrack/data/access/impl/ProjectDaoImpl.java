@@ -115,7 +115,7 @@ public class ProjectDaoImpl implements ProjectDao {
             "select min(o.detectionTime), max(o.detectionTime)\n" +
             "from PositionFix o\n" +
             "where ((o.deleted = false) or (:includeDeleted = true))\n" +
-            "and o.dataFile in (select d from datafile d where d.project.id = :projectId)";
+            "and o.project.id = :projectId";
         Query query = em.createQuery(sql);
         query.setParameter("projectId", project.getId());
         query.setParameter("includeDeleted", includeDeleted);
@@ -130,8 +130,7 @@ public class ProjectDaoImpl implements ProjectDao {
         String sql =
             "select p.id, min(o.detectionTime), max(o.detectionTime)\n" +
             "from org.oztrack.data.model.Project p\n" +
-            "left join p.dataFiles d\n" +
-            "left join d.positionFixes o\n" +
+            "left join p.positionFixes o\n" +
             "where ((o.deleted = false) or (:includeDeleted = true))\n" +
             "group by p.id";
         Query query = em.createQuery(sql);
@@ -155,7 +154,7 @@ public class ProjectDaoImpl implements ProjectDao {
             "select count(*)\n" +
             "from PositionFix o\n" +
             "where ((o.deleted = false) or (:includeDeleted = true))\n" +
-            "and o.dataFile in (select d from datafile d where d.project.id = :projectId)";
+            "and o.project.id = :projectId";
         Query query = em.createQuery(sql);
         query.setParameter("projectId", project.getId());
         query.setParameter("includeDeleted", includeDeleted);
@@ -171,9 +170,8 @@ public class ProjectDaoImpl implements ProjectDao {
             "        else positionfix.locationgeometry\n" +
             "    end" +
             ")))\n" +
-            "from project, datafile, positionfix\n" +
-            "where datafile.project_id = project.id\n" +
-            "and positionfix.datafile_id = datafile.id\n" +
+            "from project, positionfix\n" +
+            "where positionfix.project_id = project.id\n" +
             "and not(positionfix.deleted)\n" +
             "group by project.id"
         );
@@ -202,18 +200,18 @@ public class ProjectDaoImpl implements ProjectDao {
     }
 
     @Override
-    public Polygon getBoundingBox(Project project) {
+    public Polygon getBoundingBox(Project project, boolean includeDeleted) {
         String geomExpr = project.getCrosses180()
             ? "ST_Shift_Longitude(positionfix.locationgeometry)"
             : "positionfix.locationgeometry";
         Query query = em.createNativeQuery(
             "select ST_AsText(ST_Envelope(ST_Collect(" + geomExpr + ")))\n" +
-            "from datafile, positionfix\n" +
-            "where datafile.project_id = :projectId\n" +
-            "and positionfix.datafile_id = datafile.id\n" +
-            "and not(positionfix.deleted)"
+            "from positionfix\n" +
+            "where positionfix.project_id = :projectId\n" +
+            "and (:includeDeleted or not(positionfix.deleted))"
         );
         query.setParameter("projectId", project.getId());
+        query.setParameter("includeDeleted", includeDeleted);
         String wkt = (String) query.getSingleResult();
         if (wkt == null) {
             return null;
@@ -231,7 +229,7 @@ public class ProjectDaoImpl implements ProjectDao {
     }
 
     @Override
-    public HashMap<Long, Polygon> getAnimalBoundingBoxes(Project project) {
+    public HashMap<Long, Polygon> getAnimalBoundingBoxes(Project project, boolean includeDeleted) {
         String geomExpr = project.getCrosses180()
             ? "ST_Shift_Longitude(positionfix.locationgeometry)"
             : "positionfix.locationgeometry";
@@ -239,13 +237,13 @@ public class ProjectDaoImpl implements ProjectDao {
             "select animal.id, ST_AsText(ST_Envelope(ST_Collect(" + geomExpr + ")))\n" +
             "from animal\n" +
             "inner join positionfix on\n" +
+            "    positionfix.project_id = :projectId and\n" +
             "    positionfix.animal_id = animal.id and\n" +
-            "    not(positionfix.deleted)\n" +
-            "where\n" +
-            "    animal.project_id = :projectId\n" +
+            "    (:includeDeleted or not(positionfix.deleted))\n" +
             "group by animal.id;"
         );
         query.setParameter("projectId", project.getId());
+        query.setParameter("includeDeleted", includeDeleted);
         GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
         WKTReader reader = new WKTReader(geometryFactory);
         HashMap<Long, Polygon> map = new HashMap<Long, Polygon>();
