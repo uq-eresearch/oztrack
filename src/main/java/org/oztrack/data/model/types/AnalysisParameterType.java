@@ -71,7 +71,7 @@ public class AnalysisParameterType {
     }
 
     public boolean isValid(String value) {
-        if (value == null) {
+        if (StringUtils.isBlank(value)) {
             return true;
         }
         if (options != null) {

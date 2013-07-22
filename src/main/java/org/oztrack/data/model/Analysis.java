@@ -185,11 +185,15 @@ public class Analysis extends OzTrackBaseEntity {
 
     public Object getParameterValue(String name, boolean useDefault) {
         AnalysisParameterType parameterType = analysisType.getParameterType(name);
-        AnalysisParameter parameter = getParameter(parameterType.getIdentifier());
-        if ((parameter == null) || !parameterType.isValid(parameter.getValue())) {
-            return null;
+        if (parameterType == null) {
+            throw new RuntimeException("Unrecognised parameter name: '" + String.valueOf(name) + "'");
         }
-        return parameterType.getParameterValueObject(parameter.getValue(), useDefault);
+        AnalysisParameter parameter = getParameter(parameterType.getIdentifier());
+        if ((parameter != null) && !parameterType.isValid(parameter.getValue())) {
+            throw new RuntimeException("Invalid '" + parameterType.getDisplayName() + "' value: '" + String.valueOf(parameter.getValue()) + "'");
+        }
+        String value = (parameter != null) ? parameter.getValue() : null;
+        return parameterType.getParameterValueObject(value, useDefault);
     }
 
     public Set<AnalysisResultAttribute> getResultAttributes() {
