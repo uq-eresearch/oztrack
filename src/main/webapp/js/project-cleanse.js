@@ -15,6 +15,7 @@
         that.onReset = options.onReset;
         that.onPolygonFeatureAdded = options.onPolygonFeatureAdded;
         that.onDeletePolygonFeature = options.onDeletePolygonFeature;
+        that.kalmanFilterAnalysis = null;
 
         that.projectMap = new OzTrack.ProjectMap(div, {
             project: that.project,
@@ -24,10 +25,26 @@
             showAllStartEnd: false,
             includeDeleted: true,
             extraCategories: {'filter': {label: 'Filter layers'}},
-            onLayerSuccess: options.onLayerSuccess,
-            onAnalysisCreate: options.onAnalysisCreate,
-            onAnalysisError: options.onAnalysisError
+            onAnalysisCreate: function(layerName, analysis) {
+                that.kalmanFilterAnalysis = analysis;
+            },
+            onAnalysisError: options.onKalmanFilterError,
+            onLayerSuccess: options.onKalmanFilterSuccess
         });
+
+        that.deleteKalmanFilterAnalysis = function() {
+            if (that.kalmanFilterAnalysis) {
+                that.projectMap.deleteAnalysis(that.kalmanFilterAnalysis.id);
+                that.kalmanFilterAnalysis = null;
+            }
+        };
+
+        that.applyKalmanFilterAnalysis = function() {
+            if (that.kalmanFilterAnalysis) {
+                // TODO
+                that.deleteKalmanFilterAnalysis();
+            }
+        };
 
         that.polygonLayer = new OpenLayers.Layer.Vector('Polygon Selections', {
             metadata: {category: 'filter'}
@@ -120,6 +137,5 @@
         that.setToDate = that.projectMap.setToDate;
         that.setAnimalVisible = that.projectMap.setAnimalVisible;
         that.createAnalysisLayer = that.projectMap.createAnalysisLayer;
-        that.deleteCurrentAnalysis = that.projectMap.deleteCurrentAnalysis;
     };
 }(window.OzTrack = window.OzTrack || {}));

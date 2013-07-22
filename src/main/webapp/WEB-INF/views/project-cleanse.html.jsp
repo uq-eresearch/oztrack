@@ -184,14 +184,23 @@
                     cleanseMap.setAnimalVisible("${animal.id}", checked);
                     </c:forEach>
                 });
-                $('#kalmanFilterApply').click(function(e) {
-                    $(this).prop('disabled', true);
-                    $('#kalmanFilterCancel').fadeIn();
+                $('#kalmanFilterRun').click(function(e) {
+                    $('#kalmanFilterRun').prop('disabled', true);
+                    $('#kalmanFilterApply,#kalmanFilterCancel').prop('disabled', false).fadeIn();
                 });
-                $('#kalmanFilterCancel').click(function() {
-                    $(this).fadeOut();
-                    cleanseMap.deleteCurrentAnalysis();
-                    $('#kalmanFilterApply').prop('disabled', false);
+                $('#kalmanFilterApply').click(function(e) {
+                    var actionButtons = $('#kalmanFilterApply,#kalmanFilterCancel');
+                    actionButtons.prop('disabled', true);
+                    cleanseMap.applyKalmanFilterAnalysis();
+                    actionButtons.fadeOut();
+                    $('#kalmanFilterRun').prop('disabled', false);
+                });
+                $('#kalmanFilterCancel').click(function(e) {
+                    var actionButtons = $('#kalmanFilterApply,#kalmanFilterCancel');
+                    actionButtons.prop('disabled', true);
+                    cleanseMap.deleteKalmanFilterAnalysis();
+                    actionButtons.fadeOut();
+                    $('#kalmanFilterRun').prop('disabled', false);
                 });
                 cleanseMap = null;
                 onResize();
@@ -227,13 +236,11 @@
                         </c:if>
                         </c:forEach>
                     ],
-                    onAnalysisError: function(message) {
-                        $('#kalmanFilterCancel').fadeOut();
-                        $('#kalmanFilterApply').prop('disabled', false);
+                    onKalmanFilterError: function(message) {
+                        $('#kalmanFilterApply,#kalmanFilterCancel').prop('disabled', true).fadeOut();
+                        $('#kalmanFilterRun').prop('disabled', false);
                     },
-                    onLayerSuccess: function() {
-                        $('#kalmanFilterCancel').fadeOut();
-                        $('#kalmanFilterApply').prop('disabled', false);
+                    onKalmanFilterSuccess: function() {
                     },
                     onReset: function() {
                         jQuery('#cleanse-select').children().remove();
@@ -430,13 +437,14 @@
                                 <div class="control-group">
                                     <div class="controls">
                                         <tags:analysis-param-fields analysisType="${kalmanAnalysisType}"/>
-                                        <div>
-                                            <button id="kalmanFilterApply" class="btn btn-primary" onclick="submitKalmanFilter();">Apply filter</button>
-                                            <button id="kalmanFilterCancel" class="btn" style="display: none; margin-left: 0.5em;">Cancel</button>
-                                        </div>
                                     </div>
                                 </div>
                                 </fieldset>
+                                <div style="margin-top: 9px;">
+                                    <button id="kalmanFilterRun" class="btn btn-primary" onclick="submitKalmanFilter();">Run filter</button>
+                                    <button id="kalmanFilterApply" class="btn" style="display: none; margin-left: 0.5em;">Apply</button>
+                                    <button id="kalmanFilterCancel" class="btn" style="display: none;">Cancel</button>
+                                </div>
                                 </form>
                             </div>
                         </div>
