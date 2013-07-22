@@ -127,8 +127,6 @@ function createProjectClickControl(map, projectPointsLayer) {
                         $.each(e.feature.cluster, function(i, f) {
                             $('*[id="' + f.id + '_popup_link"]')
                                 .click(function(e) {
-                                    console.log('here');
-                                    console.log(e);
                                     e.preventDefault();
                                     $.each(map.popups, function(j, p) {
                                         $(p.div).fadeOut('normal', function() {map.removePopup(p);});
