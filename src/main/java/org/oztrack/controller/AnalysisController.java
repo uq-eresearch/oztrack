@@ -61,6 +61,8 @@ public class AnalysisController {
 
     private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
+    private final SimpleDateFormat isoDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
     @Autowired
     private OzTrackConfiguration configuration;
 
@@ -127,6 +129,8 @@ public class AnalysisController {
         JSONWriter out = new JSONWriter(response.getWriter());
         out.object();
         out.key("id").value(analysis.getId());
+        out.key("url").value(configuration.getBaseUrl() + "/projects/" + analysis.getProject().getId() + "/analyses/" + analysis.getId());
+        out.key("createDate").value(isoDateTimeFormat.format(analysis.getCreateDate()));
         out.key("analysisType").value(analysis.getAnalysisType());
         out.key("params").object();
         if (analysis.getFromDate() != null) {

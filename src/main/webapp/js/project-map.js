@@ -1754,7 +1754,6 @@
                 complete: function (xhr, textStatus) {
                     if (textStatus == 'success') {
                         var analysisUrl = xhr.getResponseHeader('Location');
-                        that.onAnalysisCreate && that.onAnalysisCreate(layerName, analysisUrl);
                         that.addAnalysisLayer(analysisUrl, layerName, category);
                     }
                 }
@@ -1773,6 +1772,7 @@
                         var analysis = $.parseJSON(xhr.responseText);
                         that.analyses[analysis.id] = analysis;
                         currentAnalysisId = analysis.id;
+                        that.onAnalysisCreate && that.onAnalysisCreate(layerName, analysis);
                         updateAnimalInfoFromAnalysisCreate(layerName, analysis);
                         that.increaseLoadingCounter();
                         pollAnalysisLayer(analysisUrl, layerName, category);

@@ -331,8 +331,8 @@
                         </c:if>
                         </c:forEach>
                     ],
-                    onAnalysisCreate: function(layerName, analysisUrl) {
-                        addAnalysis(layerName, analysisUrl, new Date(), false);
+                    onAnalysisCreate: function(layerName, analysis) {
+                        addAnalysis(layerName, analysis.url, moment(analysis.createDate, 'YYYY-MM-DDTHH:mm:ss').toDate(), false);
                     },
                     onAnalysisError: function(message) {
                         $('#projectMapCancel').fadeOut().prev().prop('disabled', false);
@@ -535,13 +535,13 @@
                             content.slideToggle();
                         }
                         else {
-                            parent.append(getAnalysisContent(analysisUrl, layerName, analysisCreateDate, saved));
+                            parent.append(getAnalysisContent(layerName, analysisUrl, analysisCreateDate, saved));
                         }
                     });
                 analysisHeader.append(analysisLink);
                 analysisContainer.append(analysisHeader);
                 if (saved) {
-                    analysisContainer.append(getAnalysisContent(analysisUrl, layerName, analysisCreateDate, saved));
+                    analysisContainer.append(getAnalysisContent(layerName, analysisUrl, analysisCreateDate, saved));
                     $('#savedAnalysesTitle').fadeIn();
                     $('#savedAnalysesList').fadeIn().prepend(analysisContainer);
                 }
@@ -550,7 +550,7 @@
                     $('#previousAnalysesList').fadeIn().prepend(analysisContainer);
                 }
             }
-            function getAnalysisContent(analysisUrl, layerName, analysisCreateDate, saved) {
+            function getAnalysisContent(layerName, analysisUrl, analysisCreateDate, saved) {
                 var div = $('<div class="analysis-content">').hide();
                 $.ajax({
                     url: analysisUrl,
