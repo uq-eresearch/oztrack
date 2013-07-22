@@ -87,60 +87,8 @@
                 cleanseMap.createAnalysisLayer(params, 'Kalman Filter', 'filter');
             }
             function submitCleanseForm(operation, mode) {
-                jQuery('.cleanse-response').hide();
-                jQuery.ajax({
-                    url: '${pageContext.request.contextPath}/projects/${project.id}/cleanse',
-                    type: 'POST',
-                    data: 'operation=' + operation + '&' + $('#form-context,#form-' + mode).serialize(),
-                    beforeSend: function(jqXHR, settings) {
-                        cleanseMap.increaseLoadingCounter();
-                    },
-                    success: function(data, textStatus, jqXHR) {
-                        cleanseMap.reset();
-                        var message = null;
-                        if ((operation == 'delete')) {
-                            var numDeleted = jQuery(data).find('num-deleted').text();
-                            message = numDeleted + ' detections deleted';
-                        }
-                        else if ((operation == 'undelete')) {
-                            var numUndeleted = jQuery(data).find('num-undeleted').text();
-                            message = numUndeleted + ' detections restored';
-                        }
-                        $('#responseDialog')
-                            .text(message)
-                            .dialog({
-                                title: 'Complete',
-                                modal: true,
-                                resizable: false,
-                                dialogClass: 'no-close',
-                                buttons: {
-                                    'Close': function() {
-                                        $(this).dialog('close');
-                                    }
-                                }
-                            });
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        var message = jQuery(jqXHR.responseText).find('error').text() || 'Error processing request';
-                        $('#responseDialog')
-                            .text(message)
-                            .dialog({
-                                title: 'Error',
-                                modal: true,
-                                resizable: false,
-                                dialogClass: 'no-close',
-                                buttons: {
-                                    'Close': function() {
-                                        $(this).dialog('close');
-                                    }
-                                }
-                            });
-                    },
-                    complete: function(jqXHR, textStatus) {
-                        cleanseMap.decreaseLoadingCounter();
-                    }
-                });
-                return false;
+                var params = 'operation=' + operation + '&' + $('#form-context,#form-' + mode).serialize();
+                cleanseMap.submitCleanseRequest(operation, params);
             }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
@@ -243,17 +191,17 @@
                     onKalmanFilterSuccess: function() {
                     },
                     onReset: function() {
-                        jQuery('#cleanse-select').children().remove();
-                        jQuery('#cleanse-list').children().remove();
+                        $('#cleanse-select').children().remove();
+                        $('#cleanse-list').children().remove();
                     },
                     onPolygonFeatureAdded: function(id, title, wkt) {
-                        jQuery('#cleanse-list').append(
-                            jQuery('<li>')
+                        $('#cleanse-list').append(
+                            $('<li>')
                                 .attr('id', 'cleanse-li-' + id)
                                 .append(title)
                                 .append(' (')
                                 .append(
-                                    jQuery('<a>')
+                                    $('<a>')
                                         .attr('href', 'javascript:void(0)')
                                         .attr('onclick', 'cleanseMap.deletePolygonFeature(\'' + id + '\');')
                                         .attr('onmouseover', 'cleanseMap.selectPolygonFeature(\'' + id + '\', true);')
@@ -262,8 +210,8 @@
                                 )
                                 .append(')')
                         );
-                        jQuery('#cleanse-select').append(
-                            jQuery('<option>')
+                        $('#cleanse-select').append(
+                            $('<option>')
                                 .attr('id', 'cleanse-option-' + id)
                                 .attr('value', wkt)
                                 .attr('selected', 'selected')
@@ -271,8 +219,8 @@
                         );
                     },
                     onDeletePolygonFeature: function(id) {
-                        jQuery('*[id=\'cleanse-li-' + id + '\']').remove();
-                        jQuery('*[id=\'cleanse-option-' + id + '\']').remove();
+                        $('*[id=\'cleanse-li-' + id + '\']').remove();
+                        $('*[id=\'cleanse-option-' + id + '\']').remove();
                     }
                 });
             });

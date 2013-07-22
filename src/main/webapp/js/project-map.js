@@ -726,7 +726,7 @@
                 });
                 that.onLayerSuccess && that.onLayerSuccess();
             }
-            jQuery.ajax({
+            $.ajax({
                 type: 'GET',
                 url: '/projects/' + that.project.id + '/detections',
                 dataType: 'json',
@@ -859,7 +859,7 @@
                 });
                 that.onLayerSuccess && that.onLayerSuccess();
             }
-            jQuery.ajax({
+            $.ajax({
                 type: 'GET',
                 url: '/projects/' + that.project.id + '/trajectories',
                 dataType: 'json',
@@ -1721,14 +1721,14 @@
             updateVectorLayers();
         };
 
-        function showAnalysisError(message) {
+        that.showMessage = function(title, message) {
             if (that.errorDialog) {
                 that.errorDialog.dialog('destroy').remove();
             }
             that.errorDialog = $('<div>')
                 .text(message)
                 .dialog({
-                    title: 'Error',
+                    title: title,
                     modal: true,
                     resizable: false,
                     create: function(event, ui) {
@@ -1741,7 +1741,7 @@
                     }
                 });
             that.onAnalysisError && that.onAnalysisError(message);
-        }
+        };
 
         that.createAnalysisLayer = function(params, layerName, category) {
             $.ajax({
@@ -1749,7 +1749,7 @@
                 type: 'POST',
                 data: params,
                 error: function(xhr, textStatus, errorThrown) {
-                    showAnalysisError($(xhr.responseText).find('error').text() || 'Error processing request');
+                    that.showMessage('Error', $(xhr.responseText).find('error').text() || 'Error processing request');
                 },
                 complete: function (xhr, textStatus) {
                     if (textStatus == 'success') {
@@ -1765,7 +1765,7 @@
                 url: analysisUrl,
                 type: 'GET',
                 error: function(xhr, textStatus, errorThrown) {
-                    showAnalysisError($(xhr.responseText).find('error').text() || 'Error getting analysis');
+                    that.showMessage('Error', $(xhr.responseText).find('error').text() || 'Error getting analysis');
                 },
                 complete: function (xhr, textStatus) {
                     if (textStatus == 'success') {
@@ -1787,7 +1787,7 @@
                 type: 'GET',
                 error: function(xhr, textStatus, errorThrown) {
                     that.decreaseLoadingCounter();
-                    showAnalysisError($(xhr.responseText).find('error').text() || 'Error getting analysis');
+                    that.showMessage('Error', $(xhr.responseText).find('error').text() || 'Error getting analysis');
                 },
                 complete: function (xhr, textStatus) {
                     if (textStatus == 'success') {
@@ -1805,7 +1805,7 @@
                         }
                         else {
                             that.decreaseLoadingCounter();
-                            showAnalysisError(analysis.message || 'Error running analysis');
+                            that.showMessage('Error', analysis.message || 'Error running analysis');
                         }
                     }
                 }
@@ -1860,7 +1860,7 @@
                     that.onLayerSuccess && that.onLayerSuccess();
                 }
                 else {
-                    showAnalysisError(jQuery(resp.priv.responseText).find('error').text() || 'Error processing request');
+                    that.showMessage('Error', jQuery(resp.priv.responseText).find('error').text() || 'Error processing request');
                 }
             };
             protocol.read({

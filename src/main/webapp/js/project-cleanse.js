@@ -33,17 +33,68 @@
         });
 
         that.deleteKalmanFilterAnalysis = function() {
-            if (that.kalmanFilterAnalysis) {
-                that.projectMap.deleteAnalysis(that.kalmanFilterAnalysis.id);
-                that.kalmanFilterAnalysis = null;
+            if (!that.kalmanFilterAnalysis) {
+                return;
             }
+            that.projectMap.deleteAnalysis(that.kalmanFilterAnalysis.id);
+            that.kalmanFilterAnalysis = null;
+        };
+
+        that.submitCleanseRequest = function(operation, params) {
+            $.ajax({
+                url: '/projects/' + that.project.id + '/cleanse',
+                type: 'POST',
+                data: params,
+                beforeSend: function(jqXHR, settings) {
+                    cleanseMap.increaseLoadingCounter();
+                },
+                success: function(data, textStatus, jqXHR) {
+                    cleanseMap.reset();
+                    var message = null;
+                    if ((operation == 'delete')) {
+                        var numDeleted = $(data).find('num-deleted').text();
+                        message = numDeleted + ' detections deleted';
+                    }
+                    else if ((operation == 'undelete')) {
+                        var numUndeleted = $(data).find('num-undeleted').text();
+                        message = numUndeleted + ' detections restored';
+                    }
+                    that.projectMap.showMessage('Complete', message);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    var message = $(jqXHR.responseText).find('error').text() || 'Error processing request';
+                    that.projectMap.showMessage('Error', message);
+                },
+                complete: function(jqXHR, textStatus) {
+                    cleanseMap.decreaseLoadingCounter();
+                }
+            });
         };
 
         that.applyKalmanFilterAnalysis = function() {
-            if (that.kalmanFilterAnalysis) {
-                // TODO
-                that.deleteKalmanFilterAnalysis();
+            if (!that.kalmanFilterAnalysis) {
+                return;
             }
+            $.ajax({
+                url: that.kalmanFilterAnalysis.url + '/apply',
+                type: 'POST',
+                beforeSend: function(jqXHR, settings) {
+                    that.increaseLoadingCounter();
+                },
+                success: function(data, textStatus, jqXHR) {
+                    that.reset();
+                    //var message = TODO;
+                    //that.projectMap.showMessage('Complete', message);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    var message = $(jqXHR.responseText).find('error').text() || 'Error applying filter';
+                    that.projectMap.showMessage('Error', message);
+                },
+                complete: function(jqXHR, textStatus) {
+                    that.decreaseLoadingCounter();
+                }
+            });
+            that.deleteKalmanFilterAnalysis();
         };
 
         that.polygonLayer = new OpenLayers.Layer.Vector('Polygon Selections', {
