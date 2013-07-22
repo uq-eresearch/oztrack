@@ -163,6 +163,13 @@
                     cleanseMap.setToDate($('#toDate').val());
                     $('#toDateVisible').datepicker('hide');
                 });
+                <c:forEach items="${kalmanAnalysisType.parameterTypes}" var="parameterType">
+                <c:if test="${parameterType.dataType == 'date'}">
+                $('#${parameterType.identifier}Visible').datepicker({
+                    altField: '#${parameterType.identifier}'
+                });
+                </c:if>
+                </c:forEach>
                 <c:forEach items="${projectAnimalsList}" var="animal">
                 $('#select-animal-${animal.id}').change(function() {
                     $('#select-animal-all').prop('checked', $('.select-animal:not(:checked)').length == 0);
