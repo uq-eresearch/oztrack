@@ -170,7 +170,8 @@ public class PositionFixDaoImpl implements PositionFixDao {
             "update positionfix\n" +
             "set deleted = :deleted\n" +
             "where\n" +
-            "    deleted = not(:deleted)\n" +
+            "    probable = false\n" +
+            "    and deleted = not(:deleted)\n" +
             "    and project_id = :projectId\n" +
             "    and animal_id in (:animalIds)\n";
         if (fromDate != null) {
@@ -200,13 +201,14 @@ public class PositionFixDaoImpl implements PositionFixDao {
         query.setParameter("projectId", project.getId());
         query.setParameter("animalIds", animalIds);
         query.setParameter("deleted", deleted);
+        Date fromDateTrunc = null;
         if (fromDate != null) {
-            Date fromDateTrunc = DateUtils.truncate(fromDate, Calendar.DATE);
+            fromDateTrunc = DateUtils.truncate(fromDate, Calendar.DATE);
             query.setParameter("fromDate", fromDateTrunc);
         }
+        Date toDateTruncExcl = null;
         if (toDate != null) {
-            Date toDateTrunc = DateUtils.truncate(toDate, Calendar.DATE);
-            Date toDateTruncExcl = DateUtils.addDays(toDateTrunc, 1);
+            toDateTruncExcl = DateUtils.addDays(DateUtils.truncate(toDate, Calendar.DATE), 1);
             query.setParameter("toDateExcl", toDateTruncExcl);
         }
         if (speedFilterPositionFixes != null) {
@@ -221,7 +223,33 @@ public class PositionFixDaoImpl implements PositionFixDao {
         if (maxDop != null) {
             query.setParameter("maxDop", maxDop);
         }
-        return query.executeUpdate();
+        int numDeleted = query.executeUpdate();
+
+        String removeKalmanSql =
+            "delete from positionfix\n" +
+            "where\n" +
+            "    probable = true\n" +
+            "    and project_id = :projectId\n" +
+            "    and animal_id in (:animalIds)";
+        removeKalmanSql += ";";
+        if (fromDate != null) {
+            removeKalmanSql += "    and detectionTime >= :fromDate\n";
+        }
+        if (toDate != null) {
+            removeKalmanSql += "    and detectionTime < :toDateExcl\n";
+        }
+        Query removeKalmanQuery = em.createNativeQuery(removeKalmanSql);
+        removeKalmanQuery.setParameter("projectId", project.getId());
+        removeKalmanQuery.setParameter("animalIds", animalIds);
+        if (fromDate != null) {
+            query.setParameter("fromDate", fromDateTrunc);
+        }
+        if (toDate != null) {
+            query.setParameter("toDateExcl", toDateTruncExcl);
+        }
+        removeKalmanQuery.executeUpdate();
+
+        return numDeleted;
     }
 
     @Override
@@ -232,7 +260,7 @@ public class PositionFixDaoImpl implements PositionFixDao {
             "update positionfix\n" +
             "set deleted = true\n" +
             "where\n" +
-            "    datafile_id in (select id from datafile where project_id = :projectId)\n" +
+            "    project_id = :projectId\n" +
             "    and animal_id in (:animalIds)\n";
         if (analysis.getFromDate() != null) {
             queryString += "    and detectionTime >= :fromDate\n";

@@ -92,7 +92,14 @@
                 cleanseMap.createAnalysisLayer(params, 'Kalman Filter', 'filter');
             }
             function submitCleanseForm(operation, mode) {
-                var params = 'operation=' + operation + '&' + $('#form-context,#form-' + mode).serialize();
+                var params = {
+                    operation: operation,
+                    mode: mode
+                };
+                
+                $.each($('#form-context,#form-' + mode).serializeArray(), function(i, pair) {
+                    params[pair.name] = pair.value;
+                });
                 cleanseMap.submitCleanseRequest(operation, params);
             }
             $(document).ready(function() {
@@ -554,8 +561,11 @@
                                 <fieldset>
                                 <div class="control-group">
                                     <p>
-                                        Restore all detections matching the selected dates and animals
+                                        Restore all detections matching the selected dates and animals.
                                         This will restore all points currently visible on the map but not others in the project.
+                                    </p>
+                                    <p>
+                                        All points output from a Kalman filter will be removed.
                                     </p>
                                     <div class="controls">
                                         <div>

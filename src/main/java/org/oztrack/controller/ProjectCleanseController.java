@@ -97,6 +97,7 @@ public class ProjectCleanseController {
     public void processCleanse(
         @ModelAttribute(value="project") Project project,
         @RequestParam(value="operation", required=true) String operation,
+        @RequestParam(value="mode", required=true) String mode,
         @RequestParam(value="fromDate", required=false) String fromDateString,
         @RequestParam(value="toDate", required=false) String toDateString,
         @RequestParam(value="animalIds", required=false) List<Long> animalIds,
