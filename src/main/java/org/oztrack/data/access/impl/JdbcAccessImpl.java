@@ -17,6 +17,7 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
                 " ,latitude" +
                 " ,longitude" +
                 " ,animal_id" +
+                " ,project_id" +
                 " ,datafile_id" +
                 " ,locationgeometry" +
                 " ,deleted" +
@@ -27,6 +28,7 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
                 " ,rpf.latitude" +
                 " ,rpf.longitude" +
                 " ,ani.id" +
+                " ,?" +
                 " ,?" +
                 " ,rpf.locationgeometry" +
                 " ,rpf.deleted" +
@@ -42,7 +44,7 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
         }
         logger.debug(sql);
 
-        int nbrObservations = getJdbcTemplate().update(sql, new Object [] {dataFileId, projectId});
+        int nbrObservations = getJdbcTemplate().update(sql, new Object [] {projectId, dataFileId, projectId});
         return nbrObservations;
     }
 
