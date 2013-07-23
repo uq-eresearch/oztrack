@@ -169,7 +169,12 @@ fkfsstkmlPlacemark <- function(fit, datetime) {
   for (i in 1:nrow(fit$most.prob.track)) {
     kml <- append(kml, "<Placemark>")
     kml <- append(kml,"<TimeStamp>")
-    kml <- append(kml,"<when>" %+% substr(datetime[i],1,10) %+% "T" %+% substr(datetime[i],12,19) %+% "Z" %+% "</when>")
+    datestr <- substr(datetime[i],1,10)
+    timestr <- substr(datetime[i],12,19)
+    if (timestr == '') {
+        timestr <- '00:00:00'
+    }
+    kml <- append(kml,"<when>" %+% datestr %+% "T" %+% timestr %+% "Z" %+% "</when>")
     kml <- append(kml,"</TimeStamp>")
     kml <- append(kml,"<ExtendedData>")
     kml <- append(kml,"<SchemaData schemaUrl=\"#KalmanFilterPoint\">")
