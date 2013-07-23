@@ -61,6 +61,11 @@
                 margin-left: 40px;
                 padding: 0;
             }
+            #kalmanFilterSingleAnimal {
+                display: inline-block;
+                padding: 4px 12px;
+                color: #888;
+            }
         </style>
     </jsp:attribute>
     <jsp:attribute name="tail">
@@ -132,23 +137,55 @@
                     cleanseMap.setAnimalVisible("${animal.id}", checked);
                     </c:forEach>
                 });
+                $('#select-animal-all,.select-animal').change(function() {
+                    if (
+                        ($('.select-animal:checked').length != 1) &&
+                        $('#kalmanFilterApply,#kalmanFilterCancel').is(':not(:visible)')
+                    ) {
+                        $('#kalmanFilterRun').prop('disabled', true);
+                        $('#kalmanFilterSingleAnimal').fadeIn();
+                    }
+                    else {
+                        if ($('#kalmanFilterApply,#kalmanFilterCancel').is(':not(:visible)')) {
+                            $('#kalmanFilterRun').prop('disabled', false);
+                        }
+                        $('#kalmanFilterSingleAnimal').hide();
+                    }
+                });
+                if ($('.select-animal:checked').length != 1) {
+                    $('#kalmanFilterRun').prop('disabled', true);
+                    $('#kalmanFilterSingleAnimal').show();
+                }
                 $('#kalmanFilterRun').click(function(e) {
                     $('#kalmanFilterRun').prop('disabled', true);
+                    $('#kalmanFilterSingleAnimal').hide();
                     $('#kalmanFilterApply,#kalmanFilterCancel').prop('disabled', false).fadeIn();
                 });
                 $('#kalmanFilterApply').click(function(e) {
                     var actionButtons = $('#kalmanFilterApply,#kalmanFilterCancel');
                     actionButtons.prop('disabled', true);
                     cleanseMap.applyKalmanFilterAnalysis();
-                    actionButtons.fadeOut();
-                    $('#kalmanFilterRun').prop('disabled', false);
+                    if ($('.select-animal:checked').length != 1) {
+                        actionButtons.hide();
+                        $('#kalmanFilterSingleAnimal').fadeIn();
+                    }
+                    else {
+                        actionButtons.fadeOut();
+                        $('#kalmanFilterRun').prop('disabled', false);
+                    }
                 });
                 $('#kalmanFilterCancel').click(function(e) {
                     var actionButtons = $('#kalmanFilterApply,#kalmanFilterCancel');
                     actionButtons.prop('disabled', true);
                     cleanseMap.deleteKalmanFilterAnalysis();
-                    actionButtons.fadeOut();
-                    $('#kalmanFilterRun').prop('disabled', false);
+                    if ($('.select-animal:checked').length != 1) {
+                        actionButtons.hide();
+                        $('#kalmanFilterSingleAnimal').fadeIn();
+                    }
+                    else {
+                        actionButtons.fadeOut();
+                        $('#kalmanFilterRun').prop('disabled', false);
+                    }
                 });
                 cleanseMap = null;
                 onResize();
@@ -185,8 +222,14 @@
                         </c:forEach>
                     ],
                     onKalmanFilterError: function(message) {
-                        $('#kalmanFilterApply,#kalmanFilterCancel').prop('disabled', true).fadeOut();
-                        $('#kalmanFilterRun').prop('disabled', false);
+                        if ($('.select-animal:checked').length != 1) {
+                            $('#kalmanFilterApply,#kalmanFilterCancel').prop('disabled', true).hide();
+                            $('#kalmanFilterSingleAnimal').fadeIn();
+                        }
+                        else {
+                            $('#kalmanFilterApply,#kalmanFilterCancel').prop('disabled', true).fadeOut();
+                            $('#kalmanFilterRun').prop('disabled', false);
+                        }
                     },
                     onKalmanFilterSuccess: function() {
                     },
@@ -390,6 +433,7 @@
                                 </fieldset>
                                 <div style="margin-top: 9px;">
                                     <button id="kalmanFilterRun" class="btn btn-primary" onclick="submitKalmanFilter();">Run filter</button>
+                                    <span id="kalmanFilterSingleAnimal" style="display: none;">Can only filter one animal at a time</span>
                                     <button id="kalmanFilterApply" class="btn" style="display: none; margin-left: 0.5em;">Apply</button>
                                     <button id="kalmanFilterCancel" class="btn" style="display: none;">Cancel</button>
                                 </div>
