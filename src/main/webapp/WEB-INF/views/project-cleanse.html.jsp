@@ -441,7 +441,7 @@
                                 <div style="margin-top: 9px;">
                                     <button id="kalmanFilterRun" class="btn btn-primary" onclick="submitKalmanFilter();">Run filter</button>
                                     <span id="kalmanFilterSingleAnimal" style="display: none;">Can only filter one animal at a time</span>
-                                    <button id="kalmanFilterApply" class="btn" style="display: none; margin-left: 0.5em;">Apply</button>
+                                    <button id="kalmanFilterApply" class="btn" style="display: none; margin-left: 0.5em;">Replace original track</button>
                                     <button id="kalmanFilterCancel" class="btn" style="display: none;">Cancel</button>
                                 </div>
                                 </form>
