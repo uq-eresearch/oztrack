@@ -555,6 +555,20 @@ public enum AnalysisType {
         ),
         Arrays.asList(
             new AnalysisResultAttributeType(
+                "Negativeloglik",
+                "Negativeloglik",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "MaxGradComp",
+                "MaxGradComp",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
                 "uValue",
                 "u value",
                 "double",
@@ -564,6 +578,118 @@ public enum AnalysisType {
             new AnalysisResultAttributeType(
                 "uStdDev",
                 "u std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "vValue",
+                "v value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "vStdDev",
+                "v std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "DValue",
+                "D value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "DStdDev",
+                "D std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "bxValue",
+                "bx value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "bxStdDev",
+                "bx std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "byValue",
+                "by value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "byStdDev",
+                "by std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "sxValue",
+                "sx value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "sxStdDev",
+                "sx std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "syValue",
+                "sy value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "syStdDev",
+                "sy std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "a0Value",
+                "a0 value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "a0StdDev",
+                "a0 std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "b0Value",
+                "b0 value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "b0StdDev",
+                "b0 std dev",
                 "double",
                 null,
                 6
