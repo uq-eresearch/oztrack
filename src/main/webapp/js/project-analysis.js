@@ -15,6 +15,7 @@
             onUpdateAnimalInfoFromLayer: options.onUpdateAnimalInfoFromLayer,
             onAnalysisCreate: options.onAnalysisCreate,
             onAnalysisError: options.onAnalysisError,
+            onAnalysisSuccess: options.onAnalysisSuccess,
             onUpdateAnimalInfoFromAnalysisCreate: options.onUpdateAnimalInfoFromAnalysisCreate,
             onUpdateAnimalInfoFromAnalysisSuccess: options.onUpdateAnimalInfoFromAnalysisSuccess
         });

@@ -334,11 +334,14 @@
                     onAnalysisCreate: function(layerName, analysis) {
                         addAnalysis(layerName, analysis.url, moment(analysis.createDate, 'YYYY-MM-DDTHH:mm:ss').toDate(), false);
                     },
-                    onAnalysisError: function(message) {
+                    onAnalysisError: function() {
                         $('#projectMapCancel').fadeOut().prev().prop('disabled', false);
                     },
-                    onLayerSuccess: function() {
+                    onAnalysisSuccess: function(analysis) {
                         $('#projectMapCancel').fadeOut().prev().prop('disabled', false);
+                        $('a[href="#animalPanel"]').trigger('click');
+                    },
+                    onLayerSuccess: function() {
                         $('a[href="#animalPanel"]').trigger('click');
                     },
                     onUpdateAnimalInfoFromLayer: function(layerName, layerId, animalId, animalIds, fromDate, toDate, layerAttrs) {

@@ -39,6 +39,7 @@
         that.onUpdateAnimalInfoFromLayer = options.onUpdateAnimalInfoFromLayer;
         that.onAnalysisCreate = options.onAnalysisCreate;
         that.onAnalysisError = options.onAnalysisError;
+        that.onAnalysisSuccess = options.onAnalysisSuccess;
         that.onUpdateAnimalInfoFromAnalysisCreate = options.onUpdateAnimalInfoFromAnalysisCreate;
         that.onUpdateAnimalInfoFromAnalysisSuccess = options.onUpdateAnimalInfoFromAnalysisSuccess;
 
@@ -1727,7 +1728,7 @@
                 that.errorDialog.dialog('destroy').remove();
             }
             that.errorDialog = $('<div>')
-                .text(message)
+                .html(message)
                 .dialog({
                     title: title,
                     modal: true,
@@ -1741,7 +1742,6 @@
                         }
                     }
                 });
-            that.onAnalysisError && that.onAnalysisError(message);
         };
 
         that.createAnalysisLayer = function(params, layerName, category) {
@@ -1751,6 +1751,7 @@
                 data: params,
                 error: function(xhr, textStatus, errorThrown) {
                     that.showMessage('Error', $(xhr.responseText).find('error').text() || 'Error processing request');
+                    that.onAnalysisError && that.onAnalysisError();
                 },
                 complete: function (xhr, textStatus) {
                     if (textStatus == 'success') {
@@ -1767,6 +1768,7 @@
                 type: 'GET',
                 error: function(xhr, textStatus, errorThrown) {
                     that.showMessage('Error', $(xhr.responseText).find('error').text() || 'Error getting analysis');
+                    that.onAnalysisError && that.onAnalysisError();
                 },
                 complete: function (xhr, textStatus) {
                     if (textStatus == 'success') {
@@ -1789,6 +1791,7 @@
                 error: function(xhr, textStatus, errorThrown) {
                     that.decreaseLoadingCounter();
                     that.showMessage('Error', $(xhr.responseText).find('error').text() || 'Error getting analysis');
+                    that.onAnalysisError && that.onAnalysisError();
                 },
                 complete: function (xhr, textStatus) {
                     if (textStatus == 'success') {
@@ -1807,6 +1810,7 @@
                         else {
                             that.decreaseLoadingCounter();
                             that.showMessage('Error', analysis.message || 'Error running analysis');
+                            that.onAnalysisError && that.onAnalysisError();
                         }
                     }
                 }
@@ -1858,10 +1862,11 @@
                     }
 
                     updateAnimalInfoFromAnalysisSuccess(analysis, resp.features);
-                    that.onLayerSuccess && that.onLayerSuccess();
+                    that.onAnalysisSuccess && that.onAnalysisSuccess(analysis);
                 }
                 else {
                     that.showMessage('Error', jQuery(resp.priv.responseText).find('error').text() || 'Error processing request');
+                    that.onAnalysisError && that.onAnalysisError();
                 }
             };
             protocol.read({

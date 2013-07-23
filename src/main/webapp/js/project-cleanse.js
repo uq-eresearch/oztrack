@@ -30,7 +30,23 @@
                 that.kalmanFilterAnalysis = analysis;
             },
             onAnalysisError: options.onKalmanFilterError,
-            onLayerSuccess: options.onKalmanFilterSuccess
+            onAnalysisSuccess: function() {
+                that.projectMap.showMessage(
+                    'Complete',
+                    '<p>\n' +
+                    '    The Kalman filter result is shown on the map.\n' +
+                    '</p>\n' +
+                    '<p>\n' +
+                    '    To replace the animal\'s original track with output from the filter,\n' +
+                    '    click <i>Replace original track</i> on the left of screen.\n' +
+                    '    Alternatively, you can click <i>Cancel</i> to remove the filtered track.' +
+                    '</p>' +
+                    '<p>\n' +
+                    '    Once replaced, the new track will appear on the <i>Tracks and analysis</i> page.\n' +
+                    '</p>'
+                );
+                options.onKalmanFilterSuccess && options.onKalmanFilterSuccess();
+            }
         });
 
         that.submitCleanseRequest = function(operation, params) {
@@ -76,12 +92,16 @@
                 },
                 success: function(data, textStatus, jqXHR) {
                     that.reset();
-                    var message = "Successfully applied Kalman Filter";
-                    that.projectMap.showMessage('Complete', message);
+                    that.projectMap.showMessage(
+                        'Complete',
+                        'Original track replaced with most probable track from Kalman filter.'
+                    );
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    var message = $(jqXHR.responseText).find('error').text() || 'Error applying filter';
-                    that.projectMap.showMessage('Error', message);
+                    that.projectMap.showMessage(
+                        'Error',
+                        $(jqXHR.responseText).find('error').text() || 'Error applying filter'
+                    );
                 },
                 complete: function(jqXHR, textStatus) {
                     that.decreaseLoadingCounter();

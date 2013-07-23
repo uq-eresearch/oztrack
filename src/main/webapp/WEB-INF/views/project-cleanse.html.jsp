@@ -166,7 +166,8 @@
                 $('#kalmanFilterRun').click(function(e) {
                     $('#kalmanFilterRun').prop('disabled', true);
                     $('#kalmanFilterSingleAnimal').hide();
-                    $('#kalmanFilterApply,#kalmanFilterCancel').prop('disabled', false).fadeIn();
+                    $('#kalmanFilterApply').prop('disabled', true).fadeIn();
+                    $('#kalmanFilterCancel').prop('disabled', false).fadeIn();
                 });
                 $('#kalmanFilterApply').click(function(e) {
                     var actionButtons = $('#kalmanFilterApply,#kalmanFilterCancel');
@@ -228,7 +229,7 @@
                         </c:if>
                         </c:forEach>
                     ],
-                    onKalmanFilterError: function(message) {
+                    onKalmanFilterError: function() {
                         if ($('.select-animal:checked').length != 1) {
                             $('#kalmanFilterApply,#kalmanFilterCancel').prop('disabled', true).hide();
                             $('#kalmanFilterSingleAnimal').fadeIn();
@@ -239,6 +240,7 @@
                         }
                     },
                     onKalmanFilterSuccess: function() {
+                        $('#kalmanFilterApply').prop('disabled', false);
                     },
                     onReset: function() {
                         $('#cleanse-select').children().remove();
