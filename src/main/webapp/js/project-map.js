@@ -33,6 +33,7 @@
         that.showAllTrajectories = (options.showAllTrajectories !== undefined) ? options.showAllTrajectories : true;
         that.showAllStartEnd = (options.showAllStartEnd !== undefined) ? options.showAllStartEnd : true;
         that.includeDeleted = (options.includeDeleted !== undefined) ? options.includeDeleted : false;
+        that.highlightProbable = (options.highlightProbable !== undefined) ? options.highlightProbable : false;
         that.extraCategories = (options.extraCategories !== undefined) ? options.extraCategories : {};
         that.onLayerSuccess = options.onLayerSuccess;
         that.onUpdateAnimalInfoFromLayer = options.onUpdateAnimalInfoFromLayer;
@@ -668,7 +669,7 @@
                 '/geoserver/wms',
                 {
                     layers: 'oztrack:positionfixlayer',
-                    styles: 'oztrack_positionfixlayer',
+                    styles: 'oztrack_positionfixlayer' + (that.highlightProbable ? '_probable' : ''),
                     cql_filter: buildFilter(params),
                     format: 'image/png',
                     transparent: true

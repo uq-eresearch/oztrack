@@ -6,6 +6,7 @@
       <sld:FeatureTypeStyle>
         <sld:Rule>
           <ogc:Filter>
+            <#if highlightProbable>
             <ogc:And>
               <ogc:PropertyIsEqualTo>
                 <ogc:PropertyName>deleted</ogc:PropertyName>
@@ -16,6 +17,12 @@
                 <ogc:Literal>false</ogc:Literal>
               </ogc:PropertyIsEqualTo>
             </ogc:And>
+            <#else>
+            <ogc:PropertyIsEqualTo>
+              <ogc:PropertyName>deleted</ogc:PropertyName>
+              <ogc:Literal>false</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+            </#if>
           </ogc:Filter>
           <sld:PointSymbolizer>
             <sld:Graphic>
@@ -64,6 +71,7 @@
             </sld:Graphic>
           </sld:PointSymbolizer>
         </sld:Rule>
+        <#if highlightProbable>
         <sld:Rule>
           <ogc:Filter>
             <ogc:PropertyIsEqualTo>
@@ -92,6 +100,7 @@
             </sld:Graphic>
           </sld:PointSymbolizer>
         </sld:Rule>
+        </#if>
       </sld:FeatureTypeStyle>
     </sld:UserStyle>
   </sld:NamedLayer>

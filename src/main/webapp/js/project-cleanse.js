@@ -24,6 +24,7 @@
             showAllTrajectories: true,
             showAllStartEnd: false,
             includeDeleted: true,
+            highlightProbable: true,
             extraCategories: {'filter': {label: 'Filter layers'}},
             onAnalysisCreate: function(layerName, analysis) {
                 that.kalmanFilterAnalysis = analysis;

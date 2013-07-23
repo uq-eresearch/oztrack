@@ -88,6 +88,12 @@ public class GeoServerUploader {
         client
             .style("styles/" + workspaceName + "_" + "positionfixlayer")
             .template("styles/positionfixlayer.sld.ftl")
+            .param("highlightProbable", false)
+            .replace();
+        client
+            .style("styles/" + workspaceName + "_" + "positionfixlayer_probable")
+            .template("styles/positionfixlayer.sld.ftl")
+            .param("highlightProbable", true)
             .replace();
         client
             .layer("layers/positionfixlayer")
@@ -95,7 +101,11 @@ public class GeoServerUploader {
             .param("layerName", "positionfixlayer")
             .param("featuretypeName", "positionfixlayer")
             .param("defaultStyle", "oztrack_positionfixlayer")
-            .param("styles", new String[] {"oztrack_positionfixlayer", "point"})
+            .param("styles", new String[] {
+                "oztrack_positionfixlayer",
+                "oztrack_positionfixlayer_probable",
+                "point"
+            })
             .replace();
 
         client
