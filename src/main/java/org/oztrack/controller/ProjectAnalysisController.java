@@ -1,5 +1,6 @@
 package org.oztrack.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -67,7 +68,13 @@ public class ProjectAnalysisController {
     ) {
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
         model.addAttribute("mapLayerTypeList", MapLayerType.values());
-        model.addAttribute("analysisTypeList", AnalysisType.values());
+        ArrayList<AnalysisType> analysisTypeList = new ArrayList<AnalysisType>();
+        for (AnalysisType analysisType : AnalysisType.values()) {
+            if (analysisType != AnalysisType.KALMAN) {
+                analysisTypeList.add(analysisType);
+            }
+        }
+        model.addAttribute("analysisTypeList", analysisTypeList);
         model.addAttribute("projectAnimalsList", projectAnimalsList);
         model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project, false));
         model.addAttribute("animalBoundingBoxes", projectDao.getAnimalBoundingBoxes(project, false));
