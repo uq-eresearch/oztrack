@@ -210,4 +210,20 @@ fkfsstkml <- function(fit, datetime, kmlFileName) {
   close(kmlFile)
 }
 
-
+oztrack_kfsst <- function(
+    sinputfile, is.AM=TRUE,
+    startdate=NULL, startX=NULL, startY=NULL,
+    enddate=NULL, endX=NULL, endY=NULL,
+    kmlFileName
+) {
+  mykal <- fozkalmankfsst(
+      sinputfile=sinputfile, is.AM=is.AM,
+      startdate=startdate, startX=startX, startY=startY,
+      enddate=enddate, endX=endX, endY=endY,
+      bx.active=FALSE, by.active=FALSE
+  )
+  if (is.character(mykal)) {
+    stop(mykal)
+  }
+  fkfsstkml(fit=mykal, datetime=mykal$Datetime, kmlFileName=kmlFileName)
+}

@@ -239,7 +239,7 @@ oztrack_kalman <- function(
   kmlFileName
 ) {
   mykal <- fozkalmankf(
-    sinputfile=positionFix, is.AM=is.AM,
+    sinputfile=sinputfile, is.AM=is.AM,
     startdate=startdate, startX=startX, startY=startY,
     enddate=enddate, endX=endX, endY=endY,
     bx.active=FALSE, by.active=FALSE
