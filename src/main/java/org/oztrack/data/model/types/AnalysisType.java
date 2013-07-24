@@ -551,6 +551,255 @@ public enum AnalysisType {
                 null,
                 false,
                 null
+            ),
+            new AnalysisParameterType(
+                "uActive",
+                "u.active",
+                "<p>Whether <i>u</i> should be optimized; uncheck to fix <i>u</i> at <i>u.init</i> value below.</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "vActive",
+                "v.active",
+                "<p>Whether <i>v</i> should be optimized; uncheck to fix <i>v</i> at <i>v.init</i> value below.</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "DActive",
+                "D.active",
+                "<p>Whether <i>D</i> should be optimized; uncheck to fix <i>D</i> at <i>D.init</i> value below.</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "bxActive",
+                "bx.active",
+                "<p>Whether <i>b[x]</i> should be optimized; uncheck to fix <i>b[x]</i> at <i>bx.init</i> value below.</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "byActive",
+                "by.active",
+                "<p>Whether <i>b[y]</i> should be optimized; uncheck to fix <i>b[y]</i> at <i>by.init</i> value below.</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "sxActive",
+                "sx.active",
+                "<p>Whether <i>sigma[x]</i> should be optimized; uncheck to fix <i>sigma[x]</i> at <i>sx.init</i> value below.</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "syActive",
+                "sy.active",
+                "<p>Whether <i>sigma[y]</i> should be optimized; uncheck to fix <i>sigma[y]</i> at <i>sy.init</i> value below.</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "a0Active",
+                "a0.active",
+                "<p>\n" +
+                "   If <i>var.struct</i>=\"solstice\",\n" +
+                "   whether <i>a[0]</i> should be optimized; uncheck to fix <i>a[0]</i> at <i>a0.init</i> value below.\n" +
+                "</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "b0Active",
+                "b0.active",
+                "<p>\n" +
+                "   If <i>var.struct</i>=\"solstice\",\n" +
+                "   Whether <i>b[0]</i> should be optimized; uncheck to fix <i>b[0]</i> at <i>b0.init</i> value below.\n" +
+                "</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "vscaleActive",
+                "vscale.active",
+                "<p>Whether <i>vscale</i> should be optimized; uncheck to fix <i>vscale</i> at <i>vscale.init</i> value below.</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "uInit",
+                "u.init",
+                "<p>\"Advection\" component of movement; northward component of directed movement.</p>",
+                "double",
+                "nm/day",
+                "0",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "vInit",
+                "v.init",
+                "<p>\"Advection\" component of movement; eastward component of directed movement.</p>",
+                "double",
+                "nm/day",
+                "0",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "DInit",
+                "D.init",
+                "<p>\"Diffusion\" component of movement; a measure of the variability in movement.</p>",
+                "double",
+                "nm^2/day",
+                "100",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "bxInit",
+                "bx.init",
+                "<p>Systematic error (or bias) in the estimation of position (longitude).</p>",
+                "double",
+                "°",
+                "0",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "byInit",
+                "by.init",
+                "<p>Systematic error (or bias) in the estimation of position (latitude).</p>",
+                "double",
+                "°",
+                "0",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "sxInit",
+                "sx.init",
+                "<p>Random error in the estimation of position (longitude).</p>",
+                "double",
+                "°",
+                "0.5",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "syInit",
+                "sy.init",
+                "<p>Random error in the estimation of position (latitude).</p>",
+                "double",
+                "°",
+                "1.5",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "a0Init",
+                "a0.init",
+                "<p>\n" +
+                "    Upper bound for latitude variance. Used in \"solstice\" variance structure;\n" +
+                "    related to how the latitude estimation error varies around the equinox.\n" +
+                "</p>",
+                "double",
+                "°",
+                "0.001",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "b0Init",
+                "b0.init",
+                "<p>\n" +
+                "    The number of days prior to the equinox where the latitude error is maximal.\n" +
+                "    Used in \"solstice\" variance structure; related to how the latitude estimation\n" +
+                "    error varies around the equinox.\n" +
+                "</p>",
+                "double",
+                "days",
+                "0",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "vscaleInit",
+                "vscale.init",
+                "<p>Initial value for the common scaling parameter for the specified covariance matrices.</p>",
+                "double",
+                null,
+                "1",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "varStruct",
+                "var.struct",
+                "<p>Sets the model for the latitude error: \"uniform\", \"specified\", \"solstice\", or \"daily\".</p>" +
+                "<p>\n" +
+                "    If \"uniform\", the same variance is assumed for all observations.\n" +
+                "</p>\n" +
+                "<p>\n" +
+                "    If \"specified\", and <i>vscale.active</i> is checked,\n" +
+                "    a common scaling parameter is estimated for the specified covariance matrices." +
+                "</p>" +
+                "<p>\n" +
+                "    If \"solstice\", the variance is assumed to follow the model\n" +
+                "    sigma[y[i]]^2 = sigma[y[0]]^2 / (cos^2(2pi(J[i]+(-1)^(s[i])b[0])/365.25)+a[0]),\n" +
+                "    where J[i] is the number of days since last solstice prior to all observations,\n" +
+                "    s[i] is the season number since the beginning of the track \n" +
+                "    (one for the first 182.625 days, then two for the next 182.625, then three and so on).\n" +
+                "    a[0], b[0] and sigma[y[0]]^2 are model parameters.\n" +
+                "</p>\n" +
+                "<p>\n" +
+                "    If \"daily\" the variance is assumed to have a different value at\n" +
+                "    each time step, and psi[i] are normally distributed random\n" +
+                "    variables with mean zero and variance sigma[psi]^2 representing\n" +
+                "    transient deviations in the latitude error.\n" +
+                "</p>",
+                "string",
+                null,
+                "solstice",
+                true,
+                Arrays.asList(
+                    new AnalysisParameterOption("uniform", "uniform"),
+                    new AnalysisParameterOption("specified", "specified"),
+                    new AnalysisParameterOption("solstice", "solstice"),
+                    new AnalysisParameterOption("daily", "daily")
+                )
             )
         ),
         Arrays.asList(

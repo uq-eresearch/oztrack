@@ -70,9 +70,9 @@ public class ProjectAnalysisController {
         model.addAttribute("mapLayerTypeList", MapLayerType.values());
         ArrayList<AnalysisType> analysisTypeList = new ArrayList<AnalysisType>();
         for (AnalysisType analysisType : AnalysisType.values()) {
-            if (analysisType != AnalysisType.KALMAN) {
+            //if (analysisType != AnalysisType.KALMAN) {
                 analysisTypeList.add(analysisType);
-            }
+            //}
         }
         model.addAttribute("analysisTypeList", analysisTypeList);
         model.addAttribute("projectAnimalsList", projectAnimalsList);
