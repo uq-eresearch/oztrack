@@ -74,6 +74,16 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/project-map.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/project-cleanse.js"></script>
         <script type="text/javascript">
+            function submitCleanseForm(operation, mode) {
+                var params = {
+                    operation: operation,
+                    mode: mode
+                };
+                $.each($('#form-context,#form-' + mode).serializeArray(), function(i, pair) {
+                    params[pair.name] = pair.value;
+                });
+                cleanseMap.submitCleanseRequest(operation, params);
+            }
             function submitKalmanFilter() {
                 var params = {
                     projectId: ${project.id},
@@ -90,17 +100,6 @@
                     params[pair.name] = pair.value;
                 });
                 cleanseMap.createAnalysisLayer(params, 'Kalman Filter', 'filter');
-            }
-            function submitCleanseForm(operation, mode) {
-                var params = {
-                    operation: operation,
-                    mode: mode
-                };
-                
-                $.each($('#form-context,#form-' + mode).serializeArray(), function(i, pair) {
-                    params[pair.name] = pair.value;
-                });
-                cleanseMap.submitCleanseRequest(operation, params);
             }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
@@ -426,32 +425,6 @@
                     </div>
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-action" href="#accordion-body-kalman-filter">
-                                Kalman filter
-                            </a>
-                        </div>
-                        <div id="accordion-body-kalman-filter" class="accordion-body collapse">
-                            <div class="accordion-inner">
-                                <form id="form-kalman-filter" class="form-vertical" style="margin: 0;" onsubmit="return false;">
-                                <fieldset>
-                                <div class="control-group">
-                                    <div class="controls">
-                                        <tags:analysis-param-fields analysisType="${kalmanAnalysisType}"/>
-                                    </div>
-                                </div>
-                                </fieldset>
-                                <div style="margin-top: 9px;">
-                                    <button id="kalmanFilterRun" class="btn btn-primary" onclick="submitKalmanFilter();">Run filter</button>
-                                    <span id="kalmanFilterSingleAnimal" style="display: none;">Can only filter one animal at a time</span>
-                                    <button id="kalmanFilterApply" class="btn" style="display: none; margin-left: 0.5em;">Replace original track</button>
-                                    <button id="kalmanFilterCancel" class="btn" style="display: none;">Cancel</button>
-                                </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-action" href="#accordion-body-argos-class">
                                 Argos location class
                             </a>
@@ -521,6 +494,32 @@
                                     </div>
                                 </div>
                                 </fieldset>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-action" href="#accordion-body-kalman-filter">
+                                Kalman filter
+                            </a>
+                        </div>
+                        <div id="accordion-body-kalman-filter" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                                <form id="form-kalman-filter" class="form-vertical" style="margin: 0;" onsubmit="return false;">
+                                <fieldset>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <tags:analysis-param-fields analysisType="${kalmanAnalysisType}"/>
+                                    </div>
+                                </div>
+                                </fieldset>
+                                <div style="margin-top: 9px;">
+                                    <button id="kalmanFilterRun" class="btn btn-primary" onclick="submitKalmanFilter();">Run filter</button>
+                                    <span id="kalmanFilterSingleAnimal" style="display: none;">Can only filter one animal at a time</span>
+                                    <button id="kalmanFilterApply" class="btn" style="display: none; margin-left: 0.5em;">Replace original track</button>
+                                    <button id="kalmanFilterCancel" class="btn" style="display: none;">Cancel</button>
+                                </div>
                                 </form>
                             </div>
                         </div>
