@@ -1305,9 +1305,13 @@
                     bounds.extend(that.map.getLonLatFromPixel(rightTop));
                     var vectorLayers = that.map.getLayersByClass('OpenLayers.Layer.Vector');
                     $.each(vectorLayers, function(i, vectorLayer) {
-                        $.each(vectorLayer.features, function(i, f) {
-                            if (bounds.toGeometry().intersects(f.geometry)) {
-                                event.features.push(f);
+                        $.each(control.layerDetails, function(i, layerDetail) {
+                            if (layerDetail.layerName && layerDetail.layerName === vectorLayer.name) {
+                                $.each(vectorLayer.features, function(i, f) {
+                                    if (bounds.toGeometry().intersects(f.geometry)) {
+                                        event.features.push(f);
+                                    }
+                                });
                             }
                         });
                     });
