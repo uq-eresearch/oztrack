@@ -1,46 +1,85 @@
 ## Code written by Ross Dwyer on the 02.07.2013
 ## Code is a collection of functions to read and write results from Kalman Filter as a kml object
 
-#setwd("C:/Users/rdwye/SkyDrive/Australia/OzTrack")
-
 # Function to reorganise data into coprrect format and run the kftrack kalman filter 
-fozkalmankfsst <- function(sinputfile,is.AM=TRUE,
-                        startdate=NULL,startX=NULL,startY=NULL,
-                        enddate=NULL,endX=NULL,endY=NULL,
-                        u.active = TRUE, v.active = TRUE, D.active = TRUE, bx.active = TRUE, by.active = TRUE, sx.active = TRUE, sy.active = TRUE, a0.active = TRUE, b0.active = TRUE, bsst.active = TRUE, ssst.active = TRUE, r.active = TRUE,
-                        u.init = 0, v1.init = 0, D.init = 100, bx.init = 0, by.init = 0, sx.init = 0.5, sy.init = 1.5, a0.init = 0.001, b0.init = 0, bsst.init = 0, ssst.init = 0.1, r.init = 200)
-{
-  
-  #sinputfile=positionFix;
-  #startdate='2010-12-18';startX=174.436;startY=-36.89;
-  #enddate='2010-12-29';endX=174.436;endY=-36.89;
-  #u1.active = TRUE; v1.active = TRUE;D1.active = TRUE; bx1.active = FALSE; by1.active = FALSE; sx1.active = TRUE;sy1.active = TRUE; a01.active = TRUE; b01.active = TRUE; vscale1.active = TRUE;
-  #u1.init = 0; v1.init = 0; D1.init = 100; bx1.init = 0; by1.init = 0;sx1.init = 0.5; sy1.init = 1.5; a01.init = 0.001; b01.init = 0
-  
+fozkalmankfsst <- function(
+  sinputfile, is.AM=TRUE,
+  startdate=NULL, startX=NULL, startY=NULL,
+  enddate=NULL, endX=NULL, endY=NULL,
+  u.active=TRUE,
+  v.active=TRUE,
+  D.active=TRUE,
+  bx.active=TRUE,
+  by.active=TRUE,
+  sx.active=TRUE,
+  sy.active=TRUE,
+  a0.active=TRUE,
+  b0.active=TRUE,
+  bsst.active=TRUE,
+  ssst.active=TRUE,
+  r.active=FALSE,
+  u.init=0,
+  v.init=0,
+  D.init=100,
+  bx.init=0,
+  by.init=0,
+  sx.init=0.1,
+  sy.init=1,
+  a0.init=0.001,
+  b0.init=0,
+  bsst.init=0,
+  ssst.init=0.1,
+  r.init=200
+) {
+  #sinputfile=positionFix
+  #startdate='2010-12-18'
+  #startX=174.436
+  #startY=-36.89
+  #enddate='2010-12-29'
+  #endX=174.436
+  #endY=-36.89
+  #u.active=TRUE
+  #v.active=TRUE
+  #D.active=TRUE
+  #bx.active=TRUE
+  #by.active=TRUE
+  #sx.active=TRUE
+  #sy.active=TRUE
+  #a0.active=TRUE
+  #b0.active=TRUE
+  #vscale.active=TRUE
+  #u.init=0
+  #v.init=0
+  #D.init=100
+  #bx.init=0
+  #by.init=0
+  #sx.init=0.5
+  #sy.init=1.5
+  #a0.init=0.001
+  #b0.init=0
   
   # if the user has specified that there is a start date and an end date
   if(is.null(startdate)==FALSE){
     sinputfile <- subset(sinputfile,sinputfile$Date > as.POSIXlt(startdate) & sinputfile$Date < as.POSIXlt(enddate))
     trackdata <- sinputfile
     
-    tagattach <- data.frame(ID=trackdata[1,1],Date=as.POSIXlt(startdate),X=startX,Y=startY)
-    tagremove <- data.frame(ID=trackdata[1,1],Date=as.POSIXlt(enddate),X=endX,Y=endY)
+    tagattach <- data.frame(ID=trackdata[1,1],Date=as.POSIXlt(startdate),X=startX,Y=startY,sst=NA)
+    tagremove <- data.frame(ID=trackdata[1,1],Date=as.POSIXlt(enddate),X=endX,Y=endY,sst=NA)
     trackdata <- rbind(tagattach,trackdata,tagremove)
   }else{
     trackdata <- sinputfile
   }
   
-  # Remove duplicates and ensure data in the correct order
   trackdata <- trackdata[!duplicated(order(trackdata$Date)),]
   
-  Lat <- trackdata$Y
-  Long <- trackdata$X  
+  lati <- trackdata$Y
+  long <- trackdata$X  
   # If data crosses 180th meridian change longitude so 0 - 360
-  if(is.AM==TRUE)  Long <- ifelse(Long<0,Long+360,Long)
+  if(is.AM==TRUE)  long <- ifelse(long<0,long+360,long)
 
   # Ensure dates in correct decimal
   Datetime <- trackdata$Date
-  
+
   day <- as.numeric(strftime(Datetime, format="%d")) 
   dhour <- sapply(strsplit(substr(Datetime,12,19),":"),
                   function(x) {
@@ -49,37 +88,58 @@ fozkalmankfsst <- function(sinputfile,is.AM=TRUE,
   day <- day+dhour
   
   # to prevent step size being too small, remove anything greater than 1 dp
-  day <- floor(day*10)/10 
+  day <- floor(day*10)/10
   month <- as.numeric(strftime(Datetime,"%m"))
-  year <- as.numeric(strftime(Datetime,"%Y"))  
+  year <- as.numeric(strftime(Datetime,"%Y"))
   sst <-  trackdata$sst
   
-  track <- data.frame(day,month,year,Long,Lat,sst)
-  
+  track <- data.frame(day,month,year,long,lati,sst)
   dups <- duplicated(track$year,track$month,track$day)
-  
   track <- track[!dups,]
   
-  #plot(track$long,track$lati,type='b')
-  
-  # For small datasets
-  setwd("C:/Users/rdwye/SkyDrive/Australia/OzTrack")
-  
+  get.sst.from.server(track)
+
   kfm <- try({
-    kfsst(data = track, fix.first = TRUE, fix.last = TRUE, 
-               u.active, v.active = v.active, D.active = D.active, bx.active = bx.active, by.active = by.active, sx.active = sx.active, sy.active = sy.active, a0.active = a0.active, b0.active = b0.active, bsst.active = bsst.active, ssst.active = ssst.active, r.active = r.active,
-               u.init = u.init, v.init = v.init, D.init = D.init, bx.init = bx.init, by.init = by.init, sx.init = sx.init, sy.init = sy.init, a0.init = a0.init , b0.init = b0.init, bsst.init = bsst.init, ssst.init = ssst.init, r.init = r.init)
+    kfsst(
+      data=track,
+      fix.first=TRUE,
+      fix.last=TRUE,
+      u.active=u.active,
+      v.active=v.active,
+      D.active=D.active,
+      bx.active=bx.active,
+      by.active=by.active,
+      sx.active=sx.active,
+      sy.active=sy.active,
+      a0.active=a0.active,
+      b0.active=b0.active,
+      bsst.active=bsst.active,
+      ssst.active=ssst.active,
+      r.active=r.active,
+      u.init=u.init,
+      v.init=v.init,
+      D.init=D.init,
+      bx.init=bx.init,
+      by.init=by.init,
+      sx.init=sx.init,
+      sy.init=sy.init,
+      a0.init=a0.init ,
+      b0.init=b0.init,
+      bsst.init=bsst.init,
+      ssst.init=ssst.init,
+      r.init=r.init
+    )
     },silent=TRUE)
   
   # Error handling
   if (class(kfm) == 'try-error') 
   {
-    stop('Kalman filter did not work using these parameters.')
+    kfm <- 'Kalman filter did not work using these parameters.'
   }else{
-    
     # Combine Datetime data to Object
-    kfm$Datetime <- Datetime[!dups]}
-  
+    kfm$Datetime <- Datetime[!dups]
+  }
+
   return(kfm)
 }
 
@@ -211,16 +271,63 @@ fkfsstkml <- function(fit, datetime, kmlFileName) {
 }
 
 oztrack_kfsst <- function(
-    sinputfile, is.AM=TRUE,
-    startdate=NULL, startX=NULL, startY=NULL,
-    enddate=NULL, endX=NULL, endY=NULL,
-    kmlFileName
+  sinputfile, is.AM=TRUE,
+  startdate=NULL, startX=NULL, startY=NULL,
+  enddate=NULL, endX=NULL, endY=NULL,
+  u.active=TRUE,
+  v.active=TRUE,
+  D.active=TRUE,
+  bx.active=TRUE,
+  by.active=TRUE,
+  sx.active=TRUE,
+  sy.active=TRUE,
+  a0.active=TRUE,
+  b0.active=TRUE,
+  bsst.active=TRUE,
+  ssst.active=TRUE,
+  r.active=FALSE,
+  u.init=0,
+  v.init=0,
+  D.init=100,
+  bx.init=0,
+  by.init=0,
+  sx.init=0.1,
+  sy.init=1,
+  a0.init=0.001,
+  b0.init=0,
+  bsst.init=0,
+  ssst.init=0.1,
+  r.init=200,
+  kmlFileName
 ) {
   mykal <- fozkalmankfsst(
-      sinputfile=sinputfile, is.AM=is.AM,
-      startdate=startdate, startX=startX, startY=startY,
-      enddate=enddate, endX=endX, endY=endY,
-      bx.active=FALSE, by.active=FALSE
+    sinputfile=sinputfile, is.AM=is.AM,
+    startdate=startdate, startX=startX, startY=startY,
+    enddate=enddate, endX=endX, endY=endY,
+    u.active=u.active,
+    v.active=v.active,
+    D.active=D.active,
+    bx.active=bx.active,
+    by.active=by.active,
+    sx.active=sx.active,
+    sy.active=sy.active,
+    a0.active=a0.active,
+    b0.active=b0.active,
+    bsst.active=bsst.active,
+    ssst.active=ssst.active,
+    r.active=r.active,
+    u.init=u.init,
+    v.init=v.init,
+    D.init=D.init,
+    bx.init=bx.init,
+    by.init=by.init,
+    sx.init=sx.init,
+    sy.init=sy.init,
+    a0.init=a0.init,
+    b0.init=b0.init,
+    bsst.init=bsst.init,
+    ssst.init=ssst.init,
+    r.init=r.init
   )
   if (is.character(mykal)) {
     stop(mykal)

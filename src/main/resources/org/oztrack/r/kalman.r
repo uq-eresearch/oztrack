@@ -1,23 +1,60 @@
 ## Code written by Ross Dwyer on the 02.07.2013
 ## Code is a collection of functions to read and write results from Kalman Filter as a kml object
 
-#setwd("C:/Users/rdwye/SkyDrive/Australia/OzTrack")
-
 # Function to reorganise data into coprrect format and run the kftrack kalman filter 
-fozkalmankf <- function(sinputfile, is.AM=TRUE,
-                        startdate=NULL, startX=NULL, startY=NULL,
-                        enddate=NULL, endX=NULL, endY=NULL,
-                        u.active = TRUE, v.active = TRUE, D.active = TRUE, bx.active = TRUE, by.active = TRUE, sx.active = TRUE, sy.active = TRUE, a0.active = TRUE, b0.active = TRUE, vscale.active = TRUE,
-                        u.init = 0, v.init = 0, D.init = 100, bx.init = 0, by.init = 0, sx.init = 0.5, sy.init = 1.5, a0.init = 0.001, b0.init = 0, vscale.init = TRUE, var.struct = "solstice")
-{
-  
-  #sinputfile=positionFix[31:69,];
-  #startdate='2010-12-18';startX=174.436;startY=-36.89;
-  #enddate='2010-12-29';endX=174.436;endY=-36.89;
-  #u.active = TRUE; v.active = TRUE; D.active = TRUE; bx.active = TRUE; by.active = TRUE; sx.active = TRUE; sy.active = TRUE; a0.active = TRUE; b0.active = TRUE; vscale.active = TRUE;
-  #u.init = 0; v.init = 0; D.init = 100; bx.init = 0; by.init = 0; sx.init = 0.5; sy.init = 1.5; a0.init = 0.001; b0.init = 0; vscale.init = TRUE
-  #startdate =NULL; is.AM=TRUE
-  
+fozkalmankf <- function(
+  sinputfile, is.AM=TRUE,
+  startdate=NULL, startX=NULL, startY=NULL,
+  enddate=NULL, endX=NULL, endY=NULL,
+  u.active=TRUE,
+  v.active=TRUE,
+  D.active=TRUE,
+  bx.active=TRUE,
+  by.active=TRUE,
+  sx.active=TRUE,
+  sy.active=TRUE,
+  a0.active=TRUE,
+  b0.active=TRUE,
+  vscale.active=TRUE,
+  u.init=0,
+  v.init=0,
+  D.init=100,
+  bx.init=0,
+  by.init=0,
+  sx.init=0.5,
+  sy.init=1.5,
+  a0.init=0.001,
+  b0.init=0,
+  vscale.init=1,
+  var.struct="solstice"
+) {
+  #sinputfile=positionFix[31:69,]
+  #startdate='2010-12-18'
+  #startX=174.436
+  #startY=-36.89
+  #enddate='2010-12-29'
+  #endX=174.436
+  #endY=-36.89
+  #u.active=TRUE
+  #v.active=TRUE
+  #D.active=TRUE
+  #bx.active=TRUE
+  #by.active=TRUE
+  #sx.active=TRUE
+  #sy.active=TRUE
+  #a0.active=TRUE
+  #b0.active=TRUE
+  #vscale.active=TRUE
+  #u.init=0
+  #v.init=0
+  #D.init=100
+  #bx.init=0
+  #by.init=0
+  #sx.init=0.5
+  #sy.init=1.5
+  #a0.init=0.001
+  #b0.init=0
+  #vscale.init=TRUE
   
   # if the user has specified that there is a start date and an end date
   if(is.null(startdate)==FALSE){
@@ -44,32 +81,46 @@ fozkalmankf <- function(sinputfile, is.AM=TRUE,
   day <- as.numeric(strftime(Datetime, format="%d")) 
   dhour <- sapply(strsplit(substr(Datetime,12,19),":"),
                   function(x) {
-                               x <- as.numeric(x)
-                               x[1]/24+x[2]/(24*60)+x[3]/(24*60*60)})
+                    x <- as.numeric(x)
+                    x[1]/24+x[2]/(24*60)+x[3]/(24*60*60)})
   day <- day+dhour
   
-  day <- floor(day*10)/10 # to prevent step size being too small, remove anything greater than 1 dp
+  # to prevent step size being too small, remove anything greater than 1 dp
+  day <- floor(day*10)/10
   month <- as.numeric(strftime(Datetime,"%m"))
   year <- as.numeric(strftime(Datetime,"%Y"))
   
   track <- data.frame(day,month,year,long,lati)
-  
-  # remove all the duplicates after rounding
   dups <- duplicated(data.frame(day,month,year))
   track <- track[!dups,] 
 
-  #track <- track[!duplicated(order(sshear$year,sshear$month,sshear$day)),]
-  
-  #plot(track$long,track$lati,type='b')
-  
-  # For small datasets
-  #setwd("C:/Users/rdwye2/SkyDrive/Australia/OzTrack")
-
   kfm <- try({
-    kftrack_RD(data = track, fix.first = TRUE, fix.last = TRUE, 
-               u.active = u.active, v.active = v.active, D.active = D.active, bx.active = bx.active, by.active = by.active, sx.active = sx.active, sy.active = sy.active, a0.active = a0.active, b0.active = b0.active, vscale.active = vscale.active,
-               u.init = u.init, v.init = v.init, D.init = D.init, bx.init = bx.init, by.init = by.init, sx.init = sx.init, sy.init = sy.init, a0.init = a0.init , b0.init = b0.init, vscale.init = vscale.init,
-               var.struct = "solstice")
+    kftrack_RD(
+      data=track,
+      fix.first=TRUE,
+      fix.last=TRUE,
+      u.active=u.active,
+      v.active=v.active,
+      D.active=D.active,
+      bx.active=bx.active,
+      by.active=by.active,
+      sx.active=sx.active,
+      sy.active=sy.active,
+      a0.active=a0.active,
+      b0.active=b0.active,
+      vscale.active=vscale.active,
+      u.init=u.init,
+      v.init=v.init,
+      D.init=D.init,
+      bx.init=bx.init,
+      by.init=by.init,
+      sx.init=sx.init,
+      sy.init=sy.init,
+      a0.init=a0.init ,
+      b0.init=b0.init,
+      vscale.init=vscale.init,
+      var.struct=var.struct
+    )
   },silent=TRUE)
   
   # Error handling
@@ -77,10 +128,11 @@ fozkalmankf <- function(sinputfile, is.AM=TRUE,
   {
     kfm <- 'Kalman filter did not work using these parameters.'
   }else{
-        # Combine Datetime data to Object
-    kfm$Datetime <- Datetime[!dups]   }
+    # Combine Datetime data to Object
+    kfm$Datetime <- Datetime[!dups]
+  }
 
-return(kfm)
+  return(kfm)
 }
 
 #############################################################
@@ -192,25 +244,6 @@ fkalmankml <- function(fit, datetime, kmlFileName) {
   close(kmlFile)
 }
 
-## This code converts SPDF to kml
-oztrack_kfkml <- function(sinputfile, is.AM=TRUE,
-                          startdate=NULL, startX=NULL, startY=NULL,
-                          enddate=NULL, endX=NULL, endY=NULL,
-                          u.active = TRUE, v.active = TRUE, D.active = TRUE, bx.active = TRUE, by.active = TRUE, sx.active = TRUE, sy.active = TRUE, a0.active = TRUE, b0.active = TRUE, vscale.active = TRUE,
-                          u.init = 0, v.init = 0, D.init = 100, bx.init = 0, by.init = 0, sx.init = 0.5, sy.init = 1.5, a0.init = 0.001, b0.init = 0, vscale.init = TRUE, var.struct = "solstice",
-                          datetime, kmlFileName) {
-
-    myfit <- fozkalmankf(sinputfile,is.AM,
-                       startdate, startX, startY,
-                       enddate, endX, endY,
-                       u.active, v.active, D.active, bx.active, by.active, sx.active, sy.active, a0.active, b0.active, vscale.active,
-                       u.init, v.init, D.init, bx.init, by.init, sx.init, sy.init, a0.init, b0.init, vscale.init)
-  
-    if(is.character(myfit)==FALSE)
-      fkalmankml(myfit, datetime, kmlFileName) 
-    
-}
-
 oztrack_kalman <- function(
   sinputfile, is.AM=TRUE,
   startdate=NULL, startX=NULL, startY=NULL,
@@ -242,7 +275,27 @@ oztrack_kalman <- function(
     sinputfile=sinputfile, is.AM=is.AM,
     startdate=startdate, startX=startX, startY=startY,
     enddate=enddate, endX=endX, endY=endY,
-    bx.active=FALSE, by.active=FALSE
+    u.active=u.active,
+    v.active=v.active,
+    D.active=D.active,
+    bx.active=bx.active,
+    by.active=by.active,
+    sx.active=sx.active,
+    sy.active=sy.active,
+    a0.active=a0.active,
+    b0.active=b0.active,
+    vscale.active=vscale.active,
+    u.init=u.init,
+    v.init=v.init,
+    D.init=D.init,
+    bx.init=bx.init,
+    by.init=by.init,
+    sx.init=sx.init,
+    sy.init=sy.init,
+    a0.init=a0.init,
+    b0.init=b0.init,
+    vscale.init=vscale.init,
+    var.struct=var.struct
   )
   if (is.character(mykal)) {
     stop(mykal)
