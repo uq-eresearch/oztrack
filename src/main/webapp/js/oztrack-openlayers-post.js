@@ -49,6 +49,26 @@ OpenLayers.Layer.XYZ.prototype.getXYZ = function(bounds) {
     return {'x': x, 'y': y, 'z': z};
 };
 
+// Hack to KML format: parse dateTime values from TimeStamp and TimeSpan
+var origParseAttributes = OpenLayers.Format.KML.prototype.parseAttributes;
+OpenLayers.Format.KML.prototype.parseAttributes = function(node) {
+    var attributes = origParseAttributes.apply(this, arguments);
+    var n = $(node);
+    if (!attributes.when) {
+        var when = n.find('TimeStamp>when').text();
+        if (when) {attributes.when = when;}
+    }
+    if (!attributes.begin) {
+        var begin = n.find('TimeSpan>begin').text();
+        if (begin) {attributes.begin = begin;}
+    }
+    if (!attributes.end) {
+        var end = n.find('TimeSpan>end').text();
+        if (end) {attributes.end = end;}
+    }
+    return attributes;
+};
+
 (function(OzTrack) {
     OzTrack.OpenLayers = OzTrack.OpenLayers || {};
     OzTrack.OpenLayers.Control = OzTrack.OpenLayers.Control || {};

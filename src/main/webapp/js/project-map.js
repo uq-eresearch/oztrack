@@ -1285,6 +1285,66 @@
                             .append(' ' + moment(date, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
                             .append(' ' + coordString(feature.geometry.clone().transform(that.projection900913, that.projection4326)));
                     }
+                },
+                {
+                    layerName: 'Kalman Filter',
+                    propertyNames: [
+                        'name',
+                        'id',
+                        'when',
+                        'begin',
+                        'end',
+                        'Negativeloglik',
+                        'MaxGradComp',
+                        'uValue',
+                        'uStdDev',
+                        'vValue',
+                        'vStdDev',
+                        'DValue',
+                        'DStdDev',
+                        'bxValue',
+                        'bxStdDev',
+                        'byValue',
+                        'byStdDev',
+                        'sxValue',
+                        'sxStdDev',
+                        'syValue',
+                        'syStdDev',
+                        'a0Value',
+                        'a0StdDev',
+                        'b0Value',
+                        'b0StdDev',
+                        'varLon',
+                        'varLat'
+                    ],
+                    summary: function(feature) {
+                        if (feature.attributes.name === 'Trajectory') {
+                            var fromCoord = feature.geometry.components[0].clone().transform(that.projection900913, that.projection4326);
+                            var toCoord = feature.geometry.components[feature.geometry.components.length - 1].clone().transform(that.projection900913, that.projection4326);
+                            return $('<span>')
+                                .append(getAnimal(feature.attributes.id.value).name + ' probable track<br />')
+                                .append(' from ' + moment(feature.attributes.begin, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
+                                .append(' ' + coordString(fromCoord) + '<br />')
+                                .append(' to ' + moment(feature.attributes.end, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
+                                .append(' ' + coordString(toCoord) + '<br />')
+                                .append($.map(['u', 'v', 'D', 'bx', 'by', 'sx', 'sy', 'a0', 'b0'], function(x) {
+                                    var s = '';
+                                    var valueObject = feature.attributes[x + 'Value'];
+                                    if (valueObject) {s += x + ' value: ' + parseFloat(valueObject.value).toFixed(6) + ', ';}
+                                    var stdDevObject = feature.attributes[x + 'StdDev'];
+                                    if (stdDevObject) {s += x + ' std dev: ' + parseFloat(stdDevObject.value).toFixed(6) + '<br />';}
+                                    return s;
+                                }));
+                        }
+                        else {
+                            return $('<span>')
+                                .append(getAnimal(feature.attributes.id.value).name)
+                                .append(' at ' + moment(feature.attributes.when, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
+                                .append(' ' + coordString(feature.geometry.clone().transform(that.projection900913, that.projection4326)) + '<br />')
+                                .append('varLon: ' + parseFloat(feature.attributes.varLon.value).toFixed(6))
+                                .append(', varLat: ' + parseFloat(feature.attributes.varLat.value).toFixed(6));
+                        }
+                    }
                 }
             ],
             queryVisible: true,
@@ -1308,7 +1368,8 @@
                         $.each(control.layerDetails, function(i, layerDetail) {
                             if (layerDetail.layerName && layerDetail.layerName === vectorLayer.name) {
                                 $.each(vectorLayer.features, function(i, f) {
-                                    if (bounds.toGeometry().intersects(f.geometry)) {
+                                    if (event.features.length < control.maxFeatures &&
+                                        bounds.toGeometry().intersects(f.geometry)) {
                                         event.features.push(f);
                                     }
                                 });

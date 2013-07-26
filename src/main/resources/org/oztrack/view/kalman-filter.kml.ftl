@@ -39,6 +39,7 @@
       </TimeSpan>
       <ExtendedData>
         <SchemaData schemaUrl="#Overall">
+          <SimpleData name="id">${animal.id?c}</SimpleData>
           <#list analysis.analysisType.overallResultAttributeTypes as resultAttributeType>
           <SimpleData name="${resultAttributeType.identifier}"><#rt>
           <#if (analysis.getResultAttributeValue(resultAttributeType.identifier)??)><#t>
