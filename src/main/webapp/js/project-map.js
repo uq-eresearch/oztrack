@@ -1504,7 +1504,7 @@
         };
 
         that.activateControl = function(control) {
-            ozTrackNavToolbar.activateControl(control);
+            ozTrackNavToolbar.activateControl(control || navigationControl);
         };
 
         that.addLayer = function(layer) {

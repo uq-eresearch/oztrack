@@ -200,6 +200,10 @@
             }
         };
 
+        that.setPolygonControlActivated = function(activated) {
+            that.projectMap.activateControl(activated ? that.polygonControl : null);
+        };
+
         // Delegate to properties/functions of OzTrack.ProjectMap
         that.updateSize = that.projectMap.updateSize;
         that.zoomToAnimal = that.projectMap.zoomToAnimal;

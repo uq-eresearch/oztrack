@@ -194,6 +194,12 @@
                         $('#kalmanFilterRun').prop('disabled', false);
                     }
                 });
+                $('#accordion-body-multi-polygon').on('show', function() {
+                    cleanseMap.setPolygonControlActivated(true);
+                });
+                $('#accordion-body-multi-polygon').on('hide', function() {
+                    cleanseMap.setPolygonControlActivated(false);
+                });
                 cleanseMap = null;
                 onResize();
                 cleanseMap = new OzTrack.CleanseMap('projectMap', {
