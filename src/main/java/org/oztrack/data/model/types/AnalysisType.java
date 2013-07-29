@@ -1483,21 +1483,21 @@ public enum AnalysisType {
                 6
             ),
             new AnalysisResultAttributeType(
-                "sstO",
+                "sst_o",
                 "sst o",
                 "double",
                 null,
                 6
             ),
             new AnalysisResultAttributeType(
-                "sstP",
+                "sst_p",
                 "sst p",
                 "double",
                 null,
                 6
             ),
             new AnalysisResultAttributeType(
-                "sstSmooth",
+                "sst_smooth",
                 "sst smooth",
                 "double",
                 null,
