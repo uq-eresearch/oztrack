@@ -83,6 +83,9 @@ public class RserveInterface {
                 case KALMAN:
                     writeKalmanKmlFile(analysis);
                     break;
+                case KALMAN_SST:
+                    writeKalmanSstKmlFile(analysis);
+                    break;
                 default:
                     throw new RserveInterfaceException("Unhandled AnalysisType: " + analysis.getAnalysisType());
             }
@@ -390,6 +393,49 @@ public class RserveInterface {
             "  b0.init=" + toRValue(analysis.getParameterValue("b0Init", true)) + ",\n" +
             "  vscale.init=" + toRValue(analysis.getParameterValue("vscaleInit", true)) + ",\n" +
             "  var.struct=" + toRValue(analysis.getParameterValue("varStruct", true)) + ",\n" +
+            "  kmlFileName=" + toRValue(analysis.getAbsoluteResultFilePath()) + "\n" +
+            ")"
+        );
+    }
+
+    private void writeKalmanSstKmlFile(Analysis analysis) throws RserveInterfaceException {
+        if (analysis.getAnimals().size() > 1) {
+            throw new RserveInterfaceException("The Kalman Filter can only be run on one animal at a time.");
+        }
+        safeEval(
+            "oztrack_kfsst(\n" +
+            "  sinputfile=" + "positionFix" + ",\n" +
+            "  is.AM=" + toRValue(analysis.getProject().getCrosses180()) + ",\n" +
+            "  startdate=" + toRValue(analysis.getParameterValue("startDate", false)) + ",\n" +
+            "  startX=" + toRValue(analysis.getParameterValue("startX", false)) + ",\n" +
+            "  startY=" + toRValue(analysis.getParameterValue("startY", false)) + ",\n"+
+            "  enddate=" + toRValue(analysis.getParameterValue("endDate", false)) + ",\n" +
+            "  endX=" + toRValue(analysis.getParameterValue("endX", false)) + ",\n" +
+            "  endY=" + toRValue(analysis.getParameterValue("endY", false)) + ",\n" +
+            "  u.active=" + toRValue(analysis.getParameterValue("uActive", true)) + ",\n" +
+            "  v.active=" + toRValue(analysis.getParameterValue("vActive", true)) + ",\n" +
+            "  D.active=" + toRValue(analysis.getParameterValue("DActive", true)) + ",\n" +
+            "  bx.active=" + toRValue(analysis.getParameterValue("bxActive", true)) + ",\n" +
+            "  by.active=" + toRValue(analysis.getParameterValue("byActive", true)) + ",\n" +
+            "  sx.active=" + toRValue(analysis.getParameterValue("sxActive", true)) + ",\n" +
+            "  sy.active=" + toRValue(analysis.getParameterValue("syActive", true)) + ",\n" +
+            "  a0.active=" + toRValue(analysis.getParameterValue("a0Active", true)) + ",\n" +
+            "  b0.active=" + toRValue(analysis.getParameterValue("b0Active", true)) + ",\n" +
+            "  bsst.active=" + toRValue(analysis.getParameterValue("bsstActive", true)) + ",\n" +
+            "  ssst.active=" + toRValue(analysis.getParameterValue("ssstActive", true)) + ",\n" +
+            "  r.active=" + toRValue(analysis.getParameterValue("rActive", true)) + ",\n" +
+            "  u.init=" + toRValue(analysis.getParameterValue("uInit", true)) + ",\n" +
+            "  v.init=" + toRValue(analysis.getParameterValue("vInit", true)) + ",\n" +
+            "  D.init=" + toRValue(analysis.getParameterValue("DInit", true)) + ",\n" +
+            "  bx.init=" + toRValue(analysis.getParameterValue("bxInit", true)) + ",\n" +
+            "  by.init=" + toRValue(analysis.getParameterValue("byInit", true)) + ",\n" +
+            "  sx.init=" + toRValue(analysis.getParameterValue("sxInit", true)) + ",\n" +
+            "  sy.init=" + toRValue(analysis.getParameterValue("syInit", true)) + ",\n" +
+            "  a0.init=" + toRValue(analysis.getParameterValue("a0Init", true)) + ",\n" +
+            "  b0.init=" + toRValue(analysis.getParameterValue("b0Init", true)) + ",\n" +
+            "  bsst.init=" + toRValue(analysis.getParameterValue("bsstInit", true)) + ",\n" +
+            "  ssst.init=" + toRValue(analysis.getParameterValue("ssstInit", true)) + ",\n" +
+            "  r.init=" + toRValue(analysis.getParameterValue("rInit", true)) + ",\n" +
             "  kmlFileName=" + toRValue(analysis.getAbsoluteResultFilePath()) + "\n" +
             ")"
         );

@@ -888,6 +888,529 @@ public enum AnalysisType {
                 6
             ),
             new AnalysisResultAttributeType(
+                "bsstValue",
+                "bsst value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "bsstStdDev",
+                "bsst std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "sxValue",
+                "sx value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "sxStdDev",
+                "sx std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "syValue",
+                "sy value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "syStdDev",
+                "sy std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "ssstValue",
+                "ssst value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "ssstStdDev",
+                "ssst std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "rValue",
+                "r value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "rStdDev",
+                "r std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "a0Value",
+                "a0 value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "a0StdDev",
+                "a0 std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "b0Value",
+                "b0 value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "b0StdDev",
+                "b0 std dev",
+                "double",
+                null,
+                6
+            )
+        ),
+        Arrays.<AnalysisResultAttributeType>asList(
+            new AnalysisResultAttributeType(
+                "varLon",
+                "var lon",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "varLat",
+                "var lat",
+                "double",
+                null,
+                6
+            )
+        )
+    ),
+    KALMAN_SST(
+        "Kalman Filter (SST)",
+        null,
+        AnalysisResultType.FILTER,
+        Arrays.asList(
+            new AnalysisParameterType(
+                "startDate",
+                "Start date",
+                null,
+                "date",
+                null,
+                null,
+                false,
+                null
+            ),
+            new AnalysisParameterType(
+                "startX",
+                "Start longitude",
+                null,
+                "double",
+                "°",
+                null,
+                false,
+                null
+            ),
+            new AnalysisParameterType(
+                "startY",
+                "Start latitude",
+                null,
+                "double",
+                "°",
+                null,
+                false,
+                null
+            ),
+            new AnalysisParameterType(
+                "endDate",
+                "End date",
+                null,
+                "date",
+                null,
+                null,
+                false,
+                null
+            ),
+            new AnalysisParameterType(
+                "endX",
+                "End longitude",
+                null,
+                "double",
+                "°",
+                null,
+                false,
+                null
+            ),
+            new AnalysisParameterType(
+                "endY",
+                "End latitude",
+                null,
+                "double",
+                "°",
+                null,
+                false,
+                null
+            ),
+            new AnalysisParameterType(
+                "uActive",
+                "u.active",
+                "<p>Whether <i>u</i> should be optimized; uncheck to fix <i>u</i> at <i>u.init</i> value below.</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "vActive",
+                "v.active",
+                "<p>Whether <i>v</i> should be optimized; uncheck to fix <i>v</i> at <i>v.init</i> value below.</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "DActive",
+                "D.active",
+                "<p>Whether <i>D</i> should be optimized; uncheck to fix <i>D</i> at <i>D.init</i> value below.</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "bxActive",
+                "bx.active",
+                "<p>Whether <i>b[x]</i> should be optimized; uncheck to fix <i>b[x]</i> at <i>bx.init</i> value below.</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "byActive",
+                "by.active",
+                "<p>Whether <i>b[y]</i> should be optimized; uncheck to fix <i>b[y]</i> at <i>by.init</i> value below.</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "sxActive",
+                "sx.active",
+                "<p>Whether <i>sigma[x]</i> should be optimized; uncheck to fix <i>sigma[x]</i> at <i>sx.init</i> value below.</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "syActive",
+                "sy.active",
+                "<p>Whether <i>sigma[y]</i> should be optimized; uncheck to fix <i>sigma[y]</i> at <i>sy.init</i> value below.</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "a0Active",
+                "a0.active",
+                "<p>\n" +
+                "   If <i>var.struct</i>=\"solstice\",\n" +
+                "   whether <i>a[0]</i> should be optimized; uncheck to fix <i>a[0]</i> at <i>a0.init</i> value below.\n" +
+                "</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "b0Active",
+                "b0.active",
+                "<p>\n" +
+                "   If <i>var.struct</i>=\"solstice\",\n" +
+                "   Whether <i>b[0]</i> should be optimized; uncheck to fix <i>b[0]</i> at <i>b0.init</i> value below.\n" +
+                "</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "bsstActive",
+                "bsst.active",
+                "<p>Whether <i>b[sst]</i> should be optimized; uncheck to fix <i>b[sst]</i> at <i>bsst.init</i> value below.</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "ssstActive",
+                "ssst.active",
+                "<p>Whether <i>sigma[sst]</i> should be optimized; uncheck to fix <i>sigma[sst]</i> at <i>ssst.init</i> value below.</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "rActive",
+                "r.active",
+                "<p>Whether <i>r</i> should be optimized; uncheck to fix <i>r</i> at <i>r.init</i> value below.</p>",
+                "boolean",
+                null,
+                "false",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "uInit",
+                "u.init",
+                "<p>\"Advection\" component of movement; northward component of directed movement.</p>",
+                "double",
+                "nm/day",
+                "0",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "vInit",
+                "v.init",
+                "<p>\"Advection\" component of movement; eastward component of directed movement.</p>",
+                "double",
+                "nm/day",
+                "0",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "DInit",
+                "D.init",
+                "<p>\"Diffusion\" component of movement; a measure of the variability in movement.</p>",
+                "double",
+                "nm^2/day",
+                "100",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "bxInit",
+                "bx.init",
+                "<p>Systematic error (or bias) in the estimation of position (longitude).</p>",
+                "double",
+                "°",
+                "0",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "byInit",
+                "by.init",
+                "<p>Systematic error (or bias) in the estimation of position (latitude).</p>",
+                "double",
+                "°",
+                "0",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "sxInit",
+                "sx.init",
+                "<p>Random error in the estimation of position (longitude).</p>",
+                "double",
+                "°",
+                "0.1",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "syInit",
+                "sy.init",
+                "<p>Random error in the estimation of position (latitude).</p>",
+                "double",
+                "°",
+                "1.0",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "a0Init",
+                "a0.init",
+                "<p>\n" +
+                "    Upper bound for latitude variance. Used in \"solstice\" variance structure;\n" +
+                "    related to how the latitude estimation error varies around the equinox.\n" +
+                "</p>",
+                "double",
+                "°",
+                "0.001",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "b0Init",
+                "b0.init",
+                "<p>\n" +
+                "    The number of days prior to the equinox where the latitude error is maximal.\n" +
+                "    Used in \"solstice\" variance structure; related to how the latitude estimation\n" +
+                "    error varies around the equinox.\n" +
+                "</p>",
+                "double",
+                "days",
+                "0",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "bsstInit",
+                "bsst.init",
+                "<p>Initial value of b[sst].</p>",
+                "double",
+                null,
+                "0",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "ssstInit",
+                "ssst.init",
+                "<p>Initial value of sigma[sst].</p>",
+                "double",
+                null,
+                "0.1",
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "rInit",
+                "r.init",
+                "<p>\n" +
+                "    The initial value for the radius (in nautical miles) around\n" +
+                "    each track point where the SST is to be used.\n" +
+                "</p>",
+                "double",
+                null,
+                "200",
+                true,
+                null
+            )
+        ),
+        Arrays.asList(
+            new AnalysisResultAttributeType(
+                "Negativeloglik",
+                "Negativeloglik",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "MaxGradComp",
+                "MaxGradComp",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "uValue",
+                "u value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "uStdDev",
+                "u std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "vValue",
+                "v value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "vStdDev",
+                "v std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "DValue",
+                "D value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "DStdDev",
+                "D std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "bxValue",
+                "bx value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "bxStdDev",
+                "bx std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "byValue",
+                "by value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "byStdDev",
+                "by std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
                 "sxValue",
                 "sx value",
                 "double",
@@ -955,6 +1478,27 @@ public enum AnalysisType {
             new AnalysisResultAttributeType(
                 "varLat",
                 "var lat",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "sstO",
+                "sst o",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "sstP",
+                "sst p",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "sstSmooth",
+                "sst smooth",
                 "double",
                 null,
                 6
