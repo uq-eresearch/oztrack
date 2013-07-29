@@ -193,7 +193,11 @@ public class PositionFixFileLoader extends DataFileLoader {
                                         throw new FileProcessingException("Date Parsing error");
                                     }
                                     if (dateIncludesTime && dataFile.getLocalTimeConversionRequired()) {
-                                        calendar.add(Calendar.HOUR, dataFile.getLocalTimeConversionHours().intValue());
+                                        Double h = dataFile.getLocalTimeConversionHours();
+                                        calendar.add(Calendar.HOUR, (int) Math.floor(h));
+                                        calendar.add(Calendar.MINUTE, (int) Math.floor((h % (1d)) * (1d) * 60d));
+                                        calendar.add(Calendar.SECOND, (int) Math.floor((h % (1d / 60d)) * (1d * 60d) * 60d));
+                                        calendar.add(Calendar.MILLISECOND, (int) Math.round((h % (1d / 60d / 60d)) * (1d * 60d * 60d) * 1000d));
                                     }
                                     rawPositionFix.setDetectionTime(calendar.getTime());
                                 }

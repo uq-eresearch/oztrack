@@ -1,5 +1,6 @@
 package org.oztrack.data.loader;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 
 import javax.persistence.EntityManager;
@@ -91,7 +92,8 @@ public class DataFileRunner {
                 completeDataFile.setStatus(DataFileStatus.COMPLETE);
                 String statusMessage = "File processing successfully completed on " + (new Date()).toString() + ".";
                 if (completeDataFile.getLocalTimeConversionRequired()) {
-                    statusMessage += " Local time conversion is " + completeDataFile.getLocalTimeConversionHours() + " hours.";
+                    String hoursStr = new DecimalFormat("0.##").format(completeDataFile.getLocalTimeConversionHours());
+                    statusMessage += " Local time conversion is " + hoursStr + " hours.";
                 }
                 completeDataFile.setStatusMessage(statusMessage);
                 dataFileDao.update(completeDataFile);

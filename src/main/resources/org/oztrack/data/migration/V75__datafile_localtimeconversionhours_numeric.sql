@@ -1,0 +1,1 @@
+alter table datafile alter column localtimeconversionhours type numeric using localtimeconversionhours::numeric;

@@ -43,8 +43,12 @@ public class DataFile extends OzTrackBaseEntity {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date uploadDate;
+
     private Boolean localTimeConversionRequired;
-    private Long localTimeConversionHours;
+
+    @Column(columnDefinition="numeric")
+    private Double localTimeConversionHours;
+
     private Boolean singleAnimalInFile;
 
     @Enumerated(STRING)
@@ -157,11 +161,11 @@ public class DataFile extends OzTrackBaseEntity {
         this.localTimeConversionRequired = localTimeConversionRequired;
     }
 
-    public Long getLocalTimeConversionHours() {
+    public Double getLocalTimeConversionHours() {
         return localTimeConversionHours;
     }
 
-    public void setLocalTimeConversionHours(Long localTimeConversionHours) {
+    public void setLocalTimeConversionHours(Double localTimeConversionHours) {
         this.localTimeConversionHours = localTimeConversionHours;
     }
 

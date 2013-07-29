@@ -66,7 +66,7 @@ public class DataFileListController {
     @ModelAttribute("dataFile")
     public DataFile getDataFile() {
         DataFile dataFile = new DataFile();
-        dataFile.setLocalTimeConversionHours(10L);
+        dataFile.setLocalTimeConversionHours(10d);
         return dataFile;
     }
 
