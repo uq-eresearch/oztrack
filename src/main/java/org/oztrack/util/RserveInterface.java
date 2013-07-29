@@ -337,95 +337,60 @@ public class RserveInterface {
         safeEval("oztrack_heatmap_line(srs=srs, gridSize=gridSize, colours=colours, labsent=labsent, kmlFile=kmlFile)");
     }
 
+    private String toRValue(Object object) {
+        if (object == null) {
+            return "NULL";
+        }
+        else if (object instanceof Double) {
+            return ((Double) object).toString();
+        }
+        else if (object instanceof Boolean) {
+            return ((Boolean) object) ? "TRUE" : "FALSE";
+        }
+        else if (object instanceof Date) {
+            return "'" + isoDateFormat.format((Date) object) + "'";
+        }
+        else {
+            return "'" + object.toString() + "'";
+        }
+    }
+
     private void writeKalmanKmlFile(Analysis analysis) throws RserveInterfaceException {
         if (analysis.getAnimals().size() > 1) {
             throw new RserveInterfaceException("The Kalman Filter can only be run on one animal at a time.");
         }
-        Boolean is180 = analysis.getProject().getCrosses180();
-        Date startDate = (Date) analysis.getParameterValue("startDate", false);
-        Double startX = (Double) analysis.getParameterValue("startX", false);
-        Double startY = (Double) analysis.getParameterValue("startY", false);
-        Date endDate = (Date) analysis.getParameterValue("endDate", false);
-        Double endX = (Double) analysis.getParameterValue("endX", false);
-        Double endY = (Double) analysis.getParameterValue("endY", false);
-        Boolean uActive = (Boolean) analysis.getParameterValue("uActive", true);
-        Boolean vActive = (Boolean) analysis.getParameterValue("vActive", true);
-        Boolean DActive = (Boolean) analysis.getParameterValue("DActive", true);
-        Boolean bxActive = (Boolean) analysis.getParameterValue("bxActive", true);
-        Boolean byActive = (Boolean) analysis.getParameterValue("byActive", true);
-        Boolean sxActive = (Boolean) analysis.getParameterValue("sxActive", true);
-        Boolean syActive = (Boolean) analysis.getParameterValue("syActive", true);
-        Boolean a0Active = (Boolean) analysis.getParameterValue("a0Active", true);
-        Boolean b0Active = (Boolean) analysis.getParameterValue("b0Active", true);
-        Boolean vscaleActive = (Boolean) analysis.getParameterValue("vscaleActive", true);
-        Double uInit = (Double) analysis.getParameterValue("uInit", true);
-        Double vInit = (Double) analysis.getParameterValue("vInit", true);
-        Double DInit = (Double) analysis.getParameterValue("DInit", true);
-        Double bxInit = (Double) analysis.getParameterValue("bxInit", true);
-        Double byInit = (Double) analysis.getParameterValue("byInit", true);
-        Double sxInit = (Double) analysis.getParameterValue("sxInit", true);
-        Double syInit = (Double) analysis.getParameterValue("syInit", true);
-        Double a0Init = (Double) analysis.getParameterValue("a0Init", true);
-        Double b0Init = (Double) analysis.getParameterValue("b0Init", true);
-        Double vscaleInit = (Double) analysis.getParameterValue("vscaleInit", true);
-        String varStruct = (String) analysis.getParameterValue("varStruct", true);
-        safeEval("is.AM <- " + (is180 ? "TRUE" : "FALSE"));
-        safeEval("startdate <- " + ((startDate != null) ? ("'" + isoDateFormat.format(startDate) + "'") : "NULL"));
-        safeEval("startX <- " + ((startX != null) ? startX : "NULL"));
-        safeEval("startY <- " + ((startY != null) ? startY : "NULL"));
-        safeEval("enddate <- " + ((endDate != null) ? ("'" + isoDateFormat.format(endDate) + "'") : "NULL"));
-        safeEval("endX <- " + ((endX != null) ? endX : "NULL"));
-        safeEval("endY <- " + ((endY != null) ? endY : "NULL"));
-        safeEval("u.active <- " + (uActive ? "TRUE" : "FALSE"));
-        safeEval("v.active <- " + (vActive ? "TRUE" : "FALSE"));
-        safeEval("D.active <- " + (DActive ? "TRUE" : "FALSE"));
-        safeEval("bx.active <- " + (bxActive ? "TRUE" : "FALSE"));
-        safeEval("by.active <- " + (byActive ? "TRUE" : "FALSE"));
-        safeEval("sx.active <- " + (sxActive ? "TRUE" : "FALSE"));
-        safeEval("sy.active <- " + (syActive ? "TRUE" : "FALSE"));
-        safeEval("a0.active <- " + (a0Active ? "TRUE" : "FALSE"));
-        safeEval("b0.active <- " + (b0Active ? "TRUE" : "FALSE"));
-        safeEval("vscale.active <- " + (vscaleActive ? "TRUE" : "FALSE"));
-        safeEval("u.init <- " + uInit);
-        safeEval("v.init <- " + vInit);
-        safeEval("D.init <- " + DInit);
-        safeEval("bx.init <- " + bxInit);
-        safeEval("by.init <- " + byInit);
-        safeEval("sx.init <- " + sxInit);
-        safeEval("sy.init <- " + syInit);
-        safeEval("a0.init <- " + a0Init);
-        safeEval("b0.init <- " + b0Init);
-        safeEval("vscale.init <- " + vscaleInit);
-        safeEval("var.struct <- '" + varStruct + "'");
-        safeEval("kmlFileName <- '" + analysis.getAbsoluteResultFilePath() + "'");
-        safeEval("write.table(positionFix, '/tmp/positionFix.txt', sep=',')");
         safeEval(
             "oztrack_kalman(\n" +
-            "  sinputfile=positionFix,is.AM=is.AM,\n" +
-            "  startdate=startdate,startX=startX,startY=startY,\n"+
-            "  enddate=enddate,endX=endX,endY=endY,\n" +
-            "  u.active=u.active,\n" +
-            "  v.active=v.active,\n" +
-            "  D.active=D.active,\n" +
-            "  bx.active=bx.active,\n" +
-            "  by.active=by.active,\n" +
-            "  sx.active=sx.active,\n" +
-            "  sy.active=sy.active,\n" +
-            "  a0.active=a0.active,\n" +
-            "  b0.active=b0.active,\n" +
-            "  vscale.active=vscale.active,\n" +
-            "  u.init=u.init,\n" +
-            "  v.init=v.init,\n" +
-            "  D.init=D.init,\n" +
-            "  bx.init=bx.init,\n" +
-            "  by.init=by.init,\n" +
-            "  sx.init=sx.init,\n" +
-            "  sy.init=sy.init,\n" +
-            "  a0.init=a0.init,\n" +
-            "  b0.init=b0.init,\n" +
-            "  vscale.init=vscale.init,\n" +
-            "  var.struct=var.struct,\n" +
-            "  kmlFileName=kmlFileName\n" +
+            "  sinputfile=" + "positionFix" + ",\n" +
+            "  is.AM=" + toRValue(analysis.getProject().getCrosses180()) + ",\n" +
+            "  startdate=" + toRValue(analysis.getParameterValue("startDate", false)) + ",\n" +
+            "  startX=" + toRValue(analysis.getParameterValue("startX", false)) + ",\n" +
+            "  startY=" + toRValue(analysis.getParameterValue("startY", false)) + ",\n"+
+            "  enddate=" + toRValue(analysis.getParameterValue("endDate", false)) + ",\n" +
+            "  endX=" + toRValue(analysis.getParameterValue("endX", false)) + ",\n" +
+            "  endY=" + toRValue(analysis.getParameterValue("endY", false)) + ",\n" +
+            "  u.active=" + toRValue(analysis.getParameterValue("uActive", true)) + ",\n" +
+            "  v.active=" + toRValue(analysis.getParameterValue("vActive", true)) + ",\n" +
+            "  D.active=" + toRValue(analysis.getParameterValue("DActive", true)) + ",\n" +
+            "  bx.active=" + toRValue(analysis.getParameterValue("bxActive", true)) + ",\n" +
+            "  by.active=" + toRValue(analysis.getParameterValue("byActive", true)) + ",\n" +
+            "  sx.active=" + toRValue(analysis.getParameterValue("sxActive", true)) + ",\n" +
+            "  sy.active=" + toRValue(analysis.getParameterValue("syActive", true)) + ",\n" +
+            "  a0.active=" + toRValue(analysis.getParameterValue("a0Active", true)) + ",\n" +
+            "  b0.active=" + toRValue(analysis.getParameterValue("b0Active", true)) + ",\n" +
+            "  vscale.active=" + toRValue(analysis.getParameterValue("vscaleActive", true)) + ",\n" +
+            "  u.init=" + toRValue(analysis.getParameterValue("uInit", true)) + ",\n" +
+            "  v.init=" + toRValue(analysis.getParameterValue("vInit", true)) + ",\n" +
+            "  D.init=" + toRValue(analysis.getParameterValue("DInit", true)) + ",\n" +
+            "  bx.init=" + toRValue(analysis.getParameterValue("bxInit", true)) + ",\n" +
+            "  by.init=" + toRValue(analysis.getParameterValue("byInit", true)) + ",\n" +
+            "  sx.init=" + toRValue(analysis.getParameterValue("sxInit", true)) + ",\n" +
+            "  sy.init=" + toRValue(analysis.getParameterValue("syInit", true)) + ",\n" +
+            "  a0.init=" + toRValue(analysis.getParameterValue("a0Init", true)) + ",\n" +
+            "  b0.init=" + toRValue(analysis.getParameterValue("b0Init", true)) + ",\n" +
+            "  vscale.init=" + toRValue(analysis.getParameterValue("vscaleInit", true)) + ",\n" +
+            "  var.struct=" + toRValue(analysis.getParameterValue("varStruct", true)) + ",\n" +
+            "  kmlFileName=" + toRValue(analysis.getAbsoluteResultFilePath()) + "\n" +
             ")"
         );
     }
