@@ -90,7 +90,7 @@ public class AnalysisRunner {
             analysis.setResultFilePath("analysis-" + analysis.getId().toString() + ".kml");
             List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(analysis.toSearchQuery());
             RserveInterface rserveInterface = new RserveInterface(rserveConnectionPool);
-            rserveInterface.createKml(analysis, positionFixList);
+            rserveInterface.runAnalysis(analysis, positionFixList);
             if (analysis.getAnalysisType().getResultType() == AnalysisResultType.HOME_RANGE) {
                 readHomeRangeResult(analysis);
             }

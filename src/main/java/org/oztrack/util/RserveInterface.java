@@ -41,7 +41,7 @@ public class RserveInterface {
         this.rConnectionPool = rConnectionPool;
     }
 
-    public void createKml(Analysis analysis, List<PositionFix> positionFixList) throws RserveInterfaceException {
+    public void runAnalysis(Analysis analysis, List<PositionFix> positionFixList) throws RserveInterfaceException {
         try {
             this.rConnection = rConnectionPool.borrowObject();
         }
@@ -55,36 +55,34 @@ public class RserveInterface {
                 StringUtils.isNotBlank(project.getSrsIdentifier())
                 ? project.getSrsIdentifier().toLowerCase(Locale.ENGLISH)
                 : "epsg:3577";
-            createAnimalNameList(analysis);
-            createRPositionFixDataFrame(positionFixList, srs);
 
             switch (analysis.getAnalysisType()) {
                 case MCP:
-                    writeMCPKmlFile(analysis, srs);
+                    runMcpAnalysis(analysis, positionFixList, srs);
                     break;
                 case KUD:
-                    writeKernelUDKmlFile(analysis, srs);
+                    runKernelUdAnalysis(analysis, positionFixList, srs);
                     break;
                 case KBB:
-                    writeKernelBBKmlFile(analysis, srs);
+                    runKernelBbAnalysis(analysis, positionFixList, srs);
                     break;
                 case AHULL:
-                    writeAlphahullKmlFile(analysis, srs);
+                    runAlphahullAnalysis(analysis, positionFixList, srs);
                     break;
                 case LOCOH:
-                    writeLocohKmlFile(analysis, srs);
+                    runLocohAnalysis(analysis, positionFixList, srs);
                     break;
                 case HEATMAP_POINT:
-                    writePointHeatmapKmlFile(analysis, srs);
+                    runPointHeatmapAnalysis(analysis, positionFixList, srs);
                     break;
                 case HEATMAP_LINE:
-                    writeLineHeatmapKmlFile(analysis, srs);
+                    runLineHeatmapAnalysis(analysis, positionFixList, srs);
                     break;
                 case KALMAN:
-                    writeKalmanKmlFile(analysis);
+                    runKalmanAnalysis(analysis, positionFixList);
                     break;
                 case KALMAN_SST:
-                    writeKalmanSstKmlFile(analysis);
+                    runKalmanSstAnalysis(analysis, positionFixList);
                     break;
                 default:
                     throw new RserveInterfaceException("Unhandled AnalysisType: " + analysis.getAnalysisType());
@@ -116,7 +114,7 @@ public class RserveInterface {
                 StringUtils.isNotBlank(project.getSrsIdentifier())
                 ? project.getSrsIdentifier().toLowerCase(Locale.ENGLISH)
                 : "epsg:3577";
-            createRPositionFixDataFrame(positionFixList, srs);
+            assignRPositionFixDataFrame(positionFixList, false);
             safeEval("srs <- '+init=" + srs + "'");
             safeEval("max.speed <- " + maxSpeed);
             safeEval("is180 <- " + (project.getCrosses180() ? "TRUE" : "FALSE"));
@@ -150,7 +148,7 @@ public class RserveInterface {
         }
     }
 
-    private void createAnimalNameList(Analysis analysis) throws RserveInterfaceException {
+    private void assignRAnimalNameList(Analysis analysis) throws RserveInterfaceException {
         ArrayList<String> names = new ArrayList<String>();
         ArrayList<REXP> contents = new ArrayList<REXP>();
         for (Animal animal : analysis.getAnimals()) {
@@ -166,13 +164,17 @@ public class RserveInterface {
         }
     }
 
-    private void createRPositionFixDataFrame(List<PositionFix> positionFixList, String srs) throws RserveInterfaceException {
+    private void assignRPositionFixDataFrame(
+        List<PositionFix> positionFixList,
+        boolean includeSst
+    ) throws RserveInterfaceException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         String[] animalIds = new String[positionFixList.size()];
         String[] dates = new String[positionFixList.size()];
         double[] latitudes = new double[positionFixList.size()];
         double[] longitudes = new double[positionFixList.size()];
+        double[] ssts = includeSst ? new double[positionFixList.size()] : null;
 
         // Load up the arrays from the database result set
         for (int i=0; i < positionFixList.size(); i++) {
@@ -181,6 +183,9 @@ public class RserveInterface {
             dates[i] = dateFormat.format(positionFix.getDetectionTime());
             longitudes[i] = positionFix.getLocationGeometry().getX();
             latitudes[i] = positionFix.getLocationGeometry().getY();
+            if (includeSst) {
+                ssts[i] = positionFix.getSst();
+            }
         }
 
         // Create the RList to become the dataframe
@@ -189,6 +194,9 @@ public class RserveInterface {
         rPositionFixList.put("Date", new REXPString(dates));
         rPositionFixList.put("X", new REXPDouble(longitudes));
         rPositionFixList.put("Y", new REXPDouble(latitudes));
+        if (includeSst) {
+            rPositionFixList.put("sst", new REXPDouble(ssts));
+        }
 
         try {
             REXP rPosFixDataFrame = REXP.createDataFrame(rPositionFixList);
@@ -196,20 +204,6 @@ public class RserveInterface {
 
             // Convert date strings into POSIXct instances
             safeEval("positionFix$Date <- as.POSIXct(strptime(positionFix$Date, '%Y-%m-%d %H:%M:%S'));");
-
-            // Create SpatialPointsDataFrame in WGS84
-            safeEval("positionFix.xy <- positionFix[, c('ID', 'X', 'Y')];");
-            safeEval("coordinates(positionFix.xy) <- ~X+Y;");
-            safeEval("proj4string(positionFix.xy) <- CRS('+init=epsg:4326');");
-
-            // Create SpatialPointsDataFrame projected to SRS
-            // Note: we assume the user-supplied SRS has units of metres in our area calculations.
-            safeEval("positionFix.proj <- try({spTransform(positionFix.xy,CRS('+init=" + srs + "'))}, silent=TRUE);");
-            safeEval(
-                "if (class(positionFix.proj) == 'try-error') {\n" +
-                "  stop('Unable to project locations. Please check that coordinates and the project\\'s Spatial Reference System are valid.')\n" +
-                "}"
-            );
         }
         catch (REngineException e) {
             throw new RserveInterfaceException(e.toString());
@@ -219,8 +213,29 @@ public class RserveInterface {
         }
     }
 
+    private void assignRPositionFixXYDataFrame() throws RserveInterfaceException {
+        // Create SpatialPointsDataFrame in WGS84
+        safeEval("positionFix.xy <- positionFix[, c('ID', 'X', 'Y')];");
+        safeEval("coordinates(positionFix.xy) <- ~X+Y;");
+        safeEval("proj4string(positionFix.xy) <- CRS('+init=epsg:4326');");
+    }
 
-    private void writeMCPKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
+    private void assignRPositionFixProjDataFrame(String srs) throws RserveInterfaceException {
+        // Create SpatialPointsDataFrame projected to SRS
+        // Note: we assume the user-supplied SRS has units of metres in our area calculations.
+        safeEval("positionFix.proj <- try({spTransform(positionFix.xy,CRS('+init=" + srs + "'))}, silent=TRUE);");
+        safeEval(
+            "if (class(positionFix.proj) == 'try-error') {\n" +
+            "  stop('Unable to project locations. Please check that coordinates and the project\\'s Spatial Reference System are valid.')\n" +
+            "}"
+        );
+    }
+
+    private void runMcpAnalysis(Analysis analysis, List<PositionFix> positionFixList, String srs) throws RserveInterfaceException {
+        assignRAnimalNameList(analysis);
+        assignRPositionFixDataFrame(positionFixList, false);
+        assignRPositionFixXYDataFrame();
+        assignRPositionFixProjDataFrame(srs);
         Double percent = (Double) analysis.getParameterValue("percent", true);
         Boolean is180 = analysis.getProject().getCrosses180();
         if (!(percent >= 0d && percent <= 100d)) {
@@ -233,7 +248,11 @@ public class RserveInterface {
         safeEval("oztrack_mcp(srs=srs, percent=percent, kmlFile=kmlFile, is180=is180)");
     }
 
-    private void writeKernelUDKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
+    private void runKernelUdAnalysis(Analysis analysis, List<PositionFix> positionFixList, String srs) throws RserveInterfaceException {
+        assignRAnimalNameList(analysis);
+        assignRPositionFixDataFrame(positionFixList, false);
+        assignRPositionFixXYDataFrame();
+        assignRPositionFixProjDataFrame(srs);
         Double percent = (Double) analysis.getParameterValue("percent", true);
         String hEstimator = (String) analysis.getParameterValue("hEstimator", false);
         Boolean is180 = analysis.getProject().getCrosses180();
@@ -256,7 +275,11 @@ public class RserveInterface {
         safeEval("oztrack_kernelud(srs=srs, h=h, gridSize=gridSize, extent=extent, percent=percent, kmlFile=kmlFile, is180=is180)");
     }
 
-    private void writeKernelBBKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
+    private void runKernelBbAnalysis(Analysis analysis, List<PositionFix> positionFixList, String srs) throws RserveInterfaceException {
+        assignRAnimalNameList(analysis);
+        assignRPositionFixDataFrame(positionFixList, false);
+        assignRPositionFixXYDataFrame();
+        assignRPositionFixProjDataFrame(srs);
         Double percent = (Double) analysis.getParameterValue("percent", true);
         Double sig1 = (Double) analysis.getParameterValue("sig1", false);
         Double sig2 = (Double) analysis.getParameterValue("sig2", false);
@@ -280,7 +303,11 @@ public class RserveInterface {
         safeEval("oztrack_kernelbb(srs=srs, sig1=sig1, sig2=sig2, gridSize=gridSize, extent=extent, percent=percent, kmlFile=kmlFile, is180=is180)");
     }
 
-    private void writeAlphahullKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
+    private void runAlphahullAnalysis(Analysis analysis, List<PositionFix> positionFixList, String srs) throws RserveInterfaceException {
+        assignRAnimalNameList(analysis);
+        assignRPositionFixDataFrame(positionFixList, false);
+        assignRPositionFixXYDataFrame();
+        assignRPositionFixProjDataFrame(srs);
         Double alpha = (Double) analysis.getParameterValue("alpha", true);
         Boolean is180 = analysis.getProject().getCrosses180();
         if (!(alpha > 0d)) {
@@ -293,7 +320,11 @@ public class RserveInterface {
         safeEval("oztrack_alphahull(srs=srs, alpha=alpha, kmlFile=kmlFile, is180=is180)");
     }
 
-    private void writeLocohKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
+    private void runLocohAnalysis(Analysis analysis, List<PositionFix> positionFixList, String srs) throws RserveInterfaceException {
+        assignRAnimalNameList(analysis);
+        assignRPositionFixDataFrame(positionFixList, false);
+        assignRPositionFixXYDataFrame();
+        assignRPositionFixProjDataFrame(srs);
         Double percent = (Double) analysis.getParameterValue("percent", true);
         Double k = (Double) analysis.getParameterValue("k", false);
         Double r = (Double) analysis.getParameterValue("r", false);
@@ -310,7 +341,9 @@ public class RserveInterface {
         safeEval("oztrack_locoh(srs=srs, k=k, r=r, percent=percent, kmlFile=kmlFile, is180=is180)");
     }
 
-    private void writePointHeatmapKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
+    private void runPointHeatmapAnalysis(Analysis analysis, List<PositionFix> positionFixList, String srs) throws RserveInterfaceException {
+        assignRPositionFixDataFrame(positionFixList, false);
+        assignRPositionFixXYDataFrame();
         Boolean showAbsence = (Boolean) analysis.getParameterValue("showAbsence", true);
         Double gridSize = (Double) analysis.getParameterValue("gridSize", true);
         String colours = (String) analysis.getParameterValue("colours", true);
@@ -325,7 +358,9 @@ public class RserveInterface {
         safeEval("oztrack_heatmap_point(srs=srs, gridSize=gridSize, colours=colours, labsent=labsent, kmlFile=kmlFile)");
     }
 
-    private void writeLineHeatmapKmlFile(Analysis analysis, String srs) throws RserveInterfaceException {
+    private void runLineHeatmapAnalysis(Analysis analysis, List<PositionFix> positionFixList, String srs) throws RserveInterfaceException {
+        assignRPositionFixDataFrame(positionFixList, false);
+        assignRPositionFixXYDataFrame();
         Boolean showAbsence = (Boolean) analysis.getParameterValue("showAbsence", true);
         Double gridSize = (Double) analysis.getParameterValue("gridSize", true);
         String colours = (String) analysis.getParameterValue("colours", true);
@@ -340,28 +375,11 @@ public class RserveInterface {
         safeEval("oztrack_heatmap_line(srs=srs, gridSize=gridSize, colours=colours, labsent=labsent, kmlFile=kmlFile)");
     }
 
-    private String toRValue(Object object) {
-        if (object == null) {
-            return "NULL";
-        }
-        else if (object instanceof Double) {
-            return ((Double) object).toString();
-        }
-        else if (object instanceof Boolean) {
-            return ((Boolean) object) ? "TRUE" : "FALSE";
-        }
-        else if (object instanceof Date) {
-            return "'" + isoDateFormat.format((Date) object) + "'";
-        }
-        else {
-            return "'" + object.toString() + "'";
-        }
-    }
-
-    private void writeKalmanKmlFile(Analysis analysis) throws RserveInterfaceException {
+    private void runKalmanAnalysis(Analysis analysis, List<PositionFix> positionFixList) throws RserveInterfaceException {
         if (analysis.getAnimals().size() > 1) {
             throw new RserveInterfaceException("The Kalman Filter can only be run on one animal at a time.");
         }
+        assignRPositionFixDataFrame(positionFixList, true);
         safeEval(
             "oztrack_kalman(\n" +
             "  sinputfile=" + "positionFix" + ",\n" +
@@ -398,10 +416,11 @@ public class RserveInterface {
         );
     }
 
-    private void writeKalmanSstKmlFile(Analysis analysis) throws RserveInterfaceException {
+    private void runKalmanSstAnalysis(Analysis analysis, List<PositionFix> positionFixList) throws RserveInterfaceException {
         if (analysis.getAnimals().size() > 1) {
             throw new RserveInterfaceException("The Kalman Filter can only be run on one animal at a time.");
         }
+        assignRPositionFixDataFrame(positionFixList, true);
         safeEval(
             "oztrack_kfsst(\n" +
             "  sinputfile=" + "positionFix" + ",\n" +
@@ -439,6 +458,24 @@ public class RserveInterface {
             "  kmlFileName=" + toRValue(analysis.getAbsoluteResultFilePath()) + "\n" +
             ")"
         );
+    }
+
+    private String toRValue(Object object) {
+        if (object == null) {
+            return "NULL";
+        }
+        else if (object instanceof Double) {
+            return ((Double) object).toString();
+        }
+        else if (object instanceof Boolean) {
+            return ((Boolean) object) ? "TRUE" : "FALSE";
+        }
+        else if (object instanceof Date) {
+            return "'" + isoDateFormat.format((Date) object) + "'";
+        }
+        else {
+            return "'" + object.toString() + "'";
+        }
     }
 
     // Wraps an R statement inside a try({...}, silent=TRUE) so we can catch any exception
