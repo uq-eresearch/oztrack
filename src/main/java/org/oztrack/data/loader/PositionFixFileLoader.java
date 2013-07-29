@@ -126,6 +126,8 @@ public class PositionFixFileLoader extends DataFileLoader {
                                 break;
                             case DOP:
                                 break;
+                            case SST:
+                                break;
                             default:
                                 logger.debug("Unhandled positionFixFileHeader: " + positionFixFileHeader);
                                 break;
@@ -239,6 +241,15 @@ public class PositionFixFileLoader extends DataFileLoader {
                                 }
                                 catch (Exception e) {
                                     throw new FileProcessingException("Invalid DOP value: " + dataRow[i]);
+                                }
+                                break;
+                            case SST:
+                                try {
+                                    Double sst = Double.valueOf(dataRow[i]);
+                                    rawPositionFix.setSst(sst);
+                                }
+                                catch (Exception e) {
+                                    throw new FileProcessingException("Invalid SST value: " + dataRow[i]);
                                 }
                                 break;
                             default:

@@ -86,9 +86,11 @@
 
 <c:set var="inclArgos" value="false"/>
 <c:set var="inclDop" value="false"/>
+<c:set var="inclSst" value="false"/>
 <c:forEach items="${positionFixPage.objects}" var="detection">
 <c:set var="inclArgos" value="${inclArgos || (not empty detection.argosClass)}"/>
 <c:set var="inclDop" value="${inclDop || (not empty detection.dop)}"/>
+<c:set var="inclSst" value="${inclSst || (not empty detection.sst)}"/>
 </c:forEach>
 
 <c:if test="${positionFixPage.objects != null}">
@@ -104,6 +106,9 @@
     <col style="width: 60px;" />
     </c:if>
     <c:if test="${inclDop}">
+    <col style="width: 60px;" />
+    </c:if>
+    <c:if test="${inclSst}">
     <col style="width: 60px;" />
     </c:if>
     <sec:authorize access="hasPermission(#project, 'write')">
@@ -126,6 +131,9 @@
             </c:if>
             <c:if test="${inclDop}">
             <th>DOP</th>
+            </c:if>
+            <c:if test="${inclSst}">
+            <th>SST</th>
             </c:if>
             <sec:authorize access="hasPermission(#project, 'write')">
             <th>Uploaded</th>
@@ -150,6 +158,9 @@
             </c:if>
             <c:if test="${inclDop}">
             <td><fmt:formatNumber pattern="0.000" value="${detection.dop}"/></td>
+            </c:if>
+            <c:if test="${inclSst}">
+            <td><fmt:formatNumber pattern="0.000" value="${detection.sst}"/></td>
             </c:if>
             <sec:authorize access="hasPermission(#project, 'write')">
             <td>

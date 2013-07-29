@@ -17,5 +17,6 @@ public enum PositionFixFileHeader {
     ID,
     DELETED,
     ARGOSCLASS,
-    DOP
+    DOP,
+    SST
 }

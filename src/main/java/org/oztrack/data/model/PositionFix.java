@@ -67,6 +67,9 @@ public class PositionFix {
     @Column(name="dop", columnDefinition="numeric")
     private Double dop;
 
+    @Column(name="sst", columnDefinition="numeric")
+    private Double sst;
+
     public Long getId() {
         return id;
     }
@@ -161,5 +164,13 @@ public class PositionFix {
 
     public void setDop(Double dop) {
         this.dop = dop;
+    }
+
+    public Double getSst() {
+        return sst;
+    }
+
+    public void setSst(Double sst) {
+        this.sst = sst;
     }
 }

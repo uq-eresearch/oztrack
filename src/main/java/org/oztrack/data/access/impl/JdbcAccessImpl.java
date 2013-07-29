@@ -22,7 +22,8 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
                 " ,locationgeometry" +
                 " ,deleted" +
                 " ,argosclass" +
-                " ,dop)" +
+                " ,dop" +
+                " ,sst)" +
                 " SELECT rpf.id" +
                 " ,rpf.detectiontime" +
                 " ,rpf.latitude" +
@@ -34,6 +35,7 @@ public class JdbcAccessImpl extends JdbcDaoSupport implements JdbcAccess {
                 " ,rpf.deleted" +
                 " ,rpf.argosclass" +
                 " ,rpf.dop" +
+                " ,rpf.sst" +
                 " FROM rawpositionfix rpf" +
                 " ,animal ani" ;
         if (dataFile.getSingleAnimalInFile()) {
