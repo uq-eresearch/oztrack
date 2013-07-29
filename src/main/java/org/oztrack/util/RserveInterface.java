@@ -184,7 +184,7 @@ public class RserveInterface {
             longitudes[i] = positionFix.getLocationGeometry().getX();
             latitudes[i] = positionFix.getLocationGeometry().getY();
             if (includeSst) {
-                ssts[i] = positionFix.getSst();
+                ssts[i] = (positionFix.getSst() != null) ? positionFix.getSst() : REXPDouble.NA;
             }
         }
 

@@ -55,7 +55,7 @@ public class AnalysisResultAttributeType {
     public Object getAttributeValueObject(String value) {
         String stringValue = StringUtils.isNotBlank(value) ? value : null;
         return
-            (stringValue == null) ? null
+            ((stringValue == null) || stringValue.equals("NA") || stringValue.equals("NULL")) ? null
             : getDataType().equals("double") ? Double.valueOf(stringValue)
             : getDataType().equals("boolean") ?  Boolean.valueOf(stringValue)
             : stringValue;
