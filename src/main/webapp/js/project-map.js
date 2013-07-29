@@ -1322,17 +1322,27 @@
                             var fromCoord = feature.geometry.components[0].clone().transform(that.projection900913, that.projection4326);
                             var toCoord = feature.geometry.components[feature.geometry.components.length - 1].clone().transform(that.projection900913, that.projection4326);
                             return $('<span>')
-                                .append(getAnimal(feature.attributes.id.value).name + ' probable track<br />')
+                                .append(getAnimal(feature.attributes.id.value).name + ' probable track')
+                                .append('<br />')
                                 .append(' from ' + moment(feature.attributes.begin, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
-                                .append(' ' + coordString(fromCoord) + '<br />')
+                                .append(' ' + coordString(fromCoord))
+                                .append('<br />')
                                 .append(' to ' + moment(feature.attributes.end, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
-                                .append(' ' + coordString(toCoord) + '<br />')
+                                .append(' ' + coordString(toCoord))
+                                .append('<br />')
                                 .append($.map(['u', 'v', 'D', 'bx', 'by', 'sx', 'sy', 'a0', 'b0'], function(x) {
                                     var s = '';
                                     var valueObject = feature.attributes[x + 'Value'];
-                                    if (valueObject) {s += x + ' value: ' + parseFloat(valueObject.value).toFixed(6) + ', ';}
+                                    if (valueObject && valueObject.value) {
+                                        s += x + ' value: ' + parseFloat(valueObject.value).toFixed(6) + ', ';
+                                    }
                                     var stdDevObject = feature.attributes[x + 'StdDev'];
-                                    if (stdDevObject) {s += x + ' std dev: ' + parseFloat(stdDevObject.value).toFixed(6) + '<br />';}
+                                    if (stdDevObject && stdDevObject.value) {
+                                        s += x + ' std dev: ' + parseFloat(stdDevObject.value).toFixed(6);
+                                    }
+                                    if (s !== '') {
+                                        s += '<br />';
+                                    }
                                     return s;
                                 }));
                         }
@@ -1340,9 +1350,94 @@
                             return $('<span>')
                                 .append(getAnimal(feature.attributes.id.value).name)
                                 .append(' at ' + moment(feature.attributes.when, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
-                                .append(' ' + coordString(feature.geometry.clone().transform(that.projection900913, that.projection4326)) + '<br />')
-                                .append('varLon: ' + parseFloat(feature.attributes.varLon.value).toFixed(6))
-                                .append(', varLat: ' + parseFloat(feature.attributes.varLat.value).toFixed(6));
+                                .append(' ' + coordString(feature.geometry.clone().transform(that.projection900913, that.projection4326)))
+                                .append('<br />')
+                                .append('varLon: ' + parseFloat(feature.attributes.varLon.value).toFixed(6) + ', ')
+                                .append('varLat: ' + parseFloat(feature.attributes.varLat.value).toFixed(6));
+                        }
+                    }
+                },
+                {
+                    layerName: 'Kalman Filter (SST)',
+                    propertyNames: [
+                        'name',
+                        'id',
+                        'when',
+                        'begin',
+                        'end',
+                        'Negativeloglik',
+                        'MaxGradComp',
+                        'uValue',
+                        'uStdDev',
+                        'vValue',
+                        'vStdDev',
+                        'DValue',
+                        'DStdDev',
+                        'bxValue',
+                        'bxStdDev',
+                        'byValue',
+                        'byStdDev',
+                        'bsstValue',
+                        'bsstStdDev',
+                        'sxValue',
+                        'sxStdDev',
+                        'syValue',
+                        'syStdDev',
+                        'ssstValue',
+                        'ssstStdDev',
+                        'rValue',
+                        'rStdDev',
+                        'a0Value',
+                        'a0StdDev',
+                        'b0Value',
+                        'b0StdDev',
+                        'varLon',
+                        'varLat',
+                        'sst_o',
+                        'sst_p',
+                        'sst_smooth'
+                    ],
+                    summary: function(feature) {
+                        if (feature.attributes.name === 'Trajectory') {
+                            var fromCoord = feature.geometry.components[0].clone().transform(that.projection900913, that.projection4326);
+                            var toCoord = feature.geometry.components[feature.geometry.components.length - 1].clone().transform(that.projection900913, that.projection4326);
+                            return $('<span>')
+                                .append(getAnimal(feature.attributes.id.value).name + ' probable track')
+                                .append('<br />')
+                                .append(' from ' + moment(feature.attributes.begin, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
+                                .append(' ' + coordString(fromCoord))
+                                .append('<br />')
+                                .append(' to ' + moment(feature.attributes.end, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
+                                .append(' ' + coordString(toCoord))
+                                .append('<br />')
+                                .append($.map(['u', 'v', 'D', 'bx', 'by', 'bsst', 'sx', 'sy', 'ssst', 'r', 'a0', 'b0'], function(x) {
+                                    var s = '';
+                                    var valueObject = feature.attributes[x + 'Value'];
+                                    if (valueObject && valueObject.value) {
+                                        s += x + ' value: ' + parseFloat(valueObject.value).toFixed(6) + ', ';
+                                    }
+                                    var stdDevObject = feature.attributes[x + 'StdDev'];
+                                    if (stdDevObject && stdDevObject.value) {
+                                        s += x + ' std dev: ' + parseFloat(stdDevObject.value).toFixed(6);
+                                    }
+                                    if (s !== '') {
+                                        s += '<br />';
+                                    }
+                                    return s;
+                                }));
+                        }
+                        else {
+                            return $('<span>')
+                                .append(getAnimal(feature.attributes.id.value).name)
+                                .append(' at ' + moment(feature.attributes.when, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
+                                .append(' ' + coordString(feature.geometry.clone().transform(that.projection900913, that.projection4326)))
+                                .append('<br />')
+                                .append('varLon: ' + parseFloat(feature.attributes.varLon.value).toFixed(6) + ', ')
+                                .append('varLat: ' + parseFloat(feature.attributes.varLat.value).toFixed(6))
+                                .append('<br />')
+                                .append('sst_o: ' + parseFloat(feature.attributes.sst_o.value).toFixed(3) + ', ')
+                                .append('sst_p: ' + parseFloat(feature.attributes.sst_p.value).toFixed(3) + ', ')
+                                .append('sst_smooth: ' + parseFloat(feature.attributes.sst_smooth.value).toFixed(3));
                         }
                     }
                 }

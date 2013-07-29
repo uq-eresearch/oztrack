@@ -379,7 +379,7 @@ public class RserveInterface {
         if (analysis.getAnimals().size() > 1) {
             throw new RserveInterfaceException("The Kalman Filter can only be run on one animal at a time.");
         }
-        assignRPositionFixDataFrame(positionFixList, true);
+        assignRPositionFixDataFrame(positionFixList, false);
         safeEval(
             "oztrack_kalman(\n" +
             "  sinputfile=" + "positionFix" + ",\n" +

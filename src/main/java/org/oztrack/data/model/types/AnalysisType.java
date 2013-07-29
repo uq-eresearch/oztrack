@@ -888,20 +888,6 @@ public enum AnalysisType {
                 6
             ),
             new AnalysisResultAttributeType(
-                "bsstValue",
-                "bsst value",
-                "double",
-                null,
-                6
-            ),
-            new AnalysisResultAttributeType(
-                "bsstStdDev",
-                "bsst std dev",
-                "double",
-                null,
-                6
-            ),
-            new AnalysisResultAttributeType(
                 "sxValue",
                 "sx value",
                 "double",
@@ -925,34 +911,6 @@ public enum AnalysisType {
             new AnalysisResultAttributeType(
                 "syStdDev",
                 "sy std dev",
-                "double",
-                null,
-                6
-            ),
-            new AnalysisResultAttributeType(
-                "ssstValue",
-                "ssst value",
-                "double",
-                null,
-                6
-            ),
-            new AnalysisResultAttributeType(
-                "ssstStdDev",
-                "ssst std dev",
-                "double",
-                null,
-                6
-            ),
-            new AnalysisResultAttributeType(
-                "rValue",
-                "r value",
-                "double",
-                null,
-                6
-            ),
-            new AnalysisResultAttributeType(
-                "rStdDev",
-                "r std dev",
                 "double",
                 null,
                 6
@@ -1411,6 +1369,20 @@ public enum AnalysisType {
                 6
             ),
             new AnalysisResultAttributeType(
+                "bsstValue",
+                "bsst value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "bsstStdDev",
+                "bsst std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
                 "sxValue",
                 "sx value",
                 "double",
@@ -1434,6 +1406,34 @@ public enum AnalysisType {
             new AnalysisResultAttributeType(
                 "syStdDev",
                 "sy std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "ssstValue",
+                "ssst value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "ssstStdDev",
+                "ssst std dev",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "rValue",
+                "r value",
+                "double",
+                null,
+                6
+            ),
+            new AnalysisResultAttributeType(
+                "rStdDev",
+                "r std dev",
                 "double",
                 null,
                 6
