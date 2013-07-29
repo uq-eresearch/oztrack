@@ -99,6 +99,7 @@ OpenLayers.Format.KML.prototype.parseAttributes = function(node) {
                     $('<div>')
                         .addClass(this.displayClass)
                         .append($('<a>')
+                            .addClass('olButton')
                             .attr('target', '_blank')
                             .attr('href', this.dataLicence.infoUrl)
                             .attr('title',
@@ -276,6 +277,7 @@ OpenLayers.Format.KML.prototype.parseAttributes = function(node) {
                         return popoverContent;
                     }
                     var span = $('<span>')
+                        .addClass('olButton')
                         .addClass('icon-white')
                         .addClass('icon-wrench')
                         .addClass('layer-opacity-popover-icon')
@@ -297,6 +299,7 @@ OpenLayers.Format.KML.prototype.parseAttributes = function(node) {
                     var targetLayer = map.layers[map.getLayerIndex(layer) + delta];
                     if (targetLayer && (layer.metadata.category == targetLayer.metadata.category)) {
                         layerMoveSpan
+                            .addClass('olButton')
                             .css('cursor', 'pointer')
                             .attr('title', 'Move ' + ((delta > 0) ? 'down' : 'up'))
                             .click(function(e) {
@@ -317,6 +320,7 @@ OpenLayers.Format.KML.prototype.parseAttributes = function(node) {
                         return;
                     }
                     var span = $('<span>')
+                        .addClass('olButton')
                         .addClass('icon-white')
                         .addClass('icon-info-sign')
                         .css('float', 'right')
@@ -457,7 +461,9 @@ OpenLayers.Format.KML.prototype.parseAttributes = function(node) {
             for (categoryId in this.categories) {
                 var category = this.categories[categoryId];
                 category.labelDiv = $('<div class="categoryLabelDiv">')
+                    .addClass('olButton')
                     .append($('<span>')
+                        .addClass('olButton')
                         .addClass('categoryLabelMinimizer')
                         .addClass('icon-chevron-' + (category.initMinimized ? 'down' : 'up'))
                         .addClass('icon-white')
