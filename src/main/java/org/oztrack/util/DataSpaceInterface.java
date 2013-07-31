@@ -11,8 +11,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.lang3.Range;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -22,6 +20,7 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.log4j.Logger;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.UserDao;
@@ -36,7 +35,7 @@ import org.xml.sax.InputSource;
 import com.vividsolutions.jts.geom.Polygon;
 
 public class DataSpaceInterface {
-    protected final Log logger = LogFactory.getLog(getClass());
+    private final Logger logger = Logger.getLogger(getClass());
     private ProjectDao projectDao;
     private UserDao userDao;
     private String dataSpaceUrl;
