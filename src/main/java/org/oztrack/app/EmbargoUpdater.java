@@ -12,8 +12,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceUnit;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.oztrack.data.access.impl.ProjectDaoImpl;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.types.ProjectAccess;
@@ -26,7 +25,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EmbargoUpdater implements Runnable {
-    protected final Log logger = LogFactory.getLog(getClass());
+    private final Logger logger = Logger.getLogger(getClass());
 
     private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 

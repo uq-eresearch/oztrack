@@ -73,7 +73,7 @@ class StreamHog extends Thread {
  * Inform the user if you started an Rserve instance.
  */
 public class RserveUtils {
-    private static Logger logger = Logger.getLogger(OzTrackUtil.class);
+    private static Logger logger = Logger.getLogger(RserveUtils.class);
 
     /** shortcut with default args */
     public static boolean launchRserve(String cmd) {

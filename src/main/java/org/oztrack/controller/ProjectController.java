@@ -19,8 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
@@ -58,8 +56,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ProjectController {
-    protected final Log logger = LogFactory.getLog(getClass());
-
     private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired

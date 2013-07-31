@@ -6,8 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -20,7 +19,7 @@ import org.oztrack.data.model.Project;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
 public class SearchQueryXLSView extends AbstractExcelView {
-    protected final Log logger = LogFactory.getLog(getClass());
+    private final Logger logger = Logger.getLogger(getClass());
 
     @SuppressWarnings("unused")
     private Project project;

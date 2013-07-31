@@ -9,8 +9,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceUnit;
 import javax.sql.DataSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.oztrack.data.access.impl.AnimalDaoImpl;
 import org.oztrack.data.access.impl.DataFileDaoImpl;
 import org.oztrack.data.access.impl.JdbcAccessImpl;
@@ -20,7 +19,7 @@ import org.oztrack.data.model.types.DataFileStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class DataFileRunner {
-    protected final Log logger = LogFactory.getLog(getClass());
+    private final Logger logger = Logger.getLogger(getClass());
 
     @PersistenceUnit
     private EntityManagerFactory entityManagerFactory;
@@ -42,7 +41,6 @@ public class DataFileRunner {
 
         PositionFixDaoImpl positionFixDao = new PositionFixDaoImpl();
         positionFixDao.setEntityManger(entityManager);
-        positionFixDao.setDataSource(dataSource);
 
         JdbcAccessImpl jdbcAccess = new JdbcAccessImpl();
         jdbcAccess.setDataSource(dataSource);

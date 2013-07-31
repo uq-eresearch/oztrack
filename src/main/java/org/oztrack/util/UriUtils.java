@@ -5,11 +5,10 @@ import java.net.URISyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 public class UriUtils {
-    protected static final Log logger = LogFactory.getLog(UriUtils.class);
+    private static final Logger logger = Logger.getLogger(UriUtils.class);
 
     /**
      * Check whether the supplied URI is within same web application as that of the request.

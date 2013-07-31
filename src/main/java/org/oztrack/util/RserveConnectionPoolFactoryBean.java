@@ -1,14 +1,13 @@
 package org.oztrack.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.pool.ObjectPool;
 import org.apache.commons.pool.impl.GenericObjectPool;
+import org.apache.log4j.Logger;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.springframework.beans.factory.FactoryBean;
 
 public class RserveConnectionPoolFactoryBean implements FactoryBean<ObjectPool<RConnection>> {
-    protected final Log logger = LogFactory.getLog(getClass());
+    private final Logger logger = Logger.getLogger(getClass());
 
     private final int numConnections;
 

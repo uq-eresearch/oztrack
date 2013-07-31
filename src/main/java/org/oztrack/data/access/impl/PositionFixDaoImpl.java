@@ -19,8 +19,7 @@ import javax.sql.DataSource;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.oztrack.data.access.Page;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.Analysis;
@@ -43,7 +42,7 @@ import com.vividsolutions.jts.io.WKTWriter;
 
 @Service
 public class PositionFixDaoImpl implements PositionFixDao {
-    protected final Log logger = LogFactory.getLog(getClass());
+    private final Logger logger = Logger.getLogger(getClass());
 
     private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 

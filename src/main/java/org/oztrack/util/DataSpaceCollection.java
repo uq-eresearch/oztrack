@@ -7,8 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.lang3.Range;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.types.ProjectAccess;
@@ -21,7 +20,7 @@ import com.vividsolutions.jts.geom.Polygon;
 
 @SuppressWarnings("unused")
 public class DataSpaceCollection {
-    protected final Log logger = LogFactory.getLog(getClass());
+    private final Logger logger = Logger.getLogger(getClass());
 
     private final SimpleDateFormat isoYearMonthDateFormat = new SimpleDateFormat("yyyy-MM");
     private final SimpleDateFormat isoDateTimeUTCFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");

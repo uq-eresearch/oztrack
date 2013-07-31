@@ -15,8 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.pool.ObjectPool;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.JTSFactoryFinder;
@@ -53,8 +51,6 @@ import com.vividsolutions.jts.io.WKTReader;
 
 @Controller
 public class ProjectCleanseController {
-    protected final Log logger = LogFactory.getLog(getClass());
-
     private final DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired

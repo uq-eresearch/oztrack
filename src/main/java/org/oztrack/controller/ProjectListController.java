@@ -10,8 +10,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.DataLicenceDao;
 import org.oztrack.data.access.ProjectDao;
@@ -38,8 +36,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ProjectListController {
-    protected final Log logger = LogFactory.getLog(getClass());
-
     private final GregorianCalendar currentCalendar = new GregorianCalendar();
 
     @Autowired

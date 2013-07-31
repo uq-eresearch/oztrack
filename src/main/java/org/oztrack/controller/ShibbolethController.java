@@ -7,8 +7,7 @@ import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
@@ -26,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ShibbolethController {
-    protected final Log logger = LogFactory.getLog(getClass());
+    private final Logger logger = Logger.getLogger(getClass());
 
     @Autowired
     private OzTrackConfiguration configuration;

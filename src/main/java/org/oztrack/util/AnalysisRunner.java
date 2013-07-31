@@ -13,9 +13,8 @@ import javax.persistence.PersistenceUnit;
 import javax.sql.DataSource;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.pool.ObjectPool;
+import org.apache.log4j.Logger;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.oztrack.data.access.impl.AnalysisDaoImpl;
 import org.oztrack.data.access.impl.PositionFixDaoImpl;
@@ -52,10 +51,10 @@ import de.micromata.opengis.kml.v_2_2_0.TimeStamp;
 
 @Service
 public class AnalysisRunner {
-    protected final Log logger = LogFactory.getLog(getClass());
+    private final Logger logger = Logger.getLogger(getClass());
 
     private final GeometryFactory jtsGeometryFactory = JTSFactoryFinder.getGeometryFactory(null);
-    
+
     private final SimpleDateFormat isoDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'");
 
     @PersistenceUnit
@@ -78,7 +77,6 @@ public class AnalysisRunner {
         analysisDao.setEntityManger(entityManager);
         PositionFixDaoImpl positionFixDao = new PositionFixDaoImpl();
         positionFixDao.setEntityManger(entityManager);
-        positionFixDao.setDataSource(dataSource);
         try {
             entityManager.getTransaction().begin();
             Analysis analysis = analysisDao.getAnalysisById(analysisId);

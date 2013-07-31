@@ -1,14 +1,13 @@
 package org.oztrack.util;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.pool.BasePoolableObjectFactory;
+import org.apache.log4j.Logger;
 import org.oztrack.error.RserveInterfaceException;
 import org.rosuda.REngine.Rserve.RConnection;
 
 public class RserveConnectionFactory extends BasePoolableObjectFactory<RConnection> {
-    protected final Log logger = LogFactory.getLog(getClass());
+    private final Logger logger = Logger.getLogger(getClass());
 
     @Override
     public RConnection makeObject() throws Exception {

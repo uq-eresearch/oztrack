@@ -9,8 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONWriter;
 import org.oztrack.data.access.PositionFixDao;
@@ -32,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ProjectTracksController {
-    protected final Log logger = LogFactory.getLog(getClass());
+    private final Logger logger = Logger.getLogger(getClass());
 
     private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 

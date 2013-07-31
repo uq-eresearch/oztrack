@@ -3,8 +3,6 @@ package org.oztrack.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.oztrack.util.UriUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class LoginController {
-    protected final Log logger = LogFactory.getLog(getClass());
-
     @Autowired
     AuthenticationManager authenticationManager;
 

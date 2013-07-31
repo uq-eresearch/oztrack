@@ -8,8 +8,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.JdbcAccess;
@@ -19,7 +18,7 @@ import org.oztrack.data.model.DataFile;
 import org.oztrack.error.FileProcessingException;
 
 public abstract class DataFileLoader {
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Logger logger = Logger.getLogger(getClass());
 
     protected DataFile dataFile;
     protected DataFileDao dataFileDao;

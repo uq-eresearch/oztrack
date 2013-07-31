@@ -3,8 +3,6 @@ package org.oztrack.controller;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ResetPasswordActionController {
-    protected final Log logger = LogFactory.getLog(getClass());
-
     @Autowired
     private UserDao userDao;
 
