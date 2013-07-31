@@ -88,4 +88,6 @@
         <property name="maxUploadSize" value="100000000"/>
         <property name="defaultEncoding" value="UTF-8"/>
     </bean>
+
+    <bean id="renumberPositionFixesExecutor" class="org.oztrack.util.ProjectAnimalsMutexExecutor"/>
 </beans>

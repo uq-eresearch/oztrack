@@ -14,10 +14,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.sql.DataSource;
 
 import org.apache.commons.lang3.Range;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.oztrack.data.access.Page;
@@ -32,8 +30,8 @@ import org.oztrack.data.model.SearchQuery;
 import org.oztrack.data.model.types.ArgosClass;
 import org.oztrack.data.model.types.PositionFixStats;
 import org.oztrack.data.model.types.TrajectoryStats;
+import org.oztrack.util.ProjectAnimalsMutexExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,17 +46,13 @@ public class PositionFixDaoImpl implements PositionFixDao {
 
     private EntityManager em;
 
-    private DataSource dataSource;
-
     @PersistenceContext
     public void setEntityManger(EntityManager em) {
         this.em = em;
     }
 
     @Autowired
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    ProjectAnimalsMutexExecutor renumberPositionFixesExecutor;
 
     @Override
     @Transactional
@@ -316,148 +310,142 @@ public class PositionFixDaoImpl implements PositionFixDao {
 
     @Override
     @Transactional
-    public void renumberPositionFixes(Project project, List<Long> animalIds) {
+    public void renumberPositionFixes(final Project project, final List<Long> animalIds) {
         if ((project == null) || (animalIds == null) || animalIds.isEmpty()) {
             return;
         }
+        renumberPositionFixesExecutor.execute(new ProjectAnimalsMutexExecutor.ProjectAnimalsRunnable(project, animalIds) {
+            @Override
+            public void run() {
+                em.createNativeQuery(
+                        "delete from positionfixlayer\n" +
+                        "where\n" +
+                        "    project_id = :projectId and\n" +
+                        "    animal_id in (:animalIds)"
+                    )
+                    .setParameter("projectId", project.getId())
+                    .setParameter("animalIds", animalIds)
+                    .executeUpdate();
 
-        // Object locks on all tables to avoid deadlock
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        String lockWhere =
-            "where \n" +
-            "    project_id = " + project.getId() + " and \n" +
-            "    animal_id in (" + StringUtils.join(animalIds, ",") + ")";
-        jdbcTemplate.execute("select * from positionfixlayer " + lockWhere + " for update");
-        jdbcTemplate.execute("select * from positionfixnumbered " + lockWhere + " for update");
-        jdbcTemplate.execute("select * from trajectorylayer " + lockWhere + " for update");
+                String unshiftedPointExpr = "positionfix.locationgeometry";
+                String pointExpr = project.getCrosses180() ? "ST_Shift_Longitude(" + unshiftedPointExpr + ")" : unshiftedPointExpr;
+                em.createNativeQuery(
+                        "insert into positionfixlayer(\n" +
+                        "    id,\n" +
+                        "    project_id,\n" +
+                        "    animal_id,\n" +
+                        "    detectiontime,\n" +
+                        "    locationgeometry,\n" +
+                        "    deleted,\n" +
+                        "    probable,\n" +
+                        "    colour\n" +
+                        ")\n" +
+                        "select\n" +
+                        "    positionfix.id as id,\n" +
+                        "    positionfix.project_id as project_id,\n" +
+                        "    positionfix.animal_id as animal_id,\n" +
+                        "    positionfix.detectiontime as detectiontime,\n" +
+                        "    " + pointExpr + " as locationgeometry,\n" +
+                        "    positionfix.deleted as deleted,\n" +
+                        "    positionfix.probable as probable,\n" +
+                        "    animal.colour as colour\n" +
+                        "from\n" +
+                        "    positionfix,\n" +
+                        "    animal\n" +
+                        "where\n" +
+                        "    positionfix.project_id = :projectId and\n" +
+                        "    positionfix.animal_id = animal.id and\n" +
+                        "    animal.id in (:animalIds)"
+                    )
+                    .setParameter("projectId", project.getId())
+                    .setParameter("animalIds", animalIds)
+                    .executeUpdate();
 
-        em.createNativeQuery(
-                "delete from positionfixlayer\n" +
-                "where\n" +
-                "    project_id = :projectId and\n" +
-                "    animal_id in (:animalIds)"
-            )
-            .setParameter("projectId", project.getId())
-            .setParameter("animalIds", animalIds)
-            .executeUpdate();
+                em.createNativeQuery(
+                        "delete from positionfixnumbered\n" +
+                        "where\n" +
+                        "    project_id = :projectId and\n" +
+                        "    animal_id in (:animalIds)"
+                    )
+                    .setParameter("projectId", project.getId())
+                    .setParameter("animalIds", animalIds)
+                    .executeUpdate();
 
-        String unshiftedPointExpr = "positionfix.locationgeometry";
-        String pointExpr = project.getCrosses180() ? "ST_Shift_Longitude(" + unshiftedPointExpr + ")" : unshiftedPointExpr;
-        em.createNativeQuery(
-                "insert into positionfixlayer(\n" +
-                "    id,\n" +
-                "    project_id,\n" +
-                "    animal_id,\n" +
-                "    detectiontime,\n" +
-                "    locationgeometry,\n" +
-                "    deleted,\n" +
-                "    probable,\n" +
-                "    colour\n" +
-                ")\n" +
-                "select\n" +
-                "    positionfix.id as id,\n" +
-                "    positionfix.project_id as project_id,\n" +
-                "    positionfix.animal_id as animal_id,\n" +
-                "    positionfix.detectiontime as detectiontime,\n" +
-                "    " + pointExpr + " as locationgeometry,\n" +
-                "    positionfix.deleted as deleted,\n" +
-                "    positionfix.probable as probable,\n" +
-                "    animal.colour as colour\n" +
-                "from\n" +
-                "    positionfix,\n" +
-                "    animal\n" +
-                "where\n" +
-                "    positionfix.project_id = :projectId and\n" +
-                "    positionfix.animal_id = animal.id and\n" +
-                "    animal.id in (:animalIds)"
-            )
-            .setParameter("projectId", project.getId())
-            .setParameter("animalIds", animalIds)
-            .executeUpdate();
+                em.createNativeQuery(
+                        "insert into positionfixnumbered(\n" +
+                        "    id,\n" +
+                        "    project_id,\n" +
+                        "    animal_id,\n" +
+                        "    detectiontime,\n" +
+                        "    locationgeometry,\n" +
+                        "    colour,\n" +
+                        "    row_number\n" +
+                        ")\n" +
+                        "select\n" +
+                        "    positionfix.id as id,\n" +
+                        "    positionfix.project_id as project_id,\n" +
+                        "    positionfix.animal_id as animal_id,\n" +
+                        "    positionfix.detectiontime as detectiontime,\n" +
+                        "    positionfix.locationgeometry as locationgeometry,\n" +
+                        "    animal.colour as colour,\n" +
+                        "    row_number() over (partition by positionfix.project_id, positionfix.animal_id order by positionfix.detectiontime) as row_number\n" +
+                        "from\n" +
+                        "    positionfix positionfix\n" +
+                        "    inner join animal on positionfix.animal_id = animal.id\n" +
+                        "where\n" +
+                        "    positionfix.project_id = :projectId and\n" +
+                        "    not(positionfix.deleted) and\n" +
+                        "    animal.id in (:animalIds)"
+                    )
+                    .setParameter("projectId", project.getId())
+                    .setParameter("animalIds", animalIds)
+                    .executeUpdate();
 
-        em.createNativeQuery(
-                "delete from positionfixnumbered\n" +
-                "where\n" +
-                "    project_id = :projectId and\n" +
-                "    animal_id in (:animalIds)"
-            )
-            .setParameter("projectId", project.getId())
-            .setParameter("animalIds", animalIds)
-            .executeUpdate();
+                em.createNativeQuery(
+                        "delete from trajectorylayer\n" +
+                        "where\n" +
+                        "    project_id = :projectId and\n" +
+                        "    animal_id in (:animalIds)"
+                    )
+                    .setParameter("projectId", project.getId())
+                    .setParameter("animalIds", animalIds)
+                    .executeUpdate();
 
-        em.createNativeQuery(
-                "insert into positionfixnumbered(\n" +
-                "    id,\n" +
-                "    project_id,\n" +
-                "    animal_id,\n" +
-                "    detectiontime,\n" +
-                "    locationgeometry,\n" +
-                "    colour,\n" +
-                "    row_number\n" +
-                ")\n" +
-                "select\n" +
-                "    positionfix.id as id,\n" +
-                "    positionfix.project_id as project_id,\n" +
-                "    positionfix.animal_id as animal_id,\n" +
-                "    positionfix.detectiontime as detectiontime,\n" +
-                "    positionfix.locationgeometry as locationgeometry,\n" +
-                "    animal.colour as colour,\n" +
-                "    row_number() over (partition by positionfix.project_id, positionfix.animal_id order by positionfix.detectiontime) as row_number\n" +
-                "from\n" +
-                "    positionfix positionfix\n" +
-                "    inner join animal on positionfix.animal_id = animal.id\n" +
-                "where\n" +
-                "    positionfix.project_id = :projectId and\n" +
-                "    not(positionfix.deleted) and\n" +
-                "    animal.id in (:animalIds)"
-            )
-            .setParameter("projectId", project.getId())
-            .setParameter("animalIds", animalIds)
-            .executeUpdate();
-
-        em.createNativeQuery(
-                "delete from trajectorylayer\n" +
-                "where\n" +
-                "    project_id = :projectId and\n" +
-                "    animal_id in (:animalIds)"
-            )
-            .setParameter("projectId", project.getId())
-            .setParameter("animalIds", animalIds)
-            .executeUpdate();
-
-        String unshiftedLineExpr = "ST_MakeLine(positionfix1.locationgeometry, positionfix2.locationgeometry)";
-        String lineExpr = project.getCrosses180() ? "ST_Shift_Longitude(" + unshiftedLineExpr + ")" : unshiftedLineExpr;
-        em.createNativeQuery(
-                "insert into trajectorylayer(\n" +
-                "    id,\n" +
-                "    project_id,\n" +
-                "    animal_id,\n" +
-                "    startdetectiontime,\n" +
-                "    enddetectiontime,\n" +
-                "    colour,\n" +
-                "    trajectorygeometry\n" +
-                ")\n" +
-                "select\n" +
-                "    positionfix1.id as id,\n" +
-                "    positionfix1.project_id as project_id,\n" +
-                "    positionfix1.animal_id as animal_id,\n" +
-                "    positionfix1.detectiontime as startdetectiontime,\n" +
-                "    positionfix2.detectiontime as enddetectiontime,\n" +
-                "    positionfix1.colour as colour,\n" +
-                "    " + lineExpr + " as trajectorygeometry\n" +
-                "from\n" +
-                "    positionfixnumbered positionfix1\n" +
-                "    inner join positionfixnumbered positionfix2 on\n" +
-                "        positionfix1.project_id = positionfix2.project_id and\n" +
-                "        positionfix1.animal_id = positionfix2.animal_id and\n" +
-                "        positionfix1.row_number + 1 = positionfix2.row_number\n" +
-                "where\n" +
-                "    positionfix1.project_id = :projectId and\n" +
-                "    positionfix1.animal_id in (:animalIds)"
-            )
-            .setParameter("projectId", project.getId())
-            .setParameter("animalIds", animalIds)
-            .executeUpdate();
+                String unshiftedLineExpr = "ST_MakeLine(positionfix1.locationgeometry, positionfix2.locationgeometry)";
+                String lineExpr = project.getCrosses180() ? "ST_Shift_Longitude(" + unshiftedLineExpr + ")" : unshiftedLineExpr;
+                em.createNativeQuery(
+                        "insert into trajectorylayer(\n" +
+                        "    id,\n" +
+                        "    project_id,\n" +
+                        "    animal_id,\n" +
+                        "    startdetectiontime,\n" +
+                        "    enddetectiontime,\n" +
+                        "    colour,\n" +
+                        "    trajectorygeometry\n" +
+                        ")\n" +
+                        "select\n" +
+                        "    positionfix1.id as id,\n" +
+                        "    positionfix1.project_id as project_id,\n" +
+                        "    positionfix1.animal_id as animal_id,\n" +
+                        "    positionfix1.detectiontime as startdetectiontime,\n" +
+                        "    positionfix2.detectiontime as enddetectiontime,\n" +
+                        "    positionfix1.colour as colour,\n" +
+                        "    " + lineExpr + " as trajectorygeometry\n" +
+                        "from\n" +
+                        "    positionfixnumbered positionfix1\n" +
+                        "    inner join positionfixnumbered positionfix2 on\n" +
+                        "        positionfix1.project_id = positionfix2.project_id and\n" +
+                        "        positionfix1.animal_id = positionfix2.animal_id and\n" +
+                        "        positionfix1.row_number + 1 = positionfix2.row_number\n" +
+                        "where\n" +
+                        "    positionfix1.project_id = :projectId and\n" +
+                        "    positionfix1.animal_id in (:animalIds)"
+                    )
+                    .setParameter("projectId", project.getId())
+                    .setParameter("animalIds", animalIds)
+                    .executeUpdate();
+            }
+        });
     }
 
     @Override
