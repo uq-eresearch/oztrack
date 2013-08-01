@@ -66,6 +66,9 @@ public class AnalysisRunner {
     @Autowired
     private ObjectPool<RConnection> rserveConnectionPool;
 
+    @Autowired
+    private ProjectAnimalsMutexExecutor renumberPositionFixesExecutor;
+
     public AnalysisRunner() {
     }
 
@@ -77,6 +80,7 @@ public class AnalysisRunner {
         analysisDao.setEntityManger(entityManager);
         PositionFixDaoImpl positionFixDao = new PositionFixDaoImpl();
         positionFixDao.setEntityManger(entityManager);
+        positionFixDao.setRenumberPositionFixesExecutor(renumberPositionFixesExecutor);
         try {
             entityManager.getTransaction().begin();
             Analysis analysis = analysisDao.getAnalysisById(analysisId);

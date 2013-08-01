@@ -16,6 +16,7 @@ import org.oztrack.data.access.impl.JdbcAccessImpl;
 import org.oztrack.data.access.impl.PositionFixDaoImpl;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.types.DataFileStatus;
+import org.oztrack.util.ProjectAnimalsMutexExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class DataFileRunner {
@@ -26,6 +27,9 @@ public class DataFileRunner {
 
     @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    private ProjectAnimalsMutexExecutor renumberPositionFixesExecutor;
 
     public DataFileRunner() {
     }
@@ -41,6 +45,7 @@ public class DataFileRunner {
 
         PositionFixDaoImpl positionFixDao = new PositionFixDaoImpl();
         positionFixDao.setEntityManger(entityManager);
+        positionFixDao.setRenumberPositionFixesExecutor(renumberPositionFixesExecutor);
 
         JdbcAccessImpl jdbcAccess = new JdbcAccessImpl();
         jdbcAccess.setDataSource(dataSource);

@@ -46,13 +46,17 @@ public class PositionFixDaoImpl implements PositionFixDao {
 
     private EntityManager em;
 
+    private ProjectAnimalsMutexExecutor renumberPositionFixesExecutor;
+
     @PersistenceContext
     public void setEntityManger(EntityManager em) {
         this.em = em;
     }
 
     @Autowired
-    ProjectAnimalsMutexExecutor renumberPositionFixesExecutor;
+    public void setRenumberPositionFixesExecutor(ProjectAnimalsMutexExecutor renumberPositionFixesExecutor) {
+        this.renumberPositionFixesExecutor = renumberPositionFixesExecutor;
+    }
 
     @Override
     @Transactional
