@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -83,6 +84,7 @@ public class ProjectCleanseController {
         model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project, true));
         model.addAttribute("animalBoundingBoxes", projectDao.getAnimalBoundingBoxes(project, true));
         model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, true));
+        model.addAttribute("analysisTypeList", Arrays.asList(AnalysisType.KALMAN));
         model.addAttribute("kalmanAnalysisType", AnalysisType.KALMAN);
         model.addAttribute("argosClasses", ArgosClass.values());
         return "project-cleanse.html";

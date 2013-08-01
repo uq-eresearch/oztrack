@@ -172,6 +172,7 @@
                     var actionButtons = $('#kalmanFilterApply,#kalmanFilterCancel');
                     actionButtons.prop('disabled', true);
                     cleanseMap.applyKalmanFilterAnalysis();
+                    $('#kalmanFilterInfo').fadeOut();
                     if ($('.select-animal:checked').length != 1) {
                         actionButtons.hide();
                         $('#kalmanFilterSingleAnimal').fadeIn();
@@ -185,6 +186,7 @@
                     var actionButtons = $('#kalmanFilterApply,#kalmanFilterCancel');
                     actionButtons.prop('disabled', true);
                     cleanseMap.deleteKalmanFilterAnalysis();
+                    $('#kalmanFilterInfo').fadeOut();
                     if ($('.select-animal:checked').length != 1) {
                         actionButtons.hide();
                         $('#kalmanFilterSingleAnimal').fadeIn();
@@ -246,6 +248,23 @@
                     },
                     onKalmanFilterSuccess: function() {
                         $('#kalmanFilterApply').prop('disabled', false);
+                    },
+                    onUpdateInfoFromKalmanFilterCreate: function(layerName, analysis, fromDate, toDate) {
+                        $('#kalmanFilterInfo').hide().empty();
+                        <tags:analysis-info-create
+                            analysisTypeList="${analysisTypeList}"
+                            parentIdJsExpr="'kalmanFilterInfo'"
+                            childIdJsExpr="'kalmanFilterInfoChild'"
+                            statsIdJsExpr="'kalmanFilterInfoStats'"/>
+                        $('#kalmanFilterInfo').fadeIn();
+                    },
+                    onUpdateInfoFromKalmanFilterSuccess: function(analysis, animalAttributes) {
+                        <tags:analysis-info-success
+                            project="${project}"
+                            analysisTypeList="${analysisTypeList}"
+                            childIdJsExpr="'kalmanFilterInfoChild'"
+                            statsIdJsExpr="'kalmanFilterInfoStats'"
+                            helpPopoverIdJsExpr="'kalmanFilterInfoHelpPopover'"/>
                     },
                     onReset: function() {
                         $('#cleanse-select').children().remove();
@@ -525,6 +544,8 @@
                                     <span id="kalmanFilterSingleAnimal" style="display: none;">Can only filter one animal at a time</span>
                                     <button id="kalmanFilterApply" class="btn" style="display: none; margin-left: 0.5em;">Replace original track</button>
                                     <button id="kalmanFilterCancel" class="btn" style="display: none;">Cancel</button>
+                                </div>
+                                <div id="kalmanFilterInfo">
                                 </div>
                                 </form>
                             </div>

@@ -34,11 +34,12 @@
                 that.projectMap.showMessage(
                     'Complete',
                     '<p>\n' +
-                    '    The Kalman filter result is shown on the map.\n' +
+                    '    The most probable track is shown on the map,\n' +
+                    '    with Kalman filter parameters and result values on the left of screen.\n' +
                     '</p>\n' +
                     '<p>\n' +
                     '    To replace the animal\'s original track with output from the filter,\n' +
-                    '    click <i>Replace original track</i> on the left of screen.\n' +
+                    '    click <i>Replace original track</i>.\n' +
                     '    Alternatively, you can click <i>Cancel</i> to remove the filtered track.' +
                     '</p>' +
                     '<p>\n' +
@@ -46,6 +47,12 @@
                     '</p>'
                 );
                 options.onKalmanFilterSuccess && options.onKalmanFilterSuccess();
+            },
+            onUpdateAnimalInfoFromAnalysisCreate: function(layerName, animalId, analysis, fromDate, toDate) {
+                options.onUpdateInfoFromKalmanFilterCreate(layerName, analysis, fromDate, toDate);
+            },
+            onUpdateAnimalInfoFromAnalysisSuccess: function(animalId, analysis, animalAttributes) {
+                options.onUpdateInfoFromKalmanFilterSuccess(analysis, animalAttributes);
             }
         });
 
