@@ -14,6 +14,7 @@
             onLayerSuccess: options.onLayerSuccess,
             onUpdateAnimalInfoFromLayer: options.onUpdateAnimalInfoFromLayer,
             onAnalysisCreate: options.onAnalysisCreate,
+            onAnalysisDelete: options.onAnalysisDelete,
             onAnalysisError: options.onAnalysisError,
             onAnalysisSuccess: options.onAnalysisSuccess,
             onUpdateAnimalInfoFromAnalysisCreate: options.onUpdateAnimalInfoFromAnalysisCreate,
@@ -63,7 +64,7 @@
         that.zoomToAnimal = that.projectMap.zoomToAnimal;
         that.deleteProjectMapLayer = function(id) {
             that.projectMap.deleteProjectMapLayer(id);
-            $('.projectMapLayerInfo-' + id).fadeOut().remove();
+            $('.projectMapLayerInfo-' + id).fadeOut({complete: function() {$(this).remove();}});
         };
         that.setAnimalVisible = that.projectMap.setAnimalVisible;
         that.createAnalysisLayer = that.projectMap.createAnalysisLayer;

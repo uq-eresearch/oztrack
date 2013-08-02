@@ -2,16 +2,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ attribute name="analysisTypeList" type="java.util.List" required="true" %>
-<%@ attribute name="deleteLayerJsStmt" type="java.lang.String" required="false" %>
+<%@ attribute name="headerActionsJsExpr" type="java.lang.String" required="false" %>
 <%@ attribute name="parentIdJsExpr" type="java.lang.String" required="true" %>
 <%@ attribute name="childIdJsExpr" type="java.lang.String" required="true" %>
 <%@ attribute name="statsIdJsExpr" type="java.lang.String" required="true" %>
 <%@ attribute name="classNameJsExpr" type="java.lang.String" required="false" %>
-var html = '<div class="layerInfoTitle">';
-<c:if test="${not empty deleteLayerJsStmt}">
-html += '<a class="layer-delete" href="javascript:${deleteLayerJsStmt}">delete</a></span>';
+var html = '<div class="layerInfoHeader">';
+html += '<span class="layerInfoTitle">' + layerName + '</span>';
+<c:if test="${not empty headerActionsJsExpr}">
+html += $('<div>').append($('<span class="layerInfoActions">').append(${headerActionsJsExpr})).html();
 </c:if>
-html += layerName;
+html += '<div style="clear: both;"></div>';
 html += '</div>';
 var statsHtml = '';
 statsHtml += '<span class="layerInfoStat">';

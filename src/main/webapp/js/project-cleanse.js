@@ -15,7 +15,7 @@
         that.onReset = options.onReset;
         that.onPolygonFeatureAdded = options.onPolygonFeatureAdded;
         that.onDeletePolygonFeature = options.onDeletePolygonFeature;
-        that.kalmanFilterAnalysis = null;
+        that.kalmanFilterAnalysisCounter = 1;
 
         that.projectMap = new OzTrack.ProjectMap(div, {
             project: that.project,
@@ -26,11 +26,9 @@
             includeDeleted: true,
             highlightProbable: true,
             extraCategories: {'filter': {label: 'Filter layers'}},
-            onAnalysisCreate: function(layerName, analysis) {
-                that.kalmanFilterAnalysis = analysis;
-            },
+            onAnalysisDelete: options.onKalmanFilterDelete,
             onAnalysisError: options.onKalmanFilterError,
-            onAnalysisSuccess: function() {
+            onAnalysisSuccess: function(analysis) {
                 that.projectMap.showMessage(
                     'Complete',
                     '<p>\n' +
@@ -39,14 +37,11 @@
                     '</p>\n' +
                     '<p>\n' +
                     '    To replace the animal\'s original track with output from the filter,\n' +
-                    '    click <i>Replace original track</i>.\n' +
-                    '    Alternatively, you can click <i>Cancel</i> to remove the filtered track.' +
-                    '</p>' +
-                    '<p>\n' +
+                    '    click <i>Replace track</i>.\n' +
                     '    Once replaced, the new track will appear on the <i>Tracks and analysis</i> page.\n' +
                     '</p>'
                 );
-                options.onKalmanFilterSuccess && options.onKalmanFilterSuccess();
+                options.onKalmanFilterSuccess && options.onKalmanFilterSuccess(analysis);
             },
             onUpdateAnimalInfoFromAnalysisCreate: function(layerName, animalId, analysis, fromDate, toDate) {
                 options.onUpdateInfoFromKalmanFilterCreate(layerName, analysis, fromDate, toDate);
@@ -87,12 +82,17 @@
             });
         };
 
-        that.applyKalmanFilterAnalysis = function() {
-            if (!that.kalmanFilterAnalysis) {
+        that.createKalmanFilterAnalysis = function(params) {
+            that.projectMap.createAnalysisLayer(params, 'Kalman Filter ' + that.kalmanFilterAnalysisCounter++, 'filter');
+        }
+
+        that.applyKalmanFilterAnalysis = function(analysisId) {
+            var analysis = that.projectMap.getAnalysis(analysisId);
+            if (!analysis) {
                 return;
             }
             $.ajax({
-                url: that.kalmanFilterAnalysis.url + '/apply',
+                url: analysis.url + '/apply',
                 type: 'POST',
                 beforeSend: function(jqXHR, settings) {
                     that.increaseLoadingCounter();
@@ -114,15 +114,6 @@
                     that.decreaseLoadingCounter();
                 }
             });
-            that.deleteKalmanFilterAnalysis();
-        };
-
-        that.deleteKalmanFilterAnalysis = function() {
-            if (!that.kalmanFilterAnalysis) {
-                return;
-            }
-            that.projectMap.deleteAnalysis(that.kalmanFilterAnalysis.id);
-            that.kalmanFilterAnalysis = null;
         };
 
         that.polygonLayer = new OpenLayers.Layer.Vector('Polygon Selections', {
@@ -161,10 +152,12 @@
         that.projectMap.addControl(that.highlightPolygonControl, false);
 
         that.reset = function() {
+            that.projectMap.deleteAllAnalyses();
             that.projectMap.updateLayers();
             while (that.polygonFeatures.length > 0) {
                 that.polygonFeatures.shift().destroy();
             }
+            
             that.onReset && that.onReset();
         };
 
@@ -219,6 +212,7 @@
         that.setFromDate = that.projectMap.setFromDate;
         that.setToDate = that.projectMap.setToDate;
         that.setAnimalVisible = that.projectMap.setAnimalVisible;
-        that.createAnalysisLayer = that.projectMap.createAnalysisLayer;
+        that.deleteCurrentAnalysis = that.projectMap.deleteCurrentAnalysis;
+        that.deleteAnalysis = that.projectMap.deleteAnalysis;
     };
 }(window.OzTrack = window.OzTrack || {}));

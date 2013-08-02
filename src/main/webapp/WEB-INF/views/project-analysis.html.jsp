@@ -87,11 +87,8 @@
             .animalInfo table {
                 margin-top: 5px;
             }
-            a.layer-delete {
-                float: right;
-                margin-right: 3px;
-                font-size: 11px;
-                color: #666;
+            .layerInfoTitle {
+                padding: 3px 0;
             }
             .layerExplanationExpander {
                 display: block;
@@ -304,6 +301,9 @@
                     onAnalysisCreate: function(layerName, analysis) {
                         addAnalysis(layerName, analysis.url, moment(analysis.createDate, 'YYYY-MM-DDTHH:mm:ss').toDate(), false);
                     },
+                    onAnalysisDelete: function(analysis) {
+                        $('.analysisInfo-' + analysis.id).fadeOut({complete: function() {$(this).remove();}});
+                    },
                     onAnalysisError: function() {
                         $('#projectMapCancel').fadeOut().prev().prop('disabled', false);
                     },
@@ -315,9 +315,9 @@
                         $('a[href="#animalPanel"]').trigger('click');
                     },
                     onUpdateAnimalInfoFromLayer: function(layerName, layerId, animalId, animalIds, fromDate, toDate, layerAttrs) {
-                        var html = '<div class="layerInfoTitle">';
-                        html += '<a class="layer-delete" href="javascript:analysisMap.deleteProjectMapLayer(' + layerId + ');">delete</a></span>';
-                        html += layerName;
+                        var html = '<div class="layerInfoHeader">';
+                        html += '<span class="layerInfoActions">' + '<button class="btn btn-small" onclick="analysisMap.deleteProjectMapLayer(' + layerId + ');"><i class="icon-trash"></i></button>' + '</span>';
+                        html += '<span class="layerInfoTitle">' + layerName + '</span>';
                         html += '</div>';
                         var statsHtml = '';
                         statsHtml += '<span class="layerInfoStat">';
@@ -352,7 +352,13 @@
                     },
                     onUpdateAnimalInfoFromAnalysisCreate: function(layerName, animalId, analysis, fromDate, toDate) {
                         <tags:analysis-info-create
-                            deleteLayerJsStmt="analysisMap.deleteAnalysis(' + analysis.id + ', true);"
+                            headerActionsJsExpr="
+                                $('<button>')
+                                    .addClass('btn')
+                                    .addClass('btn-small')
+                                    .attr('onclick', 'analysisMap.deleteAnalysis(' + analysis.id + ', true);')
+                                    .append($('<i>').addClass('icon-trash'))
+                            "
                             parentIdJsExpr="'animalInfo-' + animalId"
                             childIdJsExpr="'analysisInfo-' + animalId + '-' + analysis.id"
                             statsIdJsExpr="'analysis-stats-' + animalId + '-' + analysis.id"

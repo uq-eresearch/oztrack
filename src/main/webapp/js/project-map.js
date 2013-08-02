@@ -38,6 +38,7 @@
         that.onLayerSuccess = options.onLayerSuccess;
         that.onUpdateAnimalInfoFromLayer = options.onUpdateAnimalInfoFromLayer;
         that.onAnalysisCreate = options.onAnalysisCreate;
+        that.onAnalysisDelete = options.onAnalysisDelete;
         that.onAnalysisError = options.onAnalysisError;
         that.onAnalysisSuccess = options.onAnalysisSuccess;
         that.onUpdateAnimalInfoFromAnalysisCreate = options.onUpdateAnimalInfoFromAnalysisCreate;
@@ -631,6 +632,10 @@
 
         function getAnimal(id) {
             return $.grep(that.animals, function(x) {return x.id == id;})[0];
+        }
+
+        that.getAnalysis = function(id) {
+            return that.analyses[id];
         }
 
         that.startEndStyleMap = createStartEndStyleMap();
@@ -1911,7 +1916,7 @@
                 data: params,
                 error: function(xhr, textStatus, errorThrown) {
                     that.showMessage('Error', $(xhr.responseText).find('error').text() || 'Error processing request');
-                    that.onAnalysisError && that.onAnalysisError();
+                    that.onAnalysisError && that.onAnalysisError(null);
                 },
                 complete: function (xhr, textStatus) {
                     if (textStatus == 'success') {
@@ -1928,7 +1933,7 @@
                 type: 'GET',
                 error: function(xhr, textStatus, errorThrown) {
                     that.showMessage('Error', $(xhr.responseText).find('error').text() || 'Error getting analysis');
-                    that.onAnalysisError && that.onAnalysisError();
+                    that.onAnalysisError && that.onAnalysisError(null);
                 },
                 complete: function (xhr, textStatus) {
                     if (textStatus == 'success') {
@@ -1951,7 +1956,7 @@
                 error: function(xhr, textStatus, errorThrown) {
                     that.decreaseLoadingCounter();
                     that.showMessage('Error', $(xhr.responseText).find('error').text() || 'Error getting analysis');
-                    that.onAnalysisError && that.onAnalysisError();
+                    that.onAnalysisError && that.onAnalysisError(null);
                 },
                 complete: function (xhr, textStatus) {
                     if (textStatus == 'success') {
@@ -1970,7 +1975,7 @@
                         else {
                             that.decreaseLoadingCounter();
                             that.showMessage('Error', analysis.message || 'Error running analysis');
-                            that.onAnalysisError && that.onAnalysisError();
+                            that.onAnalysisError && that.onAnalysisError(analysis);
                         }
                     }
                 }
@@ -2026,7 +2031,7 @@
                 }
                 else {
                     that.showMessage('Error', jQuery(resp.priv.responseText).find('error').text() || 'Error processing request');
-                    that.onAnalysisError && that.onAnalysisError();
+                    that.onAnalysisError && that.onAnalysisError(analysis);
                 }
             };
             protocol.read({
@@ -2039,6 +2044,12 @@
             if (currentAnalysisId) {
                 that.deleteAnalysis(currentAnalysisId, false);
             }
+        };
+
+        that.deleteAllAnalyses = function() {
+            $.each(that.analyses, function(id, analysis) {
+                that.deleteAnalysis(id, false);
+            });
         };
 
         that.deleteAnalysis = function(id, shouldConfirm) {
@@ -2055,12 +2066,12 @@
                 if (that.analyses[id].layer) {
                     that.analyses[id].layer.destroy();
                 }
+                that.onAnalysisDelete && that.onAnalysisDelete(that.analyses[id]);
                 delete that.analyses[id];
             }
             if (id == currentAnalysisId) {
                 currentAnalysisId = null;
             }
-            $('.analysisInfo-' + id).fadeOut().remove();
         };
 
         function updateAnimalInfoFromAnalysisCreate(layerName, analysis) {
