@@ -99,8 +99,13 @@
                             .toArray()
                             .join(',')
                 };
-                $.each($('#form-kalman-filter').serializeArray(), function(i, pair) {
-                    params[pair.name] = pair.value;
+                $('#form-kalman-filter .paramField-KALMAN').each(function() {
+                    if ($(this).attr('type') == 'checkbox') {
+                        params[$(this).attr('name')] = $(this).is(':checked') ? 'true' : 'false';
+                    }
+                    else if ($(this).val()) {
+                        params[$(this).attr('name')] = $(this).val();
+                    }
                 });
                 cleanseMap.createKalmanFilterAnalysis(params);
             }
