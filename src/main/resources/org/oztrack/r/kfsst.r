@@ -59,17 +59,33 @@ fozkalmankfsst <- function(
   #b0.init=0
   
   # if the user has specified that there is a start date and an end date
-  if(is.null(startdate)==FALSE){
+  if(is.null(startdate)==FALSE & is.null(enddate)==FALSE){
     sinputfile <- subset(sinputfile,sinputfile$Date > as.POSIXlt(startdate) & sinputfile$Date < as.POSIXlt(enddate))
     trackdata <- sinputfile
     
     tagattach <- data.frame(ID=trackdata[1,1],Date=as.POSIXlt(startdate),X=startX,Y=startY,sst=NA)
     tagremove <- data.frame(ID=trackdata[1,1],Date=as.POSIXlt(enddate),X=endX,Y=endY,sst=NA)
     trackdata <- rbind(tagattach,trackdata,tagremove)
-  }else{
+  }
+  if(is.null(startdate)==FALSE & is.null(enddate)!=FALSE){
+    sinputfile <- subset(sinputfile,sinputfile$Date > as.POSIXlt(startdate))
+    trackdata <- sinputfile
+    
+    tagattach <- data.frame(ID=trackdata[1,1],Date=as.POSIXlt(startdate),X=startX,Y=startY,sst=NA)
+    trackdata <- rbind(tagattach,trackdata)
+  }
+  if(is.null(startdate)!=FALSE & is.null(enddate)==FALSE){
+    sinputfile <- subset(sinputfile,sinputfile$Date < as.POSIXlt(enddate))
+    trackdata <- sinputfile
+    
+    tagremove <- data.frame(ID=trackdata[1,1],Date=as.POSIXlt(enddate),X=endX,Y=endY,sst=NA)
+    trackdata <- rbind(trackdata,tagremove)
+  }
+  if(is.null(startdate)!=FALSE & is.null(enddate)!=FALSE){
     trackdata <- sinputfile
   }
   
+  # Remove duplicates and ensure data in the correct order
   trackdata <- trackdata[!duplicated(order(trackdata$Date)),]
   
   lati <- trackdata$Y
@@ -94,11 +110,17 @@ fozkalmankfsst <- function(
   sst <-  trackdata$sst
   
   track <- data.frame(day,month,year,long,lati,sst)
-  dups <- duplicated(track$year,track$month,track$day)
+  dups <- duplicated(data.frame(track$year,track$month,track$day))
   track <- track[!dups,]
-  
-  get.sst.from.server(track)
 
+  #Obtain a corresponding SST-field
+  sst.path <- try({get.sst.from.server(track)})
+  
+  # Error handling
+  if (class(sst.path) == 'try-error')
+    stop('Failed to get sst from server. Try removing and extreme outliers and re-running the kalman filter.')
+
+  # Run the  Unscented Kalman filter (+sst)
   kfm <- try({
     kfsst(
       data=track,
@@ -134,7 +156,12 @@ fozkalmankfsst <- function(
   # Error handling
   if (class(kfm) == 'try-error') 
   {
-    kfm <- 'Kalman filter did not work using these parameters.'
+    if(is.null(startdate)==FALSE)
+      kfm <- 'Kalman filter failed to work using these parameters. Try adding a true start and end date and location.'  
+    if(is.null(enddate)==FALSE)
+      kfm <- 'Kalman filter failed to work using these parameters. Try adding a true start and end date and location.'  
+    if(is.null(startdate)!=FALSE & is.null(enddate)!=FALSE)
+      kfm <- 'Kalman filter failed to work using these parameters. In "Advanced parameters", try simplifying the model (e.g. bx.active=FALSE, by.active=FALSE, bsst.active=FALSE ) or provide better initial values (e.g. D.i = 500).'
   }else{
     # Combine Datetime data to Object
     kfm$Datetime <- Datetime[!dups]
