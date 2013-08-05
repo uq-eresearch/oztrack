@@ -15,8 +15,6 @@
         that.onReset = options.onReset;
         that.onPolygonFeatureAdded = options.onPolygonFeatureAdded;
         that.onDeletePolygonFeature = options.onDeletePolygonFeature;
-        that.kalmanFilterAnalysisCounter = 1;
-        that.kalmanFilterSstAnalysisCounter = 1;
 
         that.projectMap = new OzTrack.ProjectMap(div, {
             project: that.project,
@@ -119,11 +117,11 @@
         };
 
         that.createKalmanFilterAnalysis = function(params) {
-            that.projectMap.createAnalysisLayer(params, 'Kalman Filter ' + that.kalmanFilterAnalysisCounter++, 'filter');
+            that.projectMap.createAnalysisLayer(params, 'Kalman Filter', 'filter');
         }
 
         that.createKalmanFilterSstAnalysis = function(params) {
-            that.projectMap.createAnalysisLayer(params, 'Kalman Filter (SST) ' + that.kalmanFilterSstAnalysisCounter++, 'filter');
+            that.projectMap.createAnalysisLayer(params, 'Kalman Filter (SST)', 'filter');
         }
 
         that.applyKalmanFilterAnalysis = function(analysisId) {
