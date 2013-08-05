@@ -64,11 +64,6 @@
             .layerInfoTitle {
                 padding: 5px 0;
             }
-            #kalmanFilterSingleAnimal {
-                display: inline-block;
-                padding: 4px 12px;
-                color: #888;
-            }
         </style>
     </jsp:attribute>
     <jsp:attribute name="tail">
@@ -109,12 +104,41 @@
                 });
                 cleanseMap.createKalmanFilterAnalysis(params);
             }
+            function submitKalmanFilterSst() {
+                var params = {
+                    projectId: ${project.id},
+                    analysisType: 'KALMAN_SST',
+                    fromDate: $('#fromDate').val(),
+                    toDate: $('#toDate').val(),
+                    animalIds:
+                        $('input[name=animalIds]:not(:disabled):checked')
+                            .map(function() {return $(this).val();})
+                            .toArray()
+                            .join(',')
+                };
+                $('#form-kalman-filter-sst .paramField-KALMAN_SST').each(function() {
+                    if ($(this).attr('type') == 'checkbox') {
+                        params[$(this).attr('name')] = $(this).is(':checked') ? 'true' : 'false';
+                    }
+                    else if ($(this).val()) {
+                        params[$(this).attr('name')] = $(this).val();
+                    }
+                });
+                cleanseMap.createKalmanFilterSstAnalysis(params);
+            }
             function deleteKalmanFilter(analysisId) {
+                cleanseMap.deleteAnalysis(analysisId);
+            }
+            function deleteKalmanFilterSst(analysisId) {
                 cleanseMap.deleteAnalysis(analysisId);
             }
             function applyKalmanFilter(analysisId) {
                 $('#kalmanFilterApply-' + analysisId).prop('disabled', true);
                 cleanseMap.applyKalmanFilterAnalysis(analysisId);
+            }
+            function applyKalmanFilterSst(analysisId) {
+                $('#kalmanFilterSstApply-' + analysisId).prop('disabled', true);
+                cleanseMap.applyKalmanFilterSstAnalysis(analysisId);
             }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
@@ -137,12 +161,14 @@
                     cleanseMap.setToDate($('#toDate').val());
                     $('#toDateVisible').datepicker('hide');
                 });
-                <c:forEach items="${kalmanAnalysisType.parameterTypes}" var="parameterType">
+                <c:forEach items="${analysisTypeList}" var="analysisType">
+                <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
                 <c:if test="${parameterType.dataType == 'date'}">
                 $('#${parameterType.identifier}Visible').datepicker({
                     altField: '#${parameterType.identifier}'
                 });
                 </c:if>
+                </c:forEach>
                 </c:forEach>
                 <c:forEach items="${projectAnimalsList}" var="animal">
                 $('#select-animal-${animal.id}').change(function() {
@@ -158,41 +184,25 @@
                     cleanseMap.setAnimalVisible("${animal.id}", checked);
                     </c:forEach>
                 });
-                $('#select-animal-all,.select-animal').change(function() {
-                    if (
-                        ($('.select-animal:checked').length != 1) &&
-                        $('#kalmanFilterCancel').is(':not(:visible)')
-                    ) {
-                        $('#kalmanFilterRun').prop('disabled', true);
-                        $('#kalmanFilterSingleAnimal').fadeIn();
-                    }
-                    else {
-                        if ($('#kalmanFilterCancel').is(':not(:visible)')) {
-                            $('#kalmanFilterRun').prop('disabled', false);
-                        }
-                        $('#kalmanFilterSingleAnimal').hide();
-                    }
-                });
-                if ($('.select-animal:checked').length != 1) {
-                    $('#kalmanFilterRun').prop('disabled', true);
-                    $('#kalmanFilterSingleAnimal').show();
-                }
                 $('#kalmanFilterRun').click(function(e) {
                     $('#kalmanFilterRun').prop('disabled', true);
-                    $('#kalmanFilterSingleAnimal').hide();
                     $('#kalmanFilterCancel').prop('disabled', false).fadeIn();
+                });
+                $('#kalmanFilterSstRun').click(function(e) {
+                    $('#kalmanFilterSstRun').prop('disabled', true);
+                    $('#kalmanFilterSstCancel').prop('disabled', false).fadeIn();
                 });
                 $('#kalmanFilterCancel').click(function(e) {
                     $('#kalmanFilterCancel').prop('disabled', true);
                     cleanseMap.deleteCurrentAnalysis();
-                    if ($('.select-animal:checked').length != 1) {
-                        $('#kalmanFilterCancel').hide();
-                        $('#kalmanFilterSingleAnimal').fadeIn();
-                    }
-                    else {
-                        $('#kalmanFilterCancel').fadeOut();
-                        $('#kalmanFilterRun').prop('disabled', false);
-                    }
+                    $('#kalmanFilterCancel').fadeOut();
+                    $('#kalmanFilterRun').prop('disabled', false);
+                });
+                $('#kalmanFilterSstCancel').click(function(e) {
+                    $('#kalmanFilterSstCancel').prop('disabled', true);
+                    cleanseMap.deleteCurrentAnalysis();
+                    $('#kalmanFilterSstCancel').fadeOut();
+                    $('#kalmanFilterSstRun').prop('disabled', false);
                 });
                 $('#accordion-body-multi-polygon').on('show', function() {
                     cleanseMap.setPolygonControlActivated(true);
@@ -237,25 +247,32 @@
                     onKalmanFilterDelete: function(analysis) {
                         $('#kalmanFilterInfo-' + analysis.id).fadeOut({complete: function() {$(this).remove();}});
                     },
+                    onKalmanFilterSstDelete: function(analysis) {
+                        $('#kalmanFilterSstInfo-' + analysis.id).fadeOut({complete: function() {$(this).remove();}});
+                    },
                     onKalmanFilterError: function(analysis) {
                         $('#kalmanFilterCancel').prop('disabled', true)
-                        if (analysis) {
-                            $('#kalmanFilterDelete-' + analysis.id).prop('disabled', false);
-                        }
-                        if ($('.select-animal:checked').length != 1) {
-                            $('#kalmanFilterCancel').hide();
-                            $('#kalmanFilterSingleAnimal').fadeIn();
-                        }
-                        else {
-                            $('#kalmanFilterCancel').fadeOut();
-                            $('#kalmanFilterRun').prop('disabled', false);
-                        }
+                        $('#kalmanFilterDelete-' + analysis.id).prop('disabled', false);
+                        $('#kalmanFilterCancel').fadeOut();
+                        $('#kalmanFilterRun').prop('disabled', false);
+                    },
+                    onKalmanFilterSstError: function(analysis) {
+                        $('#kalmanFilterSstCancel').prop('disabled', true)
+                        $('#kalmanFilterSstDelete-' + analysis.id).prop('disabled', false);
+                        $('#kalmanFilterSstCancel').fadeOut();
+                        $('#kalmanFilterSstRun').prop('disabled', false);
                     },
                     onKalmanFilterSuccess: function(analysis) {
                         $('#kalmanFilterRun').prop('disabled', false);
                         $('#kalmanFilterCancel').prop('disabled', true).hide();
                         $('#kalmanFilterDelete-' + analysis.id).prop('disabled', false);
                         $('#kalmanFilterApply-' + analysis.id).prop('disabled', false);
+                    },
+                    onKalmanFilterSstSuccess: function(analysis) {
+                        $('#kalmanFilterSstRun').prop('disabled', false);
+                        $('#kalmanFilterSstCancel').prop('disabled', true).hide();
+                        $('#kalmanFilterSstDelete-' + analysis.id).prop('disabled', false);
+                        $('#kalmanFilterSstApply-' + analysis.id).prop('disabled', false);
                     },
                     onUpdateInfoFromKalmanFilterCreate: function(layerName, analysis, fromDate, toDate) {
                         <tags:analysis-info-create
@@ -268,7 +285,6 @@
                                         .addClass('kalmanFilterDelete')
                                         .addClass('btn')
                                         .prop('disabled', true)
-                                        .attr('data-analysis-id', analysis.id)
                                         .attr('onclick', 'deleteKalmanFilter(' + analysis.id + ');')
                                         .append($('<i>').addClass('icon-trash'))
                                     )
@@ -286,6 +302,34 @@
                             childIdJsExpr="'kalmanFilterInfo-' + analysis.id"
                             statsIdJsExpr="'kalmanFilterInfoStats-' + analysis.id"/>
                     },
+                    onUpdateInfoFromKalmanFilterSstCreate: function(layerName, analysis, fromDate, toDate) {
+                        <tags:analysis-info-create
+                            analysisTypeList="${analysisTypeList}"
+                            headerActionsJsExpr="
+                                $('<div>')
+                                    .addClass('btn-group')
+                                    .append($('<button>')
+                                        .attr('id', 'kalmanFilterSstDelete-' + analysis.id)
+                                        .addClass('kalmanFilterSstDelete')
+                                        .addClass('btn')
+                                        .prop('disabled', true)
+                                        .attr('onclick', 'deleteKalmanFilterSst(' + analysis.id + ');')
+                                        .append($('<i>').addClass('icon-trash'))
+                                    )
+                                    .append($('<button>')
+                                        .attr('id', 'kalmanFilterSstApply-' + analysis.id)
+                                        .addClass('kalmanFilterSstApply')
+                                        .addClass('btn')
+                                        .prop('disabled', true)
+                                        .attr('onclick', 'applyKalmanFilterSst(' + analysis.id + ');')
+                                        .append($('<i>').addClass('icon-ok'))
+                                        .append(' Replace track')
+                                    )
+                            "
+                            parentIdJsExpr="'kalmanFilterSstInfoParent'"
+                            childIdJsExpr="'kalmanFilterSstInfo-' + analysis.id"
+                            statsIdJsExpr="'kalmanFilterSstInfoStats-' + analysis.id"/>
+                    },
                     onUpdateInfoFromKalmanFilterSuccess: function(analysis, animalAttributes) {
                         $('#kalmanFilterDelete-' + analysis.id).prop('disabled', false);
                         $('#kalmanFilterApply-' + analysis.id).prop('disabled', false);
@@ -296,17 +340,21 @@
                             statsIdJsExpr="'kalmanFilterInfoStats-' + analysis.id"
                             helpPopoverIdJsExpr="'kalmanFilterInfoHelpPopover'"/>
                     },
+                    onUpdateInfoFromKalmanFilterSstSuccess: function(analysis, animalAttributes) {
+                        $('#kalmanFilterSstDelete-' + analysis.id).prop('disabled', false);
+                        $('#kalmanFilterSstApply-' + analysis.id).prop('disabled', false);
+                        <tags:analysis-info-success
+                            project="${project}"
+                            analysisTypeList="${analysisTypeList}"
+                            childIdJsExpr="'kalmanFilterSstInfo-' + analysis.id"
+                            statsIdJsExpr="'kalmanFilterSstInfoStats-' + analysis.id"
+                            helpPopoverIdJsExpr="'kalmanFilterSstInfoHelpPopover'"/>
+                    },
                     onReset: function() {
                         $('#cleanse-select').children().remove();
                         $('#cleanse-list').children().remove();
-                        if ($('.select-animal:checked').length != 1) {
-                            $('#kalmanFilterCancel').hide();
-                            $('#kalmanFilterSingleAnimal').fadeIn();
-                        }
-                        else {
-                            $('#kalmanFilterCancel').fadeOut();
-                            $('#kalmanFilterRun').prop('disabled', false);
-                        }
+                        $('#kalmanFilterCancel').fadeOut();
+                        $('#kalmanFilterSstCancel').fadeOut();
                     },
                     onPolygonFeatureAdded: function(id, title, wkt) {
                         $('#cleanse-list').append(
@@ -579,10 +627,36 @@
                                 </fieldset>
                                 <div style="margin-top: 9px;">
                                     <button id="kalmanFilterRun" class="btn btn-primary" onclick="submitKalmanFilter();">Run filter</button>
-                                    <span id="kalmanFilterSingleAnimal" style="display: none;">Can only filter one animal at a time</span>
                                     <button id="kalmanFilterCancel" class="btn" style="display: none;">Cancel</button>
                                 </div>
                                 <div id="kalmanFilterInfoParent">
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-action" href="#accordion-body-kalman-filter-sst">
+                                Kalman filter (SST)
+                            </a>
+                        </div>
+                        <div id="accordion-body-kalman-filter-sst" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                                <form id="form-kalman-filter-sst" class="form-vertical" style="margin: 0;" onsubmit="return false;">
+                                <fieldset>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <tags:analysis-param-fields analysisType="${kalmanSstAnalysisType}"/>
+                                    </div>
+                                </div>
+                                </fieldset>
+                                <div style="margin-top: 9px;">
+                                    <button id="kalmanFilterSstRun" class="btn btn-primary" onclick="submitKalmanFilterSst();">Run filter</button>
+                                    <span id="kalmanFilterSstSingleAnimal" style="display: none;">Can only filter one animal at a time</span>
+                                    <button id="kalmanFilterSstCancel" class="btn" style="display: none;">Cancel</button>
+                                </div>
+                                <div id="kalmanFilterSstInfoParent">
                                 </div>
                                 </form>
                             </div>

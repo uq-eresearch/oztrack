@@ -16,6 +16,7 @@
         that.onPolygonFeatureAdded = options.onPolygonFeatureAdded;
         that.onDeletePolygonFeature = options.onDeletePolygonFeature;
         that.kalmanFilterAnalysisCounter = 1;
+        that.kalmanFilterSstAnalysisCounter = 1;
 
         that.projectMap = new OzTrack.ProjectMap(div, {
             project: that.project,
@@ -26,8 +27,22 @@
             includeDeleted: true,
             highlightProbable: true,
             extraCategories: {'filter': {label: 'Filter layers'}},
-            onAnalysisDelete: options.onKalmanFilterDelete,
-            onAnalysisError: options.onKalmanFilterError,
+            onAnalysisDelete: function(analysis) {
+                if (analysis.analysisType == 'KALMAN') {
+                    options.onKalmanFilterDelete(analysis);
+                }
+                else if (analysis.analysisType == 'KALMAN_SST') {
+                    options.onKalmanFilterSstDelete(analysis);
+                }
+            },
+            onAnalysisError: function(analysis) {
+                if (analysis.analysisType == 'KALMAN') {
+                    options.onKalmanFilterError && options.onKalmanFilterError(analysis);
+                }
+                else if (analysis.analysisType == 'KALMAN_SST') {
+                    options.onKalmanFilterSstError && options.onKalmanFilterSstError(analysis);
+                }
+            },
             onAnalysisSuccess: function(analysis) {
                 that.projectMap.showMessage(
                     'Complete',
@@ -41,13 +56,34 @@
                     '    Once replaced, the new track will appear on the <i>Tracks and analysis</i> page.\n' +
                     '</p>'
                 );
-                options.onKalmanFilterSuccess && options.onKalmanFilterSuccess(analysis);
+                if (analysis.analysisType == 'KALMAN') {
+                    options.onKalmanFilterSuccess && options.onKalmanFilterSuccess(analysis);
+                }
+                else if (analysis.analysisType == 'KALMAN_SST') {
+                    options.onKalmanFilterSstSuccess && options.onKalmanFilterSstSuccess(analysis);
+                }
             },
             onUpdateAnimalInfoFromAnalysisCreate: function(layerName, animalId, analysis, fromDate, toDate) {
-                options.onUpdateInfoFromKalmanFilterCreate(layerName, analysis, fromDate, toDate);
+                if (animalId !== analysis.params.animalIds[0]) {
+                    return;
+                }
+                if (analysis.analysisType == 'KALMAN') {
+                    options.onUpdateInfoFromKalmanFilterCreate(layerName, analysis, fromDate, toDate);
+                }
+                else if (analysis.analysisType == 'KALMAN_SST') {
+                    options.onUpdateInfoFromKalmanFilterSstCreate(layerName, analysis, fromDate, toDate);
+                }
             },
             onUpdateAnimalInfoFromAnalysisSuccess: function(animalId, analysis, animalAttributes) {
-                options.onUpdateInfoFromKalmanFilterSuccess(analysis, animalAttributes);
+                if (animalId !== analysis.params.animalIds[0]) {
+                    return;
+                }
+                if (analysis.analysisType == 'KALMAN') {
+                    options.onUpdateInfoFromKalmanFilterSuccess(analysis, animalAttributes);
+                }
+                else if (analysis.analysisType == 'KALMAN_SST') {
+                    options.onUpdateInfoFromKalmanFilterSstSuccess(analysis, animalAttributes);
+                }
             }
         });
 
@@ -86,6 +122,10 @@
             that.projectMap.createAnalysisLayer(params, 'Kalman Filter ' + that.kalmanFilterAnalysisCounter++, 'filter');
         }
 
+        that.createKalmanFilterSstAnalysis = function(params) {
+            that.projectMap.createAnalysisLayer(params, 'Kalman Filter (SST) ' + that.kalmanFilterSstAnalysisCounter++, 'filter');
+        }
+
         that.applyKalmanFilterAnalysis = function(analysisId) {
             var analysis = that.projectMap.getAnalysis(analysisId);
             if (!analysis) {
@@ -115,6 +155,8 @@
                 }
             });
         };
+
+        that.applyKalmanFilterSstAnalysis = that.applyKalmanFilterAnalysis;
 
         that.polygonLayer = new OpenLayers.Layer.Vector('Polygon Selections', {
             metadata: {category: 'filter'}

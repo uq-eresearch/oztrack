@@ -84,8 +84,9 @@ public class ProjectCleanseController {
         model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project, true));
         model.addAttribute("animalBoundingBoxes", projectDao.getAnimalBoundingBoxes(project, true));
         model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, true));
-        model.addAttribute("analysisTypeList", Arrays.asList(AnalysisType.KALMAN));
+        model.addAttribute("analysisTypeList", Arrays.asList(AnalysisType.KALMAN, AnalysisType.KALMAN_SST));
         model.addAttribute("kalmanAnalysisType", AnalysisType.KALMAN);
+        model.addAttribute("kalmanSstAnalysisType", AnalysisType.KALMAN_SST);
         model.addAttribute("argosClasses", ArgosClass.values());
         return "project-cleanse.html";
     }
