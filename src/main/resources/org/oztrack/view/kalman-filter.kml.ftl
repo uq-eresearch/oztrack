@@ -52,7 +52,7 @@
       <LineString>
         <coordinates>
           <#list analysis.resultFeatures as resultFeature>
-          ${resultFeature.geometry.x},${resultFeature.geometry.y}
+          ${resultFeature.geometry.x?c},${resultFeature.geometry.y?c}
           </#list>
         </coordinates>
       </LineString>
@@ -79,7 +79,7 @@
         </ExtendedData>
         <Point>
           <coordinates>
-             ${resultFeature.geometry.x},${resultFeature.geometry.y}
+             ${resultFeature.geometry.x?c},${resultFeature.geometry.y?c}
           </coordinates>
         </Point>
       </Placemark>
