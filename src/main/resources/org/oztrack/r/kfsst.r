@@ -118,7 +118,7 @@ fozkalmankfsst <- function(
   
   # Error handling
   if (class(sst.path) == 'try-error')
-    stop('Failed to get sst from server. Try removing and extreme outliers and re-running the kalman filter.')
+    stop('Failed to get sst from server. Try removing any extreme outliers and re-running the kalman filter.')
 
   # Run the  Unscented Kalman filter (+sst)
   kfm <- try({
@@ -156,12 +156,10 @@ fozkalmankfsst <- function(
   # Error handling
   if (class(kfm) == 'try-error') 
   {
-    if(is.null(startdate)==FALSE)
-      kfm <- 'Kalman filter failed to work using these parameters. Try adding a true start and end date and location.'  
-    if(is.null(enddate)==FALSE)
-      kfm <- 'Kalman filter failed to work using these parameters. Try adding a true start and end date and location.'  
-    if(is.null(startdate)!=FALSE & is.null(enddate)!=FALSE)
-      kfm <- 'Kalman filter failed to work using these parameters. In "Advanced parameters", try simplifying the model (e.g. bx.active=FALSE, by.active=FALSE, bsst.active=FALSE ) or provide better initial values (e.g. D.i = 500).'
+    if (is.null(startdate) || is.null(enddate))
+      kfm <- 'Kalman filter failed to work using these parameters. Try adding a true start and end date and location.'
+    else
+      kfm <- 'Kalman filter failed to work using these parameters. In "Advanced parameters", try simplifying the model (e.g. bx.active=FALSE, by.active=FALSE, bsst.active=FALSE) or provide better initial values (e.g. D.i=500).'
   }else{
     # Combine Datetime data to Object
     kfm$Datetime <- Datetime[!dups]
