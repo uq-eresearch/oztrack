@@ -39,6 +39,7 @@
             }
             .searchButton {
                 display: inline-block;
+                padding: 2px 9px;
             }
             .searchButton img {
                 max-height: 36px;
@@ -642,10 +643,10 @@
         <p>Click the buttons below to find datasets on related websites.</p>
 
         <div id="searchButtons">
-            <button id="searchTernButton" class="btn btn-small searchButton"
+            <button id="searchTernButton" class="btn searchButton"
                 title="Terrestrial Ecosystem Research Network (TERN)"
                 ><img src="${pageContext.request.contextPath}/img/tern-logo.gif" /></button>
-            <button id="searchAlaButton" class="btn btn-small searchButton"
+            <button id="searchAlaButton" class="btn searchButton"
                 title="Atlas of Living Australia (ALA)"
                 ><img src="${pageContext.request.contextPath}/img/ala-logo.png" /></button>
         </div>
