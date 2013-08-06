@@ -64,13 +64,16 @@
         <p>The OzTrack analysis tools use these R packages:</p>
         <ul class="icons">
             <li class="software">
-                <a target="_blank" href="http://cran.r-project.org/web/packages/adehabitatHR/index.html">adehabitatHR</a>: Home range Estimation
+                <a target="_blank" href="http://cran.r-project.org/web/packages/adehabitatHR/index.html">adehabitatHR</a>:
+                Home range Estimation
             </li>
             <li class="software">
-                <a target="_blank" href="http://cran.r-project.org/web/packages/adehabitatMA/index.html">adehabitatMA</a>: Tools to Deal with Raster Maps
+                <a target="_blank" href="http://cran.r-project.org/web/packages/adehabitatMA/index.html">adehabitatMA</a>:
+                Tools to Deal with Raster Maps
             </li>
             <li class="software">
-                <a target="_blank" href="http://cran.r-project.org/web/packages/alphahull/index.html">alphahull</a>: Generalization of the convex hull of a sample of points in the plane
+                <a target="_blank" href="http://cran.r-project.org/web/packages/alphahull/index.html">alphahull</a>:
+                Generalization of the convex hull of a sample of points in the plane
             </li>
             <li class="software">
                 <a target="_blank" href="https://code.google.com/p/geolocation/wiki/ArticleKftrack">kftrack</a>:
@@ -81,40 +84,52 @@
                 Estimate movement parameters and predict "most probable track" from raw light-based geolocations and sea surface temperatures (SST)
             </li>
             <li class="software">
-                <a target="_blank" href="http://cran.r-project.org/web/packages/rgdal/index.html">rgdal</a>: Bindings for the Geospatial Data Abstraction Library
+                <a target="_blank" href="http://cran.r-project.org/web/packages/rgdal/index.html">rgdal</a>:
+                Bindings for the Geospatial Data Abstraction Library
             </li>
             <li class="software">
-                <a target="_blank" href="http://cran.r-project.org/web/packages/sp/index.html">maptools</a>: Classes and methods for spatial data
+                <a target="_blank" href="http://cran.r-project.org/web/packages/sp/index.html">maptools</a>:
+                Classes and methods for spatial data
             </li>
             <li class="software">
-                <a target="_blank" href="http://cran.r-project.org/web/packages/shapefiles/index.html">shapefiles</a>: Read and Write ESRI Shapefiles
+                <a target="_blank" href="http://cran.r-project.org/web/packages/shapefiles/index.html">shapefiles</a>:
+                Read and Write ESRI Shapefiles
             </li>
             <li class="software">
-                <a target="_blank" href="http://cran.r-project.org/web/packages/sp/index.html">sp</a>: classes and methods for spatial data
+                <a target="_blank" href="http://cran.r-project.org/web/packages/sp/index.html">sp</a>:
+                Classes and methods for spatial data
             </li>
             <li class="software">
-                <a target="_blank" href="http://cran.r-project.org/web/packages/raster/index.html">raster</a>: Geographic data analysis and modeling
+                <a target="_blank" href="http://cran.r-project.org/web/packages/raster/index.html">raster</a>:
+                Geographic data analysis and modeling
             </li>
             <li class="software">
-                <a target="_blank" href="http://cran.r-project.org/web/packages/spatstat/index.html">spatstat</a>: Spatial Point Pattern analysis, model-fitting, simulation, tests
+                <a target="_blank" href="http://cran.r-project.org/web/packages/spatstat/index.html">spatstat</a>:
+                Spatial Point Pattern analysis, model-fitting, simulation, tests
             </li>
             <li class="software">
-                <a target="_blank" href="http://cran.r-project.org/web/packages/Grid2Polygons/index.html">Grid2Polygons</a>: Convert Spatial Grids to Polygons
+                <a target="_blank" href="http://cran.r-project.org/web/packages/Grid2Polygons/index.html">Grid2Polygons</a>:
+                Convert Spatial Grids to Polygons
             </li>
             <li class="software">
-                <a target="_blank" href="http://cran.r-project.org/web/packages/RColorBrewer/index.html">RColorBrewer</a>: ColorBrewer palettes
+                <a target="_blank" href="http://cran.r-project.org/web/packages/RColorBrewer/index.html">RColorBrewer</a>:
+                ColorBrewer palettes
             </li>
             <li class="software">
-                <a target="_blank" href="http://cran.r-project.org/web/packages/googleVis/index.html">googleVis</a>: Interface between R and the Google Chart Tools
+                <a target="_blank" href="http://cran.r-project.org/web/packages/googleVis/index.html">googleVis</a>:
+                Interface between R and the Google Chart Tools
             </li>
             <li class="software">
-                <a target="_blank" href="http://cran.r-project.org/web/packages/plotKML/index.html">plotKML</a>: Visualization of spatial and spatio-temporal objects in Google Earth
+                <a target="_blank" href="http://cran.r-project.org/web/packages/plotKML/index.html">plotKML</a>:
+                Visualization of spatial and spatio-temporal objects in Google Earth
             </li>
             <li class="software">
-                <a target="_blank" href="http://cran.r-project.org/web/packages/spacetime/index.html">spacetime</a>: Classes and methods for spatio-temporal data
+                <a target="_blank" href="http://cran.r-project.org/web/packages/spacetime/index.html">spacetime</a>:
+                Classes and methods for spatio-temporal data
             </li>
             <li class="software">
-                <a target="_blank" href="http://cran.r-project.org/web/packages/plyr/index.html">plyr</a>: Tools for splitting, applying and combining data
+                <a target="_blank" href="http://cran.r-project.org/web/packages/plyr/index.html">plyr</a>:
+                Tools for splitting, applying and combining data
             </li>
         </ul>
         <h3>Web client technologies</h3>
