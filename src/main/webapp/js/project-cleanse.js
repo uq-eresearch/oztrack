@@ -90,6 +90,7 @@
                 url: '/projects/' + that.project.id + '/cleanse',
                 type: 'POST',
                 data: params,
+                traditional: true, // array params as foo=1&foo=2 instead of foo[]=1&foo[]=2
                 beforeSend: function(jqXHR, settings) {
                     cleanseMap.increaseLoadingCounter();
                 },

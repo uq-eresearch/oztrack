@@ -73,13 +73,8 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/project-cleanse.js"></script>
         <script type="text/javascript">
             function submitCleanseForm(operation, mode) {
-                var params = {
-                    operation: operation,
-                    mode: mode
-                };
-                $.each($('#form-context,#form-' + mode).serializeArray(), function(i, pair) {
-                    params[pair.name] = pair.value;
-                });
+                var params = {operation: operation, mode: mode};
+                $.extend(params, OzTrack.serializeHash('#form-context,#form-' + mode));
                 cleanseMap.submitCleanseRequest(operation, params);
             }
             function submitKalmanFilter() {

@@ -1,4 +1,25 @@
 /*global confirm, alert*/
+(function(OzTrack) {
+    OzTrack.serializeHash = function(selector) {
+        var params = [];
+        $.each($(selector).serializeArray(), function(i, pair) {
+            if ($.isArray(params[pair.name])) {
+                params[pair.name].push(pair.value);
+            }
+            else if (params[pair.name]) {
+                var a = [];
+                a.push(params[pair.name]);
+                a.push(pair.value);
+                params[pair.name] = a;
+            }
+            else {
+                params[pair.name] = pair.value;
+            }
+        });
+        return params;
+    };
+}(window.OzTrack = window.OzTrack || {}));
+
 function deleteEntity(url, destUrl, message) {
     if (!confirm(message)) {
         return;
