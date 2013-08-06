@@ -84,7 +84,7 @@
                 <a target="_blank" href="http://cran.r-project.org/web/packages/rgdal/index.html">rgdal</a>: Bindings for the Geospatial Data Abstraction Library
             </li>
             <li class="software">
-                <a target="_blank" href="http://cran.r-project.org/web/packages/sp/index.html">maptools</a>: classes and methods for spatial data
+                <a target="_blank" href="http://cran.r-project.org/web/packages/sp/index.html">maptools</a>: Classes and methods for spatial data
             </li>
             <li class="software">
                 <a target="_blank" href="http://cran.r-project.org/web/packages/shapefiles/index.html">shapefiles</a>: Read and Write ESRI Shapefiles
@@ -111,7 +111,7 @@
                 <a target="_blank" href="http://cran.r-project.org/web/packages/plotKML/index.html">plotKML</a>: Visualization of spatial and spatio-temporal objects in Google Earth
             </li>
             <li class="software">
-                <a target="_blank" href="http://cran.r-project.org/web/packages/spacetime/index.html">spacetime</a>: classes and methods for spatio-temporal data
+                <a target="_blank" href="http://cran.r-project.org/web/packages/spacetime/index.html">spacetime</a>: Classes and methods for spatio-temporal data
             </li>
             <li class="software">
                 <a target="_blank" href="http://cran.r-project.org/web/packages/plyr/index.html">plyr</a>: Tools for splitting, applying and combining data
