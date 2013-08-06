@@ -22,7 +22,7 @@
 
 body {
   height: 100%;
-  min-width: 980px;
+  min-width: 940px;
 }
 
 h1 {
@@ -760,11 +760,29 @@ ul.icons li.artwork {background-image: url('../img/palette.png');}
   width: 120px;
 }
 
-.paramTable {
+.paramContainer {
+  margin: 0 -10px 9px 0;
+}
+.paramPair {
+  display: inline-block;
+  margin: 2px 10px 2px 0;
   width: 100%;
 }
-.paramTable td {
-  padding: 2px;
+.paramPair.paired {
+  width: auto;
+}
+.paramLabel {
+  display: inline-block;
+  white-space: nowrap;
+  overflow-x: hidden;
+  width: 105px;
+}
+.paramField {
+  display: inline-block;
+  margin: 0;
+}
+.paramField.wide {
+  min-width: 135px;
 }
 
 .projectMapLogo {

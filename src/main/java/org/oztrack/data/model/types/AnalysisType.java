@@ -35,6 +35,7 @@ public enum AnalysisType {
                 "%",
                 "100",
                 false,
+                false,
                 null
             )
         ),
@@ -94,6 +95,7 @@ public enum AnalysisType {
                 "%",
                 "95",
                 false,
+                false,
                 null
             ),
             new AnalysisParameterType(
@@ -114,6 +116,7 @@ public enum AnalysisType {
                 "string",
                 null,
                 "href",
+                false,
                 false,
                 Arrays.asList(
                     new AnalysisParameterOption("href", "Ad hoc method (href)"),
@@ -141,6 +144,7 @@ public enum AnalysisType {
                 null,
                 null,
                 true,
+                false,
                 null
             ),
             new AnalysisParameterType(
@@ -161,6 +165,7 @@ public enum AnalysisType {
                 null,
                 "50",
                 true,
+                false,
                 null
             ),
             new AnalysisParameterType(
@@ -181,6 +186,7 @@ public enum AnalysisType {
                 null,
                 "1",
                 true,
+                false,
                 null
             )
         ),
@@ -252,6 +258,7 @@ public enum AnalysisType {
                 "%",
                 "95",
                 false,
+                false,
                 null
             ),
             new AnalysisParameterType(
@@ -270,7 +277,9 @@ public enum AnalysisType {
                 null,
                 null,
                 false,
-            null),
+                false,
+                null
+            ),
             new AnalysisParameterType(
                 "sig2",
                 "sig2",
@@ -285,6 +294,7 @@ public enum AnalysisType {
                 "double",
                 null,
                 null,
+                false,
                 false,
                 null
             ),
@@ -306,6 +316,7 @@ public enum AnalysisType {
                 null,
                 "50",
                 true,
+                false,
                 null
             ),
             new AnalysisParameterType(
@@ -324,6 +335,7 @@ public enum AnalysisType {
                 null,
                 "1",
                 true,
+                false,
                 null
             )
         ),
@@ -368,6 +380,7 @@ public enum AnalysisType {
                 "double",
                 null,
                 "100",
+                false,
                 false,
                 null
             )
@@ -417,6 +430,7 @@ public enum AnalysisType {
                 "%",
                 "95",
                 false,
+                false,
                 null
             ),
             new AnalysisParameterType(
@@ -433,6 +447,7 @@ public enum AnalysisType {
                 null,
                 "30",
                 false,
+                false,
                 null
             ),
             new AnalysisParameterType(
@@ -448,6 +463,7 @@ public enum AnalysisType {
                 "double",
                 "m",
                 null,
+                false,
                 false,
                 null
             )
@@ -500,6 +516,7 @@ public enum AnalysisType {
                 null,
                 null,
                 false,
+                false,
                 null
             ),
             new AnalysisParameterType(
@@ -509,6 +526,7 @@ public enum AnalysisType {
                 "double",
                 "°",
                 null,
+                false,
                 false,
                 null
             ),
@@ -520,6 +538,7 @@ public enum AnalysisType {
                 "°",
                 null,
                 false,
+                false,
                 null
             ),
             new AnalysisParameterType(
@@ -529,6 +548,7 @@ public enum AnalysisType {
                 "date",
                 null,
                 null,
+                false,
                 false,
                 null
             ),
@@ -540,6 +560,7 @@ public enum AnalysisType {
                 "°",
                 null,
                 false,
+                false,
                 null
             ),
             new AnalysisParameterType(
@@ -549,6 +570,7 @@ public enum AnalysisType {
                 "double",
                 "°",
                 null,
+                false,
                 false,
                 null
             ),
@@ -560,6 +582,18 @@ public enum AnalysisType {
                 null,
                 "true",
                 true,
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "uInit",
+                "u.init",
+                "<p>\"Advection\" component of movement; northward component of directed movement.</p>",
+                "double",
+                "nm/day",
+                "0",
+                true,
+                true,
                 null
             ),
             new AnalysisParameterType(
@@ -569,6 +603,18 @@ public enum AnalysisType {
                 "boolean",
                 null,
                 "true",
+                true,
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "vInit",
+                "v.init",
+                "<p>\"Advection\" component of movement; eastward component of directed movement.</p>",
+                "double",
+                "nm/day",
+                "0",
+                true,
                 true,
                 null
             ),
@@ -580,6 +626,18 @@ public enum AnalysisType {
                 null,
                 "true",
                 true,
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "DInit",
+                "D.init",
+                "<p>\"Diffusion\" component of movement; a measure of the variability in movement.</p>",
+                "double",
+                "nm<sup>2</sup>/day",
+                "100",
+                true,
+                true,
                 null
             ),
             new AnalysisParameterType(
@@ -589,6 +647,18 @@ public enum AnalysisType {
                 "boolean",
                 null,
                 "true",
+                true,
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "bxInit",
+                "bx.init",
+                "<p>Systematic error (or bias) in the estimation of position (longitude).</p>",
+                "double",
+                "°",
+                "0",
+                true,
                 true,
                 null
             ),
@@ -600,6 +670,18 @@ public enum AnalysisType {
                 null,
                 "true",
                 true,
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "byInit",
+                "by.init",
+                "<p>Systematic error (or bias) in the estimation of position (latitude).</p>",
+                "double",
+                "°",
+                "0",
+                true,
+                true,
                 null
             ),
             new AnalysisParameterType(
@@ -610,6 +692,18 @@ public enum AnalysisType {
                 null,
                 "true",
                 true,
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "sxInit",
+                "sx.init",
+                "<p>Random error in the estimation of position (longitude).</p>",
+                "double",
+                "°",
+                "0.5",
+                true,
+                true,
                 null
             ),
             new AnalysisParameterType(
@@ -619,6 +713,18 @@ public enum AnalysisType {
                 "boolean",
                 null,
                 "true",
+                true,
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "syInit",
+                "sy.init",
+                "<p>Random error in the estimation of position (latitude).</p>",
+                "double",
+                "°",
+                "1.5",
+                true,
                 true,
                 null
             ),
@@ -633,98 +739,6 @@ public enum AnalysisType {
                 null,
                 "true",
                 true,
-                null
-            ),
-            new AnalysisParameterType(
-                "b0Active",
-                "b0.active",
-                "<p>\n" +
-                "   If <i>var.struct</i>=\"solstice\",\n" +
-                "   Whether <i>b[0]</i> should be optimized; uncheck to fix <i>b[0]</i> at <i>b0.init</i> value below.\n" +
-                "</p>",
-                "boolean",
-                null,
-                "true",
-                true,
-                null
-            ),
-            new AnalysisParameterType(
-                "vscaleActive",
-                "vscale.active",
-                "<p>Whether <i>vscale</i> should be optimized; uncheck to fix <i>vscale</i> at <i>vscale.init</i> value below.</p>",
-                "boolean",
-                null,
-                "true",
-                true,
-                null
-            ),
-            new AnalysisParameterType(
-                "uInit",
-                "u.init",
-                "<p>\"Advection\" component of movement; northward component of directed movement.</p>",
-                "double",
-                "nm/day",
-                "0",
-                true,
-                null
-            ),
-            new AnalysisParameterType(
-                "vInit",
-                "v.init",
-                "<p>\"Advection\" component of movement; eastward component of directed movement.</p>",
-                "double",
-                "nm/day",
-                "0",
-                true,
-                null
-            ),
-            new AnalysisParameterType(
-                "DInit",
-                "D.init",
-                "<p>\"Diffusion\" component of movement; a measure of the variability in movement.</p>",
-                "double",
-                "nm^2/day",
-                "100",
-                true,
-                null
-            ),
-            new AnalysisParameterType(
-                "bxInit",
-                "bx.init",
-                "<p>Systematic error (or bias) in the estimation of position (longitude).</p>",
-                "double",
-                "°",
-                "0",
-                true,
-                null
-            ),
-            new AnalysisParameterType(
-                "byInit",
-                "by.init",
-                "<p>Systematic error (or bias) in the estimation of position (latitude).</p>",
-                "double",
-                "°",
-                "0",
-                true,
-                null
-            ),
-            new AnalysisParameterType(
-                "sxInit",
-                "sx.init",
-                "<p>Random error in the estimation of position (longitude).</p>",
-                "double",
-                "°",
-                "0.5",
-                true,
-                null
-            ),
-            new AnalysisParameterType(
-                "syInit",
-                "sy.init",
-                "<p>Random error in the estimation of position (latitude).</p>",
-                "double",
-                "°",
-                "1.5",
                 true,
                 null
             ),
@@ -738,6 +752,21 @@ public enum AnalysisType {
                 "double",
                 "°",
                 "0.001",
+                true,
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "b0Active",
+                "b0.active",
+                "<p>\n" +
+                "   If <i>var.struct</i>=\"solstice\",\n" +
+                "   Whether <i>b[0]</i> should be optimized; uncheck to fix <i>b[0]</i> at <i>b0.init</i> value below.\n" +
+                "</p>",
+                "boolean",
+                null,
+                "true",
+                true,
                 true,
                 null
             ),
@@ -753,6 +782,18 @@ public enum AnalysisType {
                 "days",
                 "0",
                 true,
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "vscaleActive",
+                "vscale.active",
+                "<p>Whether <i>vscale</i> should be optimized; uncheck to fix <i>vscale</i> at <i>vscale.init</i> value below.</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                true,
                 null
             ),
             new AnalysisParameterType(
@@ -762,6 +803,7 @@ public enum AnalysisType {
                 "double",
                 null,
                 "1",
+                true,
                 true,
                 null
             ),
@@ -778,22 +820,23 @@ public enum AnalysisType {
                 "</p>" +
                 "<p>\n" +
                 "    If \"solstice\", the variance is assumed to follow the model\n" +
-                "    sigma[y[i]]^2 = sigma[y[0]]^2 / (cos^2(2pi(J[i]+(-1)^(s[i])b[0])/365.25)+a[0]),\n" +
+                "    sigma[y[i]]<sup>2</sup> = sigma[y[0]]<sup>2</sup> / (cos<sup>2</sup>(2pi(J[i]+(-1)<sup>(s[i])b[0])</sup>/365.25)+a[0]),\n" +
                 "    where J[i] is the number of days since last solstice prior to all observations,\n" +
                 "    s[i] is the season number since the beginning of the track \n" +
                 "    (one for the first 182.625 days, then two for the next 182.625, then three and so on).\n" +
-                "    a[0], b[0] and sigma[y[0]]^2 are model parameters.\n" +
+                "    a[0], b[0] and sigma[y[0]]<sup>2</sup> are model parameters.\n" +
                 "</p>\n" +
                 "<p>\n" +
                 "    If \"daily\" the variance is assumed to have a different value at\n" +
                 "    each time step, and psi[i] are normally distributed random\n" +
-                "    variables with mean zero and variance sigma[psi]^2 representing\n" +
+                "    variables with mean zero and variance sigma[psi]<sup>2</sup> representing\n" +
                 "    transient deviations in the latitude error.\n" +
                 "</p>",
                 "string",
                 null,
                 "solstice",
                 true,
+                false,
                 Arrays.asList(
                     new AnalysisParameterOption("uniform", "uniform"),
                     new AnalysisParameterOption("specified", "specified"),
@@ -974,6 +1017,7 @@ public enum AnalysisType {
                 null,
                 null,
                 false,
+                false,
                 null
             ),
             new AnalysisParameterType(
@@ -983,6 +1027,7 @@ public enum AnalysisType {
                 "double",
                 "°",
                 null,
+                false,
                 false,
                 null
             ),
@@ -994,6 +1039,7 @@ public enum AnalysisType {
                 "°",
                 null,
                 false,
+                false,
                 null
             ),
             new AnalysisParameterType(
@@ -1003,6 +1049,7 @@ public enum AnalysisType {
                 "date",
                 null,
                 null,
+                false,
                 false,
                 null
             ),
@@ -1014,6 +1061,7 @@ public enum AnalysisType {
                 "°",
                 null,
                 false,
+                false,
                 null
             ),
             new AnalysisParameterType(
@@ -1024,6 +1072,7 @@ public enum AnalysisType {
                 "°",
                 null,
                 false,
+                true,
                 null
             ),
             new AnalysisParameterType(
@@ -1033,6 +1082,18 @@ public enum AnalysisType {
                 "boolean",
                 null,
                 "true",
+                true,
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "uInit",
+                "u.init",
+                "<p>\"Advection\" component of movement; northward component of directed movement.</p>",
+                "double",
+                "nm/day",
+                "0",
+                true,
                 true,
                 null
             ),
@@ -1044,6 +1105,18 @@ public enum AnalysisType {
                 null,
                 "true",
                 true,
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "vInit",
+                "v.init",
+                "<p>\"Advection\" component of movement; eastward component of directed movement.</p>",
+                "double",
+                "nm/day",
+                "0",
+                true,
+                true,
                 null
             ),
             new AnalysisParameterType(
@@ -1053,6 +1126,18 @@ public enum AnalysisType {
                 "boolean",
                 null,
                 "true",
+                true,
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "DInit",
+                "D.init",
+                "<p>\"Diffusion\" component of movement; a measure of the variability in movement.</p>",
+                "double",
+                "nm<sup>2</sup>/day",
+                "100",
+                true,
                 true,
                 null
             ),
@@ -1064,6 +1149,18 @@ public enum AnalysisType {
                 null,
                 "true",
                 true,
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "bxInit",
+                "bx.init",
+                "<p>Systematic error (or bias) in the estimation of position (longitude).</p>",
+                "double",
+                "°",
+                "0",
+                true,
+                true,
                 null
             ),
             new AnalysisParameterType(
@@ -1073,6 +1170,18 @@ public enum AnalysisType {
                 "boolean",
                 null,
                 "true",
+                true,
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "byInit",
+                "by.init",
+                "<p>Systematic error (or bias) in the estimation of position (latitude).</p>",
+                "double",
+                "°",
+                "0",
+                true,
                 true,
                 null
             ),
@@ -1084,6 +1193,18 @@ public enum AnalysisType {
                 null,
                 "true",
                 true,
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "sxInit",
+                "sx.init",
+                "<p>Random error in the estimation of position (longitude).</p>",
+                "double",
+                "°",
+                "0.1",
+                true,
+                true,
                 null
             ),
             new AnalysisParameterType(
@@ -1093,6 +1214,18 @@ public enum AnalysisType {
                 "boolean",
                 null,
                 "true",
+                true,
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "syInit",
+                "sy.init",
+                "<p>Random error in the estimation of position (latitude).</p>",
+                "double",
+                "°",
+                "1.0",
+                true,
                 true,
                 null
             ),
@@ -1107,118 +1240,6 @@ public enum AnalysisType {
                 null,
                 "true",
                 true,
-                null
-            ),
-            new AnalysisParameterType(
-                "b0Active",
-                "b0.active",
-                "<p>\n" +
-                "   If <i>var.struct</i>=\"solstice\",\n" +
-                "   Whether <i>b[0]</i> should be optimized; uncheck to fix <i>b[0]</i> at <i>b0.init</i> value below.\n" +
-                "</p>",
-                "boolean",
-                null,
-                "true",
-                true,
-                null
-            ),
-            new AnalysisParameterType(
-                "bsstActive",
-                "bsst.active",
-                "<p>Whether <i>b[sst]</i> should be optimized; uncheck to fix <i>b[sst]</i> at <i>bsst.init</i> value below.</p>",
-                "boolean",
-                null,
-                "true",
-                true,
-                null
-            ),
-            new AnalysisParameterType(
-                "ssstActive",
-                "ssst.active",
-                "<p>Whether <i>sigma[sst]</i> should be optimized; uncheck to fix <i>sigma[sst]</i> at <i>ssst.init</i> value below.</p>",
-                "boolean",
-                null,
-                "true",
-                true,
-                null
-            ),
-            new AnalysisParameterType(
-                "rActive",
-                "r.active",
-                "<p>Whether <i>r</i> should be optimized; uncheck to fix <i>r</i> at <i>r.init</i> value below.</p>",
-                "boolean",
-                null,
-                "false",
-                true,
-                null
-            ),
-            new AnalysisParameterType(
-                "uInit",
-                "u.init",
-                "<p>\"Advection\" component of movement; northward component of directed movement.</p>",
-                "double",
-                "nm/day",
-                "0",
-                true,
-                null
-            ),
-            new AnalysisParameterType(
-                "vInit",
-                "v.init",
-                "<p>\"Advection\" component of movement; eastward component of directed movement.</p>",
-                "double",
-                "nm/day",
-                "0",
-                true,
-                null
-            ),
-            new AnalysisParameterType(
-                "DInit",
-                "D.init",
-                "<p>\"Diffusion\" component of movement; a measure of the variability in movement.</p>",
-                "double",
-                "nm^2/day",
-                "100",
-                true,
-                null
-            ),
-            new AnalysisParameterType(
-                "bxInit",
-                "bx.init",
-                "<p>Systematic error (or bias) in the estimation of position (longitude).</p>",
-                "double",
-                "°",
-                "0",
-                true,
-                null
-            ),
-            new AnalysisParameterType(
-                "byInit",
-                "by.init",
-                "<p>Systematic error (or bias) in the estimation of position (latitude).</p>",
-                "double",
-                "°",
-                "0",
-                true,
-                null
-            ),
-            new AnalysisParameterType(
-                "sxInit",
-                "sx.init",
-                "<p>Random error in the estimation of position (longitude).</p>",
-                "double",
-                "°",
-                "0.1",
-                true,
-                null
-            ),
-            new AnalysisParameterType(
-                "syInit",
-                "sy.init",
-                "<p>Random error in the estimation of position (latitude).</p>",
-                "double",
-                "°",
-                "1.0",
                 true,
                 null
             ),
@@ -1232,6 +1253,21 @@ public enum AnalysisType {
                 "double",
                 "°",
                 "0.001",
+                true,
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "b0Active",
+                "b0.active",
+                "<p>\n" +
+                "   If <i>var.struct</i>=\"solstice\",\n" +
+                "   Whether <i>b[0]</i> should be optimized; uncheck to fix <i>b[0]</i> at <i>b0.init</i> value below.\n" +
+                "</p>",
+                "boolean",
+                null,
+                "true",
+                true,
                 true,
                 null
             ),
@@ -1247,6 +1283,18 @@ public enum AnalysisType {
                 "days",
                 "0",
                 true,
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "bsstActive",
+                "bsst.active",
+                "<p>Whether <i>b[sst]</i> should be optimized; uncheck to fix <i>b[sst]</i> at <i>bsst.init</i> value below.</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                true,
                 null
             ),
             new AnalysisParameterType(
@@ -1257,6 +1305,18 @@ public enum AnalysisType {
                 null,
                 "0",
                 true,
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "ssstActive",
+                "ssst.active",
+                "<p>Whether <i>sigma[sst]</i> should be optimized; uncheck to fix <i>sigma[sst]</i> at <i>ssst.init</i> value below.</p>",
+                "boolean",
+                null,
+                "true",
+                true,
+                true,
                 null
             ),
             new AnalysisParameterType(
@@ -1266,6 +1326,18 @@ public enum AnalysisType {
                 "double",
                 null,
                 "0.1",
+                true,
+                true,
+                null
+            ),
+            new AnalysisParameterType(
+                "rActive",
+                "r.active",
+                "<p>Whether <i>r</i> should be optimized; uncheck to fix <i>r</i> at <i>r.init</i> value below.</p>",
+                "boolean",
+                null,
+                "false",
+                true,
                 true,
                 null
             ),
@@ -1279,6 +1351,7 @@ public enum AnalysisType {
                 "double",
                 null,
                 "200",
+                true,
                 true,
                 null
             )
@@ -1582,9 +1655,9 @@ public enum AnalysisType {
 
     private static List<AnalysisParameterType> buildHeatmapParameterTypes() {
         return Arrays.asList(
-            new AnalysisParameterType("showAbsence", "Show absence", null, "boolean", null, "false", false, null),
-            new AnalysisParameterType("gridSize", "Grid size", null, "double", "m", "100", false, null),
-            new AnalysisParameterType("colours", "Colours", null, "string", null, "YlOrRed", false, Arrays.asList(
+            new AnalysisParameterType("showAbsence", "Show absence", null, "boolean", null, "false", false, false, null),
+            new AnalysisParameterType("gridSize", "Grid size", null, "double", "m", "100", false, false, null),
+            new AnalysisParameterType("colours", "Colours", null, "string", null, "YlOrRed", false, false, Arrays.asList(
                 new AnalysisParameterOption("YlOrRd", "Yellow-Orange-Red"),
                 new AnalysisParameterOption("YlOrBr", "Yellow-Orange-Brown"),
                 new AnalysisParameterOption("YlGnBu", "Yellow-Green-Blue"),

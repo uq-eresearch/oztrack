@@ -82,7 +82,7 @@
                 text-decoration: none;
             }
             .animalInfo {
-                margin: 0 0 0 20px;
+                margin: 0;
             }
             .animalInfo table {
                 margin-top: 5px;
@@ -93,9 +93,6 @@
             .layerExplanationExpander {
                 display: block;
                 padding-top: 4px;
-            }
-            .paramTableDiv {
-                margin: 9px 0;
             }
             #savedAnalysesList .analysis-header {
                 padding: 2px 4px;
@@ -771,7 +768,7 @@
                                         Read more
                                     </a>
                                     </c:if>
-                                    <div id="paramTableDiv-${analysisType}" class="paramTableDiv">
+                                    <div id="paramContainer-${analysisType}" class="paramContainer">
                                         <tags:analysis-param-fields analysisType="${analysisType}"/>
                                     </div>
                                 </div>

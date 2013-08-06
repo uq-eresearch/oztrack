@@ -16,6 +16,7 @@ public class AnalysisParameterType {
     private final String units;
     private final String defaultValue;
     private final boolean advanced;
+    private final boolean paired;
     private final List<AnalysisParameterOption> options;
 
     public AnalysisParameterType(
@@ -26,6 +27,7 @@ public class AnalysisParameterType {
         String units,
         String defaultValue,
         boolean advanced,
+        boolean paired,
         List<AnalysisParameterOption> options
     ) {
         this.identifier = identifier;
@@ -35,6 +37,7 @@ public class AnalysisParameterType {
         this.units = units;
         this.defaultValue = defaultValue;
         this.advanced = advanced;
+        this.paired = paired;
         this.options = options;
     }
 
@@ -64,6 +67,10 @@ public class AnalysisParameterType {
 
     public boolean isAdvanced() {
         return advanced;
+    }
+
+    public boolean isPaired() {
+        return paired;
     }
 
     public List<AnalysisParameterOption> getOptions() {
