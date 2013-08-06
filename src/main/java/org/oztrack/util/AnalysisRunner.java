@@ -94,7 +94,7 @@ public class AnalysisRunner {
             List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(analysis.toSearchQuery());
             RserveInterface rserveInterface = new RserveInterface(rserveConnectionPool);
             rserveInterface.runAnalysis(analysis, positionFixList);
-            if (!new File(analysis.getResultFilePath()).canRead()) {
+            if (!new File(analysis.getAbsoluteResultFilePath()).canRead()) {
                 throw new Exception("Analysis result file not found.");
             }
             if (analysis.getAnalysisType().getResultType() == AnalysisResultType.HOME_RANGE) {
