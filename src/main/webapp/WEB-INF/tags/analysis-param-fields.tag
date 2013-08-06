@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ attribute name="analysisType" type="org.oztrack.data.model.types.AnalysisType" required="true" %>
-<table>
+<table class="paramTable">
     <c:set var="foundAdvancedParameterType" value="false"/>
     <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
     <c:if test="${!foundAdvancedParameterType and parameterType.advanced}">

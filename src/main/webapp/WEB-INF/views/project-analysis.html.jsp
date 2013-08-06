@@ -97,12 +97,6 @@
             .paramTableDiv {
                 margin: 9px 0;
             }
-            .paramTableDiv table {
-                width: 100%;
-            }
-            .paramTableDiv table td {
-                padding: 2px;
-            }
             #savedAnalysesList .analysis-header {
                 padding: 2px 4px;
                 border-bottom: 1px solid #ccc;
@@ -170,10 +164,6 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/project-map.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/project-analysis.js"></script>
         <script type="text/javascript">
-            function showParamTable(analysisType) {
-                $('.paramTableDiv').not('#paramTableDiv-' + analysisType).hide();
-                $('#paramTableDiv-' + analysisType).fadeToggle();
-            }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
                 $('#projectMenuAnalysis').addClass('active');
