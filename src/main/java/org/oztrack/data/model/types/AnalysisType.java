@@ -505,7 +505,7 @@ public enum AnalysisType {
             new AnalysisParameterType(
                 "startX",
                 "Start longitude",
-                null,
+                "Decimal degrees east",
                 "double",
                 "°",
                 null,
@@ -515,7 +515,7 @@ public enum AnalysisType {
             new AnalysisParameterType(
                 "startY",
                 "Start latitude",
-                null,
+                "Decimal degrees north",
                 "double",
                 "°",
                 null,
@@ -535,7 +535,7 @@ public enum AnalysisType {
             new AnalysisParameterType(
                 "endX",
                 "End longitude",
-                null,
+                "Decimal degrees east",
                 "double",
                 "°",
                 null,
@@ -545,7 +545,7 @@ public enum AnalysisType {
             new AnalysisParameterType(
                 "endY",
                 "End latitude",
-                null,
+                "Decimal degrees north",
                 "double",
                 "°",
                 null,
