@@ -1,5 +1,6 @@
 package org.oztrack.util;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -93,6 +94,9 @@ public class AnalysisRunner {
             List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(analysis.toSearchQuery());
             RserveInterface rserveInterface = new RserveInterface(rserveConnectionPool);
             rserveInterface.runAnalysis(analysis, positionFixList);
+            if (!new File(analysis.getResultFilePath()).canRead()) {
+                throw new Exception("Analysis result file not found.");
+            }
             if (analysis.getAnalysisType().getResultType() == AnalysisResultType.HOME_RANGE) {
                 readHomeRangeResult(analysis);
             }
