@@ -73,6 +73,14 @@
                 <a target="_blank" href="http://cran.r-project.org/web/packages/alphahull/index.html">alphahull</a>: Generalization of the convex hull of a sample of points in the plane
             </li>
             <li class="software">
+                <a target="_blank" href="https://code.google.com/p/geolocation/wiki/ArticleKftrack">kftrack</a>:
+                Estimate movement parameters and predict "most probable track" from positions
+            </li>
+            <li class="software">
+                <a target="_blank" href="https://code.google.com/p/geolocation/wiki/ArticleUkfsst">ukfsst</a>:
+                Estimate movement parameters and predict "most probable track" from raw light-based geolocations and sea surface temperatures (SST)
+            </li>
+            <li class="software">
                 <a target="_blank" href="http://cran.r-project.org/web/packages/rgdal/index.html">rgdal</a>: Bindings for the Geospatial Data Abstraction Library
             </li>
             <li class="software">
