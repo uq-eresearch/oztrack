@@ -117,14 +117,13 @@ fmyalphahull <- function(sinputfile,sinputssrs,ialpha)
     a <- ahull(coordinates(positionFix.proj1d), alpha = ialpha) 
     Ahull.proj <- ah2sp(xah=a,rnd=2)
     
-    if(class(Ahull.proj) == 'SpatialPolygonsDataFrame')
-    {
+    if(class(Ahull.proj) == 'SpatialPolygonsDataFrame'){
       #Ahull.proj$id <- unique(positionFix.proj1$ID)
       Ahull.proj$alpha <- ialpha
       row.names(Ahull.proj) <- iids[i]
       Ahull.proj@data$id <- iids[i]
     }else{
-      Ahull.proj <- print('Alpha hull unable to generate under these parameters. Try increasing the alpha value.')
+      stop('Alpha hull unable to generate under these parameters. Try increasing the alpha value.')
     }
     return(Ahull.proj)
   }
@@ -134,15 +133,11 @@ fmyalphahull <- function(sinputfile,sinputssrs,ialpha)
   do.call(rbind,lapply(1:length(iids),id.alpha))
 },silent=TRUE)
   
-  if (class(all.alpha) != 'try-error'){
-    if(class(all.alpha)=='SpatialPolygonsDataFrame'){    
-      proj4string(all.alpha) <- sinputssrs 
-      myAhull <- spTransform(all.alpha,CRS("+proj=longlat +datum=WGS84"))
-    }else{
-      myAhull <- print('Alpha hull unable to generate under these parameters. Try increasing the alpha value.')
-    }
+  if(class(all.alpha)=='SpatialPolygonsDataFrame'){
+    proj4string(all.alpha) <- sinputssrs 
+    myAhull <- spTransform(all.alpha,CRS("+proj=longlat +datum=WGS84"))
   }else{
-    myAhull <- print('Alpha hull unable to generate under these parameters. Try increasing the alpha value.')
+    stop('Alpha hull unable to generate under these parameters. Try increasing the alpha value.')
   }
   return(myAhull)
 }
@@ -177,14 +172,13 @@ fmyalphahullAM <- function(sinputfile,sinputssrs,ialpha,rnd=2)
     a <- ahull(coordinates(positionFix.proj1d), alpha = ialpha) 
     Ahull.proj <- ah2sp(xah=a,rnd=rnd)
     
-    if(class(Ahull.proj) == 'SpatialPolygonsDataFrame')
-    {
+    if(class(Ahull.proj) == 'SpatialPolygonsDataFrame'){
       #Ahull.proj$id <- unique(positionFix.proj1$ID)
       Ahull.proj$alpha <- ialpha
       row.names(Ahull.proj) <- iids[i]
       Ahull.proj@data$id <- iids[i]
     }else{
-      Ahull.proj <- print('Alpha hull unable to generate under these parameters. Try increasing the alpha value.') 
+      stop('Alpha hull unable to generate under these parameters. Try increasing the alpha value.') 
     }
     return(Ahull.proj)
   }
@@ -194,18 +188,14 @@ fmyalphahullAM <- function(sinputfile,sinputssrs,ialpha,rnd=2)
   do.call(rbind,lapply(1:length(iids),id.alpha))
 },silent=TRUE)  
 
-  if (class(all.alpha) != 'try-error'){
-    if(class(all.alpha)=='SpatialPolygonsDataFrame'){
-      proj4string(all.alpha) <- sinputssrs 
-      Ahull <- spTransform(all.alpha,CRS("+proj=longlat +datum=WGS84 +over"))
-      # This ensures all coordinates 0 - 360   
-      myAhull <- elide.polygons2(Ahull, shift = c(360.0, 0.0))
-      myAhull <- SpatialPolygonsDataFrame(myAhull,Ahull@data)
-    }else{
-      myAhull <- print('Alpha hull unable to generate under these parameters. Try increasing the alpha value.')
-    }
+  if(class(all.alpha) == 'SpatialPolygonsDataFrame'){
+    proj4string(all.alpha) <- sinputssrs 
+    Ahull <- spTransform(all.alpha,CRS("+proj=longlat +datum=WGS84 +over"))
+    # This ensures all coordinates 0 - 360   
+    myAhull <- elide.polygons2(Ahull, shift = c(360.0, 0.0))
+    myAhull <- SpatialPolygonsDataFrame(myAhull,Ahull@data)
   }else{
-    myAhull <- print('Alpha hull unable to generate under these parameters. Try increasing the alpha value.')
+    stop('Alpha hull unable to generate under these parameters. Try increasing the alpha value.')
   }
   return(myAhull)
 }
@@ -220,6 +210,7 @@ oztrack_alphahull <- function(srs, alpha, kmlFile, is180=FALSE,rnd=2) {
   
   if(class(myAhull)=='SpatialPolygonsDataFrame'){
     fOZkmlPolygons(OzSPDF=myAhull,kmlFileName=kmlFile)
-  }else{ print('Alpha hull unable to generate under these parameters. Try increasing the alpha value.')   
+  }else{
+    stop('Alpha hull unable to generate under these parameters. Try increasing the alpha value.')   
   }
 }
