@@ -160,7 +160,7 @@ public class PositionFixDaoImpl implements PositionFixDao {
         Double maxDop,
         boolean deleted
     ) {
-        if ((animalIds == null) || animalIds.isEmpty()) {
+        if ((project == null) || (animalIds == null) || animalIds.isEmpty()) {
             return 0;
         }
 

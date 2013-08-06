@@ -117,24 +117,40 @@ public class ProjectCleanseController {
             }
         }
         catch (java.text.ParseException e1) {
-            PrintWriter out = response.getWriter();
-            out.append("<?xml version=\"1.0\"?>\n");
-            out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");
-            out.append("    <error>Invalid date parameters</error>\n");
-            out.append("</cleanse-response>\n");
-            response.setStatus(200);
+            writeErrorResponse(response, "Invalid date parameters");
+            return;
+        }
+        String[] polygonParams = request.getParameterValues("polygon");
+        if (mode.equals("multi-polygon") && ((polygonParams == null) || polygonParams.length == 0)) {
+            writeErrorResponse(response, "No polygons selected");
+            return;
+        }
+        if (mode.equals("speed-filter") && ((maxSpeed == null) || maxSpeed.isNaN() || maxSpeed.isInfinite())) {
+            writeErrorResponse(response, "No max speed entered");
+            return;
+        }
+        if (mode.equals("argos-class") && ((minArgosClassCode == null) || minArgosClassCode.isEmpty())) {
+            writeErrorResponse(response, "No minimum location class entered");
+            return;
+        }
+        ArgosClass minArgosClass = ArgosClass.fromCode(minArgosClassCode);
+        if (StringUtils.isNotBlank(minArgosClassCode) && (minArgosClass == null)) {
+            writeErrorResponse(response, "Invalid location class entered");
+            return;
+        }
+        if (mode.equals("dop") && ((maxDop == null) || maxDop.isNaN() || maxDop.isInfinite())) {
+            writeErrorResponse(response, "No maximum DOP entered");
             return;
         }
 
         MultiPolygon multiPolygon = null;
-        String[] polygonsWkt = request.getParameterValues("polygon");
-        if ((polygonsWkt != null) && (polygonsWkt.length > 0)) {
+        if ((polygonParams != null) && (polygonParams.length > 0)) {
             Hints hints = new Hints();
             hints.put(Hints.CRS, DefaultGeographicCRS.WGS84);
             GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(hints);
             WKTReader reader = new WKTReader(geometryFactory);
             ArrayList<Polygon> polygons = new ArrayList<Polygon>();
-            for (String polygonWkt : polygonsWkt) {
+            for (String polygonWkt : polygonParams) {
                 try {
                     Polygon polygon = (Polygon) reader.read(polygonWkt);
                     polygons.add(polygon);
@@ -166,8 +182,6 @@ public class ProjectCleanseController {
                 }
             }
         }
-
-        ArgosClass minArgosClass = ArgosClass.fromCode(minArgosClassCode);
 
         if (operation.equals("delete")) {
             int numDeleted = positionFixDao.setDeleted(
@@ -212,13 +226,17 @@ public class ProjectCleanseController {
             return;
         }
         else {
-            PrintWriter out = response.getWriter();
-            out.append("<?xml version=\"1.0\"?>\n");
-            out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");
-            out.append("    <error>" + "Unknown operation: " + operation + "</error>\n");
-            out.append("</cleanse-response>\n");
-            response.setStatus(400);
+            writeErrorResponse(response, "Unknown operation: " + operation);
             return;
         }
+    }
+
+    private void writeErrorResponse(HttpServletResponse response, String message) throws IOException {
+        PrintWriter out = response.getWriter();
+        out.append("<?xml version=\"1.0\"?>\n");
+        out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");
+        out.append("    <error>" + message + "</error>\n");
+        out.append("</cleanse-response>\n");
+        response.setStatus(400);
     }
 }
