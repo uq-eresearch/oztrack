@@ -42,7 +42,7 @@
       <ExtendedData>
         <SchemaData schemaUrl="#Overall">
           <SimpleData name="animalId">${animal.id?c}</SimpleData>
-          <SimpleData name="animalName">${animal.name}</SimpleData>
+          <SimpleData name="animalName">${animal.animalName}</SimpleData>
           <#list analysis.analysisType.overallResultAttributeTypes as resultAttributeType>
           <SimpleData name="${resultAttributeType.identifier}"><#rt>
           <#if (analysis.getResultAttributeValue(resultAttributeType.identifier)??)><#t>
@@ -71,7 +71,7 @@
         <ExtendedData>
           <SchemaData schemaUrl="#Feature">
             <SimpleData name="animalId">${resultFeature.animal.id?c}</SimpleData>
-            <SimpleData name="animalName">${resultFeature.animal.name}</SimpleData>
+            <SimpleData name="animalName">${resultFeature.animal.animalName}</SimpleData>
             <#list analysis.analysisType.featureResultAttributeTypes as resultAttributeType>
             <SimpleData name="${resultAttributeType.identifier}"><#rt>
             <#if (resultFeature.getAttributeValue(resultAttributeType.identifier)??)><#t>
