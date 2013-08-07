@@ -30,6 +30,7 @@
       <ExtendedData>
         <SchemaData schemaUrl="#Analysis">
           <SimpleData name="id">${resultFeature.animal.id?c}</SimpleData>
+          <SimpleData name="animalName">${resultFeature.animal.animalName}</SimpleData>
           <#list analysis.analysisType.featureResultAttributeTypes as resultAttributeType>
           <SimpleData name="${resultAttributeType.identifier}">${resultFeature.getAttributeValue(resultAttributeType.identifier)?c}</SimpleData>
           </#list>
