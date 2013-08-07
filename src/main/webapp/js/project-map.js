@@ -1295,7 +1295,7 @@
                     layerName: 'Kalman Filter',
                     propertyNames: [
                         'name',
-                        'id',
+                        'animalId',
                         'when',
                         'begin',
                         'end',
@@ -1327,7 +1327,7 @@
                             var fromCoord = feature.geometry.components[0].clone().transform(that.projection900913, that.projection4326);
                             var toCoord = feature.geometry.components[feature.geometry.components.length - 1].clone().transform(that.projection900913, that.projection4326);
                             return $('<span>')
-                                .append(getAnimal(feature.attributes.id.value).name + ' probable track')
+                                .append(getAnimal(feature.attributes.animalId.value).name + ' probable track')
                                 .append('<br />')
                                 .append(' from ' + moment(feature.attributes.begin, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
                                 .append(' ' + coordString(fromCoord))
@@ -1353,7 +1353,7 @@
                         }
                         else {
                             return $('<span>')
-                                .append(getAnimal(feature.attributes.id.value).name)
+                                .append(getAnimal(feature.attributes.animalId.value).name)
                                 .append(' at ' + moment(feature.attributes.when, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
                                 .append(' ' + coordString(feature.geometry.clone().transform(that.projection900913, that.projection4326)))
                                 .append('<br />')
@@ -1366,7 +1366,7 @@
                     layerName: 'Kalman Filter (SST)',
                     propertyNames: [
                         'name',
-                        'id',
+                        'animalId',
                         'when',
                         'begin',
                         'end',
@@ -1407,7 +1407,7 @@
                             var fromCoord = feature.geometry.components[0].clone().transform(that.projection900913, that.projection4326);
                             var toCoord = feature.geometry.components[feature.geometry.components.length - 1].clone().transform(that.projection900913, that.projection4326);
                             return $('<span>')
-                                .append(getAnimal(feature.attributes.id.value).name + ' probable track')
+                                .append(getAnimal(feature.attributes.animalId.value).name + ' probable track')
                                 .append('<br />')
                                 .append(' from ' + moment(feature.attributes.begin, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
                                 .append(' ' + coordString(fromCoord))
@@ -1433,7 +1433,7 @@
                         }
                         else {
                             return $('<span>')
-                                .append(getAnimal(feature.attributes.id.value).name)
+                                .append(getAnimal(feature.attributes.animalId.value).name)
                                 .append(' at ' + moment(feature.attributes.when, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
                                 .append(' ' + coordString(feature.geometry.clone().transform(that.projection900913, that.projection4326)))
                                 .append('<br />')
@@ -1690,8 +1690,10 @@
             var styleContext = {
                 getColour : function(feature) {
                     var featureAnimalId =
-                        feature.attributes.animalId ||
+                        (feature.attributes.animalId && feature.attributes.animalId.value) ||
+                        (feature.attributes.animalId) ||
                         (feature.attributes.id && feature.attributes.id.value) ||
+                        (feature.attributes.id) ||
                         null;
                     return getAnimal(featureAnimalId).colour;
                 }
@@ -1721,8 +1723,10 @@
             var styleContext = {
                 getColour : function(feature) {
                     var featureAnimalId =
-                        feature.attributes.animalId ||
+                        (feature.attributes.animalId && feature.attributes.animalId.value) ||
+                        (feature.attributes.animalId) ||
                         (feature.attributes.id && feature.attributes.id.value) ||
+                        (feature.attributes.id) ||
                         null;
                     return getAnimal(featureAnimalId).colour;
                 }
@@ -1870,8 +1874,10 @@
                     for (var f in layer.features) {
                         var feature = layer.features[f];
                         var featureAnimalId =
-                            feature.attributes.animalId ||
+                            (feature.attributes.animalId && feature.attributes.animalId.value) ||
+                            (feature.attributes.animalId) ||
                             (feature.attributes.id && feature.attributes.id.value) ||
+                            (feature.attributes.id) ||
                             null;
                         if (featureAnimalId == animal.id) {
                             feature.renderIntent = animal.visible ? 'default' : 'temporary';
@@ -2089,9 +2095,16 @@
                 var animalId = analysis.params.animalIds[i];
                 var singleAnimalFeature = null;
                 for (j = 0; j < features.length; j++) {
-                    if (features[j].attributes.id && features[j].attributes.id.value == animalId) {
+                    var feature = features[j];
+                    var featureAnimalId =
+                        (feature.attributes.animalId && feature.attributes.animalId.value) ||
+                        (feature.attributes.animalId) ||
+                        (feature.attributes.id && feature.attributes.id.value) ||
+                        (feature.attributes.id) ||
+                        null;
+                    if (featureAnimalId === animalId) {
                         if (singleAnimalFeature === null) {
-                            singleAnimalFeature = features[j];
+                            singleAnimalFeature = feature;
                         }
                         else {
                             singleAnimalFeature = null;
