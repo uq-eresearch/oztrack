@@ -642,6 +642,14 @@
                                 <form id="form-kalman-filter" class="form-vertical" style="margin: 0;" onsubmit="return false;">
                                 <fieldset>
                                 <div class="control-group">
+                                    <c:if test="${not empty kalmanAnalysisType.explanation}">
+                                    <div class="layerExplanation" style="max-height: 54px; overflow-y: hidden;">
+                                        ${kalmanAnalysisType.explanation}
+                                    </div>
+                                    <a class="layerExplanationExpander" href="#read-more">
+                                        Read more
+                                    </a>
+                                    </c:if>
                                     <div class="controls">
                                         <tags:analysis-param-fields analysisType="${kalmanAnalysisType}"/>
                                     </div>
@@ -668,6 +676,14 @@
                                 <form id="form-kalman-filter-sst" class="form-vertical" style="margin: 0;" onsubmit="return false;">
                                 <fieldset>
                                 <div class="control-group">
+                                    <c:if test="${not empty kalmanSstAnalysisType.explanation}">
+                                    <div class="layerExplanation" style="max-height: 54px; overflow-y: hidden;">
+                                        ${kalmanSstAnalysisType.explanation}
+                                    </div>
+                                    <a class="layerExplanationExpander" href="#read-more">
+                                        Read more
+                                    </a>
+                                    </c:if>
                                     <div class="controls">
                                         <tags:analysis-param-fields analysisType="${kalmanSstAnalysisType}"/>
                                     </div>

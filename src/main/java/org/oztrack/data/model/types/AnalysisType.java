@@ -505,7 +505,26 @@ public enum AnalysisType {
     ),
     KALMAN(
         "Kalman Filter",
-        null,
+        "<p>\n" +
+        "    This filter applies a state-space model combined with a kalman filter to your location data\n" +
+        "    (logitude and latitude) to help predict the ‘most probable’ track through time. This combines\n" +
+        "    the location and temperature data. More information on this particular method (i.e. the\n" +
+        "    extended kalman filter) can be found in Sibert et al. (2003), Sibert et al. (2006) and the\n" +
+        "    kftrack package documentation on which this code is based at\n" +
+        "    <a href=\"https://code.google.com/p/geolocation/wiki/ArticleKftrack\">https://code.google.com/p/geolocation/wiki/ArticleKftrack</a>.\n" +
+        "</p>\n" +
+        "<p style=\"font-weight: bold;\">References</p>\n" +
+        "\n" +
+        "<p>\n" +
+        "    Sibert, J.R., Musyl, M.K. & Brill, R.W. (2003) Horizontal movements of bigeye tuna (Thunnus obesus)\n" +
+        "    near Hawaii determined by Kalman filter analysis of archival tagging data.\n" +
+        "    Fisheries Oceanography, 12(3):141-151.\n" +
+        "</p>\n" +
+        "<p>\n" +
+        "    Sibert, J. R., Lutcavage, M.E., Nielsen, A., Brill, R.W. & Wilson, S.G. (2006) Interannual\n" +
+        "    variation in large-scale movement of Atlantic bluefin tuna (Thunnus thynnus) determined from\n" +
+        "    pop-up satellite archival tags. Canadian Journal of Fisheries and Aquatic Sciences 63: 2154-2166.\n" +
+        "</p>",
         AnalysisResultType.FILTER,
         Arrays.asList(
             new AnalysisParameterType(
@@ -1006,7 +1025,22 @@ public enum AnalysisType {
     ),
     KALMAN_SST(
         "Kalman Filter (SST)",
-        null,
+        "<p>\n" +
+        "    If tag-recorded sea-surface temperature (SST) data are available for each location, this filter\n" +
+        "    applies a state-space model combined with a kalman filter to your location data (logitude, latitude)\n" +
+        "    and SST to help predict the ‘most probable’ track through time. In an attemt to improve the model’s\n" +
+        "    predictions, the tag-recorded SST is matched with external SST data collected by the National\n" +
+        "    Oceanic and Atmospheric Administration (NOAA). This model is adapted from the kfsst function, in the\n" +
+        "    ukfsst R package <a href=\"https://code.google.com/p/geolocation/wiki/ArticleUkfsst\">https://code.google.com/p/geolocation/wiki/ArticleUkfsst</a>.\n" +
+        "    More information on this particular method can be found in Lam, Nielsen & Sibert (2008).\n" +
+        "</p>\n" +
+        "\n" +
+        "<p style=\"font-weight: bold;\">References</p>\n" +
+        "\n" +
+        "<p>\n" +
+        "    Lam, C.H., Nielsen, A. & Sibert, J.R. (2008) Improving light and temperature based geolocation by\n" +
+        "    unscented Kalman filtering. Fisheries Research, 91: 15-25.\n" +
+        "</p>",
         AnalysisResultType.FILTER,
         Arrays.asList(
             new AnalysisParameterType(
