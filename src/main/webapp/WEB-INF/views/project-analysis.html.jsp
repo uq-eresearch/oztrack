@@ -92,7 +92,7 @@
             }
             .layerExplanationExpander {
                 display: block;
-                padding-top: 4px;
+                padding: 4px 0 9px 0;
             }
             #savedAnalysesList .analysis-header {
                 padding: 2px 4px;

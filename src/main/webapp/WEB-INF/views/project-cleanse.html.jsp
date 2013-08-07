@@ -64,6 +64,10 @@
             .layerInfoTitle {
                 padding: 5px 0;
             }
+            .layerExplanationExpander {
+                display: block;
+                padding: 4px 0 9px 0;
+            }
         </style>
     </jsp:attribute>
     <jsp:attribute name="tail">
@@ -204,6 +208,13 @@
                 });
                 $('#accordion-body-multi-polygon').on('hide', function() {
                     cleanseMap.setPolygonControlActivated(false);
+                });
+                $('.layerExplanationExpander').click(function(e) {
+                    e.preventDefault();
+                    var prev = $(this).prev();
+                    var maxHeight = prev.css('max-height');
+                    var newMaxHeight = (maxHeight === 'none') ? '54px' : 'none';
+                    prev.css('max-height', newMaxHeight);
                 });
                 cleanseMap = null;
                 onResize();
@@ -510,10 +521,26 @@
                                 <form id="form-speed-filter" class="form-vertical" style="margin: 0;" onsubmit="return false;">
                                 <fieldset>
                                 <div class="control-group">
+                                    <div class="layerExplanation" style="max-height: 54px; overflow-y: hidden;">
                                     <p>
-                                        Specify a maximum speed.
-                                        All detections that imply the animal has exceeded the maximum speed will be deleted.
+                                        Specify a maximum speed. All detections that imply the animal has exceeded the specified
+                                        maximum speed will be deleted, following the algorythm described in McConnell (1992) and
+                                        implemented in the trip R package (Sumner 2006).
                                     </p>
+                                    <p style="font-weight: bold;">References</p>
+                                    <p>
+                                        McConnell, B.J., Chambers, C. & Fedak, M.A. (1992) Foraging ecology of southern elephant
+                                        seals in relation to the bathymetry and productivity of the Southern Ocean.
+                                        Antarctic Science 4: 393-398.
+                                    </p>
+                                    <p>
+                                        Sumner, M. (2013) trip: Spatial analysis of animal track data. R package version 1.1-15.
+                                        <a href="http://CRAN.R-project.org/package=trip">http://CRAN.R-project.org/package=trip</a>
+                                    </p>
+                                    </div>
+                                    <a class="layerExplanationExpander" href="#read-more">
+                                        Read more
+                                    </a>
                                     <div class="controls">
                                         <div class="input-append">
                                             <input id="maxSpeed" name="maxSpeed" type="text" class="input-small" placeholder="Max speed" >
