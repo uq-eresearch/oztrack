@@ -8,7 +8,7 @@ This software is copyright The University of Queensland.
 
 This software is distributed under the GNU GENERAL PUBLIC LICENSE Version 2. See the COPYING file for detail.
 
-## Installing on Ubuntu Linux
+## Installing on Ubuntu
 
 ### Setting up the database
 
@@ -33,8 +33,9 @@ Install the following packages:
 * `libgdal-dev`: required by `rgdal` R package.
 * `libproj-dev`: required by `rgdal` R package.
 * `libxml2-dev`: required by `plotKML` R package.
+* `libnetcdf-dev`, `netcdf-bin`: required by `ncdf` R package.
 
-<pre>sudo apt-get install libgdal-dev libproj-dev libxml2-dev</pre>
+<pre>sudo apt-get install libgdal-dev libproj-dev libxml2-dev libnetcdf-dev netcdf-bin</pre>
 
 ### Installing R (including Rserve and other packages)
 
@@ -78,7 +79,7 @@ The `kftrack` and `ukfsst` packages need to be downloaded and installed from fil
     wget 'https://geolocation.googlecode.com/files/ukfsst_0.3-x64.tar.gz'
     sudo R --no-save << EOF
     install.packages('kftrack_0.70-x64.tar.gz', repos=NULL)
-    install.packages('date', repos='http://cran.csiro.au/')
+    install.packages(c('date', 'ncdf'), repos='http://cran.csiro.au/')
     install.packages('ukfsst_0.3-x64.tar.gz', repos=NULL)
     EOF
 
@@ -124,7 +125,7 @@ HTTP server and configure reverse proxying from port 80 to GeoServer (port 8080)
 
 See the *Installing and configuring OzTrack* section below.
 
-## Installing on Red Hat Linux
+## Installing on Red Hat
 
 ### Setting up the database
 
@@ -193,8 +194,9 @@ Install the following packages:
 * `gdal-devel`: required by `rgdal` R package.
 * `proj-devel`: required by `rgdal` R package.
 * `libxml2-devel`: required by `plotKML` R package.
+* `netcdf`: required by `ncdf` R package.
 
-<pre>sudo yum install gdal-devel proj-devel libxml2-devel</pre>
+<pre>sudo yum install gdal-devel proj-devel libxml2-devel netcdf-devel</pre>
 
 ### Installing R (including Rserve and other packages)
 
@@ -238,7 +240,7 @@ The `kftrack` and `ukfsst` packages need to be downloaded and installed from fil
     wget 'https://geolocation.googlecode.com/files/ukfsst_0.3-x64.tar.gz'
     sudo R --no-save << EOF
     install.packages('kftrack_0.70-x64.tar.gz', repos=NULL)
-    install.packages('date', repos='http://cran.csiro.au/')
+    install.packages(c('date', 'ncdf'), repos='http://cran.csiro.au/')
     install.packages('ukfsst_0.3-x64.tar.gz', repos=NULL)
     EOF
 
