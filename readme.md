@@ -194,7 +194,7 @@ Install the following packages:
 * `gdal-devel`: required by `rgdal` R package.
 * `proj-devel`: required by `rgdal` R package.
 * `libxml2-devel`: required by `plotKML` R package.
-* `netcdf`: required by `ncdf` R package.
+* `netcdf-devel`: required by `ncdf` R package.
 
 <pre>sudo yum install gdal-devel proj-devel libxml2-devel netcdf-devel</pre>
 
