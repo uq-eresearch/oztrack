@@ -1465,6 +1465,9 @@
                     bounds.extend(that.map.getLonLatFromPixel(rightTop));
                     var vectorLayers = that.map.getLayersByClass('OpenLayers.Layer.Vector');
                     $.each(vectorLayers, function(i, vectorLayer) {
+                        if (control.queryVisible && !vectorLayer.getVisibility()) {
+                            return true; // continue
+                        }
                         $.each(control.layerDetails, function(i, layerDetail) {
                             if (layerDetail.layerName && layerDetail.layerName === vectorLayer.name) {
                                 $.each(vectorLayer.features, function(i, f) {
