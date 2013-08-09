@@ -348,8 +348,11 @@ oztrack_kfsst <- function(
     ssst.init=ssst.init,
     r.init=r.init
   )
-  if (class(mykal)=="kftrack") {
+  if (class(mykal)=="kfsst") {
     fkfsstkml(fit=mykal, datetime=mykal$Datetime, kmlFileName=kmlFileName)
+  }
+  else if (is.character(mykal)) {
+    stop(mykal)
   }
   else {
     stop('Kalman filter failed to work using these parameters.')

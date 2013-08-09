@@ -304,8 +304,13 @@ oztrack_kalman <- function(
     vscale.init=vscale.init,
     var.struct=var.struct
   )
-  if (is.character(mykal)) {
+  if (class(mykal)=="kftrack") {
+    fkalmankml(fit=mykal, datetime=mykal$Datetime, kmlFileName=kmlFileName)
+  }
+  else if (is.character(mykal)) {
     stop(mykal)
   }
-  fkalmankml(fit=mykal, datetime=mykal$Datetime, kmlFileName=kmlFileName)
+  else {
+    stop('Kalman filter failed to work using these parameters.')
+  }
 }
