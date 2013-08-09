@@ -43,12 +43,12 @@
         <c:when test="${parameterType.dataType == 'date'}">
         <input
             type="hidden"
-            id="${parameterType.identifier}"
+            id="paramField-${analysisType}-${parameterType.identifier}"
             class="paramField-${analysisType}"
             name="${parameterType.identifier}" />
         <input
             type="text"
-            id="${parameterType.identifier}Visible"
+            id="paramField-${analysisType}-${parameterType.identifier}Visible"
             class="datepicker input-mini"
             style="margin-bottom: 3px; width: 80px;" />
         </c:when>

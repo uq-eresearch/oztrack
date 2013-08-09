@@ -180,8 +180,8 @@
                 <c:forEach items="${analysisTypeList}" var="analysisType">
                 <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
                 <c:if test="${parameterType.dataType == 'date'}">
-                $('#${parameterType.identifier}Visible').datepicker({
-                    altField: '#${parameterType.identifier}'
+                $('#paramField-${analysisType}-${parameterType.identifier}Visible').datepicker({
+                    altField: '#paramField-${analysisType}-${parameterType.identifier}'
                 });
                 </c:if>
                 </c:forEach>
