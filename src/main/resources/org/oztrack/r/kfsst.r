@@ -31,32 +31,33 @@ fozkalmankfsst <- function(
   ssst.init=0.1,
   r.init=200
 ) {
-  #sinputfile=positionFix
-  #startdate='2010-12-18'
-  #startX=174.436
-  #startY=-36.89
-  #enddate='2010-12-29'
-  #endX=174.436
-  #endY=-36.89
-  #u.active=TRUE
-  #v.active=TRUE
-  #D.active=TRUE
-  #bx.active=TRUE
-  #by.active=TRUE
-  #sx.active=TRUE
-  #sy.active=TRUE
-  #a0.active=TRUE
-  #b0.active=TRUE
-  #vscale.active=TRUE
-  #u.init=0
-  #v.init=0
-  #D.init=100
-  #bx.init=0
-  #by.init=0
-  #sx.init=0.5
-  #sy.init=1.5
-  #a0.init=0.001
-  #b0.init=0
+  #sinputfile=sstlocs; is.AM=TRUE;
+  #startdate=NULL; startX=NULL; startY=NULL;
+  #enddate=NULL; endX=NULL; endY=NULL;
+  #u.active=TRUE;
+  #v.active=TRUE;
+  #D.active=TRUE;
+  #bx.active=FALSE;
+  #by.active=TRUE;
+  #sx.active=TRUE;
+  #sy.active=TRUE;
+  #a0.active=TRUE;
+  #b0.active=TRUE;
+  #bsst.active=FALSE;
+  #ssst.active=TRUE;
+  #r.active=FALSE;
+  #u.init=0;
+  #v.init=0;
+  #D.init=100;
+  #bx.init=0;
+  #by.init=0;
+  #sx.init=0.1;
+  #sy.init=1;
+  #a0.init=0.001;
+  #b0.init=0;
+  #bsst.init=0;
+  #ssst.init=0.1;
+  #r.init=200
   
   # if the user has specified that there is a start date and an end date
   if(is.null(startdate)==FALSE & is.null(enddate)==FALSE){
@@ -92,16 +93,16 @@ fozkalmankfsst <- function(
   long <- trackdata$X  
   # If data crosses 180th meridian change longitude so 0 - 360
   if(is.AM==TRUE)  long <- ifelse(long<0,long+360,long)
-
+  
   # Ensure dates in correct decimal
   Datetime <- trackdata$Date
-
+  
   day <- as.numeric(strftime(Datetime, format="%d")) 
   dhour <- sapply(strsplit(substr(Datetime,12,19),":"),
                   function(x) {
                     x <- as.numeric(x)
                     x[1]/24+x[2]/(24*60)+x[3]/(24*60*60)})
-  day <- day+dhour
+  #day <- day+dhour
   
   # to prevent step size being too small, remove anything greater than 1 dp
   day <- floor(day*10)/10
@@ -112,14 +113,14 @@ fozkalmankfsst <- function(
   track <- data.frame(day,month,year,long,lati,sst)
   dups <- duplicated(data.frame(track$year,track$month,track$day))
   track <- track[!dups,]
-
+  
   #Obtain a corresponding SST-field
   sst.path <- try({get.sst.from.server(track)})
   
   # Error handling
   if (class(sst.path) == 'try-error')
     stop('Failed to get sst from server. Try removing any extreme outliers and re-running the kalman filter.')
-
+  
   # Run the  Unscented Kalman filter (+sst)
   kfm <- try({
     kfsst(
@@ -151,21 +152,22 @@ fozkalmankfsst <- function(
       ssst.init=ssst.init,
       r.init=r.init
     )
-    },silent=TRUE)
+  },silent=TRUE)
   
   # Error handling
   if (class(kfm) == 'try-error') 
   {
     if (is.null(startdate) || is.null(enddate))
-      kfm <- 'Kalman filter failed to work using these parameters. Try adding a true start and end date and location.'
+      stop('Kalman filter failed to work using these parameters. Try adding a true start and end date and location.')
     else
-      kfm <- 'Kalman filter failed to work using these parameters. In "Advanced parameters", try simplifying the model (e.g. bx.active=FALSE, by.active=FALSE, bsst.active=FALSE) or provide better initial values (e.g. D.i=500).'
+      stop('Kalman filter failed to work using these parameters. In "Advanced parameters", try simplifying the model (e.g. bx.active=FALSE, by.active=FALSE, bsst.active=FALSE) or provide better initial values (e.g. D.i=500).')
   }else{
     # Combine Datetime data to Object
     kfm$Datetime <- Datetime[!dups]
+    return(kfm)
   }
-
-  return(kfm)
+  
+  
 }
 
 #############################################################
@@ -257,7 +259,7 @@ fkfsstkmlPlacemark <- function(fit, datetime) {
     datestr <- substr(datetime[i],1,10)
     timestr <- substr(datetime[i],12,19)
     if (timestr == '') {
-        timestr <- '00:00:00'
+      timestr <- '00:00:00'
     }
     kml <- append(kml,"<when>" %+% datestr %+% "T" %+% timestr %+% "Z" %+% "</when>")
     kml <- append(kml,"</TimeStamp>")
@@ -354,8 +356,7 @@ oztrack_kfsst <- function(
     ssst.init=ssst.init,
     r.init=r.init
   )
-  if (is.character(mykal)) {
-    stop(mykal)
-  }
-  fkfsstkml(fit=mykal, datetime=mykal$Datetime, kmlFileName=kmlFileName)
+  #RD edited these lines on the 06/08/2013
+  if (class(mykal)=="kftrack") {
+    fkfsstkml(fit=mykal, datetime=mykal$Datetime, kmlFileName=kmlFileName)}
 }
