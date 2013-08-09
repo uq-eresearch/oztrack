@@ -58,32 +58,24 @@ fozkalmankfsst <- function(
   #bsst.init=0;
   #ssst.init=0.1;
   #r.init=200
-  
-  # if the user has specified that there is a start date and an end date
-  if(is.null(startdate)==FALSE & is.null(enddate)==FALSE){
-    sinputfile <- subset(sinputfile,sinputfile$Date > as.POSIXlt(startdate) & sinputfile$Date < as.POSIXlt(enddate))
-    trackdata <- sinputfile
-    
-    tagattach <- data.frame(ID=trackdata[1,1],Date=as.POSIXlt(startdate),X=startX,Y=startY,sst=NA)
-    tagremove <- data.frame(ID=trackdata[1,1],Date=as.POSIXlt(enddate),X=endX,Y=endY,sst=NA)
-    trackdata <- rbind(tagattach,trackdata,tagremove)
+
+  if(length(unique(c(is.null(startdate), is.null(startX), is.null(startY)))) != 1){
+    stop('All or none of start date, longitude, and latitude must be entered.')
   }
-  if(is.null(startdate)==FALSE & is.null(enddate)!=FALSE){
-    sinputfile <- subset(sinputfile,sinputfile$Date > as.POSIXlt(startdate))
-    trackdata <- sinputfile
-    
+  if(length(unique(c(is.null(enddate), is.null(endX), is.null(endY)))) != 1){
+    stop('All or none of end date, longitude, and latitude must be entered.')
+  }
+  
+  trackdata <- sinputfile
+  if(!is.null(startdate) && !is.null(startX) && !is.null(startY)){
+    trackdata <- subset(trackdata,trackdata$Date > as.POSIXlt(startdate))
     tagattach <- data.frame(ID=trackdata[1,1],Date=as.POSIXlt(startdate),X=startX,Y=startY,sst=NA)
     trackdata <- rbind(tagattach,trackdata)
   }
-  if(is.null(startdate)!=FALSE & is.null(enddate)==FALSE){
-    sinputfile <- subset(sinputfile,sinputfile$Date < as.POSIXlt(enddate))
-    trackdata <- sinputfile
-    
+  if(!is.null(enddate) && !is.null(endX) && !is.null(endY)){
+    trackdata <- subset(trackdata,trackdata$Date < as.POSIXlt(enddate))
     tagremove <- data.frame(ID=trackdata[1,1],Date=as.POSIXlt(enddate),X=endX,Y=endY,sst=NA)
     trackdata <- rbind(trackdata,tagremove)
-  }
-  if(is.null(startdate)!=FALSE & is.null(enddate)!=FALSE){
-    trackdata <- sinputfile
   }
   
   # Remove duplicates and ensure data in the correct order
@@ -356,7 +348,10 @@ oztrack_kfsst <- function(
     ssst.init=ssst.init,
     r.init=r.init
   )
-  #RD edited these lines on the 06/08/2013
   if (class(mykal)=="kftrack") {
-    fkfsstkml(fit=mykal, datetime=mykal$Datetime, kmlFileName=kmlFileName)}
+    fkfsstkml(fit=mykal, datetime=mykal$Datetime, kmlFileName=kmlFileName)
+  }
+  else {
+    stop('Kalman filter failed to work using these parameters.')
+  }
 }

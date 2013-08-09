@@ -55,17 +55,24 @@ fozkalmankf <- function(
   #a0.init=0.001
   #b0.init=0
   #vscale.init=TRUE
+
+  if(length(unique(c(is.null(startdate), is.null(startX), is.null(startY)))) != 1){
+    stop('All or none of start date, longitude, and latitude must be entered.')
+  }
+  if(length(unique(c(is.null(enddate), is.null(endX), is.null(endY)))) != 1){
+    stop('All or none of end date, longitude, and latitude must be entered.')
+  }
   
-  # if the user has specified that there is a start date and an end date
-  if(is.null(startdate)==FALSE){
-    sinputfile <- subset(sinputfile,sinputfile$Date > as.POSIXlt(startdate) & sinputfile$Date < as.POSIXlt(enddate))
-    trackdata <- sinputfile
-    
+  trackdata <- sinputfile
+  if(!is.null(startdate) && !is.null(startX) && !is.null(startY)){
+    trackdata <- subset(trackdata,trackdata$Date > as.POSIXlt(startdate))
     tagattach <- data.frame(ID=trackdata[1,1],Date=as.POSIXlt(startdate),X=startX,Y=startY)
+    trackdata <- rbind(tagattach,trackdata)
+  }
+  if(!is.null(enddate) && !is.null(endX) && !is.null(endY)){
+    trackdata <- subset(trackdata,trackdata$Date < as.POSIXlt(enddate))
     tagremove <- data.frame(ID=trackdata[1,1],Date=as.POSIXlt(enddate),X=endX,Y=endY)
-    trackdata <- rbind(tagattach,trackdata,tagremove)
-  }else{
-    trackdata <- sinputfile
+    trackdata <- rbind(trackdata,tagremove)
   }
   
   trackdata <- trackdata[!duplicated(order(trackdata$Date)),]
