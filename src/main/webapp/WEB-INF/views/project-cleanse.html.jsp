@@ -4,6 +4,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <%@ taglib uri="/WEB-INF/functions.tld" prefix="oztrack" %>
 <tags:page title="${project.title}: Edit Data" fluid="true">
@@ -11,7 +12,7 @@
         Edit data in the ${project.title} project.
     </jsp:attribute>
     <jsp:attribute name="navExtra">
-        <a class="btn btn-inverse" href="/projects/${project.id}"><span class="icon-chevron-left icon-white"></span> Back to project</a>
+        <tags:project-dropdown project="${project}"/>
     </jsp:attribute>
     <jsp:attribute name="head">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/optimised/openlayers.css" type="text/css">
@@ -141,6 +142,7 @@
             }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
+                $('#projectActionsCleanse').addClass('active');
                 $("#projectMapOptionsTabs").tabs();
                 $('#fromDateVisible').datepicker({
                     altField: "#fromDate",

@@ -12,7 +12,7 @@
         View and analyse animal tracking data in the ${project.title} project.
     </jsp:attribute>
     <jsp:attribute name="navExtra">
-        <a class="btn btn-inverse" href="/projects/${project.id}"><span class="icon-chevron-left icon-white"></span> Back to project</a>
+        <tags:project-dropdown project="${project}"/>
     </jsp:attribute>
     <jsp:attribute name="head">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/optimised/openlayers.css" type="text/css">
