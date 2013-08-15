@@ -181,9 +181,7 @@
                 <c:forEach items="${analysisType.parameterTypes}" var="parameterType">
                 <c:if test="${parameterType.dataType == 'date'}">
                 $('#paramField-${analysisType}-${parameterType.identifier}Visible').datepicker({
-                    altField: '#paramField-${analysisType}-${parameterType.identifier}',
-                    minDate: new Date(${projectDetectionDateRange.minimum.time}),
-                    maxDate: new Date(${projectDetectionDateRange.maximum.time})
+                    altField: '#paramField-${analysisType}-${parameterType.identifier}'
                 });
                 </c:if>
                 </c:forEach>
