@@ -1323,35 +1323,7 @@
                         'varLat'
                     ],
                     summary: function(feature) {
-                        if (feature.attributes.name === 'Trajectory') {
-                            var fromCoord = feature.geometry.components[0].clone().transform(that.projection900913, that.projection4326);
-                            var toCoord = feature.geometry.components[feature.geometry.components.length - 1].clone().transform(that.projection900913, that.projection4326);
-                            return $('<span>')
-                                .append(getAnimal(feature.attributes.animalId.value).name + ' probable track')
-                                .append('<br />')
-                                .append(' from ' + moment(feature.attributes.begin, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
-                                .append(' ' + coordString(fromCoord))
-                                .append('<br />')
-                                .append(' to ' + moment(feature.attributes.end, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
-                                .append(' ' + coordString(toCoord))
-                                .append('<br />')
-                                .append($.map(['u', 'v', 'D', 'bx', 'by', 'sx', 'sy', 'a0', 'b0'], function(x) {
-                                    var s = '';
-                                    var valueObject = feature.attributes[x + 'Value'];
-                                    if (valueObject && valueObject.value) {
-                                        s += x + ' value: ' + parseFloat(valueObject.value).toFixed(6) + ', ';
-                                    }
-                                    var stdDevObject = feature.attributes[x + 'StdDev'];
-                                    if (stdDevObject && stdDevObject.value) {
-                                        s += x + ' std dev: ' + parseFloat(stdDevObject.value).toFixed(6);
-                                    }
-                                    if (s !== '') {
-                                        s += '<br />';
-                                    }
-                                    return s;
-                                }));
-                        }
-                        else {
+                        if (feature.attributes.name !== 'Trajectory') {
                             return $('<span>')
                                 .append(getAnimal(feature.attributes.animalId.value).name)
                                 .append(' at ' + moment(feature.attributes.when, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-MM-DD HH:mm:ss'))
