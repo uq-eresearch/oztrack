@@ -3,10 +3,16 @@
   <Document>
     <#assign animal=analysis.animals[0]/>
     <Schema name="Overall" id="Overall">
-      <SimpleField name="animalId" type="string"/>
-      <SimpleField name="animalName" type="string"/>
+      <SimpleField name="animalId" type="string">
+        <displayName>Animal ID</displayName>
+      </SimpleField>
+      <SimpleField name="animalName" type="string">
+        <displayName>Animal name</displayName>
+      </SimpleField>
       <#list analysis.analysisType.overallResultAttributeTypes as resultAttributeType>
-      <SimpleField name="${resultAttributeType.identifier}" type="${resultAttributeType.dataType}"/>
+      <SimpleField name="${resultAttributeType.identifier}" type="${resultAttributeType.dataType}">
+        <displayName>${resultAttributeType.displayName}</displayName>
+      </SimpleField>
       </#list>
     </Schema>
     <ExtendedData>
@@ -30,18 +36,19 @@
         <p>Animal: <a href="${baseUrl}/animals/$[Overall/animalId]">$[Overall/animalName]</a></p>
         <table style="border-collapse: collapse;">
           <tr>
-            <th style="border: 2px ridge; padding: 2px 4px; text-align: left; background-color: #ddd;">Result</th>
+            <th style="border: 2px ridge; padding: 2px 4px; text-align: left; background-color: #ddd;">Attribute</th>
             <th style="border: 2px ridge; padding: 2px 4px; text-align: left; background-color: #ddd;">Value</th>
           </tr>
           <#list analysis.analysisType.overallResultAttributeTypes as resultAttributeType>
           <tr>
-            <td style="border: 2px ridge; padding: 2px 4px;">${resultAttributeType.displayName}</td>
+            <td style="border: 2px ridge; padding: 2px 4px;">$[Overall/${resultAttributeType.identifier}/displayName]</td>
             <td style="border: 2px ridge; padding: 2px 4px;">$[Overall/${resultAttributeType.identifier}]</td>
           </tr>
           </#list>
         </table>
       ]]>
     </description>
+    <open>1</open>
     <Style id="animal-${animal.id?c}-trajectory">
       <LineStyle>
         <color>ffffffff</color>
@@ -49,6 +56,26 @@
       </LineStyle>
     </Style>
     <Style id="animal-${animal.id?c}-detection">
+      <BalloonStyle>
+        <text>
+          <![CDATA[
+            <p>$[name]</p>
+            <p>Animal: <a href="${baseUrl}/animals/$[Feature/animalId]">$[Feature/animalName]</a></p>
+            <table style="border-collapse: collapse;">
+              <tr>
+                <th style="border: 2px ridge; padding: 2px 4px; text-align: left; background-color: #ddd;">Attribute</th>
+                <th style="border: 2px ridge; padding: 2px 4px; text-align: left; background-color: #ddd;">Value</th>
+              </tr>
+              <#list analysis.analysisType.featureResultAttributeTypes as resultAttributeType>
+              <tr>
+                <td style="border: 2px ridge; padding: 2px 4px;">$[Feature/${resultAttributeType.identifier}/displayName]</td>
+                <td style="border: 2px ridge; padding: 2px 4px;">$[Feature/${resultAttributeType.identifier}]</td>
+              </tr>
+              </#list>
+            </table>
+          ]]>
+        </text>
+      </BalloonStyle>
       <IconStyle>
         <color>ffffffff</color>
         <scale>0.5</scale>
@@ -56,12 +83,22 @@
           <href>http://maps.google.com/mapfiles/kml/shapes/triangle.png</href>
         </Icon>
       </IconStyle>
+      <LabelStyle>
+          <!-- Set alpha to 0 to hide labels -->
+         <color>00ffffff</color>
+      </LabelStyle>
     </Style>
     <Schema name="Feature" id="Feature">
-      <SimpleField name="animalId" type="string"/>
-      <SimpleField name="animalName" type="string"/>
+      <SimpleField name="animalId" type="string">
+        <displayName>Animal ID</displayName>
+      </SimpleField>
+      <SimpleField name="animalName" type="string">
+        <displayName>Animal name</displayName>
+      </SimpleField>
       <#list analysis.analysisType.featureResultAttributeTypes as resultAttributeType>
-      <SimpleField name="${resultAttributeType.identifier}" type="${resultAttributeType.dataType}"/>
+      <SimpleField name="${resultAttributeType.identifier}" type="${resultAttributeType.dataType}">
+        <displayName>${resultAttributeType.displayName}</displayName>
+      </SimpleField>
       </#list>
     </Schema>
     <Placemark>
@@ -81,8 +118,10 @@
     </Placemark>
     <Folder>
       <name>Detections</name>
+      <open>1</open>
       <#list analysis.resultFeatures as resultFeature>
       <Placemark>
+        <name>${resultFeature.geometry.x?string("0.000")}, ${resultFeature.geometry.y?string("0.000")}</name>
         <styleUrl>#animal-${resultFeature.animal.id?c}-detection</styleUrl>
         <TimeStamp>
           <when>${resultFeature.dateTime?iso_local_nz}</when>
