@@ -1621,14 +1621,14 @@ public enum AnalysisType {
     private final List<AnalysisResultAttributeType> featureResultAttributeTypes;
 
     private AnalysisType(
-        String display,
+        String displayName,
         String explanation,
         AnalysisResultType resultType,
         List<AnalysisParameterType> parameterTypes,
         List<AnalysisResultAttributeType> overallResultAttributeTypes,
         List<AnalysisResultAttributeType> featureResultAttributeTypes
     ) {
-        this.displayName = display;
+        this.displayName = displayName;
         this.explanation = explanation;
         this.resultType = resultType;
         this.parameterTypes = parameterTypes;
