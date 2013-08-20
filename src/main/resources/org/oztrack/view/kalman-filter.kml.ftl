@@ -27,7 +27,15 @@
         <#list analysis.analysisType.parameterTypes as parameterType>
         <SimpleData name="${parameterType.identifier}"><#rt>
         <#if analysis.getParameterValue(parameterType.identifier, false)??><#t>
+        <#if (parameterType.dataType == "date")><#t>
+        ${analysis.getParameterValue(parameterType.identifier, false)?string("yyyy-MM-dd")}<#t>
+        <#elseif (parameterType.dataType == "double")><#t>
+        ${analysis.getParameterValue(parameterType.identifier, false)?c}<#t>
+        <#elseif (parameterType.dataType == "boolean")><#t>
         ${analysis.getParameterValue(parameterType.identifier, false)?string}<#t>
+        <#else><#t>
+        ${analysis.getParameterValue(parameterType.identifier, false)?string}<#t>
+        </#if><#t>
         </#if><#t>
         </SimpleData><#lt>
         </#list>
