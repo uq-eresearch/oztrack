@@ -94,7 +94,7 @@ fozkalmankfsst <- function(
                   function(x) {
                     x <- as.numeric(x)
                     x[1]/24+x[2]/(24*60)+x[3]/(24*60*60)})
-  #day <- day+dhour
+  day <- day+dhour
   
   # to prevent step size being too small, remove anything greater than 1 dp
   day <- floor(day*10)/10
