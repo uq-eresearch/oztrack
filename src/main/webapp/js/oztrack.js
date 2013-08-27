@@ -24,6 +24,7 @@ function deleteEntity(url, destUrl, message) {
     if (!confirm(message)) {
         return;
     }
+    var loadingOverlay = $('<div class="loadingOverlay">').appendTo($('body'));
     $.ajax({
         url: url,
         type: 'POST',
@@ -31,6 +32,7 @@ function deleteEntity(url, destUrl, message) {
             '_method': 'DELETE'
         },
         error: function(xhr, textStatus, errorThrown) {
+            loadingOverlay.remove();
             alert('Error processing delete');
         },
         success: function (data,textStatus, jqXHR) {
