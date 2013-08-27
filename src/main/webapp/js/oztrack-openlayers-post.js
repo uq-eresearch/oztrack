@@ -86,6 +86,31 @@ OpenLayers.Format.KML.prototype.parseAttributes = function(node) {
         CLASS_NAME: "OzTrack.OpenLayers.Control.ZoomToExtent"
     });
 
+    OzTrack.OpenLayers.Control.OzTrackProjectTitle = OpenLayers.Class(OpenLayers.Control, {
+        initialize: function(options) {
+            options = options || {};
+            this.projectTitle = options.projectTitle;
+            options.displayClass = options.displayClass || "OzTrackOpenLayersControlOzTrackProjectTitle";
+            OpenLayers.Control.prototype.initialize.apply(this, [options]);
+        },
+        draw: function (px) {
+            if (this.div == null) {
+                this.div = $('<div>')
+                    .addClass(this.displayClass)
+                    .append($('<div>')
+                        .addClass(this.displayClass + 'Inner')
+                        .append(this.projectTitle)
+                    )
+                    .get(0);
+            }
+            if (px != null) {
+                this.position = px.clone();
+            }
+            this.moveTo(this.position);
+            return this.div;
+        }
+    });
+
     OzTrack.OpenLayers.Control.OzTrackDataLicence = OpenLayers.Class(OpenLayers.Control, {
         initialize: function(options) {
             options = options || {};

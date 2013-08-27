@@ -63,6 +63,9 @@
             controls: []
         });
         that.map.Z_INDEX_BASE.Popup = 1500;
+        that.map.addControl(new OzTrack.OpenLayers.Control.OzTrackProjectTitle({
+            projectTitle: that.project.title
+        }));
         that.map.addControl(new OpenLayers.Control.Zoom({title: 'Zoom in/out'}));
         that.map.addControl(new OpenLayers.Control.Attribution());
         that.map.addControl(new OpenLayers.Control.ScaleLine());

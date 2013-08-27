@@ -258,6 +258,7 @@
                 analysisMap = new OzTrack.AnalysisMap('projectMap', {
                     project: {
                         id: <c:out value="${project.id}"/>,
+                        title: '${oztrack:escapeJS(project.title)}',
                         <c:if test="${(project.access == 'OPEN') and (project.dataLicence != null)}">
                         dataLicence: {
                             title: '${project.dataLicence.title}',
