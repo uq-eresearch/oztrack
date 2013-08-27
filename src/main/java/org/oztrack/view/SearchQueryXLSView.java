@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
+import org.oztrack.data.model.types.PositionFixFileHeader;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
 public class SearchQueryXLSView extends AbstractExcelView {
@@ -47,17 +48,35 @@ public class SearchQueryXLSView extends AbstractExcelView {
     protected void createPositionFixSheet(HSSFWorkbook workbook) {
         HSSFSheet sheet = workbook.createSheet("Sheet");
 
+        boolean includeArgos = false;
+        boolean includeDop = false;
+        boolean includeSst = false;
+        for (PositionFix positionFix : positionFixes) {
+            includeArgos = includeArgos || positionFix.getArgosClass() != null;
+            includeDop = includeDop || positionFix.getDop() != null;
+            includeSst = includeSst || positionFix.getSst() != null;
+        }
+
         int rowNum = 0;
 
         HSSFRow headerRow = sheet.createRow(rowNum++);
         {
             int colNum = 0;
-            headerRow.createCell(colNum++).setCellValue("ANIMALID");
-            headerRow.createCell(colNum++).setCellValue("DATE");
-            headerRow.createCell(colNum++).setCellValue("LATITUDE");
-            headerRow.createCell(colNum++).setCellValue("LONGITUDE");
+            headerRow.createCell(colNum++).setCellValue(PositionFixFileHeader.ANIMALID.name());
+            headerRow.createCell(colNum++).setCellValue(PositionFixFileHeader.DATE.name());
+            headerRow.createCell(colNum++).setCellValue(PositionFixFileHeader.LATITUDE.name());
+            headerRow.createCell(colNum++).setCellValue(PositionFixFileHeader.LONGITUDE.name());
+            if (includeArgos) {
+                headerRow.createCell(colNum++).setCellValue(PositionFixFileHeader.ARGOSCLASS.name());
+            }
+            if (includeDop) {
+                headerRow.createCell(colNum++).setCellValue(PositionFixFileHeader.DOP.name());
+            }
+            if (includeSst) {
+                headerRow.createCell(colNum++).setCellValue(PositionFixFileHeader.SST.name());
+            }
             if (includeDeleted) {
-                headerRow.createCell(colNum++).setCellValue("DELETED");
+                headerRow.createCell(colNum++).setCellValue(PositionFixFileHeader.DELETED.name());
             }
         }
 
@@ -66,6 +85,10 @@ public class SearchQueryXLSView extends AbstractExcelView {
         dateTimeCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("yyyy-mm-dd hh:mm:ss"));
         CellStyle latLngCellStyle = workbook.createCellStyle();
         latLngCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("0.000000"));
+        CellStyle dopCellStyle = workbook.createCellStyle();
+        dopCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("0.000"));
+        CellStyle sstCellStyle = workbook.createCellStyle();
+        sstCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("0.000"));
 
         for (PositionFix positionFix : positionFixes) {
             try {
@@ -90,6 +113,39 @@ public class SearchQueryXLSView extends AbstractExcelView {
                 lngCell.setCellType(Cell.CELL_TYPE_NUMERIC);
                 lngCell.setCellValue(Double.parseDouble(positionFix.getLongitude()));
                 lngCell.setCellStyle(latLngCellStyle);
+
+                if (includeArgos) {
+                    HSSFCell argosCell = row.createCell(colNum++);
+                    if (positionFix.getArgosClass() != null) {
+                        argosCell.setCellType(Cell.CELL_TYPE_STRING);
+                        argosCell.setCellValue(positionFix.getArgosClass().getCode());
+                    }
+                    else {
+                        argosCell.setCellType(Cell.CELL_TYPE_BLANK);
+                    }
+                }
+                if (includeDop) {
+                    HSSFCell dopCell = row.createCell(colNum++);
+                    if (positionFix.getDop() != null) {
+                        dopCell.setCellType(Cell.CELL_TYPE_NUMERIC);
+                        dopCell.setCellValue(positionFix.getDop());
+                        dopCell.setCellStyle(dopCellStyle);
+                    }
+                    else {
+                        dopCell.setCellType(Cell.CELL_TYPE_BLANK);
+                    }
+                }
+                if (includeSst) {
+                    HSSFCell sstCell = row.createCell(colNum++);
+                    if (positionFix.getSst() != null) {
+                        sstCell.setCellType(Cell.CELL_TYPE_NUMERIC);
+                        sstCell.setCellValue(positionFix.getSst());
+                        sstCell.setCellStyle(sstCellStyle);
+                    }
+                    else {
+                        sstCell.setCellType(Cell.CELL_TYPE_BLANK);
+                    }
+                }
 
                 if (includeDeleted) {
                     HSSFCell deletedCell = row.createCell(colNum++);

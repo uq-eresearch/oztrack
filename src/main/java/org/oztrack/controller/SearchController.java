@@ -17,6 +17,7 @@ import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.SearchQuery;
+import org.oztrack.data.model.types.PositionFixFileHeader;
 import org.oztrack.view.SearchQueryXLSView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -120,13 +121,31 @@ public class SearchController {
                     response.setHeader("Content-Disposition", "attachment; filename=\"export.csv\"");
                     CSVWriter writer = new CSVWriter(response.getWriter());
                     try {
+                        boolean includeArgos = false;
+                        boolean includeDop = false;
+                        boolean includeSst = false;
+                        for (PositionFix positionFix : positionFixes) {
+                            includeArgos = includeArgos || positionFix.getArgosClass() != null;
+                            includeDop = includeDop || positionFix.getDop() != null;
+                            includeSst = includeSst || positionFix.getSst() != null;
+                        }
+
                         ArrayList<String> headerLine = new ArrayList<String>();
-                        headerLine.add("ANIMALID");
-                        headerLine.add("DATE");
-                        headerLine.add("LONGITUDE");
-                        headerLine.add("LATITUDE");
+                        headerLine.add(PositionFixFileHeader.ANIMALID.name());
+                        headerLine.add(PositionFixFileHeader.DATE.name());
+                        headerLine.add(PositionFixFileHeader.LONGITUDE.name());
+                        headerLine.add(PositionFixFileHeader.LATITUDE.name());
+                        if (includeArgos) {
+                            headerLine.add(PositionFixFileHeader.ARGOSCLASS.name());
+                        }
+                        if (includeDop) {
+                            headerLine.add(PositionFixFileHeader.DOP.name());
+                        }
+                        if (includeSst) {
+                            headerLine.add(PositionFixFileHeader.SST.name());
+                        }
                         if ((searchQuery.getIncludeDeleted() != null) && searchQuery.getIncludeDeleted()) {
-                            headerLine.add("DELETED");
+                            headerLine.add(PositionFixFileHeader.DELETED.name());
                         }
                         writer.writeNext(headerLine.toArray(new String[] {}));
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
@@ -136,6 +155,15 @@ public class SearchController {
                             valuesLine.add(dateFormat.format(positionFix.getDetectionTime()));
                             valuesLine.add(String.valueOf(positionFix.getLocationGeometry().getX()));
                             valuesLine.add(String.valueOf(positionFix.getLocationGeometry().getY()));
+                            if (includeArgos) {
+                                valuesLine.add((positionFix.getArgosClass() != null) ? positionFix.getArgosClass().getCode() : "");
+                            }
+                            if (includeDop) {
+                                valuesLine.add((positionFix.getDop() != null) ? String.valueOf(positionFix.getDop()) : "");
+                            }
+                            if (includeSst) {
+                                valuesLine.add((positionFix.getSst() != null) ? String.valueOf(positionFix.getSst()) : "");
+                            }
                             if ((searchQuery.getIncludeDeleted() != null) && searchQuery.getIncludeDeleted()) {
                                 valuesLine.add(((positionFix.getDeleted() != null) && positionFix.getDeleted()) ? "TRUE" : "FALSE");
                             }
