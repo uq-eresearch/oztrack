@@ -14,7 +14,7 @@ This software is distributed under the GNU GENERAL PUBLIC LICENSE Version 2. See
 
 Install PostgreSQL and PostGIS:
 
-    sudo apt-get install postgresql-9.1 postgresql-9.1-postgis
+    sudo apt-get install postgresql-9.1 postgresql-client-9.1 postgresql-9.1-postgis
 
 Setup the OzTrack database, including PostGIS:
 
@@ -129,34 +129,36 @@ See the *Installing and configuring OzTrack* section below.
 
 ### Setting up the database
 
-To install PostgreSQL, use the following commands:
+To install PostgreSQL, use the following commands. The RPM used below depends on the
+version of Red Hat you're running: see instructions on <http://yum.postgresql.org/>.
 
-    sudo yum install postgresql
-    sudo yum install postgresql-server
-    sudo yum install postgresql-devel
-
-To install PostGIS, you need the EPEL repository. The URL used in the
-following command depends on the version of Red Hat that you're running: see
-instructions on <http://fedoraproject.org/wiki/EPEL>.
-
-    sudo rpm -Uvh 'http://mirror.iprimus.com.au/epel/6/i386/epel-release-6-7.noarch.rpm'
-    sudo yum install postgis
+    sudo rpm -Uvh 'http://yum.postgresql.org/9.1/redhat/rhel-6-x86_64/pgdg-sl91-9.1-6.noarch.rpm'
+    sudo yum install postgresql91 postgresql91-server postgis91
 
 Sort out PostgreSQL authentication:
 
 <pre>sudo $EDITOR /var/lib/pgsql/data/pg_hba.conf</pre>
 
-    # TYPE  DATABASE    USER        CIDR-ADDRESS          METHOD
-    local   all         postgres                          ident
-    local   all         all                               md5
-    host    all         all         127.0.0.1/32          md5
-    host    all         all         ::1/128               md5
+    --- /var/lib/pgsql/9.1/data/pg_hba.conf.1   2013-08-29 11:55:23.367138671 +1000
+    +++ /var/lib/pgsql/9.1/data/pg_hba.conf 2013-08-29 11:56:10.992211757 +1000
+    @@ -83,9 +83,9 @@
+     # "local" is for Unix domain socket connections only
+     local   all             all                                     trust
+     # IPv4 local connections:
+    -host    all             all             127.0.0.1/32            trust
+    +host    all             all             127.0.0.1/32            md5
+     # IPv6 local connections:
+    -host    all             all             ::1/128                 trust
+    +host    all             all             ::1/128                 md5
+     # Allow replication connections from localhost, by a user with the
+     # replication privilege.
+     #local   replication     postgres                                trust
 
 Initialise PostgreSQL and set up the service:
 
-    sudo service postgresql initdb
-    sudo chkconfig postgresql on
-    sudo service postgresql start
+    sudo service postgresql-9.1 initdb
+    sudo service postgresql-9.1 start
+    sudo chkconfig postgresql-9.1 on
 
 Run something like the following commands:
 
