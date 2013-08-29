@@ -288,15 +288,16 @@
                             analysisTypeList="${analysisTypeList}"
                             headerActionsJsExpr="
                                 $('<div>')
-                                    .addClass('btn-group')
                                     .append($('<button>')
                                         .attr('id', 'kalmanFilterDelete-' + analysis.id)
                                         .addClass('kalmanFilterDelete')
                                         .addClass('btn')
+                                        .addClass('btn-layer-info')
                                         .prop('disabled', true)
                                         .attr('onclick', 'deleteKalmanFilter(' + analysis.id + ');')
                                         .append($('<i>').addClass('icon-trash'))
                                     )
+                                    .append(' ')
                                     .append($('<button>')
                                         .attr('id', 'kalmanFilterApply-' + analysis.id)
                                         .addClass('kalmanFilterApply')

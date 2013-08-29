@@ -17,6 +17,10 @@
 @formBorderedBackground: #e6e6c0;
 @dropdownLinkBackgroundActive: @btnPrimaryBackground;
 
+@layerInfoBackground: #dedcc0;
+@btnLayerInfoBackground: lighten(@layerInfoBackground, 8%);
+@btnLayerInfoBackgroundHighlight: darken(@layerInfoBackground, 4%);
+
 @iconSpritePath: "../../img/glyphicons-halflings.png";
 @iconWhiteSpritePath: "../../img/glyphicons-halflings-white.png";
 
@@ -57,6 +61,16 @@ a:hover {
 
 a.btn {
   text-decoration: none;
+}
+
+.btn-layer-info {
+  .buttonBackground(@btnLayerInfoBackground, @btnLayerInfoBackgroundHighlight, @grayDark, 0 1px 1px rgba(255,255,255,.75));
+}
+
+.btn-group.open {
+  .btn-layer-info.dropdown-toggle {
+    background-color: @btnLayerInfoBackgroundHighlight;
+  }
 }
 
 .dropdown-menu {
@@ -728,7 +742,7 @@ ul.icons li.artwork {background-image: url('../img/palette.png');}
 .layerInfo {
   margin: 9px 0;
   padding: 6px 8px;
-  background-color: #dedcc0;
+  background-color: @layerInfoBackground;
   border: 1px solid #ceccb0;
   border-radius: 4px;
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08);

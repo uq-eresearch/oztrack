@@ -304,7 +304,7 @@
                     },
                     onUpdateAnimalInfoFromLayer: function(layerName, layerId, animalId, animalIds, fromDate, toDate, layerAttrs) {
                         var html = '<div class="layerInfoHeader">';
-                        html += '<span class="layerInfoActions">' + '<button class="btn btn-small" onclick="analysisMap.deleteProjectMapLayer(' + layerId + ');"><i class="icon-trash"></i></button>' + '</span>';
+                        html += '<span class="layerInfoActions">' + '<button class="btn btn-small btn-layer-info" onclick="analysisMap.deleteProjectMapLayer(' + layerId + ');"><i class="icon-trash"></i></button>' + '</span>';
                         html += '<span class="layerInfoTitle">' + layerName + '</span>';
                         html += '</div>';
                         var statsHtml = '';
@@ -344,6 +344,7 @@
                                 $('<button>')
                                     .addClass('btn')
                                     .addClass('btn-small')
+                                    .addClass('btn-layer-info')
                                     .attr('onclick', 'analysisMap.deleteAnalysis(' + analysis.id + ', true);')
                                     .append($('<i>').addClass('icon-trash'))
                             "
