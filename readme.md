@@ -137,22 +137,12 @@ version of Red Hat you're running: see instructions on <http://yum.postgresql.or
 
 Sort out PostgreSQL authentication:
 
-<pre>sudo $EDITOR /var/lib/pgsql/data/pg_hba.conf</pre>
+<pre>sudo $EDITOR /var/lib/pgsql/9.1/data/pg_hba.conf</pre>
 
-    --- /var/lib/pgsql/9.1/data/pg_hba.conf.1   2013-08-29 11:55:23.367138671 +1000
-    +++ /var/lib/pgsql/9.1/data/pg_hba.conf 2013-08-29 11:56:10.992211757 +1000
-    @@ -83,9 +83,9 @@
-     # "local" is for Unix domain socket connections only
-     local   all             all                                     trust
-     # IPv4 local connections:
-    -host    all             all             127.0.0.1/32            trust
-    +host    all             all             127.0.0.1/32            md5
-     # IPv6 local connections:
-    -host    all             all             ::1/128                 trust
-    +host    all             all             ::1/128                 md5
-     # Allow replication connections from localhost, by a user with the
-     # replication privilege.
-     #local   replication     postgres                                trust
+    # # TYPE  DATABASE        USER            ADDRESS                 METHOD
+    # local   all             all                                     peer
+    # host    all             all             127.0.0.1/32            md5
+    # host    all             all             ::1/128                 md5
 
 Initialise PostgreSQL and set up the service:
 
@@ -163,21 +153,19 @@ Initialise PostgreSQL and set up the service:
 Run something like the following commands:
 
     # Create database with PL/pgSQL support
-    sudo -u postgres psql -c "create user oztrack with password 'changeme';"
-    sudo -u postgres psql -c "create database oztrack with owner oztrack;"
-    psql -U oztrack -d oztrack -c "create language plpgsql;"
+    sudo -u postgres /usr/pgsql-9.1/bin/psql -c "create user oztrack with password 'changeme';"
+    sudo -u postgres /usr/pgsql-9.1/bin/psql -c "create database oztrack with owner oztrack;"
+    /usr/pgsql-9.1/bin/psql -U oztrack -d oztrack -c "create language plpgsql;"
 
     # Run the PostGIS initialisation scripts: need to run postgis.sql as postgres
     # because only superuser can create c functions; afterwards, we change owner
     # on the resulting tables/views and subsequently connect as normal user.
-    sudo -u postgres psql -d oztrack -f /usr/share/pgsql/contrib/postgis-64.sql
-    sudo -u postgres psql -d oztrack -f /usr/share/pgsql/contrib/spatial_ref_sys.sql
+    sudo -u postgres /usr/pgsql-9.1/bin/psql -d oztrack -f /usr/share/pgsql/contrib/postgis-64.sql
+    sudo -u postgres /usr/pgsql-9.1/bin/psql -d oztrack -f /usr/share/pgsql/contrib/spatial_ref_sys.sql
 
-    sudo -u postgres psql -d oztrack -c "alter table geometry_columns owner to oztrack;"
-    sudo -u postgres psql -d oztrack -c "alter table spatial_ref_sys owner to oztrack;"
-    sudo -u postgres psql -d oztrack -c "alter view geography_columns owner to oztrack;"
-
-    # Our own tables should be created on first run by Hibernate
+    sudo -u postgres /usr/pgsql-9.1/bin/psql -d oztrack -c "alter table geometry_columns owner to oztrack;"
+    sudo -u postgres /usr/pgsql-9.1/bin/psql -d oztrack -c "alter table spatial_ref_sys owner to oztrack;"
+    sudo -u postgres /usr/pgsql-9.1/bin/psql -d oztrack -c "alter view geography_columns owner to oztrack;"
 
 See <http://postgis.refractions.net/documentation/manual-1.5/ch02.html#id2565921>
 
