@@ -341,7 +341,7 @@ OpenLayers.Format.KML.prototype.parseAttributes = function(node) {
                         return;
                     }
                     if (!(layer.attribution) &&
-                        !(layer.params && layer.params.LAYERS && layer.params.STYLES)) {
+                        !(layer.params && layer.params.LAYERS)) {
                         return;
                     }
                     var span = $('<span>')
@@ -372,7 +372,7 @@ OpenLayers.Format.KML.prototype.parseAttributes = function(node) {
                                         .append(layer.attribution)
                                     );
                                 }
-                                if (layer.params && layer.params.LAYERS && layer.params.STYLES) {
+                                if (layer.params && layer.params.LAYERS) {
                                     content
                                         .append($('<p>').css('font-weight', 'bold').append('Map legend'))
                                         .append($('<img>').attr('src',
@@ -384,7 +384,7 @@ OpenLayers.Format.KML.prototype.parseAttributes = function(node) {
                                             '&HEIGHT=15' +
                                             '&LEGEND_OPTIONS=forceLabels:on' +
                                             '&LAYER=' + layer.params.LAYERS +
-                                            '&STYLE=' + layer.params.STYLES
+                                            (layer.params.STYLES ? '&STYLE=' + layer.params.STYLES : '')
                                         ));
                                 }
                                 that.layerInfoDialogs[layer.id] = content.dialog({
