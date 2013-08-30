@@ -366,11 +366,23 @@
             });
             $('#searchTernButton').click(function(e) {
                 $('.searchForm').not('#searchTernForm').hide();
-                $('#searchTernForm').fadeToggle();
+                if ($('#searchTernForm:visible').size() != 0) {
+                    $('#searchTernForm').fadeOut();
+                }
+                else {
+                    $('#searchTernForm').fadeIn();
+                    searchTern();
+                }
             });
             $('#searchAlaButton').click(function(e) {
                 $('.searchForm').not('#searchAlaForm').hide();
-                $('#searchAlaForm').fadeToggle();
+                if ($('#searchAlaForm:visible').size() != 0) {
+                    $('#searchAlaForm').fadeOut();
+                }
+                else {
+                    $('#searchAlaForm').fadeIn();
+                    searchAla();
+                }
             });
         </script>
     </jsp:attribute>
