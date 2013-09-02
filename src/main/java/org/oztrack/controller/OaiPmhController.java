@@ -151,6 +151,19 @@ public class OaiPmhController {
         }
     }
 
+    private static class OaiPmhListSetsView extends OaiPmhView {
+        @Override
+        protected void renderVerbElement(
+            Map<String, Object> model,
+            HttpServletRequest request,
+            HttpServletResponse response
+        ) throws Exception {
+            PrintWriter out = response.getWriter();
+            out.append("  <ListSets>\n");
+            out.append("  </ListSets>\n");
+        }
+    }
+
     @RequestMapping(value="/oai", method=RequestMethod.GET)
     @PreAuthorize("permitAll")
     public View handleRequest(HttpServletRequest request, HttpServletResponse response) {
@@ -194,11 +207,13 @@ public class OaiPmhController {
             return new OaiPmhListMetadataFormatsView();
         }
         else if (verb.equals("ListSets")) {
-            // Possible errors:
-            // - badArgument
-            // - badResumptionToken
-            // - noSetHierarchy
-            throw new UnsupportedOperationException();
+            HashSet<String> legalArguments = new HashSet<String>(Arrays.asList("verb", "resumptionToken"));
+            OaiPmhView illegalArgumentsErrorView = checkForIllegalArguments(request, legalArguments);
+            if (illegalArgumentsErrorView != null) {
+                return illegalArgumentsErrorView;
+            }
+            // TODO: Check for badResumptionToken (resumptionToken is invalid or expired)
+            return new OaiPmhListSetsView();
         }
         else if (verb.equals("ListIdentifiers")) {
             // Possible errors:
