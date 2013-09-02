@@ -46,11 +46,13 @@ public class OaiPmhController {
             HttpServletRequest request,
             HttpServletResponse response
         ) throws Exception {
+            response.setCharacterEncoding("UTF-8");
             FastDateFormat utcDateTimeFormat = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss'Z'");
             GregorianCalendar currentUtcDateTime = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
             String responseDate = utcDateTimeFormat.format(currentUtcDateTime);
             String baseUrl = request.getRequestURL().toString();
             PrintWriter out = response.getWriter();
+            out.append("<?xml version=\"1.0\" encoding=\"" + response.getCharacterEncoding() + "\"?>\n");
             out.append("<OAI-PMH\n");
             out.append("  xmlns=\"http://www.openarchives.org/OAI/2.0/\"\n");
             out.append("  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
