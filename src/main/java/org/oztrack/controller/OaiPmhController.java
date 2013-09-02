@@ -136,6 +136,11 @@ public class OaiPmhController {
             PrintWriter out = response.getWriter();
             out.append("  <ListMetadataFormats>\n");
             out.append("    <metadataFormat>\n");
+            out.append("      <metadataPrefix>oai_dc</metadataPrefix>\n");
+            out.append("      <schema>http://www.openarchives.org/OAI/2.0/oai_dc.xsd</schema>\n");
+            out.append("      <metadataNamespace>http://www.openarchives.org/OAI/2.0/oai_dc/</metadataNamespace>\n");
+            out.append("    </metadataFormat>\n");
+            out.append("    <metadataFormat>\n");
             out.append("      <metadataPrefix>rif</metadataPrefix>\n");
             out.append("      <schema>http://services.ands.org.au/documentation/rifcs/schema/registryObjects.xsd</schema>\n");
             out.append("      <metadataNamespace>http://ands.org.au/standards/rif-cs/registryObjects</metadataNamespace>\n");
