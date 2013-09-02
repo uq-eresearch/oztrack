@@ -112,7 +112,7 @@ public class OaiPmhController {
             HttpServletResponse response
         ) throws Exception {
             String baseUrl = request.getRequestURL().toString();
-            String earliestDatestamp = "1990-02-01T12:00:00Z"; // TODO: Query from database
+            String earliestDatestamp = "1990-02-01T00:00:00Z"; // TODO: Query from database
             PrintWriter out = response.getWriter();
             out.append("  <Identify>\n");
             out.append("    <repositoryName>" + StringEscapeUtils.escapeXml(repositoryName) + "</repositoryName>\n");
@@ -123,6 +123,24 @@ public class OaiPmhController {
             out.append("    <deletedRecord>transient</deletedRecord>\n");
             out.append("    <granularity>YYYY-MM-DDThh:mm:ssZ</granularity>\n");
             out.append("  </Identify>\n");
+        }
+    }
+
+    private static class OaiPmhListMetadataFormatsView extends OaiPmhView {
+        @Override
+        protected void renderVerbElement(
+            Map<String, Object> model,
+            HttpServletRequest request,
+            HttpServletResponse response
+        ) throws Exception {
+            PrintWriter out = response.getWriter();
+            out.append("  <ListMetadataFormats>\n");
+            out.append("    <metadataFormat>\n");
+            out.append("      <metadataPrefix>rif</metadataPrefix>\n");
+            out.append("      <schema>http://services.ands.org.au/documentation/rifcs/schema/registryObjects.xsd</schema>\n");
+            out.append("      <metadataNamespace>http://ands.org.au/standards/rif-cs/registryObjects</metadataNamespace>\n");
+            out.append("    </metadataFormat>\n");
+            out.append("  </ListMetadataFormats>\n");
         }
     }
 
@@ -143,10 +161,9 @@ public class OaiPmhController {
         String verb = verbs[0];
         if (verb.equals("Identify")) {
             HashSet<String> legalArguments = new HashSet<String>(Arrays.asList("verb"));
-            for (Enumeration<String> arguments = request.getParameterNames(); arguments.hasMoreElements(); ) {
-                if (!legalArguments.contains(arguments.nextElement())) {
-                    return new OaiPmhErrorView("badArgument", "The request includes illegal arguments.");
-                }
+            OaiPmhView illegalArgumentsErrorView = checkForIllegalArguments(request, legalArguments);
+            if (illegalArgumentsErrorView != null) {
+                return illegalArgumentsErrorView;
             }
             return new OaiPmhIdentifyView(
                 configuration.getOaiPmhRepositoryName(),
@@ -154,11 +171,20 @@ public class OaiPmhController {
             );
         }
         else if (verb.equals("ListMetadataFormats")) {
-            // Possible errors:
-            // - badArgument
-            // - idDoesNotExist
-            // - noMetadataFormats
-            throw new UnsupportedOperationException();
+            HashSet<String> legalArguments = new HashSet<String>(Arrays.asList("verb", "identifier"));
+            OaiPmhView illegalArgumentsErrorView = checkForIllegalArguments(request, legalArguments);
+            if (illegalArgumentsErrorView != null) {
+                return illegalArgumentsErrorView;
+            }
+            String[] identifiers = request.getParameterValues("identifier");
+            if ((identifiers != null) && (identifiers.length > 1)) {
+                return new OaiPmhErrorView("badArgument", "Identifier argument is repeated.");
+            }
+            @SuppressWarnings("unused")
+            String identifier = (identifiers != null) ? identifiers[0] : null;
+            // TODO: Check for idDoesNotExist error (identifier argument unknown or illegal in this repository)
+            // TODO: Check for noMetadataFormats error (no metadata formats available for identified item)
+            return new OaiPmhListMetadataFormatsView();
         }
         else if (verb.equals("ListSets")) {
             // Possible errors:
@@ -195,5 +221,15 @@ public class OaiPmhController {
         else {
             return new OaiPmhErrorView("badVerb", "Verb argument is not a legal OAI-PMH verb.");
         }
+    }
+
+    private OaiPmhView checkForIllegalArguments(HttpServletRequest request, HashSet<String> legalArguments) {
+        for (Enumeration<String> arguments = request.getParameterNames(); arguments.hasMoreElements(); ) {
+            String argument = arguments.nextElement();
+            if (!legalArguments.contains(argument)) {
+                return new OaiPmhErrorView("badArgument", "Request includes illegal argument \'" + argument + "\'.");
+            }
+        }
+        return null;
     }
 }
