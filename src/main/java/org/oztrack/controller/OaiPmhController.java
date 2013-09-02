@@ -184,6 +184,12 @@ public class OaiPmhController {
             if (!legalArguments.containsAll(request.getParameterMap().keySet())) {
                 return new OaiPmhErrorView("badArgument", "Request includes illegal arguments.");
             }
+            String[] resumptionTokens = request.getParameterValues("resumptionToken");
+            if ((resumptionTokens != null) && (resumptionTokens.length > 1)) {
+                return new OaiPmhErrorView("badArgument", "Resumption token argument is repeated.");
+            }
+            @SuppressWarnings("unused")
+            String resumptionToken = (resumptionTokens != null) ? resumptionTokens[0] : null;
             // TODO: Check for badResumptionToken (resumptionToken is invalid or expired)
             return new OaiPmhListSetsView();
         }
