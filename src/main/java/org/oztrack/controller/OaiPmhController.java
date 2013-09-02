@@ -41,11 +41,7 @@ public class OaiPmhController {
         }
 
         @Override
-        protected void renderMergedOutputModel(
-            Map<String, Object> model,
-            HttpServletRequest request,
-            HttpServletResponse response
-        ) throws Exception {
+        protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
             response.setCharacterEncoding("UTF-8");
             FastDateFormat utcDateTimeFormat = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss'Z'");
             GregorianCalendar currentUtcDateTime = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
@@ -70,11 +66,7 @@ public class OaiPmhController {
             out.append("</OAI-PMH>\n");
         }
 
-        protected abstract void renderVerbElement(
-            Map<String, Object> model,
-            HttpServletRequest request,
-            HttpServletResponse response
-        ) throws Exception;
+        protected abstract void renderVerbElement(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception;
     }
 
     private static class OaiPmhErrorView extends OaiPmhView {
@@ -88,11 +80,7 @@ public class OaiPmhController {
         }
 
         @Override
-        protected void renderVerbElement(
-            Map<String, Object> model,
-            HttpServletRequest request,
-            HttpServletResponse response
-        ) throws Exception {
+        protected void renderVerbElement(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
             PrintWriter out = response.getWriter();
             out.append("  <error code=\"" + StringEscapeUtils.escapeXml(code) + "\">" + StringEscapeUtils.escapeXml(message) + "</error>\n");
         }
@@ -108,11 +96,7 @@ public class OaiPmhController {
         }
 
         @Override
-        protected void renderVerbElement(
-            Map<String, Object> model,
-            HttpServletRequest request,
-            HttpServletResponse response
-        ) throws Exception {
+        protected void renderVerbElement(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
             String baseUrl = request.getRequestURL().toString();
             String earliestDatestamp = "1990-02-01T00:00:00Z"; // TODO: Query from database
             PrintWriter out = response.getWriter();
@@ -130,11 +114,7 @@ public class OaiPmhController {
 
     private static class OaiPmhListMetadataFormatsView extends OaiPmhView {
         @Override
-        protected void renderVerbElement(
-            Map<String, Object> model,
-            HttpServletRequest request,
-            HttpServletResponse response
-        ) throws Exception {
+        protected void renderVerbElement(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
             PrintWriter out = response.getWriter();
             out.append("  <ListMetadataFormats>\n");
             out.append("    <metadataFormat>\n");
@@ -153,11 +133,7 @@ public class OaiPmhController {
 
     private static class OaiPmhListSetsView extends OaiPmhView {
         @Override
-        protected void renderVerbElement(
-            Map<String, Object> model,
-            HttpServletRequest request,
-            HttpServletResponse response
-        ) throws Exception {
+        protected void renderVerbElement(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
             PrintWriter out = response.getWriter();
             out.append("  <ListSets>\n");
             out.append("  </ListSets>\n");
