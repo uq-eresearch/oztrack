@@ -142,12 +142,20 @@ public class OaiPmhController {
         }
     }
 
-    private static class OaiPmhListIdentifiersView extends OaiPmhView {
+    private static class OaiPmhListRecordsView extends OaiPmhView {
+        private final boolean includeRecords;
+        
+        public OaiPmhListRecordsView(boolean includeRecords) {
+            super(true);
+            this.includeRecords = includeRecords;
+        }
+
         @Override
         protected void renderVerbElement(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
             PrintWriter out = response.getWriter();
-            out.append("  <ListIdentifiers>\n");
-            out.append("  </ListIdentifiers>\n");
+            String verbElementName = includeRecords ? "ListRecords" : "ListIdentifiers";
+            out.append("  <" + verbElementName + ">\n");
+            out.append("  </" + verbElementName + ">\n");
         }
     }
 
@@ -202,7 +210,7 @@ public class OaiPmhController {
             // TODO: Check for badResumptionToken (resumptionToken is invalid or expired)
             return new OaiPmhListSetsView();
         }
-        else if (verb.equals("ListIdentifiers")) {
+        else if (verb.equals("ListIdentifiers") || verb.equals("ListRecords")) {
             String resumptionToken = request.getParameter("resumptionToken");
             HashSet<String> legalArguments = (resumptionToken != null)
                 ? new HashSet<String>(Arrays.asList("verb", "resumptionToken"))
@@ -246,16 +254,7 @@ public class OaiPmhController {
             String set = request.getParameter("set");
             // TODO: Query for records matching from/until/set parameters
             // TODO: Check for noRecordsMatch error (combination of from/until/set results no records)
-            return new OaiPmhListIdentifiersView();
-        }
-        else if (verb.equals("ListRecords")) {
-            // Possible errors:
-            // - badArgument
-            // - badResumptionToken
-            // - cannotDisseminateFormat
-            // - noRecordsMatch
-            // - noSetHierarchy
-            throw new UnsupportedOperationException();
+            return new OaiPmhListRecordsView(verb.equals("ListRecords"));
         }
         else if (verb.equals("GetRecord")) {
             // Possible errors:
