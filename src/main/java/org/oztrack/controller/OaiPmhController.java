@@ -98,7 +98,7 @@ public class OaiPmhController {
         @Override
         protected void renderVerbElement(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
             String baseUrl = request.getRequestURL().toString();
-            String earliestDatestamp = "1990-02-01T00:00:00Z"; // TODO: Query from database
+            String earliestDatestamp = "1970-01-01T00:00:00Z"; // TODO: Query from database
             PrintWriter out = response.getWriter();
             out.append("  <Identify>\n");
             out.append("    <repositoryName>" + StringEscapeUtils.escapeXml(repositoryName) + "</repositoryName>\n");
