@@ -159,6 +159,15 @@ public class OaiPmhController {
         }
     }
 
+    private static class OaiPmhGetRecordView extends OaiPmhView {
+        @Override
+        protected void renderVerbElement(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+            PrintWriter out = response.getWriter();
+            out.append("  <GetRecord>\n");
+            out.append("  </GetRecord>\n");
+        }
+    }
+    
     @RequestMapping(value="/oai", method=RequestMethod.GET)
     @PreAuthorize("permitAll")
     public View handleRequest(HttpServletRequest request, HttpServletResponse response) {
@@ -168,10 +177,10 @@ public class OaiPmhController {
         }
         String[] verbs = request.getParameterValues("verb");
         if (verbs == null) {
-            return new OaiPmhErrorView("badVerb", "Verb argument is missing.");
+            return new OaiPmhErrorView("badVerb", "verb argument is missing.");
         }
         if (verbs.length > 1) {
-            return new OaiPmhErrorView("badVerb", "Verb argument is repeated.");
+            return new OaiPmhErrorView("badVerb", "verb argument is repeated.");
         }
         String verb = verbs[0];
         for (Entry<String, String[]> parameterEntry : request.getParameterMap().entrySet()) {
@@ -196,6 +205,7 @@ public class OaiPmhController {
             }
             @SuppressWarnings("unused")
             String identifier = request.getParameter("identifier");
+            // TODO: Query for records matching identifier
             // TODO: Check for idDoesNotExist error (identifier argument unknown or illegal in this repository)
             // TODO: Check for noMetadataFormats error (no metadata formats available for identified item)
             return new OaiPmhListMetadataFormatsView();
@@ -228,7 +238,7 @@ public class OaiPmhController {
                     fromUtcDateTime = utcDateTimeFormat.parse(fromUtcDateTimeString);
                 }
                 catch (ParseException e) {
-                    return new OaiPmhErrorView("badArgument", "From argument is invalid datetime.");
+                    return new OaiPmhErrorView("badArgument", "from argument is invalid datetime.");
                 }
             }
             String toUtcDateTimeString = request.getParameter("to");
@@ -239,16 +249,16 @@ public class OaiPmhController {
                     toUtcDateTime = utcDateTimeFormat.parse(toUtcDateTimeString);
                 }
                 catch (ParseException e) {
-                    return new OaiPmhErrorView("badArgument", "To argument is invalid datetime.");
+                    return new OaiPmhErrorView("badArgument", "to argument is invalid datetime.");
                 }
             }
             String metadataPrefix = request.getParameter("metadataPrefix");
             if (metadataPrefix == null) {
-                return new OaiPmhErrorView("badArgument", "Metadata prefix argument is missing.");
+                return new OaiPmhErrorView("badArgument", "metadataPrefix argument is missing.");
             }
             HashSet<String> supportedMetadataPrefixes = new HashSet<String>(Arrays.asList("oai_dc", "rif"));
             if (!supportedMetadataPrefixes.contains(metadataPrefix)) {
-                return new OaiPmhErrorView("cannotDisseminateFormat", "Metadata prefix argument is not supported by the repository.");
+                return new OaiPmhErrorView("cannotDisseminateFormat", "metadataPrefix argument is not supported by the repository.");
             }
             @SuppressWarnings("unused")
             String set = request.getParameter("set");
@@ -257,11 +267,25 @@ public class OaiPmhController {
             return new OaiPmhListRecordsView(verb.equals("ListRecords"));
         }
         else if (verb.equals("GetRecord")) {
-            // Possible errors:
-            // - badArgument
-            // - cannotDisseminateFormat
-            // - idDoesNotExist
-            throw new UnsupportedOperationException();
+            HashSet<String> legalArguments = new HashSet<String>(Arrays.asList("verb", "identifier", "metadataPrefix"));
+            if (!legalArguments.containsAll(request.getParameterMap().keySet())) {
+                return new OaiPmhErrorView("badArgument", "Request includes illegal arguments.");
+            }
+            String identifier = request.getParameter("identifier");
+            if (identifier == null) {
+                return new OaiPmhErrorView("badArgument", "identifier argument is missing.");
+            }
+            String metadataPrefix = request.getParameter("metadataPrefix");
+            if (metadataPrefix == null) {
+                return new OaiPmhErrorView("badArgument", "metadataPrefix argument is missing.");
+            }
+            HashSet<String> supportedMetadataPrefixes = new HashSet<String>(Arrays.asList("oai_dc", "rif"));
+            if (!supportedMetadataPrefixes.contains(metadataPrefix)) {
+                return new OaiPmhErrorView("cannotDisseminateFormat", "metadataPrefix argument is not supported by the repository.");
+            }
+            // TODO: Query for record matching identifier
+            // TODO: Check for idDoesNotExist error (identifier argument unknown or illegal in this repository)
+            return new OaiPmhGetRecordView();
         }
         else {
             return new OaiPmhErrorView("badVerb", "Verb argument is not a legal OAI-PMH verb.");
