@@ -63,6 +63,9 @@
         <property name="nonIncrementalEmbargoDisableDateString" value="${org.oztrack.conf.nonIncrementalEmbargoDisableDate}"/>
         <property name="rserveLogFile" value="${org.oztrack.conf.rserveLogFile}"/>
         <property name="rserveOomAdj" value="${org.oztrack.conf.rserveOomAdj}"/>
+        <property name="oaiPmhEnabled" value="${org.oztrack.conf.oaiPmhEnabled}"/>
+        <property name="oaiPmhRepositoryName" value="${org.oztrack.conf.oaiPmhRepositoryName}"/>
+        <property name="oaiPmhAdminEmail" value="${org.oztrack.conf.oaiPmhAdminEmail}"/>
     </bean>
 
     <bean id="ozTrackApplication" class="org.oztrack.app.OzTrackApplication">

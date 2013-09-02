@@ -27,6 +27,9 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
     private Date nonIncrementalEmbargoDisableDate;
     private String rserveLogFile;
     private Integer rserveOomAdj;
+    private boolean oaiPmhEnabled;
+    private String oaiPmhRepositoryName;
+    private String oaiPmhAdminEmail;
 
     @Override
     public String getBaseUrl() {
@@ -222,5 +225,32 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
 
     public void setRserveOomAdj(Integer rserveOomAdj) {
         this.rserveOomAdj = rserveOomAdj;
+    }
+
+    @Override
+    public boolean isOaiPmhEnabled() {
+        return oaiPmhEnabled;
+    }
+
+    public void setOaiPmhEnabled(boolean oaiPmhEnabled) {
+        this.oaiPmhEnabled = oaiPmhEnabled;
+    }
+
+    @Override
+    public String getOaiPmhRepositoryName() {
+        return oaiPmhRepositoryName;
+    }
+
+    public void setOaiPmhRepositoryName(String oaiPmhRepositoryName) {
+        this.oaiPmhRepositoryName = oaiPmhRepositoryName;
+    }
+
+    @Override
+    public String getOaiPmhAdminEmail() {
+        return oaiPmhAdminEmail;
+    }
+
+    public void setOaiPmhAdminEmail(String oaiPmhAdminEmail) {
+        this.oaiPmhAdminEmail = oaiPmhAdminEmail;
     }
 }

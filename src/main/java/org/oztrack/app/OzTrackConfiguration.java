@@ -23,4 +23,7 @@ public interface OzTrackConfiguration {
     Date getNonIncrementalEmbargoDisableDate();
     String getRserveLogFile();
     Integer getRserveOomAdj();
+    boolean isOaiPmhEnabled();
+    String getOaiPmhRepositoryName();
+    String getOaiPmhAdminEmail();
 }
