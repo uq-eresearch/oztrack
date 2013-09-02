@@ -2,7 +2,6 @@ package org.oztrack.controller;
 
 import java.io.PrintWriter;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Map;
@@ -157,9 +156,8 @@ public class OaiPmhController {
         String verb = verbs[0];
         if (verb.equals("Identify")) {
             HashSet<String> legalArguments = new HashSet<String>(Arrays.asList("verb"));
-            OaiPmhView illegalArgumentsErrorView = checkForIllegalArguments(request, legalArguments);
-            if (illegalArgumentsErrorView != null) {
-                return illegalArgumentsErrorView;
+            if (!legalArguments.containsAll(request.getParameterMap().keySet())) {
+                return new OaiPmhErrorView("badArgument", "Request includes illegal arguments.");
             }
             return new OaiPmhIdentifyView(
                 configuration.getOaiPmhRepositoryName(),
@@ -168,9 +166,8 @@ public class OaiPmhController {
         }
         else if (verb.equals("ListMetadataFormats")) {
             HashSet<String> legalArguments = new HashSet<String>(Arrays.asList("verb", "identifier"));
-            OaiPmhView illegalArgumentsErrorView = checkForIllegalArguments(request, legalArguments);
-            if (illegalArgumentsErrorView != null) {
-                return illegalArgumentsErrorView;
+            if (!legalArguments.containsAll(request.getParameterMap().keySet())) {
+                return new OaiPmhErrorView("badArgument", "Request includes illegal arguments.");
             }
             String[] identifiers = request.getParameterValues("identifier");
             if ((identifiers != null) && (identifiers.length > 1)) {
@@ -184,9 +181,8 @@ public class OaiPmhController {
         }
         else if (verb.equals("ListSets")) {
             HashSet<String> legalArguments = new HashSet<String>(Arrays.asList("verb", "resumptionToken"));
-            OaiPmhView illegalArgumentsErrorView = checkForIllegalArguments(request, legalArguments);
-            if (illegalArgumentsErrorView != null) {
-                return illegalArgumentsErrorView;
+            if (!legalArguments.containsAll(request.getParameterMap().keySet())) {
+                return new OaiPmhErrorView("badArgument", "Request includes illegal arguments.");
             }
             // TODO: Check for badResumptionToken (resumptionToken is invalid or expired)
             return new OaiPmhListSetsView();
@@ -219,15 +215,5 @@ public class OaiPmhController {
         else {
             return new OaiPmhErrorView("badVerb", "Verb argument is not a legal OAI-PMH verb.");
         }
-    }
-
-    private OaiPmhView checkForIllegalArguments(HttpServletRequest request, HashSet<String> legalArguments) {
-        for (Enumeration<String> arguments = request.getParameterNames(); arguments.hasMoreElements(); ) {
-            String argument = arguments.nextElement();
-            if (!legalArguments.contains(argument)) {
-                return new OaiPmhErrorView("badArgument", "Request includes illegal argument \'" + argument + "\'.");
-            }
-        }
-        return null;
     }
 }
