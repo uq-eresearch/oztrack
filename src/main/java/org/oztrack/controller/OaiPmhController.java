@@ -144,7 +144,7 @@ public class OaiPmhController {
 
     private static class OaiPmhListRecordsView extends OaiPmhView {
         private final boolean includeRecords;
-        
+
         public OaiPmhListRecordsView(boolean includeRecords) {
             super(true);
             this.includeRecords = includeRecords;
@@ -167,7 +167,7 @@ public class OaiPmhController {
             out.append("  </GetRecord>\n");
         }
     }
-    
+
     @RequestMapping(value="/oai", method=RequestMethod.GET)
     @PreAuthorize("permitAll")
     public View handleRequest(HttpServletRequest request, HttpServletResponse response) {
