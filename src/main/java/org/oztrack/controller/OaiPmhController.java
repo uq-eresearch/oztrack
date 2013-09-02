@@ -166,6 +166,11 @@ public class OaiPmhController {
             return new OaiPmhErrorView("badVerb", "Verb argument is repeated.");
         }
         String verb = verbs[0];
+        for (Entry<String, String[]> parameterEntry : request.getParameterMap().entrySet()) {
+            if (parameterEntry.getValue().length > 1) {
+                return new OaiPmhErrorView("badArgument", parameterEntry.getKey() + " argument is repeated.");
+            }
+        }
         if (verb.equals("Identify")) {
             HashSet<String> legalArguments = new HashSet<String>(Arrays.asList("verb"));
             if (!legalArguments.containsAll(request.getParameterMap().keySet())) {
@@ -181,12 +186,8 @@ public class OaiPmhController {
             if (!legalArguments.containsAll(request.getParameterMap().keySet())) {
                 return new OaiPmhErrorView("badArgument", "Request includes illegal arguments.");
             }
-            String[] identifiers = request.getParameterValues("identifier");
-            if ((identifiers != null) && (identifiers.length > 1)) {
-                return new OaiPmhErrorView("badArgument", "Identifier argument is repeated.");
-            }
             @SuppressWarnings("unused")
-            String identifier = (identifiers != null) ? identifiers[0] : null;
+            String identifier = request.getParameter("identifier");
             // TODO: Check for idDoesNotExist error (identifier argument unknown or illegal in this repository)
             // TODO: Check for noMetadataFormats error (no metadata formats available for identified item)
             return new OaiPmhListMetadataFormatsView();
@@ -196,21 +197,13 @@ public class OaiPmhController {
             if (!legalArguments.containsAll(request.getParameterMap().keySet())) {
                 return new OaiPmhErrorView("badArgument", "Request includes illegal arguments.");
             }
-            String[] resumptionTokens = request.getParameterValues("resumptionToken");
-            if ((resumptionTokens != null) && (resumptionTokens.length > 1)) {
-                return new OaiPmhErrorView("badArgument", "Resumption token argument is repeated.");
-            }
             @SuppressWarnings("unused")
-            String resumptionToken = (resumptionTokens != null) ? resumptionTokens[0] : null;
+            String resumptionToken = request.getParameter("resumptionToken");
             // TODO: Check for badResumptionToken (resumptionToken is invalid or expired)
             return new OaiPmhListSetsView();
         }
         else if (verb.equals("ListIdentifiers")) {
-            String[] resumptionTokens = request.getParameterValues("resumptionToken");
-            if ((resumptionTokens != null) && (resumptionTokens.length > 1)) {
-                return new OaiPmhErrorView("badArgument", "Resumption token argument is repeated.");
-            }
-            String resumptionToken = (resumptionTokens != null) ? resumptionTokens[0] : null;
+            String resumptionToken = request.getParameter("resumptionToken");
             HashSet<String> legalArguments = (resumptionToken != null)
                 ? new HashSet<String>(Arrays.asList("verb", "resumptionToken"))
                 : new HashSet<String>(Arrays.asList("verb", "from", "until", "metadataPrefix", "set"));
@@ -219,11 +212,7 @@ public class OaiPmhController {
             }
             // TODO: Check for badResumptionToken (resumptionToken is invalid or expired)
             SimpleDateFormat utcDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            String[] fromUtcDateTimeStrings = request.getParameterValues("from");
-            if ((fromUtcDateTimeStrings != null) && (fromUtcDateTimeStrings.length > 1)) {
-                return new OaiPmhErrorView("badArgument", "From argument is repeated.");
-            }
-            String fromUtcDateTimeString = (fromUtcDateTimeStrings != null) ? fromUtcDateTimeStrings[0] : null;
+            String fromUtcDateTimeString = request.getParameter("from");
             @SuppressWarnings("unused")
             Date fromUtcDateTime = null;
             if (fromUtcDateTimeString != null) {
@@ -234,11 +223,7 @@ public class OaiPmhController {
                     return new OaiPmhErrorView("badArgument", "From argument is invalid datetime.");
                 }
             }
-            String[] toUtcDateTimeStrings = request.getParameterValues("to");
-            if ((toUtcDateTimeStrings != null) && (toUtcDateTimeStrings.length > 1)) {
-                return new OaiPmhErrorView("badArgument", "To argument is repeated.");
-            }
-            String toUtcDateTimeString = (toUtcDateTimeStrings != null) ? toUtcDateTimeStrings[0] : null;
+            String toUtcDateTimeString = request.getParameter("to");
             @SuppressWarnings("unused")
             Date toUtcDateTime = null;
             if (toUtcDateTimeString != null) {
@@ -249,24 +234,16 @@ public class OaiPmhController {
                     return new OaiPmhErrorView("badArgument", "To argument is invalid datetime.");
                 }
             }
-            String[] metadataPrefixes = request.getParameterValues("metadataPrefix");
-            if (metadataPrefixes == null) {
+            String metadataPrefix = request.getParameter("metadataPrefix");
+            if (metadataPrefix == null) {
                 return new OaiPmhErrorView("badArgument", "Metadata prefix argument is missing.");
             }
-            if (metadataPrefixes.length > 1) {
-                return new OaiPmhErrorView("badArgument", "Metadata prefix argument is repeated.");
-            }
-            String metadataPrefix = (metadataPrefixes != null) ? metadataPrefixes[0] : null;
             HashSet<String> supportedMetadataPrefixes = new HashSet<String>(Arrays.asList("oai_dc", "rif"));
             if (!supportedMetadataPrefixes.contains(metadataPrefix)) {
                 return new OaiPmhErrorView("cannotDisseminateFormat", "Metadata prefix argument is not supported by the repository.");
             }
-            String[] sets = request.getParameterValues("set");
-            if ((sets != null) && (sets.length > 1)) {
-                return new OaiPmhErrorView("badArgument", "Resumption token argument is repeated.");
-            }
             @SuppressWarnings("unused")
-            String set = (sets != null) ? sets[0] : null;
+            String set = request.getParameter("set");
             // TODO: Query for records matching from/until/set parameters
             // TODO: Check for noRecordsMatch error (combination of from/until/set results no records)
             return new OaiPmhListIdentifiersView();
