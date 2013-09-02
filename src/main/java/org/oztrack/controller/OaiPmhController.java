@@ -1,7 +1,10 @@
 package org.oztrack.controller;
 
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Map;
@@ -139,6 +142,15 @@ public class OaiPmhController {
         }
     }
 
+    private static class OaiPmhListIdentifiersView extends OaiPmhView {
+        @Override
+        protected void renderVerbElement(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+            PrintWriter out = response.getWriter();
+            out.append("  <ListIdentifiers>\n");
+            out.append("  </ListIdentifiers>\n");
+        }
+    }
+
     @RequestMapping(value="/oai", method=RequestMethod.GET)
     @PreAuthorize("permitAll")
     public View handleRequest(HttpServletRequest request, HttpServletResponse response) {
@@ -194,13 +206,70 @@ public class OaiPmhController {
             return new OaiPmhListSetsView();
         }
         else if (verb.equals("ListIdentifiers")) {
-            // Possible errors:
-            // - badArgument
-            // - badResumptionToken
-            // - cannotDisseminateFormat
-            // - noRecordsMatch
-            // - noSetHierarchy
-            throw new UnsupportedOperationException();
+            String[] resumptionTokens = request.getParameterValues("resumptionToken");
+            if ((resumptionTokens != null) && (resumptionTokens.length > 1)) {
+                return new OaiPmhErrorView("badArgument", "Resumption token argument is repeated.");
+            }
+            String resumptionToken = (resumptionTokens != null) ? resumptionTokens[0] : null;
+            HashSet<String> legalArguments = (resumptionToken != null)
+                ? new HashSet<String>(Arrays.asList("verb", "resumptionToken"))
+                : new HashSet<String>(Arrays.asList("verb", "from", "until", "metadataPrefix", "set"));
+            if (!legalArguments.containsAll(request.getParameterMap().keySet())) {
+                return new OaiPmhErrorView("badArgument", "Request includes illegal arguments.");
+            }
+            // TODO: Check for badResumptionToken (resumptionToken is invalid or expired)
+            SimpleDateFormat utcDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            String[] fromUtcDateTimeStrings = request.getParameterValues("from");
+            if ((fromUtcDateTimeStrings != null) && (fromUtcDateTimeStrings.length > 1)) {
+                return new OaiPmhErrorView("badArgument", "From argument is repeated.");
+            }
+            String fromUtcDateTimeString = (fromUtcDateTimeStrings != null) ? fromUtcDateTimeStrings[0] : null;
+            @SuppressWarnings("unused")
+            Date fromUtcDateTime = null;
+            if (fromUtcDateTimeString != null) {
+                try {
+                    fromUtcDateTime = utcDateTimeFormat.parse(fromUtcDateTimeString);
+                }
+                catch (ParseException e) {
+                    return new OaiPmhErrorView("badArgument", "From argument is invalid datetime.");
+                }
+            }
+            String[] toUtcDateTimeStrings = request.getParameterValues("to");
+            if ((toUtcDateTimeStrings != null) && (toUtcDateTimeStrings.length > 1)) {
+                return new OaiPmhErrorView("badArgument", "To argument is repeated.");
+            }
+            String toUtcDateTimeString = (toUtcDateTimeStrings != null) ? toUtcDateTimeStrings[0] : null;
+            @SuppressWarnings("unused")
+            Date toUtcDateTime = null;
+            if (toUtcDateTimeString != null) {
+                try {
+                    toUtcDateTime = utcDateTimeFormat.parse(toUtcDateTimeString);
+                }
+                catch (ParseException e) {
+                    return new OaiPmhErrorView("badArgument", "To argument is invalid datetime.");
+                }
+            }
+            String[] metadataPrefixes = request.getParameterValues("metadataPrefix");
+            if (metadataPrefixes == null) {
+                return new OaiPmhErrorView("badArgument", "Metadata prefix argument is missing.");
+            }
+            if (metadataPrefixes.length > 1) {
+                return new OaiPmhErrorView("badArgument", "Metadata prefix argument is repeated.");
+            }
+            String metadataPrefix = (metadataPrefixes != null) ? metadataPrefixes[0] : null;
+            HashSet<String> supportedMetadataPrefixes = new HashSet<String>(Arrays.asList("oai_dc", "rif"));
+            if (!supportedMetadataPrefixes.contains(metadataPrefix)) {
+                return new OaiPmhErrorView("cannotDisseminateFormat", "Metadata prefix argument is not supported by the repository.");
+            }
+            String[] sets = request.getParameterValues("set");
+            if ((sets != null) && (sets.length > 1)) {
+                return new OaiPmhErrorView("badArgument", "Resumption token argument is repeated.");
+            }
+            @SuppressWarnings("unused")
+            String set = (sets != null) ? sets[0] : null;
+            // TODO: Query for records matching from/until/set parameters
+            // TODO: Check for noRecordsMatch error (combination of from/until/set results no records)
+            return new OaiPmhListIdentifiersView();
         }
         else if (verb.equals("ListRecords")) {
             // Possible errors:
