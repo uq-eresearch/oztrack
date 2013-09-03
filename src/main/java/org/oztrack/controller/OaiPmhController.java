@@ -75,7 +75,7 @@ public class OaiPmhController {
             // The third child of the root element is either:
             // an error element that must be used in case of an error or exception condition;
             // an element with the same name as the verb of the respective OAI-PMH request.
-            renderVerbElement(model, request, response);
+            writeMainElement(out);
 
             out.append("</OAI-PMH>\n");
         }
@@ -86,7 +86,7 @@ public class OaiPmhController {
             return true;
         }
 
-        protected abstract void renderVerbElement(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception;
+        protected abstract void writeMainElement(PrintWriter out);
     }
 
     // Implements Error and Exception Conditions response format
@@ -109,8 +109,7 @@ public class OaiPmhController {
         }
 
         @Override
-        protected void renderVerbElement(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-            PrintWriter out = response.getWriter();
+        protected void writeMainElement(PrintWriter out) {
             // In event of an error or exception condition, repositories must include one or more error elements in the response.
             // Each error element must have a code attribute and may have a string value to provide information to a human reader.
             // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#ErrorConditions
@@ -126,18 +125,18 @@ public class OaiPmhController {
     // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#Identify
     private static class OaiPmhIdentifyView extends OaiPmhView {
         private final String repositoryName;
+        private final String baseUrl;
         private final String adminEmail;
 
-        public OaiPmhIdentifyView(String repositoryName, String adminEmail) {
+        public OaiPmhIdentifyView(String repositoryName, String baseUrl, String adminEmail) {
             this.repositoryName = repositoryName;
+            this.baseUrl = baseUrl;
             this.adminEmail = adminEmail;
         }
 
         @Override
-        protected void renderVerbElement(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-            String baseUrl = request.getRequestURL().toString();
+        protected void writeMainElement(PrintWriter out) {
             String earliestDatestamp = "1970-01-01T00:00:00Z"; // TODO: Query from database
-            PrintWriter out = response.getWriter();
             out.append("  <Identify>\n");
             out.append("    <repositoryName>" + StringEscapeUtils.escapeXml(repositoryName) + "</repositoryName>\n");
             out.append("    <baseURL>" + StringEscapeUtils.escapeXml(baseUrl) + "</baseURL>\n");
@@ -154,8 +153,7 @@ public class OaiPmhController {
     // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#ListMetadataFormats
     private static class OaiPmhListMetadataFormatsView extends OaiPmhView {
         @Override
-        protected void renderVerbElement(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-            PrintWriter out = response.getWriter();
+        protected void writeMainElement(PrintWriter out) {
             out.append("  <ListMetadataFormats>\n");
             out.append("    <metadataFormat>\n");
             out.append("      <metadataPrefix>oai_dc</metadataPrefix>\n");
@@ -175,8 +173,7 @@ public class OaiPmhController {
     // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#ListSets
     private static class OaiPmhListSetsView extends OaiPmhView {
         @Override
-        protected void renderVerbElement(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-            PrintWriter out = response.getWriter();
+        protected void writeMainElement(PrintWriter out) {
             out.append("  <ListSets>\n");
             out.append("  </ListSets>\n");
         }
@@ -193,8 +190,7 @@ public class OaiPmhController {
         }
 
         @Override
-        protected void renderVerbElement(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-            PrintWriter out = response.getWriter();
+        protected void writeMainElement(PrintWriter out) {
             out.append("  <" + verb + ">\n");
             out.append("  </" + verb + ">\n");
         }
@@ -204,8 +200,7 @@ public class OaiPmhController {
     // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#GetRecord
     private static class OaiPmhGetRecordView extends OaiPmhView {
         @Override
-        protected void renderVerbElement(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-            PrintWriter out = response.getWriter();
+        protected void writeMainElement(PrintWriter out) {
             out.append("  <GetRecord>\n");
             out.append("  </GetRecord>\n");
         }
@@ -274,6 +269,7 @@ public class OaiPmhController {
 
         return new OaiPmhIdentifyView(
             configuration.getOaiPmhRepositoryName(),
+            configuration.getBaseUrl() + "/oai-pmh",
             configuration.getOaiPmhAdminEmail()
         );
     }
