@@ -53,7 +53,7 @@ public class OaiPmhController {
     );
 
     private static class MetadataFormat extends Namespace {
-        private MetadataFormat(String nsPrefix, String nsUri, String xsdUri) {
+        public MetadataFormat(String nsPrefix, String nsUri, String xsdUri) {
             super(nsPrefix, nsUri, xsdUri);
         }
     }
