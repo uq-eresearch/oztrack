@@ -1,22 +1,22 @@
 package org.oztrack.controller;
 
-import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.FastDateFormat;
 import org.oztrack.app.OzTrackConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,6 +31,47 @@ import org.springframework.web.servlet.view.AbstractView;
 // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm
 @Controller
 public class OaiPmhController {
+    private static class Namespace {
+        public final String nsPrefix;
+        public final String nsUri;
+        public final String xsdUri;
+        public Namespace(String nsPrefix, String nsUri, String xsdUri) {
+            this.nsPrefix = nsPrefix;
+            this.nsUri = nsUri;
+            this.xsdUri = xsdUri;
+        }
+    }
+    private static Namespace XSI = new Namespace(
+        "xsi",
+        "http://www.w3.org/2001/XMLSchema-instance",
+        null
+    );
+    private static Namespace OAI_PMH = new Namespace(
+        null,
+        "http://www.openarchives.org/OAI/2.0/",
+        "http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd"
+    );
+
+    private static class MetadataFormat extends Namespace {
+        private MetadataFormat(String nsPrefix, String nsUri, String xsdUri) {
+            super(nsPrefix, nsUri, xsdUri);
+        }
+    }
+    private static MetadataFormat OAI_DC = new MetadataFormat(
+        "oai_dc",
+        "http://www.openarchives.org/OAI/2.0/oai_dc/",
+        "http://www.openarchives.org/OAI/2.0/oai_dc.xsd"
+    );
+    private static MetadataFormat RIF_CS = new MetadataFormat(
+        "rif",
+        "http://ands.org.au/standards/rif-cs/registryObjects",
+        "http://services.ands.org.au/documentation/rifcs/schema/registryObjects.xsd"
+    );
+    private static List<MetadataFormat> supportedMetadataFormats = new ArrayList<MetadataFormat>(Arrays.asList(
+        OAI_DC,
+        RIF_CS
+    ));
+
     @Autowired
     private OzTrackConfiguration configuration;
 
@@ -42,42 +83,46 @@ public class OaiPmhController {
             // Encoding of the XML must use the UTF-8 representation of Unicode.
             response.setCharacterEncoding("UTF-8");
 
-            PrintWriter out = response.getWriter();
+            XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
+            XMLStreamWriter out = xmlOutputFactory.createXMLStreamWriter(response.getWriter());
 
             // The first tag output is an XML declaration where the version is always 1.0 and the encoding is always UTF-8.
-            out.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+            out.writeStartDocument("UTF-8", "1.0");
 
             // The root element has the name OAI-PMH and must define the namespace URI and schema URL for OAI-PMH.
-            out.append("<OAI-PMH\n");
-            out.append("  xmlns=\"http://www.openarchives.org/OAI/2.0/\"\n");
-            out.append("  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
-            out.append("  xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd\">\n");
+            out.writeStartElement("OAI-PMH");
+            out.setDefaultNamespace(OAI_PMH.nsUri);
+            out.writeDefaultNamespace(OAI_PMH.nsUri);
+            out.setPrefix(XSI.nsPrefix, XSI.nsUri);
+            out.writeNamespace(XSI.nsPrefix, XSI.nsUri);
+            out.writeAttribute(XSI.nsUri, "schemaLocation", OAI_PMH.nsUri + " " + OAI_PMH.xsdUri);
 
             // The first child of the root element is the responseDate element, indicating the UTC datetime that the response was sent.
-            GregorianCalendar currentUtcDateTime = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
-            FastDateFormat utcDateTimeFormat = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            String responseDate = utcDateTimeFormat.format(currentUtcDateTime);
-            out.append("  <responseDate>" + StringEscapeUtils.escapeXml(responseDate) + "</responseDate>\n");
+            SimpleDateFormat utcDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            utcDateTimeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            String responseDate = utcDateTimeFormat.format(new Date());
+            writeSimpleElement(out, "responseDate", responseDate);
 
             // The second child of the root element is the request element, indicating the protocol request that generated this response.
             // The content of the request element must always be the base URL of the protocol request;
             // The attribute values must correspond to the key=value pairs of protocol request.
             String baseUrl = request.getRequestURL().toString();
-            StringBuilder parameterAttributes = new StringBuilder();
+            out.writeStartElement("request");
             if (shouldIncludeRequestArguments()) {
                 for (Entry<String, String[]> parameterEntry : request.getParameterMap().entrySet()) {
-                    parameterAttributes.append(" ").append(parameterEntry.getKey());
-                    parameterAttributes.append("=\"").append(StringUtils.join(parameterEntry.getValue(), ",")).append("\"");
+                    out.writeAttribute(parameterEntry.getKey(), parameterEntry.getValue()[0]);
                 }
             }
-            out.append("  <request" + parameterAttributes.toString() + ">" + StringEscapeUtils.escapeXml(baseUrl) + "</request>\n");
+            out.writeCharacters(baseUrl);
+            out.writeEndElement();
 
             // The third child of the root element is either:
             // an error element that must be used in case of an error or exception condition;
             // an element with the same name as the verb of the respective OAI-PMH request.
             writeMainElement(out);
 
-            out.append("</OAI-PMH>\n");
+            out.writeEndElement();
+            out.writeEndDocument();
         }
 
         protected boolean shouldIncludeRequestArguments() {
@@ -86,7 +131,7 @@ public class OaiPmhController {
             return true;
         }
 
-        protected abstract void writeMainElement(PrintWriter out);
+        protected abstract void writeMainElement(XMLStreamWriter out) throws XMLStreamException;
     }
 
     // Implements Error and Exception Conditions response format
@@ -105,19 +150,20 @@ public class OaiPmhController {
             // In cases where the request that generated this response resulted in a badVerb or badArgument error condition,
             // the repository must return the base URL of the protocol request only. Attributes must not be provided in these cases.
             // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#XMLResponse
-            return !code.equals("badVerb") && !code.equals("badArgument");
+            return !(code.equals("badVerb") || code.equals("badArgument"));
         }
 
         @Override
-        protected void writeMainElement(PrintWriter out) {
+        protected void writeMainElement(XMLStreamWriter out) throws XMLStreamException {
             // In event of an error or exception condition, repositories must include one or more error elements in the response.
             // Each error element must have a code attribute and may have a string value to provide information to a human reader.
             // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#ErrorConditions
-            out.append("  <error code=\"" + StringEscapeUtils.escapeXml(code) + "\">");
+            out.writeStartElement("error");
+            out.writeAttribute("code", code);
             if (message != null) {
-                out.append(StringEscapeUtils.escapeXml(message));
+                out.writeCharacters(message);
             }
-            out.append("</error>\n");
+            out.writeEndElement();
         }
     }
 
@@ -135,17 +181,17 @@ public class OaiPmhController {
         }
 
         @Override
-        protected void writeMainElement(PrintWriter out) {
+        protected void writeMainElement(XMLStreamWriter out) throws XMLStreamException {
             String earliestDatestamp = "1970-01-01T00:00:00Z"; // TODO: Query from database
-            out.append("  <Identify>\n");
-            out.append("    <repositoryName>" + StringEscapeUtils.escapeXml(repositoryName) + "</repositoryName>\n");
-            out.append("    <baseURL>" + StringEscapeUtils.escapeXml(baseUrl) + "</baseURL>\n");
-            out.append("    <protocolVersion>2.0</protocolVersion>\n");
-            out.append("    <adminEmail>" + StringEscapeUtils.escapeXml(adminEmail) + "</adminEmail>\n");
-            out.append("    <earliestDatestamp>" + StringEscapeUtils.escapeXml(earliestDatestamp) + "</earliestDatestamp>\n");
-            out.append("    <deletedRecord>transient</deletedRecord>\n");
-            out.append("    <granularity>YYYY-MM-DDThh:mm:ssZ</granularity>\n");
-            out.append("  </Identify>\n");
+            out.writeStartElement("Identify");
+            writeSimpleElement(out, "repositoryName", repositoryName);
+            writeSimpleElement(out, "baseURL", baseUrl);
+            writeSimpleElement(out, "protocolVersion", "2.0");
+            writeSimpleElement(out, "adminEmail", adminEmail);
+            writeSimpleElement(out, "earliestDatestamp", earliestDatestamp);
+            writeSimpleElement(out, "deletedRecord", "transient");
+            writeSimpleElement(out, "granularity", "YYYY-MM-DDThh:mm:ssZ");
+            out.writeEndElement();
         }
     }
 
@@ -153,19 +199,16 @@ public class OaiPmhController {
     // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#ListMetadataFormats
     private static class OaiPmhListMetadataFormatsView extends OaiPmhView {
         @Override
-        protected void writeMainElement(PrintWriter out) {
-            out.append("  <ListMetadataFormats>\n");
-            out.append("    <metadataFormat>\n");
-            out.append("      <metadataPrefix>oai_dc</metadataPrefix>\n");
-            out.append("      <schema>http://www.openarchives.org/OAI/2.0/oai_dc.xsd</schema>\n");
-            out.append("      <metadataNamespace>http://www.openarchives.org/OAI/2.0/oai_dc/</metadataNamespace>\n");
-            out.append("    </metadataFormat>\n");
-            out.append("    <metadataFormat>\n");
-            out.append("      <metadataPrefix>rif</metadataPrefix>\n");
-            out.append("      <schema>http://services.ands.org.au/documentation/rifcs/schema/registryObjects.xsd</schema>\n");
-            out.append("      <metadataNamespace>http://ands.org.au/standards/rif-cs/registryObjects</metadataNamespace>\n");
-            out.append("    </metadataFormat>\n");
-            out.append("  </ListMetadataFormats>\n");
+        protected void writeMainElement(XMLStreamWriter out) throws XMLStreamException {
+            out.writeStartElement("ListMetadataFormats");
+            for (MetadataFormat metadataFormat : supportedMetadataFormats) {
+                out.writeStartElement("metadataFormat");
+                writeSimpleElement(out, "metadataPrefix", metadataFormat.nsPrefix);
+                writeSimpleElement(out, "schema", metadataFormat.xsdUri);
+                writeSimpleElement(out, "metadataNamespace", metadataFormat.nsUri);
+                out.writeEndElement();
+            }
+            out.writeEndElement();
         }
     }
 
@@ -173,9 +216,8 @@ public class OaiPmhController {
     // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#ListSets
     private static class OaiPmhListSetsView extends OaiPmhView {
         @Override
-        protected void writeMainElement(PrintWriter out) {
-            out.append("  <ListSets>\n");
-            out.append("  </ListSets>\n");
+        protected void writeMainElement(XMLStreamWriter out) throws XMLStreamException {
+            out.writeEmptyElement("ListSets");
         }
     }
 
@@ -190,9 +232,8 @@ public class OaiPmhController {
         }
 
         @Override
-        protected void writeMainElement(PrintWriter out) {
-            out.append("  <" + verb + ">\n");
-            out.append("  </" + verb + ">\n");
+        protected void writeMainElement(XMLStreamWriter out) throws XMLStreamException {
+            out.writeEmptyElement(verb);
         }
     }
 
@@ -200,9 +241,8 @@ public class OaiPmhController {
     // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#GetRecord
     private static class OaiPmhGetRecordView extends OaiPmhView {
         @Override
-        protected void writeMainElement(PrintWriter out) {
-            out.append("  <GetRecord>\n");
-            out.append("  </GetRecord>\n");
+        protected void writeMainElement(XMLStreamWriter out) throws XMLStreamException {
+            out.writeEmptyElement("GetRecord");
         }
     }
 
@@ -369,7 +409,10 @@ public class OaiPmhController {
         // Return cannotDisseminateFormat error code if metadataPrefix argument not supported by the repository.
         // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#ListIdentifiers
         // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#ListRecords
-        HashSet<String> supportedMetadataPrefixes = new HashSet<String>(Arrays.asList("oai_dc", "rif"));
+        HashSet<String> supportedMetadataPrefixes = new HashSet<String>();
+        for (MetadataFormat metadataFormat : supportedMetadataFormats) {
+            supportedMetadataPrefixes.add(metadataFormat.nsPrefix);
+        }
         if (!supportedMetadataPrefixes.contains(metadataPrefix)) {
             return new OaiPmhErrorView("cannotDisseminateFormat", "metadataPrefix argument is not supported by the repository.");
         }
@@ -407,7 +450,10 @@ public class OaiPmhController {
 
         // Return cannotDisseminateFormat error code if metadataPrefix argument not supported by identified item.
         // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#GetRecord
-        HashSet<String> supportedMetadataPrefixes = new HashSet<String>(Arrays.asList("oai_dc", "rif"));
+        HashSet<String> supportedMetadataPrefixes = new HashSet<String>();
+        for (MetadataFormat metadataFormat : supportedMetadataFormats) {
+            supportedMetadataPrefixes.add(metadataFormat.nsPrefix);
+        }
         if (!supportedMetadataPrefixes.contains(metadataPrefix)) {
             return new OaiPmhErrorView("cannotDisseminateFormat", "metadataPrefix argument is not supported by the repository.");
         }
@@ -416,5 +462,11 @@ public class OaiPmhController {
         // TODO: Check for idDoesNotExist error (identifier argument unknown or illegal in this repository)
 
         return new OaiPmhGetRecordView();
+    }
+
+    private static void writeSimpleElement(XMLStreamWriter out, String localName, String text) throws XMLStreamException {
+        out.writeStartElement(localName);
+        out.writeCharacters(text);
+        out.writeEndElement();
     }
 }
