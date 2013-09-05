@@ -84,7 +84,7 @@
             }
             function submitKalmanFilter() {
                 var params = {
-                    projectId: ${project.id},
+                    projectId: '${project.id}',
                     analysisType: 'KALMAN',
                     fromDate: $('#fromDate').val(),
                     toDate: $('#toDate').val(),
@@ -106,7 +106,7 @@
             }
             function submitKalmanFilterSst() {
                 var params = {
-                    projectId: ${project.id},
+                    projectId: '${project.id}',
                     analysisType: 'KALMAN_SST',
                     fromDate: $('#fromDate').val(),
                     toDate: $('#toDate').val(),
@@ -174,7 +174,7 @@
                 <c:forEach items="${projectAnimalsList}" var="animal">
                 $('#select-animal-${animal.id}').change(function() {
                     $('#select-animal-all').prop('checked', $('.select-animal:not(:checked)').length == 0);
-                    cleanseMap.setAnimalVisible("${animal.id}", this.checked);
+                    cleanseMap.setAnimalVisible('${animal.id}', this.checked);
                 });
                 </c:forEach>
                 $('#select-animal-all').prop('checked', $('.select-animal:not(:checked)').length == 0);
@@ -182,7 +182,7 @@
                     var checked = $(this).prop('checked');
                     $('.select-animal').prop('checked', checked);
                     <c:forEach items="${projectAnimalsList}" var="animal">
-                    cleanseMap.setAnimalVisible("${animal.id}", checked);
+                    cleanseMap.setAnimalVisible('${animal.id}', checked);
                     </c:forEach>
                 });
                 $('#kalmanFilterRun').click(function(e) {
@@ -222,7 +222,7 @@
                 onResize();
                 cleanseMap = new OzTrack.CleanseMap('projectMap', {
                     project: {
-                        id: <c:out value="${project.id}"/>,
+                        id: '${project.id}',
                         title: '${oztrack:escapeJS(project.title)}',
                         <c:if test="${(project.access == 'OPEN') and (project.dataLicence != null)}">
                         dataLicence: {
@@ -243,7 +243,7 @@
                         <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
                         <c:set var="animalBoundingBox" value="${animalBoundingBoxes[animal.id]}"/>
                         {
-                            id: ${animal.id},
+                            id: '${animal.id}',
                             name: '${oztrack:escapeJS(animal.animalName)}',
                             <c:if test="${animalBoundingBox != null}">
                             <c:set var="env" value="${animalBoundingBox.envelopeInternal}"/>
@@ -294,7 +294,7 @@
                                         .addClass('btn')
                                         .addClass('btn-layer-info')
                                         .prop('disabled', true)
-                                        .attr('onclick', 'deleteKalmanFilter(' + analysis.id + ');')
+                                        .attr('onclick', 'deleteKalmanFilter(\\'' + analysis.id + '\\');')
                                         .append($('<i>').addClass('icon-trash'))
                                     )
                                     .append(' ')
@@ -303,7 +303,7 @@
                                         .addClass('kalmanFilterApply')
                                         .addClass('btn')
                                         .prop('disabled', true)
-                                        .attr('onclick', 'applyKalmanFilter(' + analysis.id + ');')
+                                        .attr('onclick', 'applyKalmanFilter(\\'' + analysis.id + '\\');')
                                         .append($('<i>').addClass('icon-ok'))
                                         .append(' Replace track')
                                     )
@@ -323,7 +323,7 @@
                                         .addClass('kalmanFilterSstDelete')
                                         .addClass('btn')
                                         .prop('disabled', true)
-                                        .attr('onclick', 'deleteKalmanFilterSst(' + analysis.id + ');')
+                                        .attr('onclick', 'deleteKalmanFilterSst(\\'' + analysis.id + '\\');')
                                         .append($('<i>').addClass('icon-trash'))
                                     )
                                     .append($('<button>')
@@ -331,7 +331,7 @@
                                         .addClass('kalmanFilterSstApply')
                                         .addClass('btn')
                                         .prop('disabled', true)
-                                        .attr('onclick', 'applyKalmanFilterSst(' + analysis.id + ');')
+                                        .attr('onclick', 'applyKalmanFilterSst(\\'' + analysis.id + '\\');')
                                         .append($('<i>').addClass('icon-ok'))
                                         .append(' Replace track')
                                     )

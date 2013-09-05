@@ -634,7 +634,7 @@
         that.map.addLayer(that.imcraMesoscale);
 
         function getAnimal(id) {
-            return $.grep(that.animals, function(x) {return x.id == id;})[0];
+            return $.grep(that.animals, function(x) {return x.id === id;})[0];
         }
 
         that.getAnalysis = function(id) {
@@ -1704,10 +1704,10 @@
         function createStartEndStyleMap() {
             var styleContext = {
                 getColour : function(feature) {
-                    if (feature.attributes.identifier == 'start') {
+                    if (feature.attributes.identifier === 'start') {
                         return '#00CD00';
                     }
-                    if (feature.attributes.identifier == 'end') {
+                    if (feature.attributes.identifier === 'end') {
                         return '#CD0000';
                     }
                     return '#CDCDCD';
@@ -1747,8 +1747,8 @@
                 }
                 delete that.projectMapLayers[id];
             }
-            that.detectionLayers = $.grep(that.detectionLayers, function(x) {return x.id != id});
-            that.trajectoryLayers = $.grep(that.trajectoryLayers, function(x) {return x.id != id});
+            that.detectionLayers = $.grep(that.detectionLayers, function(x) {return x.id !== id});
+            that.trajectoryLayers = $.grep(that.trajectoryLayers, function(x) {return x.id !== id});
         };
 
         that.zoomToAnimal = function(animalId) {
@@ -1829,7 +1829,7 @@
                             (feature.attributes.id && feature.attributes.id.value) ||
                             (feature.attributes.id) ||
                             null;
-                        if (featureAnimalId == animal.id) {
+                        if (featureAnimalId === animal.id) {
                             feature.renderIntent = animal.visible ? 'default' : 'temporary';
                             feature.layer.drawFeature(feature);
                         }
@@ -2025,7 +2025,7 @@
                 that.onAnalysisDelete && that.onAnalysisDelete(that.analyses[id]);
                 delete that.analyses[id];
             }
-            if (id == currentAnalysisId) {
+            if (id === currentAnalysisId) {
                 currentAnalysisId = null;
             }
         };

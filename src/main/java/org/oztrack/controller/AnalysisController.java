@@ -133,7 +133,7 @@ public class AnalysisController {
         response.setHeader("Expires", "Thu, 01 Jan 1970 00:00:00 GMT");
         JSONWriter out = new JSONWriter(response.getWriter());
         out.object();
-        out.key("id").value(analysis.getId());
+        out.key("id").value(String.valueOf(analysis.getId()));
         out.key("url").value(configuration.getBaseUrl() + "/projects/" + analysis.getProject().getId() + "/analyses/" + analysis.getId());
         out.key("createDate").value(isoDateTimeFormat.format(analysis.getCreateDate()));
         out.key("analysisType").value(analysis.getAnalysisType());
@@ -146,7 +146,7 @@ public class AnalysisController {
         }
         out.key("animalIds").array();
         for (Animal animal : analysis.getAnimals()) {
-            out.value(animal.getId());
+            out.value(String.valueOf(animal.getId()));
         }
         out.endArray();
         out.key("animalNames").array();

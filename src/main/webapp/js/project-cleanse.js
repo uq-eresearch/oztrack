@@ -221,7 +221,7 @@
 
         that.selectPolygonFeature = function(id, selected) {
             for (var i = 0; i < that.polygonFeatures.length; i++) {
-                if (that.polygonFeatures[i].id == id) {
+                if (that.polygonFeatures[i].id === id) {
                     that.highlightPolygonControl[selected ? 'select' : 'unselect'](that.polygonFeatures[i]);
                     break;
                 }
@@ -233,7 +233,7 @@
                 that.onDeletePolygonFeature(id);
             }
             for (var i = 0; i < that.polygonFeatures.length; i++) {
-                if (that.polygonFeatures[i].id == id) {
+                if (that.polygonFeatures[i].id === id) {
                     that.polygonFeatures[i].destroy();
                     that.polygonFeatures.splice(i, 1);
                     break;

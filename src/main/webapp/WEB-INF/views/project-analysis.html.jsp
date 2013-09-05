@@ -189,7 +189,7 @@
                 <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
                 $('input[id=select-animal-${animal.id}]').change(function() {
                     $('#filter-animal-${animal.id}').prop('disabled', !this.checked);
-                    analysisMap.setAnimalVisible("${animal.id}", this.checked);
+                    analysisMap.setAnimalVisible('${animal.id}', this.checked);
                 });
                 </c:forEach>
 
@@ -257,7 +257,7 @@
                 onResize();
                 analysisMap = new OzTrack.AnalysisMap('projectMap', {
                     project: {
-                        id: <c:out value="${project.id}"/>,
+                        id: '${project.id}',
                         title: '${oztrack:escapeJS(project.title)}',
                         <c:if test="${(project.access == 'OPEN') and (project.dataLicence != null)}">
                         dataLicence: {
@@ -275,7 +275,7 @@
                         <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
                         <c:set var="animalBoundingBox" value="${animalBoundingBoxes[animal.id]}"/>
                         {
-                            id: ${animal.id},
+                            id: '${animal.id}',
                             name: '${oztrack:escapeJS(animal.animalName)}',
                             <c:if test="${animalBoundingBox != null}">
                             <c:set var="env" value="${animalBoundingBox.envelopeInternal}"/>
@@ -345,7 +345,7 @@
                                     .addClass('btn')
                                     .addClass('btn-small')
                                     .addClass('btn-layer-info')
-                                    .attr('onclick', 'analysisMap.deleteAnalysis(' + analysis.id + ', true);')
+                                    .attr('onclick', 'analysisMap.deleteAnalysis(\\'' + analysis.id + '\\', true);')
                                     .append($('<i>').addClass('icon-trash'))
                             "
                             parentIdJsExpr="'animalInfo-' + animalId"
@@ -623,7 +623,7 @@
                             <button
                                 class="btn btn-small"
                                 title="Zoom to animal"
-                                onclick="analysisMap.zoomToAnimal(${animal.id});">
+                                onclick="analysisMap.zoomToAnimal('${animal.id}');">
                                 <i class="icon-zoom-in"></i>
                             </button>
                             <button
@@ -692,7 +692,7 @@
                             </div>
                             <div style="clear: both;"></div>
                             <c:forEach items="${projectAnimalsList}" var="animal" varStatus="animalStatus">
-                            <a style="display: inline-block; float: right;" href="javascript:analysisMap.zoomToAnimal(${animal.id});"><i class="icon-zoom-in"></i></a>
+                            <a style="display: inline-block; float: right;" href="javascript:analysisMap.zoomToAnimal('${animal.id}');"><i class="icon-zoom-in"></i></a>
                             <div class="animalsFilterCheckbox">
                                 <input
                                     id="filter-animal-${animal.id}"
