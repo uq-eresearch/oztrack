@@ -35,56 +35,61 @@
             Don't have an account yet? <a href="${pageContext.request.contextPath}/users/new">Register as a new user</a>
         </div>
 
-        <c:if test="${aafEnabled}">
-        <form class="form-vertical form-bordered" style="float: left; width: 425px; height: 240px;">
-            <fieldset>
-                <div class="legend">Login using AAF</div>
-                <div style="margin: 18px 0;">
-                    <p>
-                        Click here to authenticate using the <a target="_blank" href="http://www.aaf.edu.au/">Australian Access Federation (AAF)</a>.
-                    </p>
-                    <p>
-                        You will be redirected to your home institution's website to login.
-                    </p>
-                </div>
-            </fieldset>
-            <div class="form-actions">
-                <c:url var="shibbolethUrl" value="${pageContext.request.contextPath}/login/shibboleth">
-                    <c:if test="${not empty redirectUrl}">
-                    <c:param name="redirect">
-                        ${redirectUrl}
-                    </c:param>
-                    </c:if>
-                </c:url>
-                <a class="btn btn-primary" href="${shibbolethUrl}">Login using AAF</a>
-            </div>
-        </form>
-        </c:if>
-
-        <form id="nativeLoginForm" class="form-vertical form-bordered" method="POST" action="${pageContext.request.contextPath}/login"
-            style="float: left; width: ${aafEnabled ? 425 : 904}px; margin-left: ${aafEnabled ? 18 : 0}px; height: 240px;">
-            <fieldset>
-                <div class="legend">Login ${aafEnabled ? 'using' : 'to'} OzTrack</div>
-                <div class="control-group">
-                    <label class="control-label" for="username">Username</label>
-                    <div class="controls">
-                        <input type="text" name="username" id="username" value="${username}"/>
+        <div class="row">
+            <c:if test="${aafEnabled}">
+            <div class="span6">
+                <form class="form-vertical form-bordered" style="height: 230px;">
+                    <fieldset>
+                        <div class="legend">Login using AAF</div>
+                        <div style="margin: 18px 0;">
+                            <p>
+                                Click here to authenticate using the <a target="_blank" href="http://www.aaf.edu.au/">Australian Access Federation (AAF)</a>.
+                            </p>
+                            <p>
+                                You will be redirected to your home institution's website to login.
+                            </p>
+                        </div>
+                    </fieldset>
+                    <div class="form-actions">
+                        <c:url var="shibbolethUrl" value="${pageContext.request.contextPath}/login/shibboleth">
+                            <c:if test="${not empty redirectUrl}">
+                            <c:param name="redirect">
+                                ${redirectUrl}
+                            </c:param>
+                            </c:if>
+                        </c:url>
+                        <a class="btn btn-primary" href="${shibbolethUrl}">Login using AAF</a>
                     </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="password">Password</label>
-                    <div class="controls">
-                        <input type="password" name="password" id="password"/>
-                    </div>
-                </div>
-                <c:if test="${not empty redirectUrl}">
-                <input type="hidden" name="redirect" value="${redirectUrl}" />
-                </c:if>
-            </fieldset>
-            <div class="form-actions">
-                <input class="btn btn-primary" type="submit" value="Login"/>
-                <a style="margin-left: 10px;" href="${pageContext.request.contextPath}/reset-password">Can't access your account?</a>
+                </form>
             </div>
-        </form>
+            </c:if>
+            <div class="${aafEnabled ? 'span6' : 'span12'}">
+                <form id="nativeLoginForm" class="form-vertical form-bordered" style="height: 230px;"
+                    method="POST" action="${pageContext.request.contextPath}/login">
+                    <fieldset>
+                        <div class="legend">Login ${aafEnabled ? 'using' : 'to'} OzTrack</div>
+                        <div class="control-group">
+                            <label class="control-label" for="username">Username</label>
+                            <div class="controls">
+                                <input type="text" name="username" id="username" value="${username}"/>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="password">Password</label>
+                            <div class="controls">
+                                <input type="password" name="password" id="password"/>
+                            </div>
+                        </div>
+                        <c:if test="${not empty redirectUrl}">
+                        <input type="hidden" name="redirect" value="${redirectUrl}" />
+                        </c:if>
+                    </fieldset>
+                    <div class="form-actions">
+                        <input class="btn btn-primary" type="submit" value="Login"/>
+                        <a style="margin-left: 10px;" href="${pageContext.request.contextPath}/reset-password">Can't access your account?</a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </jsp:body>
 </tags:page>
