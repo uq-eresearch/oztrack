@@ -31,12 +31,12 @@
         </div>
         </c:if>
 
-        <p style="margin-bottom: 14px;">
+        <div class="alert alert-info" style="text-align: center;">
             Don't have an account yet? <a href="${pageContext.request.contextPath}/users/new">Register as a new user</a>
-        </p>
+        </div>
 
         <c:if test="${aafEnabled}">
-        <form class="form-vertical form-bordered">
+        <form class="form-vertical form-bordered" style="float: left; width: 425px; height: 240px;">
             <fieldset>
                 <div class="legend">Login using AAF</div>
                 <div style="margin: 18px 0;">
@@ -61,11 +61,10 @@
         </form>
         </c:if>
 
-        <form id="nativeLoginForm" class="form-vertical form-bordered" method="POST" action="${pageContext.request.contextPath}/login">
+        <form id="nativeLoginForm" class="form-vertical form-bordered" method="POST" action="${pageContext.request.contextPath}/login"
+            style="float: left; width: ${aafEnabled ? 425 : 904}px; margin-left: ${aafEnabled ? 18 : 0}px; height: 240px;">
             <fieldset>
-                <c:if test="${aafEnabled}">
-                <div class="legend">Login using OzTrack</div>
-                </c:if>
+                <div class="legend">Login ${aafEnabled ? 'using' : 'to'} OzTrack</div>
                 <div class="control-group">
                     <label class="control-label" for="username">Username</label>
                     <div class="controls">
