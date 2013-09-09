@@ -31,6 +31,11 @@
     <div class="container${fluid ? '-fluid' : ''}">
         <div id="banner">
             <div id="banner-left">
+                <div id="banner-logo">
+                    <a href="${pageContext.request.contextPath}/">
+                        <img src="${pageContext.request.contextPath}/img/header_logo.png" />
+                    </a>
+                </div>
                 <c:if test="${testServer}">
                 <div id="banner-msg">
                     <div style="font-weight: bold; color: red; margin-bottom: 3px;">OzTrack Testing</div>

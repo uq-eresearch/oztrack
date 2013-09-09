@@ -336,23 +336,18 @@ a.thumbnail:hover {
   background-color: white;
 }
 
-@bannerLeftImageWidth: 114px;
-@bannerLeftImageHeight: 60px;
-@bannerLeftImageHorizontalPadding: 5px;
-@bannerLeftImageVerticalPadding: 5px;
-@bannerLeftImagePaddedWidth: @bannerLeftImageWidth + (2 * @bannerLeftImageHorizontalPadding);
-@bannerHeight: @bannerLeftImageHeight + (2 * @bannerLeftImageVerticalPadding);
+@bannerLogoWidth: 114px;
+@bannerLogoHeight: 60px;
+@bannerLogoHorizontalPadding: 5px;
+@bannerLogoVerticalPadding: 5px;
+@bannerHeight: @bannerLogoHeight + (2 * @bannerLogoVerticalPadding);
 
 #banner {
 }
 
 #banner-left {
   float: left;
-  min-width: @bannerLeftImagePaddedWidth;
   height: @bannerHeight;
-  background-image: url('../img/header_logo.png');
-  background-position: @bannerLeftImageHorizontalPadding center;
-  background-repeat: no-repeat;
 }
 
 #banner-right {
@@ -362,8 +357,14 @@ a.thumbnail:hover {
   background-repeat: no-repeat;
 }
 
-#banner-left #banner-msg {
-  margin: 6px 0px 6px (@bannerLeftImagePaddedWidth + 12px);
+#banner-logo {
+  float: left;
+  margin: @bannerLogoVerticalPadding @bannerLogoHorizontalPadding;
+}
+
+#banner-msg {
+  float: left;
+  margin: 6px;
   padding: 4px 6px;
   font-size: 11px;
   line-height: 15px;
