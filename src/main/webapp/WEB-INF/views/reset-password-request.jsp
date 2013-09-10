@@ -45,7 +45,7 @@
         </p>
         <form class="form-vertical form-bordered" style="width: 600px;" method="POST" action="">
             <fieldset>
-                <div class="control-group">
+                <div class="control-group required">
                     <label class="control-label" for="email">Email address</label>
                     <div class="controls">
                         <input type="text" name="email" value="${empty successMessage ? param.email : ''}" />

@@ -43,13 +43,13 @@
         </p>
         <form class="form-vertical form-bordered" style="width: 600px;" method="POST" action="">
             <fieldset>
-                <div class="control-group">
+                <div class="control-group required">
                     <label class="control-label" for="username">Username</label>
                     <div class="controls">
                         <input type="text" name="user" disabled="disabled" value="${user.username}" />
                     </div>
                 </div>
-                <div class="control-group">
+                <div class="control-group required">
                     <label class="control-label" for="password">Password</label>
                     <div class="controls">
                         <input type="password" name="password" />

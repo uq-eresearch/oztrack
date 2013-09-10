@@ -46,21 +46,21 @@
         <form:form class="form-horizontal form-bordered" method="${method}" action="${action}" commandName="srs">
             <fieldset>
                 <div class="legend">${title}</div>
-                <div class="control-group">
+                <div class="control-group required">
                     <label class="control-label" for="identifier">ID</label>
                     <div class="controls">
                         <form:input path="identifier" cssStyle="width: 150px;"/>
                         <form:errors path="identifier" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
-                <div class="control-group">
+                <div class="control-group required">
                     <label class="control-label" for="title">Title</label>
                     <div class="controls">
                         <form:input path="title" cssClass="input-xxlarge"/>
                         <form:errors path="title" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
-                <div class="control-group">
+                <div class="control-group required">
                     <label class="control-label" for="bounds">Bounds</label>
                     <div class="controls">
                         <form:input path="bounds" cssClass="input-xxlarge"/>

@@ -68,13 +68,13 @@
                     method="POST" action="${pageContext.request.contextPath}/login">
                     <fieldset>
                         <div class="legend">Login ${aafEnabled ? 'using' : 'to'} OzTrack</div>
-                        <div class="control-group">
+                        <div class="control-group required">
                             <label class="control-label" for="username">Username</label>
                             <div class="controls">
                                 <input type="text" name="username" id="username" value="${username}"/>
                             </div>
                         </div>
-                        <div class="control-group">
+                        <div class="control-group required">
                             <label class="control-label" for="password">Password</label>
                             <div class="controls">
                                 <input type="password" name="password" id="password"/>

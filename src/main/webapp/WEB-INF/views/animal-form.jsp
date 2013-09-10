@@ -39,7 +39,7 @@
         <form:form cssClass="form-horizontal form-bordered" action="/animals/${animal.id}" commandName="animal" method="PUT">
             <fieldset>
             <div class="legend">Animal details</div>
-            <div class="control-group">
+            <div class="control-group required">
                 <label class="control-label" for="projectAnimalId">Animal ID</label>
                 <div class="controls">
                     <form:input path="projectAnimalId" id="projectAnimalId"/>
@@ -48,7 +48,7 @@
                     </span>
                 </div>
             </div>
-            <div class="control-group">
+            <div class="control-group required">
                 <label class="control-label" for="animalName">Name</label>
                 <div class="controls">
                     <form:input path="animalName" id="animalName"/>
@@ -66,7 +66,7 @@
                     </span>
                 </div>
             </div>
-            <div class="control-group">
+            <div class="control-group required">
                 <label class="control-label" for="colour">Colour</label>
                 <div class="controls">
                     <form:input path="colour" id="colour"

@@ -51,7 +51,7 @@
                     <a target="_blank" href="http://en.wikipedia.org/wiki/Microsoft_Excel">Excel</a> format.
                     See below for details on required columns.
                 </p>
-                <div class="control-group">
+                <div class="control-group required">
                     <label class="control-label" for="file">File: </label>
                     <div class="controls">
                         <input type="file" name="file"/>

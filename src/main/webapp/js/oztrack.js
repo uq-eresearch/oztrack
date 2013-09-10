@@ -86,6 +86,7 @@ function initHelpPopover(helpPopover) {
 }
 $(document).ready(function() {
     $('.help-popover').each(function() {initHelpPopover($(this));});
+    $('.control-group.required').find('label:first').append($('<i class="required-marker">*</i>'));
 });
 $(document).click(function(e) {
     // Hide popovers unless: clicking on one, because it might contain interactive elements;

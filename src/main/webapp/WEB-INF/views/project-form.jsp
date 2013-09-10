@@ -305,7 +305,7 @@
             commandName="project" name="project" enctype="multipart/form-data">
             <fieldset>
                 <div class="legend">Project Metadata</div>
-                <div class="control-group">
+                <div class="control-group required">
                     <label class="control-label" for="title">Title</label>
                     <div class="controls">
                         <form:input path="title" id="title" cssClass="input-xxlarge"/>
@@ -317,14 +317,14 @@
                         <form:errors path="title" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
-                <div class="control-group">
+                <div class="control-group required">
                     <label class="control-label" for="description">Description</label>
                     <div class="controls">
                         <form:textarea path="description" id="description" cssStyle="width: 400px; height: 100px;"/>
                         <form:errors path="description" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
-                <div class="control-group">
+                <div class="control-group required">
                     <label class="control-label" for="spatialCoverageDescr">Location</label>
                     <div class="controls">
                         <form:input path="spatialCoverageDescr" id="spatialCoverageDescr" cssClass="input-xxlarge"/>
@@ -363,13 +363,13 @@
                         </label>
                     </div>
                 </div>
-                <div class="control-group" style="margin-bottom: 9px;">
+                <div class="control-group required" style="margin-bottom: 9px;">
                     <label class="control-label" for="speciesScientificName">Scientific Name</label>
                     <div class="controls">
                         <form:input path="speciesScientificName" id="speciesScientificName" cssClass="input-xxlarge" readonly="true"/>
                     </div>
                 </div>
-                <div class="control-group">
+                <div class="control-group required">
                     <label class="control-label" for="speciesCommonName">Common Name</label>
                     <div class="controls">
                         <form:input path="speciesCommonName" id="speciesCommonName" cssClass="input-xxlarge" readonly="true"/>
@@ -438,7 +438,7 @@
             </fieldset>
             <fieldset>
                 <div class="legend">Data Availability</div>
-                <div class="control-group">
+                <div class="control-group required">
                     <label class="control-label" for="publicationUrl">Access Rights</label>
                     <div class="controls">
                         <label for="accessOpen" class="radio">
@@ -530,7 +530,7 @@
                         <form:errors path="access" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
-                <div id="data-licences-control-group" class="control-group" style="<c:if test="${project.access == 'CLOSED'}">display: none;</c:if>">
+                <div id="data-licences-control-group" class="control-group required" style="<c:if test="${project.access == 'CLOSED'}">display: none;</c:if>">
                     <label class="control-label" for="dataLicenceCopyright">Data Licence</label>
                     <div class="controls">
                         <div style="margin: 0.5em 0 1em 0;">

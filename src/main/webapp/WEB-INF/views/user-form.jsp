@@ -88,7 +88,7 @@
                     </div>
                 </div>
                 </c:if>
-                <div class="control-group">
+                <div class="control-group required">
                     <label class="control-label" for="username">Username:</label>
                     <div class="controls">
                         <form:input path="username" id="username"/>
@@ -104,6 +104,11 @@
                     <label class="control-label" for="password">Password:</label>
                     <div class="controls">
                         <input type="password" name="password" id="password"/>
+                        <div class="help-inline">
+                            <div class="help-popover" title="Password">
+                                You must enter a password unless you're linking your profile with an AAF ID.
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="control-group">
@@ -120,14 +125,14 @@
                         <form:errors path="title" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
-                <div class="control-group">
+                <div class="control-group required">
                     <label class="control-label" for="firstname">First Name:</label>
                     <div class="controls">
                         <form:input path="firstName" id="firstname"/>
                         <form:errors path="firstName" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
-                <div class="control-group">
+                <div class="control-group required">
                     <label class="control-label" for="lastname">Last Name:</label>
                     <div class="controls">
                         <form:input path="lastName" id="lastname"/>
@@ -138,18 +143,18 @@
                     <label class="control-label" for="organisation">Organisation:</label>
                     <div class="controls">
                         <form:input path="organisation" id="organisation"/>
+                        <c:if test="${dataSpaceEnabled}">
                         <div class="help-inline">
                             <div class="help-popover" title="Organisation">
                                 <p>Please give the name of the organisation in full.</p>
-                                <c:if test="${dataSpaceEnabled}">
                                 <p>This field is used when project metadata are syndicated to UQ DataSpace and ANDS.</p>
-                                </c:if>
                             </div>
                         </div>
+                        </c:if>
                         <form:errors path="organisation" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
-                <div class="control-group">
+                <div class="control-group required">
                     <label class="control-label" for="email">Email:</label>
                     <div class="controls">
                         <form:input path="email" id="email"/>
@@ -173,7 +178,7 @@
                     </div>
                 </div>
                 <c:if test="${not empty recaptchaHtml}">
-                <div class="control-group">
+                <div class="control-group required">
                     <label class="control-label" for="recaptcha_response_field">Verification:</label>
                     <div class="controls">
                         ${recaptchaHtml}
