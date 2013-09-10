@@ -23,6 +23,8 @@ public class ContentSettingsController {
         binder.setAllowedFields(
             "homeText",
             "aboutText",
+            "peopleText",
+            "publicationsText",
             "contactText",
             "customJs"
         );

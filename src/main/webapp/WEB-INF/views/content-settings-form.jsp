@@ -35,6 +35,20 @@
                 </div>
             </div>
             <div class="control-group">
+                <h2>People text</h2>
+                <div class="controls">
+                    <form:errors path="peopleText" element="div" cssClass="alert alert-error"/>
+                    <form:textarea path="peopleText" id="peopleText" cssClass="oztrack-ckeditor"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <h2>Publications text</h2>
+                <div class="controls">
+                    <form:errors path="publicationsText" element="div" cssClass="alert alert-error"/>
+                    <form:textarea path="publicationsText" id="publicationsText" cssClass="oztrack-ckeditor"/>
+                </div>
+            </div>
+            <div class="control-group">
                 <h2>Contact text</h2>
                 <div class="controls">
                     <form:errors path="contactText" element="div" cssClass="alert alert-error"/>

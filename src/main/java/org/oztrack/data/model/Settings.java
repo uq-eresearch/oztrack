@@ -22,6 +22,12 @@ public class Settings {
     private String aboutText;
 
     @Column(columnDefinition="TEXT")
+    private String peopleText;
+
+    @Column(columnDefinition="TEXT")
+    private String publicationsText;
+
+    @Column(columnDefinition="TEXT")
     private String contactText;
 
     @Column(columnDefinition="TEXT")
@@ -49,6 +55,22 @@ public class Settings {
 
     public void setAboutText(String aboutText) {
         this.aboutText = aboutText;
+    }
+
+    public String getPeopleText() {
+        return peopleText;
+    }
+
+    public void setPeopleText(String peopleText) {
+        this.peopleText = peopleText;
+    }
+
+    public String getPublicationsText() {
+        return publicationsText;
+    }
+
+    public void setPublicationsText(String publicationsText) {
+        this.publicationsText = publicationsText;
     }
 
     public String getContactText() {
