@@ -23,7 +23,7 @@
         &rsaquo; <span class="active">Environmental layers</span>
     </jsp:attribute>
     <jsp:body>
-        <h1>Environmental layer credits</h1>
+        <h1>Environmental layers</h1>
         <ul class="icons">
             <li class="layer">
                 <a href="https://developers.google.com/maps/documentation/javascript/maptypes">Google Satellite</a>,
