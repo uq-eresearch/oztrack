@@ -93,6 +93,6 @@ exportHtml += '</div>';
 $('#' + ${childIdJsExpr}).append(exportHtml);
 <c:if test="${project.crosses180}">
 if (analysis.result.type === 'HOME_RANGE') {
-    initHelpPopover($('#' + ${helpPopoverIdJsExpr}));
+    OzTrack.initHelpPopover($('#' + ${helpPopoverIdJsExpr}));
 }
 </c:if>

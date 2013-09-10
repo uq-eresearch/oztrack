@@ -21,7 +21,7 @@
         <li class="publish-project"><a href="${pageContext.request.contextPath}/projects/${project.id}/publish">Publish project</a></li>
         </c:if>
         <c:if test="${empty project.dataSpaceURI}">
-        <li class="delete-project"><a href="javascript:void(deleteEntity('${pageContext.request.contextPath}/projects/${project.id}', '${pageContext.request.contextPath}/projects', 'Are you sure you want to delete this project?'));">Delete project</a></li>
+        <li class="delete-project"><a href="javascript:void(OzTrack.deleteEntity('${pageContext.request.contextPath}/projects/${project.id}', '${pageContext.request.contextPath}/projects', 'Are you sure you want to delete this project?'));">Delete project</a></li>
         </c:if>
         </sec:authorize>
 <c:if test="${itemsOnly == null || itemsOnly == false}">

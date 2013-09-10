@@ -18,28 +18,41 @@
         });
         return params;
     };
-}(window.OzTrack = window.OzTrack || {}));
 
-function deleteEntity(url, destUrl, message) {
-    if (!confirm(message)) {
-        return;
-    }
-    var loadingOverlay = $('<div class="loadingOverlay">').appendTo($('body'));
-    $.ajax({
-        url: url,
-        type: 'POST',
-        data: {
-            '_method': 'DELETE'
-        },
-        error: function(xhr, textStatus, errorThrown) {
-            loadingOverlay.remove();
-            alert('Error processing delete');
-        },
-        success: function (data,textStatus, jqXHR) {
-            window.location = destUrl;
+    OzTrack.deleteEntity = function(url, destUrl, message) {
+        if (!confirm(message)) {
+            return;
         }
-    });
-}
+        var loadingOverlay = $('<div class="loadingOverlay">').appendTo($('body'));
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: {
+                '_method': 'DELETE'
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                loadingOverlay.remove();
+                alert('Error processing delete');
+            },
+            success: function (data,textStatus, jqXHR) {
+                window.location = destUrl;
+            }
+        });
+    };
+
+    OzTrack.initHelpPopover = function(helpPopover) {
+        $('<a class="help-popover-icon" href="javascript:void(0);">')
+            .insertBefore(helpPopover)
+            .popover({
+                container: 'body',
+                placement: 'right',
+                trigger: 'click',
+                html: true,
+                title: helpPopover.attr('title'),
+                content: helpPopover.html()
+            });
+    };
+}(window.OzTrack = window.OzTrack || {}));
 
 $.datepicker.setDefaults({
     dateFormat: 'yy-mm-dd',
@@ -70,24 +83,12 @@ $(document).ready(function() {
             $(altField).val('');
         }
     });
-});
 
-function initHelpPopover(helpPopover) {
-    $('<a class="help-popover-icon" href="javascript:void(0);">')
-        .insertBefore(helpPopover)
-        .popover({
-            container: 'body',
-            placement: 'right',
-            trigger: 'click',
-            html: true,
-            title: helpPopover.attr('title'),
-            content: helpPopover.html()
-        });
-}
-$(document).ready(function() {
-    $('.help-popover').each(function() {initHelpPopover($(this));});
+    $('.help-popover').each(function() {OzTrack.initHelpPopover($(this));});
+
     $('.control-group.required').find('label:first').append($('<i class="required-marker">*</i>'));
 });
+
 $(document).click(function(e) {
     // Hide popovers unless: clicking on one, because it might contain interactive elements;
     if ($(e.target).closest('.popover').length !== 0) {

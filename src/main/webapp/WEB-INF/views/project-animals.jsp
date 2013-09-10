@@ -55,7 +55,7 @@
                             <span style="padding-left: 10px; font-style: italic;">
                                 <a href="${pageContext.request.contextPath}/animals/${animal.id}/edit"><img src="${pageContext.request.contextPath}/img/page_white_edit.png" /></a>
                                 <c:if test="${empty animal.positionFixes}">
-                                <a href="javascript:void(0);" onclick="deleteEntity(
+                                <a href="javascript:void(0);" onclick="OzTrack.deleteEntity(
                                     '${pageContext.request.contextPath}/animals/${animal.id}',
                                     '${pageContext.request.contextPath}/projects/${project.id}/animals',
                                     'Are you sure you want to delete this animal?'

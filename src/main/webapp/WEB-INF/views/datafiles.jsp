@@ -69,7 +69,7 @@
                         </td>
                         <td><c:out value="${not empty dataFile.status ? dataFile.status : 'UNKNOWN'}"/></td>
                         <td>
-                            <a href="javascript:void(0);" onclick="deleteEntity(
+                            <a href="javascript:void(0);" onclick="OzTrack.deleteEntity(
                                 '${pageContext.request.contextPath}/datafiles/${dataFile.id}',
                                 '${pageContext.request.contextPath}/projects/${dataFile.project.id}/datafiles',
                                 'Are you sure you want to delete this data file?'

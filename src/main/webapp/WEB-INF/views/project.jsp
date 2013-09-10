@@ -193,7 +193,7 @@
                         .css('padding', '1px 2px')
                         .click(function(e) {
                             e.preventDefault();
-                            deleteEntity(
+                            OzTrack.deleteEntity(
                                 projectImage.imageUrl,
                                 '${pageContext.request.contextPath}/projects/${project.id}',
                                 'Are you sure you want to delete this image?'

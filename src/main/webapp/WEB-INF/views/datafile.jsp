@@ -61,7 +61,7 @@
                 <li id="dataFileActionsView" class="view-file"><a href="${pageContext.request.contextPath}/datafiles/${dataFile.id}">View data file</a></li>
                 <li id="dataActionsCreateFile" class="create-file"><a href="${pageContext.request.contextPath}/projects/${dataFile.project.id}/datafiles/new">Upload data file</a></li>
                 <li class="view-files"><a href="${pageContext.request.contextPath}/projects/${dataFile.project.id}/datafiles">View data files</a></li>
-                <li class="delete-file"><a href="javascript:void(deleteEntity('${pageContext.request.contextPath}/datafiles/${dataFile.id}', '${pageContext.request.contextPath}/projects/${dataFile.project.id}/datafiles', 'Are you sure you want to delete this data file?'));">Delete data file</a></li>
+                <li class="delete-file"><a href="javascript:void(OzTrack.deleteEntity('${pageContext.request.contextPath}/datafiles/${dataFile.id}', '${pageContext.request.contextPath}/projects/${dataFile.project.id}/datafiles', 'Are you sure you want to delete this data file?'));">Delete data file</a></li>
             </ul>
         </div>
         </sec:authorize>

@@ -49,7 +49,7 @@
                     </td>
                     <td>
                         <a href="${pageContext.request.contextPath}/settings/srs/${srs.id}/edit"><img src="${pageContext.request.contextPath}/img/page_white_edit.png" /></a>
-                        <a href="javascript:void(deleteEntity(
+                        <a href="javascript:void(OzTrack.deleteEntity(
                             '${pageContext.request.contextPath}/settings/srs/${srs.id}',
                             '${pageContext.request.contextPath}/settings/srs', 'Are you sure you want to delete this spatial reference system?'
                             ));"><img src="${pageContext.request.contextPath}/img/page_white_delete.png" /></a>
