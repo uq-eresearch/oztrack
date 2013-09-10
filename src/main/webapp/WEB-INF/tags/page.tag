@@ -122,7 +122,11 @@
         <a target="_blank" href="http://itee.uq.edu.au/~eresearch/"><img src="${pageContext.request.contextPath}/img/uq_logo.png" width="140px" height="40px"/></a>
     </div>
     <div id="copyright">
-        &copy; 2011 The University of Queensland
+        &copy; 2011-2013 The University of Queensland
+    </div>
+    <div id="site-licence">
+        All site content, except where otherwise noted, is licensed under a
+        <a rel="license" target="_blank" href="http://creativecommons.org/licenses/by/3.0/au/">Creative Commons Attribution license</a>.
     </div>
 </div>
 </c:if>
