@@ -23,7 +23,16 @@ import org.springframework.web.servlet.View;
 // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#ListRecords
 @Controller
 public class OaiPmhListIdentifiersOrListRecordsController extends OaiPmhController {
-    @RequestMapping(value="/oai-pmh", method=RequestMethod.GET, params={"verb=ListIdentifiers", "verb=ListRecords"})
+    @RequestMapping(value="/oai-pmh", method=RequestMethod.GET, params={"verb=ListIdentifiers"})
+    public View handleListIdentifiersRequest(HttpServletRequest request, HttpServletResponse response) throws OaiPmhException {
+        return handleRequest(request, response);
+    }
+
+    @RequestMapping(value="/oai-pmh", method=RequestMethod.GET, params={"verb=ListRecords"})
+    public View handleListRecordsRequest(HttpServletRequest request, HttpServletResponse response) throws OaiPmhException {
+        return handleRequest(request, response);
+    }
+
     public View handleRequest(HttpServletRequest request, HttpServletResponse response) throws OaiPmhException {
         super.preHandleRequest(request, response);
 
@@ -96,6 +105,6 @@ public class OaiPmhListIdentifiersOrListRecordsController extends OaiPmhControll
         // TODO: Query for records matching from/until/set parameters
         // TODO: Check for noRecordsMatch error (combination of from/until/set results no records)
 
-        return new OaiPmhListIdentifiersOrListRecordsView(verb);
+        return new OaiPmhListIdentifiersOrListRecordsView(verb, metadataPrefix);
     }
 }

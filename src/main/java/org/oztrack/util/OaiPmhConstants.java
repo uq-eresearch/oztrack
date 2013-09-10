@@ -15,6 +15,11 @@ public class OaiPmhConstants {
         "http://www.openarchives.org/OAI/2.0/",
         "http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd"
     );
+    public static OaiPmhNamespace DC = new OaiPmhNamespace(
+        "dc",
+        "http://purl.org/dc/elements/1.1/",
+        "http://dublincore.org/schemas/xmls/simpledc20021212.xsd"
+    );
     public static OaiPmhMetadataFormat OAI_DC = new OaiPmhMetadataFormat(
         "oai_dc",
         "http://www.openarchives.org/OAI/2.0/oai_dc/",

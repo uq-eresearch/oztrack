@@ -33,7 +33,8 @@ public abstract class OaiPmhController {
 
         // Return badVerb error code if verb argument is repeated.
         // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#ErrorConditions
-        if (request.getParameterValues("verb").length > 1) {
+        String[] verbArguments = request.getParameterValues("verb");
+        if ((verbArguments != null) && (verbArguments.length > 1)) {
             throw new OaiPmhException("badVerb", "verb argument is repeated.");
         }
 

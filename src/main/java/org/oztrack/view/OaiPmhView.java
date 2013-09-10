@@ -78,4 +78,10 @@ public abstract class OaiPmhView extends AbstractView {
         out.writeCharacters(text);
         out.writeEndElement();
     }
+
+    protected static void writeSimpleElement(XMLStreamWriter out, String namespaceURI, String localName, String text) throws XMLStreamException {
+        out.writeStartElement(namespaceURI, localName);
+        out.writeCharacters(text);
+        out.writeEndElement();
+    }
 }
