@@ -1,9 +1,11 @@
 package org.oztrack.view;
 
+import static org.oztrack.util.OaiPmhConstants.DC;
+import static org.oztrack.util.OaiPmhConstants.OAI_DC;
+import static org.oztrack.util.OaiPmhConstants.XSI;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
-import org.oztrack.util.OaiPmhConstants;
 
 // Implements ListIdentifiers and ListRecords verb response formats
 // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#ListIdentifiers
@@ -20,7 +22,7 @@ public class OaiPmhListIdentifiersOrListRecordsView extends OaiPmhView {
     @Override
     protected void writeMainElement(XMLStreamWriter out) throws XMLStreamException {
         out.writeStartElement(verb);
-        if (metadataPrefix.equals(OaiPmhConstants.OAI_DC.nsPrefix)) {
+        if (metadataPrefix.equals(OAI_DC.nsPrefix)) {
             writeOaiDcRepositoryRecordElement(out);
         }
         out.writeEndElement();
@@ -41,19 +43,19 @@ public class OaiPmhListIdentifiersOrListRecordsView extends OaiPmhView {
         out.writeEndElement();
         if (verb.equals("ListRecords")) {
             out.writeStartElement("metadata");
-            out.writeStartElement(OaiPmhConstants.OAI_DC.nsPrefix, "dc", OaiPmhConstants.OAI_DC.nsUri);
-            out.setPrefix(OaiPmhConstants.OAI_DC.nsPrefix, OaiPmhConstants.OAI_DC.nsUri);
-            out.writeNamespace(OaiPmhConstants.OAI_DC.nsPrefix, OaiPmhConstants.OAI_DC.nsUri);
-            out.setPrefix(OaiPmhConstants.DC.nsPrefix, OaiPmhConstants.DC.nsUri);
-            out.writeNamespace(OaiPmhConstants.DC.nsPrefix, OaiPmhConstants.DC.nsUri);
-            out.writeAttribute(OaiPmhConstants.XSI.nsUri, "schemaLocation", OaiPmhConstants.OAI_DC.nsUri + " " + OaiPmhConstants.OAI_DC.xsdUri);
-            writeSimpleElement(out, OaiPmhConstants.DC.nsUri, "title", oztrackRepositoryTitle);
-            writeSimpleElement(out, OaiPmhConstants.DC.nsUri, "description", oztrackRepositoryDescription);
-            writeSimpleElement(out, OaiPmhConstants.DC.nsUri, "creator", oztrackRepositoryCreator);
-            writeSimpleElement(out, OaiPmhConstants.DC.nsUri, "date", oztrackRepositoryStartDate);
-            writeSimpleElement(out, OaiPmhConstants.DC.nsUri, "type", "Service");
-            writeSimpleElement(out, OaiPmhConstants.DC.nsUri, "identifier", oztrackRepositoryIdentifier);
-            writeSimpleElement(out, OaiPmhConstants.DC.nsUri, "language", "english");
+            out.writeStartElement(OAI_DC.nsPrefix, "dc", OAI_DC.nsUri);
+            out.setPrefix(OAI_DC.nsPrefix, OAI_DC.nsUri);
+            out.writeNamespace(OAI_DC.nsPrefix, OAI_DC.nsUri);
+            out.setPrefix(DC.nsPrefix, DC.nsUri);
+            out.writeNamespace(DC.nsPrefix, DC.nsUri);
+            out.writeAttribute(XSI.nsUri, "schemaLocation", OAI_DC.nsUri + " " + OAI_DC.xsdUri);
+            writeSimpleElement(out, DC.nsUri, "title", oztrackRepositoryTitle);
+            writeSimpleElement(out, DC.nsUri, "description", oztrackRepositoryDescription);
+            writeSimpleElement(out, DC.nsUri, "creator", oztrackRepositoryCreator);
+            writeSimpleElement(out, DC.nsUri, "date", oztrackRepositoryStartDate);
+            writeSimpleElement(out, DC.nsUri, "type", "Service");
+            writeSimpleElement(out, DC.nsUri, "identifier", oztrackRepositoryIdentifier);
+            writeSimpleElement(out, DC.nsUri, "language", "english");
             out.writeEndElement();
             out.writeEndElement();
         }
