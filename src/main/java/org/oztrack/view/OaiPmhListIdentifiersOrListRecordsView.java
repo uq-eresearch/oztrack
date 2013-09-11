@@ -121,7 +121,7 @@ public class OaiPmhListIdentifiersOrListRecordsView extends OaiPmhView {
             out.writeStartElement(RIF_CS.nsUri, "identifier");
             out.writeAttribute("type", "uri");
             out.writeCharacters(oztrackRepositoryIdentifier);
-            out.writeEndElement();
+            out.writeEndElement(); // identifier
 
             out.writeStartElement(RIF_CS.nsUri, "name");
             out.writeAttribute("type", "primary");
