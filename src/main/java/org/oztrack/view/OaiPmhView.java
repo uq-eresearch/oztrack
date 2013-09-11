@@ -13,6 +13,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.oztrack.util.OaiPmhConstants;
+import org.oztrack.util.StaxUtil;
 import org.springframework.web.servlet.view.AbstractView;
 
 // Implements the OAI-PMH XML Response Format
@@ -41,7 +42,7 @@ public abstract class OaiPmhView extends AbstractView {
         SimpleDateFormat utcDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         utcDateTimeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         String responseDate = utcDateTimeFormat.format(new Date());
-        writeSimpleElement(out, "responseDate", responseDate);
+        StaxUtil.writeSimpleElement(out, "responseDate", responseDate);
 
         // The second child of the root element is the request element, indicating the protocol request that generated this response.
         // The content of the request element must always be the base URL of the protocol request;
@@ -72,16 +73,4 @@ public abstract class OaiPmhView extends AbstractView {
     }
 
     protected abstract void writeMainElement(XMLStreamWriter out) throws XMLStreamException;
-
-    protected static void writeSimpleElement(XMLStreamWriter out, String localName, String text) throws XMLStreamException {
-        out.writeStartElement(localName);
-        out.writeCharacters(text);
-        out.writeEndElement();
-    }
-
-    protected static void writeSimpleElement(XMLStreamWriter out, String namespaceURI, String localName, String text) throws XMLStreamException {
-        out.writeStartElement(namespaceURI, localName);
-        out.writeCharacters(text);
-        out.writeEndElement();
-    }
 }

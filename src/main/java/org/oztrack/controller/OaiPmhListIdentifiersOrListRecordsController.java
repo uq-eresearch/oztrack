@@ -90,11 +90,13 @@ public class OaiPmhListIdentifiersOrListRecordsController extends OaiPmhControll
         // Return cannotDisseminateFormat error code if metadataPrefix argument not supported by the repository.
         // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#ListIdentifiers
         // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#ListRecords
-        HashSet<String> supportedMetadataPrefixes = new HashSet<String>();
-        for (OaiPmhMetadataFormat metadataFormat : OaiPmhConstants.supportedMetadataFormats) {
-            supportedMetadataPrefixes.add(metadataFormat.nsPrefix);
+        OaiPmhMetadataFormat metadataFormat = null;
+        for (OaiPmhMetadataFormat supportedMetadataFormat : OaiPmhConstants.supportedMetadataFormats) {
+            if (supportedMetadataFormat.nsPrefix.equals(metadataPrefix)) {
+                metadataFormat = supportedMetadataFormat;
+            }
         }
-        if (!supportedMetadataPrefixes.contains(metadataPrefix)) {
+        if (metadataFormat == null) {
             throw new OaiPmhException("cannotDisseminateFormat", "metadataPrefix argument is not supported by the repository.");
         }
 
@@ -105,6 +107,6 @@ public class OaiPmhListIdentifiersOrListRecordsController extends OaiPmhControll
         // TODO: Query for records matching from/until/set parameters
         // TODO: Check for noRecordsMatch error (combination of from/until/set results no records)
 
-        return new OaiPmhListIdentifiersOrListRecordsView(verb, metadataPrefix);
+        return new OaiPmhListIdentifiersOrListRecordsView(verb, metadataFormat);
     }
 }
