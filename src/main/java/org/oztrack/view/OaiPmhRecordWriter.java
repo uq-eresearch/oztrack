@@ -11,41 +11,32 @@ import javax.xml.stream.XMLStreamWriter;
 import org.oztrack.util.OaiPmhMetadataFormat;
 import org.oztrack.util.StaxUtil;
 
-public class OaiPmhRepositoryRecordWriter {
-    private static final String oztrackRifCsGroup = "OzTrack";
-    private static final String oztrackRepositoryTitle = "OzTrack";
-    private static final String oztrackRepositoryDescription =
-        "OzTrack is a free-to-use web-based platform for analysing and visualising " +
-        "individual-based animal location data. Upload your tracking data now.";
-    private static final String oztrackRepositoryCreator = "The University of Queensland";
-    private static final String oztrackRepositoryCreateDate = "2011-11-02T03:47:24Z";
-    private static final String oztrackRepositoryUpdateDate = oztrackRepositoryCreateDate;
-    private static final String oztrackRepositoryIdentifier = "http://oztrack.org/id/repository";
-    private static final String oztrackRepositoryUrl = "http://oztrack.org/";
-
-    private final boolean headerOnly;
+public class OaiPmhRecordWriter {
+    private final XMLStreamWriter out;
     private final OaiPmhMetadataFormat metadataFormat;
+    private final boolean headerOnly;
 
-    public OaiPmhRepositoryRecordWriter(boolean headerOnly, OaiPmhMetadataFormat metadataFormat) {
-        this.headerOnly = headerOnly;
+    public OaiPmhRecordWriter(XMLStreamWriter out, OaiPmhMetadataFormat metadataFormat, boolean headerOnly) {
+        this.out = out;
         this.metadataFormat = metadataFormat;
+        this.headerOnly = headerOnly;
     }
 
-    public void write(XMLStreamWriter out) throws XMLStreamException {
+    public void write(OaiPmhRecord record) throws XMLStreamException {
         out.writeStartElement("record");
 
         out.writeStartElement("header");
-        StaxUtil.writeSimpleElement(out, "identifier", oztrackRepositoryIdentifier);
-        StaxUtil.writeSimpleElement(out, "datestamp", oztrackRepositoryUpdateDate);
+        StaxUtil.writeSimpleElement(out, "identifier", record.getIdentifier());
+        StaxUtil.writeSimpleElement(out, "datestamp", record.getUpdateDate());
         out.writeEndElement(); // header
 
         if (!headerOnly) {
             out.writeStartElement("metadata");
             if (metadataFormat.equals(OAI_DC)) {
-                writeOaiDcRepositoryMetadataElement(out);
+                writeOaiDcRepositoryMetadataElement(record);
             }
             else if (metadataFormat.equals(RIF_CS)) {
-                writeRifCsRepositoryMetadataElement(out);
+                writeRifCsRepositoryMetadataElement(record);
             }
             out.writeEndElement(); // metadata
         }
@@ -53,7 +44,7 @@ public class OaiPmhRepositoryRecordWriter {
         out.writeEndElement(); // record
     }
 
-    private void writeOaiDcRepositoryMetadataElement(XMLStreamWriter out) throws XMLStreamException {
+    private void writeOaiDcRepositoryMetadataElement(OaiPmhRecord record) throws XMLStreamException {
         out.writeStartElement(OAI_DC.nsPrefix, "dc", OAI_DC.nsUri);
 
         // Every metadata part must include xmlns attributes for its metadata formats.
@@ -70,19 +61,18 @@ public class OaiPmhRepositoryRecordWriter {
         out.writeNamespace(XSI.nsPrefix, XSI.nsUri);
         out.writeAttribute(XSI.nsUri, "schemaLocation", OAI_DC.nsUri + " " + OAI_DC.xsdUri);
 
-        StaxUtil.writeSimpleElement(out, DC.nsUri, "title", oztrackRepositoryTitle);
-        StaxUtil.writeSimpleElement(out, DC.nsUri, "description", oztrackRepositoryDescription);
-        StaxUtil.writeSimpleElement(out, DC.nsUri, "creator", oztrackRepositoryCreator);
-        StaxUtil.writeSimpleElement(out, DC.nsUri, "created", oztrackRepositoryCreateDate);
-        StaxUtil.writeSimpleElement(out, DC.nsUri, "date", oztrackRepositoryUpdateDate);
-        StaxUtil.writeSimpleElement(out, DC.nsUri, "type", "Service");
-        StaxUtil.writeSimpleElement(out, DC.nsUri, "identifier", oztrackRepositoryIdentifier);
-        StaxUtil.writeSimpleElement(out, DC.nsUri, "language", "english");
+        StaxUtil.writeSimpleElement(out, DC.nsUri, "title", record.getTitle());
+        StaxUtil.writeSimpleElement(out, DC.nsUri, "description", record.getDescription());
+        StaxUtil.writeSimpleElement(out, DC.nsUri, "creator", record.getCreator());
+        StaxUtil.writeSimpleElement(out, DC.nsUri, "created", record.getCreateDate());
+        StaxUtil.writeSimpleElement(out, DC.nsUri, "date", record.getUpdateDate());
+        StaxUtil.writeSimpleElement(out, DC.nsUri, "type", record.getDcType());
+        StaxUtil.writeSimpleElement(out, DC.nsUri, "identifier", record.getIdentifier());
 
         out.writeEndElement(); // dc
     }
 
-    private void writeRifCsRepositoryMetadataElement(XMLStreamWriter out) throws XMLStreamException {
+    private void writeRifCsRepositoryMetadataElement(OaiPmhRecord record) throws XMLStreamException {
         out.writeStartElement(RIF_CS.nsPrefix, "registryObjects", RIF_CS.nsUri);
 
         // Every metadata part must include xmlns attributes for its metadata formats.
@@ -98,39 +88,39 @@ public class OaiPmhRepositoryRecordWriter {
         out.writeAttribute(XSI.nsUri, "schemaLocation", RIF_CS.nsUri + " " + RIF_CS.xsdUri);
 
         out.writeStartElement(RIF_CS.nsUri, "registryObject");
-        out.writeAttribute("group", oztrackRifCsGroup);
+        out.writeAttribute("group", record.getRifCsGroup());
 
         // TODO: Do not use the identifier for an object as the key for a metadata record describing
         // that object - the metadata record needs its own unique separate identifier.
         // http://ands.org.au/guides/cpguide/cpgidentifiers.html
-        StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "key", oztrackRepositoryIdentifier);
+        StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "key", record.getIdentifier());
 
         out.writeStartElement(RIF_CS.nsUri, "originatingSource");
         out.writeAttribute("type", "authoritative");
-        out.writeCharacters(oztrackRepositoryUrl);
+        out.writeCharacters(record.getUrl());
         out.writeEndElement(); // originatingSource
 
-        out.writeStartElement(RIF_CS.nsUri, "service");
-        out.writeAttribute("type", "report");
-        out.writeAttribute("dateModified", oztrackRepositoryUpdateDate);
+        out.writeStartElement(RIF_CS.nsUri, record.getRifCsObjectElemName());
+        out.writeAttribute("type", record.getRifCsObjectTypeAttrValue());
+        out.writeAttribute("dateModified", record.getUpdateDate());
 
         out.writeStartElement(RIF_CS.nsUri, "identifier");
         out.writeAttribute("type", "uri");
-        out.writeCharacters(oztrackRepositoryIdentifier);
+        out.writeCharacters(record.getIdentifier());
         out.writeEndElement(); // identifier
 
         out.writeStartElement(RIF_CS.nsUri, "name");
         out.writeAttribute("type", "primary");
-        StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "namePart", oztrackRepositoryTitle);
+        StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "namePart", record.getTitle());
         out.writeEndElement(); // name
 
-        StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "description", oztrackRepositoryDescription);
+        StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "description", record.getDescription());
 
         out.writeStartElement(RIF_CS.nsUri, "location");
         out.writeStartElement(RIF_CS.nsUri, "address");
         out.writeStartElement(RIF_CS.nsUri, "electronic");
         out.writeAttribute("type", "url");
-        StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "value", oztrackRepositoryUrl);
+        StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "value", record.getUrl());
         out.writeEndElement(); // electronic
         out.writeEndElement(); // address
         out.writeEndElement(); // location
@@ -138,7 +128,7 @@ public class OaiPmhRepositoryRecordWriter {
         out.writeStartElement(RIF_CS.nsUri, "existenceDates");
         out.writeStartElement(RIF_CS.nsUri, "startDate");
         out.writeAttribute("dateFormat", "W3CDTF");
-        out.writeCharacters(oztrackRepositoryCreateDate);
+        out.writeCharacters(record.getCreateDate());
         out.writeEndElement(); // startDate
         out.writeEndElement(); //existenceDates
 
