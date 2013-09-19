@@ -23,21 +23,23 @@ public class OaiPmhRepositoryRecordWriter {
     private static final String oztrackRepositoryIdentifier = "http://oztrack.org/id/repository";
     private static final String oztrackRepositoryUrl = "http://oztrack.org/";
 
-    private final String verb;
+    private final boolean headerOnly;
     private final OaiPmhMetadataFormat metadataFormat;
 
-    public OaiPmhRepositoryRecordWriter(String verb, OaiPmhMetadataFormat metadataFormat) {
-        this.verb = verb;
+    public OaiPmhRepositoryRecordWriter(boolean headerOnly, OaiPmhMetadataFormat metadataFormat) {
+        this.headerOnly = headerOnly;
         this.metadataFormat = metadataFormat;
     }
 
     public void write(XMLStreamWriter out) throws XMLStreamException {
         out.writeStartElement("record");
+
         out.writeStartElement("header");
         StaxUtil.writeSimpleElement(out, "identifier", oztrackRepositoryIdentifier);
         StaxUtil.writeSimpleElement(out, "datestamp", oztrackRepositoryUpdateDate);
         out.writeEndElement(); // header
-        if (verb.equals("ListRecords")) {
+
+        if (!headerOnly) {
             out.writeStartElement("metadata");
             if (metadataFormat.equals(OAI_DC)) {
                 writeOaiDcRepositoryMetadataElement(out);
@@ -47,6 +49,7 @@ public class OaiPmhRepositoryRecordWriter {
             }
             out.writeEndElement(); // metadata
         }
+
         out.writeEndElement(); // record
     }
 

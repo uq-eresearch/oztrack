@@ -20,8 +20,7 @@ public class OaiPmhListIdentifiersOrListRecordsView extends OaiPmhView {
     @Override
     protected void writeMainElement(XMLStreamWriter out) throws XMLStreamException {
         out.writeStartElement(verb);
-        OaiPmhRepositoryRecordWriter repositoryRecordWriter = new OaiPmhRepositoryRecordWriter(verb, metadataFormat);
-        repositoryRecordWriter.write(out);
+        new OaiPmhRepositoryRecordWriter(verb.equals("ListRecords"), metadataFormat).write(out);
         out.writeEndElement(); // verb
     }
 }
