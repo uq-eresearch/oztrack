@@ -12,7 +12,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.oztrack.util.OaiPmhMetadataFormat;
-import org.oztrack.util.StaxUtil;
 
 public class OaiPmhRecordWriter {
     private SimpleDateFormat utcDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -45,7 +44,9 @@ public class OaiPmhRecordWriter {
         // A unique identifier unambiguously identifies an item within a repository.
         // The format of the unique identifier must correspond to that of the URI syntax.
         // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#UniqueIdentifier
-        StaxUtil.writeSimpleElement(out, "identifier", record.getOaiPmhIdentifier());
+        out.writeStartElement("identifier");
+        out.writeCharacters(record.getOaiPmhIdentifier());
+        out.writeEndElement(); // identifier
 
         // Date of creation, modification or deletion of the record for the purpose of selective harvesting.
         // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#Record
@@ -54,7 +55,9 @@ public class OaiPmhRecordWriter {
             (record.getCreateDate() != null) ? record.getCreateDate() :
             null;
         if (datestampDate != null) {
-            StaxUtil.writeSimpleElement(out, "datestamp", utcDateTimeFormat.format(datestampDate));
+            out.writeStartElement("datestamp");
+            out.writeCharacters(utcDateTimeFormat.format(datestampDate));
+            out.writeEndElement(); // datestamp
         }
 
         out.writeEndElement(); // header
@@ -91,25 +94,39 @@ public class OaiPmhRecordWriter {
         out.writeAttribute(XSI.nsUri, "schemaLocation", OAI_DC.nsUri + " " + OAI_DC.xsdUri);
 
         if (record.getObjectIdentifier() != null) {
-            StaxUtil.writeSimpleElement(out, DC.nsUri, "identifier", record.getObjectIdentifier());
+            out.writeStartElement(DC.nsUri, "identifier");
+            out.writeCharacters(record.getObjectIdentifier());
+            out.writeEndElement(); // identifier
         }
         if (record.getTitle() != null) {
-            StaxUtil.writeSimpleElement(out, DC.nsUri, "title", record.getTitle());
+            out.writeStartElement(DC.nsUri, "title");
+            out.writeCharacters(record.getTitle());
+            out.writeEndElement(); // title
         }
         if (record.getDescription() != null) {
-            StaxUtil.writeSimpleElement(out, DC.nsUri, "description", record.getDescription());
+            out.writeStartElement(DC.nsUri, "description");
+            out.writeCharacters(record.getDescription());
+            out.writeEndElement(); // description
         }
         if (record.getCreator() != null) {
-            StaxUtil.writeSimpleElement(out, DC.nsUri, "creator", record.getCreator());
+            out.writeStartElement(DC.nsUri, "creator");
+            out.writeCharacters(record.getCreator());
+            out.writeEndElement(); // creator
         }
         if (record.getCreateDate() != null) {
-            StaxUtil.writeSimpleElement(out, DC.nsUri, "created", utcDateTimeFormat.format(record.getCreateDate()));
+            out.writeStartElement(DC.nsUri, "created");
+            out.writeCharacters(utcDateTimeFormat.format(record.getCreateDate()));
+            out.writeEndElement(); // created
         }
         if (record.getUpdateDate() != null) {
-            StaxUtil.writeSimpleElement(out, DC.nsUri, "date", utcDateTimeFormat.format(record.getUpdateDate()));
+            out.writeStartElement(DC.nsUri, "date");
+            out.writeCharacters(utcDateTimeFormat.format(record.getUpdateDate()));
+            out.writeEndElement(); // date
         }
         if (record.getDcType() != null) {
-            StaxUtil.writeSimpleElement(out, DC.nsUri, "type", record.getDcType());
+            out.writeStartElement(DC.nsUri, "type");
+            out.writeCharacters(record.getDcType());
+            out.writeEndElement(); // type
         }
         if (record.getIsPartOfObjectIdentifier() != null) {
             out.writeStartElement(DC.nsUri, "relation");
@@ -162,7 +179,9 @@ public class OaiPmhRecordWriter {
         // that object - the metadata record needs its own unique separate identifier.
         // http://ands.org.au/guides/cpguide/cpgidentifiers.html
         if (record.getObjectIdentifier() != null) {
-            StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "key", record.getObjectIdentifier());
+            out.writeStartElement(RIF_CS.nsUri, "key");
+            out.writeCharacters(record.getObjectIdentifier());
+            out.writeEndElement(); // key
         }
 
         if (record.getUrl() != null) {
@@ -192,12 +211,16 @@ public class OaiPmhRecordWriter {
         if (record.getTitle() != null) {
             out.writeStartElement(RIF_CS.nsUri, "name");
             out.writeAttribute("type", "primary");
-            StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "namePart", record.getTitle());
+            out.writeStartElement(RIF_CS.nsUri, "namePart");
+            out.writeCharacters(record.getTitle());
+            out.writeEndElement(); // namePart
             out.writeEndElement(); // name
         }
 
         if (record.getDescription() != null) {
-            StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "description", record.getDescription());
+            out.writeStartElement(RIF_CS.nsUri, "description");
+            out.writeCharacters(record.getDescription());
+            out.writeEndElement(); // description
         }
 
         if (record.getUrl() != null) {
@@ -205,7 +228,9 @@ public class OaiPmhRecordWriter {
             out.writeStartElement(RIF_CS.nsUri, "address");
             out.writeStartElement(RIF_CS.nsUri, "electronic");
             out.writeAttribute("type", "url");
-            StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "value", record.getUrl());
+            out.writeStartElement(RIF_CS.nsUri, "value");
+            out.writeCharacters(record.getUrl());
+            out.writeEndElement(); // value
             out.writeEndElement(); // electronic
             out.writeEndElement(); // address
             out.writeEndElement(); // location

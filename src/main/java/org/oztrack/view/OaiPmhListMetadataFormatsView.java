@@ -5,7 +5,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.oztrack.util.OaiPmhConstants;
 import org.oztrack.util.OaiPmhMetadataFormat;
-import org.oztrack.util.StaxUtil;
 
 // Implements ListMetadataFormats verb response format
 // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#ListMetadataFormats
@@ -15,10 +14,20 @@ public class OaiPmhListMetadataFormatsView extends OaiPmhView {
         out.writeStartElement("ListMetadataFormats");
         for (OaiPmhMetadataFormat metadataFormat : OaiPmhConstants.supportedMetadataFormats) {
             out.writeStartElement("metadataFormat");
-            StaxUtil.writeSimpleElement(out, "metadataPrefix", metadataFormat.nsPrefix);
-            StaxUtil.writeSimpleElement(out, "schema", metadataFormat.xsdUri);
-            StaxUtil.writeSimpleElement(out, "metadataNamespace", metadataFormat.nsUri);
-            out.writeEndElement();
+
+            out.writeStartElement("metadataPrefix");
+            out.writeCharacters(metadataFormat.nsPrefix);
+            out.writeEndElement(); // metadataPrefix
+
+            out.writeStartElement("schema");
+            out.writeCharacters(metadataFormat.xsdUri);
+            out.writeEndElement(); // schema
+
+            out.writeStartElement("metadataNamespace");
+            out.writeCharacters(metadataFormat.nsUri);
+            out.writeEndElement(); // metadataNamespace
+
+            out.writeEndElement(); // metadataFormat
         }
         out.writeEndElement();
     }
