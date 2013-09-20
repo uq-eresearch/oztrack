@@ -5,6 +5,9 @@ import static org.oztrack.util.OaiPmhConstants.OAI_DC;
 import static org.oztrack.util.OaiPmhConstants.RIF_CS;
 import static org.oztrack.util.OaiPmhConstants.XSI;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -12,6 +15,8 @@ import org.oztrack.util.OaiPmhMetadataFormat;
 import org.oztrack.util.StaxUtil;
 
 public class OaiPmhRecordWriter {
+    private SimpleDateFormat utcDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
     private final XMLStreamWriter out;
     private final OaiPmhMetadataFormat metadataFormat;
     private final boolean headerOnly;
@@ -32,8 +37,22 @@ public class OaiPmhRecordWriter {
         out.writeStartElement("record");
 
         out.writeStartElement("header");
+
+        // A unique identifier unambiguously identifies an item within a repository.
+        // The format of the unique identifier must correspond to that of the URI syntax.
+        // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#UniqueIdentifier
         StaxUtil.writeSimpleElement(out, "identifier", record.getIdentifier());
-        StaxUtil.writeSimpleElement(out, "datestamp", record.getUpdateDate());
+
+        // Date of creation, modification or deletion of the record for the purpose of selective harvesting.
+        // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#Record
+        Date datestampDate =
+            (record.getUpdateDate() != null) ? record.getUpdateDate() :
+            (record.getCreateDate() != null) ? record.getCreateDate() :
+            null;
+        if (datestampDate != null) {
+            StaxUtil.writeSimpleElement(out, "datestamp", utcDateTimeFormat.format(datestampDate));
+        }
+
         out.writeEndElement(); // header
 
         if (!headerOnly) {
@@ -67,18 +86,42 @@ public class OaiPmhRecordWriter {
         out.writeNamespace(XSI.nsPrefix, XSI.nsUri);
         out.writeAttribute(XSI.nsUri, "schemaLocation", OAI_DC.nsUri + " " + OAI_DC.xsdUri);
 
-        StaxUtil.writeSimpleElement(out, DC.nsUri, "title", record.getTitle());
-        StaxUtil.writeSimpleElement(out, DC.nsUri, "description", record.getDescription());
-        StaxUtil.writeSimpleElement(out, DC.nsUri, "creator", record.getCreator());
-        StaxUtil.writeSimpleElement(out, DC.nsUri, "created", record.getCreateDate());
-        StaxUtil.writeSimpleElement(out, DC.nsUri, "date", record.getUpdateDate());
-        StaxUtil.writeSimpleElement(out, DC.nsUri, "type", record.getDcType());
-        StaxUtil.writeSimpleElement(out, DC.nsUri, "identifier", record.getIdentifier());
+        if (record.getTitle() != null) {
+            StaxUtil.writeSimpleElement(out, DC.nsUri, "title", record.getTitle());
+        }
+        if (record.getDescription() != null) {
+            StaxUtil.writeSimpleElement(out, DC.nsUri, "description", record.getDescription());
+        }
+        if (record.getCreator() != null) {
+            StaxUtil.writeSimpleElement(out, DC.nsUri, "creator", record.getCreator());
+        }
+        if (record.getCreateDate() != null) {
+            StaxUtil.writeSimpleElement(out, DC.nsUri, "created", utcDateTimeFormat.format(record.getCreateDate()));
+        }
+        if (record.getUpdateDate() != null) {
+            StaxUtil.writeSimpleElement(out, DC.nsUri, "date", utcDateTimeFormat.format(record.getUpdateDate()));
+        }
+        if (record.getDcType() != null) {
+            StaxUtil.writeSimpleElement(out, DC.nsUri, "type", record.getDcType());
+        }
+        if (record.getIdentifier() != null) {
+            StaxUtil.writeSimpleElement(out, DC.nsUri, "identifier", record.getIdentifier());
+        }
+        if (record.getParentObjectIdentifier() != null) {
+            out.writeStartElement(DC.nsUri, "relation");
+            out.writeAttribute("type", "isPartOf");
+            out.writeCharacters(record.getParentObjectIdentifier());
+            out.writeEndElement(); // relation
+        }
 
         out.writeEndElement(); // dc
     }
 
     private void writeRifCsRepositoryMetadataElement(OaiPmhRecord record) throws XMLStreamException {
+        if (record.getRifCsObjectElemName() == null) {
+            throw new IllegalArgumentException("Record must have RIF-CS object element name");
+        }
+
         out.writeStartElement(RIF_CS.nsPrefix, "registryObjects", RIF_CS.nsUri);
 
         // Every metadata part must include xmlns attributes for its metadata formats.
@@ -94,49 +137,83 @@ public class OaiPmhRecordWriter {
         out.writeAttribute(XSI.nsUri, "schemaLocation", RIF_CS.nsUri + " " + RIF_CS.xsdUri);
 
         out.writeStartElement(RIF_CS.nsUri, "registryObject");
-        out.writeAttribute("group", record.getRifCsGroup());
+
+        if (record.getRifCsGroup() != null) {
+            out.writeAttribute("group", record.getRifCsGroup());
+        }
 
         // TODO: Do not use the identifier for an object as the key for a metadata record describing
         // that object - the metadata record needs its own unique separate identifier.
         // http://ands.org.au/guides/cpguide/cpgidentifiers.html
-        StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "key", record.getIdentifier());
+        if (record.getIdentifier() != null) {
+            StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "key", record.getIdentifier());
+        }
 
-        out.writeStartElement(RIF_CS.nsUri, "originatingSource");
-        out.writeAttribute("type", "authoritative");
-        out.writeCharacters(record.getUrl());
-        out.writeEndElement(); // originatingSource
+        if (record.getUrl() != null) {
+            out.writeStartElement(RIF_CS.nsUri, "originatingSource");
+            out.writeAttribute("type", "authoritative");
+            out.writeCharacters(record.getUrl());
+            out.writeEndElement(); // originatingSource
+        }
 
         out.writeStartElement(RIF_CS.nsUri, record.getRifCsObjectElemName());
-        out.writeAttribute("type", record.getRifCsObjectTypeAttr());
-        out.writeAttribute("dateModified", record.getUpdateDate());
 
-        out.writeStartElement(RIF_CS.nsUri, "identifier");
-        out.writeAttribute("type", "uri");
-        out.writeCharacters(record.getIdentifier());
-        out.writeEndElement(); // identifier
+        if (record.getRifCsObjectTypeAttr() != null) {
+            out.writeAttribute("type", record.getRifCsObjectTypeAttr());
+        }
 
-        out.writeStartElement(RIF_CS.nsUri, "name");
-        out.writeAttribute("type", "primary");
-        StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "namePart", record.getTitle());
-        out.writeEndElement(); // name
+        if (record.getUpdateDate() != null) {
+            out.writeAttribute("dateModified", utcDateTimeFormat.format(record.getUpdateDate()));
+        }
 
-        StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "description", record.getDescription());
+        if (record.getIdentifier() != null) {
+            out.writeStartElement(RIF_CS.nsUri, "identifier");
+            out.writeAttribute("type", "uri");
+            out.writeCharacters(record.getIdentifier());
+            out.writeEndElement(); // identifier
+        }
 
-        out.writeStartElement(RIF_CS.nsUri, "location");
-        out.writeStartElement(RIF_CS.nsUri, "address");
-        out.writeStartElement(RIF_CS.nsUri, "electronic");
-        out.writeAttribute("type", "url");
-        StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "value", record.getUrl());
-        out.writeEndElement(); // electronic
-        out.writeEndElement(); // address
-        out.writeEndElement(); // location
+        if (record.getTitle() != null) {
+            out.writeStartElement(RIF_CS.nsUri, "name");
+            out.writeAttribute("type", "primary");
+            StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "namePart", record.getTitle());
+            out.writeEndElement(); // name
+        }
 
-        out.writeStartElement(RIF_CS.nsUri, "existenceDates");
-        out.writeStartElement(RIF_CS.nsUri, "startDate");
-        out.writeAttribute("dateFormat", "W3CDTF");
-        out.writeCharacters(record.getCreateDate());
-        out.writeEndElement(); // startDate
-        out.writeEndElement(); //existenceDates
+        if (record.getDescription() != null) {
+            StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "description", record.getDescription());
+        }
+
+        if (record.getUrl() != null) {
+            out.writeStartElement(RIF_CS.nsUri, "location");
+            out.writeStartElement(RIF_CS.nsUri, "address");
+            out.writeStartElement(RIF_CS.nsUri, "electronic");
+            out.writeAttribute("type", "url");
+            StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "value", record.getUrl());
+            out.writeEndElement(); // electronic
+            out.writeEndElement(); // address
+            out.writeEndElement(); // location
+        }
+
+        if (record.getCreateDate() != null) {
+            out.writeStartElement(RIF_CS.nsUri, "existenceDates");
+            out.writeStartElement(RIF_CS.nsUri, "startDate");
+            out.writeAttribute("dateFormat", "W3CDTF");
+            out.writeCharacters(utcDateTimeFormat.format(record.getCreateDate()));
+            out.writeEndElement(); // startDate
+            out.writeEndElement(); //existenceDates
+        }
+
+        if (record.getParentObjectIdentifier() != null) {
+            out.writeStartElement(RIF_CS.nsUri, "relatedObject");
+            out.writeStartElement(RIF_CS.nsUri, "key");
+            out.writeCharacters(record.getParentObjectIdentifier());
+            out.writeEndElement(); // key
+            out.writeStartElement(RIF_CS.nsUri, "relation");
+            out.writeAttribute("type", "isPartOf");
+            out.writeEndElement(); // relation
+            out.writeEndElement(); // relatedObject
+        }
 
         out.writeEndElement(); // service
 

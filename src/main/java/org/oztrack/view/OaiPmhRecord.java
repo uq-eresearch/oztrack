@@ -1,13 +1,16 @@
 package org.oztrack.view;
 
+import java.util.Date;
+
 public class OaiPmhRecord {
     private String identifier;
+    private String parentObjectIdentifier;
     private String title;
     private String description;
     private String url;
     private String creator;
-    private String createDate;
-    private String updateDate;
+    private Date createDate;
+    private Date updateDate;
     private String dcType;
     private String rifCsObjectElemName;
     private String rifCsObjectTypeAttr;
@@ -19,6 +22,12 @@ public class OaiPmhRecord {
     }
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
+    }
+    public String getParentObjectIdentifier() {
+        return parentObjectIdentifier;
+    }
+    public void setParentObjectIdentifier(String parentObjectIdentifier) {
+        this.parentObjectIdentifier = parentObjectIdentifier;
     }
     public String getTitle() {
         return title;
@@ -44,16 +53,16 @@ public class OaiPmhRecord {
     public void setCreator(String creator) {
         this.creator = creator;
     }
-    public String getCreateDate() {
+    public Date getCreateDate() {
         return createDate;
     }
-    public void setCreateDate(String createDate) {
+    public void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
-    public String getUpdateDate() {
+    public Date getUpdateDate() {
         return updateDate;
     }
-    public void setUpdateDate(String updateDate) {
+    public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
     }
     public String getDcType() {
