@@ -34,5 +34,4 @@ public class OaiPmhConstants {
         OAI_DC,
         RIF_CS
     ));
-
 }
