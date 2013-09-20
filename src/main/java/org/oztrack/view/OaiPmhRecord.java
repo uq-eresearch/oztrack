@@ -3,7 +3,8 @@ package org.oztrack.view;
 import java.util.Date;
 
 public class OaiPmhRecord {
-    private String identifier;
+    private String oaiPmhIdentifier;
+    private String objectIdentifier;
     private String parentObjectIdentifier;
     private String title;
     private String description;
@@ -17,11 +18,17 @@ public class OaiPmhRecord {
     private String rifCsGroup;
     public OaiPmhRecord() {
     }
-    public String getIdentifier() {
-        return identifier;
+    public String getOaiPmhIdentifier() {
+        return oaiPmhIdentifier;
     }
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
+    public void setOaiPmhIdentifier(String oaiPmhIdentifier) {
+        this.oaiPmhIdentifier = oaiPmhIdentifier;
+    }
+    public String getObjectIdentifier() {
+        return objectIdentifier;
+    }
+    public void setObjectIdentifier(String objectIdentifier) {
+        this.objectIdentifier = objectIdentifier;
     }
     public String getParentObjectIdentifier() {
         return parentObjectIdentifier;

@@ -10,13 +10,13 @@ import java.util.List;
 public class OaiPmhRepositoryRecordProducer implements OaiPmhRecordProducer {
     private SimpleDateFormat utcDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
-    private final String repositoryIdentifier;
+    private final String repositoryObjectIdentifier;
     private final Date oztrackCreateDate;
     private final Date oztrackUpdateDate;
     private final String rifCsGroup;
 
     public OaiPmhRepositoryRecordProducer() {
-        this.repositoryIdentifier = "http://oztrack.org/id/repository";
+        this.repositoryObjectIdentifier = "http://oztrack.org/id/repository";
         try {
             this.oztrackCreateDate = utcDateTimeFormat.parse("2011-11-02T03:47:24Z");
         }
@@ -38,7 +38,8 @@ public class OaiPmhRepositoryRecordProducer implements OaiPmhRecordProducer {
 
     private OaiPmhRecord createRepositoryRecord() {
         OaiPmhRecord repositoryRecord = new OaiPmhRecord();
-        repositoryRecord.setIdentifier(repositoryIdentifier);
+        repositoryRecord.setOaiPmhIdentifier("oai:oztrack.org:repository");
+        repositoryRecord.setObjectIdentifier(repositoryObjectIdentifier);
         repositoryRecord.setTitle(rifCsGroup);
         repositoryRecord.setDescription(
             "OzTrack is a free-to-use web-based platform for analysing and " +
@@ -48,7 +49,7 @@ public class OaiPmhRepositoryRecordProducer implements OaiPmhRecordProducer {
         repositoryRecord.setCreator("The University of Queensland");
         repositoryRecord.setCreateDate(oztrackCreateDate);
         repositoryRecord.setUpdateDate(oztrackUpdateDate);
-        repositoryRecord.setDcType("Service");
+        repositoryRecord.setDcType("service");
         repositoryRecord.setRifCsObjectElemName("service");
         repositoryRecord.setRifCsObjectTypeAttr("report");
         repositoryRecord.setRifCsGroup(rifCsGroup);
@@ -57,15 +58,16 @@ public class OaiPmhRepositoryRecordProducer implements OaiPmhRecordProducer {
 
     private OaiPmhRecord createOaiPmhFeedRecord() {
         OaiPmhRecord repositoryRecord = new OaiPmhRecord();
-        repositoryRecord.setIdentifier("http://oztrack.org/id/oai-pmh");
-        repositoryRecord.setParentObjectIdentifier(repositoryIdentifier);
+        repositoryRecord.setOaiPmhIdentifier("oai:oztrack.org:oai-pmh");
+        repositoryRecord.setObjectIdentifier("http://oztrack.org/id/oai-pmh");
+        repositoryRecord.setParentObjectIdentifier(repositoryObjectIdentifier);
         repositoryRecord.setTitle(rifCsGroup);
         repositoryRecord.setDescription("OzTrack OAI-PMH feed.");
         repositoryRecord.setUrl("http://oztrack.org/oai-pmh");
         repositoryRecord.setCreator("The University of Queensland");
         repositoryRecord.setCreateDate(oztrackCreateDate);
         repositoryRecord.setUpdateDate(oztrackUpdateDate);
-        repositoryRecord.setDcType("Service");
+        repositoryRecord.setDcType("service");
         repositoryRecord.setRifCsObjectElemName("service");
         repositoryRecord.setRifCsObjectTypeAttr("harvest-oaipmh");
         repositoryRecord.setRifCsGroup(rifCsGroup);

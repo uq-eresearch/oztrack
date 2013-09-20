@@ -34,6 +34,10 @@ public class OaiPmhRecordWriter {
     }
 
     private void write(OaiPmhRecord record) throws XMLStreamException {
+        if (record.getOaiPmhIdentifier() == null) {
+            throw new IllegalArgumentException("Record must have OAI-PMH identifier");
+        }
+
         out.writeStartElement("record");
 
         out.writeStartElement("header");
@@ -41,7 +45,7 @@ public class OaiPmhRecordWriter {
         // A unique identifier unambiguously identifies an item within a repository.
         // The format of the unique identifier must correspond to that of the URI syntax.
         // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#UniqueIdentifier
-        StaxUtil.writeSimpleElement(out, "identifier", record.getIdentifier());
+        StaxUtil.writeSimpleElement(out, "identifier", record.getOaiPmhIdentifier());
 
         // Date of creation, modification or deletion of the record for the purpose of selective harvesting.
         // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#Record
@@ -86,6 +90,9 @@ public class OaiPmhRecordWriter {
         out.writeNamespace(XSI.nsPrefix, XSI.nsUri);
         out.writeAttribute(XSI.nsUri, "schemaLocation", OAI_DC.nsUri + " " + OAI_DC.xsdUri);
 
+        if (record.getObjectIdentifier() != null) {
+            StaxUtil.writeSimpleElement(out, DC.nsUri, "identifier", record.getObjectIdentifier());
+        }
         if (record.getTitle() != null) {
             StaxUtil.writeSimpleElement(out, DC.nsUri, "title", record.getTitle());
         }
@@ -103,9 +110,6 @@ public class OaiPmhRecordWriter {
         }
         if (record.getDcType() != null) {
             StaxUtil.writeSimpleElement(out, DC.nsUri, "type", record.getDcType());
-        }
-        if (record.getIdentifier() != null) {
-            StaxUtil.writeSimpleElement(out, DC.nsUri, "identifier", record.getIdentifier());
         }
         if (record.getParentObjectIdentifier() != null) {
             out.writeStartElement(DC.nsUri, "relation");
@@ -142,11 +146,11 @@ public class OaiPmhRecordWriter {
             out.writeAttribute("group", record.getRifCsGroup());
         }
 
-        // TODO: Do not use the identifier for an object as the key for a metadata record describing
+        // Do not use the identifier for an object as the key for a metadata record describing
         // that object - the metadata record needs its own unique separate identifier.
         // http://ands.org.au/guides/cpguide/cpgidentifiers.html
-        if (record.getIdentifier() != null) {
-            StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "key", record.getIdentifier());
+        if (record.getObjectIdentifier() != null) {
+            StaxUtil.writeSimpleElement(out, RIF_CS.nsUri, "key", record.getObjectIdentifier());
         }
 
         if (record.getUrl() != null) {
@@ -166,10 +170,10 @@ public class OaiPmhRecordWriter {
             out.writeAttribute("dateModified", utcDateTimeFormat.format(record.getUpdateDate()));
         }
 
-        if (record.getIdentifier() != null) {
+        if (record.getObjectIdentifier() != null) {
             out.writeStartElement(RIF_CS.nsUri, "identifier");
             out.writeAttribute("type", "uri");
-            out.writeCharacters(record.getIdentifier());
+            out.writeCharacters(record.getObjectIdentifier());
             out.writeEndElement(); // identifier
         }
 
