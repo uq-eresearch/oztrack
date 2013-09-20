@@ -5,7 +5,7 @@ import org.oztrack.app.OzTrackApplication;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
-import org.oztrack.util.OzTrackUtil;
+import org.oztrack.util.OzTrackUtils;
 import org.oztrack.validator.UserFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -55,7 +55,7 @@ public class UserController {
         @RequestParam(value="aafId", required=false) String aafIdParam,
         @RequestParam(value="update", defaultValue="false") boolean update
     ) {
-        User currentUser = OzTrackUtil.getCurrentUser(SecurityContextHolder.getContext().getAuthentication(), userDao);
+        User currentUser = OzTrackUtils.getCurrentUser(SecurityContextHolder.getContext().getAuthentication(), userDao);
         if (currentUser == null || !currentUser.equals(user)) {
             return "redirect:/login";
         }
@@ -77,7 +77,7 @@ public class UserController {
         @RequestParam(value="password2", required=false) String newPassword2,
         BindingResult bindingResult
     ) throws Exception {
-        User currentUser = OzTrackUtil.getCurrentUser(SecurityContextHolder.getContext().getAuthentication(), userDao);
+        User currentUser = OzTrackUtils.getCurrentUser(SecurityContextHolder.getContext().getAuthentication(), userDao);
         if (currentUser == null || !currentUser.equals(user)) {
             return "redirect:/login";
         }

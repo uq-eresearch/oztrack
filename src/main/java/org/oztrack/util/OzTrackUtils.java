@@ -21,7 +21,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 
-public class OzTrackUtil {
+public class OzTrackUtils {
     public static void removeDuplicateLinesFromFile(String fileName) throws FileProcessingException {
         File inFile = new File(fileName);
         File outFile = new File(fileName + ".dedup");

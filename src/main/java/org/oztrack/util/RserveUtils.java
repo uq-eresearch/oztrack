@@ -17,7 +17,7 @@ import org.rosuda.REngine.Rserve.RConnection;
  */
 class StreamHog extends Thread {
 
-    private static Logger logger = Logger.getLogger(OzTrackUtil.class);
+    private static Logger logger = Logger.getLogger(OzTrackUtils.class);
     InputStream is;
     boolean capture;
     String installPath;

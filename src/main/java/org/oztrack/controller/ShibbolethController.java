@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
-import org.oztrack.util.OzTrackUtil;
+import org.oztrack.util.OzTrackUtils;
 import org.oztrack.util.UriUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -84,7 +84,7 @@ public class ShibbolethController {
         }
 
         // Existing user already logged in and providing a new AAF ID
-        User currentUser = OzTrackUtil.getCurrentUser(SecurityContextHolder.getContext().getAuthentication(), userDao);
+        User currentUser = OzTrackUtils.getCurrentUser(SecurityContextHolder.getContext().getAuthentication(), userDao);
         if (currentUser != null) {
             String enc = (response.getCharacterEncoding() != null) ? response.getCharacterEncoding() : null;
             return "redirect:/users/" + currentUser.getId() + "/edit?aafId=" + URLEncoder.encode(aafId, enc);

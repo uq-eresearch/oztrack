@@ -1,6 +1,6 @@
 package org.oztrack.data.loader;
 
-import static org.oztrack.util.OzTrackUtil.removeDuplicateLinesFromFile;
+import static org.oztrack.util.OzTrackUtils.removeDuplicateLinesFromFile;
 
 import java.util.ArrayList;
 import java.util.List;
