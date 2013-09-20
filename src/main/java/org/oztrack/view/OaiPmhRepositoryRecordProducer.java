@@ -11,12 +11,16 @@ public class OaiPmhRepositoryRecordProducer implements OaiPmhRecordProducer {
     private SimpleDateFormat utcDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     private final String repositoryServiceObjectIdentifier;
+    private final String oaiPmhServiceObjectIdentifier;
+    private final String repositoryCollectionObjectIdentifier;
     private final Date oztrackCreateDate;
     private final Date oztrackUpdateDate;
     private final String rifCsGroup;
 
     public OaiPmhRepositoryRecordProducer() {
         this.repositoryServiceObjectIdentifier = "http://oztrack.org/id/service";
+        this.oaiPmhServiceObjectIdentifier = "http://oztrack.org/id/oai-pmh";
+        this.repositoryCollectionObjectIdentifier = "http://oztrack.org/id/collection";
         try {
             this.oztrackCreateDate = utcDateTimeFormat.parse("2011-11-02T03:47:24Z");
         }
@@ -31,7 +35,8 @@ public class OaiPmhRepositoryRecordProducer implements OaiPmhRecordProducer {
     public Iterator<OaiPmhRecord> iterator() {
         List<OaiPmhRecord> records = Arrays.asList(
             createRepositoryServiceRecord(),
-            createOaiPmhServiceRecord()
+            createOaiPmhServiceRecord(),
+            createRepositoryCollectionRecord()
         );
         return records.iterator();
     }
@@ -40,7 +45,7 @@ public class OaiPmhRepositoryRecordProducer implements OaiPmhRecordProducer {
         OaiPmhRecord record = new OaiPmhRecord();
         record.setOaiPmhIdentifier("oai:oztrack.org:service");
         record.setObjectIdentifier(repositoryServiceObjectIdentifier);
-        record.setTitle(rifCsGroup);
+        record.setTitle("OzTrack");
         record.setDescription(
             "OzTrack is a free-to-use web-based platform for analysing and " +
             "visualising individual-based animal location data."
@@ -59,10 +64,14 @@ public class OaiPmhRepositoryRecordProducer implements OaiPmhRecordProducer {
     private OaiPmhRecord createOaiPmhServiceRecord() {
         OaiPmhRecord record = new OaiPmhRecord();
         record.setOaiPmhIdentifier("oai:oztrack.org:oai-pmh");
-        record.setObjectIdentifier("http://oztrack.org/id/oai-pmh");
-        record.setParentObjectIdentifier(repositoryServiceObjectIdentifier);
-        record.setTitle(rifCsGroup);
-        record.setDescription("OzTrack OAI-PMH feed.");
+        record.setObjectIdentifier(oaiPmhServiceObjectIdentifier);
+        record.setIsPartOfObjectIdentifier(repositoryServiceObjectIdentifier);
+        record.setTitle("OzTrack OAI-PMH Feed");
+        record.setDescription(
+            "OzTrack is a free-to-use web-based platform for analysing and " +
+            "visualising individual-based animal location data. " +
+            "This feed allows records to be harvested using the OAI-PMH protocol."
+        );
         record.setUrl("http://oztrack.org/oai-pmh");
         record.setCreator("The University of Queensland");
         record.setCreateDate(oztrackCreateDate);
@@ -70,6 +79,29 @@ public class OaiPmhRepositoryRecordProducer implements OaiPmhRecordProducer {
         record.setDcType("service");
         record.setRifCsObjectElemName("service");
         record.setRifCsObjectTypeAttr("harvest-oaipmh");
+        record.setRifCsGroup(rifCsGroup);
+        return record;
+    }
+
+    private OaiPmhRecord createRepositoryCollectionRecord() {
+        OaiPmhRecord record = new OaiPmhRecord();
+        record.setOaiPmhIdentifier("oai:oztrack.org:collection");
+        record.setObjectIdentifier(repositoryCollectionObjectIdentifier);
+        record.setIsPresentedByObjectIdentifier(repositoryServiceObjectIdentifier);
+        record.setTitle("OzTrack Data Collection");
+        record.setDescription(
+            "OzTrack is a free-to-use web-based platform for analysing and " +
+            "visualising individual-based animal location data. " +
+            "This data collection contains animal tracking projects uploaded " +
+            "by users of OzTrack."
+        );
+        record.setUrl("http://oztrack.org/");
+        record.setCreator("The University of Queensland");
+        record.setCreateDate(oztrackCreateDate);
+        record.setUpdateDate(oztrackUpdateDate);
+        record.setDcType("collection");
+        record.setRifCsObjectElemName("collection");
+        record.setRifCsObjectTypeAttr("repository");
         record.setRifCsGroup(rifCsGroup);
         return record;
     }

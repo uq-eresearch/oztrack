@@ -111,10 +111,16 @@ public class OaiPmhRecordWriter {
         if (record.getDcType() != null) {
             StaxUtil.writeSimpleElement(out, DC.nsUri, "type", record.getDcType());
         }
-        if (record.getParentObjectIdentifier() != null) {
+        if (record.getIsPartOfObjectIdentifier() != null) {
             out.writeStartElement(DC.nsUri, "relation");
             out.writeAttribute("type", "isPartOf");
-            out.writeCharacters(record.getParentObjectIdentifier());
+            out.writeCharacters(record.getIsPartOfObjectIdentifier());
+            out.writeEndElement(); // relation
+        }
+        if (record.getIsPresentedByObjectIdentifier() != null) {
+            out.writeStartElement(DC.nsUri, "relation");
+            out.writeAttribute("type", "isPresentedBy");
+            out.writeCharacters(record.getIsPresentedByObjectIdentifier());
             out.writeEndElement(); // relation
         }
 
@@ -208,13 +214,23 @@ public class OaiPmhRecordWriter {
             out.writeEndElement(); //existenceDates
         }
 
-        if (record.getParentObjectIdentifier() != null) {
+        if (record.getIsPartOfObjectIdentifier() != null) {
             out.writeStartElement(RIF_CS.nsUri, "relatedObject");
             out.writeStartElement(RIF_CS.nsUri, "key");
-            out.writeCharacters(record.getParentObjectIdentifier());
+            out.writeCharacters(record.getIsPartOfObjectIdentifier());
             out.writeEndElement(); // key
             out.writeStartElement(RIF_CS.nsUri, "relation");
             out.writeAttribute("type", "isPartOf");
+            out.writeEndElement(); // relation
+            out.writeEndElement(); // relatedObject
+        }
+        if (record.getIsPresentedByObjectIdentifier() != null) {
+            out.writeStartElement(RIF_CS.nsUri, "relatedObject");
+            out.writeStartElement(RIF_CS.nsUri, "key");
+            out.writeCharacters(record.getIsPresentedByObjectIdentifier());
+            out.writeEndElement(); // key
+            out.writeStartElement(RIF_CS.nsUri, "relation");
+            out.writeAttribute("type", "isPresentedBy");
             out.writeEndElement(); // relation
             out.writeEndElement(); // relatedObject
         }

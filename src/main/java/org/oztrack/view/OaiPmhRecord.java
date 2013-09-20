@@ -5,7 +5,8 @@ import java.util.Date;
 public class OaiPmhRecord {
     private String oaiPmhIdentifier;
     private String objectIdentifier;
-    private String parentObjectIdentifier;
+    private String isPartOfObjectIdentifier;
+    private String isPresentedByObjectIdentifier;
     private String title;
     private String description;
     private String url;
@@ -30,11 +31,17 @@ public class OaiPmhRecord {
     public void setObjectIdentifier(String objectIdentifier) {
         this.objectIdentifier = objectIdentifier;
     }
-    public String getParentObjectIdentifier() {
-        return parentObjectIdentifier;
+    public String getIsPartOfObjectIdentifier() {
+        return isPartOfObjectIdentifier;
     }
-    public void setParentObjectIdentifier(String parentObjectIdentifier) {
-        this.parentObjectIdentifier = parentObjectIdentifier;
+    public void setIsPartOfObjectIdentifier(String isPartOfObjectIdentifier) {
+        this.isPartOfObjectIdentifier = isPartOfObjectIdentifier;
+    }
+    public String getIsPresentedByObjectIdentifier() {
+        return isPresentedByObjectIdentifier;
+    }
+    public void setIsPresentedByObjectIdentifier(String isPresentedByObjectIdentifier) {
+        this.isPresentedByObjectIdentifier = isPresentedByObjectIdentifier;
     }
     public String getTitle() {
         return title;
