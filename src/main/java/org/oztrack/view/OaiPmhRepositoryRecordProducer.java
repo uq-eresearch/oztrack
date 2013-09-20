@@ -88,6 +88,7 @@ public class OaiPmhRepositoryRecordProducer implements OaiPmhRecordProducer {
         record.setOaiPmhIdentifier("oai:oztrack.org:collection");
         record.setObjectIdentifier(repositoryCollectionObjectIdentifier);
         record.setIsPresentedByObjectIdentifier(repositoryServiceObjectIdentifier);
+        record.setIsAvailableThroughObjectIdentifier(oaiPmhServiceObjectIdentifier);
         record.setTitle("OzTrack Data Collection");
         record.setDescription(
             "OzTrack is a free-to-use web-based platform for analysing and " +

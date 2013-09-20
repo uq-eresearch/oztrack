@@ -123,6 +123,12 @@ public class OaiPmhRecordWriter {
             out.writeCharacters(record.getIsPresentedByObjectIdentifier());
             out.writeEndElement(); // relation
         }
+        if (record.getIsAvailableThroughObjectIdentifier() != null) {
+            out.writeStartElement(DC.nsUri, "relation");
+            out.writeAttribute("type", "isAvailableThrough");
+            out.writeCharacters(record.getIsAvailableThroughObjectIdentifier());
+            out.writeEndElement(); // relation
+        }
 
         out.writeEndElement(); // dc
     }
@@ -231,6 +237,16 @@ public class OaiPmhRecordWriter {
             out.writeEndElement(); // key
             out.writeStartElement(RIF_CS.nsUri, "relation");
             out.writeAttribute("type", "isPresentedBy");
+            out.writeEndElement(); // relation
+            out.writeEndElement(); // relatedObject
+        }
+        if (record.getIsAvailableThroughObjectIdentifier() != null) {
+            out.writeStartElement(RIF_CS.nsUri, "relatedObject");
+            out.writeStartElement(RIF_CS.nsUri, "key");
+            out.writeCharacters(record.getIsAvailableThroughObjectIdentifier());
+            out.writeEndElement(); // key
+            out.writeStartElement(RIF_CS.nsUri, "relation");
+            out.writeAttribute("type", "isAvailableThrough");
             out.writeEndElement(); // relation
             out.writeEndElement(); // relatedObject
         }

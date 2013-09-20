@@ -7,6 +7,7 @@ public class OaiPmhRecord {
     private String objectIdentifier;
     private String isPartOfObjectIdentifier;
     private String isPresentedByObjectIdentifier;
+    private String isAvailableThroughObjectIdentifier;
     private String title;
     private String description;
     private String url;
@@ -42,6 +43,12 @@ public class OaiPmhRecord {
     }
     public void setIsPresentedByObjectIdentifier(String isPresentedByObjectIdentifier) {
         this.isPresentedByObjectIdentifier = isPresentedByObjectIdentifier;
+    }
+    public String getIsAvailableThroughObjectIdentifier() {
+        return isAvailableThroughObjectIdentifier;
+    }
+    public void setIsAvailableThroughObjectIdentifier(String isAvailableThroughObjectIdentifier) {
+        this.isAvailableThroughObjectIdentifier = isAvailableThroughObjectIdentifier;
     }
     public String getTitle() {
         return title;
