@@ -20,20 +20,9 @@ public class OaiPmhListIdentifiersOrListRecordsView extends OaiPmhView {
     @Override
     protected void writeMainElement(XMLStreamWriter out) throws XMLStreamException {
         out.writeStartElement(verb);
-        OaiPmhRecord repositoryRecord = new OaiPmhRecord(
-            "http://oztrack.org/id/repository",
-            "OzTrack",
-            "OzTrack is a free-to-use web-based platform for analysing and visualising individual-based animal location data.",
-            "http://oztrack.org/",
-            "The University of Queensland",
-            "2011-11-02T03:47:24Z",
-            "2011-11-02T03:47:24Z",
-            "Service",
-            "service",
-            "report",
-            "OzTrack"
-        );
-        new OaiPmhRecordWriter(out, metadataFormat, verb.equals("ListIdentifiers")).write(repositoryRecord);
+        boolean headerOnly = verb.equals("ListIdentifiers");
+        OaiPmhRecordWriter writer = new OaiPmhRecordWriter(out, metadataFormat, headerOnly);
+        writer.write(new OaiPmhRepositoryRecordProducer());
         out.writeEndElement(); // verb
     }
 }

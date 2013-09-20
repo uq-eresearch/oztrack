@@ -22,7 +22,13 @@ public class OaiPmhRecordWriter {
         this.headerOnly = headerOnly;
     }
 
-    public void write(OaiPmhRecord record) throws XMLStreamException {
+    public void write(OaiPmhRecordProducer producer) throws XMLStreamException {
+        for (OaiPmhRecord record : producer) {
+            write(record);
+        }
+    }
+
+    private void write(OaiPmhRecord record) throws XMLStreamException {
         out.writeStartElement("record");
 
         out.writeStartElement("header");
@@ -101,7 +107,7 @@ public class OaiPmhRecordWriter {
         out.writeEndElement(); // originatingSource
 
         out.writeStartElement(RIF_CS.nsUri, record.getRifCsObjectElemName());
-        out.writeAttribute("type", record.getRifCsObjectTypeAttrValue());
+        out.writeAttribute("type", record.getRifCsObjectTypeAttr());
         out.writeAttribute("dateModified", record.getUpdateDate());
 
         out.writeStartElement(RIF_CS.nsUri, "identifier");
