@@ -11,6 +11,8 @@ import java.util.Date;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.oztrack.data.access.OaiPmhRecordProducer;
+import org.oztrack.data.model.types.OaiPmhRecord;
 import org.oztrack.util.OaiPmhMetadataFormat;
 
 public class OaiPmhRecordWriter {

@@ -1,4 +1,4 @@
-package org.oztrack.view;
+package org.oztrack.data.access.impl;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -6,6 +6,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+import org.oztrack.data.access.OaiPmhRecordProducer;
+import org.oztrack.data.model.types.OaiPmhRecord;
 
 public class OaiPmhRepositoryRecordProducer implements OaiPmhRecordProducer {
     private SimpleDateFormat utcDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");

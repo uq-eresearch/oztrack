@@ -1,4 +1,4 @@
-package org.oztrack.view;
+package org.oztrack.data.model.types;
 
 import java.util.Date;
 

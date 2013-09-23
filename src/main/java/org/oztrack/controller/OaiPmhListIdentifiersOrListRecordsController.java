@@ -9,6 +9,7 @@ import java.util.HashSet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.oztrack.data.access.impl.OaiPmhRepositoryRecordProducer;
 import org.oztrack.util.OaiPmhConstants;
 import org.oztrack.util.OaiPmhException;
 import org.oztrack.util.OaiPmhMetadataFormat;
@@ -106,7 +107,8 @@ public class OaiPmhListIdentifiersOrListRecordsController extends OaiPmhControll
         // TODO: Check for noSetHierarchy (repository does not support sets)
         // TODO: Query for records matching from/until/set parameters
         // TODO: Check for noRecordsMatch error (combination of from/until/set results no records)
+        OaiPmhRepositoryRecordProducer recordProducer = new OaiPmhRepositoryRecordProducer();
 
-        return new OaiPmhListIdentifiersOrListRecordsView(verb, metadataFormat);
+        return new OaiPmhListIdentifiersOrListRecordsView(verb, metadataFormat, recordProducer);
     }
 }
