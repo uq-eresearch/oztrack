@@ -13,17 +13,24 @@ import org.oztrack.data.model.types.OaiPmhRecord;
 public class OaiPmhRepositoryRecordProducer implements OaiPmhRecordProducer {
     private SimpleDateFormat utcDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
-    private final String repositoryServiceObjectIdentifier;
-    private final String oaiPmhServiceObjectIdentifier;
-    private final String repositoryCollectionObjectIdentifier;
-    private final Date oztrackCreateDate;
-    private final Date oztrackUpdateDate;
+    private final String oaiPmhIdentifierPrefix;
+    private final String objectIdentifierPrefix;
     private final String rifCsGroup;
 
+    private final String repositoryServiceLocalIdentifier;
+    private final String oaiPmhServiceLocalIdentifier;
+    private final String repositoryCollectionLocalIdentifier;
+    private final Date oztrackCreateDate;
+    private final Date oztrackUpdateDate;
+
     public OaiPmhRepositoryRecordProducer() {
-        this.repositoryServiceObjectIdentifier = "http://oztrack.org/id/service";
-        this.oaiPmhServiceObjectIdentifier = "http://oztrack.org/id/oai-pmh";
-        this.repositoryCollectionObjectIdentifier = "http://oztrack.org/id/collection";
+        this.oaiPmhIdentifierPrefix = "oai:oztrack.org:";
+        this.objectIdentifierPrefix = "http://oztrack.org/id/";
+        this.rifCsGroup = "OzTrack";
+
+        this.repositoryServiceLocalIdentifier = "service";
+        this.oaiPmhServiceLocalIdentifier = "oai-pmh";
+        this.repositoryCollectionLocalIdentifier = "collection";
         try {
             this.oztrackCreateDate = utcDateTimeFormat.parse("2011-11-02T03:47:24Z");
         }
@@ -31,7 +38,6 @@ public class OaiPmhRepositoryRecordProducer implements OaiPmhRecordProducer {
             throw new RuntimeException(e);
         }
         this.oztrackUpdateDate = this.oztrackCreateDate;
-        this.rifCsGroup = "OzTrack";
     }
 
     @Override
@@ -46,8 +52,8 @@ public class OaiPmhRepositoryRecordProducer implements OaiPmhRecordProducer {
 
     private OaiPmhRecord createRepositoryServiceRecord() {
         OaiPmhRecord record = new OaiPmhRecord();
-        record.setOaiPmhIdentifier("oai:oztrack.org:service");
-        record.setObjectIdentifier(repositoryServiceObjectIdentifier);
+        record.setOaiPmhIdentifier(oaiPmhIdentifierPrefix + repositoryServiceLocalIdentifier);
+        record.setObjectIdentifier(objectIdentifierPrefix + repositoryServiceLocalIdentifier);
         record.setTitle("OzTrack");
         record.setDescription(
             "OzTrack is a free-to-use web-based platform for analysing and " +
@@ -66,9 +72,9 @@ public class OaiPmhRepositoryRecordProducer implements OaiPmhRecordProducer {
 
     private OaiPmhRecord createOaiPmhServiceRecord() {
         OaiPmhRecord record = new OaiPmhRecord();
-        record.setOaiPmhIdentifier("oai:oztrack.org:oai-pmh");
-        record.setObjectIdentifier(oaiPmhServiceObjectIdentifier);
-        record.setIsPartOfObjectIdentifier(repositoryServiceObjectIdentifier);
+        record.setOaiPmhIdentifier(oaiPmhIdentifierPrefix + oaiPmhServiceLocalIdentifier);
+        record.setObjectIdentifier(objectIdentifierPrefix + oaiPmhServiceLocalIdentifier);
+        record.setIsPartOfObjectIdentifier(objectIdentifierPrefix + repositoryServiceLocalIdentifier);
         record.setTitle("OzTrack OAI-PMH Feed");
         record.setDescription(
             "OzTrack is a free-to-use web-based platform for analysing and " +
@@ -88,10 +94,10 @@ public class OaiPmhRepositoryRecordProducer implements OaiPmhRecordProducer {
 
     private OaiPmhRecord createRepositoryCollectionRecord() {
         OaiPmhRecord record = new OaiPmhRecord();
-        record.setOaiPmhIdentifier("oai:oztrack.org:collection");
-        record.setObjectIdentifier(repositoryCollectionObjectIdentifier);
-        record.setIsPresentedByObjectIdentifier(repositoryServiceObjectIdentifier);
-        record.setIsAvailableThroughObjectIdentifier(oaiPmhServiceObjectIdentifier);
+        record.setOaiPmhIdentifier(oaiPmhIdentifierPrefix + repositoryCollectionLocalIdentifier);
+        record.setObjectIdentifier(objectIdentifierPrefix + repositoryCollectionLocalIdentifier);
+        record.setIsPresentedByObjectIdentifier(objectIdentifierPrefix + repositoryServiceLocalIdentifier);
+        record.setIsAvailableThroughObjectIdentifier(objectIdentifierPrefix + oaiPmhServiceLocalIdentifier);
         record.setTitle("OzTrack Data Collection");
         record.setDescription(
             "OzTrack is a free-to-use web-based platform for analysing and " +
