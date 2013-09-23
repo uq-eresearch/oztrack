@@ -20,8 +20,8 @@ public class OaiPmhRepositoryRecordProducer implements OaiPmhRecordProducer {
     private final String repositoryServiceLocalIdentifier;
     private final String oaiPmhServiceLocalIdentifier;
     private final String repositoryCollectionLocalIdentifier;
-    private final Date oztrackCreateDate;
-    private final Date oztrackUpdateDate;
+    private final Date repositoryCreateDate;
+    private final Date repositoryUpdateDate;
 
     public OaiPmhRepositoryRecordProducer() {
         this.oaiPmhIdentifierPrefix = "oai:oztrack.org:";
@@ -32,12 +32,12 @@ public class OaiPmhRepositoryRecordProducer implements OaiPmhRecordProducer {
         this.oaiPmhServiceLocalIdentifier = "oai-pmh";
         this.repositoryCollectionLocalIdentifier = "collection";
         try {
-            this.oztrackCreateDate = utcDateTimeFormat.parse("2011-11-02T03:47:24Z");
+            this.repositoryCreateDate = utcDateTimeFormat.parse("2011-11-02T03:47:24Z");
         }
         catch (ParseException e) {
             throw new RuntimeException(e);
         }
-        this.oztrackUpdateDate = this.oztrackCreateDate;
+        this.repositoryUpdateDate = this.repositoryCreateDate;
     }
 
     @Override
@@ -61,8 +61,8 @@ public class OaiPmhRepositoryRecordProducer implements OaiPmhRecordProducer {
         );
         record.setUrl("http://oztrack.org/");
         record.setCreator("The University of Queensland");
-        record.setCreateDate(oztrackCreateDate);
-        record.setUpdateDate(oztrackUpdateDate);
+        record.setCreateDate(repositoryCreateDate);
+        record.setUpdateDate(repositoryUpdateDate);
         record.setDcType("service");
         record.setRifCsObjectElemName("service");
         record.setRifCsObjectTypeAttr("report");
@@ -83,8 +83,8 @@ public class OaiPmhRepositoryRecordProducer implements OaiPmhRecordProducer {
         );
         record.setUrl("http://oztrack.org/oai-pmh");
         record.setCreator("The University of Queensland");
-        record.setCreateDate(oztrackCreateDate);
-        record.setUpdateDate(oztrackUpdateDate);
+        record.setCreateDate(repositoryCreateDate);
+        record.setUpdateDate(repositoryUpdateDate);
         record.setDcType("service");
         record.setRifCsObjectElemName("service");
         record.setRifCsObjectTypeAttr("harvest-oaipmh");
@@ -107,8 +107,8 @@ public class OaiPmhRepositoryRecordProducer implements OaiPmhRecordProducer {
         );
         record.setUrl("http://oztrack.org/");
         record.setCreator("The University of Queensland");
-        record.setCreateDate(oztrackCreateDate);
-        record.setUpdateDate(oztrackUpdateDate);
+        record.setCreateDate(repositoryCreateDate);
+        record.setUpdateDate(repositoryUpdateDate);
         record.setDcType("collection");
         record.setRifCsObjectElemName("collection");
         record.setRifCsObjectTypeAttr("repository");
