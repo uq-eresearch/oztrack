@@ -6,13 +6,13 @@ import javax.xml.stream.XMLStreamWriter;
 // Implements Identify verb response format
 // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#Identify
 public class OaiPmhIdentifyView extends OaiPmhView {
-    private final String repositoryName;
     private final String baseUrl;
+    private final String repositoryName;
     private final String adminEmail;
 
-    public OaiPmhIdentifyView(String repositoryName, String baseUrl, String adminEmail) {
-        this.repositoryName = repositoryName;
+    public OaiPmhIdentifyView(String baseUrl, String repositoryName, String adminEmail) {
         this.baseUrl = baseUrl;
+        this.repositoryName = repositoryName;
         this.adminEmail = adminEmail;
     }
 

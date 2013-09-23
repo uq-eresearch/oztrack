@@ -64,8 +64,23 @@
         <property name="rserveLogFile" value="${org.oztrack.conf.rserveLogFile}"/>
         <property name="rserveOomAdj" value="${org.oztrack.conf.rserveOomAdj}"/>
         <property name="oaiPmhEnabled" value="${org.oztrack.conf.oaiPmhEnabled}"/>
-        <property name="oaiPmhRepositoryName" value="${org.oztrack.conf.oaiPmhRepositoryName}"/>
-        <property name="oaiPmhAdminEmail" value="${org.oztrack.conf.oaiPmhAdminEmail}"/>
+        <property name="oaiPmhOaiPmhIdentifierPrefix" value="${org.oztrack.conf.oaiPmhOaiPmhIdentifierPrefix}"/>
+        <property name="oaiPmhObjectIdentifierPrefix" value="${org.oztrack.conf.oaiPmhObjectIdentifierPrefix}"/>
+        <property name="oaiPmhRifCsGroup" value="${org.oztrack.conf.oaiPmhRifCsGroup}"/>
+        <property name="oaiPmhRepositoryCreator" value="${org.oztrack.conf.oaiPmhRepositoryCreator}"/>
+        <property name="oaiPmhRepositoryServiceTitle" value="${org.oztrack.conf.oaiPmhRepositoryServiceTitle}"/>
+        <property name="oaiPmhRepositoryServiceDescription" value="${org.oztrack.conf.oaiPmhRepositoryServiceDescription}"/>
+        <property name="oaiPmhRepositoryServiceCreateDateString" value="${org.oztrack.conf.oaiPmhRepositoryServiceCreateDate}"/>
+        <property name="oaiPmhRepositoryServiceUpdateDateString" value="${org.oztrack.conf.oaiPmhRepositoryServiceUpdateDate}"/>
+        <property name="oaiPmhOaiPmhServiceTitle" value="${org.oztrack.conf.oaiPmhOaiPmhServiceTitle}"/>
+        <property name="oaiPmhOaiPmhServiceDescription" value="${org.oztrack.conf.oaiPmhOaiPmhServiceDescription}"/>
+        <property name="oaiPmhOaiPmhServiceCreateDateString" value="${org.oztrack.conf.oaiPmhOaiPmhServiceCreateDate}"/>
+        <property name="oaiPmhOaiPmhServiceUpdateDateString" value="${org.oztrack.conf.oaiPmhOaiPmhServiceUpdateDate}"/>
+        <property name="oaiPmhOaiPmhServiceAdminEmail" value="${org.oztrack.conf.oaiPmhOaiPmhServiceAdminEmail}"/>
+        <property name="oaiPmhRepositoryCollectionTitle" value="${org.oztrack.conf.oaiPmhRepositoryCollectionTitle}"/>
+        <property name="oaiPmhRepositoryCollectionDescription" value="${org.oztrack.conf.oaiPmhRepositoryCollectionDescription}"/>
+        <property name="oaiPmhRepositoryCollectionCreateDateString" value="${org.oztrack.conf.oaiPmhRepositoryCollectionCreateDate}"/>
+        <property name="oaiPmhRepositoryCollectionUpdateDateString" value="${org.oztrack.conf.oaiPmhRepositoryCollectionUpdateDate}"/>
     </bean>
 
     <bean id="ozTrackApplication" class="org.oztrack.app.OzTrackApplication">
