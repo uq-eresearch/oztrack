@@ -3,7 +3,7 @@ package org.oztrack.view;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.oztrack.data.access.impl.OaiPmhRepositoryRecordProducer;
+import org.oztrack.data.access.OaiPmhRecordProducer;
 import org.oztrack.util.OaiPmhMetadataFormat;
 
 // Implements ListIdentifiers and ListRecords verb response formats
@@ -12,12 +12,12 @@ import org.oztrack.util.OaiPmhMetadataFormat;
 public class OaiPmhListIdentifiersOrListRecordsView extends OaiPmhView {
     private final String verb;
     private final OaiPmhMetadataFormat metadataFormat;
-    private final OaiPmhRepositoryRecordProducer recordProducer;
+    private final OaiPmhRecordProducer recordProducer;
 
     public OaiPmhListIdentifiersOrListRecordsView(
         String verb,
         OaiPmhMetadataFormat metadataFormat,
-        OaiPmhRepositoryRecordProducer recordProducer
+        OaiPmhRecordProducer recordProducer
     ) {
         this.verb = verb;
         this.metadataFormat = metadataFormat;
