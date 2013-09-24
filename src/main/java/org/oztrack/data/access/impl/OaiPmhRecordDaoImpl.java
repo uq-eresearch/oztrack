@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.OaiPmhRecordDao;
 import org.oztrack.data.access.OaiPmhRecordProducer;
@@ -13,17 +15,25 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
+    private static final String repositoryServiceLocalIdentifier = "service";
+    private static final String oaiPmhServiceLocalIdentifier = "oai-pmh";
+    private static final String repositoryCollectionLocalIdentifier = "collection";
+
     @Autowired
     private OzTrackConfiguration configuration;
 
-    private final String repositoryServiceLocalIdentifier;
-    private final String oaiPmhServiceLocalIdentifier;
-    private final String repositoryCollectionLocalIdentifier;
+    private OaiPmhRecord repositoryServiceRecord;
+    private OaiPmhRecord oaiPmhServiceRecord;
+    private OaiPmhRecord repositoryCollectionRecord;
 
     public OaiPmhRecordDaoImpl() {
-        this.repositoryServiceLocalIdentifier = "service";
-        this.oaiPmhServiceLocalIdentifier = "oai-pmh";
-        this.repositoryCollectionLocalIdentifier = "collection";
+    }
+
+    @PostConstruct
+    private void init() {
+        this.repositoryServiceRecord = createRepositoryServiceRecord(configuration);
+        this.oaiPmhServiceRecord = createOaiPmhServiceRecord(configuration);
+        this.repositoryCollectionRecord = createRepositoryCollectionRecord(configuration);
     }
 
     @Override
@@ -32,16 +42,16 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
             @Override
             public Iterator<OaiPmhRecord> iterator() {
                 List<OaiPmhRecord> records = Arrays.asList(
-                    createRepositoryServiceRecord(),
-                    createOaiPmhServiceRecord(),
-                    createRepositoryCollectionRecord()
+                    repositoryServiceRecord,
+                    oaiPmhServiceRecord,
+                    repositoryCollectionRecord
                 );
                 return records.iterator();
             }
         };
     }
 
-    private OaiPmhRecord createRepositoryServiceRecord() {
+    private static OaiPmhRecord createRepositoryServiceRecord(OzTrackConfiguration configuration) {
         OaiPmhRecord record = new OaiPmhRecord();
         record.setOaiPmhIdentifier(configuration.getOaiPmhOaiPmhIdentifierPrefix() + repositoryServiceLocalIdentifier);
         record.setObjectIdentifier(configuration.getOaiPmhObjectIdentifierPrefix() + repositoryServiceLocalIdentifier);
@@ -58,7 +68,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         return record;
     }
 
-    private OaiPmhRecord createOaiPmhServiceRecord() {
+    private static OaiPmhRecord createOaiPmhServiceRecord(OzTrackConfiguration configuration) {
         OaiPmhRecord record = new OaiPmhRecord();
         record.setOaiPmhIdentifier(configuration.getOaiPmhOaiPmhIdentifierPrefix() + oaiPmhServiceLocalIdentifier);
         record.setObjectIdentifier(configuration.getOaiPmhObjectIdentifierPrefix() + oaiPmhServiceLocalIdentifier);
@@ -76,7 +86,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         return record;
     }
 
-    private OaiPmhRecord createRepositoryCollectionRecord() {
+    private static OaiPmhRecord createRepositoryCollectionRecord(OzTrackConfiguration configuration) {
         OaiPmhRecord record = new OaiPmhRecord();
         record.setOaiPmhIdentifier(configuration.getOaiPmhOaiPmhIdentifierPrefix() + repositoryCollectionLocalIdentifier);
         record.setObjectIdentifier(configuration.getOaiPmhObjectIdentifierPrefix() + repositoryCollectionLocalIdentifier);
