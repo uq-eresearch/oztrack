@@ -30,8 +30,8 @@ public class OaiPmhIdentifyController extends OaiPmhController {
 
         return new OaiPmhIdentifyView(
             configuration.getBaseUrl() + "/oai-pmh",
-            configuration.getOaiPmhOaiPmhServiceTitle(),
-            configuration.getOaiPmhOaiPmhServiceAdminEmail()
+            configuration.getOaiPmhConfiguration().getOaiPmhServiceTitle(),
+            configuration.getOaiPmhConfiguration().getOaiPmhServiceAdminEmail()
         );
     }
 }

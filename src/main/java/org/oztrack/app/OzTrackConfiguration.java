@@ -23,22 +23,5 @@ public interface OzTrackConfiguration {
     Date getNonIncrementalEmbargoDisableDate();
     String getRserveLogFile();
     Integer getRserveOomAdj();
-    boolean isOaiPmhEnabled();
-    String getOaiPmhOaiPmhIdentifierPrefix();
-    String getOaiPmhObjectIdentifierPrefix();
-    String getOaiPmhRifCsGroup();
-    String getOaiPmhRepositoryCreator();
-    String getOaiPmhRepositoryServiceTitle();
-    String getOaiPmhRepositoryServiceDescription();
-    Date getOaiPmhRepositoryServiceCreateDate();
-    Date getOaiPmhRepositoryServiceUpdateDate();
-    String getOaiPmhOaiPmhServiceTitle();
-    String getOaiPmhOaiPmhServiceDescription();
-    Date getOaiPmhOaiPmhServiceCreateDate();
-    Date getOaiPmhOaiPmhServiceUpdateDate();
-    String getOaiPmhOaiPmhServiceAdminEmail();
-    String getOaiPmhRepositoryCollectionTitle();
-    String getOaiPmhRepositoryCollectionDescription();
-    Date getOaiPmhRepositoryCollectionCreateDate();
-    Date getOaiPmhRepositoryCollectionUpdateDate();
+    OzTrackOaiPmhConfiguration getOaiPmhConfiguration();
 }

@@ -27,7 +27,7 @@ public abstract class OaiPmhController {
     }
 
     public void preHandleRequest(HttpServletRequest request, HttpServletResponse response) throws OaiPmhException {
-        if (!configuration.isOaiPmhEnabled()) {
+        if (!configuration.getOaiPmhConfiguration().isOaiPmhEnabled()) {
             throw new RuntimeException("OAI-PMH not enabled");
         }
 
