@@ -9,6 +9,8 @@ import javax.annotation.PostConstruct;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.OaiPmhRecordDao;
 import org.oztrack.data.access.OaiPmhRecordProducer;
+import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.model.Project;
 import org.oztrack.data.model.types.OaiPmhRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,9 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
 
     @Autowired
     private OzTrackConfiguration configuration;
+
+    @Autowired
+    private ProjectDao projectDao;
 
     private OaiPmhRecord repositoryServiceRecord;
     private OaiPmhRecord oaiPmhServiceRecord;
@@ -38,6 +43,13 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
 
     @Override
     public OaiPmhRecordProducer getRecords() {
+        return new OaiPmhChainingRecordProducer(Arrays.asList(
+            createRepositoryRecordProducer(),
+            createProjectRecordProducer()
+        ));
+    }
+
+    private OaiPmhRecordProducer createRepositoryRecordProducer() {
         return new OaiPmhRecordProducer() {
             @Override
             public Iterator<OaiPmhRecord> iterator() {
@@ -49,6 +61,35 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
                 return records.iterator();
             }
         };
+    }
+
+    private OaiPmhRecordProducer createProjectRecordProducer() {
+        List<Project> projects = projectDao.getAll();
+        return new OaiPmhMappingRecordProducer<Project>(projects.iterator()) {
+            @Override
+            protected OaiPmhRecord map(Project project) {
+                return createProjectRecord(configuration, project);
+            }
+        };
+    }
+
+    private static OaiPmhRecord createProjectRecord(OzTrackConfiguration configuration, Project project) {
+        OaiPmhRecord record = new OaiPmhRecord();
+        String localIdentifier = "projects/" + project.getId();
+        record.setOaiPmhIdentifier(configuration.getOaiPmhConfiguration().getOaiPmhIdentifierPrefix() + localIdentifier);
+        record.setObjectIdentifier(configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + localIdentifier);
+        record.setIsPartOfObjectIdentifier(configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + repositoryCollectionLocalIdentifier);
+        record.setTitle(project.getTitle());
+        record.setDescription(project.getDescription());
+        record.setUrl(configuration.getBaseUrl() + "/projects/" + project.getId());
+        record.setCreator(null);
+        record.setCreateDate(project.getCreateDate());
+        record.setUpdateDate(project.getUpdateDate());
+        record.setDcType("collection");
+        record.setRifCsObjectElemName("collection");
+        record.setRifCsObjectTypeAttr("dataset");
+        record.setRifCsGroup(configuration.getOaiPmhConfiguration().getRifCsGroup());
+        return record;
     }
 
     private static OaiPmhRecord createRepositoryServiceRecord(OzTrackConfiguration configuration) {
