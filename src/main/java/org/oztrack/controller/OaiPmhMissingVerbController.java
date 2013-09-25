@@ -13,7 +13,7 @@ import org.springframework.web.servlet.View;
 // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#ProtocolMessages
 @Controller
 public class OaiPmhMissingVerbController extends OaiPmhController {
-    @RequestMapping(value="/oai-pmh", method=RequestMethod.GET, produces="text/xml", params="!verb")
+    @RequestMapping(value="/oai-pmh", method={RequestMethod.GET, RequestMethod.POST}, produces="text/xml", params="!verb")
     public View handleRequest(HttpServletRequest request, HttpServletResponse response) throws OaiPmhException {
         super.preHandleRequest(request, response);
         throw new OaiPmhException("badVerb", "verb argument is missing.");

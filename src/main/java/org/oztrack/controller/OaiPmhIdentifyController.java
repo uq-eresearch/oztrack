@@ -17,7 +17,7 @@ import org.springframework.web.servlet.View;
 // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#Identify
 @Controller
 public class OaiPmhIdentifyController extends OaiPmhController {
-    @RequestMapping(value="/oai-pmh", method=RequestMethod.GET, produces="text/xml", params="verb=Identify")
+    @RequestMapping(value="/oai-pmh", method={RequestMethod.GET, RequestMethod.POST}, produces="text/xml", params="verb=Identify")
     public View handleRequest(HttpServletRequest request, HttpServletResponse response) throws OaiPmhException {
         super.preHandleRequest(request, response);
 

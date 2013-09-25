@@ -29,12 +29,12 @@ public class OaiPmhListIdentifiersOrListRecordsController extends OaiPmhControll
     @Autowired
     OaiPmhRecordDao recordDao;
 
-    @RequestMapping(value="/oai-pmh", method=RequestMethod.GET, produces="text/xml", params={"verb=ListIdentifiers"})
+    @RequestMapping(value="/oai-pmh", method={RequestMethod.GET, RequestMethod.POST}, produces="text/xml", params={"verb=ListIdentifiers"})
     public View handleListIdentifiersRequest(HttpServletRequest request, HttpServletResponse response) throws OaiPmhException {
         return handleRequest(request, response);
     }
 
-    @RequestMapping(value="/oai-pmh", method=RequestMethod.GET, produces="text/xml", params={"verb=ListRecords"})
+    @RequestMapping(value="/oai-pmh", method={RequestMethod.GET, RequestMethod.POST}, produces="text/xml", params={"verb=ListRecords"})
     public View handleListRecordsRequest(HttpServletRequest request, HttpServletResponse response) throws OaiPmhException {
         return handleRequest(request, response);
     }
