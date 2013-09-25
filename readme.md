@@ -286,25 +286,37 @@ Alternatively, it can be run as a normal Java application via the `org.oztrack.a
 
 ### Configuring OzTrack
 
-OzTrack can be configured via a range of properties. The `application.properties` file included in the
-distribution contains the complete list of properties together with their default values.
+OzTrack can be configured via a range of properties. The properties files included in the
+distribution under `/WEB-INF/classes/org/oztrack/conf/` contain default settings.
 
-To override these default values, either edit `application.properties` or supply values via Java system properties.
-System properties can be set as arguments to the `java` command (e.g. `-Dorg.oztrack.conf.dataDir=/var/local/oztrack`).
+To override these default values, you have three options (in increasing order of precedence):
+
+* edit the `/WEB-INF/classes/org/oztrack/conf/custom.properties` file included in the distribution;
+* point to an external properties file using the `org.oztrack.conf.customConfigFile` system property;
+* override individual properties via Java system properties.
+
+An advantage of pointing to an external configuration file rather than editing the `custom.properties` file
+included in the distribution is that you can keep configuration separate to the application, avoiding the
+need to apply patches each time a new version of the application is deployed.
+
+System properties can be set as arguments to the `java` command
+(e.g. `-Dorg.oztrack.conf.customConfigFile=/var/local/oztrack/custom.properties`).
 When deploying to Tomcat, arguments can be added to the `JAVA_OPTS` variable used in the startup script.
 
 The following are key properties that should be configured for all applications:
 
+* `org.oztrack.conf.baseUrl`: Base URL for application, minus trailing slash (default "http://localhost").
 * `org.oztrack.conf.dataDir`: Directory used to store tracking data files - ensure that this directory exists and can be written to by the application (default "/var/local/oztrack").
 * `org.oztrack.conf.databaseUsername`: Username for PostgreSQL database (default "oztrack").
 * `org.oztrack.conf.databasePassword`: Password for PostgreSQL database.
 * `org.oztrack.conf.geoServerUsername`: Username for Geoserver admin user (default "admin").
 * `org.oztrack.conf.geoServerPassword`: Password for GeoServer admin user.
-* `org.oztrack.conf.baseUrl`: Base URL for application, minus trailing slash (default "http://localhost").
 * `org.oztrack.conf.mailServerHostName`: SMTP host name for sending mail notifications.
 * `org.oztrack.conf.mailServerPort`: SMTP host port number for sending mail notifications.
 * `org.oztrack.conf.mailFromName`: Name in From field for mail notifications (default "OzTrack").
 * `org.oztrack.conf.mailFromEmail`: Email address in From field for mail notifications.
+* `org.oztrack.conf.closedAccessDisableDate`: Date from which the ability to create closed access projects is disabled.
+* `org.oztrack.conf.nonIncrementalEmbargoDisableDate`: Date from which project embargoes must be annually renewed.
 
 OzTrack defines a default admin user with the username/password "admin"/"oztrack".
 To log into OzTrack, click the 'Login' button at the top-right of screen. You should change the default
