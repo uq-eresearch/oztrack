@@ -12,9 +12,11 @@
         http://www.springframework.org/schema/util
         http://www.springframework.org/schema/util/spring-util-3.1.xsd">
 
-    <context:property-placeholder location="
+    <context:property-placeholder ignore-resource-not-found="true" location="
         classpath:/org/oztrack/conf/application.properties,
-        classpath:/org/oztrack/conf/oai-pmh.properties
+        classpath:/org/oztrack/conf/oai-pmh.properties,
+        classpath:/org/oztrack/conf/custom.properties,
+        file:${org.oztrack.conf.customConfigFile}
     "/>
 
     <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
