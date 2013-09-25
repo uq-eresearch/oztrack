@@ -13,7 +13,7 @@ import org.springframework.web.servlet.View;
 // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#ProtocolMessages
 @Controller
 public class OaiPmhIllegalVerbController extends OaiPmhController {
-    @RequestMapping(value="/oai-pmh", method=RequestMethod.GET, params={
+    @RequestMapping(value="/oai-pmh", method=RequestMethod.GET, produces="text/xml", params={
         "verb",
         "verb!=Identify",
         "verb!=ListMetadataFormats",

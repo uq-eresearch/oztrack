@@ -45,5 +45,7 @@ public abstract class OaiPmhController {
                 throw new OaiPmhException("badArgument", parameterEntry.getKey() + " argument is repeated.");
             }
         }
+
+        response.setContentType("text/xml;charset=UTF-8");
     }
 }
