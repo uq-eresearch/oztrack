@@ -51,7 +51,7 @@
         <jetty.version>8.1.5.v20120716</jetty.version>
     </properties>
     <build>
-        <finalName>ROOT</finalName>
+        <finalName>oztrack</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
