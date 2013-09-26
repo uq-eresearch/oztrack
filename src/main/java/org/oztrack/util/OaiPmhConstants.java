@@ -1,8 +1,9 @@
 package org.oztrack.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.oztrack.data.model.types.OaiPmhRecord;
 
 public class OaiPmhConstants {
     public static OaiPmhNamespace XSI = new OaiPmhNamespace(
@@ -30,8 +31,13 @@ public class OaiPmhConstants {
         "http://ands.org.au/standards/rif-cs/registryObjects",
         "http://services.ands.org.au/documentation/rifcs/schema/registryObjects.xsd"
     );
-    public static List<OaiPmhMetadataFormat> supportedMetadataFormats = new ArrayList<OaiPmhMetadataFormat>(Arrays.asList(
+    public static List<OaiPmhMetadataFormat> supportedMetadataFormats = Arrays.asList(
         OAI_DC,
         RIF_CS
-    ));
+    );
+    public static List<OaiPmhRecord.Subject> defaultRecordSubjects = Arrays.asList(
+        new OaiPmhRecord.Subject("anzsrc-for", "0502"), // Environmental Science and Management
+        new OaiPmhRecord.Subject("anzsrc-for", "0602"), // Ecology
+        new OaiPmhRecord.Subject("anzsrc-for", "0608") // Zoology
+    );
 }

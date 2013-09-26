@@ -276,6 +276,15 @@ public class OaiPmhRecordWriter {
             out.writeEndElement(); // coverage
         }
 
+        if (record.getSubjects() != null) {
+            for (OaiPmhRecord.Subject subject : record.getSubjects()) {
+                out.writeStartElement(RIF_CS.nsUri, "subject");
+                out.writeAttribute("type", subject.getSubjectType());
+                out.writeCharacters(subject.getSubjectText());
+                out.writeEndElement(); // subject
+            }
+        }
+
         if (record.getIsPartOfObjectIdentifier() != null) {
             out.writeStartElement(RIF_CS.nsUri, "relatedObject");
             out.writeStartElement(RIF_CS.nsUri, "key");

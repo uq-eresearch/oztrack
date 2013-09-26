@@ -1,10 +1,31 @@
 package org.oztrack.data.model.types;
 
 import java.util.Date;
+import java.util.List;
 
 import com.vividsolutions.jts.geom.Envelope;
 
 public class OaiPmhRecord {
+    public static class Subject {
+        private String subjectType;
+        private String subjectText;
+        public Subject(String subjectType, String subjectText) {
+            this.subjectType = subjectType;
+            this.subjectText = subjectText;
+        }
+        public String getSubjectType() {
+            return subjectType;
+        }
+        public void setSubjectType(String subjectType) {
+            this.subjectType = subjectType;
+        }
+        public String getSubjectText() {
+            return subjectText;
+        }
+        public void setSubjectText(String subjectText) {
+            this.subjectText = subjectText;
+        }
+    }
     private String oaiPmhIdentifier;
     private String objectIdentifier;
     private String isPartOfObjectIdentifier;
@@ -17,6 +38,7 @@ public class OaiPmhRecord {
     private Date createDate;
     private Date updateDate;
     private Envelope spatialCoverage;
+    private List<Subject> subjects;
     private String dcType;
     private String rifCsObjectElemName;
     private String rifCsObjectTypeAttr;
@@ -94,6 +116,12 @@ public class OaiPmhRecord {
     }
     public void setSpatialCoverage(Envelope spatialCoverage) {
         this.spatialCoverage = spatialCoverage;
+    }
+    public List<Subject> getSubjects() {
+        return subjects;
+    }
+    public void setSubjects(List<Subject> subjects) {
+        this.subjects = subjects;
     }
     public String getDcType() {
         return dcType;

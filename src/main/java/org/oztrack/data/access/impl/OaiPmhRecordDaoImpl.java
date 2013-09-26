@@ -13,6 +13,7 @@ import org.oztrack.data.access.OaiPmhRecordProducer;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.types.OaiPmhRecord;
+import org.oztrack.util.OaiPmhConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -87,6 +88,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
                 if (boundingBox != null)  {
                     record.setSpatialCoverage(boundingBox.getEnvelopeInternal());
                 }
+                record.setSubjects(OaiPmhConstants.defaultRecordSubjects);
                 record.setDcType("collection");
                 record.setRifCsObjectElemName("collection");
                 record.setRifCsObjectTypeAttr("dataset");
@@ -106,6 +108,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         record.setCreator(configuration.getOaiPmhConfiguration().getRepositoryCreator());
         record.setCreateDate(configuration.getOaiPmhConfiguration().getRepositoryServiceCreateDate());
         record.setUpdateDate(configuration.getOaiPmhConfiguration().getRepositoryServiceUpdateDate());
+        record.setSubjects(OaiPmhConstants.defaultRecordSubjects);
         record.setDcType("service");
         record.setRifCsObjectElemName("service");
         record.setRifCsObjectTypeAttr("report");
@@ -124,6 +127,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         record.setCreator(configuration.getOaiPmhConfiguration().getRepositoryCreator());
         record.setCreateDate(configuration.getOaiPmhConfiguration().getOaiPmhServiceCreateDate());
         record.setUpdateDate(configuration.getOaiPmhConfiguration().getOaiPmhServiceUpdateDate());
+        record.setSubjects(OaiPmhConstants.defaultRecordSubjects);
         record.setDcType("service");
         record.setRifCsObjectElemName("service");
         record.setRifCsObjectTypeAttr("harvest-oaipmh");
@@ -143,6 +147,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         record.setCreator(configuration.getOaiPmhConfiguration().getRepositoryCreator());
         record.setCreateDate(configuration.getOaiPmhConfiguration().getRepositoryCollectionCreateDate());
         record.setUpdateDate(configuration.getOaiPmhConfiguration().getRepositoryCollectionUpdateDate());
+        record.setSubjects(OaiPmhConstants.defaultRecordSubjects);
         record.setDcType("collection");
         record.setRifCsObjectElemName("collection");
         record.setRifCsObjectTypeAttr("repository");
