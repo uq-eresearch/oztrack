@@ -6,6 +6,7 @@ import static org.oztrack.util.OaiPmhConstants.RIF_CS;
 import static org.oztrack.util.OaiPmhConstants.XSI;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 import javax.xml.stream.XMLStreamException;
@@ -239,13 +240,27 @@ public class OaiPmhRecordWriter {
             out.writeEndElement(); // location
         }
 
-        if (record.getCreateDate() != null) {
-            out.writeStartElement(RIF_CS.nsUri, "existenceDates");
-            out.writeStartElement(RIF_CS.nsUri, "startDate");
-            out.writeAttribute("dateFormat", "W3CDTF");
-            out.writeCharacters(utcDateTimeFormat.format(record.getCreateDate()));
-            out.writeEndElement(); // startDate
-            out.writeEndElement(); //existenceDates
+        if (Arrays.asList("activity", "party", "service").contains(record.getRifCsObjectElemName())) {
+            if (record.getCreateDate() != null) {
+                out.writeStartElement(RIF_CS.nsUri, "existenceDates");
+                out.writeStartElement(RIF_CS.nsUri, "startDate");
+                out.writeAttribute("dateFormat", "W3CDTF");
+                out.writeCharacters(utcDateTimeFormat.format(record.getCreateDate()));
+                out.writeEndElement(); // startDate
+                out.writeEndElement(); // existenceDates
+            }
+        }
+        if (record.getRifCsObjectElemName().equals("collection")) {
+            if (record.getCreateDate() != null) {
+                out.writeStartElement(RIF_CS.nsUri, "dates");
+                out.writeAttribute("type", "created");
+                out.writeStartElement(RIF_CS.nsUri, "date");
+                out.writeAttribute("type", "dateFrom");
+                out.writeAttribute("dateFormat", "W3CDTF");
+                out.writeCharacters(utcDateTimeFormat.format(record.getCreateDate()));
+                out.writeEndElement(); // date
+                out.writeEndElement(); // dates
+            }
         }
 
         if (record.getIsPartOfObjectIdentifier() != null) {
