@@ -126,6 +126,14 @@ public class OaiPmhRecordWriter {
             out.writeCharacters(utcDateTimeFormat.format(record.getUpdateDate()));
             out.writeEndElement(); // date
         }
+        if (record.getSpatialCoverage() != null) {
+            out.writeStartElement(DC.nsUri, "coverage");
+            out.writeCharacters("North " + record.getSpatialCoverage().getMaxY() + ", ");
+            out.writeCharacters("East " + record.getSpatialCoverage().getMaxX() + ", ");
+            out.writeCharacters("South " + record.getSpatialCoverage().getMinY() + ", ");
+            out.writeCharacters("West " + record.getSpatialCoverage().getMinX() + ".");
+            out.writeEndElement(); // coverage
+        }
         if (record.getSubjects() != null) {
             for (OaiPmhRecord.Subject subject : record.getSubjects()) {
                 if (subject.getSubjectType().equals("local")) {
