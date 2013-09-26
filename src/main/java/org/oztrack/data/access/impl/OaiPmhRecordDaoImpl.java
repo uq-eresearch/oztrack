@@ -1,12 +1,14 @@
 package org.oztrack.data.access.impl;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.Range;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.OaiPmhRecordDao;
 import org.oztrack.data.access.OaiPmhRecordProducer;
@@ -69,6 +71,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
 
     private OaiPmhRecordProducer createProjectRecordProducer() {
         final List<Project> projects = projectDao.getAll();
+        final HashMap<Long, Range<Date>> projectDetectionDateRanges = projectDao.getProjectDetectionDateRanges(false);
         final HashMap<Long, Polygon> projectBoundingBoxes = projectDao.getProjectBoundingBoxes(false);
         return new OaiPmhMappingRecordProducer<Project>(projects.iterator()) {
             @Override
@@ -84,6 +87,10 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
                 record.setCreator(null);
                 record.setCreateDate(project.getCreateDate());
                 record.setUpdateDate(project.getUpdateDate());
+                Range<Date> detectionDateRange = projectDetectionDateRanges.get(project.getId());
+                if (detectionDateRange != null) {
+                    record.setTemporalCoverage(detectionDateRange);
+                }
                 Polygon boundingBox = projectBoundingBoxes.get(project.getId());
                 if (boundingBox != null)  {
                     record.setSpatialCoverage(boundingBox.getEnvelopeInternal());

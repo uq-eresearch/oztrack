@@ -3,6 +3,8 @@ package org.oztrack.data.model.types;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.Range;
+
 import com.vividsolutions.jts.geom.Envelope;
 
 public class OaiPmhRecord {
@@ -37,6 +39,7 @@ public class OaiPmhRecord {
     private String creator;
     private Date createDate;
     private Date updateDate;
+    private Range<Date> temporalCoverage;
     private Envelope spatialCoverage;
     private List<Subject> subjects;
     private String dcType;
@@ -110,6 +113,12 @@ public class OaiPmhRecord {
     }
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
+    }
+    public Range<Date> getTemporalCoverage() {
+        return temporalCoverage;
+    }
+    public void setTemporalCoverage(Range<Date> temporalCoverage) {
+        this.temporalCoverage = temporalCoverage;
     }
     public Envelope getSpatialCoverage() {
         return spatialCoverage;

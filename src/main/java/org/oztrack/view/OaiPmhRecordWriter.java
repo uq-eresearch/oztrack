@@ -280,6 +280,23 @@ public class OaiPmhRecordWriter {
             }
         }
 
+        if (record.getTemporalCoverage() != null) {
+            out.writeStartElement(RIF_CS.nsUri, "coverage");
+            out.writeStartElement(RIF_CS.nsUri, "temporal");
+            out.writeStartElement(RIF_CS.nsUri, "date");
+            out.writeAttribute("type", "dateFrom");
+            out.writeAttribute("dateFormat", "W3CDTF");
+            out.writeCharacters(utcDateTimeFormat.format(record.getTemporalCoverage().getMinimum()));
+            out.writeEndElement(); // date
+            out.writeStartElement(RIF_CS.nsUri, "date");
+            out.writeAttribute("type", "dateTo");
+            out.writeAttribute("dateFormat", "W3CDTF");
+            out.writeCharacters(utcDateTimeFormat.format(record.getTemporalCoverage().getMaximum()));
+            out.writeEndElement(); // date
+            out.writeEndElement(); // temporal
+            out.writeEndElement(); // coverage
+        }
+
         if (record.getSpatialCoverage() != null) {
             out.writeStartElement(RIF_CS.nsUri, "coverage");
             out.writeStartElement(RIF_CS.nsUri, "spatial");
