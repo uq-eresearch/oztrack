@@ -126,6 +126,15 @@ public class OaiPmhRecordWriter {
             out.writeCharacters(utcDateTimeFormat.format(record.getUpdateDate()));
             out.writeEndElement(); // date
         }
+        if (record.getSubjects() != null) {
+            for (OaiPmhRecord.Subject subject : record.getSubjects()) {
+                if (subject.getSubjectType().equals("local")) {
+                    out.writeStartElement(DC.nsUri, "subject");
+                    out.writeCharacters(subject.getSubjectText());
+                    out.writeEndElement(); // subject
+                }
+            }
+        }
         if (record.getDcType() != null) {
             out.writeStartElement(DC.nsUri, "type");
             out.writeCharacters(record.getDcType());
