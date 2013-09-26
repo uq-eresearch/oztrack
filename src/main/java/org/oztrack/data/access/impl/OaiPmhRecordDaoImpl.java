@@ -1,6 +1,7 @@
 package org.oztrack.data.access.impl;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,6 +15,8 @@ import org.oztrack.data.model.Project;
 import org.oztrack.data.model.types.OaiPmhRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.vividsolutions.jts.geom.Polygon;
 
 @Service
 public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
@@ -64,32 +67,33 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
     }
 
     private OaiPmhRecordProducer createProjectRecordProducer() {
-        List<Project> projects = projectDao.getAll();
+        final List<Project> projects = projectDao.getAll();
+        final HashMap<Long, Polygon> projectBoundingBoxes = projectDao.getProjectBoundingBoxes(false);
         return new OaiPmhMappingRecordProducer<Project>(projects.iterator()) {
             @Override
             protected OaiPmhRecord map(Project project) {
-                return createProjectRecord(configuration, project);
+                OaiPmhRecord record = new OaiPmhRecord();
+                String localIdentifier = "projects/" + project.getId();
+                record.setOaiPmhIdentifier(configuration.getOaiPmhConfiguration().getOaiPmhIdentifierPrefix() + localIdentifier);
+                record.setObjectIdentifier(configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + localIdentifier);
+                record.setIsPartOfObjectIdentifier(configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + repositoryCollectionLocalIdentifier);
+                record.setTitle(project.getTitle());
+                record.setDescription(project.getDescription());
+                record.setUrl(configuration.getBaseUrl() + "/projects/" + project.getId());
+                record.setCreator(null);
+                record.setCreateDate(project.getCreateDate());
+                record.setUpdateDate(project.getUpdateDate());
+                Polygon boundingBox = projectBoundingBoxes.get(project.getId());
+                if (boundingBox != null)  {
+                    record.setSpatialCoverage(boundingBox.getEnvelopeInternal());
+                }
+                record.setDcType("collection");
+                record.setRifCsObjectElemName("collection");
+                record.setRifCsObjectTypeAttr("dataset");
+                record.setRifCsGroup(configuration.getOaiPmhConfiguration().getRifCsGroup());
+                return record;
             }
         };
-    }
-
-    private static OaiPmhRecord createProjectRecord(OzTrackConfiguration configuration, Project project) {
-        OaiPmhRecord record = new OaiPmhRecord();
-        String localIdentifier = "projects/" + project.getId();
-        record.setOaiPmhIdentifier(configuration.getOaiPmhConfiguration().getOaiPmhIdentifierPrefix() + localIdentifier);
-        record.setObjectIdentifier(configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + localIdentifier);
-        record.setIsPartOfObjectIdentifier(configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + repositoryCollectionLocalIdentifier);
-        record.setTitle(project.getTitle());
-        record.setDescription(project.getDescription());
-        record.setUrl(configuration.getBaseUrl() + "/projects/" + project.getId());
-        record.setCreator(null);
-        record.setCreateDate(project.getCreateDate());
-        record.setUpdateDate(project.getUpdateDate());
-        record.setDcType("collection");
-        record.setRifCsObjectElemName("collection");
-        record.setRifCsObjectTypeAttr("dataset");
-        record.setRifCsGroup(configuration.getOaiPmhConfiguration().getRifCsGroup());
-        return record;
     }
 
     private static OaiPmhRecord createRepositoryServiceRecord(OzTrackConfiguration configuration) {

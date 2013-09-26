@@ -229,6 +229,43 @@ public class ProjectDaoImpl implements ProjectDao {
     }
 
     @Override
+    public HashMap<Long, Polygon> getProjectBoundingBoxes(boolean includeDeleted) {
+        Query query = em.createNativeQuery(
+            "select project.id, ST_AsText(ST_Envelope(ST_Collect(\n" +
+            "    case\n" +
+            "        when project.crosses180 then ST_Shift_Longitude(positionfix.locationgeometry)\n" +
+            "        else positionfix.locationgeometry\n" +
+            "    end\n" +
+            ")))\n" +
+            "from project\n" +
+            "inner join positionfix on\n" +
+            "    positionfix.project_id = project.id and\n" +
+            "    (:includeDeleted or not(positionfix.deleted))\n" +
+            "group by project.id"
+        );
+        query.setParameter("includeDeleted", includeDeleted);
+        GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
+        WKTReader reader = new WKTReader(geometryFactory);
+        HashMap<Long, Polygon> map = new HashMap<Long, Polygon>();
+        @SuppressWarnings("unchecked")
+        List<Object[]> resultList = query.getResultList();
+        for (Object[] result : resultList) {
+            Long projectId = ((Number) result[0]).longValue();
+            String wkt = (String) result[1];
+            Polygon polygon = null;
+            if (wkt != null) {
+                try {
+                    polygon = (Polygon) reader.read(wkt);
+                }
+                catch (Exception e) {
+                }
+            }
+            map.put(projectId, polygon);
+        }
+        return map;
+    }
+
+    @Override
     public HashMap<Long, Polygon> getAnimalBoundingBoxes(Project project, boolean includeDeleted) {
         String geomExpr = project.getCrosses180()
             ? "ST_Shift_Longitude(positionfix.locationgeometry)"

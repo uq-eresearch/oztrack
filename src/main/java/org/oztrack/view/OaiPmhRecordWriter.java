@@ -263,6 +263,19 @@ public class OaiPmhRecordWriter {
             }
         }
 
+        if (record.getSpatialCoverage() != null) {
+            out.writeStartElement(RIF_CS.nsUri, "coverage");
+            out.writeStartElement(RIF_CS.nsUri, "spatial");
+            out.writeAttribute("type", "iso19139dcmiBox");
+            out.writeCharacters("northlimit=" + record.getSpatialCoverage().getMaxY() + "; ");
+            out.writeCharacters("eastLimit=" + record.getSpatialCoverage().getMaxX() + "; ");
+            out.writeCharacters("southlimit=" + record.getSpatialCoverage().getMinY() + "; ");
+            out.writeCharacters("westlimit=" + record.getSpatialCoverage().getMinX() + "; ");
+            out.writeCharacters("projection=WGS84");
+            out.writeEndElement(); // spatial
+            out.writeEndElement(); // coverage
+        }
+
         if (record.getIsPartOfObjectIdentifier() != null) {
             out.writeStartElement(RIF_CS.nsUri, "relatedObject");
             out.writeStartElement(RIF_CS.nsUri, "key");
