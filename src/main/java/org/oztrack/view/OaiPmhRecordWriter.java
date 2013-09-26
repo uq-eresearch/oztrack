@@ -221,6 +221,7 @@ public class OaiPmhRecordWriter {
 
         if (record.getDescription() != null) {
             out.writeStartElement(RIF_CS.nsUri, "description");
+            out.writeAttribute("type", "full");
             out.writeCharacters(record.getDescription());
             out.writeEndElement(); // description
         }
