@@ -38,6 +38,7 @@ public class OaiPmhConstants {
     public static List<OaiPmhRecord.Subject> defaultRecordSubjects = Arrays.asList(
         new OaiPmhRecord.Subject("anzsrc-for", "0502"), // Environmental Science and Management
         new OaiPmhRecord.Subject("anzsrc-for", "0602"), // Ecology
-        new OaiPmhRecord.Subject("anzsrc-for", "0608") // Zoology
+        new OaiPmhRecord.Subject("anzsrc-for", "0608"), // Zoology
+        new OaiPmhRecord.Subject("local", "Animal Tracking")
     );
 }
