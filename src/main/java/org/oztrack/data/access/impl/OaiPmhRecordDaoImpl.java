@@ -1,5 +1,6 @@
 package org.oztrack.data.access.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,12 +10,14 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang3.Range;
+import org.apache.commons.lang3.StringUtils;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.OaiPmhRecordDao;
 import org.oztrack.data.access.OaiPmhRecordProducer;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.types.OaiPmhRecord;
+import org.oztrack.data.model.types.OaiPmhRecord.Subject;
 import org.oztrack.util.OaiPmhConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -97,7 +100,11 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
                 record.setRelations(Arrays.asList(
                     new OaiPmhRecord.Relation("isPartOf", configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + repositoryCollectionLocalIdentifier)
                 ));
-                record.setSubjects(OaiPmhConstants.defaultRecordSubjects);
+                List<Subject> subjects = new ArrayList<Subject>(OaiPmhConstants.defaultRecordSubjects);
+                if (StringUtils.isNotBlank(project.getSpeciesScientificName())) {
+                    subjects.add(new OaiPmhRecord.Subject("local", project.getSpeciesScientificName()));
+                }
+                record.setSubjects(subjects);
                 record.setDcType("collection");
                 record.setRifCsObjectElemName("collection");
                 record.setRifCsObjectTypeAttr("dataset");
