@@ -36,7 +36,7 @@ public class OaiPmhRecordWriter {
     }
 
     private void write(OaiPmhRecord record) throws XMLStreamException {
-        if (record.getOaiPmhIdentifier() == null) {
+        if (record.getOaiPmhRecordIdentifier() == null) {
             throw new IllegalArgumentException("Record must have OAI-PMH identifier");
         }
 
@@ -48,7 +48,7 @@ public class OaiPmhRecordWriter {
         // The format of the unique identifier must correspond to that of the URI syntax.
         // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#UniqueIdentifier
         out.writeStartElement("identifier");
-        out.writeCharacters(record.getOaiPmhIdentifier());
+        out.writeCharacters(record.getOaiPmhRecordIdentifier());
         out.writeEndElement(); // identifier
 
         // Date of creation, modification or deletion of the record for the purpose of selective harvesting.
@@ -188,9 +188,9 @@ public class OaiPmhRecordWriter {
         // Do not use the identifier for an object as the key for a metadata record describing
         // that object - the metadata record needs its own unique separate identifier.
         // http://ands.org.au/guides/cpguide/cpgidentifiers.html
-        if (record.getObjectIdentifier() != null) {
+        if (record.getRifCsRecordIdentifier() != null) {
             out.writeStartElement(RIF_CS.nsUri, "key");
-            out.writeCharacters(record.getObjectIdentifier());
+            out.writeCharacters(record.getRifCsRecordIdentifier());
             out.writeEndElement(); // key
         }
 
@@ -304,7 +304,7 @@ public class OaiPmhRecordWriter {
             for (OaiPmhRecord.Relation relation : record.getRelations()) {
                 out.writeStartElement(RIF_CS.nsUri, "relatedObject");
                 out.writeStartElement(RIF_CS.nsUri, "key");
-                out.writeCharacters(relation.getRelatedObjectIdentifier());
+                out.writeCharacters(relation.getRelatedRifCsRecordIdentifier());
                 out.writeEndElement(); // key
                 out.writeStartElement(RIF_CS.nsUri, "relation");
                 out.writeAttribute("type", relation.getRelationType());

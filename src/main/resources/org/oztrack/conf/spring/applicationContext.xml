@@ -71,7 +71,8 @@
         <property name="oaiPmhConfiguration">
             <bean class="org.oztrack.app.OzTrackOaiPmhConfigurationImpl">
                 <property name="oaiPmhEnabled" value="${org.oztrack.conf.oaipmh.oaiPmhEnabled}"/>
-                <property name="oaiPmhIdentifierPrefix" value="${org.oztrack.conf.oaipmh.oaiPmhIdentifierPrefix}"/>
+                <property name="oaiPmhRecordIdentifierPrefix" value="${org.oztrack.conf.oaipmh.oaiPmhRecordIdentifierPrefix}"/>
+                <property name="rifCsRecordIdentifierPrefix" value="${org.oztrack.conf.oaipmh.rifCsRecordIdentifierPrefix}"/>
                 <property name="objectIdentifierPrefix" value="${org.oztrack.conf.oaipmh.objectIdentifierPrefix}"/>
                 <property name="rifCsGroup" value="${org.oztrack.conf.oaipmh.rifCsGroup}"/>
                 <property name="repositoryCreator" value="${org.oztrack.conf.oaipmh.repositoryCreator}"/>

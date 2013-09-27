@@ -10,9 +10,11 @@ import com.vividsolutions.jts.geom.Envelope;
 public class OaiPmhRecord {
     public static class Relation {
         private String relationType;
+        private String relatedRifCsRecordIdentifier;
         private String relatedObjectIdentifier;
-        public Relation(String relationType, String relatedObjectIdentifier) {
+        public Relation(String relationType, String relatedRifCsRecordIdentifier, String relatedObjectIdentifier) {
             this.relationType = relationType;
+            this.relatedRifCsRecordIdentifier = relatedRifCsRecordIdentifier;
             this.relatedObjectIdentifier = relatedObjectIdentifier;
         }
         public String getRelationType() {
@@ -20,6 +22,12 @@ public class OaiPmhRecord {
         }
         public void setRelationType(String relationType) {
             this.relationType = relationType;
+        }
+        public String getRelatedRifCsRecordIdentifier() {
+            return relatedRifCsRecordIdentifier;
+        }
+        public void setRelatedRifCsRecordIdentifier(String relatedRifCsRecordIdentifier) {
+            this.relatedRifCsRecordIdentifier = relatedRifCsRecordIdentifier;
         }
         public String getRelatedObjectIdentifier() {
             return relatedObjectIdentifier;
@@ -48,7 +56,8 @@ public class OaiPmhRecord {
             this.subjectText = subjectText;
         }
     }
-    private String oaiPmhIdentifier;
+    private String oaiPmhRecordIdentifier;
+    private String rifCsRecordIdentifier;
     private String objectIdentifier;
     private String title;
     private String description;
@@ -66,11 +75,17 @@ public class OaiPmhRecord {
     private String rifCsGroup;
     public OaiPmhRecord() {
     }
-    public String getOaiPmhIdentifier() {
-        return oaiPmhIdentifier;
+    public String getOaiPmhRecordIdentifier() {
+        return oaiPmhRecordIdentifier;
     }
-    public void setOaiPmhIdentifier(String oaiPmhIdentifier) {
-        this.oaiPmhIdentifier = oaiPmhIdentifier;
+    public void setOaiPmhRecordIdentifier(String oaiPmhRecordIdentifier) {
+        this.oaiPmhRecordIdentifier = oaiPmhRecordIdentifier;
+    }
+    public String getRifCsRecordIdentifier() {
+        return rifCsRecordIdentifier;
+    }
+    public void setRifCsRecordIdentifier(String rifCsRecordIdentifier) {
+        this.rifCsRecordIdentifier = rifCsRecordIdentifier;
     }
     public String getObjectIdentifier() {
         return objectIdentifier;

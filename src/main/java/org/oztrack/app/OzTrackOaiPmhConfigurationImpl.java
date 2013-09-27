@@ -9,7 +9,8 @@ public class OzTrackOaiPmhConfigurationImpl implements OzTrackOaiPmhConfiguratio
 
     private boolean oaiPmhEnabled;
 
-    private String oaiPmhIdentifierPrefix;
+    private String oaiPmhRecordIdentifierPrefix;
+    private String rifCsRecordIdentifierPrefix;
     private String objectIdentifierPrefix;
     private String rifCsGroup;
 
@@ -40,12 +41,21 @@ public class OzTrackOaiPmhConfigurationImpl implements OzTrackOaiPmhConfiguratio
     }
 
     @Override
-    public String getOaiPmhIdentifierPrefix() {
-        return oaiPmhIdentifierPrefix;
+    public String getOaiPmhRecordIdentifierPrefix() {
+        return oaiPmhRecordIdentifierPrefix;
     }
 
-    public void setOaiPmhIdentifierPrefix(String oaiPmhIdentifierPrefix) {
-        this.oaiPmhIdentifierPrefix = oaiPmhIdentifierPrefix;
+    public void setOaiPmhRecordIdentifierPrefix(String oaiPmhRecordIdentifierPrefix) {
+        this.oaiPmhRecordIdentifierPrefix = oaiPmhRecordIdentifierPrefix;
+    }
+
+    @Override
+    public String getRifCsRecordIdentifierPrefix() {
+        return rifCsRecordIdentifierPrefix;
+    }
+
+    public void setRifCsRecordIdentifierPrefix(String rifCsRecordIdentifierPrefix) {
+        this.rifCsRecordIdentifierPrefix = rifCsRecordIdentifierPrefix;
     }
 
     @Override

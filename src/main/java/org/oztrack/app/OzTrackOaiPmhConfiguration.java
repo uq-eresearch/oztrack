@@ -4,7 +4,8 @@ import java.util.Date;
 
 public interface OzTrackOaiPmhConfiguration {
     boolean isOaiPmhEnabled();
-    String getOaiPmhIdentifierPrefix();
+    String getOaiPmhRecordIdentifierPrefix();
+    String getRifCsRecordIdentifierPrefix();
     String getObjectIdentifierPrefix();
     String getRifCsGroup();
     String getRepositoryCreator();
