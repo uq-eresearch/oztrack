@@ -26,10 +26,6 @@ import com.vividsolutions.jts.geom.Polygon;
 
 @Service
 public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
-    private static final String repositoryServiceLocalIdentifier = "service";
-    private static final String oaiPmhServiceLocalIdentifier = "oai-pmh";
-    private static final String repositoryCollectionLocalIdentifier = "collection";
-
     @Autowired
     private OzTrackConfiguration configuration;
 
@@ -101,8 +97,8 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
                 record.setRelations(Arrays.asList(
                     new OaiPmhRecord.Relation(
                         "isPartOf",
-                        configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + repositoryCollectionLocalIdentifier,
-                        configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + repositoryCollectionLocalIdentifier
+                        configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + OaiPmhConstants.repositoryCollectionLocalIdentifier,
+                        configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + OaiPmhConstants.repositoryCollectionLocalIdentifier
                     )
                 ));
                 List<Subject> subjects = new ArrayList<Subject>(OaiPmhConstants.defaultRecordSubjects);
@@ -121,9 +117,9 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
 
     private static OaiPmhRecord createRepositoryServiceRecord(OzTrackConfiguration configuration) {
         OaiPmhRecord record = new OaiPmhRecord();
-        record.setOaiPmhRecordIdentifier(configuration.getOaiPmhConfiguration().getOaiPmhRecordIdentifierPrefix() + repositoryServiceLocalIdentifier);
-        record.setRifCsRecordIdentifier(configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + repositoryServiceLocalIdentifier);
-        record.setObjectIdentifier(configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + repositoryServiceLocalIdentifier);
+        record.setOaiPmhRecordIdentifier(configuration.getOaiPmhConfiguration().getOaiPmhRecordIdentifierPrefix() + OaiPmhConstants.repositoryServiceLocalIdentifier);
+        record.setRifCsRecordIdentifier(configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + OaiPmhConstants.repositoryServiceLocalIdentifier);
+        record.setObjectIdentifier(configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + OaiPmhConstants.repositoryServiceLocalIdentifier);
         record.setTitle(configuration.getOaiPmhConfiguration().getRepositoryServiceTitle());
         record.setDescription(configuration.getOaiPmhConfiguration().getRepositoryServiceDescription());
         record.setUrl(configuration.getBaseUrl() + "/");
@@ -140,9 +136,9 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
 
     private static OaiPmhRecord createOaiPmhServiceRecord(OzTrackConfiguration configuration) {
         OaiPmhRecord record = new OaiPmhRecord();
-        record.setOaiPmhRecordIdentifier(configuration.getOaiPmhConfiguration().getOaiPmhRecordIdentifierPrefix() + oaiPmhServiceLocalIdentifier);
-        record.setRifCsRecordIdentifier(configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + oaiPmhServiceLocalIdentifier);
-        record.setObjectIdentifier(configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + oaiPmhServiceLocalIdentifier);
+        record.setOaiPmhRecordIdentifier(configuration.getOaiPmhConfiguration().getOaiPmhRecordIdentifierPrefix() + OaiPmhConstants.oaiPmhServiceLocalIdentifier);
+        record.setRifCsRecordIdentifier(configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + OaiPmhConstants.oaiPmhServiceLocalIdentifier);
+        record.setObjectIdentifier(configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + OaiPmhConstants.oaiPmhServiceLocalIdentifier);
         record.setTitle(configuration.getOaiPmhConfiguration().getOaiPmhServiceTitle());
         record.setDescription(configuration.getOaiPmhConfiguration().getOaiPmhServiceDescription());
         record.setUrl(configuration.getBaseUrl() + "/oai-pmh");
@@ -152,8 +148,8 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         record.setRelations(Arrays.asList(
             new OaiPmhRecord.Relation(
                 "isPartOf",
-                configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + repositoryServiceLocalIdentifier,
-                configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + repositoryServiceLocalIdentifier
+                configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + OaiPmhConstants.repositoryServiceLocalIdentifier,
+                configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + OaiPmhConstants.repositoryServiceLocalIdentifier
             )
         ));
         record.setSubjects(OaiPmhConstants.defaultRecordSubjects);
@@ -166,9 +162,9 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
 
     private static OaiPmhRecord createRepositoryCollectionRecord(OzTrackConfiguration configuration) {
         OaiPmhRecord record = new OaiPmhRecord();
-        record.setOaiPmhRecordIdentifier(configuration.getOaiPmhConfiguration().getOaiPmhRecordIdentifierPrefix() + repositoryCollectionLocalIdentifier);
-        record.setRifCsRecordIdentifier(configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + repositoryCollectionLocalIdentifier);
-        record.setObjectIdentifier(configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + repositoryCollectionLocalIdentifier);
+        record.setOaiPmhRecordIdentifier(configuration.getOaiPmhConfiguration().getOaiPmhRecordIdentifierPrefix() + OaiPmhConstants.repositoryCollectionLocalIdentifier);
+        record.setRifCsRecordIdentifier(configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + OaiPmhConstants.repositoryCollectionLocalIdentifier);
+        record.setObjectIdentifier(configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + OaiPmhConstants.repositoryCollectionLocalIdentifier);
         record.setTitle(configuration.getOaiPmhConfiguration().getRepositoryCollectionTitle());
         record.setDescription(configuration.getOaiPmhConfiguration().getRepositoryCollectionDescription());
         record.setUrl(configuration.getBaseUrl() + "/");
@@ -178,13 +174,13 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         record.setRelations(Arrays.asList(
             new OaiPmhRecord.Relation(
                 "isPresentedBy",
-                configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + repositoryServiceLocalIdentifier,
-                configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + repositoryServiceLocalIdentifier
+                configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + OaiPmhConstants.repositoryServiceLocalIdentifier,
+                configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + OaiPmhConstants.repositoryServiceLocalIdentifier
             ),
             new OaiPmhRecord.Relation(
                 "isAvailableThrough",
-                configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + oaiPmhServiceLocalIdentifier,
-                configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + oaiPmhServiceLocalIdentifier
+                configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + OaiPmhConstants.oaiPmhServiceLocalIdentifier,
+                configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + OaiPmhConstants.oaiPmhServiceLocalIdentifier
             )
         ));
         record.setSubjects(OaiPmhConstants.defaultRecordSubjects);
