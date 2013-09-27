@@ -134,6 +134,14 @@ public class OaiPmhRecordWriter {
             out.writeCharacters("West " + record.getSpatialCoverage().getMinX() + ".");
             out.writeEndElement(); // coverage
         }
+        if (record.getRelations() != null) {
+            for (OaiPmhRecord.Relation relation : record.getRelations()) {
+                out.writeStartElement(DC.nsUri, "relation");
+                out.writeAttribute("type", relation.getRelationType());
+                out.writeCharacters(relation.getRelatedObjectIdentifier());
+                out.writeEndElement(); // relation
+            }
+        }
         if (record.getSubjects() != null) {
             for (OaiPmhRecord.Subject subject : record.getSubjects()) {
                 if (subject.getSubjectType().equals("local")) {
@@ -147,24 +155,6 @@ public class OaiPmhRecordWriter {
             out.writeStartElement(DC.nsUri, "type");
             out.writeCharacters(record.getDcType());
             out.writeEndElement(); // type
-        }
-        if (record.getIsPartOfObjectIdentifier() != null) {
-            out.writeStartElement(DC.nsUri, "relation");
-            out.writeAttribute("type", "isPartOf");
-            out.writeCharacters(record.getIsPartOfObjectIdentifier());
-            out.writeEndElement(); // relation
-        }
-        if (record.getIsPresentedByObjectIdentifier() != null) {
-            out.writeStartElement(DC.nsUri, "relation");
-            out.writeAttribute("type", "isPresentedBy");
-            out.writeCharacters(record.getIsPresentedByObjectIdentifier());
-            out.writeEndElement(); // relation
-        }
-        if (record.getIsAvailableThroughObjectIdentifier() != null) {
-            out.writeStartElement(DC.nsUri, "relation");
-            out.writeAttribute("type", "isAvailableThrough");
-            out.writeCharacters(record.getIsAvailableThroughObjectIdentifier());
-            out.writeEndElement(); // relation
         }
 
         out.writeEndElement(); // dc
@@ -310,6 +300,19 @@ public class OaiPmhRecordWriter {
             out.writeEndElement(); // coverage
         }
 
+        if (record.getRelations() != null) {
+            for (OaiPmhRecord.Relation relation : record.getRelations()) {
+                out.writeStartElement(RIF_CS.nsUri, "relatedObject");
+                out.writeStartElement(RIF_CS.nsUri, "key");
+                out.writeCharacters(relation.getRelatedObjectIdentifier());
+                out.writeEndElement(); // key
+                out.writeStartElement(RIF_CS.nsUri, "relation");
+                out.writeAttribute("type", relation.getRelationType());
+                out.writeEndElement(); // relation
+                out.writeEndElement(); // relatedObject
+            }
+        }
+
         if (record.getSubjects() != null) {
             for (OaiPmhRecord.Subject subject : record.getSubjects()) {
                 out.writeStartElement(RIF_CS.nsUri, "subject");
@@ -317,37 +320,6 @@ public class OaiPmhRecordWriter {
                 out.writeCharacters(subject.getSubjectText());
                 out.writeEndElement(); // subject
             }
-        }
-
-        if (record.getIsPartOfObjectIdentifier() != null) {
-            out.writeStartElement(RIF_CS.nsUri, "relatedObject");
-            out.writeStartElement(RIF_CS.nsUri, "key");
-            out.writeCharacters(record.getIsPartOfObjectIdentifier());
-            out.writeEndElement(); // key
-            out.writeStartElement(RIF_CS.nsUri, "relation");
-            out.writeAttribute("type", "isPartOf");
-            out.writeEndElement(); // relation
-            out.writeEndElement(); // relatedObject
-        }
-        if (record.getIsPresentedByObjectIdentifier() != null) {
-            out.writeStartElement(RIF_CS.nsUri, "relatedObject");
-            out.writeStartElement(RIF_CS.nsUri, "key");
-            out.writeCharacters(record.getIsPresentedByObjectIdentifier());
-            out.writeEndElement(); // key
-            out.writeStartElement(RIF_CS.nsUri, "relation");
-            out.writeAttribute("type", "isPresentedBy");
-            out.writeEndElement(); // relation
-            out.writeEndElement(); // relatedObject
-        }
-        if (record.getIsAvailableThroughObjectIdentifier() != null) {
-            out.writeStartElement(RIF_CS.nsUri, "relatedObject");
-            out.writeStartElement(RIF_CS.nsUri, "key");
-            out.writeCharacters(record.getIsAvailableThroughObjectIdentifier());
-            out.writeEndElement(); // key
-            out.writeStartElement(RIF_CS.nsUri, "relation");
-            out.writeAttribute("type", "isAvailableThrough");
-            out.writeEndElement(); // relation
-            out.writeEndElement(); // relatedObject
         }
 
         out.writeEndElement(); // service

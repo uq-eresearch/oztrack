@@ -80,7 +80,6 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
                 String localIdentifier = "projects/" + project.getId();
                 record.setOaiPmhIdentifier(configuration.getOaiPmhConfiguration().getOaiPmhIdentifierPrefix() + localIdentifier);
                 record.setObjectIdentifier(configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + localIdentifier);
-                record.setIsPartOfObjectIdentifier(configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + repositoryCollectionLocalIdentifier);
                 record.setTitle(project.getTitle());
                 record.setDescription(project.getDescription());
                 record.setUrl(configuration.getBaseUrl() + "/projects/" + project.getId());
@@ -95,6 +94,9 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
                 if (boundingBox != null)  {
                     record.setSpatialCoverage(boundingBox.getEnvelopeInternal());
                 }
+                record.setRelations(Arrays.asList(
+                    new OaiPmhRecord.Relation("isPartOf", configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + repositoryCollectionLocalIdentifier)
+                ));
                 record.setSubjects(OaiPmhConstants.defaultRecordSubjects);
                 record.setDcType("collection");
                 record.setRifCsObjectElemName("collection");
@@ -127,13 +129,15 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         OaiPmhRecord record = new OaiPmhRecord();
         record.setOaiPmhIdentifier(configuration.getOaiPmhConfiguration().getOaiPmhIdentifierPrefix() + oaiPmhServiceLocalIdentifier);
         record.setObjectIdentifier(configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + oaiPmhServiceLocalIdentifier);
-        record.setIsPartOfObjectIdentifier(configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + repositoryServiceLocalIdentifier);
         record.setTitle(configuration.getOaiPmhConfiguration().getOaiPmhServiceTitle());
         record.setDescription(configuration.getOaiPmhConfiguration().getOaiPmhServiceDescription());
         record.setUrl(configuration.getBaseUrl() + "/oai-pmh");
         record.setCreator(configuration.getOaiPmhConfiguration().getRepositoryCreator());
         record.setCreateDate(configuration.getOaiPmhConfiguration().getOaiPmhServiceCreateDate());
         record.setUpdateDate(configuration.getOaiPmhConfiguration().getOaiPmhServiceUpdateDate());
+        record.setRelations(Arrays.asList(
+            new OaiPmhRecord.Relation("isPartOf", configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + repositoryServiceLocalIdentifier)
+        ));
         record.setSubjects(OaiPmhConstants.defaultRecordSubjects);
         record.setDcType("service");
         record.setRifCsObjectElemName("service");
@@ -146,14 +150,16 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         OaiPmhRecord record = new OaiPmhRecord();
         record.setOaiPmhIdentifier(configuration.getOaiPmhConfiguration().getOaiPmhIdentifierPrefix() + repositoryCollectionLocalIdentifier);
         record.setObjectIdentifier(configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + repositoryCollectionLocalIdentifier);
-        record.setIsPresentedByObjectIdentifier(configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + repositoryServiceLocalIdentifier);
-        record.setIsAvailableThroughObjectIdentifier(configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + oaiPmhServiceLocalIdentifier);
         record.setTitle(configuration.getOaiPmhConfiguration().getRepositoryCollectionTitle());
         record.setDescription(configuration.getOaiPmhConfiguration().getRepositoryCollectionDescription());
         record.setUrl(configuration.getBaseUrl() + "/");
         record.setCreator(configuration.getOaiPmhConfiguration().getRepositoryCreator());
         record.setCreateDate(configuration.getOaiPmhConfiguration().getRepositoryCollectionCreateDate());
         record.setUpdateDate(configuration.getOaiPmhConfiguration().getRepositoryCollectionUpdateDate());
+        record.setRelations(Arrays.asList(
+            new OaiPmhRecord.Relation("isPresentedBy", configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + repositoryServiceLocalIdentifier),
+            new OaiPmhRecord.Relation("isAvailableThrough", configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + oaiPmhServiceLocalIdentifier)
+        ));
         record.setSubjects(OaiPmhConstants.defaultRecordSubjects);
         record.setDcType("collection");
         record.setRifCsObjectElemName("collection");

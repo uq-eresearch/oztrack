@@ -8,6 +8,26 @@ import org.apache.commons.lang3.Range;
 import com.vividsolutions.jts.geom.Envelope;
 
 public class OaiPmhRecord {
+    public static class Relation {
+        private String relationType;
+        private String relatedObjectIdentifier;
+        public Relation(String relationType, String relatedObjectIdentifier) {
+            this.relationType = relationType;
+            this.relatedObjectIdentifier = relatedObjectIdentifier;
+        }
+        public String getRelationType() {
+            return relationType;
+        }
+        public void setRelationType(String relationType) {
+            this.relationType = relationType;
+        }
+        public String getRelatedObjectIdentifier() {
+            return relatedObjectIdentifier;
+        }
+        public void setRelatedObjectIdentifier(String relatedObjectIdentifier) {
+            this.relatedObjectIdentifier = relatedObjectIdentifier;
+        }
+    }
     public static class Subject {
         private String subjectType;
         private String subjectText;
@@ -30,9 +50,6 @@ public class OaiPmhRecord {
     }
     private String oaiPmhIdentifier;
     private String objectIdentifier;
-    private String isPartOfObjectIdentifier;
-    private String isPresentedByObjectIdentifier;
-    private String isAvailableThroughObjectIdentifier;
     private String title;
     private String description;
     private String url;
@@ -41,6 +58,7 @@ public class OaiPmhRecord {
     private Date updateDate;
     private Range<Date> temporalCoverage;
     private Envelope spatialCoverage;
+    private List<Relation> relations;
     private List<Subject> subjects;
     private String dcType;
     private String rifCsObjectElemName;
@@ -59,24 +77,6 @@ public class OaiPmhRecord {
     }
     public void setObjectIdentifier(String objectIdentifier) {
         this.objectIdentifier = objectIdentifier;
-    }
-    public String getIsPartOfObjectIdentifier() {
-        return isPartOfObjectIdentifier;
-    }
-    public void setIsPartOfObjectIdentifier(String isPartOfObjectIdentifier) {
-        this.isPartOfObjectIdentifier = isPartOfObjectIdentifier;
-    }
-    public String getIsPresentedByObjectIdentifier() {
-        return isPresentedByObjectIdentifier;
-    }
-    public void setIsPresentedByObjectIdentifier(String isPresentedByObjectIdentifier) {
-        this.isPresentedByObjectIdentifier = isPresentedByObjectIdentifier;
-    }
-    public String getIsAvailableThroughObjectIdentifier() {
-        return isAvailableThroughObjectIdentifier;
-    }
-    public void setIsAvailableThroughObjectIdentifier(String isAvailableThroughObjectIdentifier) {
-        this.isAvailableThroughObjectIdentifier = isAvailableThroughObjectIdentifier;
     }
     public String getTitle() {
         return title;
@@ -125,6 +125,12 @@ public class OaiPmhRecord {
     }
     public void setSpatialCoverage(Envelope spatialCoverage) {
         this.spatialCoverage = spatialCoverage;
+    }
+    public List<Relation> getRelations() {
+        return relations;
+    }
+    public void setRelations(List<Relation> relations) {
+        this.relations = relations;
     }
     public List<Subject> getSubjects() {
         return subjects;
