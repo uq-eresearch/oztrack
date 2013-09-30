@@ -12,6 +12,7 @@ import java.util.Date;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.oztrack.data.access.OaiPmhRecordProducer;
 import org.oztrack.data.model.types.OaiPmhRecord;
 import org.oztrack.util.OaiPmhMetadataFormat;
@@ -36,7 +37,7 @@ public class OaiPmhRecordWriter {
     }
 
     private void write(OaiPmhRecord record) throws XMLStreamException {
-        if (record.getOaiPmhRecordIdentifier() == null) {
+        if (StringUtils.isBlank(record.getOaiPmhRecordIdentifier())) {
             throw new IllegalArgumentException("Record must have OAI-PMH identifier");
         }
 
@@ -96,22 +97,22 @@ public class OaiPmhRecordWriter {
         out.writeNamespace(XSI.nsPrefix, XSI.nsUri);
         out.writeAttribute(XSI.nsUri, "schemaLocation", OAI_DC.nsUri + " " + OAI_DC.xsdUri);
 
-        if (record.getObjectIdentifier() != null) {
+        if (StringUtils.isNotBlank(record.getObjectIdentifier())) {
             out.writeStartElement(DC.nsUri, "identifier");
             out.writeCharacters(record.getObjectIdentifier());
             out.writeEndElement(); // identifier
         }
-        if (record.getTitle() != null) {
+        if (StringUtils.isNotBlank(record.getTitle())) {
             out.writeStartElement(DC.nsUri, "title");
             out.writeCharacters(record.getTitle());
             out.writeEndElement(); // title
         }
-        if (record.getDescription() != null) {
+        if (StringUtils.isNotBlank(record.getDescription())) {
             out.writeStartElement(DC.nsUri, "description");
             out.writeCharacters(record.getDescription());
             out.writeEndElement(); // description
         }
-        if (record.getCreator() != null) {
+        if (StringUtils.isNotBlank(record.getCreator())) {
             out.writeStartElement(DC.nsUri, "creator");
             out.writeCharacters(record.getCreator());
             out.writeEndElement(); // creator
@@ -134,17 +135,17 @@ public class OaiPmhRecordWriter {
             out.writeCharacters("West " + record.getSpatialCoverage().getMinX() + ".");
             out.writeEndElement(); // coverage
         }
-        if (record.getAccessRights() != null) {
+        if (StringUtils.isNotBlank(record.getAccessRights())) {
             out.writeStartElement(DC.nsUri, "accessRights");
             out.writeCharacters(record.getAccessRights());
             out.writeEndElement(); // accessRights
         }
-        if ((record.getLicence() != null) && (record.getLicence().getLicenceText() != null)) {
+        if ((record.getLicence() != null) && StringUtils.isNotBlank(record.getLicence().getLicenceText())) {
             out.writeStartElement(DC.nsUri, "license");
             out.writeCharacters(record.getLicence().getLicenceText());
             out.writeEndElement(); // license
         }
-        if (record.getRightsStatement() != null) {
+        if (StringUtils.isNotBlank(record.getRightsStatement())) {
             out.writeStartElement(DC.nsUri, "rights");
             out.writeCharacters(record.getRightsStatement());
             out.writeEndElement(); // rights
@@ -166,7 +167,7 @@ public class OaiPmhRecordWriter {
                 }
             }
         }
-        if (record.getDcType() != null) {
+        if (StringUtils.isNotBlank(record.getDcType())) {
             out.writeStartElement(DC.nsUri, "type");
             out.writeCharacters(record.getDcType());
             out.writeEndElement(); // type
@@ -176,7 +177,7 @@ public class OaiPmhRecordWriter {
     }
 
     private void writeRifCsRepositoryMetadataElement(OaiPmhRecord record) throws XMLStreamException {
-        if (record.getRifCsObjectElemName() == null) {
+        if (StringUtils.isBlank(record.getRifCsObjectElemName())) {
             throw new IllegalArgumentException("Record must have RIF-CS object element name");
         }
 
@@ -196,20 +197,20 @@ public class OaiPmhRecordWriter {
 
         out.writeStartElement(RIF_CS.nsUri, "registryObject");
 
-        if (record.getRifCsGroup() != null) {
+        if (StringUtils.isNotBlank(record.getRifCsGroup())) {
             out.writeAttribute("group", record.getRifCsGroup());
         }
 
         // Do not use the identifier for an object as the key for a metadata record describing
         // that object - the metadata record needs its own unique separate identifier.
         // http://ands.org.au/guides/cpguide/cpgidentifiers.html
-        if (record.getRifCsRecordIdentifier() != null) {
+        if (StringUtils.isNotBlank(record.getRifCsRecordIdentifier())) {
             out.writeStartElement(RIF_CS.nsUri, "key");
             out.writeCharacters(record.getRifCsRecordIdentifier());
             out.writeEndElement(); // key
         }
 
-        if (record.getUrl() != null) {
+        if (StringUtils.isNotBlank(record.getUrl())) {
             out.writeStartElement(RIF_CS.nsUri, "originatingSource");
             out.writeAttribute("type", "authoritative");
             out.writeCharacters(record.getUrl());
@@ -218,7 +219,7 @@ public class OaiPmhRecordWriter {
 
         out.writeStartElement(RIF_CS.nsUri, record.getRifCsObjectElemName());
 
-        if (record.getRifCsObjectTypeAttr() != null) {
+        if (StringUtils.isNotBlank(record.getRifCsObjectTypeAttr())) {
             out.writeAttribute("type", record.getRifCsObjectTypeAttr());
         }
 
@@ -226,14 +227,14 @@ public class OaiPmhRecordWriter {
             out.writeAttribute("dateModified", utcDateTimeFormat.format(record.getUpdateDate()));
         }
 
-        if (record.getObjectIdentifier() != null) {
+        if (StringUtils.isNotBlank(record.getObjectIdentifier())) {
             out.writeStartElement(RIF_CS.nsUri, "identifier");
             out.writeAttribute("type", "uri");
             out.writeCharacters(record.getObjectIdentifier());
             out.writeEndElement(); // identifier
         }
 
-        if (record.getTitle() != null) {
+        if (StringUtils.isNotBlank(record.getTitle())) {
             out.writeStartElement(RIF_CS.nsUri, "name");
             out.writeAttribute("type", "primary");
             out.writeStartElement(RIF_CS.nsUri, "namePart");
@@ -242,14 +243,14 @@ public class OaiPmhRecordWriter {
             out.writeEndElement(); // name
         }
 
-        if (record.getDescription() != null) {
+        if (StringUtils.isNotBlank(record.getDescription())) {
             out.writeStartElement(RIF_CS.nsUri, "description");
             out.writeAttribute("type", "full");
             out.writeCharacters(record.getDescription());
             out.writeEndElement(); // description
         }
 
-        if (record.getUrl() != null) {
+        if (StringUtils.isNotBlank(record.getUrl())) {
             out.writeStartElement(RIF_CS.nsUri, "location");
             out.writeStartElement(RIF_CS.nsUri, "address");
             out.writeStartElement(RIF_CS.nsUri, "electronic");
@@ -315,27 +316,37 @@ public class OaiPmhRecordWriter {
             out.writeEndElement(); // coverage
         }
 
-        if ((record.getAccessRights() != null) || (record.getLicence() != null) || (record.getRightsStatement() != null) ) {
+        if (
+            StringUtils.isNotBlank(record.getAccessRights()) ||
+            (
+                (record.getLicence() != null) && (
+                    StringUtils.isNotBlank(record.getLicence().getLicenceType()) ||
+                    StringUtils.isNotBlank(record.getLicence().getRightsUri()) ||
+                    StringUtils.isNotBlank(record.getLicence().getLicenceText())
+                )
+            ) ||
+            StringUtils.isNotBlank(record.getRightsStatement())
+        ) {
             out.writeStartElement(RIF_CS.nsUri, "rights");
-            if (record.getAccessRights() != null) {
+            if (StringUtils.isNotBlank(record.getAccessRights())) {
                 out.writeStartElement(RIF_CS.nsUri, "accessRights");
                 out.writeCharacters(record.getAccessRights());
                 out.writeEndElement(); // accessRights
             }
             if (record.getLicence() != null) {
                 out.writeStartElement(RIF_CS.nsUri, "license");
-                if (record.getLicence().getLicenceType() != null) {
+                if (StringUtils.isNotBlank(record.getLicence().getLicenceType())) {
                     out.writeAttribute("type", record.getLicence().getLicenceType());
                 }
-                if (record.getLicence().getRightsUri() != null) {
+                if (StringUtils.isNotBlank(record.getLicence().getRightsUri())) {
                     out.writeAttribute("rightsUri", record.getLicence().getRightsUri());
                 }
-                if (record.getLicence().getLicenceText() != null) {
+                if (StringUtils.isNotBlank(record.getLicence().getLicenceText())) {
                     out.writeCharacters(record.getLicence().getLicenceText());
                 }
                 out.writeEndElement(); // license
             }
-            if (record.getRightsStatement() != null) {
+            if (StringUtils.isNotBlank(record.getRightsStatement())) {
                 out.writeStartElement(RIF_CS.nsUri, "rightsStatement");
                 out.writeCharacters(record.getRightsStatement());
                 out.writeEndElement(); // rightsStatement

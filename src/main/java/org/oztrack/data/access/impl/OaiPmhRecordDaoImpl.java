@@ -121,7 +121,9 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
                         record.setAccessRights("The data in this project are not publicly available.");
                         break;
                 }
-                record.setRightsStatement(project.getRightsStatement());
+                if (StringUtils.isNotBlank(project.getRightsStatement())) {
+                    record.setRightsStatement(project.getRightsStatement());
+                }
                 record.setRelations(Arrays.asList(
                     new OaiPmhRecord.Relation(
                         "isPartOf",
