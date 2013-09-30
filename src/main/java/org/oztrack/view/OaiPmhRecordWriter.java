@@ -210,10 +210,10 @@ public class OaiPmhRecordWriter {
             out.writeEndElement(); // key
         }
 
-        if (StringUtils.isNotBlank(record.getUrl())) {
+        if (StringUtils.isNotBlank(record.getOriginatingSource())) {
             out.writeStartElement(RIF_CS.nsUri, "originatingSource");
             out.writeAttribute("type", "authoritative");
-            out.writeCharacters(record.getUrl());
+            out.writeCharacters(record.getOriginatingSource());
             out.writeEndElement(); // originatingSource
         }
 
@@ -250,15 +250,25 @@ public class OaiPmhRecordWriter {
             out.writeEndElement(); // description
         }
 
-        if (StringUtils.isNotBlank(record.getUrl())) {
+        if (StringUtils.isNotBlank(record.getUrl()) || StringUtils.isNotBlank(record.getEmail())) {
             out.writeStartElement(RIF_CS.nsUri, "location");
             out.writeStartElement(RIF_CS.nsUri, "address");
-            out.writeStartElement(RIF_CS.nsUri, "electronic");
-            out.writeAttribute("type", "url");
-            out.writeStartElement(RIF_CS.nsUri, "value");
-            out.writeCharacters(record.getUrl());
-            out.writeEndElement(); // value
-            out.writeEndElement(); // electronic
+            if (StringUtils.isNotBlank(record.getUrl())) {
+                out.writeStartElement(RIF_CS.nsUri, "electronic");
+                out.writeAttribute("type", "url");
+                out.writeStartElement(RIF_CS.nsUri, "value");
+                out.writeCharacters(record.getUrl());
+                out.writeEndElement(); // value
+                out.writeEndElement(); // electronic
+            }
+            if (StringUtils.isNotBlank(record.getEmail())) {
+                out.writeStartElement(RIF_CS.nsUri, "electronic");
+                out.writeAttribute("type", "email");
+                out.writeStartElement(RIF_CS.nsUri, "value");
+                out.writeCharacters(record.getEmail());
+                out.writeEndElement(); // value
+                out.writeEndElement(); // electronic
+            }
             out.writeEndElement(); // address
             out.writeEndElement(); // location
         }

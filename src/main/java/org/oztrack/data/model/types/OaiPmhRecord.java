@@ -90,6 +90,7 @@ public class OaiPmhRecord {
     private String title;
     private String description;
     private String url;
+    private String email;
     private String creator;
     private Date createDate;
     private Date updateDate;
@@ -104,6 +105,7 @@ public class OaiPmhRecord {
     private String rifCsObjectElemName;
     private String rifCsObjectTypeAttr;
     private String rifCsGroup;
+    private String originatingSource;
     public OaiPmhRecord() {
     }
     public String getOaiPmhRecordIdentifier() {
@@ -141,6 +143,12 @@ public class OaiPmhRecord {
     }
     public void setUrl(String url) {
         this.url = url;
+    }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
     }
     public String getCreator() {
         return creator;
@@ -225,5 +233,11 @@ public class OaiPmhRecord {
     }
     public void setRifCsGroup(String rifCsGroup) {
         this.rifCsGroup = rifCsGroup;
+    }
+    public String getOriginatingSource() {
+        return originatingSource;
+    }
+    public void setOriginatingSource(String originatingSource) {
+        this.originatingSource = originatingSource;
     }
 }

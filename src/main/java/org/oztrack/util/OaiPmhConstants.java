@@ -35,9 +35,12 @@ public class OaiPmhConstants {
         OAI_DC,
         RIF_CS
     );
+
     public static final String repositoryServiceLocalIdentifier = "service";
     public static final String oaiPmhServiceLocalIdentifier = "oai-pmh";
     public static final String repositoryCollectionLocalIdentifier = "collection";
+    public static final String dataManagerPartyLocalIdentifier = "data-manager";
+
     public static List<OaiPmhRecord.Subject> defaultRecordSubjects = Arrays.asList(
         new OaiPmhRecord.Subject("anzsrc-for", "0502"), // Environmental Science and Management
         new OaiPmhRecord.Subject("anzsrc-for", "0602"), // Ecology

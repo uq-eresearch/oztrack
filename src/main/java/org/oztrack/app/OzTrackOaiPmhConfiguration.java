@@ -23,4 +23,9 @@ public interface OzTrackOaiPmhConfiguration {
     String getRepositoryCollectionRightsStatement();
     Date getRepositoryCollectionCreateDate();
     Date getRepositoryCollectionUpdateDate();
+    String getDataManagerPartyName();
+    String getDataManagerPartyDescription();
+    String getDataManagerPartyEmail();
+    Date getDataManagerPartyCreateDate();
+    Date getDataManagerPartyUpdateDate();
 }

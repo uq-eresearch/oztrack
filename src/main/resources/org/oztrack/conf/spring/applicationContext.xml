@@ -90,6 +90,11 @@
                 <property name="repositoryCollectionRightsStatement" value="${org.oztrack.conf.oaipmh.repositoryCollectionRightsStatement}"/>
                 <property name="repositoryCollectionCreateDateString" value="${org.oztrack.conf.oaipmh.repositoryCollectionCreateDate}"/>
                 <property name="repositoryCollectionUpdateDateString" value="${org.oztrack.conf.oaipmh.repositoryCollectionUpdateDate}"/>
+                <property name="dataManagerPartyName" value="${org.oztrack.conf.oaipmh.dataManagerPartyName}"/>
+                <property name="dataManagerPartyDescription" value="${org.oztrack.conf.oaipmh.dataManagerPartyDescription}"/>
+                <property name="dataManagerPartyEmail" value="${org.oztrack.conf.oaipmh.dataManagerPartyEmail}"/>
+                <property name="dataManagerPartyCreateDateString" value="${org.oztrack.conf.oaipmh.dataManagerPartyCreateDate}"/>
+                <property name="dataManagerPartyUpdateDateString" value="${org.oztrack.conf.oaipmh.dataManagerPartyUpdateDate}"/>
             </bean>
         </property>
     </bean>

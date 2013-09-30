@@ -38,6 +38,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
     private OaiPmhRecord repositoryServiceRecord;
     private OaiPmhRecord oaiPmhServiceRecord;
     private OaiPmhRecord repositoryCollectionRecord;
+    private OaiPmhRecord dataManagerPartyRecord;
 
     public OaiPmhRecordDaoImpl() {
     }
@@ -47,6 +48,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         this.repositoryServiceRecord = createRepositoryServiceRecord(configuration);
         this.oaiPmhServiceRecord = createOaiPmhServiceRecord(configuration);
         this.repositoryCollectionRecord = createRepositoryCollectionRecord(configuration);
+        this.dataManagerPartyRecord = createDataManagerPartyRecord(configuration);
     }
 
     @Override
@@ -64,7 +66,8 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
                 List<OaiPmhRecord> records = Arrays.asList(
                     repositoryServiceRecord,
                     oaiPmhServiceRecord,
-                    repositoryCollectionRecord
+                    repositoryCollectionRecord,
+                    dataManagerPartyRecord
                 );
                 return records.iterator();
             }
@@ -140,6 +143,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
                 record.setRifCsObjectElemName("collection");
                 record.setRifCsObjectTypeAttr("dataset");
                 record.setRifCsGroup(configuration.getOaiPmhConfiguration().getRifCsGroup());
+                record.setOriginatingSource(configuration.getBaseUrl() + "/");
                 return record;
             }
         };
@@ -161,6 +165,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         record.setRifCsObjectElemName("service");
         record.setRifCsObjectTypeAttr("report");
         record.setRifCsGroup(configuration.getOaiPmhConfiguration().getRifCsGroup());
+        record.setOriginatingSource(configuration.getBaseUrl() + "/");
         return record;
     }
 
@@ -187,6 +192,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         record.setRifCsObjectElemName("service");
         record.setRifCsObjectTypeAttr("harvest-oaipmh");
         record.setRifCsGroup(configuration.getOaiPmhConfiguration().getRifCsGroup());
+        record.setOriginatingSource(configuration.getBaseUrl() + "/");
         return record;
     }
 
@@ -219,6 +225,33 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         record.setRifCsObjectElemName("collection");
         record.setRifCsObjectTypeAttr("repository");
         record.setRifCsGroup(configuration.getOaiPmhConfiguration().getRifCsGroup());
+        record.setOriginatingSource(configuration.getBaseUrl() + "/");
+        return record;
+    }
+
+    private static OaiPmhRecord createDataManagerPartyRecord(OzTrackConfiguration configuration) {
+        OaiPmhRecord record = new OaiPmhRecord();
+        record.setOaiPmhRecordIdentifier(configuration.getOaiPmhConfiguration().getOaiPmhRecordIdentifierPrefix() + OaiPmhConstants.dataManagerPartyLocalIdentifier);
+        record.setRifCsRecordIdentifier(configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + OaiPmhConstants.dataManagerPartyLocalIdentifier);
+        record.setObjectIdentifier(configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + OaiPmhConstants.dataManagerPartyLocalIdentifier);
+        record.setTitle(configuration.getOaiPmhConfiguration().getDataManagerPartyName());
+        record.setDescription(configuration.getOaiPmhConfiguration().getDataManagerPartyDescription());
+        record.setEmail(configuration.getOaiPmhConfiguration().getDataManagerPartyEmail());
+        record.setCreateDate(configuration.getOaiPmhConfiguration().getDataManagerPartyCreateDate());
+        record.setUpdateDate(configuration.getOaiPmhConfiguration().getDataManagerPartyUpdateDate());
+        record.setRelations(Arrays.asList(
+            new OaiPmhRecord.Relation(
+                "isManagerOf",
+                configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + OaiPmhConstants.repositoryCollectionLocalIdentifier,
+                configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + OaiPmhConstants.repositoryCollectionLocalIdentifier
+            )
+        ));
+        record.setSubjects(OaiPmhConstants.defaultRecordSubjects);
+        record.setDcType("agent");
+        record.setRifCsObjectElemName("party");
+        record.setRifCsObjectTypeAttr("administrativePosition");
+        record.setRifCsGroup(configuration.getOaiPmhConfiguration().getRifCsGroup());
+        record.setOriginatingSource(configuration.getBaseUrl() + "/");
         return record;
     }
 }

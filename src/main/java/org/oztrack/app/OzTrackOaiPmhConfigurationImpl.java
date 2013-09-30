@@ -32,6 +32,12 @@ public class OzTrackOaiPmhConfigurationImpl implements OzTrackOaiPmhConfiguratio
     private Date repositoryCollectionCreateDate;
     private Date repositoryCollectionUpdateDate;
 
+    private String dataManagerPartyName;
+    private String dataManagerPartyDescription;
+    private String dataManagerPartyEmail;
+    private Date dataManagerPartyCreateDate;
+    private Date dataManagerPartyUpdateDate;
+
     @Override
     public boolean isOaiPmhEnabled() {
         return oaiPmhEnabled;
@@ -219,13 +225,13 @@ public class OzTrackOaiPmhConfigurationImpl implements OzTrackOaiPmhConfiguratio
         this.repositoryCollectionCreateDate = repositoryCollectionCreateDate;
     }
 
+    public void setRepositoryCollectionCreateDateString(String repositoryCollectionCreateDateString) throws ParseException {
+        this.repositoryCollectionCreateDate = utcDateTimeFormat.parse(repositoryCollectionCreateDateString);
+    }
+
     @Override
     public Date getRepositoryCollectionUpdateDate() {
         return repositoryCollectionUpdateDate;
-    }
-
-    public void setRepositoryCollectionCreateDateString(String repositoryCollectionCreateDateString) throws ParseException {
-        this.repositoryCollectionCreateDate = utcDateTimeFormat.parse(repositoryCollectionCreateDateString);
     }
 
     public void setRepositoryCollectionUpdateDate(Date repositoryCollectionUpdateDate) {
@@ -234,5 +240,58 @@ public class OzTrackOaiPmhConfigurationImpl implements OzTrackOaiPmhConfiguratio
 
     public void setRepositoryCollectionUpdateDateString(String repositoryCollectionUpdateDateString) throws ParseException {
         this.repositoryCollectionUpdateDate = utcDateTimeFormat.parse(repositoryCollectionUpdateDateString);
+    }
+
+    @Override
+    public String getDataManagerPartyName() {
+        return dataManagerPartyName;
+    }
+
+    public void setDataManagerPartyName(String dataManagerPartyName) {
+        this.dataManagerPartyName = dataManagerPartyName;
+    }
+
+    @Override
+    public String getDataManagerPartyDescription() {
+        return dataManagerPartyDescription;
+    }
+
+    public void setDataManagerPartyDescription(String dataManagerPartyDescription) {
+        this.dataManagerPartyDescription = dataManagerPartyDescription;
+    }
+
+    @Override
+    public String getDataManagerPartyEmail() {
+        return dataManagerPartyEmail;
+    }
+
+    public void setDataManagerPartyEmail(String dataManagerPartyEmail) {
+        this.dataManagerPartyEmail = dataManagerPartyEmail;
+    }
+
+    @Override
+    public Date getDataManagerPartyCreateDate() {
+        return dataManagerPartyCreateDate;
+    }
+
+    public void setDataManagerPartyCreateDate(Date dataManagerPartyCreateDate) {
+        this.dataManagerPartyCreateDate = dataManagerPartyCreateDate;
+    }
+
+    public void setDataManagerPartyCreateDateString(String dataManagerPartyCreateDateString) throws ParseException {
+        this.dataManagerPartyCreateDate = utcDateTimeFormat.parse(dataManagerPartyCreateDateString);
+    }
+
+    @Override
+    public Date getDataManagerPartyUpdateDate() {
+        return dataManagerPartyUpdateDate;
+    }
+
+    public void setDataManagerPartyUpdateDate(Date dataManagerPartyUpdateDate) {
+        this.dataManagerPartyUpdateDate = dataManagerPartyUpdateDate;
+    }
+
+    public void setDataManagerPartyUpdateDateString(String dataManagerPartyUpdateDateString) throws ParseException {
+        this.dataManagerPartyUpdateDate = utcDateTimeFormat.parse(dataManagerPartyUpdateDateString);
     }
 }
