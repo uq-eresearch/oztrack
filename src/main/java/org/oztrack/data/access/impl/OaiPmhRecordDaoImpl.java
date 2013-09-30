@@ -201,6 +201,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         record.setCreator(configuration.getOaiPmhConfiguration().getRepositoryCreator());
         record.setCreateDate(configuration.getOaiPmhConfiguration().getRepositoryCollectionCreateDate());
         record.setUpdateDate(configuration.getOaiPmhConfiguration().getRepositoryCollectionUpdateDate());
+        record.setRightsStatement(configuration.getOaiPmhConfiguration().getRepositoryCollectionRightsStatement());
         record.setRelations(Arrays.asList(
             new OaiPmhRecord.Relation(
                 "isPresentedBy",

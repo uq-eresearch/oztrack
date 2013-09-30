@@ -20,6 +20,7 @@ public interface OzTrackOaiPmhConfiguration {
     String getOaiPmhServiceAdminEmail();
     String getRepositoryCollectionTitle();
     String getRepositoryCollectionDescription();
+    String getRepositoryCollectionRightsStatement();
     Date getRepositoryCollectionCreateDate();
     Date getRepositoryCollectionUpdateDate();
 }

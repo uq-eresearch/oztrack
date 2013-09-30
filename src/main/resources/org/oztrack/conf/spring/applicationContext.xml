@@ -87,6 +87,7 @@
                 <property name="oaiPmhServiceAdminEmail" value="${org.oztrack.conf.oaipmh.oaiPmhServiceAdminEmail}"/>
                 <property name="repositoryCollectionTitle" value="${org.oztrack.conf.oaipmh.repositoryCollectionTitle}"/>
                 <property name="repositoryCollectionDescription" value="${org.oztrack.conf.oaipmh.repositoryCollectionDescription}"/>
+                <property name="repositoryCollectionRightsStatement" value="${org.oztrack.conf.oaipmh.repositoryCollectionRightsStatement}"/>
                 <property name="repositoryCollectionCreateDateString" value="${org.oztrack.conf.oaipmh.repositoryCollectionCreateDate}"/>
                 <property name="repositoryCollectionUpdateDateString" value="${org.oztrack.conf.oaipmh.repositoryCollectionUpdateDate}"/>
             </bean>

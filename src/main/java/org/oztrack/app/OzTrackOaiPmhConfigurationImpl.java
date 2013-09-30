@@ -28,6 +28,7 @@ public class OzTrackOaiPmhConfigurationImpl implements OzTrackOaiPmhConfiguratio
 
     private String repositoryCollectionTitle;
     private String repositoryCollectionDescription;
+    private String repositoryCollectionRightsStatement;
     private Date repositoryCollectionCreateDate;
     private Date repositoryCollectionUpdateDate;
 
@@ -198,6 +199,15 @@ public class OzTrackOaiPmhConfigurationImpl implements OzTrackOaiPmhConfiguratio
 
     public void setRepositoryCollectionDescription(String repositoryCollectionDescription) {
         this.repositoryCollectionDescription = repositoryCollectionDescription;
+    }
+
+    @Override
+    public String getRepositoryCollectionRightsStatement() {
+        return repositoryCollectionRightsStatement;
+    }
+
+    public void setRepositoryCollectionRightsStatement(String repositoryCollectionRightsStatement) {
+        this.repositoryCollectionRightsStatement = repositoryCollectionRightsStatement;
     }
 
     @Override
