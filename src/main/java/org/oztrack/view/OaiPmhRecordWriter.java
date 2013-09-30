@@ -134,6 +134,21 @@ public class OaiPmhRecordWriter {
             out.writeCharacters("West " + record.getSpatialCoverage().getMinX() + ".");
             out.writeEndElement(); // coverage
         }
+        if (record.getAccessRights() != null) {
+            out.writeStartElement(DC.nsUri, "accessRights");
+            out.writeCharacters(record.getAccessRights());
+            out.writeEndElement(); // accessRights
+        }
+        if ((record.getLicence() != null) && (record.getLicence().getLicenceText() != null)) {
+            out.writeStartElement(DC.nsUri, "license");
+            out.writeCharacters(record.getLicence().getLicenceText());
+            out.writeEndElement(); // license
+        }
+        if (record.getRightsStatement() != null) {
+            out.writeStartElement(DC.nsUri, "rights");
+            out.writeCharacters(record.getRightsStatement());
+            out.writeEndElement(); // rights
+        }
         if (record.getRelations() != null) {
             for (OaiPmhRecord.Relation relation : record.getRelations()) {
                 out.writeStartElement(DC.nsUri, "relation");
@@ -298,6 +313,34 @@ public class OaiPmhRecordWriter {
             out.writeCharacters("projection=WGS84");
             out.writeEndElement(); // spatial
             out.writeEndElement(); // coverage
+        }
+
+        if ((record.getAccessRights() != null) || (record.getLicence() != null) || (record.getRightsStatement() != null) ) {
+            out.writeStartElement(RIF_CS.nsUri, "rights");
+            if (record.getAccessRights() != null) {
+                out.writeStartElement(RIF_CS.nsUri, "accessRights");
+                out.writeCharacters(record.getAccessRights());
+                out.writeEndElement(); // accessRights
+            }
+            if (record.getLicence() != null) {
+                out.writeStartElement(RIF_CS.nsUri, "license");
+                if (record.getLicence().getLicenceType() != null) {
+                    out.writeAttribute("type", record.getLicence().getLicenceType());
+                }
+                if (record.getLicence().getRightsUri() != null) {
+                    out.writeAttribute("rightsUri", record.getLicence().getRightsUri());
+                }
+                if (record.getLicence().getLicenceText() != null) {
+                    out.writeCharacters(record.getLicence().getLicenceText());
+                }
+                out.writeEndElement(); // license
+            }
+            if (record.getRightsStatement() != null) {
+                out.writeStartElement(RIF_CS.nsUri, "rightsStatement");
+                out.writeCharacters(record.getRightsStatement());
+                out.writeEndElement(); // rightsStatement
+            }
+            out.writeEndElement(); // rights
         }
 
         if (record.getRelations() != null) {

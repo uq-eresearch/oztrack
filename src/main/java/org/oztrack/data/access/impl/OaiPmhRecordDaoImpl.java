@@ -1,5 +1,6 @@
 package org.oztrack.data.access.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -26,6 +27,8 @@ import com.vividsolutions.jts.geom.Polygon;
 
 @Service
 public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
+    private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
     @Autowired
     private OzTrackConfiguration configuration;
 
@@ -94,6 +97,31 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
                 if (boundingBox != null)  {
                     record.setSpatialCoverage(boundingBox.getEnvelopeInternal());
                 }
+                switch (project.getAccess()) {
+                    case OPEN:
+                        record.setAccessRights("The data in this project are available for public use.");
+                        if (project.getDataLicence() != null) {
+                            record.setLicence(new OaiPmhRecord.Licence(
+                                project.getDataLicence().getIdentifier(),
+                                project.getDataLicence().getInfoUrl(),
+                                project.getDataLicence().getTitle()
+                            ));
+                        }
+                        else {
+                            record.setLicence(new OaiPmhRecord.Licence("NoLicense", null, null));
+                        }
+                        break;
+                    case EMBARGO:
+                        record.setAccessRights(
+                            "The data in this project are under embargo until " +
+                            isoDateFormat.format(project.getEmbargoDate()) + "."
+                        );
+                        break;
+                    case CLOSED:
+                        record.setAccessRights("The data in this project are not publicly available.");
+                        break;
+                }
+                record.setRightsStatement(project.getRightsStatement());
                 record.setRelations(Arrays.asList(
                     new OaiPmhRecord.Relation(
                         "isPartOf",

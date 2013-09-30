@@ -8,6 +8,34 @@ import org.apache.commons.lang3.Range;
 import com.vividsolutions.jts.geom.Envelope;
 
 public class OaiPmhRecord {
+    public static class Licence {
+        private String licenceType;
+        private String rightsUri;
+        private String licenceText;
+        public Licence(String licenceType, String rightsUri, String licenceText) {
+            this.licenceType = licenceType;
+            this.rightsUri = rightsUri;
+            this.licenceText = licenceText;
+        }
+        public String getLicenceType() {
+            return licenceType;
+        }
+        public void setLicenceType(String licenceType) {
+            this.licenceType = licenceType;
+        }
+        public String getRightsUri() {
+            return rightsUri;
+        }
+        public void setRightsUri(String rightsUri) {
+            this.rightsUri = rightsUri;
+        }
+        public String getLicenceText() {
+            return licenceText;
+        }
+        public void setLicenceText(String licenceText) {
+            this.licenceText = licenceText;
+        }
+    }
     public static class Relation {
         private String relationType;
         private String relatedRifCsRecordIdentifier;
@@ -67,6 +95,9 @@ public class OaiPmhRecord {
     private Date updateDate;
     private Range<Date> temporalCoverage;
     private Envelope spatialCoverage;
+    private String rightsStatement;
+    private Licence licence;
+    private String accessRights;
     private List<Relation> relations;
     private List<Subject> subjects;
     private String dcType;
@@ -140,6 +171,24 @@ public class OaiPmhRecord {
     }
     public void setSpatialCoverage(Envelope spatialCoverage) {
         this.spatialCoverage = spatialCoverage;
+    }
+    public String getRightsStatement() {
+        return rightsStatement;
+    }
+    public void setRightsStatement(String rightsStatement) {
+        this.rightsStatement = rightsStatement;
+    }
+    public Licence getLicence() {
+        return licence;
+    }
+    public void setLicence(Licence licence) {
+        this.licence = licence;
+    }
+    public String getAccessRights() {
+        return accessRights;
+    }
+    public void setAccessRights(String accessRights) {
+        this.accessRights = accessRights;
     }
     public List<Relation> getRelations() {
         return relations;
