@@ -318,9 +318,15 @@ public class OaiPmhRecordWriter {
             out.writeStartElement(RIF_CS.nsUri, "spatial");
             out.writeAttribute("type", "iso19139dcmiBox");
             out.writeCharacters("northlimit=" + record.getSpatialCoverage().getMaxY() + "; ");
-            out.writeCharacters("eastLimit=" + record.getSpatialCoverage().getMaxX() + "; ");
+            out.writeCharacters("eastLimit=" +
+                ((record.getSpatialCoverage().getMaxX() > 180d)
+                ? (record.getSpatialCoverage().getMaxX() - 360d)
+                : record.getSpatialCoverage().getMaxX()) + "; ");
             out.writeCharacters("southlimit=" + record.getSpatialCoverage().getMinY() + "; ");
-            out.writeCharacters("westlimit=" + record.getSpatialCoverage().getMinX() + "; ");
+            out.writeCharacters("westlimit=" +
+                ((record.getSpatialCoverage().getMinX() > 180d)
+                ? (record.getSpatialCoverage().getMinX() - 360d)
+                : record.getSpatialCoverage().getMinX()) + "; ");
             out.writeCharacters("projection=WGS84");
             out.writeEndElement(); // spatial
             out.writeEndElement(); // coverage
