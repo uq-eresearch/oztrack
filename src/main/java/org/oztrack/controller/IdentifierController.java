@@ -21,6 +21,7 @@ public class IdentifierController {
             id.equals(OaiPmhConstants.repositoryServiceLocalIdentifier) ? "/" :
             id.equals(OaiPmhConstants.repositoryCollectionLocalIdentifier) ? "/" :
             id.equals(OaiPmhConstants.oaiPmhServiceLocalIdentifier) ? "/oai-pmh" :
+            id.equals(OaiPmhConstants.dataManagerPartyLocalIdentifier) ? "/contact" :
             "/" + id
         );
     }
