@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.oztrack.util.OaiPmhException;
-import org.oztrack.view.OaiPmhListSetsView;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,8 +31,7 @@ public class OaiPmhListSetsController extends OaiPmhController {
         String resumptionToken = request.getParameter("resumptionToken");
 
         // TODO: Check for badResumptionToken (resumptionToken is invalid or expired)
-        // TODO: Check for noSetHierarchy (repository does not support sets)
 
-        return new OaiPmhListSetsView();
+        throw new OaiPmhException("noSetHierarchy", "This repository does not support sets.");
     }
 }

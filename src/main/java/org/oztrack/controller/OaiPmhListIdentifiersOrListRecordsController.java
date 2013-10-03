@@ -106,10 +106,11 @@ public class OaiPmhListIdentifiersOrListRecordsController extends OaiPmhControll
             throw new OaiPmhException("cannotDisseminateFormat", "metadataPrefix argument is not supported by the repository.");
         }
 
-        @SuppressWarnings("unused")
         String set = request.getParameter("set");
+        if (set != null) {
+            throw new OaiPmhException("noSetHierarchy", "This repository does not support sets.");
+        }
 
-        // TODO: Check for noSetHierarchy (repository does not support sets)
         // TODO: Query for records matching from/until/set parameters
         // TODO: Check for noRecordsMatch error (combination of from/until/set results no records)
         OaiPmhRecordProducer recordProducer = recordDao.getRecords();
