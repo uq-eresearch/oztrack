@@ -41,7 +41,9 @@ public class OaiPmhRecordWriter {
             throw new IllegalArgumentException("Record must have OAI-PMH identifier");
         }
 
-        out.writeStartElement("record");
+        if (!headerOnly) {
+            out.writeStartElement("record");
+        }
 
         out.writeStartElement("header");
 
@@ -77,7 +79,9 @@ public class OaiPmhRecordWriter {
             out.writeEndElement(); // metadata
         }
 
-        out.writeEndElement(); // record
+        if (!headerOnly) {
+            out.writeEndElement(); // record
+        }
     }
 
     private void writeOaiDcRepositoryMetadataElement(OaiPmhRecord record) throws XMLStreamException {
