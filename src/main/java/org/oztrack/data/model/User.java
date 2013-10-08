@@ -16,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -23,41 +24,46 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
+import org.oztrack.data.model.types.Personable;
 
 @Entity(name="appuser")
-public class User {
+public class User implements Personable {
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="userid_seq")
     @SequenceGenerator(name="userid_seq", sequenceName="userid_seq", allocationSize=1)
-    @Column(nullable=false)
+    @Column(name="id", nullable=false)
     private Long id;
 
-    @Column(unique=true, nullable=false)
-    private String username;
-
-    @Column(unique=true, nullable=false)
-    private String email;
-
-    private String title;
-    private String firstName;
-    private String lastName;
-    private String organisation;
-    private String password;
-    private Boolean admin;
-    private String aafId;
-
-    private String dataSpaceAgentURI;
-    private String dataSpaceAgentDescription;
-    private Date dataSpaceAgentUpdateDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="createdate")
+    private Date createDate;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createDate;
+    @Column(name="updatedate")
+    private Date updateDate;
+
+    @Column(name="username", unique=true, nullable=false)
+    private String username;
+
+    @Column(name="password")
+    private String password;
 
     @Column(name="passwordresettoken", unique=true)
     private String passwordResetToken;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name="passwordresetexpiresat")
     private Date passwordResetExpiresAt;
+
+    @Column(name="aafid")
+    private String aafId;
+
+    @Column(name="admin")
+    private Boolean admin;
+
+    @OneToOne(fetch=FetchType.EAGER, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval=false)
+    @JoinColumn(name="person_id", nullable=false)
+    private Person person = new Person();
 
     @OneToMany(mappedBy="user", fetch=FetchType.LAZY, cascade={CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true)
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
@@ -84,6 +90,26 @@ public class User {
         this.id = id;
     }
 
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+        person.setCreateDate(createDate);
+        person.setCreateUser(this);
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+        person.setUpdateDate(updateDate);
+        person.setUpdateUser(this);
+    }
+
     public String getUsername() {
         return username;
     }
@@ -92,130 +118,12 @@ public class User {
         this.username = username;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (!(obj instanceof User)) {
-            return false;
-        }
-        User other = (User) obj;
-        return getId().equals(other.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return (getId() != null) ? getId().intValue() : super.hashCode();
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getOrganisation() {
-        return organisation;
-    }
-
-    public void setOrganisation(String organisation) {
-        this.organisation = organisation;
-    }
-
-    public String getFullName() {
-        return firstName + " " + lastName;
-    }
-
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Boolean getAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(Boolean admin) {
-        this.admin = admin;
-    }
-
-    public String getAafId() {
-        return aafId;
-    }
-
-    public void setAafId(String aafId) {
-        this.aafId = aafId;
-    }
-
-    public List<ProjectUser> getProjectUsers() {
-        return this.projectUsers;
-    }
-
-    public void setProjectUsers(List<ProjectUser> projectUsers) {
-        this.projectUsers = projectUsers;
-    }
-
-    public String getDataSpaceAgentURI() {
-        return dataSpaceAgentURI;
-    }
-
-    public void setDataSpaceAgentURI(String dataSpaceAgentURI) {
-        this.dataSpaceAgentURI = dataSpaceAgentURI;
-    }
-
-    public String getDataSpaceAgentDescription() {
-        return dataSpaceAgentDescription;
-    }
-
-    public void setDataSpaceAgentDescription(String dataSpaceAgentDescription) {
-        this.dataSpaceAgentDescription = dataSpaceAgentDescription;
-    }
-
-    public Date getDataSpaceAgentUpdateDate() {
-        return dataSpaceAgentUpdateDate;
-    }
-
-    public void setDataSpaceAgentUpdateDate(Date dataSpaceAgentUpdateDate) {
-        this.dataSpaceAgentUpdateDate = dataSpaceAgentUpdateDate;
-    }
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
     }
 
     public String getPasswordResetToken() {
@@ -234,6 +142,38 @@ public class User {
         this.passwordResetExpiresAt = passwordResetExpiresAt;
     }
 
+    public String getAafId() {
+        return aafId;
+    }
+
+    public void setAafId(String aafId) {
+        this.aafId = aafId;
+    }
+
+    public Boolean getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        this.admin = admin;
+    }
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
+    public List<ProjectUser> getProjectUsers() {
+        return this.projectUsers;
+    }
+
+    public void setProjectUsers(List<ProjectUser> projectUsers) {
+        this.projectUsers = projectUsers;
+    }
+
     public SortedSet<Date> getLoginDates() {
         return loginDates;
     }
@@ -244,5 +184,91 @@ public class User {
 
     public void setLoginDates(SortedSet<Date> loginDates) {
         this.loginDates = loginDates;
+    }
+
+    public String getEmail() {
+        return person.getEmail();
+    }
+
+    public void setEmail(String email) {
+        person.setEmail(email);
+    }
+
+    public String getTitle() {
+        return person.getTitle();
+    }
+
+    public void setTitle(String title) {
+        person.setTitle(title);
+    }
+
+    public String getFirstName() {
+        return person.getFirstName();
+    }
+
+    public void setFirstName(String firstName) {
+        person.setFirstName(firstName);
+    }
+
+    public String getLastName() {
+        return person.getLastName();
+    }
+
+    public void setLastName(String lastName) {
+        person.setLastName(lastName);
+    }
+
+    public String getOrganisation() {
+        return person.getOrganisation();
+    }
+
+    public void setOrganisation(String organisation) {
+        person.setOrganisation(organisation);
+    }
+
+    public String getFullName() {
+        return person.getFullName();
+    }
+
+    public String getDataSpaceAgentURI() {
+        return person.getDataSpaceAgentURI();
+    }
+
+    public void setDataSpaceAgentURI(String dataSpaceAgentURI) {
+        person.setDataSpaceAgentURI(dataSpaceAgentURI);
+    }
+
+    public String getDescription() {
+        return person.getDescription();
+    }
+
+    public void setDescription(String description) {
+        person.setDescription(description);
+    }
+
+    public Date getDataSpaceAgentUpdateDate() {
+        return person.getDataSpaceAgentUpdateDate();
+    }
+
+    public void setDataSpaceAgentUpdateDate(Date dataSpaceAgentUpdateDate) {
+        person.setDataSpaceAgentUpdateDate(dataSpaceAgentUpdateDate);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof User)) {
+            return false;
+        }
+        User other = (User) obj;
+        return getId().equals(other.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return (getId() != null) ? getId().intValue() : super.hashCode();
     }
 }

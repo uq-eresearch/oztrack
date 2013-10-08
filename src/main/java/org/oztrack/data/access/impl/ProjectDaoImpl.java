@@ -319,7 +319,7 @@ public class ProjectDaoImpl implements ProjectDao {
             .createQuery(
                 "from org.oztrack.data.model.ProjectUser\n" +
                 "where project = :project and role = :role\n" +
-                "order by user.lastName, user.firstName")
+                "order by user.person.lastName, user.person.firstName")
             .setParameter("project", project)
             .setParameter("role", role)
             .getResultList();

@@ -133,7 +133,7 @@
 
         <tr><th>Collection Manager Description:</th>
 
-            <td><c:out value="${project.dataSpaceAgent.dataSpaceAgentDescription}"/>
+            <td><c:out value="${project.dataSpaceAgent.description}"/>
             <br></td></tr>
 
         <tr><th>Temporal Coverage:</th><td>

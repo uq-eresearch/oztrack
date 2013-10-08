@@ -37,7 +37,7 @@ public class UserController {
             "title",
             "firstName",
             "lastName",
-            "dataSpaceAgentDescription",
+            "description",
             "organisation",
             "email"
         );

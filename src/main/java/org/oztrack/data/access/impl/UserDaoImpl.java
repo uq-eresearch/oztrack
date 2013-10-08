@@ -39,7 +39,7 @@ public class UserDaoImpl implements UserDao {
     public User getByEmail(String email) {
         @SuppressWarnings("unchecked")
         List<User> resultList = em
-            .createQuery("from org.oztrack.data.model.User where lower(email) = lower(:email)")
+            .createQuery("from org.oztrack.data.model.User where lower(person.email) = lower(:email)")
             .setParameter("email", email)
             .getResultList();
         assert resultList.size() <= 1;
@@ -87,7 +87,7 @@ public class UserDaoImpl implements UserDao {
                 "from org.oztrack.data.model.User\n" +
                 "where\n" +
                 "  lower(username) like lower('%' || :term || '%') or" +
-                "  lower(firstName || ' ' || lastName) like lower('%' || :term || '%')"
+                "  lower(person.firstName || ' ' || person.lastName) like lower('%' || :term || '%')"
             )
             .setParameter("term", term)
             .setMaxResults(10)

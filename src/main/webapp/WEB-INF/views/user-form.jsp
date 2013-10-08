@@ -162,9 +162,9 @@
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="dataSpaceAgentDescription">Short Bio:</label>
+                    <label class="control-label" for="description">Short Bio:</label>
                     <div class="controls">
-                        <form:textarea path="dataSpaceAgentDescription" id="dataSpaceAgentDescription" cssStyle="width: 400px; height: 100px;"/>
+                        <form:textarea path="description" id="description" cssStyle="width: 400px; height: 100px;"/>
                         <div class="help-inline">
                             <div class="help-popover" title="Short Bio">
                                 <p>Briefly describe yourself and your research interests.</p>
@@ -174,7 +174,7 @@
                                 </c:if>
                             </div>
                         </div>
-                        <form:errors path="dataSpaceAgentDescription" element="div" cssClass="help-block formErrors"/>
+                        <form:errors path="description" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
                 <c:if test="${not empty recaptchaHtml}">

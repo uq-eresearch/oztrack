@@ -129,7 +129,7 @@ public class DataSpaceCollection {
     }
 
     public String getContactDescription() {
-        return project.getDataSpaceAgent().getDataSpaceAgentDescription();
+        return project.getDataSpaceAgent().getDescription();
     }
 
     public String getSpeciesCommonName() {

@@ -49,7 +49,7 @@ public class UserListController {
             "title",
             "firstName",
             "lastName",
-            "dataSpaceAgentDescription",
+            "description",
             "organisation",
             "email"
         );
@@ -72,7 +72,7 @@ public class UserListController {
             newUser.setTitle(title);
             newUser.setFirstName(givenName);
             newUser.setLastName(surname);
-            newUser.setDataSpaceAgentDescription(description);
+            newUser.setDescription(description);
             newUser.setEmail(email);
             newUser.setOrganisation(organisation);
             if (aafId != null) {

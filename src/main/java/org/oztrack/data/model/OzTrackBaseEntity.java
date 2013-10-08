@@ -2,6 +2,7 @@ package org.oztrack.data.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
@@ -10,9 +11,11 @@ import javax.persistence.TemporalType;
 @MappedSuperclass
 public abstract class OzTrackBaseEntity {
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="createdate")
     private Date createDate;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="updatedate")
     private Date updateDate;
 
     @ManyToOne
