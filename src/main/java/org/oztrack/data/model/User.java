@@ -27,20 +27,12 @@ import org.hibernate.annotations.SortType;
 import org.oztrack.data.model.types.Personable;
 
 @Entity(name="appuser")
-public class User implements Personable {
+public class User extends OzTrackBaseEntity implements Personable {
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="userid_seq")
     @SequenceGenerator(name="userid_seq", sequenceName="userid_seq", allocationSize=1)
     @Column(name="id", nullable=false)
     private Long id;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="createdate")
-    private Date createDate;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="updatedate")
-    private Date updateDate;
 
     @Column(name="username", unique=true, nullable=false)
     private String username;
@@ -90,24 +82,28 @@ public class User implements Personable {
         this.id = id;
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    @Override
+    public void setCreateDate(Date createDate) {
+        super.setCreateDate(createDate);
+        person.setCreateDate(createDate);
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-        person.setCreateDate(createDate);
+    @Override
+    public void setCreateUser(User createUser) {
+        super.setCreateUser(createUser);
         person.setCreateUser(this);
     }
 
-    public Date getUpdateDate() {
-        return updateDate;
+    @Override
+    public void setUpdateDate(Date updateDate) {
+        super.setUpdateDate(updateDate);
+        person.setUpdateDate(updateDate);
     }
 
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
-        person.setUpdateDate(updateDate);
-        person.setUpdateUser(this);
+    @Override
+    public void setUpdateUser(User updateUser) {
+        super.setUpdateUser(updateUser);
+        person.setUpdateUser(updateUser);
     }
 
     public String getUsername() {
@@ -186,70 +182,87 @@ public class User implements Personable {
         this.loginDates = loginDates;
     }
 
+    @Override
     public String getEmail() {
         return person.getEmail();
     }
 
+    @Override
     public void setEmail(String email) {
         person.setEmail(email);
     }
 
+    @Override
     public String getTitle() {
         return person.getTitle();
     }
 
+    @Override
     public void setTitle(String title) {
         person.setTitle(title);
     }
 
+    @Override
     public String getFirstName() {
         return person.getFirstName();
     }
 
+    @Override
     public void setFirstName(String firstName) {
         person.setFirstName(firstName);
     }
 
+    @Override
     public String getLastName() {
         return person.getLastName();
     }
 
+    @Override
     public void setLastName(String lastName) {
         person.setLastName(lastName);
     }
 
+    @Override
     public String getOrganisation() {
         return person.getOrganisation();
     }
 
+    @Override
     public void setOrganisation(String organisation) {
         person.setOrganisation(organisation);
     }
 
+    @Override
     public String getFullName() {
         return person.getFullName();
     }
 
+    @Override
     public String getDataSpaceAgentURI() {
         return person.getDataSpaceAgentURI();
     }
 
+    @Override
     public void setDataSpaceAgentURI(String dataSpaceAgentURI) {
         person.setDataSpaceAgentURI(dataSpaceAgentURI);
     }
 
+    @Override
     public String getDescription() {
         return person.getDescription();
     }
 
+    @Override
     public void setDescription(String description) {
         person.setDescription(description);
     }
 
+    @Override
     public Date getDataSpaceAgentUpdateDate() {
         return person.getDataSpaceAgentUpdateDate();
     }
 
+    @Override
     public void setDataSpaceAgentUpdateDate(Date dataSpaceAgentUpdateDate) {
         person.setDataSpaceAgentUpdateDate(dataSpaceAgentUpdateDate);
     }

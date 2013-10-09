@@ -41,6 +41,8 @@ from appuser;
 
 alter table appuser
     add column updatedate timestamp without time zone,
+    add column createuser_id bigint,
+    add column updateuser_id bigint,
     add column person_id bigint references person (id) on delete no action,
     drop column email,
     drop column title,

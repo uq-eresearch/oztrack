@@ -1,5 +1,7 @@
 package org.oztrack.controller;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.StringUtils;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.app.OzTrackConfiguration;
@@ -107,6 +109,8 @@ public class UserController {
         if (StringUtils.isNotBlank(newPassword)) {
             user.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
         }
+        user.setUpdateDate(new Date());
+        user.setUpdateUser(currentUser);
         userDao.save(user);
         return "redirect:/projects";
     }

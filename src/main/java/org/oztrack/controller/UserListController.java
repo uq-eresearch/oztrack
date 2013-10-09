@@ -156,6 +156,7 @@ public class UserListController {
             user.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
         }
         user.setCreateDate(new Date());
+        user.setCreateUser(null);
         userDao.save(user);
         SecurityContextHolder.getContext().setAuthentication(OzTrackAuthenticationProvider.buildAuthentication(user));
         return "redirect:/";
