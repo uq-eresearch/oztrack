@@ -23,6 +23,42 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navHome').addClass('active');
+                $('#new-institution-dialog').dialog({
+                    autoOpen: false,
+                    modal: true,
+                    width: '312px',
+                    resizable: false,
+                    title: 'New institution',
+                    create: function(event, ui) {
+                        $(event.target).closest('.ui-dialog').find('.ui-dialog-titlebar-close').text('×');
+                    },
+                    buttons: {
+                        "Cancel": function() {
+                            $(this).dialog("close");
+                        },
+                        "Create": function() {
+                            var dialogDiv = this;
+                            $.ajax({
+                                url: '${pageContext.request.contextPath}/institutions',
+                                type: 'POST',
+                                data: $(dialogDiv).serialize(),
+                                success: function(data, textStatus, jqXHR) {
+                                    var option = $('<option>').attr('value', data.id).text(data.title);
+                                    $('#institution').append(option);
+                                    option.prop('selected', true);
+                                    $(dialogDiv).dialog("close");
+                                },
+                                error: function(jqXHR, textStatus, errorThrown) {
+                                    alert(errorThrown);
+                                }
+                            });
+                        }
+                    }
+                });
+                $('#new-institution-btn').click(function (e) {
+                    e.preventDefault();
+                    $('#new-institution-dialog').dialog('open');
+                });
             });
         </script>
     </jsp:attribute>
@@ -146,6 +182,7 @@
                             <form:option value="" label=""/>
                             <form:options items="${institutions}" itemValue="id" itemLabel="title"/>
                         </form:select>
+                        <button id="new-institution-btn" class="btn">New institution</button>
                         <c:if test="${dataSpaceEnabled}">
                         <div class="help-inline">
                             <div class="help-popover" title="Institution">
@@ -197,5 +234,22 @@
                 <input class="btn btn-primary" type="submit" value="${(user.id != null) ? 'Update' : 'Register'}" />
             </div>
         </form:form>
+        
+        <form id="new-institution-dialog" class="form-vertical form-bordered" style="display: none; margin: 0;">
+            <fieldset>
+                <div class="control-group required">
+                    <label class="control-label" for="new-institution-title">Title</label>
+                    <div class="controls">
+                        <input type="text" name="title" id="new-institution-title" class="input-xlarge" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="new-institution-domainName">Domain name</label>
+                    <div class="controls">
+                        <input type="text" name="domainName" id="new-institution-domainName" class="input-xlarge" />
+                    </div>
+                </div>
+            </fieldset>
+        </form>
     </jsp:body>
 </tags:page>

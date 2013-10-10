@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 import org.oztrack.data.access.InstitutionDao;
 import org.oztrack.data.model.Institution;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class InstititutionDaoImpl implements InstitutionDao {
@@ -37,16 +38,19 @@ public class InstititutionDaoImpl implements InstitutionDao {
     }
 
     @Override
+    @Transactional
     public void save(Institution institution) {
         em.persist(institution);
     }
 
     @Override
+    @Transactional
     public Institution update(Institution institution) {
         return em.merge(institution);
     }
 
     @Override
+    @Transactional
     public void delete(Institution institution) {
         em.remove(institution);
     }
