@@ -24,7 +24,6 @@ public abstract class OzTrackBaseEntity {
     @ManyToOne
     private User updateUser;
 
-
     public Date getCreateDate() {
         return createDate;
     }

@@ -8,6 +8,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
@@ -35,8 +37,9 @@ public class Person extends OzTrackBaseEntity implements Personable {
     @Column(name="lastName")
     private String lastName;
 
-    @Column(name="organisation")
-    private String organisation;
+    @ManyToOne
+    @JoinColumn(name="institution_id")
+    private Institution institution;
 
     @Column(name="description")
     private String description;
@@ -105,13 +108,12 @@ public class Person extends OzTrackBaseEntity implements Personable {
     }
 
     @Override
-    public String getOrganisation() {
-        return organisation;
+    public Institution getInstitution() {
+        return institution;
     }
 
-    @Override
-    public void setOrganisation(String organisation) {
-        this.organisation = organisation;
+    public void setInstitution(Institution institution) {
+        this.institution = institution;
     }
 
     @Override

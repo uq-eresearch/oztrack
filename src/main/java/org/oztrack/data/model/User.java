@@ -223,13 +223,13 @@ public class User extends OzTrackBaseEntity implements Personable {
     }
 
     @Override
-    public String getOrganisation() {
-        return person.getOrganisation();
+    public Institution getInstitution() {
+        return person.getInstitution();
     }
 
     @Override
-    public void setOrganisation(String organisation) {
-        person.setOrganisation(organisation);
+    public void setInstitution(Institution institution) {
+        person.setInstitution(institution);
     }
 
     @Override

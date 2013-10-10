@@ -451,7 +451,7 @@
                                 Data in this project will be made publicly available in OzTrack.
                                 Releasing data under an open-access licence benefits the wider scientific community
                                 and increases the potential impact of your research.
-                                Many research funding bodies and research organisations require that data from
+                                Many research funding bodies and research institutions require that data from
                                 their projects be published and made available for re-use.
                             </div>
                         </label>
@@ -582,7 +582,7 @@
                             property of an institution or someone other than yourself, an appropriate
                             copyright notice should be provided.
                         </p>
-                        <form:textarea path="rightsStatement" cssStyle="width: 400px; height: 100px;" placeholder="e.g. Copyright ${currentUser.organisation} ${currentYear}"/>
+                        <form:textarea path="rightsStatement" cssStyle="width: 400px; height: 100px;" placeholder="e.g. Copyright ${currentUser.institution.title} ${currentYear}"/>
                         <form:errors path="rightsStatement" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>

@@ -16,7 +16,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONWriter;
 import org.oztrack.app.OzTrackConfiguration;
+import org.oztrack.data.access.InstitutionDao;
 import org.oztrack.data.access.UserDao;
+import org.oztrack.data.model.Institution;
 import org.oztrack.data.model.User;
 import org.oztrack.validator.UserFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,9 @@ public class UserListController {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private InstitutionDao institutionDao;
+
     @InitBinder("user")
     public void initUserBinder(WebDataBinder binder) {
         binder.setAllowedFields(
@@ -50,37 +55,40 @@ public class UserListController {
             "firstName",
             "lastName",
             "description",
-            "organisation",
+            "institution",
             "email"
         );
+        binder.registerCustomEditor(Institution.class, "institution", new InstitutionPropertyEditor(institutionDao));
     }
 
     @ModelAttribute("user")
     public User getUser(
-        @RequestHeader(value="eppn", required=false) String aafId,
-        @RequestHeader(value="title", required=false) String title,
-        @RequestHeader(value="givenname", required=false) String givenName,
-        @RequestHeader(value="sn", required=false) String surname,
-        @RequestHeader(value="description", required=false) String description,
-        @RequestHeader(value="mail", required=false) String email,
-        @RequestHeader(value="o", required=false) String organisation
+        @RequestHeader(value="eppn", required=false) String aafEppn,
+        @RequestHeader(value="title", required=false) String aafTitle,
+        @RequestHeader(value="givenname", required=false) String aafGivenName,
+        @RequestHeader(value="sn", required=false) String aafSurname,
+        @RequestHeader(value="description", required=false) String aafDescription,
+        @RequestHeader(value="mail", required=false) String aafEmail,
+        @RequestHeader(value="o", required=false) String aafOrganisation
     )
     throws Exception {
         User newUser = new User();
         if (configuration.isAafEnabled()) {
-            newUser.setAafId(aafId);
-            newUser.setTitle(title);
-            newUser.setFirstName(givenName);
-            newUser.setLastName(surname);
-            newUser.setDescription(description);
-            newUser.setEmail(email);
-            newUser.setOrganisation(organisation);
-            if (aafId != null) {
-                if (aafId.contains("@")) {
-                    newUser.setUsername(aafId.substring(0, aafId.indexOf("@")));
+            newUser.setAafId(aafEppn);
+            newUser.setTitle(aafTitle);
+            newUser.setFirstName(aafGivenName);
+            newUser.setLastName(aafSurname);
+            newUser.setDescription(aafDescription);
+            newUser.setEmail(aafEmail);
+            Institution institution = new Institution();
+            institution.setTitle(aafOrganisation);;
+            newUser.setInstitution(institution);
+            if (aafEppn != null) {
+                if (aafEppn.contains("@")) {
+                    newUser.setUsername(aafEppn.substring(0, aafEppn.indexOf("@")));
                 }
                 else {
-                    newUser.setUsername(aafId);
+                    newUser.setUsername(aafEppn);
                 }
             }
         }
@@ -100,7 +108,8 @@ public class UserListController {
 
     @RequestMapping(value="/users/new", method=RequestMethod.GET)
     @PreAuthorize("permitAll")
-    public String getFormView() {
+    public String getFormView(Model model) {
+        addFormAttributes(model);
         return "user-form";
     }
 
@@ -135,6 +144,7 @@ public class UserListController {
             bindingResult.rejectValue("password", "error.empty.field", "Please enter password");
         }
         if (bindingResult.hasErrors()) {
+            addFormAttributes(model);
             return "user-form";
         }
         if (user.getAafId() == null) {
@@ -147,6 +157,7 @@ public class UserListController {
                 String recaptchaResponse = request.getParameter("recaptcha_response_field");
                 ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(request.getRemoteAddr(), recaptchaChallenge, recaptchaResponse);
                 if (!reCaptchaResponse.isValid()) {
+                    addFormAttributes(model);
                     model.addAttribute("recaptchaError", "Verification incorrect - please try again.");
                     return "user-form";
                 }
@@ -178,5 +189,9 @@ public class UserListController {
             out.endObject();
         }
         out.endArray();
+    }
+
+    private void addFormAttributes(Model model) {
+        model.addAttribute("institutions", institutionDao.getAllOrderedByTitle());
     }
 }

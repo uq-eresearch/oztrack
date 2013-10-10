@@ -5,7 +5,9 @@ import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.app.OzTrackConfiguration;
+import org.oztrack.data.access.InstitutionDao;
 import org.oztrack.data.access.UserDao;
+import org.oztrack.data.model.Institution;
 import org.oztrack.data.model.User;
 import org.oztrack.util.OzTrackUtils;
 import org.oztrack.validator.UserFormValidator;
@@ -32,6 +34,9 @@ public class UserController {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private InstitutionDao institutionDao;
+
     @InitBinder("user")
     public void initUserBinder(WebDataBinder binder) {
         binder.setAllowedFields(
@@ -40,9 +45,10 @@ public class UserController {
             "firstName",
             "lastName",
             "description",
-            "organisation",
+            "institution",
             "email"
         );
+        binder.registerCustomEditor(Institution.class, "institution", new InstitutionPropertyEditor(institutionDao));
     }
 
     @ModelAttribute("user")
@@ -52,6 +58,7 @@ public class UserController {
 
     @RequestMapping(value="/users/{id}/edit", method=RequestMethod.GET)
     public String getEditView(
+        Model model,
         @ModelAttribute(value="user") User user,
         @RequestHeader(value="eppn", required=false) String aafIdHeader,
         @RequestParam(value="aafId", required=false) String aafIdParam,
@@ -66,6 +73,7 @@ public class UserController {
                 user.setAafId(aafIdHeader);
             }
         }
+        addFormAttributes(model);
         return "user-form";
     }
 
@@ -104,6 +112,7 @@ public class UserController {
             bindingResult.rejectValue("password", "error.empty.field", "Please enter password");
         }
         if (bindingResult.hasErrors()) {
+            addFormAttributes(model);
             return "user-form";
         }
         if (StringUtils.isNotBlank(newPassword)) {
@@ -113,5 +122,9 @@ public class UserController {
         user.setUpdateUser(currentUser);
         userDao.save(user);
         return "redirect:/projects";
+    }
+
+    private void addFormAttributes(Model model) {
+        model.addAttribute("institutions", institutionDao.getAllOrderedByTitle());
     }
 }

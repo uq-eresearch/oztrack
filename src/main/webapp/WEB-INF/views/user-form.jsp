@@ -140,18 +140,20 @@
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="organisation">Organisation:</label>
+                    <label class="control-label" for="institution">Institution:</label>
                     <div class="controls">
-                        <form:input path="organisation" id="organisation"/>
+                        <form:select path="institution" id="institution">
+                            <form:option value="" label=""/>
+                            <form:options items="${institutions}" itemValue="id" itemLabel="title"/>
+                        </form:select>
                         <c:if test="${dataSpaceEnabled}">
                         <div class="help-inline">
-                            <div class="help-popover" title="Organisation">
-                                <p>Please give the name of the organisation in full.</p>
+                            <div class="help-popover" title="Institution">
                                 <p>This field is used when project metadata are syndicated to UQ DataSpace and ANDS.</p>
                             </div>
                         </div>
                         </c:if>
-                        <form:errors path="organisation" element="div" cssClass="help-block formErrors"/>
+                        <form:errors path="institution" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
                 <div class="control-group required">

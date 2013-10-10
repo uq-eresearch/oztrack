@@ -33,7 +33,7 @@
             <thead>
             <tr>
                 <th>User</th>
-                <th>Organisation</th>
+                <th>Institution</th>
                 <th>Projects</th>
             </tr>
             </thead>
@@ -49,7 +49,7 @@
                         </c:if>
                     </p>
                 </td>
-                <td>${user.organisation}</td>
+                <td>${user.institution.title}</td>
                 <td>
                     <p>
                         ${fn:length(user.projectUsers)} projects

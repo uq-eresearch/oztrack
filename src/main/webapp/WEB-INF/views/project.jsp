@@ -602,7 +602,7 @@
             <dd>
                 <ul class="unstyled">
                     <li><c:out value="${project.dataSpaceAgent.firstName}"/>&nbsp;<c:out value="${project.dataSpaceAgent.lastName}"/></li>
-                    <li><c:out value="${project.dataSpaceAgent.organisation}"/></li>
+                    <li><c:out value="${project.dataSpaceAgent.institution.title}"/></li>
                     <li><a href="mailto:<c:out value="${project.dataSpaceAgent.email}"/>"><c:out value="${project.dataSpaceAgent.email}"/></a></li>
                 </ul>
             </dd>
