@@ -14,6 +14,7 @@ final class SrsBoundsPropertyEditor extends PropertyEditorSupport {
     public void setAsText(String text) throws IllegalArgumentException {
         if (text == null) {
             setValue(null);
+            return;
         }
         String[] parts = text.split("\\s*,\\s*");
         if (parts.length != 4) {
