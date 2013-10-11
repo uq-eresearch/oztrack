@@ -23,41 +23,26 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#navHome').addClass('active');
-                $('#new-institution-dialog').dialog({
-                    autoOpen: false,
-                    modal: true,
-                    width: '312px',
-                    resizable: false,
-                    title: 'New institution',
-                    create: function(event, ui) {
-                        $(event.target).closest('.ui-dialog').find('.ui-dialog-titlebar-close').text('×');
-                    },
-                    buttons: {
-                        "Cancel": function() {
-                            $(this).dialog("close");
-                        },
-                        "Create": function() {
-                            var dialogDiv = this;
-                            $.ajax({
-                                url: '${pageContext.request.contextPath}/institutions',
-                                type: 'POST',
-                                data: $(dialogDiv).serialize(),
-                                success: function(data, textStatus, jqXHR) {
-                                    var option = $('<option>').attr('value', data.id).text(data.title);
-                                    $('#institution').append(option);
-                                    option.prop('selected', true);
-                                    $(dialogDiv).dialog("close");
-                                },
-                                error: function(jqXHR, textStatus, errorThrown) {
-                                    alert(errorThrown);
-                                }
-                            });
-                        }
-                    }
-                });
-                $('#new-institution-btn').click(function (e) {
+                $('#new-institution-toggle').click(function(e) {
                     e.preventDefault();
-                    $('#new-institution-dialog').dialog('open');
+                    $('#new-institution-form').fadeToggle();
+                });
+                $('#new-institution-btn').click(function(e) {
+                    e.preventDefault();
+                    $.ajax({
+                        url: '${pageContext.request.contextPath}/institutions',
+                        type: 'POST',
+                        data: $('#new-institution-form *').serialize(),
+                        success: function(data, textStatus, jqXHR) {
+                            var option = $('<option>').attr('value', data.id).text(data.title);
+                            $('#institution').append(option);
+                            option.prop('selected', true);
+                            $('#new-institution-form').fadeOut();
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            alert(errorThrown);
+                        }
+                    });
                 });
             });
         </script>
@@ -178,18 +163,30 @@
                 <div class="control-group">
                     <label class="control-label" for="institution">Institution:</label>
                     <div class="controls">
-                        <form:select path="institution" id="institution">
-                            <form:option value="" label=""/>
-                            <form:options items="${institutions}" itemValue="id" itemLabel="title"/>
-                        </form:select>
-                        <button id="new-institution-btn" class="btn">New institution</button>
-                        <c:if test="${dataSpaceEnabled}">
-                        <div class="help-inline">
-                            <div class="help-popover" title="Institution">
-                                <p>This field is used when project metadata are syndicated to UQ DataSpace and ANDS.</p>
+                        <div>
+                            <form:select path="institution" id="institution" cssStyle="width: 284px;">
+                                <form:option value="" label="Select institution"/>
+                                <form:options items="${institutions}" itemValue="id" itemLabel="title"/>
+                            </form:select>
+                        </div>
+                        <div style="margin-top: 5px;">
+                            <button id="new-institution-toggle" class="btn" style="width: 284px;">Can't find your institution?</button>
+                        </div>
+                        <div id="new-institution-form" style="margin-top: 18px; display: none;">
+                            <div style="display: inline-block; padding: 12px; border: 1px solid #ccc; border-radius: 4px;">
+                                <div style="display: inline-block;">
+                                    <div style="margin-bottom: 5px;">
+                                        <label for="new-institution-title" style="display: inline-block; width: 90px;">Title<i class="required-marker">*</i></label>
+                                        <input type="text" name="title" id="new-institution-title" class="input-xlarge" placeholder="e.g. The University of Queensland">
+                                    </div>
+                                    <div style="margin-bottom: 0px;">
+                                        <label for="new-institution-domainName" style="display: inline-block; width: 90px;">Domain name</label>
+                                        <input type="text" name="domainName" id="new-institution-domainName" class="input-xlarge" placeholder="e.g. uq.edu.au">
+                                    </div>
+                                </div>
+                                <button id="new-institution-btn" class="btn">Add institution</button>
                             </div>
                         </div>
-                        </c:if>
                         <form:errors path="institution" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
@@ -234,22 +231,5 @@
                 <input class="btn btn-primary" type="submit" value="${(user.id != null) ? 'Update' : 'Register'}" />
             </div>
         </form:form>
-        
-        <form id="new-institution-dialog" class="form-vertical form-bordered" style="display: none; margin: 0;">
-            <fieldset>
-                <div class="control-group required">
-                    <label class="control-label" for="new-institution-title">Title</label>
-                    <div class="controls">
-                        <input type="text" name="title" id="new-institution-title" class="input-xlarge" />
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="new-institution-domainName">Domain name</label>
-                    <div class="controls">
-                        <input type="text" name="domainName" id="new-institution-domainName" class="input-xlarge" />
-                    </div>
-                </div>
-            </fieldset>
-        </form>
     </jsp:body>
 </tags:page>

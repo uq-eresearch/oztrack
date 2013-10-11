@@ -2,6 +2,7 @@ package org.oztrack.controller;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
 import org.oztrack.data.access.InstitutionDao;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Institution;
@@ -42,14 +43,19 @@ public class InstitutionListController {
         @ModelAttribute(value="institution") Institution institution,
         BindingResult bindingResult
     ) throws Exception {
-        if (bindingResult.hasErrors()) {
-            return "institution-form";
+        if (StringUtils.isBlank(institution.getTitle())) {
+            throw new RuntimeException("Please enter a title.");
         }
         institution.setCreateDate(new Date());
         if (authentication != null) {
             institution.setCreateUser(userDao.getByUsername((String) authentication.getPrincipal()));
         }
-        institutionDao.save(institution);
+        try {
+            institutionDao.save(institution);
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Could not save institution. Check title is not used for another institution.");
+        }
         return "redirect:/institutions/" + institution.getId();
     }
 }
