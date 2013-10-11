@@ -305,19 +305,32 @@ When deploying to Tomcat, arguments can be added to the `JAVA_OPTS` variable use
 
 The following are key properties that should be configured for all applications:
 
-* `org.oztrack.conf.baseUrl`: Base URL for application, minus trailing slash (default "http://localhost").
-* `org.oztrack.conf.dataDir`: Directory used to store tracking data files - ensure that this directory exists and can be written to by the application (default "/var/local/oztrack").
-* `org.oztrack.conf.databaseUsername`: Username for PostgreSQL database (default "oztrack").
-* `org.oztrack.conf.databasePassword`: Password for PostgreSQL database.
-* `org.oztrack.conf.geoServerUsername`: Username for Geoserver admin user (default "admin").
-* `org.oztrack.conf.geoServerPassword`: Password for GeoServer admin user.
-* `org.oztrack.conf.mailServerHostName`: SMTP host name for sending mail notifications.
-* `org.oztrack.conf.mailServerPort`: SMTP host port number for sending mail notifications.
-* `org.oztrack.conf.mailFromName`: Name in From field for mail notifications (default "OzTrack").
-* `org.oztrack.conf.mailFromEmail`: Email address in From field for mail notifications.
-* `org.oztrack.conf.closedAccessDisableDate`: Date from which the ability to create closed access projects is disabled.
-* `org.oztrack.conf.nonIncrementalEmbargoDisableDate`: Date from which project embargoes must be annually renewed.
-* `org.oztrack.conf.numRConnections`: Number of `Rserve` instances run in the background (default 4 - reduce if memory is limited).
+    # Base URL for application, minus trailing slash.
+    org.oztrack.conf.baseUrl=http://localhost
+    # Directory used to store tracking data files - ensure that this directory exists and can be written to by the application.
+    org.oztrack.conf.dataDir=/var/local/oztrack
+    # Username for PostgreSQL database.
+    org.oztrack.conf.databaseUsername=oztrack
+    # Password for PostgreSQL database.
+    org.oztrack.conf.databasePassword=changeme
+    # Username for Geoserver admin user.
+    org.oztrack.conf.geoServerUsername=admin
+    # Password for GeoServer admin user.
+    org.oztrack.conf.geoServerPassword=changeme
+    # SMTP host name for sending mail notifications.
+    org.oztrack.conf.mailServerHostName=smtp.example.org
+    # SMTP host port number for sending mail notifications.
+    org.oztrack.conf.mailServerPort=25
+    # Name in From field for mail notifications.
+    org.oztrack.conf.mailFromName=OzTrack
+    # Email address in From field for mail notifications.
+    org.oztrack.conf.mailFromEmail=oztrack@example.org
+    # Date from which the ability to create closed access projects is disabled.
+    org.oztrack.conf.closedAccessDisableDate=2013-01-18T17:00:00
+    # Date from which project embargoes must be annually renewed.
+    org.oztrack.conf.nonIncrementalEmbargoDisableDate=2013-05-28T09:00:00
+    # Number of `Rserve` instances run in the background (reduce if memory is limited).
+    org.oztrack.conf.numRConnections=4
 
 OzTrack defines a default admin user with the username/password "admin"/"oztrack".
 To log into OzTrack, click the 'Login' button at the top-right of screen. You should change the default
