@@ -10,6 +10,7 @@ public interface InstitutionDao {
     List<Institution> getAll();
     List<Institution> getAllOrderedByTitle();
     Institution getById(Long id);
+    Institution getByTitle(String title);
     void save(Institution institution);
     Institution update(Institution institution);
     void delete(Institution institution);

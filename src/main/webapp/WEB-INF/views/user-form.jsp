@@ -19,24 +19,64 @@
         </c:otherwise>
         </c:choose>
     </jsp:attribute>
+    <jsp:attribute name="head">
+        <style type="text/css">
+            .old-institution {
+                margin-bottom: 5px;
+            }
+        </style>
+    </jsp:attribute>
     <jsp:attribute name="tail">
         <script type="text/javascript">
+            function addInstitution(institution) {
+                $('#old-institutions').append($('<div class="old-institution">')
+                    .append($('<input type="hidden" name="institutions" class="input-xlarge">').val(institution.id))
+                    .append($('<input type="text" readonly="readonly" class="input-xlarge">').val(institution.title))
+                    .append(' ')
+                    .append($('<a class="btn"><i class="icon-trash"></i></a>')
+                        .click(function(e) {
+                            e.preventDefault();
+                            $(this).closest('.old-institution').fadeOut({
+                                complete: function() {
+                                    $(this).remove();
+                                    $('#old-institutions:not(:has(.old-institution))').slideUp();
+                                }
+                            });
+                        })
+                    )
+                );
+            }
             $(document).ready(function() {
                 $('#navHome').addClass('active');
+                <c:forEach var="institution" items="${user.institutions}">
+                addInstitution({id: '${institution.id}', title: '${institution.title}'});
+                </c:forEach>
+                $('#add-affiliation-btn').click(function(e) {
+                    e.preventDefault();
+                });
                 $('#new-institution-toggle').click(function(e) {
                     e.preventDefault();
                     $('#new-institution-form').fadeToggle();
+                });
+                $('#add-affiliation-btn').click(function(e) {
+                    var institutionId = $('#new-institution').val();
+                    if (institutionId !== '') {
+                        var institutionTitle = $('#new-institution :selected').text()
+                        addInstitution({id: institutionId, title: institutionTitle});
+                    }
                 });
                 $('#new-institution-btn').click(function(e) {
                     e.preventDefault();
                     $.ajax({
                         url: '${pageContext.request.contextPath}/institutions',
                         type: 'POST',
-                        data: $('#new-institution-form *').serialize(),
-                        success: function(data, textStatus, jqXHR) {
-                            var option = $('<option>').attr('value', data.id).text(data.title);
-                            $('#institution').append(option);
-                            option.prop('selected', true);
+                        data: {
+                            title: $.param($('#new-institution-title').val()),
+                            domainName: $.param($('#new-institution-domainName').val())
+                        },
+                        success: function(affiliation, textStatus, jqXHR) {
+                            addInstitution(affiliation);
+                            $('#new-institution').append($('<option>').attr('value', affiliation.id).text(affiliation.title));
                             $('#new-institution-form').fadeOut();
                         },
                         error: function(jqXHR, textStatus, errorThrown) {
@@ -161,33 +201,39 @@
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="institution">Institution:</label>
+                    <label class="control-label" for="new-institution">Institution:</label>
                     <div class="controls">
+                        <div id="old-institutions" style="margin-bottom: 18px;">
+                        </div>
                         <div>
-                            <form:select path="institution" id="institution" cssStyle="width: 284px;">
-                                <form:option value="" label="Select institution"/>
-                                <form:options items="${institutions}" itemValue="id" itemLabel="title"/>
-                            </form:select>
+                            <select id="new-institution" style="width: 284px;">
+                                <option value="">Select institution</option>
+                                <c:forEach var="institution" items="${institutions}">
+                                <option value="${institution.id}">${institution.title}</option>
+                                </c:forEach>
+                            </select>
+                            <button id="add-affiliation-btn" class="btn">Add affiliation</button>
                         </div>
                         <div style="margin-top: 5px;">
                             <button id="new-institution-toggle" class="btn" style="width: 284px;">Can't find your institution?</button>
                         </div>
                         <div id="new-institution-form" style="margin-top: 18px; display: none;">
-                            <div style="display: inline-block; padding: 12px; border: 1px solid #ccc; border-radius: 4px;">
-                                <div style="display: inline-block;">
-                                    <div style="margin-bottom: 5px;">
-                                        <label for="new-institution-title" style="display: inline-block; width: 90px;">Title<i class="required-marker">*</i></label>
-                                        <input type="text" name="title" id="new-institution-title" class="input-xlarge" placeholder="e.g. The University of Queensland">
-                                    </div>
-                                    <div style="margin-bottom: 0px;">
-                                        <label for="new-institution-domainName" style="display: inline-block; width: 90px;">Domain name</label>
-                                        <input type="text" name="domainName" id="new-institution-domainName" class="input-xlarge" placeholder="e.g. uq.edu.au">
-                                    </div>
+                            <div style="display: inline-block; padding: 12px; border: 1px solid #ccc; border-radius: 4px; background-color: #F0F0E2; box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08);">
+                                <div style="margin-bottom: 5px;">
+                                    <label for="new-institution-title" style="display: inline-block; width: 90px;">Title<i class="required-marker">*</i></label>
+                                    <input type="text" id="new-institution-title" class="input-xlarge" placeholder="e.g. The University of Queensland">
                                 </div>
-                                <button id="new-institution-btn" class="btn">Add institution</button>
+                                <div style="margin-bottom: 5px;">
+                                    <label for="new-institution-domainName" style="display: inline-block; width: 90px;">Domain name</label>
+                                    <input type="text" id="new-institution-domainName" class="input-xlarge" placeholder="e.g. uq.edu.au">
+                                </div>
+                                <div>
+                                    <label for="new-institution-btn" style="display: inline-block; width: 90px;"></label>
+                                    <button id="new-institution-btn" class="btn">Add institution</button>
+                                </div>
                             </div>
                         </div>
-                        <form:errors path="institution" element="div" cssClass="help-block formErrors"/>
+                        <form:errors path="institutions" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
                 <div class="control-group required">

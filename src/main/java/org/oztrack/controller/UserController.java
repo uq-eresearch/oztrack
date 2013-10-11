@@ -1,13 +1,13 @@
 package org.oztrack.controller;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.InstitutionDao;
 import org.oztrack.data.access.UserDao;
-import org.oztrack.data.model.Institution;
 import org.oztrack.data.model.User;
 import org.oztrack.util.OzTrackUtils;
 import org.oztrack.validator.UserFormValidator;
@@ -45,10 +45,10 @@ public class UserController {
             "firstName",
             "lastName",
             "description",
-            "institution",
+            "institutions",
             "email"
         );
-        binder.registerCustomEditor(Institution.class, "institution", new InstitutionPropertyEditor(institutionDao));
+        binder.registerCustomEditor(List.class, "institutions", new InstitutionsPropertyEditor(institutionDao));
     }
 
     @ModelAttribute("user")

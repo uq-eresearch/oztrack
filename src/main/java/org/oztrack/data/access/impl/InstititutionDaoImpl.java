@@ -38,6 +38,14 @@ public class InstititutionDaoImpl implements InstitutionDao {
     }
 
     @Override
+    public Institution getByTitle(String title) {
+        return (Institution) em
+            .createQuery("from org.oztrack.data.model.Institution where lower(title) = lower(:title)")
+            .setParameter("title", title)
+            .getSingleResult();
+    }
+
+    @Override
     @Transactional
     public void save(Institution institution) {
         em.persist(institution);

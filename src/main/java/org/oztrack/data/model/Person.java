@@ -1,7 +1,9 @@
 package org.oztrack.data.model;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,7 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
@@ -37,9 +40,13 @@ public class Person extends OzTrackBaseEntity implements Personable {
     @Column(name="lastName")
     private String lastName;
 
-    @ManyToOne
-    @JoinColumn(name="institution_id")
-    private Institution institution;
+    @ManyToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+    @JoinTable(
+        name="person_institution",
+        joinColumns=@JoinColumn(name="person_id"),
+        inverseJoinColumns=@JoinColumn(name="institution_id")
+    )
+    private List<Institution> institutions;
 
     @Column(name="description")
     private String description;
@@ -108,12 +115,13 @@ public class Person extends OzTrackBaseEntity implements Personable {
     }
 
     @Override
-    public Institution getInstitution() {
-        return institution;
+    public List<Institution> getInstitutions() {
+        return institutions;
     }
 
-    public void setInstitution(Institution institution) {
-        this.institution = institution;
+    @Override
+    public void setInstitutions(List<Institution> institutions) {
+        this.institutions = institutions;
     }
 
     @Override

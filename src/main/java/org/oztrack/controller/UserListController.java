@@ -1,6 +1,7 @@
 package org.oztrack.controller;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -55,10 +56,10 @@ public class UserListController {
             "firstName",
             "lastName",
             "description",
-            "institution",
+            "institutions",
             "email"
         );
-        binder.registerCustomEditor(Institution.class, "institution", new InstitutionPropertyEditor(institutionDao));
+        binder.registerCustomEditor(List.class, "institutions", new InstitutionsPropertyEditor(institutionDao));
     }
 
     @ModelAttribute("user")
@@ -80,9 +81,12 @@ public class UserListController {
             newUser.setLastName(aafSurname);
             newUser.setDescription(aafDescription);
             newUser.setEmail(aafEmail);
-            Institution institution = new Institution();
-            institution.setTitle(aafOrganisation);;
-            newUser.setInstitution(institution);
+            if (StringUtils.isNotBlank(aafOrganisation)) {
+                Institution institution = institutionDao.getByTitle(aafOrganisation);
+                if (institution != null) {
+                    newUser.setInstitutions(Arrays.asList(institution));
+                }
+            }
             if (aafEppn != null) {
                 if (aafEppn.contains("@")) {
                     newUser.setUsername(aafEppn.substring(0, aafEppn.indexOf("@")));

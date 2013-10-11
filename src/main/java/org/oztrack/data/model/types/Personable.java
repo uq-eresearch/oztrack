@@ -1,6 +1,7 @@
 package org.oztrack.data.model.types;
 
 import java.util.Date;
+import java.util.List;
 
 import org.oztrack.data.model.Institution;
 
@@ -16,8 +17,8 @@ public interface Personable {
     public void setFirstName(String firstName);
     public String getLastName();
     public void setLastName(String lastName);
-    public Institution getInstitution();
-    public void setInstitution(Institution institution);
+    public List<Institution> getInstitutions();
+    public void setInstitutions(List<Institution> institutions);
     public String getFullName();
     public String getDataSpaceAgentURI();
     public void setDataSpaceAgentURI(String dataSpaceAgentURI);
