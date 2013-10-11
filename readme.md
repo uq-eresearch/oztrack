@@ -307,7 +307,8 @@ The following are key properties that should be configured for all applications:
 
     # Base URL for application, minus trailing slash.
     org.oztrack.conf.baseUrl=http://localhost
-    # Directory used to store tracking data files - ensure that this directory exists and can be written to by the application.
+    # Directory used to store tracking data files.
+    # Ensure that this directory exists and can be written to by the application.
     org.oztrack.conf.dataDir=/var/local/oztrack
     # Username for PostgreSQL database.
     org.oztrack.conf.databaseUsername=oztrack
