@@ -8,7 +8,6 @@ import org.oztrack.data.model.Institution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -35,12 +34,6 @@ public class InstitutionListController {
     @ModelAttribute("institution")
     public Institution getInstitution() {
         return new Institution();
-    }
-
-    @RequestMapping(value="/institutions", method=RequestMethod.GET)
-    public String getListView(Model model) {
-        model.addAttribute("institutionList", institutionDao.getAll());
-        return "institution-list";
     }
 
     @RequestMapping(value="/institutions", method=RequestMethod.POST)
