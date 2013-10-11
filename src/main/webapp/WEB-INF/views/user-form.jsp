@@ -29,6 +29,7 @@
     <jsp:attribute name="tail">
         <script type="text/javascript">
             function addInstitution(institution) {
+                $('#old-institutions').show();
                 $('#old-institutions').append($('<div class="old-institution">')
                     .append($('<input type="hidden" name="institutions" class="input-xlarge">').val(institution.id))
                     .append($('<input type="text" readonly="readonly" class="input-xlarge">').val(institution.title))
@@ -203,7 +204,7 @@
                 <div class="control-group">
                     <label class="control-label" for="new-institution">Institution:</label>
                     <div class="controls">
-                        <div id="old-institutions" style="margin-bottom: 18px;">
+                        <div id="old-institutions" style="margin-bottom: 18px; display: none;">
                         </div>
                         <div>
                             <select id="new-institution" style="width: 284px;">
