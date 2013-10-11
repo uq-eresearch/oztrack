@@ -317,6 +317,7 @@ The following are key properties that should be configured for all applications:
 * `org.oztrack.conf.mailFromEmail`: Email address in From field for mail notifications.
 * `org.oztrack.conf.closedAccessDisableDate`: Date from which the ability to create closed access projects is disabled.
 * `org.oztrack.conf.nonIncrementalEmbargoDisableDate`: Date from which project embargoes must be annually renewed.
+* `org.oztrack.conf.numRConnections`: Number of `Rserve` instances run in the background (default 4 - reduce if memory is limited).
 
 OzTrack defines a default admin user with the username/password "admin"/"oztrack".
 To log into OzTrack, click the 'Login' button at the top-right of screen. You should change the default
