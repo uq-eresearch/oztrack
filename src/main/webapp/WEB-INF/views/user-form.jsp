@@ -71,10 +71,10 @@
                     $.ajax({
                         url: '${pageContext.request.contextPath}/institutions',
                         type: 'POST',
-                        data: {
-                            title: $.param($('#new-institution-title').val()),
-                            domainName: $.param($('#new-institution-domainName').val())
-                        },
+                        data: $.param({
+                            title: $('#new-institution-title').val(),
+                            domainName: $('#new-institution-domainName').val()
+                        }),
                         success: function(affiliation, textStatus, jqXHR) {
                             addInstitution(affiliation);
                             $('#new-institution').append($('<option>').attr('value', affiliation.id).text(affiliation.title));
