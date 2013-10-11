@@ -33,7 +33,7 @@
             <thead>
             <tr>
                 <th>User</th>
-                <th>Institution</th>
+                <th>Institutions</th>
                 <th>Projects</th>
             </tr>
             </thead>
@@ -49,7 +49,13 @@
                         </c:if>
                     </p>
                 </td>
-                <td>${user.institution.title}</td>
+                <td>
+                	<ul>
+	                	<c:forEach var="institution" items="${user.institutions}">
+	                	<li>${institution.title}</li>
+                	    </c:forEach>
+                	</ul>
+            	</td>
                 <td>
                     <p>
                         ${fn:length(user.projectUsers)} projects

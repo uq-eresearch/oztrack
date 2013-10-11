@@ -582,7 +582,7 @@
                             property of an institution or someone other than yourself, an appropriate
                             copyright notice should be provided.
                         </p>
-                        <form:textarea path="rightsStatement" cssStyle="width: 400px; height: 100px;" placeholder="e.g. Copyright ${currentUser.institution.title} ${currentYear}"/>
+                        <form:textarea path="rightsStatement" cssStyle="width: 400px; height: 100px;" placeholder="e.g. Copyright ${not empty currentUser.institutions[0] ? currentUser.institutions[0].title : 'The University of Queensland'} ${currentYear}"/>
                         <form:errors path="rightsStatement" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
