@@ -10,8 +10,10 @@ import java.io.OutputStreamWriter;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
 import org.oztrack.error.FileProcessingException;
@@ -95,5 +97,23 @@ public class OzTrackUtils {
             currentUser = userDao.getByUsername((String) authentication.getPrincipal());
         }
         return currentUser;
+    }
+
+    public static String getConfigProperty(String key) throws IOException, FileNotFoundException {
+        String value = System.getProperty(key);
+        if (StringUtils.isBlank(value)) {
+            String customConfigFile = System.getProperty("org.oztrack.conf.customConfigFile");
+            if (StringUtils.isNotBlank(customConfigFile)) {
+                Properties properties = new Properties();
+                properties.load(new FileInputStream(customConfigFile));
+                value = properties.getProperty(key);
+            }
+        }
+        if (StringUtils.isBlank(value)) {
+            Properties properties = new Properties();
+            properties.load(OzTrackUtils.class.getResourceAsStream("/org/oztrack/conf/application.properties"));
+            value = properties.getProperty(key);
+        }
+        return value;
     }
 }
