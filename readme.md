@@ -123,7 +123,7 @@ HTTP server and configure reverse proxying from port 80 to GeoServer (port 8080)
 
 ### Completing installation
 
-See the *Installing and configuring OzTrack* section below.
+See the [Installing and configuring OzTrack](#installing-and-configuring-oztrack) section below.
 
 ## Installing on Red Hat
 
@@ -272,7 +272,7 @@ HTTP server and configure reverse proxying from port 80 to GeoServer (port 8080)
 
 ### Completing installation
 
-See the *Installing and configuring OzTrack* section below.
+See the [Installing and configuring OzTrack](#installing-and-configuring-oztrack) section below.
 
 ## Installing and configuring OzTrack
 
