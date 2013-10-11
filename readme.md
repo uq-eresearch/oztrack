@@ -39,10 +39,10 @@ Install the following packages:
 
 ### Installing R (including Rserve and other packages)
 
-Install R.
+Install R, including `r-base-dev` for compiling/installing auxiliary R packages.
 OzTrack has been tested with R versions 2.15.2 and 3.0.1.
 
-    sudo apt-get install r-base-core --no-install-recommends
+    sudo apt-get install r-base-core r-base-dev --no-install-recommends
 
 Install the R packages used by OzTrack, including Rserve.
 Note that the following command takes a while (e.g. 10 minutes) because it
