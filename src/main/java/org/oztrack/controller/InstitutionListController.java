@@ -54,7 +54,7 @@ public class InstitutionListController {
             institutionDao.save(institution);
         }
         catch (Exception e) {
-            throw new RuntimeException("Could not save institution. Check title is not used for another institution.");
+            throw new RuntimeException("Could not save institution. Check title/domain is not used for another institution.");
         }
         return "redirect:/institutions/" + institution.getId();
     }
