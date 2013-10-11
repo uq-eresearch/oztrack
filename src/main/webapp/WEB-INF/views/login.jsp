@@ -31,7 +31,7 @@
         </div>
         </c:if>
 
-        <div class="alert alert-info" style="text-align: center;">
+        <div class="alert" style="text-align: center;">
             Don't have an account yet? <a href="${pageContext.request.contextPath}/users/new">Register as a new user</a>
         </div>
 
