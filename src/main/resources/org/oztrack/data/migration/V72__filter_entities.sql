@@ -38,8 +38,10 @@ alter table analysis_result_feature add column datetime timestamp without time z
 -- no long have unique constraint on analysis_result_feature (analysis_id, animal_id)
 
 alter table analysis_result_feature
--- drop constraint analysis_result_feature_analysis_id_animal_id_key; -- postgresql 9.1
-drop constraint analysis_result_feature_analysis_id_key; -- postgresql 8.4
+drop constraint if exists analysis_result_feature_analysis_id_animal_id_key; -- postgresql 9.1
+
+alter table analysis_result_feature
+drop constraint if exists analysis_result_feature_analysis_id_key; -- postgresql 8.4
 
 -- add support for overall result attributes on analyses
 
