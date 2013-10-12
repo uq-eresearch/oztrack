@@ -1,5 +1,6 @@
 package org.oztrack.controller;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import org.oztrack.app.OzTrackApplication;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.InstitutionDao;
 import org.oztrack.data.access.UserDao;
+import org.oztrack.data.model.Institution;
 import org.oztrack.data.model.User;
 import org.oztrack.util.OzTrackUtils;
 import org.oztrack.validator.UserFormValidator;
@@ -61,8 +63,7 @@ public class UserController {
         Model model,
         @ModelAttribute(value="user") User user,
         @RequestHeader(value="eppn", required=false) String aafIdHeader,
-        @RequestParam(value="aafId", required=false) String aafIdParam,
-        @RequestParam(value="update", defaultValue="false") boolean update
+        @RequestParam(value="aafId", required=false) String aafIdParam
     ) {
         User currentUser = OzTrackUtils.getCurrentUser(SecurityContextHolder.getContext().getAuthentication(), userDao);
         if (currentUser == null || !currentUser.equals(user)) {
@@ -85,6 +86,7 @@ public class UserController {
         @RequestParam(value="aafId", required=false) String aafIdParam,
         @RequestParam(value="password", required=false) String newPassword,
         @RequestParam(value="password2", required=false) String newPassword2,
+        @RequestParam(value="institutions", required=false) List<String> institutionIds,
         BindingResult bindingResult
     ) throws Exception {
         User currentUser = OzTrackUtils.getCurrentUser(SecurityContextHolder.getContext().getAuthentication(), userDao);
@@ -104,6 +106,11 @@ public class UserController {
                 }
             }
         }
+        // Catch empty institutions list here: although WebDataBinder will produce new list when
+        // at least one institution entered, it will not be triggered for an empty list, leaving old value.
+        if (institutionIds == null) {
+            user.setInstitutions(Collections.<Institution>emptyList());
+        }
         new UserFormValidator(userDao).validate(user, bindingResult);
         if (!StringUtils.equals(newPassword, newPassword2)) {
             bindingResult.rejectValue("password", "error.password.mismatch", "Passwords do not match");
@@ -120,7 +127,7 @@ public class UserController {
         }
         user.setUpdateDate(new Date());
         user.setUpdateUser(currentUser);
-        userDao.save(user);
+        userDao.update(user);
         return "redirect:/projects";
     }
 
