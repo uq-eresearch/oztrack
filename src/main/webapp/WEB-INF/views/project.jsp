@@ -602,7 +602,15 @@
             <dd>
                 <ul class="unstyled">
                     <li><c:out value="${project.dataSpaceAgent.firstName}"/>&nbsp;<c:out value="${project.dataSpaceAgent.lastName}"/></li>
-                    <li><c:out value="${project.dataSpaceAgent.institutions[0].title}"/></li>
+                    <c:set var="institutions">
+                        <c:forEach var="institution" items="${project.dataSpaceAgent.institutions}" varStatus="status">
+                        ${institution.title}
+                        <c:if test="${not status.last}"> / </c:if>
+                        </c:forEach>
+                    </c:set>
+                    <c:if test="${not empty institutions}">
+                    <li><c:out value="${institutions}"/></li>
+                    </c:if>
                     <li><a href="mailto:<c:out value="${project.dataSpaceAgent.email}"/>"><c:out value="${project.dataSpaceAgent.email}"/></a></li>
                 </ul>
             </dd>

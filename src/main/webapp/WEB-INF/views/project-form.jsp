@@ -582,7 +582,13 @@
                             property of an institution or someone other than yourself, an appropriate
                             copyright notice should be provided.
                         </p>
-                        <form:textarea path="rightsStatement" cssStyle="width: 400px; height: 100px;" placeholder="e.g. Copyright ${not empty currentUser.institutions[0] ? currentUser.institutions[0].title : 'The University of Queensland'} ${currentYear}"/>
+                        <c:set var="institutions">
+                            <c:forEach var="institution" items="${currentUser.institutions}" varStatus="status">
+                            ${institution.title}
+                            <c:if test="${not status.last}"> / </c:if>
+                            </c:forEach>
+                        </c:set>
+                        <form:textarea path="rightsStatement" cssStyle="width: 400px; height: 100px;" placeholder="e.g. Copyright ${not empty institutions ? institutions : 'The University of Queensland'} ${currentYear}"/>
                         <form:errors path="rightsStatement" element="div" cssClass="help-block formErrors"/>
                     </div>
                 </div>
