@@ -546,7 +546,8 @@
                 </c:forEach>
             </c:set>
             <li class="contributor">
-                ${projectContribution.contributor.fullName}<c:if test="${not empty institutions}">, ${institutions}</c:if>
+                <span style="color: #777; font-weight: bold;">${projectContribution.contributor.fullName}</span><!--
+                --><c:if test="${not empty institutions}">, <span>${institutions}</span></c:if>
             </li>
             </c:forEach>
         </ul>
