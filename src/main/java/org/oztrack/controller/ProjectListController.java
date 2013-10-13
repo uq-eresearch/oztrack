@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.time.DateUtils;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.DataLicenceDao;
+import org.oztrack.data.access.PersonDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.SrsDao;
 import org.oztrack.data.access.UserDao;
@@ -46,6 +47,9 @@ public class ProjectListController {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private PersonDao personDao;
 
     @Autowired
     private SrsDao srsDao;
@@ -138,6 +142,8 @@ public class ProjectListController {
         // Note that two or more values is handled correctly (e.g. ["a, b", "c"]).
         String[] publicationReferenceParam = request.getParameterValues("publicationReference");
         String[] publicationUrlParam = request.getParameterValues("publicationUrl");
+        String[] conbtributorIdParam = request.getParameterValues("contributor");
+
         if (!project.getAccess().equals(ProjectAccess.EMBARGO)) {
             project.setEmbargoDate(null);
             project.setEmbargoNotificationDate(null);
@@ -149,6 +155,7 @@ public class ProjectListController {
             project.setDataLicence(null);
         }
         ProjectController.setProjectPublications(project, bindingResult, publicationReferenceParam, publicationUrlParam);
+        ProjectController.setProjectContributions(project, bindingResult, conbtributorIdParam, personDao);
         new ProjectFormValidator(projectDao, null).validate(project, bindingResult);
         if (bindingResult.hasErrors()) {
             project.setEmbargoDate(DateUtils.addYears(currentCalendar.getTime(), 1));
@@ -161,6 +168,7 @@ public class ProjectListController {
     }
 
     private void addFormAttributes(Model model) {
+        model.addAttribute("people", personDao.getAllOrderedByName());
         model.addAttribute("dataLicences", dataLicenceDao.getAll());
         model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
         model.addAttribute("currentYear", currentCalendar.get(Calendar.YEAR));
