@@ -25,21 +25,46 @@
                 $('#old-institutions').show();
                 $('#old-institutions').append($('<li class="institution old-institution">')
                     .append($('<input type="hidden" name="institutions" class="input-xlarge">').val(institution.id))
-                    .append(institution.title)
-                    .append(' [')
-                    .append($('<a href="javascript:void(0)" style="font-size: 0.85em;">')
-                        .append('remove')
-                        .click(function(e) {
-                            e.preventDefault();
-                            $(this).closest('.old-institution').fadeOut({
-                                complete: function() {
-                                    $(this).remove();
-                                    $('#old-institutions:not(:has(.old-institution))').slideUp();
+                    .append($('<input type="text" class="input-xlarge" readonly="readonly">').val(institution.title))
+                    .append(' ')
+                    .append($('<div class="btn-group">')
+                        .append($('<a class="btn" href="#up">')
+                            .append('<i class="icon-arrow-up"></i>')
+                            .click(function(e) {
+                                e.preventDefault();
+                                var prev = $(this).closest('.institution').prev();
+                                if (prev.size() != 0) {
+                                    $(this).closest('.institution').fadeOut({complete: function() {
+                                        $(this).insertBefore(prev).fadeIn();
+                                    }});
                                 }
-                            });
-                        })
+                            })
+                        )
+                        .append($('<a class="btn" href="#down">')
+                            .append('<i class="icon-arrow-down"></i>')
+                            .click(function(e) {
+                                e.preventDefault();
+                                var next = $(this).closest('.institution').next();
+                                if (next.size() != 0) {
+                                    $(this).closest('.institution').fadeOut({complete: function() {
+                                        $(this).insertAfter(next).fadeIn();
+                                    }});
+                                }
+                            })
+                        )
+                        .append($('<a class="btn" href="#remove">')
+                            .append('<i class="icon-trash"></i>')
+                            .click(function(e) {
+                                e.preventDefault();
+                                $(this).closest('.old-institution').fadeOut({
+                                    complete: function() {
+                                        $(this).remove();
+                                        $('#old-institutions:not(:has(.old-institution))').slideUp();
+                                    }
+                                });
+                            })
+                        )
                     )
-                    .append(']')
                 );
             }
             $(document).ready(function() {
@@ -50,7 +75,6 @@
                 $('#new-institution-toggle').click(function(e) {
                     e.preventDefault();
                     $('#new-institution-form').fadeToggle();
-                    $(this).find('*[class^=icon-chevron]').toggleClass('icon-chevron-down').toggleClass('icon-chevron-up');
                 });
                 $('#add-affiliation-btn').click(function(e) {
                     e.preventDefault();
@@ -196,24 +220,23 @@
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="new-affiliation">Institutions:</label>
+                    <label class="control-label" for="new-affiliation">Affiliations:</label>
                     <div class="controls">
-                        <ul id="old-institutions" class="icons" style="margin-bottom: 18px; display: none;">
+                        <ul id="old-institutions" class="icons icons-input" style="margin-bottom: 0px; display: none;">
                         </ul>
-                        <div>
-                            <select id="new-affiliation" style="width: 300px;">
-                                <option value="">Select institution</option>
-                                <c:forEach var="institution" items="${institutions}">
-                                <option value="${institution.id}">${institution.title}</option>
-                                </c:forEach>
-                            </select>
-                            <button id="add-affiliation-btn" class="btn">Add affiliation</button>
-                        </div>
+                        <ul class="icons icons-input">
+                            <li class="create-institution">
+                                <select id="new-affiliation" style="width: 284px;">
+                                    <option value="">Select institution</option>
+                                    <c:forEach var="institution" items="${institutions}">
+                                    <option value="${institution.id}">${institution.title}</option>
+                                    </c:forEach>
+                                </select>
+                                <button id="add-affiliation-btn" class="btn">Add affiliation</button>
+                            </li>
+                        </ul>
                         <div style="margin-top: 18px;">
-                            <a id="new-institution-toggle" class="btn" href="#new-institution-form">
-                                <i class="icon-chevron-down"></i>
-                                Can't find your institution?
-                            </a>
+                            <a id="new-institution-toggle" class="btn" href="#new-institution-form">Can't find your institution?</a>
                         </div>
                         <div id="new-institution-form" style="margin-top: 18px; display: none;">
                             <div style="display: inline-block; padding: 12px; border: 1px solid #ccc; border-radius: 4px; background-color: #F0F0E2; box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08);">

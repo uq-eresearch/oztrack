@@ -178,21 +178,46 @@
                 $('#old-contributors').show();
                 $('#old-contributors').append($('<li class="contributor old-contributor">')
                     .append($('<input type="hidden" name="contributor" class="input-xlarge">').val(contributor.id))
-                    .append(contributor.fullName)
-                    .append(' [')
-                    .append($('<a href="javascript:void(0)" style="font-size: 0.85em;">')
-                        .append('remove')
-                        .click(function(e) {
-                            e.preventDefault();
-                            $(this).closest('.old-contributor').fadeOut({
-                                complete: function() {
-                                    $(this).remove();
-                                    $('#old-contributors:not(:has(.old-contributor))').slideUp();
+                    .append($('<input type="text" class="input-xlarge" readonly="readonly">').val(contributor.fullName))
+                    .append(' ')
+                    .append($('<div class="btn-group">')
+                        .append($('<a class="btn" href="#up">')
+                            .append('<i class="icon-arrow-up"></i>')
+                            .click(function(e) {
+                                e.preventDefault();
+                                var prev = $(this).closest('.contributor').prev();
+                                if (prev.size() != 0) {
+                                    $(this).closest('.contributor').fadeOut({complete: function() {
+                                        $(this).insertBefore(prev).fadeIn();
+                                    }});
                                 }
-                            });
-                        })
+                            })
+                        )
+                        .append($('<a class="btn" href="#down">')
+                            .append('<i class="icon-arrow-down"></i>')
+                            .click(function(e) {
+                                e.preventDefault();
+                                var next = $(this).closest('.contributor').next();
+                                if (next.size() != 0) {
+                                    $(this).closest('.contributor').fadeOut({complete: function() {
+                                        $(this).insertAfter(next).fadeIn();
+                                    }});
+                                }
+                            })
+                        )
+                        .append($('<a class="btn" href="#remove">')
+                            .append('<i class="icon-trash"></i>')
+                            .click(function(e) {
+                                e.preventDefault();
+                                $(this).closest('.old-contributor').fadeOut({
+                                    complete: function() {
+                                        $(this).remove();
+                                        $('#old-contributors:not(:has(.old-contributor))').slideUp();
+                                    }
+                                });
+                            })
+                        )
                     )
-                    .append(']')
                 );
             }
             $(document).ready(function() {
@@ -238,7 +263,6 @@
                 $('#new-person-toggle').click(function(e) {
                     e.preventDefault();
                     $('#new-person-form').fadeToggle();
-                    $(this).find('*[class^=icon-chevron]').toggleClass('icon-chevron-down').toggleClass('icon-chevron-up');
                 });
                 $('#add-contributor-btn').click(function(e) {
                     e.preventDefault();
@@ -500,22 +524,21 @@
                 <div class="control-group">
                     <label class="control-label" for="new-contributor">Contributors</label>
                     <div class="controls">
-                        <ul id="old-contributors" class="icons contributors" style="margin-bottom: 18px; display: none;">
+                        <ul id="old-contributors" class="icons icons-input" style="margin-bottom: 0px; display: none;">
                         </ul>
-                        <div>
-                            <select id="new-contributor" style="width: 300px;">
-                                <option value="">Select contributor</option>
-                                <c:forEach var="person" items="${people}">
-                                <option value="${person.id}">${person.fullName}</option>
-                                </c:forEach>
-                            </select>
-                            <button id="add-contributor-btn" class="btn">Add contributor</button>
-                        </div>
+                        <ul class="icons icons-input">
+                            <li class="create-contributor">
+                                <select id="new-contributor" style="width: 284px;">
+                                    <option value="">Select contributor</option>
+                                    <c:forEach var="person" items="${people}">
+                                    <option value="${person.id}">${person.fullName}</option>
+                                    </c:forEach>
+                                </select>
+                                <button id="add-contributor-btn" class="btn">Add contributor</button>
+                            </li>
+                        </ul>
                         <div style="margin-top: 18px;">
-                            <a id="new-person-toggle" class="btn" href="#new-person-form">
-                                <i class="icon-chevron-down"></i>
-                                Can't find a contributor?
-                            </a>
+                            <a id="new-person-toggle" class="btn" href="#new-person-form">Can't find a contributor?</a>
                         </div>
                         <div id="new-person-form" style="margin-top: 18px; display: none;">
                             <div style="display: inline-block; padding: 12px; border: 1px solid #ccc; border-radius: 4px; background-color: #F0F0E2; box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08);">
