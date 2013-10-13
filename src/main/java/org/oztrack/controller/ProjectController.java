@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.log4j.Logger;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
@@ -59,6 +60,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ProjectController {
+    private final Logger logger = Logger.getLogger(getClass());
+
     private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
@@ -230,6 +233,8 @@ public class ProjectController {
         project.setCrosses180(crosses180);
 
         setProjectPublications(project, bindingResult, publicationReferenceParam, publicationUrlParam);
+
+        List<ProjectContribution> previousContributions = new ArrayList<ProjectContribution>(project.getProjectContributions());
         setProjectContributions(project, bindingResult, conbtributorIdParam, personDao);
 
         new ProjectFormValidator(projectDao, prevEmbargoDate).validate(project, bindingResult);
@@ -241,6 +246,7 @@ public class ProjectController {
         }
 
         projectDao.update(project);
+
         if (shouldRenumberPositionFixes) {
             ArrayList<Long> animalIds = new ArrayList<Long>();
             for (Animal animal : project.getAnimals()) {
@@ -249,7 +255,44 @@ public class ProjectController {
             positionFixDao.renumberPositionFixes(project, animalIds);
         }
 
+        respondToContributionsChange(previousContributions, project.getProjectContributions());
+
         return "redirect:/projects/" + project.getId();
+    }
+
+    private void respondToContributionsChange(List<ProjectContribution> previousContributions, List<ProjectContribution> currentContributions) {
+        for (ProjectContribution currentContribution : currentContributions) {
+            ProjectContribution previousContributionForSameContributor = null;
+            for (ProjectContribution previousContribution : previousContributions) {
+                if (previousContribution.getContributor().equals(currentContribution.getContributor())) {
+                    previousContributionForSameContributor = currentContribution;
+                    break;
+                }
+            }
+            if (previousContributionForSameContributor == null) {
+                logger.info("Person added to list of project contributors");
+                return;
+            }
+        }
+        for (ProjectContribution previousContribution : previousContributions) {
+            ProjectContribution currentContributionForSameContributor = null;
+            for (ProjectContribution currentContribution : currentContributions) {
+                if (currentContribution.getContributor().equals(previousContribution.getContributor())) {
+                    currentContributionForSameContributor = previousContribution;
+                    break;
+                }
+            }
+            if (currentContributionForSameContributor == null) {
+                logger.info("Person removed from list of project contributors.");
+                return;
+            }
+        }
+        for (int i = 0; i < currentContributions.size(); i++) {
+            if (!previousContributions.get(i).getContributor().equals(currentContributions.get(i).getContributor())) {
+                logger.info("Project contributors list has changed.");
+                return;
+            }
+        }
     }
 
     public static void setProjectPublications(
