@@ -43,10 +43,4 @@ public class InstitutionController {
         out.key("domainName").value(institution.getDomainName());
         out.endObject();
     }
-
-    @RequestMapping(value="/institutions/{id}", method=RequestMethod.DELETE)
-    public void processDelete(@ModelAttribute(value="institution") Institution institution, HttpServletResponse response) {
-        institutionDao.delete(institution);
-        response.setStatus(204);
-    }
 }

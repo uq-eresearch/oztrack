@@ -19,22 +19,16 @@
         </c:otherwise>
         </c:choose>
     </jsp:attribute>
-    <jsp:attribute name="head">
-        <style type="text/css">
-            .old-institution {
-                margin-bottom: 5px;
-            }
-        </style>
-    </jsp:attribute>
     <jsp:attribute name="tail">
         <script type="text/javascript">
             function addInstitution(institution) {
                 $('#old-institutions').show();
-                $('#old-institutions').append($('<div class="old-institution">')
+                $('#old-institutions').append($('<li class="institution old-institution">')
                     .append($('<input type="hidden" name="institutions" class="input-xlarge">').val(institution.id))
-                    .append($('<input type="text" readonly="readonly" class="input-xlarge">').val(institution.title))
-                    .append(' ')
-                    .append($('<a class="btn"><i class="icon-trash"></i></a>')
+                    .append(institution.title)
+                    .append(' [')
+                    .append($('<a href="javascript:void(0)" style="font-size: 0.85em;">')
+                        .append('remove')
                         .click(function(e) {
                             e.preventDefault();
                             $(this).closest('.old-institution').fadeOut({
@@ -45,6 +39,7 @@
                             });
                         })
                     )
+                    .append(']')
                 );
             }
             $(document).ready(function() {
@@ -52,17 +47,16 @@
                 <c:forEach var="institution" items="${user.institutions}">
                 addInstitution({id: '${institution.id}', title: '${institution.title}'});
                 </c:forEach>
-                $('#add-affiliation-btn').click(function(e) {
-                    e.preventDefault();
-                });
                 $('#new-institution-toggle').click(function(e) {
                     e.preventDefault();
                     $('#new-institution-form').fadeToggle();
+                    $(this).find('*[class^=icon-chevron]').toggleClass('icon-chevron-down').toggleClass('icon-chevron-up');
                 });
                 $('#add-affiliation-btn').click(function(e) {
-                    var institutionId = $('#new-institution').val();
+                    e.preventDefault();
+                    var institutionId = $('#new-affiliation').val();
                     if (institutionId !== '') {
-                        var institutionTitle = $('#new-institution :selected').text()
+                        var institutionTitle = $('#new-affiliation :selected').text()
                         addInstitution({id: institutionId, title: institutionTitle});
                     }
                 });
@@ -77,7 +71,7 @@
                         }),
                         success: function(affiliation, textStatus, jqXHR) {
                             addInstitution(affiliation);
-                            $('#new-institution').append($('<option>').attr('value', affiliation.id).text(affiliation.title));
+                            $('#new-affiliation').append($('<option>').attr('value', affiliation.id).text(affiliation.title));
                             $('#new-institution-form').fadeOut();
                         },
                         error: function(jqXHR, textStatus, errorThrown) {
@@ -202,12 +196,12 @@
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="new-institution">Institution:</label>
+                    <label class="control-label" for="new-affiliation">Institutions:</label>
                     <div class="controls">
-                        <div id="old-institutions" style="margin-bottom: 18px; display: none;">
-                        </div>
+                        <ul id="old-institutions" class="icons" style="margin-bottom: 18px; display: none;">
+                        </ul>
                         <div>
-                            <select id="new-institution" style="width: 284px;">
+                            <select id="new-affiliation" style="width: 300px;">
                                 <option value="">Select institution</option>
                                 <c:forEach var="institution" items="${institutions}">
                                 <option value="${institution.id}">${institution.title}</option>
@@ -215,8 +209,11 @@
                             </select>
                             <button id="add-affiliation-btn" class="btn">Add affiliation</button>
                         </div>
-                        <div style="margin-top: 5px;">
-                            <button id="new-institution-toggle" class="btn" style="width: 284px;">Can't find your institution?</button>
+                        <div style="margin-top: 18px;">
+                            <a id="new-institution-toggle" class="btn" href="#new-institution-form">
+                                <i class="icon-chevron-down"></i>
+                                Can't find your institution?
+                            </a>
                         </div>
                         <div id="new-institution-form" style="margin-top: 18px; display: none;">
                             <div style="display: inline-block; padding: 12px; border: 1px solid #ccc; border-radius: 4px; background-color: #F0F0E2; box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08);">

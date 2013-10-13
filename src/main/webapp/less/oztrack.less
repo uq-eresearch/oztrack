@@ -50,12 +50,15 @@ h3 {
   margin: 9px 0;
 }
 
-a {
+a,
+a.btn-link {
   color: @textColor;
   text-decoration: underline;
 }
 
-a:hover {
+a:hover,
+a.btn-link:hover,
+a.btn-link:focus {
   color: #ef9800;
 }
 
@@ -704,9 +707,12 @@ ul.icons li.layer {background-image: url('../img/map.png');}
 
 ul.icons li.add-layer {background-image: url('../img/page_white_go.png');}
 
-ul.icons li.manager {background-image: url('../img/user.png');}
-ul.icons li.writer {background-image: url('../img/user_green.png');}
-ul.icons li.reader {background-image: url('../img/user_orange.png');}
+ul.icons li.institution {background-image: url('../img/building.png');}
+
+ul.icons li.contributor {background-image: url('../img/user.png');}
+ul.icons li.manager {background-image: url('../img/user_green.png');}
+ul.icons li.writer {background-image: url('../img/user_orange.png');}
+ul.icons li.reader {background-image: url('../img/user_red.png');}
 
 ul.icons li.software {background-image: url('../img/package.png');}
 ul.icons li.artwork {background-image: url('../img/palette.png');}
