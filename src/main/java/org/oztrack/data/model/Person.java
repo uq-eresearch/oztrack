@@ -16,6 +16,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -49,6 +50,7 @@ public class Person extends OzTrackBaseEntity implements Personable {
         joinColumns=@JoinColumn(name="person_id"),
         inverseJoinColumns=@JoinColumn(name="institution_id")
     )
+    @OrderColumn(name="ordinal", nullable=false)
     private List<Institution> institutions;
 
     @OneToMany(mappedBy="contributor", fetch=FetchType.LAZY, cascade={CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true)
