@@ -535,6 +535,21 @@
         </div> <!-- .row -->
         </c:if>
 
+        <h2>Project Contibutors</h2>
+        <ul class="icons">
+            <c:forEach var="projectContribution" items="${project.projectContributions}">
+            <c:set var="institutions">
+                <c:forEach var="institution" items="${projectContribution.contributor.institutions}" varStatus="status">
+                ${institution.title}
+                <c:if test="${not status.last}"> / </c:if>
+                </c:forEach>
+            </c:set>
+            <li class="contributor">
+                ${projectContribution.contributor.fullName}<c:if test="${not empty institutions}">, ${institutions}</c:if>
+            </li>
+            </c:forEach>
+        </ul>
+
         <h2>Data Access</h2>
 
         <c:set var="dataAccessRowClass">

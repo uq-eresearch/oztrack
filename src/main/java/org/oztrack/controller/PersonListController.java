@@ -1,0 +1,63 @@
+package org.oztrack.controller;
+
+import java.util.Date;
+
+import org.apache.commons.lang3.StringUtils;
+import org.oztrack.data.access.PersonDao;
+import org.oztrack.data.access.UserDao;
+import org.oztrack.data.model.Person;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+public class PersonListController {
+    @Autowired
+    private PersonDao personDao;
+
+    @Autowired
+    private UserDao userDao;
+
+    @InitBinder("person")
+    public void initPersonBinder(WebDataBinder binder) {
+        binder.setAllowedFields(
+            "title",
+            "firstName",
+            "lastName",
+            "email"
+        );
+    }
+
+    @ModelAttribute("person")
+    public Person getPerson() {
+        return new Person();
+    }
+
+    @RequestMapping(value="/people", method=RequestMethod.POST)
+    public String processCreate(
+        Authentication authentication,
+        @ModelAttribute(value="person") Person person,
+        BindingResult bindingResult
+    ) throws Exception {
+        if (StringUtils.isBlank(person.getFirstName()) || StringUtils.isBlank(person.getLastName()) || StringUtils.isBlank(person.getEmail())) {
+            throw new RuntimeException("Please enter a first name, last name, and email address.");
+        }
+        person.setCreateDate(new Date());
+        if (authentication != null) {
+            person.setCreateUser(userDao.getByUsername((String) authentication.getPrincipal()));
+        }
+        try {
+            personDao.save(person);
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Could not save person.");
+        }
+        return "redirect:/people/" + person.getId();
+    }
+}

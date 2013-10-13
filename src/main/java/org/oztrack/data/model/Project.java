@@ -67,6 +67,10 @@ public class Project extends OzTrackBaseEntity {
     @OneToMany(mappedBy="project", cascade={CascadeType.ALL}, orphanRemoval=true, fetch=FetchType.EAGER)
     private List<ProjectUser> projectUsers = new ArrayList<ProjectUser>();
 
+    @OneToMany(mappedBy="project", cascade={CascadeType.ALL}, orphanRemoval=true, fetch=FetchType.EAGER)
+    @OrderColumn(name="ordinal", nullable=false)
+    private List<ProjectContribution> projectContributions = new ArrayList<ProjectContribution>();
+
     @OneToMany(mappedBy="project", cascade=CascadeType.ALL, orphanRemoval=true, fetch=FetchType.LAZY)
     private List<Animal> animals = new ArrayList<Animal>();
 
@@ -148,6 +152,14 @@ public class Project extends OzTrackBaseEntity {
 
     public void setProjectUsers(List<ProjectUser> projectUsers) {
         this.projectUsers = projectUsers;
+    }
+
+    public List<ProjectContribution> getProjectContributions() {
+        return projectContributions;
+    }
+
+    public void setProjectContributions(List<ProjectContribution> projectContributions) {
+        this.projectContributions = projectContributions;
     }
 
     public List<Animal> getAnimals() {

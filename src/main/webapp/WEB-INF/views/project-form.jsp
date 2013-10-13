@@ -174,6 +174,27 @@
                     )
                 ));
             }
+            function addContributor(contributor) {
+                $('#old-contributors').show();
+                $('#old-contributors').append($('<li class="contributor old-contributor">')
+                    .append($('<input type="hidden" name="contributor" class="input-xlarge">').val(contributor.id))
+                    .append(contributor.fullName)
+                    .append(' [')
+                    .append($('<a href="javascript:void(0)" style="font-size: 0.85em;">')
+                        .append('remove')
+                        .click(function(e) {
+                            e.preventDefault();
+                            $(this).closest('.old-contributor').fadeOut({
+                                complete: function() {
+                                    $(this).remove();
+                                    $('#old-contributors:not(:has(.old-contributor))').slideUp();
+                                }
+                            });
+                        })
+                    )
+                    .append(']')
+                );
+            }
             $(document).ready(function() {
                 $('#navTrack').addClass('active');
                 srsSelector = createSrsSelector({
@@ -209,6 +230,44 @@
                 </c:forEach>
                 $.each(publications, function(i, publication) {
                     addPublication(publication);
+                });
+                
+                <c:forEach var="contribution" items="${project.projectContributions}">
+                addContributor({id: '${contribution.contributor.id}', fullName: '${contribution.contributor.fullName}'});
+                </c:forEach>
+                $('#new-person-toggle').click(function(e) {
+                    e.preventDefault();
+                    $('#new-person-form').fadeToggle();
+                    $(this).find('*[class^=icon-chevron]').toggleClass('icon-chevron-down').toggleClass('icon-chevron-up');
+                });
+                $('#add-contributor-btn').click(function(e) {
+                    e.preventDefault();
+                    var personId = $('#new-contributor').val();
+                    if (personId !== '') {
+                        var personFullName = $('#new-contributor :selected').text()
+                        addContributor({id: personId, fullName: personFullName});
+                    }
+                });
+                $('#new-person-btn').click(function(e) {
+                    e.preventDefault();
+                    $.ajax({
+                        url: '${pageContext.request.contextPath}/people',
+                        type: 'POST',
+                        data: $.param({
+                            title: $('#new-person-title').val(),
+                            firstName: $('#new-person-firstName').val(),
+                            lastName: $('#new-person-lastName').val(),
+                            email: $('#new-person-email').val()
+                        }),
+                        success: function(contributor, textStatus, jqXHR) {
+                            addContributor(contributor);
+                            $('#new-contributor').append($('<option>').attr('value', contributor.id).text(contributor.fullName));
+                            $('#new-person-form').fadeOut();
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            alert(errorThrown);
+                        }
+                    });
                 });
 
                 $('#searchSpeciesName').autocomplete({
@@ -433,6 +492,56 @@
                         <div>
                             <a class="btn" href="javascript:void(0);" onclick="addPublication();">Add publication</a>
                         </div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <div class="legend">Project Contributors</div>
+                <div class="control-group">
+                    <label class="control-label" for="new-contributor">Contributors</label>
+                    <div class="controls">
+                        <ul id="old-contributors" class="icons contributors" style="margin-bottom: 18px; display: none;">
+                        </ul>
+                        <div>
+                            <select id="new-contributor" style="width: 300px;">
+                                <option value="">Select contributor</option>
+                                <c:forEach var="person" items="${people}">
+                                <option value="${person.id}">${person.fullName}</option>
+                                </c:forEach>
+                            </select>
+                            <button id="add-contributor-btn" class="btn">Add contributor</button>
+                        </div>
+                        <div style="margin-top: 18px;">
+                            <a id="new-person-toggle" class="btn" href="#new-person-form">
+                                <i class="icon-chevron-down"></i>
+                                Can't find a contributor?
+                            </a>
+                        </div>
+                        <div id="new-person-form" style="margin-top: 18px; display: none;">
+                            <div style="display: inline-block; padding: 12px; border: 1px solid #ccc; border-radius: 4px; background-color: #F0F0E2; box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08);">
+                                <div style="margin-bottom: 5px;">
+                                    <label for="new-person-title" style="display: inline-block; width: 90px;">Title</label>
+                                    <input type="text" id="new-person-title" class="input-xlarge" placeholder="e.g. Professor">
+                                </div>
+                                <div style="margin-bottom: 5px;">
+                                    <label for="new-person-firstName" style="display: inline-block; width: 90px;">First name<i class="required-marker">*</i></label>
+                                    <input type="text" id="new-person-firstName" class="input-xlarge" placeholder="e.g. John">
+                                </div>
+                                <div style="margin-bottom: 5px;">
+                                    <label for="new-person-lastName" style="display: inline-block; width: 90px;">Last name<i class="required-marker">*</i></label>
+                                    <input type="text" id="new-person-lastName" class="input-xlarge" placeholder="e.g. Smith">
+                                </div>
+                                <div style="margin-bottom: 5px;">
+                                    <label for="new-person-email" style="display: inline-block; width: 90px;">Email<i class="required-marker">*</i></label>
+                                    <input type="text" id="new-person-email" class="input-xlarge" placeholder="e.g. j.smith@uq.edu.au">
+                                </div>
+                                <div>
+                                    <label for="new-person-btn" style="display: inline-block; width: 90px;"></label>
+                                    <button id="new-person-btn" class="btn">Add contributor</button>
+                                </div>
+                            </div>
+                        </div>
+                        <form:errors path="projectContributions" element="div" cssClass="help-block formErrors" cssStyle="margin: 1em 0;"/>
                     </div>
                 </div>
             </fieldset>

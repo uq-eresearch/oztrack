@@ -23,13 +23,16 @@ import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.DataLicenceDao;
+import org.oztrack.data.access.PersonDao;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.SrsDao;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.DataFile;
+import org.oztrack.data.model.Person;
 import org.oztrack.data.model.Project;
+import org.oztrack.data.model.ProjectContribution;
 import org.oztrack.data.model.ProjectUser;
 import org.oztrack.data.model.Publication;
 import org.oztrack.data.model.User;
@@ -75,6 +78,9 @@ public class ProjectController {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private PersonDao personDao;
 
     @Autowired
     private SrsDao srsDao;
@@ -198,6 +204,7 @@ public class ProjectController {
         // Note that two or more values is handled correctly (e.g. ["a, b", "c"]).
         String[] publicationReferenceParam = request.getParameterValues("publicationReference");
         String[] publicationUrlParam = request.getParameterValues("publicationUrl");
+        String[] conbtributorIdParam = request.getParameterValues("contributor");
 
         Date prevEmbargoDate = project.getEmbargoDate();
         if (project.getAccess().equals(ProjectAccess.EMBARGO) && StringUtils.isNotBlank(embargoDateString)) {
@@ -223,6 +230,7 @@ public class ProjectController {
         project.setCrosses180(crosses180);
 
         setProjectPublications(project, bindingResult, publicationReferenceParam, publicationUrlParam);
+        setProjectContributions(project, bindingResult, conbtributorIdParam, personDao);
 
         new ProjectFormValidator(projectDao, prevEmbargoDate).validate(project, bindingResult);
 
@@ -296,8 +304,33 @@ public class ProjectController {
         }
     }
 
+    public static void setProjectContributions(
+        Project project,
+        BindingResult bindingResult,
+        String[] conbtributorIdParam,
+        PersonDao personDao
+    ) {
+        List<String> contributorIds = (conbtributorIdParam != null) ? Arrays.asList(conbtributorIdParam) : Collections.<String>emptyList();
+        project.getProjectContributions().clear();
+        for (String contributorId : contributorIds) {
+            if (StringUtils.isBlank(contributorId)) {
+                continue;
+            }
+            Person contributor = personDao.getById(Long.valueOf(contributorId));
+            if (contributor == null) {
+                bindingResult.rejectValue("projectContributions", "error.projectContributions", "Person not found with supplied ID.");
+            }
+            ProjectContribution projectContribution = new ProjectContribution();
+            projectContribution.setProject(project);
+            projectContribution.setContributor(contributor);
+            projectContribution.setOrdinal(project.getProjectContributions().size());
+            project.getProjectContributions().add(projectContribution);
+        }
+    }
+
     private void addFormAttributes(Model model, Project project) {
         GregorianCalendar currentCalendar = new GregorianCalendar();
+        model.addAttribute("people", personDao.getAllOrderedByName());
         model.addAttribute("dataLicences", dataLicenceDao.getAll());
         model.addAttribute("srsList", srsDao.getAllOrderedByBoundsAreaDesc());
         model.addAttribute("currentYear", currentCalendar.get(Calendar.YEAR));

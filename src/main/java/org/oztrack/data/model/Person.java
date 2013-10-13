@@ -1,6 +1,7 @@
 package org.oztrack.data.model;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -13,11 +14,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cascade;
 import org.oztrack.data.model.types.Personable;
 
 @Entity(name="person")
@@ -47,6 +50,10 @@ public class Person extends OzTrackBaseEntity implements Personable {
         inverseJoinColumns=@JoinColumn(name="institution_id")
     )
     private List<Institution> institutions;
+
+    @OneToMany(mappedBy="contributor", fetch=FetchType.LAZY, cascade={CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true)
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+    private List<ProjectContribution> projectContributions = new LinkedList<ProjectContribution>();
 
     @Column(name="description")
     private String description;
