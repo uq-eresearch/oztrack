@@ -16,6 +16,20 @@ Install PostgreSQL and PostGIS:
 
     sudo apt-get install postgresql-9.1 postgresql-client-9.1 postgresql-9.1-postgis
 
+Sort out PostgreSQL authentication:
+
+    --- /etc/postgresql/9.1/main/pg_hba.conf.1	2013-10-12 14:03:37.171531579 +1000
+    +++ /etc/postgresql/9.1/main/pg_hba.conf	2013-10-12 14:03:40.923531719 +1000
+    @@ -87,7 +87,7 @@
+     # TYPE  DATABASE        USER            ADDRESS                 METHOD
+     
+     # "local" is for Unix domain socket connections only
+    -local   all             all                                     peer
+    +local   all             all                                     md5
+     # IPv4 local connections:
+     host    all             all             127.0.0.1/32            md5
+     # IPv6 local connections:
+
 Setup the OzTrack database, including PostGIS:
 
     sudo -u postgres psql -c "create user oztrack with password 'changeme';"
@@ -137,12 +151,21 @@ version of Red Hat you're running: see instructions on <http://yum.postgresql.or
 
 Sort out PostgreSQL authentication:
 
-<pre>sudo $EDITOR /var/lib/pgsql/9.1/data/pg_hba.conf</pre>
-
-    # # TYPE  DATABASE        USER            ADDRESS                 METHOD
-    # local   all             all                                     peer
-    # host    all             all             127.0.0.1/32            md5
-    # host    all             all             ::1/128                 md5
+    --- /var/lib/pgsql/9.1/data/pg_hba.conf.1       2013-08-29 12:59:57.395611680 +1000
+    +++ /var/lib/pgsql/9.1/data/pg_hba.conf 2013-10-13 22:40:04.153573926 +1000
+    @@ -73,8 +77,9 @@
+     # TYPE  DATABASE        USER            ADDRESS                 METHOD
+    +local   all             postgres                                peer
+     
+     # "local" is for Unix domain socket connections only
+    -local   all             all                                     peer
+    +local   all             all                                     md5
+     # IPv4 local connections:
+    -host    all             all             127.0.0.1/32            ident
+    +host    all             all             127.0.0.1/32            md5
+     # IPv6 local connections:
+    -host    all             all             ::1/128                 ident
+    +host    all             all             ::1/128                 md5
 
 Initialise PostgreSQL and set up the service:
 
