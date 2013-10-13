@@ -535,7 +535,8 @@
         </div> <!-- .row -->
         </c:if>
 
-        <h2>Project Contibutors</h2>
+        <c:if test="${fn:length(project.projectContributions) > 0}">
+        <h2>Project Contributors</h2>
         <ul class="icons">
             <c:forEach var="projectContribution" items="${project.projectContributions}">
             <c:set var="institutions">
@@ -549,6 +550,7 @@
             </li>
             </c:forEach>
         </ul>
+        </c:if>
 
         <h2>Data Access</h2>
 
