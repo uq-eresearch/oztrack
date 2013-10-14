@@ -324,15 +324,33 @@ public class ProjectController {
 
                 String projectLink = configuration.getBaseUrl() + "/projects/" + project.getId();
                 StringBuilder htmlMsgContent = new StringBuilder();
-                htmlMsgContent.append("<p>\n");
-                htmlMsgContent.append("    The list of contributors to OzTrack project\n");
-                htmlMsgContent.append("    <i>" + project.getTitle() + "</i>\n");
-                htmlMsgContent.append("    has been updated.\n");
-                htmlMsgContent.append("</p>\n");
-                htmlMsgContent.append("<p>The previous list of contributors was</p>\n");
-                appendContributorsList(previousContributors, htmlMsgContent);
-                htmlMsgContent.append("<p>The current list of contributors is</p>\n");
-                appendContributorsList(currentContributors, htmlMsgContent);
+                if (addedContributors.contains(notifiedContributor)) {
+                    htmlMsgContent.append("<p>\n");
+                    htmlMsgContent.append("    You have been listed as a contributor to OzTrack project\n");
+                    htmlMsgContent.append("    <i>" + project.getTitle() + "</i>.\n");
+                    htmlMsgContent.append("</p>\n");
+                    htmlMsgContent.append("<p>The full list of contributors is:</p>\n");
+                    appendContributorsList(currentContributors, htmlMsgContent);
+                }
+                else {
+                    if (removedContributors.contains(notifiedContributor)) {
+                        htmlMsgContent.append("<p>\n");
+                        htmlMsgContent.append("    You have been removed as a contributor to OzTrack project\n");
+                        htmlMsgContent.append("    <i>" + project.getTitle() + "</i>.\n");
+                        htmlMsgContent.append("</p>\n");
+                    }
+                    else {
+                        htmlMsgContent.append("<p>\n");
+                        htmlMsgContent.append("    The list of contributors to OzTrack project\n");
+                        htmlMsgContent.append("    <i>" + project.getTitle() + "</i>\n");
+                        htmlMsgContent.append("    has been updated.\n");
+                        htmlMsgContent.append("</p>\n");
+                    }
+                    htmlMsgContent.append("<p>The previous list of contributors was:</p>\n");
+                    appendContributorsList(previousContributors, htmlMsgContent);
+                    htmlMsgContent.append("<p>The current list of contributors is:</p>\n");
+                    appendContributorsList(currentContributors, htmlMsgContent);
+                }
                 htmlMsgContent.append("<p>\n");
                 htmlMsgContent.append("    To view the project, click here:\n");
                 htmlMsgContent.append("    <a href=\"" + projectLink + "\">" + projectLink + "</a>\n");
