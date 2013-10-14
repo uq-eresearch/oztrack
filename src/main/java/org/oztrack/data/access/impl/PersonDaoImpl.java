@@ -1,6 +1,7 @@
 package org.oztrack.data.access.impl;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -34,6 +35,14 @@ public class PersonDaoImpl implements PersonDao {
         return (Person) em
             .createQuery("from org.oztrack.data.model.Person where id = :id")
             .setParameter("id", id)
+            .getSingleResult();
+    }
+
+    @Override
+    public Person getByUuid(UUID uuid) {
+        return (Person) em
+            .createQuery("from org.oztrack.data.model.Person where uuid = :uuid")
+            .setParameter("uuid", uuid)
             .getSingleResult();
     }
 

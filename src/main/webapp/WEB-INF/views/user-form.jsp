@@ -138,6 +138,9 @@
             method="${(user.id == null) ? 'POST' : 'PUT'}"
             action="${(user.id == null) ? '/users' : '/users/'}${(user.id == null) ? '' : user.id}"
             style="margin: 18px 0;">
+            <c:if test="${not empty param.person}">
+            <input name="person" type="hidden" value="${param.person}" />
+            </c:if>
             <fieldset>
                 <div class="legend">${(user.id != null) ? 'Update user profile' : 'Register new profile'}</div>
                 <c:if test="${aafEnabled && ((not empty user.aafId) || (user.id != null))}">

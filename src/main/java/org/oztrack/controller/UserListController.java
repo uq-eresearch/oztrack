@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,8 +19,10 @@ import org.json.JSONException;
 import org.json.JSONWriter;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.InstitutionDao;
+import org.oztrack.data.access.PersonDao;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Institution;
+import org.oztrack.data.model.Person;
 import org.oztrack.data.model.User;
 import org.oztrack.validator.UserFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +49,9 @@ public class UserListController {
     private UserDao userDao;
 
     @Autowired
+    private PersonDao personDao;
+
+    @Autowired
     private InstitutionDao institutionDao;
 
     @InitBinder("user")
@@ -70,7 +76,8 @@ public class UserListController {
         @RequestHeader(value="sn", required=false) String aafSurname,
         @RequestHeader(value="description", required=false) String aafDescription,
         @RequestHeader(value="mail", required=false) String aafEmail,
-        @RequestHeader(value="o", required=false) String aafOrganisation
+        @RequestHeader(value="o", required=false) String aafOrganisation,
+        @RequestParam(value="person", required=false) String personUuid
     )
     throws Exception {
         User newUser = new User();
@@ -94,6 +101,15 @@ public class UserListController {
                 else {
                     newUser.setUsername(aafEppn);
                 }
+            }
+        }
+        if (personUuid != null) {
+            Person person = personDao.getByUuid(UUID.fromString(personUuid));
+            if (person.getUser() != null) {
+                throw new RuntimeException("Person already associated with user account.");
+            }
+            else {
+                newUser.setPerson(person);
             }
         }
         return newUser;

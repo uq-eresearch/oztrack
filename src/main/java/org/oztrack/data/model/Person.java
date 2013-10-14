@@ -3,6 +3,7 @@ package org.oztrack.data.model;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -31,6 +32,10 @@ public class Person extends OzTrackBaseEntity implements Personable {
     @SequenceGenerator(name="person_id_seq", sequenceName="person_id_seq", allocationSize=1)
     @Column(name="id", nullable=false)
     private Long id;
+
+    @Column(name="uuid", unique=true, nullable=false)
+    @org.hibernate.annotations.Type(type="org.hibernate.type.PostgresUUIDType")
+    private UUID uuid;
 
     @Column(name="email", unique=true, nullable=false)
     private String email;
@@ -76,6 +81,14 @@ public class Person extends OzTrackBaseEntity implements Personable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     @Override

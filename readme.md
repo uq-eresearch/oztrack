@@ -30,7 +30,7 @@ Sort out PostgreSQL authentication:
      host    all             all             127.0.0.1/32            md5
      # IPv6 local connections:
 
-Setup the OzTrack database, including PostGIS:
+Setup the OzTrack database, including PostGIS and UUID module:
 
     sudo -u postgres psql -c "create user oztrack with password 'changeme';"
     sudo -u postgres psql -c "create database oztrack with owner oztrack;"
@@ -39,6 +39,7 @@ Setup the OzTrack database, including PostGIS:
     sudo -u postgres psql -d oztrack -c "alter table geometry_columns owner to oztrack;"
     sudo -u postgres psql -d oztrack -c "alter table spatial_ref_sys owner to oztrack;"
     sudo -u postgres psql -d oztrack -c "alter view geography_columns owner to oztrack;"
+    sudo -u postgres psql -d oztrack -c 'create extension "uuid-ossp";'
 
 ### Installing Linux packages
 
@@ -189,6 +190,7 @@ Run something like the following commands:
     sudo -u postgres /usr/pgsql-9.1/bin/psql -d oztrack -c "alter table geometry_columns owner to oztrack;"
     sudo -u postgres /usr/pgsql-9.1/bin/psql -d oztrack -c "alter table spatial_ref_sys owner to oztrack;"
     sudo -u postgres /usr/pgsql-9.1/bin/psql -d oztrack -c "alter view geography_columns owner to oztrack;"
+    sudo -u postgres /usr/pgsql-9.1/bin/psql -d oztrack -c 'create extension "uuid-ossp";'
 
 See <http://postgis.refractions.net/documentation/manual-1.5/ch02.html#id2565921>
 

@@ -85,13 +85,23 @@ public class User extends OzTrackBaseEntity implements Personable {
     @Override
     public void setCreateDate(Date createDate) {
         super.setCreateDate(createDate);
-        person.setCreateDate(createDate);
+        if (person.getCreateDate() == null) {
+            person.setCreateDate(createDate);
+        }
+        else {
+            person.setUpdateDate(createDate);
+        }
     }
 
     @Override
     public void setCreateUser(User createUser) {
         super.setCreateUser(createUser);
-        person.setCreateUser(this);
+        if (person.getCreateUser() == null) {
+            person.setCreateUser(this);
+        }
+        else {
+            person.setUpdateUser(this);
+        }
     }
 
     @Override

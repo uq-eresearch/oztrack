@@ -1,6 +1,7 @@
 package org.oztrack.controller;
 
 import java.util.Date;
+import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.oztrack.data.access.PersonDao;
@@ -48,6 +49,7 @@ public class PersonListController {
         if (StringUtils.isBlank(person.getFirstName()) || StringUtils.isBlank(person.getLastName()) || StringUtils.isBlank(person.getEmail())) {
             throw new RuntimeException("Please enter a first name, last name, and email address.");
         }
+        person.setUuid(UUID.randomUUID());
         person.setCreateDate(new Date());
         if (authentication != null) {
             person.setCreateUser(userDao.getByUsername((String) authentication.getPrincipal()));
