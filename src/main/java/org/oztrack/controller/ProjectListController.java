@@ -2,6 +2,7 @@ package org.oztrack.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
@@ -10,6 +11,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.log4j.Logger;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.DataLicenceDao;
 import org.oztrack.data.access.PersonDao;
@@ -17,8 +19,10 @@ import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.access.SrsDao;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Project;
+import org.oztrack.data.model.ProjectContribution;
 import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.ProjectAccess;
+import org.oztrack.util.EmailBuilderFactory;
 import org.oztrack.util.EmbargoUtils;
 import org.oztrack.validator.ProjectFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +41,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ProjectListController {
+    private final Logger logger = Logger.getLogger(getClass());
+
     private final GregorianCalendar currentCalendar = new GregorianCalendar();
 
     @Autowired
@@ -56,6 +62,9 @@ public class ProjectListController {
 
     @Autowired
     private DataLicenceDao dataLicenceDao;
+
+    @Autowired
+    private EmailBuilderFactory emailBuilderFactory;
 
     @InitBinder("project")
     public void initProjectBinder(WebDataBinder binder) {
@@ -164,6 +173,17 @@ public class ProjectListController {
         }
         User currentUser = userDao.getByUsername((String) authentication.getPrincipal());
         projectDao.create(project, currentUser);
+
+        ProjectController.respondToContributionsChange(
+            configuration,
+            emailBuilderFactory,
+            logger,
+            currentUser,
+            project,
+            Collections.<ProjectContribution>emptyList(),
+            project.getProjectContributions()
+        );
+
         return "redirect:/projects/" + project.getId();
     }
 

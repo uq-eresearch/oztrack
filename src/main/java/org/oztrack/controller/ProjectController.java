@@ -257,6 +257,9 @@ public class ProjectController {
             return "project-form";
         }
 
+        User currentUser = OzTrackUtils.getCurrentUser(SecurityContextHolder.getContext().getAuthentication(), userDao);
+        project.setUpdateUser(currentUser);
+        project.setUpdateDate(new Date());
         projectDao.update(project);
 
         if (shouldRenumberPositionFixes) {
@@ -267,16 +270,26 @@ public class ProjectController {
             positionFixDao.renumberPositionFixes(project, animalIds);
         }
 
-        User currentUser = OzTrackUtils.getCurrentUser(SecurityContextHolder.getContext().getAuthentication(), userDao);
-        respondToContributionsChange(project, currentUser, previousContributions, project.getProjectContributions());
+        respondToContributionsChange(
+            configuration,
+            emailBuilderFactory,
+            logger,
+            currentUser,
+            project,
+            previousContributions,
+            project.getProjectContributions()
+        );
 
         return "redirect:/projects/" + project.getId();
     }
 
     @SuppressWarnings("unchecked")
-    private void respondToContributionsChange(
-        Project project,
+    public static void respondToContributionsChange(
+        OzTrackConfiguration configuration,
+        EmailBuilderFactory emailBuilderFactory,
+        Logger logger,
         User currentUser,
+        Project project,
         List<ProjectContribution> previousContributions,
         List<ProjectContribution> currentContributions
     ) {
@@ -370,7 +383,7 @@ public class ProjectController {
         }
     }
 
-    private void appendContributorsList(Collection<Person> previousContributors, StringBuilder htmlMsgContent) {
+    private static void appendContributorsList(Collection<Person> previousContributors, StringBuilder htmlMsgContent) {
         htmlMsgContent.append("<ul>\n");
         for (Person previousContributor : previousContributors) {
             htmlMsgContent.append("    <li>\n");
