@@ -148,7 +148,7 @@ To install PostgreSQL, use the following commands. The RPM used below depends on
 version of Red Hat you're running: see instructions on <http://yum.postgresql.org/>.
 
     sudo rpm -Uvh 'http://yum.postgresql.org/9.1/redhat/rhel-6-x86_64/pgdg-sl91-9.1-6.noarch.rpm'
-    sudo yum install postgresql91 postgresql91-server postgis91
+    sudo yum install postgresql91 postgresql91-server postgresql91-contrib postgis91
 
 Sort out PostgreSQL authentication:
 
