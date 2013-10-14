@@ -340,7 +340,6 @@ public class ProjectController {
                 emailBuilder.to(notifiedContributor);
                 emailBuilder.subject("OzTrack project contributor change");
 
-                String projectLink = configuration.getBaseUrl() + "/projects/" + project.getId();
                 StringBuilder htmlMsgContent = new StringBuilder();
                 if (addedContributors.contains(notifiedContributor)) {
                     htmlMsgContent.append("<p>\n");
@@ -369,8 +368,20 @@ public class ProjectController {
                     htmlMsgContent.append("<p>The current list of contributors is:</p>\n");
                     appendContributorsList(currentContributors, htmlMsgContent);
                 }
+                if (notifiedContributor.getUser() == null) {
+                    htmlMsgContent.append("<p>\n");
+                    htmlMsgContent.append("    The project owner entered your details into OzTrack,\n");
+                    htmlMsgContent.append("    creating a record consisting of your name and email address.\n");
+                    htmlMsgContent.append("    To register an OzTrack user account based on this record,\n");
+                    htmlMsgContent.append("    giving you the ability to update your profile and create\n");
+                    htmlMsgContent.append("    and edit projects in OzTrack, please click here:\n");
+                    String registrationLink = configuration.getBaseUrl() + "/users/new?person=" + notifiedContributor.getUuid();
+                    htmlMsgContent.append("    <a href=\"" + registrationLink + "\">" + registrationLink + "</a>\n");
+                    htmlMsgContent.append("</p>\n");
+                }
                 htmlMsgContent.append("<p>\n");
                 htmlMsgContent.append("    To view the project, click here:\n");
+                String projectLink = configuration.getBaseUrl() + "/projects/" + project.getId();
                 htmlMsgContent.append("    <a href=\"" + projectLink + "\">" + projectLink + "</a>\n");
                 htmlMsgContent.append("</p>\n");
                 emailBuilder.htmlMsgContent(htmlMsgContent.toString());
