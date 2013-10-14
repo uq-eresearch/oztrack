@@ -49,11 +49,13 @@ import org.oztrack.util.DataSpaceInterface;
 import org.oztrack.util.EmailBuilder;
 import org.oztrack.util.EmailBuilderFactory;
 import org.oztrack.util.EmbargoUtils;
+import org.oztrack.util.OzTrackUtils;
 import org.oztrack.validator.ProjectFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -265,7 +267,8 @@ public class ProjectController {
             positionFixDao.renumberPositionFixes(project, animalIds);
         }
 
-        respondToContributionsChange(project, previousContributions, project.getProjectContributions());
+        User currentUser = OzTrackUtils.getCurrentUser(SecurityContextHolder.getContext().getAuthentication(), userDao);
+        respondToContributionsChange(project, currentUser, previousContributions, project.getProjectContributions());
 
         return "redirect:/projects/" + project.getId();
     }
@@ -273,6 +276,7 @@ public class ProjectController {
     @SuppressWarnings("unchecked")
     private void respondToContributionsChange(
         Project project,
+        User currentUser,
         List<ProjectContribution> previousContributions,
         List<ProjectContribution> currentContributions
     ) {
@@ -316,6 +320,7 @@ public class ProjectController {
         logger.info(message.toString());
 
         Collection<Person> notifiedContributors = CollectionUtils.union(previousContributors, currentContributors);
+        notifiedContributors.remove(currentUser.getPerson());
         for (Person notifiedContributor : notifiedContributors) {
             try {
                 EmailBuilder emailBuilder = emailBuilderFactory.getObject();
