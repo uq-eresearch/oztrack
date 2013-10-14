@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -261,6 +262,8 @@ public class ProjectController {
     }
 
     private void respondToContributionsChange(List<ProjectContribution> previousContributions, List<ProjectContribution> currentContributions) {
+        List<Person> contributorsAdded = new ArrayList<Person>();
+        List<Person> contributorsRemoved = new ArrayList<Person>();
         for (ProjectContribution currentContribution : currentContributions) {
             ProjectContribution previousContributionForSameContributor = null;
             for (ProjectContribution previousContribution : previousContributions) {
@@ -270,8 +273,7 @@ public class ProjectController {
                 }
             }
             if (previousContributionForSameContributor == null) {
-                logger.info("Person added to list of project contributors");
-                return;
+                contributorsAdded.add(currentContribution.getContributor());
             }
         }
         for (ProjectContribution previousContribution : previousContributions) {
@@ -283,16 +285,63 @@ public class ProjectController {
                 }
             }
             if (currentContributionForSameContributor == null) {
-                logger.info("Person removed from list of project contributors.");
-                return;
+                contributorsRemoved.add(previousContribution.getContributor());
             }
         }
-        for (int i = 0; i < currentContributions.size(); i++) {
-            if (!previousContributions.get(i).getContributor().equals(currentContributions.get(i).getContributor())) {
-                logger.info("Project contributors list has changed.");
-                return;
+        if (!contributorsAdded.isEmpty() || !contributorsRemoved.isEmpty()) {
+            StringBuilder message = new StringBuilder();
+            if (!contributorsAdded.isEmpty()) {
+                for (Iterator<Person> iterator = contributorsAdded.iterator(); iterator.hasNext();) {
+                    Person contributor = (Person) iterator.next();
+                    message.append(contributor.getFullName());
+                    if (iterator.hasNext()) {
+                        message.append(", ");
+                    }
+                }
+                message.append(" added to list of project contributors.\n");
+            }
+            if (!contributorsRemoved.isEmpty()) {
+                for (Iterator<Person> iterator = contributorsRemoved.iterator(); iterator.hasNext();) {
+                    Person contributor = (Person) iterator.next();
+                    message.append(contributor.getFullName());
+                    if (iterator.hasNext()) {
+                        message.append(", ");
+                    }
+                }
+                message.append(" removed from list of project contributors.\n");
+            }
+            message.append(getContributorListingLines(previousContributions, currentContributions));
+            logger.info(message.toString());
+        }
+        else {
+            for (int i = 0; i < currentContributions.size(); i++) {
+                if (!previousContributions.get(i).getContributor().equals(currentContributions.get(i).getContributor())) {
+                    logger.info(
+                        "Order of project contributors list changed.\n" +
+                        getContributorListingLines(previousContributions, currentContributions)
+                    );
+                    break;
+                }
             }
         }
+    }
+
+    private String getContributorListingLines(List<ProjectContribution> previousContributions, List<ProjectContribution> currentContributions) {
+        StringBuilder message = new StringBuilder();
+        message.append("Previous contributors: ");
+        for (Iterator<ProjectContribution> iterator = previousContributions.iterator(); iterator.hasNext();) {
+            ProjectContribution contribution = (ProjectContribution) iterator.next();
+            message.append(contribution.getContributor().getFullName());
+            message.append(iterator.hasNext() ? ", " : ".");
+        }
+        message.append("\n");
+        message.append("Previous contributors: ");
+        for (Iterator<ProjectContribution> iterator = currentContributions.iterator(); iterator.hasNext();) {
+            ProjectContribution contribution = (ProjectContribution) iterator.next();
+            message.append(contribution.getContributor().getFullName());
+            message.append(iterator.hasNext() ? ", " : ".");
+        }
+        return message.toString();
     }
 
     public static void setProjectPublications(
