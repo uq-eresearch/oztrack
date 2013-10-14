@@ -368,22 +368,29 @@ public class ProjectController {
                     htmlMsgContent.append("<p>The current list of contributors is:</p>\n");
                     appendContributorsList(currentContributors, htmlMsgContent);
                 }
+                String projectLink = configuration.getBaseUrl() + "/projects/" + project.getId();
+                htmlMsgContent.append("<p>\n");
+                htmlMsgContent.append("    To view the project, click here:\n");
+                htmlMsgContent.append("    <a href=\"" + projectLink + "\">" + projectLink + "</a>\n");
+                htmlMsgContent.append("</p>\n");
                 if (notifiedContributor.getUser() == null) {
+                    htmlMsgContent.append("<p style=\"color: #333333;\">\n");
+                    htmlMsgContent.append("    <b>Register an OzTrack account</b>\n");
+                    htmlMsgContent.append("</p>\n");
                     htmlMsgContent.append("<p>\n");
                     htmlMsgContent.append("    The project owner entered your details into OzTrack,\n");
                     htmlMsgContent.append("    creating a record consisting of your name and email address.\n");
-                    htmlMsgContent.append("    To register an OzTrack user account based on this record,\n");
-                    htmlMsgContent.append("    giving you the ability to update your profile and create\n");
-                    htmlMsgContent.append("    and edit projects in OzTrack, please click here:\n");
+                    htmlMsgContent.append("    To register an OzTrack user account based on this record, click the following link:\n");
+                    htmlMsgContent.append("</p>\n");
                     String registrationLink = configuration.getBaseUrl() + "/users/new?person=" + notifiedContributor.getUuid();
+                    htmlMsgContent.append("</p>\n");
                     htmlMsgContent.append("    <a href=\"" + registrationLink + "\">" + registrationLink + "</a>\n");
+                    htmlMsgContent.append("<p>\n");
+                    htmlMsgContent.append("<p>\n");
+                    htmlMsgContent.append("    <span style=\"color: #ff9900;\"><b>Why register?</b></span>\n");
+                    htmlMsgContent.append("    Having an account in OzTrack allows you to update your profile and create new projects.\n");
                     htmlMsgContent.append("</p>\n");
                 }
-                htmlMsgContent.append("<p>\n");
-                htmlMsgContent.append("    To view the project, click here:\n");
-                String projectLink = configuration.getBaseUrl() + "/projects/" + project.getId();
-                htmlMsgContent.append("    <a href=\"" + projectLink + "\">" + projectLink + "</a>\n");
-                htmlMsgContent.append("</p>\n");
                 emailBuilder.htmlMsgContent(htmlMsgContent.toString());
 
                 emailBuilder.build().send();
@@ -398,7 +405,7 @@ public class ProjectController {
         htmlMsgContent.append("<ul>\n");
         for (Person previousContributor : previousContributors) {
             htmlMsgContent.append("    <li>\n");
-            htmlMsgContent.append("        <b>" + previousContributor.getFullName() + "</b>");
+            htmlMsgContent.append("        <span style=\"color: #777777;\"><b>" + previousContributor.getFullName() + "</b></span>");
             if (previousContributor.getInstitutions().isEmpty()) {
                 htmlMsgContent.append("\n");
             }
