@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.apache.commons.mail.resolver.DataSourceClassPathResolver;
+import org.oztrack.data.model.Person;
 import org.oztrack.data.model.User;
 
 public class EmailBuilder {
@@ -22,8 +23,12 @@ public class EmailBuilder {
     }
 
     public EmailBuilder to(User user) throws EmailException {
-        email.addTo(user.getEmail(), user.getFullName());
-        firstName = user.getFirstName();
+        return to(user.getPerson());
+    }
+
+    public EmailBuilder to(Person person) throws EmailException {
+        email.addTo(person.getEmail(), person.getFullName());
+        firstName = person.getFirstName();
         return this;
     }
 
@@ -41,7 +46,9 @@ public class EmailBuilder {
         htmlMsg.append("</head>\n");
         htmlMsg.append("<body>\n");
         htmlMsg.append("<p><img src=\"" + oztrackLogoImgSrc + "\" /></p>\n");
-        htmlMsg.append("<p>Dear " + firstName + ",</p>\n");
+        if (firstName != null) {
+            htmlMsg.append("<p>Dear " + firstName + ",</p>\n");
+        }
         htmlMsg.append(htmlMsgContent);
         htmlMsg.append("</body>\n");
         htmlMsg.append("</html>");

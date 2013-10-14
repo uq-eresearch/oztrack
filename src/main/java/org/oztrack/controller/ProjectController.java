@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -34,6 +35,7 @@ import org.oztrack.data.access.SrsDao;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.DataFile;
+import org.oztrack.data.model.Institution;
 import org.oztrack.data.model.Person;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.ProjectContribution;
@@ -44,6 +46,8 @@ import org.oztrack.data.model.types.ProjectAccess;
 import org.oztrack.data.model.types.Role;
 import org.oztrack.error.DataSpaceInterfaceException;
 import org.oztrack.util.DataSpaceInterface;
+import org.oztrack.util.EmailBuilder;
+import org.oztrack.util.EmailBuilderFactory;
 import org.oztrack.util.EmbargoUtils;
 import org.oztrack.validator.ProjectFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,6 +97,9 @@ public class ProjectController {
 
     @Autowired
     private DataLicenceDao dataLicenceDao;
+
+    @Autowired
+    private EmailBuilderFactory emailBuilderFactory;
 
     @InitBinder("project")
     public void initProjectBinder(WebDataBinder binder) {
@@ -258,13 +265,17 @@ public class ProjectController {
             positionFixDao.renumberPositionFixes(project, animalIds);
         }
 
-        respondToContributionsChange(previousContributions, project.getProjectContributions());
+        respondToContributionsChange(project, previousContributions, project.getProjectContributions());
 
         return "redirect:/projects/" + project.getId();
     }
 
     @SuppressWarnings("unchecked")
-    private void respondToContributionsChange(List<ProjectContribution> previousContributions, List<ProjectContribution> currentContributions) {
+    private void respondToContributionsChange(
+        Project project,
+        List<ProjectContribution> previousContributions,
+        List<ProjectContribution> currentContributions
+    ) {
         Transformer contributionToContributorTransformer = new Transformer() {
             @Override
             public Object transform(Object input) {
@@ -303,6 +314,61 @@ public class ProjectController {
         Collection<String> currentContributorNames = CollectionUtils.collect(currentContributors, contributorToFullNameTransformer);
         message.append("Current contributors: " + StringUtils.join(currentContributorNames, ", "));
         logger.info(message.toString());
+
+        Collection<Person> notifiedContributors = CollectionUtils.union(previousContributors, currentContributors);
+        for (Person notifiedContributor : notifiedContributors) {
+            try {
+                EmailBuilder emailBuilder = emailBuilderFactory.getObject();
+                emailBuilder.to(notifiedContributor);
+                emailBuilder.subject("OzTrack project contributor change");
+
+                String projectLink = configuration.getBaseUrl() + "/projects/" + project.getId();
+                StringBuilder htmlMsgContent = new StringBuilder();
+                htmlMsgContent.append("<p>\n");
+                htmlMsgContent.append("    The list of contributors to OzTrack project\n");
+                htmlMsgContent.append("    <i>" + project.getTitle() + "</i>\n");
+                htmlMsgContent.append("    has been updated.\n");
+                htmlMsgContent.append("</p>\n");
+                htmlMsgContent.append("<p>The previous list of contributors was</p>\n");
+                appendContributorsList(previousContributors, htmlMsgContent);
+                htmlMsgContent.append("<p>The current list of contributors is</p>\n");
+                appendContributorsList(currentContributors, htmlMsgContent);
+                htmlMsgContent.append("<p>\n");
+                htmlMsgContent.append("    To view the project, click here:\n");
+                htmlMsgContent.append("    <a href=\"" + projectLink + "\">" + projectLink + "</a>\n");
+                htmlMsgContent.append("</p>\n");
+                emailBuilder.htmlMsgContent(htmlMsgContent.toString());
+
+                emailBuilder.build().send();
+            }
+            catch (Exception e) {
+                logger.error("Error sending notification to " + notifiedContributor.getFullName() + " " + notifiedContributor.getEmail(), e);
+            }
+        }
+    }
+
+    private void appendContributorsList(Collection<Person> previousContributors, StringBuilder htmlMsgContent) {
+        htmlMsgContent.append("<ul>\n");
+        for (Person previousContributor : previousContributors) {
+            htmlMsgContent.append("    <li>\n");
+            htmlMsgContent.append("        <b>" + previousContributor.getFullName() + "</b>");
+            if (previousContributor.getInstitutions().isEmpty()) {
+                htmlMsgContent.append("\n");
+            }
+            else {
+                htmlMsgContent.append(",\n");
+                for (Iterator<Institution> iterator = previousContributor.getInstitutions().iterator(); iterator.hasNext();) {
+                    Institution institution = iterator.next();
+                    htmlMsgContent.append("        " + institution.getTitle());
+                    if (iterator.hasNext()) {
+                        htmlMsgContent.append(" /");
+                    }
+                    htmlMsgContent.append("\n");
+                }
+            }
+            htmlMsgContent.append("    </li>\n");
+        }
+        htmlMsgContent.append("</ul>\n");
     }
 
     public static void setProjectPublications(
