@@ -7,17 +7,19 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
@@ -261,87 +263,46 @@ public class ProjectController {
         return "redirect:/projects/" + project.getId();
     }
 
+    @SuppressWarnings("unchecked")
     private void respondToContributionsChange(List<ProjectContribution> previousContributions, List<ProjectContribution> currentContributions) {
-        List<Person> contributorsAdded = new ArrayList<Person>();
-        List<Person> contributorsRemoved = new ArrayList<Person>();
-        for (ProjectContribution currentContribution : currentContributions) {
-            ProjectContribution previousContributionForSameContributor = null;
-            for (ProjectContribution previousContribution : previousContributions) {
-                if (previousContribution.getContributor().equals(currentContribution.getContributor())) {
-                    previousContributionForSameContributor = currentContribution;
-                    break;
-                }
+        Transformer contributionToContributorTransformer = new Transformer() {
+            @Override
+            public Object transform(Object input) {
+                return ((ProjectContribution) input).getContributor();
             }
-            if (previousContributionForSameContributor == null) {
-                contributorsAdded.add(currentContribution.getContributor());
-            }
+        };
+        Collection<Person> previousContributors = CollectionUtils.collect(previousContributions, contributionToContributorTransformer);
+        Collection<Person> currentContributors = CollectionUtils.collect(currentContributions, contributionToContributorTransformer);
+        if (previousContributors.equals(currentContributors)) {
+            return;
         }
-        for (ProjectContribution previousContribution : previousContributions) {
-            ProjectContribution currentContributionForSameContributor = null;
-            for (ProjectContribution currentContribution : currentContributions) {
-                if (currentContribution.getContributor().equals(previousContribution.getContributor())) {
-                    currentContributionForSameContributor = previousContribution;
-                    break;
-                }
-            }
-            if (currentContributionForSameContributor == null) {
-                contributorsRemoved.add(previousContribution.getContributor());
-            }
-        }
-        if (!contributorsAdded.isEmpty() || !contributorsRemoved.isEmpty()) {
-            StringBuilder message = new StringBuilder();
-            if (!contributorsAdded.isEmpty()) {
-                for (Iterator<Person> iterator = contributorsAdded.iterator(); iterator.hasNext();) {
-                    Person contributor = (Person) iterator.next();
-                    message.append(contributor.getFullName());
-                    if (iterator.hasNext()) {
-                        message.append(", ");
-                    }
-                }
-                message.append(" added to list of project contributors.\n");
-            }
-            if (!contributorsRemoved.isEmpty()) {
-                for (Iterator<Person> iterator = contributorsRemoved.iterator(); iterator.hasNext();) {
-                    Person contributor = (Person) iterator.next();
-                    message.append(contributor.getFullName());
-                    if (iterator.hasNext()) {
-                        message.append(", ");
-                    }
-                }
-                message.append(" removed from list of project contributors.\n");
-            }
-            message.append(getContributorListingLines(previousContributions, currentContributions));
-            logger.info(message.toString());
-        }
-        else {
-            for (int i = 0; i < currentContributions.size(); i++) {
-                if (!previousContributions.get(i).getContributor().equals(currentContributions.get(i).getContributor())) {
-                    logger.info(
-                        "Order of project contributors list changed.\n" +
-                        getContributorListingLines(previousContributions, currentContributions)
-                    );
-                    break;
-                }
-            }
-        }
-    }
 
-    private String getContributorListingLines(List<ProjectContribution> previousContributions, List<ProjectContribution> currentContributions) {
         StringBuilder message = new StringBuilder();
-        message.append("Previous contributors: ");
-        for (Iterator<ProjectContribution> iterator = previousContributions.iterator(); iterator.hasNext();) {
-            ProjectContribution contribution = (ProjectContribution) iterator.next();
-            message.append(contribution.getContributor().getFullName());
-            message.append(iterator.hasNext() ? ", " : ".");
+        message.append("Project contributors list changed.\n");
+
+        Transformer contributorToFullNameTransformer = new Transformer() {
+            @Override
+            public Object transform(Object input) {
+                return ((Person) input).getFullName();
+            }
+        };
+
+        Collection<Person> addedContributors = CollectionUtils.subtract(currentContributors, previousContributors);
+        if (!addedContributors.isEmpty()) {
+            Collection<String> addedContributorNames = CollectionUtils.collect(addedContributors, contributorToFullNameTransformer);
+            message.append(StringUtils.join(addedContributorNames, ", ") + " added to list of project contributors.\n");
         }
-        message.append("\n");
-        message.append("Previous contributors: ");
-        for (Iterator<ProjectContribution> iterator = currentContributions.iterator(); iterator.hasNext();) {
-            ProjectContribution contribution = (ProjectContribution) iterator.next();
-            message.append(contribution.getContributor().getFullName());
-            message.append(iterator.hasNext() ? ", " : ".");
+        Collection<Person> removedContributors = CollectionUtils.subtract(previousContributors, currentContributors);
+        if (!removedContributors.isEmpty()) {
+            Collection<String> removedContributorNames = CollectionUtils.collect(removedContributors, contributorToFullNameTransformer);
+            message.append(StringUtils.join(removedContributorNames, ", ") + " removed from list of project contributors.\n");
         }
-        return message.toString();
+
+        Collection<String> previousContributorNames = CollectionUtils.collect(previousContributors, contributorToFullNameTransformer);
+        message.append("Previous contributors: " + StringUtils.join(previousContributorNames, ", ") + "\n");
+        Collection<String> currentContributorNames = CollectionUtils.collect(currentContributors, contributorToFullNameTransformer);
+        message.append("Current contributors: " + StringUtils.join(currentContributorNames, ", "));
+        logger.info(message.toString());
     }
 
     public static void setProjectPublications(
