@@ -7,8 +7,10 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.oztrack.app.OzTrackApplication;
 import org.oztrack.app.OzTrackConfiguration;
+import org.oztrack.data.access.CountryDao;
 import org.oztrack.data.access.InstitutionDao;
 import org.oztrack.data.access.UserDao;
+import org.oztrack.data.model.Country;
 import org.oztrack.data.model.Institution;
 import org.oztrack.data.model.User;
 import org.oztrack.util.OzTrackUtils;
@@ -39,6 +41,9 @@ public class UserController {
     @Autowired
     private InstitutionDao institutionDao;
 
+    @Autowired
+    private CountryDao countryDao;
+
     @InitBinder("user")
     public void initUserBinder(WebDataBinder binder) {
         binder.setAllowedFields(
@@ -48,9 +53,11 @@ public class UserController {
             "lastName",
             "description",
             "institutions",
+            "country",
             "email"
         );
         binder.registerCustomEditor(List.class, "institutions", new InstitutionsPropertyEditor(institutionDao));
+        binder.registerCustomEditor(Country.class, "country", new CountryPropertyEditor(countryDao));
     }
 
     @ModelAttribute("user")
@@ -133,5 +140,6 @@ public class UserController {
 
     private void addFormAttributes(Model model) {
         model.addAttribute("institutions", institutionDao.getAllOrderedByTitle());
+        model.addAttribute("countries", countryDao.getAllOrderedByTitle());
     }
 }

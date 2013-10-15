@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedSet;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -55,7 +56,7 @@ public class User extends OzTrackBaseEntity implements Personable {
 
     @OneToOne(fetch=FetchType.EAGER, cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval=false)
     @JoinColumn(name="person_id", nullable=false)
-    private Person person = new Person();
+    private Person person;
 
     @OneToMany(mappedBy="user", fetch=FetchType.LAZY, cascade={CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true)
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
@@ -68,6 +69,10 @@ public class User extends OzTrackBaseEntity implements Personable {
     private SortedSet<Date> loginDates;
 
     public User() {
+        if (person == null) {
+            person = new Person();
+            person.setUuid(UUID.randomUUID());
+        }
     }
 
     public User(String username) {
@@ -240,6 +245,16 @@ public class User extends OzTrackBaseEntity implements Personable {
     @Override
     public void setInstitutions(List<Institution> institutions) {
         person.setInstitutions(institutions);
+    }
+
+    @Override
+    public Country getCountry() {
+        return person.getCountry();
+    }
+
+    @Override
+    public void setCountry(Country country) {
+        person.setCountry(country);
     }
 
     @Override

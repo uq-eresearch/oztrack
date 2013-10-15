@@ -3,6 +3,7 @@ package org.oztrack.data.model.types;
 import java.util.Date;
 import java.util.List;
 
+import org.oztrack.data.model.Country;
 import org.oztrack.data.model.Institution;
 
 // At the moment, we delegate a bunch of getter/setters from User to Person.
@@ -19,6 +20,8 @@ public interface Personable {
     public void setLastName(String lastName);
     public List<Institution> getInstitutions();
     public void setInstitutions(List<Institution> institutions);
+    public Country getCountry();
+    public void setCountry(Country country);
     public String getFullName();
     public String getDataSpaceAgentURI();
     public void setDataSpaceAgentURI(String dataSpaceAgentURI);

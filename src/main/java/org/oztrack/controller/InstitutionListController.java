@@ -3,8 +3,10 @@ package org.oztrack.controller;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
+import org.oztrack.data.access.CountryDao;
 import org.oztrack.data.access.InstitutionDao;
 import org.oztrack.data.access.UserDao;
+import org.oztrack.data.model.Country;
 import org.oztrack.data.model.Institution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -24,12 +26,17 @@ public class InstitutionListController {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private CountryDao countryDao;
+
     @InitBinder("institution")
     public void initInstitutionBinder(WebDataBinder binder) {
         binder.setAllowedFields(
             "title",
-            "domainName"
+            "domainName",
+            "country"
         );
+        binder.registerCustomEditor(Country.class, "country", new CountryPropertyEditor(countryDao));
     }
 
     @ModelAttribute("institution")

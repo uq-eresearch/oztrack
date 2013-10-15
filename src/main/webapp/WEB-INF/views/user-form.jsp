@@ -91,7 +91,8 @@
                         type: 'POST',
                         data: $.param({
                             title: $('#new-institution-title').val(),
-                            domainName: $('#new-institution-domainName').val()
+                            domainName: $('#new-institution-domainName').val(),
+                            country: $('#new-institution-country').val()
                         }),
                         success: function(affiliation, textStatus, jqXHR) {
                             addInstitution(affiliation);
@@ -251,6 +252,15 @@
                                     <label for="new-institution-domainName" style="display: inline-block; width: 90px;">Domain name</label>
                                     <input type="text" id="new-institution-domainName" class="input-xlarge" placeholder="e.g. uq.edu.au">
                                 </div>
+                                <div style="margin-bottom: 5px;">
+                                    <label for="new-institution-country" style="display: inline-block; width: 90px;">Country</label>
+                                    <select id="new-institution-country" style="width: 284px;">
+                                        <option value="">Select country</option>
+                                        <c:forEach var="country" items="${countries}">
+                                        <option value="${country.id}">${country.title}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
                                 <div>
                                     <label for="new-institution-btn" style="display: inline-block; width: 90px;"></label>
                                     <button id="new-institution-btn" class="btn">Add institution</button>
@@ -258,6 +268,26 @@
                             </div>
                         </div>
                         <form:errors path="institutions" element="div" cssClass="help-block formErrors"/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="email">Nationality:</label>
+                    <div class="controls">
+                        <form:select path="country">
+                            <form:option value="">Select country</form:option>
+                            <form:options items="${countries}" itemValue="id" itemLabel="title"/>
+                        </form:select>
+                        <div class="help-inline">
+                            <div class="help-popover" title="Nationality">
+                                <p>
+                                    This field is optional. If provided, it will be used to show statistics for the nationality
+                                    of contributors to OzTrack and also to allow the metadata for projects to be harvested
+                                    for a specific nation. For example, the Australian National Data Service's
+                                    <a href="http://researchdata.ands.org.au/">Research Data Australia</a> repository
+                                    harvests records produced by Australian researchers.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="control-group required">

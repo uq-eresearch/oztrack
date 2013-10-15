@@ -5,17 +5,18 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
-@Entity(name="institution")
-public class Institution extends OzTrackBaseEntity {
+@Entity(name="country")
+public class Country {
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="institution_id_seq")
-    @SequenceGenerator(name="institution_id_seq", sequenceName="institution_id_seq", allocationSize=1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="country_id_seq")
+    @SequenceGenerator(name="country_id_seq", sequenceName="country_id_seq", allocationSize=1)
     @Column(name="id", nullable=false)
     private Long id;
+
+    @Column(name="code", unique=true, nullable=false)
+    private String code;
 
     @Column(name="title", unique=true, nullable=false)
     private String title;
@@ -23,16 +24,20 @@ public class Institution extends OzTrackBaseEntity {
     @Column(name="domainname", unique=true)
     private String domainName;
 
-    @ManyToOne
-    @JoinColumn(name="country_id")
-    private Country country;
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getTitle() {
@@ -49,13 +54,5 @@ public class Institution extends OzTrackBaseEntity {
 
     public void setDomainName(String domainName) {
         this.domainName = domainName;
-    }
-
-    public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
     }
 }

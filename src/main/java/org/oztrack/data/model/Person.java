@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
@@ -57,6 +58,10 @@ public class Person extends OzTrackBaseEntity implements Personable {
     )
     @OrderColumn(name="ordinal", nullable=false)
     private List<Institution> institutions;
+
+    @ManyToOne
+    @JoinColumn(name="country_id")
+    private Country country;
 
     @OneToMany(mappedBy="contributor", fetch=FetchType.LAZY, cascade={CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true)
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
@@ -144,6 +149,15 @@ public class Person extends OzTrackBaseEntity implements Personable {
     @Override
     public void setInstitutions(List<Institution> institutions) {
         this.institutions = institutions;
+    }
+
+    @Override
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
     }
 
     public List<ProjectContribution> getProjectContributions() {
