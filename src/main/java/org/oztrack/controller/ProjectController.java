@@ -368,11 +368,13 @@ public class ProjectController {
                     htmlMsgContent.append("<p>The current list of contributors is:</p>\n");
                     appendContributorsList(currentContributors, htmlMsgContent);
                 }
-                String projectLink = configuration.getBaseUrl() + "/projects/" + project.getId();
-                htmlMsgContent.append("<p>\n");
-                htmlMsgContent.append("    To view the project, click here:\n");
-                htmlMsgContent.append("    <a href=\"" + projectLink + "\">" + projectLink + "</a>\n");
-                htmlMsgContent.append("</p>\n");
+                {
+                    String projectLink = configuration.getBaseUrl() + "/projects/" + project.getId();
+                    htmlMsgContent.append("<p>\n");
+                    htmlMsgContent.append("    To view the project, click here:\n");
+                    htmlMsgContent.append("    <a href=\"" + projectLink + "\">" + projectLink + "</a>\n");
+                    htmlMsgContent.append("</p>\n");
+                }
                 if (notifiedContributor.getUser() == null) {
                     htmlMsgContent.append("<p style=\"color: #333333;\">\n");
                     htmlMsgContent.append("    <b>Register an OzTrack account</b>\n");
@@ -391,7 +393,20 @@ public class ProjectController {
                     htmlMsgContent.append("    Having an account in OzTrack allows you to update your profile and create new projects.\n");
                     htmlMsgContent.append("</p>\n");
                 }
-                emailBuilder.htmlMsgContent(htmlMsgContent.toString());
+                if (addedContributors.contains(notifiedContributor)) {
+                    htmlMsgContent.append("<p style=\"color: #333333;\">\n");
+                    htmlMsgContent.append("    <b>Remove your listing as a contributor</b>\n");
+                    htmlMsgContent.append("</p>\n");
+                    htmlMsgContent.append("<p>\n");
+                    htmlMsgContent.append("    If you believe you were added in error or would prefer not to be listed in OzTrack,\n");
+                    htmlMsgContent.append("    you can automatically remove your record by clicking the following link:\n");
+                    htmlMsgContent.append("</p>\n");
+                    String rejectionLink = configuration.getBaseUrl() + "/projects/" + project.getId() + "/reject?person=" + notifiedContributor.getUuid();
+                    htmlMsgContent.append("</p>\n");
+                    htmlMsgContent.append("    <a href=\"" + rejectionLink + "\">" + rejectionLink + "</a>\n");
+                    htmlMsgContent.append("<p>\n");
+                    emailBuilder.htmlMsgContent(htmlMsgContent.toString());
+                }
 
                 emailBuilder.build().send();
             }

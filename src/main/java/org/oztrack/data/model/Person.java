@@ -146,6 +146,14 @@ public class Person extends OzTrackBaseEntity implements Personable {
         this.institutions = institutions;
     }
 
+    public List<ProjectContribution> getProjectContributions() {
+        return projectContributions;
+    }
+
+    public void setProjectContributions(List<ProjectContribution> projectContributions) {
+        this.projectContributions = projectContributions;
+    }
+
     @Override
     public String getDescription() {
         return description;
