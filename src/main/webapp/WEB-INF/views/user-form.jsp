@@ -97,6 +97,7 @@
                         success: function(affiliation, textStatus, jqXHR) {
                             addInstitution(affiliation);
                             $('#new-affiliation').append($('<option>').attr('value', affiliation.id).text(affiliation.title));
+                            $('#new-institution-form :input').val('');
                             $('#new-institution-form').fadeOut();
                         },
                         error: function(jqXHR, textStatus, errorThrown) {
