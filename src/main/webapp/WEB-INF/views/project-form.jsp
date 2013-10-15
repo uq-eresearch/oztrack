@@ -286,6 +286,7 @@
                         success: function(contributor, textStatus, jqXHR) {
                             addContributor(contributor);
                             $('#new-contributor').append($('<option>').attr('value', contributor.id).text(contributor.fullName));
+                            $('#new-person-form :input').val('');
                             $('#new-person-form').fadeOut();
                         },
                         error: function(jqXHR, textStatus, errorThrown) {
