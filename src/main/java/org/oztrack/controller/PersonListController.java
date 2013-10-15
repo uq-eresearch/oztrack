@@ -28,7 +28,6 @@ public class PersonListController {
     @InitBinder("person")
     public void initPersonBinder(WebDataBinder binder) {
         binder.setAllowedFields(
-            "title",
             "firstName",
             "lastName",
             "email"

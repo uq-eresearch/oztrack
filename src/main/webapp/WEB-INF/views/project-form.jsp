@@ -278,7 +278,6 @@
                         url: '${pageContext.request.contextPath}/people',
                         type: 'POST',
                         data: $.param({
-                            title: $('#new-person-title').val(),
                             firstName: $('#new-person-firstName').val(),
                             lastName: $('#new-person-lastName').val(),
                             email: $('#new-person-email').val()
@@ -543,10 +542,6 @@
                         </div>
                         <div id="new-person-form" style="margin-top: 18px; display: none;">
                             <div style="display: inline-block; padding: 12px; border: 1px solid #ccc; border-radius: 4px; background-color: #F0F0E2; box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08);">
-                                <div style="margin-bottom: 5px;">
-                                    <label for="new-person-title" style="display: inline-block; width: 90px;">Title</label>
-                                    <input type="text" id="new-person-title" class="input-xlarge" placeholder="e.g. Professor">
-                                </div>
                                 <div style="margin-bottom: 5px;">
                                     <label for="new-person-firstName" style="display: inline-block; width: 90px;">First name<i class="required-marker">*</i></label>
                                     <input type="text" id="new-person-firstName" class="input-xlarge" placeholder="e.g. John">
