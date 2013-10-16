@@ -13,7 +13,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.lang3.StringUtils;
-import org.oztrack.data.access.OaiPmhRecordProducer;
+import org.oztrack.data.access.OaiPmhEntityProducer;
 import org.oztrack.data.model.types.OaiPmhRecord;
 import org.oztrack.util.OaiPmhMetadataFormat;
 
@@ -30,7 +30,7 @@ public class OaiPmhRecordWriter {
         this.headerOnly = headerOnly;
     }
 
-    public void write(OaiPmhRecordProducer producer) throws XMLStreamException {
+    public void write(OaiPmhEntityProducer<OaiPmhRecord> producer) throws XMLStreamException {
         for (OaiPmhRecord record : producer) {
             write(record);
         }

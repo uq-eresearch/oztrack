@@ -13,8 +13,8 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.StringUtils;
 import org.oztrack.app.OzTrackConfiguration;
+import org.oztrack.data.access.OaiPmhEntityProducer;
 import org.oztrack.data.access.OaiPmhRecordDao;
-import org.oztrack.data.access.OaiPmhRecordProducer;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.types.OaiPmhRecord;
@@ -52,15 +52,17 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
     }
 
     @Override
-    public OaiPmhRecordProducer getRecords() {
-        return new OaiPmhChainingRecordProducer(Arrays.asList(
+    public OaiPmhEntityProducer<OaiPmhRecord> getRecords() {
+        @SuppressWarnings("unchecked")
+        List<OaiPmhEntityProducer<OaiPmhRecord>> producers = Arrays.asList(
             createRepositoryRecordProducer(),
             createProjectRecordProducer()
-        ));
+        );
+        return new OaiPmhChainingEntityProducer<OaiPmhRecord>(producers);
     }
 
-    private OaiPmhRecordProducer createRepositoryRecordProducer() {
-        return new OaiPmhRecordProducer() {
+    private OaiPmhEntityProducer<OaiPmhRecord> createRepositoryRecordProducer() {
+        return new OaiPmhEntityProducer<OaiPmhRecord>() {
             @Override
             public Iterator<OaiPmhRecord> iterator() {
                 List<OaiPmhRecord> records = Arrays.asList(
@@ -74,11 +76,11 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         };
     }
 
-    private OaiPmhRecordProducer createProjectRecordProducer() {
+    private OaiPmhEntityProducer<OaiPmhRecord> createProjectRecordProducer() {
         final List<Project> projects = projectDao.getAll();
         final HashMap<Long, Range<Date>> projectDetectionDateRanges = projectDao.getProjectDetectionDateRanges(false);
         final HashMap<Long, Polygon> projectBoundingBoxes = projectDao.getProjectBoundingBoxes(false);
-        return new OaiPmhMappingRecordProducer<Project>(projects.iterator()) {
+        return new OaiPmhMappingEntityProducer<Project, OaiPmhRecord>(projects.iterator()) {
             @Override
             protected OaiPmhRecord map(Project project) {
                 OaiPmhRecord record = new OaiPmhRecord();

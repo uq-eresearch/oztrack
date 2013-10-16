@@ -9,8 +9,10 @@ import java.util.HashSet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.oztrack.data.access.OaiPmhEntityProducer;
 import org.oztrack.data.access.OaiPmhRecordDao;
-import org.oztrack.data.access.OaiPmhRecordProducer;
+import org.oztrack.data.access.OaiPmhSetDao;
+import org.oztrack.data.model.types.OaiPmhRecord;
 import org.oztrack.util.OaiPmhConstants;
 import org.oztrack.util.OaiPmhException;
 import org.oztrack.util.OaiPmhMetadataFormat;
@@ -28,6 +30,9 @@ import org.springframework.web.servlet.View;
 public class OaiPmhListIdentifiersOrListRecordsController extends OaiPmhController {
     @Autowired
     OaiPmhRecordDao recordDao;
+
+    @Autowired
+    private OaiPmhSetDao setDao;
 
     @RequestMapping(value="/oai-pmh", method={RequestMethod.GET, RequestMethod.POST}, produces="text/xml", params={"verb=ListIdentifiers"})
     public View handleListIdentifiersRequest(HttpServletRequest request, HttpServletResponse response) throws OaiPmhException {
@@ -107,13 +112,13 @@ public class OaiPmhListIdentifiersOrListRecordsController extends OaiPmhControll
         }
 
         String set = request.getParameter("set");
-        if (set != null) {
+        if ((set != null) && !setDao.getSets().iterator().hasNext()) {
             throw new OaiPmhException("noSetHierarchy", "This repository does not support sets.");
         }
 
         // TODO: Query for records matching from/until/set parameters
         // TODO: Check for noRecordsMatch error (combination of from/until/set results no records)
-        OaiPmhRecordProducer recordProducer = recordDao.getRecords();
+        OaiPmhEntityProducer<OaiPmhRecord> recordProducer = recordDao.getRecords();
 
         return new OaiPmhListIdentifiersOrListRecordsView(verb, metadataFormat, recordProducer);
     }

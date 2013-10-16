@@ -2,28 +2,27 @@ package org.oztrack.data.access.impl;
 
 import java.util.Iterator;
 
-import org.oztrack.data.access.OaiPmhRecordProducer;
-import org.oztrack.data.model.types.OaiPmhRecord;
+import org.oztrack.data.access.OaiPmhEntityProducer;
 
-public abstract class OaiPmhMappingRecordProducer<T> implements OaiPmhRecordProducer {
-    private Iterator<T> sourceIterator;
+public abstract class OaiPmhMappingEntityProducer<S, T> implements OaiPmhEntityProducer<T> {
+    private Iterator<S> sourceIterator;
 
-    public OaiPmhMappingRecordProducer(Iterator<T> sourceIterator) {
+    public OaiPmhMappingEntityProducer(Iterator<S> sourceIterator) {
         this.sourceIterator = sourceIterator;
     }
 
-    protected abstract OaiPmhRecord map(T source);
+    protected abstract T map(S source);
 
     @Override
-    public Iterator<OaiPmhRecord> iterator() {
-        return new Iterator<OaiPmhRecord>() {
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
             @Override
             public boolean hasNext() {
                 return sourceIterator.hasNext();
             }
 
             @Override
-            public OaiPmhRecord next() {
+            public T next() {
                 return map(sourceIterator.next());
             }
 
