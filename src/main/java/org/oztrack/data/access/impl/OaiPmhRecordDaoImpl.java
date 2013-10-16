@@ -163,6 +163,13 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
                         )
                     );
                 }
+                relations.add(
+                    new OaiPmhRecord.Relation(
+                        "isManagedBy",
+                        configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + OaiPmhConstants.dataManagerPartyLocalIdentifier,
+                        configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + OaiPmhConstants.dataManagerPartyLocalIdentifier
+                    )
+                );
                 record.setRelations(relations);
                 List<Subject> subjects = new ArrayList<Subject>(OaiPmhConstants.defaultRecordSubjects);
                 if (StringUtils.isNotBlank(project.getSpeciesScientificName())) {
