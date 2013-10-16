@@ -388,7 +388,7 @@ public class OaiPmhRecordWriter {
                 out.writeEndElement(); // accessRights
             }
             if (record.getLicence() != null) {
-                out.writeStartElement(RIF_CS.nsUri, "license");
+                out.writeStartElement(RIF_CS.nsUri, "licence");
                 if (StringUtils.isNotBlank(record.getLicence().getLicenceType())) {
                     out.writeAttribute("type", record.getLicence().getLicenceType());
                 }
