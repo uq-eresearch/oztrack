@@ -12,9 +12,12 @@ import java.util.Date;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang3.StringUtils;
 import org.oztrack.data.access.OaiPmhEntityProducer;
 import org.oztrack.data.model.types.OaiPmhRecord;
+import org.oztrack.data.model.types.OaiPmhRecord.Name.NamePart;
 import org.oztrack.util.OaiPmhMetadataFormat;
 
 public class OaiPmhRecordWriter {
@@ -57,8 +60,8 @@ public class OaiPmhRecordWriter {
         // Date of creation, modification or deletion of the record for the purpose of selective harvesting.
         // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#Record
         Date datestampDate =
-            (record.getUpdateDate() != null) ? record.getUpdateDate() :
-            (record.getCreateDate() != null) ? record.getCreateDate() :
+            (record.getRecordUpdateDate() != null) ? record.getRecordUpdateDate() :
+            (record.getRecordCreateDate() != null) ? record.getRecordCreateDate() :
             null;
         if (datestampDate != null) {
             out.writeStartElement("datestamp");
@@ -106,9 +109,16 @@ public class OaiPmhRecordWriter {
             out.writeCharacters(record.getObjectIdentifier());
             out.writeEndElement(); // identifier
         }
-        if (StringUtils.isNotBlank(record.getTitle())) {
+        Transformer namePartToTextTransformer = new Transformer() {
+            @Override
+            public Object transform(Object input) {
+                return ((OaiPmhRecord.Name.NamePart) input).getNamePartText();
+            }
+        };
+        String title = StringUtils.join(CollectionUtils.collect(record.getName().getNameParts(), namePartToTextTransformer), " ");
+        if (StringUtils.isNotBlank(title)) {
             out.writeStartElement(DC.nsUri, "title");
-            out.writeCharacters(record.getTitle());
+            out.writeCharacters(title);
             out.writeEndElement(); // title
         }
         if (StringUtils.isNotBlank(record.getDescription())) {
@@ -121,14 +131,14 @@ public class OaiPmhRecordWriter {
             out.writeCharacters(record.getCreator());
             out.writeEndElement(); // creator
         }
-        if (record.getCreateDate() != null) {
+        if (record.getRecordCreateDate() != null) {
             out.writeStartElement(DC.nsUri, "created");
-            out.writeCharacters(utcDateTimeFormat.format(record.getCreateDate()));
+            out.writeCharacters(utcDateTimeFormat.format(record.getRecordCreateDate()));
             out.writeEndElement(); // created
         }
-        if (record.getUpdateDate() != null) {
+        if (record.getRecordUpdateDate() != null) {
             out.writeStartElement(DC.nsUri, "date");
-            out.writeCharacters(utcDateTimeFormat.format(record.getUpdateDate()));
+            out.writeCharacters(utcDateTimeFormat.format(record.getRecordUpdateDate()));
             out.writeEndElement(); // date
         }
         if (record.getSpatialCoverage() != null) {
@@ -227,8 +237,8 @@ public class OaiPmhRecordWriter {
             out.writeAttribute("type", record.getRifCsObjectTypeAttr());
         }
 
-        if (record.getUpdateDate() != null) {
-            out.writeAttribute("dateModified", utcDateTimeFormat.format(record.getUpdateDate()));
+        if (record.getRecordUpdateDate() != null) {
+            out.writeAttribute("dateModified", utcDateTimeFormat.format(record.getRecordUpdateDate()));
         }
 
         if (StringUtils.isNotBlank(record.getObjectIdentifier())) {
@@ -238,12 +248,28 @@ public class OaiPmhRecordWriter {
             out.writeEndElement(); // identifier
         }
 
-        if (StringUtils.isNotBlank(record.getTitle())) {
+        if (record.getUriIdentifiers() != null) {
+            for (String uriIdentifier : record.getUriIdentifiers()) {
+                if (StringUtils.isNotBlank(uriIdentifier)) {
+                    out.writeStartElement(RIF_CS.nsUri, "identifier");
+                    out.writeAttribute("type", "uri");
+                    out.writeCharacters(uriIdentifier);
+                    out.writeEndElement(); // identifier
+                }
+            }
+        }
+
+        if ((record.getName() != null) && (record.getName().getNameParts() != null) && !record.getName().getNameParts().isEmpty()) {
             out.writeStartElement(RIF_CS.nsUri, "name");
             out.writeAttribute("type", "primary");
-            out.writeStartElement(RIF_CS.nsUri, "namePart");
-            out.writeCharacters(record.getTitle());
-            out.writeEndElement(); // namePart
+            for (NamePart namePart : record.getName().getNameParts()) {
+                out.writeStartElement(RIF_CS.nsUri, "namePart");
+                if (StringUtils.isNotBlank(namePart.getNamePartType())) {
+                    out.writeAttribute("type", namePart.getNamePartType());
+                }
+                out.writeCharacters(namePart.getNamePartText());
+                out.writeEndElement(); // namePart
+            }
             out.writeEndElement(); // name
         }
 
@@ -278,23 +304,31 @@ public class OaiPmhRecordWriter {
         }
 
         if (Arrays.asList("activity", "party", "service").contains(record.getRifCsObjectElemName())) {
-            if (record.getCreateDate() != null) {
+            if ((record.getExistenceStartDate() != null) || (record.getExistenceEndDate() != null)) {
                 out.writeStartElement(RIF_CS.nsUri, "existenceDates");
-                out.writeStartElement(RIF_CS.nsUri, "startDate");
-                out.writeAttribute("dateFormat", "W3CDTF");
-                out.writeCharacters(utcDateTimeFormat.format(record.getCreateDate()));
-                out.writeEndElement(); // startDate
+                if (record.getExistenceStartDate() != null) {
+                    out.writeStartElement(RIF_CS.nsUri, "startDate");
+                    out.writeAttribute("dateFormat", "W3CDTF");
+                    out.writeCharacters(utcDateTimeFormat.format(record.getExistenceStartDate()));
+                    out.writeEndElement(); // startDate
+                }
+                if (record.getExistenceEndDate() != null) {
+                    out.writeStartElement(RIF_CS.nsUri, "endDate");
+                    out.writeAttribute("dateFormat", "W3CDTF");
+                    out.writeCharacters(utcDateTimeFormat.format(record.getExistenceEndDate()));
+                    out.writeEndElement(); // endDate
+                }
                 out.writeEndElement(); // existenceDates
             }
         }
         if (record.getRifCsObjectElemName().equals("collection")) {
-            if (record.getCreateDate() != null) {
+            if (record.getRecordCreateDate() != null) {
                 out.writeStartElement(RIF_CS.nsUri, "dates");
                 out.writeAttribute("type", "created");
                 out.writeStartElement(RIF_CS.nsUri, "date");
                 out.writeAttribute("type", "dateFrom");
                 out.writeAttribute("dateFormat", "W3CDTF");
-                out.writeCharacters(utcDateTimeFormat.format(record.getCreateDate()));
+                out.writeCharacters(utcDateTimeFormat.format(record.getRecordCreateDate()));
                 out.writeEndElement(); // date
                 out.writeEndElement(); // dates
             }

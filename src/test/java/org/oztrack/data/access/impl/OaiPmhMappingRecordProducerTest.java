@@ -31,7 +31,7 @@ public class OaiPmhMappingRecordProducerTest {
                 @Override
                 protected OaiPmhRecord map(String source) {
                     OaiPmhRecord record = new OaiPmhRecord();
-                    record.setTitle(source);
+                    record.setObjectIdentifier(source);
                     return record;
                 }
             };
@@ -50,9 +50,9 @@ public class OaiPmhMappingRecordProducerTest {
 
     @Test
     public void testManyRecordsContents() {
-        Assert.assertEquals("foo", manyRecordsIterator.next().getTitle());
-        Assert.assertEquals("bar", manyRecordsIterator.next().getTitle());
-        Assert.assertEquals("baz", manyRecordsIterator.next().getTitle());
+        Assert.assertEquals("foo", manyRecordsIterator.next().getObjectIdentifier());
+        Assert.assertEquals("bar", manyRecordsIterator.next().getObjectIdentifier());
+        Assert.assertEquals("baz", manyRecordsIterator.next().getObjectIdentifier());
         Assert.assertFalse(manyRecordsIterator.hasNext());
     }
 

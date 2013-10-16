@@ -8,6 +8,38 @@ import org.apache.commons.lang3.Range;
 import com.vividsolutions.jts.geom.Envelope;
 
 public class OaiPmhRecord {
+    public static class Name {
+        public static class NamePart {
+            private String namePartType;
+            private String namePartText;
+            public NamePart(String namePartType, String namePartText) {
+                this.namePartType = namePartType;
+                this.namePartText = namePartText;
+            }
+            public String getNamePartType() {
+                return namePartType;
+            }
+            public void setNamePartType(String namePartType) {
+                this.namePartType = namePartType;
+            }
+            public String getNamePartText() {
+                return namePartText;
+            }
+            public void setNamePartText(String namePartText) {
+                this.namePartText = namePartText;
+            }
+        }
+        private List<NamePart> nameParts;
+        public Name(List<NamePart> nameParts) {
+            this.nameParts = nameParts;
+        }
+        public List<NamePart> getNameParts() {
+            return nameParts;
+        }
+        public void setNameParts(List<NamePart> nameParts) {
+            this.nameParts = nameParts;
+        }
+    }
     public static class Licence {
         private String licenceType;
         private String rightsUri;
@@ -87,13 +119,16 @@ public class OaiPmhRecord {
     private String oaiPmhRecordIdentifier;
     private String rifCsRecordIdentifier;
     private String objectIdentifier;
-    private String title;
+    private List<String> uriIdentifiers;
+    private Name name;
     private String description;
     private String url;
     private String email;
     private String creator;
-    private Date createDate;
-    private Date updateDate;
+    private Date recordCreateDate;
+    private Date recordUpdateDate;
+    private Date existenceStartDate;
+    private Date existenceEndDate;
     private Range<Date> temporalCoverage;
     private Envelope spatialCoverage;
     private String rightsStatement;
@@ -126,11 +161,17 @@ public class OaiPmhRecord {
     public void setObjectIdentifier(String objectIdentifier) {
         this.objectIdentifier = objectIdentifier;
     }
-    public String getTitle() {
-        return title;
+    public List<String> getUriIdentifiers() {
+        return uriIdentifiers;
     }
-    public void setTitle(String title) {
-        this.title = title;
+    public void setUriIdentifiers(List<String> uriIdentifiers) {
+        this.uriIdentifiers = uriIdentifiers;
+    }
+    public Name getName() {
+        return name;
+    }
+    public void setName(Name name) {
+        this.name = name;
     }
     public String getDescription() {
         return description;
@@ -156,17 +197,29 @@ public class OaiPmhRecord {
     public void setCreator(String creator) {
         this.creator = creator;
     }
-    public Date getCreateDate() {
-        return createDate;
+    public Date getRecordCreateDate() {
+        return recordCreateDate;
     }
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+    public void setRecordCreateDate(Date recordCreateDate) {
+        this.recordCreateDate = recordCreateDate;
     }
-    public Date getUpdateDate() {
-        return updateDate;
+    public Date getRecordUpdateDate() {
+        return recordUpdateDate;
     }
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
+    public void setRecordUpdateDate(Date recordUpdateDate) {
+        this.recordUpdateDate = recordUpdateDate;
+    }
+    public Date getExistenceStartDate() {
+        return existenceStartDate;
+    }
+    public void setExistenceStartDate(Date existenceStartDate) {
+        this.existenceStartDate = existenceStartDate;
+    }
+    public Date getExistenceEndDate() {
+        return existenceEndDate;
+    }
+    public void setExistenceEndDate(Date existenceEndDate) {
+        this.existenceEndDate = existenceEndDate;
     }
     public Range<Date> getTemporalCoverage() {
         return temporalCoverage;
