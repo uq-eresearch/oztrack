@@ -221,6 +221,16 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
                         )
                     );
                 }
+                for (ProjectContribution contribution : person.getProjectContributions()) {
+                    String projectLocalIdentifier = "project/" + contribution.getProject().getId();
+                    relations.add(
+                        new OaiPmhRecord.Relation(
+                            "isCollectorOf",
+                            configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + projectLocalIdentifier,
+                            configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + projectLocalIdentifier
+                        )
+                    );
+                }
                 record.setRelations(relations);
                 record.setSubjects(new ArrayList<Subject>(OaiPmhConstants.defaultRecordSubjects));
                 record.setDcType("agent");
