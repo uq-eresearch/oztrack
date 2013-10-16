@@ -231,6 +231,11 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
                         )
                     );
                 }
+                relations.add(new OaiPmhRecord.Relation(
+                    "hasAssociationWith",
+                    configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + OaiPmhConstants.repositoryCollectionLocalIdentifier,
+                    configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + OaiPmhConstants.repositoryCollectionLocalIdentifier
+                ));
                 record.setRelations(relations);
                 record.setSubjects(new ArrayList<Subject>(OaiPmhConstants.defaultRecordSubjects));
                 record.setDcType("agent");
@@ -262,6 +267,13 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
                 record.setCreator(null);
                 record.setRecordCreateDate(institution.getCreateDate());
                 record.setRecordUpdateDate(institution.getUpdateDate());
+                record.setRelations(Arrays.asList(
+                    new OaiPmhRecord.Relation(
+                        "hasAssociationWith",
+                        configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + OaiPmhConstants.repositoryCollectionLocalIdentifier,
+                        configuration.getOaiPmhConfiguration().getObjectIdentifierPrefix() + OaiPmhConstants.repositoryCollectionLocalIdentifier
+                    )
+                ));
                 record.setSubjects(new ArrayList<Subject>(OaiPmhConstants.defaultRecordSubjects));
                 record.setDcType("agent");
                 record.setRifCsObjectElemName("party");
