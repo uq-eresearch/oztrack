@@ -14,7 +14,7 @@ This software is distributed under the GNU GENERAL PUBLIC LICENSE Version 2. See
 
 Install PostgreSQL and PostGIS:
 
-    sudo apt-get install postgresql-9.1 postgresql-client-9.1 postgresql-9.1-postgis
+    sudo apt-get install postgresql-9.1 postgresql-client-9.1 postgresql-9.1-postgis postgresql-contrib-9.1
 
 Sort out PostgreSQL authentication:
 
