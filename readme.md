@@ -90,12 +90,12 @@ downloads, compiles, tests, and installs a large number of dependencies.
 
 The `kftrack` and `ukfsst` packages need to be downloaded and installed from files.
 
-    wget 'https://geolocation.googlecode.com/files/kftrack_0.70-x64.tar.gz'
-    wget 'https://geolocation.googlecode.com/files/ukfsst_0.3-x64.tar.gz'
+    wget -P /tmp 'https://geolocation.googlecode.com/files/kftrack_0.70-x64.tar.gz'
+    wget -P /tmp 'https://geolocation.googlecode.com/files/ukfsst_0.3-x64.tar.gz'
     sudo R --no-save << EOF
-    install.packages('kftrack_0.70-x64.tar.gz', repos=NULL)
+    install.packages('/tmp/kftrack_0.70-x64.tar.gz', repos=NULL)
     install.packages(c('date', 'ncdf'), repos='http://cran.csiro.au/')
-    install.packages('ukfsst_0.3-x64.tar.gz', repos=NULL)
+    install.packages('/tmp/ukfsst_0.3-x64.tar.gz', repos=NULL)
     EOF
 
 ### Installing GeoServer
@@ -251,12 +251,12 @@ downloads, compiles, tests, and installs a large number of dependencies.
 
 The `kftrack` and `ukfsst` packages need to be downloaded and installed from files.
 
-    wget 'https://geolocation.googlecode.com/files/kftrack_0.70-x64.tar.gz'
-    wget 'https://geolocation.googlecode.com/files/ukfsst_0.3-x64.tar.gz'
+    wget -P /tmp 'https://geolocation.googlecode.com/files/kftrack_0.70-x64.tar.gz'
+    wget -P /tmp 'https://geolocation.googlecode.com/files/ukfsst_0.3-x64.tar.gz'
     sudo R --no-save << EOF
-    install.packages('kftrack_0.70-x64.tar.gz', repos=NULL)
+    install.packages('/tmp/kftrack_0.70-x64.tar.gz', repos=NULL)
     install.packages(c('date', 'ncdf'), repos='http://cran.csiro.au/')
-    install.packages('ukfsst_0.3-x64.tar.gz', repos=NULL)
+    install.packages('/tmp/ukfsst_0.3-x64.tar.gz', repos=NULL)
     EOF
 
 ### Installing GeoServer
