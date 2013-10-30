@@ -126,7 +126,7 @@ HTTP server and configure reverse proxying from port 80 to GeoServer (port 8080)
     sudo apt-get install apache2
     sudo a2enmod proxy_http
     sudo service apache2 restart
-    sudo cat > /etc/apache2/sites-available/oztrack.conf << EOF
+    sudo tee /etc/apache2/sites-available/oztrack.conf > /dev/null << EOF
     ProxyPreserveHost on
     ProxyPass /geoserver http://localhost:8080/geoserver nocanon retry=0
     ProxyPassReverse /geoserver http://localhost:8080/geoserver
