@@ -33,7 +33,7 @@
                 padding: 0 0 5px 28px;
             }
             ul#cleanse-list li {
-                background-image: url(/js/openlayers/theme/default/img/draw_polygon_on.png);
+                background-image: url(/js/vendor/openlayers/theme/default/img/draw_polygon_on.png);
             }
             #projectMapOptions {
             }

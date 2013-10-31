@@ -108,7 +108,7 @@
                         <fileset>
                             <directory>${basedir}/src/main/webapp/css</directory>
                             <includes>
-                                <include>bootstrap/**/*</include>
+                                <include>generated/**/*</include>
                                 <include>optimised/**/*</include>
                             </includes>
                         </fileset>
@@ -175,16 +175,8 @@
                         <sourceFolder>${basedir}/src/main/webapp/js</sourceFolder>
                     </sourceFolders>
                     <excludes>
-                        <exclude>bootstrap-editable/**/*.js</exclude>
-                        <exclude>bootstrap/**/*.js</exclude>
-                        <exclude>ckeditor/**/*.js</exclude>
-                        <exclude>farbtastic/**/*.js</exclude>
-                        <exclude>jquery-ui/**/*.js</exclude>
-                        <exclude>jquery/**/*.js</exclude>
-                        <exclude>moment/**/*.js</exclude>
-                        <exclude>openlayers/**/*.js</exclude>
                         <exclude>optimised/**/*.js</exclude>
-                        <exclude>proj4js/**/*.js</exclude>
+                        <exclude>vendor/**/*.js</exclude>
                     </excludes>
                     <options>
                         <browser>true</browser>
@@ -213,7 +205,7 @@
                         <configuration>
                             <wroFile>${basedir}/src/main/webapp/WEB-INF/wro-bootstrap.xml</wroFile>
                             <extraConfigFile>${basedir}/src/main/webapp/WEB-INF/wro-bootstrap.properties</extraConfigFile>
-                            <cssDestinationFolder>${basedir}/src/main/webapp/css/bootstrap/</cssDestinationFolder>
+                            <cssDestinationFolder>${basedir}/src/main/webapp/css/generated/bootstrap/</cssDestinationFolder>
                         </configuration>
                     </execution>
                     <execution>

@@ -4,7 +4,7 @@
 .settings/
 .swp
 src/main/resources/org/oztrack/r/.Rhistory
-src/main/webapp/css/bootstrap/
+src/main/webapp/css/generated/
 src/main/webapp/css/optimised/
 src/main/webapp/js/optimised/
 target/

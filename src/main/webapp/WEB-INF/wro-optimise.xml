@@ -3,44 +3,44 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.isdc.ro/wro wro.xsd">
   <group name="core">
-    <css>/css/jquery-ui/jquery-ui.custom.min.css</css>
-    <css>/css/bootstrap/bootstrap.css</css>
-    <css>/css/bootstrap-editable/bootstrap-editable.css</css>
-    <js>/js/moment/moment.min.js</js>
-    <js>/js/jquery/jquery.min.js</js>
-    <js>/js/jquery-ui/jquery-ui.custom.min.js</js>
-    <js>/js/bootstrap/bootstrap-transition.js</js>
-    <js>/js/bootstrap/bootstrap-alert.js</js>
-    <js>/js/bootstrap/bootstrap-button.js</js>
-    <js>/js/bootstrap/bootstrap-carousel.js</js>
-    <js>/js/bootstrap/bootstrap-collapse.js</js>
-    <js>/js/bootstrap/bootstrap-dropdown.js</js>
-    <js>/js/bootstrap/bootstrap-modal.js</js>
-    <js>/js/bootstrap/bootstrap-tooltip.js</js>
-    <js>/js/bootstrap/bootstrap-popover.js</js>
-    <js>/js/bootstrap/bootstrap-scrollspy.js</js>
-    <js>/js/bootstrap/bootstrap-tab.js</js>
-    <js>/js/bootstrap/bootstrap-typeahead.js</js>
-    <js>/js/bootstrap/bootstrap-affix.js</js>
-    <js>/js/bootstrap-editable/bootstrap-editable-inline.js</js>
+    <css>/css/vendor/jquery-ui/jquery-ui.custom.min.css</css>
+    <css>/css/generated/bootstrap/bootstrap.css</css>
+    <css>/css/vendor/bootstrap-editable/bootstrap-editable.css</css>
+    <js>/js/vendor/moment/moment.min.js</js>
+    <js>/js/vendor/jquery/jquery.min.js</js>
+    <js>/js/vendor/jquery-ui/jquery-ui.custom.min.js</js>
+    <js>/js/vendor/bootstrap/bootstrap-transition.js</js>
+    <js>/js/vendor/bootstrap/bootstrap-alert.js</js>
+    <js>/js/vendor/bootstrap/bootstrap-button.js</js>
+    <js>/js/vendor/bootstrap/bootstrap-carousel.js</js>
+    <js>/js/vendor/bootstrap/bootstrap-collapse.js</js>
+    <js>/js/vendor/bootstrap/bootstrap-dropdown.js</js>
+    <js>/js/vendor/bootstrap/bootstrap-modal.js</js>
+    <js>/js/vendor/bootstrap/bootstrap-tooltip.js</js>
+    <js>/js/vendor/bootstrap/bootstrap-popover.js</js>
+    <js>/js/vendor/bootstrap/bootstrap-scrollspy.js</js>
+    <js>/js/vendor/bootstrap/bootstrap-tab.js</js>
+    <js>/js/vendor/bootstrap/bootstrap-typeahead.js</js>
+    <js>/js/vendor/bootstrap/bootstrap-affix.js</js>
+    <js>/js/vendor/bootstrap-editable/bootstrap-editable-inline.js</js>
     <js>/js/oztrack.js</js>
   </group>
   <group name="openlayers">
-    <css>/js/openlayers/theme/default/style.css</css>
-    <css>/js/openlayers/theme/default/google.css</css>
-    <js>/js/proj4js/proj4js-compressed.js</js>
-    <js>/js/openlayers/OpenLayers.js</js>
-    <js>/js/openlayers/LoadingPanel.js</js>
+    <css>/js/vendor/openlayers/theme/default/style.css</css>
+    <css>/js/vendor/openlayers/theme/default/google.css</css>
+    <js>/js/vendor/proj4js/proj4js-compressed.js</js>
+    <js>/js/vendor/openlayers/OpenLayers.js</js>
+    <js>/js/vendor/openlayers/LoadingPanel.js</js>
     <js>/js/oztrack-openlayers-post.js</js>
   </group>
   <group name="ckeditor">
     <js>/js/oztrack-ckeditor-pre.js</js>
-    <js>/js/ckeditor/ckeditor.js</js>
-    <js>/js/ckeditor/adapters/jquery.js</js>
+    <js>/js/vendor/ckeditor/ckeditor.js</js>
+    <js>/js/vendor/ckeditor/adapters/jquery.js</js>
     <js>/js/oztrack-ckeditor-post.js</js>
   </group>
   <group name="farbtastic">
-    <css>/css/farbtastic/farbtastic.css</css>
-    <js>/js/farbtastic/farbtastic.js</js>
+    <css>/css/vendor/farbtastic/farbtastic.css</css>
+    <js>/js/vendor/farbtastic/farbtastic.js</js>
   </group>
 </groups>
