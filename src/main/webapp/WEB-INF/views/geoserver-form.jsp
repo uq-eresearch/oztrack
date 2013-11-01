@@ -17,6 +17,9 @@
             <p>
                 Click to update objects in GeoServer (e.g. workspace, datastore, layers, styles)
             </p>
+            <c:if test="${not empty messages}">
+            <pre>${messages}</pre>
+            </c:if>
             <div class="form-actions">
                 <input class="btn btn-primary" type="submit" value="Update GeoServer" />
             </div>
