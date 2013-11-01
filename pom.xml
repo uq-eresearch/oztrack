@@ -10,41 +10,11 @@
     <version>2.0-SNAPSHOT</version>
     <name>OzTrack</name>
     <url>http://oztrack.org/</url>
-    <inceptionYear>2011</inceptionYear>
-    <developers>
-        <developer>
-            <id>peggy.newman</id>
-            <name>Peggy Newman</name>
-            <email>peggy.newman@uq.edu.au</email>
-            <url>http://itee.uq.edu.au/~eresearch/about.php</url>
-            <organization>School of ITEE, University of Queensland</organization>
-            <organizationUrl>http://www.itee.uq.edu.au/</organizationUrl>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-    </developers>
-    <organization>
-        <name>eResearch, ITEE, UQ</name>
-        <url>http://www.itee.uq.edu.au/~eresearch</url>
-    </organization>
     <scm>
         <connection>scm:git:git@github.com:uq-eresearch/oztrack.git</connection>
         <developerConnection>scm:git:git@github.com:uq-eresearch/oztrack.git</developerConnection>
         <url>scm:git:git@github.com:uq-eresearch/oztrack.git</url>
     </scm>
-    <distributionManagement>
-        <repository>
-            <id>maenad-releases</id>
-            <name>maenad-releases</name>
-            <url>http://maven.metadata.net/artifactory/libs-releases-local</url>
-        </repository>
-        <snapshotRepository>
-            <id>maenad-snapshots</id>
-            <name>maenad-snapshots</name>
-            <url>http://maven.metadata.net/artifactory/libs-snapshots-local</url>
-        </snapshotRepository>
-    </distributionManagement>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <geotools.version>9.3</geotools.version>
@@ -479,16 +449,6 @@
             <name>Java.net Repository for Maven</name>
             <url>http://download.java.net/maven/2/</url>
             <layout>default</layout>
-        </repository>
-        <repository>
-            <id>eResearch</id>
-            <name>maenad-releases</name>
-            <url>http://maven.metadata.net/artifactory/repo</url>
-        </repository>
-        <repository>
-            <id>eResearch-ext</id>
-            <name>maenad-ext-releases</name>
-            <url>http://maven.metadata.net/artifactory/libs-releases</url>
         </repository>
          <repository>
             <id>osgeo</id>
