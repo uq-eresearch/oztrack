@@ -111,13 +111,13 @@ For complete installation instructions, see the [GeoServer user manual](http://d
 
 The following commands install the GeoServer WAR distribution to Tomcat:
 
-    sudo apt-get install tomcat6
+    sudo apt-get install tomcat7
     wget 'http://downloads.sourceforge.net/geoserver/geoserver-2.3.1-war.zip' -P /tmp/
     unzip -d /tmp/geoserver /tmp/geoserver-2.3.1-war.zip
-    sudo service tomcat6 stop
-    sudo unzip -d /var/lib/tomcat6/webapps/geoserver/ /tmp/geoserver/geoserver.war
-    sudo chown -R tomcat6: /var/lib/tomcat6/webapps/geoserver/
-    sudo service tomcat6 start
+    sudo service tomcat7 stop
+    sudo unzip -d /var/lib/tomcat7/webapps/geoserver/ /tmp/geoserver/geoserver.war
+    sudo chown -R tomcat7: /var/lib/tomcat7/webapps/geoserver/
+    sudo service tomcat7 start
 
 Log in to the GeoServer web administation interface at <http://localhost:8080/geoserver/web/>
 using the default username/password, "admin"/"geoserver", and follow the instructions for configuring security.
