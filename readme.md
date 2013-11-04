@@ -14,7 +14,7 @@ This software is distributed under the GNU GENERAL PUBLIC LICENSE Version 2. See
 
 Install PostgreSQL and PostGIS:
 
-    sudo apt-get install postgresql-9.1 postgresql-client-9.1 postgresql-9.1-postgis postgresql-contrib-9.1
+    sudo apt-get install -y postgresql-9.1 postgresql-client-9.1 postgresql-9.1-postgis postgresql-contrib-9.1
 
 Sort out PostgreSQL authentication:
 
@@ -50,7 +50,7 @@ Install the following packages:
 * `libxml2-dev`: required by `plotKML` R package.
 * `libnetcdf-dev`, `netcdf-bin`: required by `ncdf` R package.
 
-<pre>sudo apt-get install libgdal-dev libproj-dev libxml2-dev libnetcdf-dev netcdf-bin</pre>
+<pre>sudo apt-get install -y libgdal-dev libproj-dev libxml2-dev libnetcdf-dev netcdf-bin</pre>
 
 ### Installing R (including Rserve and other packages)
 
@@ -62,7 +62,7 @@ OzTrack has been tested with R versions 2.15.2, 3.0.1, and 3.0.2.
     EOF
     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
     sudo apt-get update
-    sudo apt-get install r-base-core r-base-dev --no-install-recommends
+    sudo apt-get install -y --no-install-recommends r-base-core r-base-dev
 
 Install the R packages used by OzTrack, including Rserve.
 Note that the following command takes a while (e.g. 10 minutes) because it
@@ -111,7 +111,7 @@ For complete installation instructions, see the [GeoServer user manual](http://d
 
 The following commands install the GeoServer WAR distribution to Tomcat:
 
-    sudo apt-get install tomcat7
+    sudo apt-get install -y tomcat7 unzip
     wget 'http://downloads.sourceforge.net/geoserver/geoserver-2.3.1-war.zip' -P /tmp/
     unzip -d /tmp/geoserver /tmp/geoserver-2.3.1-war.zip
     sudo service tomcat7 stop
@@ -128,7 +128,7 @@ This step is optional - it's only needed to avoid blocking of cross-site request
 GeoServer and the OzTrack web application on different ports. The following commands install the Apache
 HTTP server and configure reverse proxying from port 80 to GeoServer (port 8080) and OzTrack (port 8181).
 
-    sudo apt-get install apache2
+    sudo apt-get install -y apache2
     sudo a2enmod proxy_http
     sudo service apache2 restart
     sudo tee /etc/apache2/sites-available/oztrack.conf > /dev/null << EOF
