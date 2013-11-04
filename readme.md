@@ -272,7 +272,7 @@ For complete installation instructions, see the [GeoServer user manual](http://d
 
 The following commands install the GeoServer WAR distribution to Tomcat:
 
-    sudo apt-get install tomcat6
+    sudo yum install tomcat6
     sudo chkconfig tomcat6 on
     wget 'http://downloads.sourceforge.net/geoserver/geoserver-2.3.1-war.zip' -P /tmp/
     unzip -d /tmp/geoserver /tmp/geoserver-2.3.1-war.zip
