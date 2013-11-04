@@ -1,6 +1,6 @@
 update settings set hometext =
-    E'<h1>Welcome to OzTrack Beta!</h1>\n' ||
-    E'<p style="font-size:1.2em">\n' ||
+    E'<h1>Welcome to OzTrack</h1>\n' ||
+    E'<p>\n' ||
     E'    OzTrack is a free-to-use web-based platform for the analysis and \n' ||
     E'    visualisation of animal tracking data. It was developed for the Australian \n' ||
     E'    animal tracking community but can be used to determine, measure and plot \n' ||
