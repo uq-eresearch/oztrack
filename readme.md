@@ -58,7 +58,7 @@ Install R, including `r-base-dev` for compiling/installing auxiliary R packages.
 OzTrack has been tested with R versions 2.15.2, 3.0.1, and 3.0.2.
 
     sudo tee -a /etc/apt/sources.list > /dev/null << EOF
-    deb http://cran.csiro.au/bin/linux/ubuntu saucy/
+    deb http://cran.csiro.au/bin/linux/ubuntu $(lsb_release -s -c)/
     EOF
     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
     sudo apt-get update
