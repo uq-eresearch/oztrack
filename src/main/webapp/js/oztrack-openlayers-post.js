@@ -2,7 +2,7 @@
 
 // Configure OpenLayers image path; needed because we use wro4j.
 // http://dev.openlayers.org/apidocs/files/OpenLayers-js.html#OpenLayers.ImgPath
-OpenLayers.ImgPath = "/js/openlayers/img/";
+OpenLayers.ImgPath = "/js/vendor/openlayers/img/";
 
 // Hack to LoadingPanel control: create svg element instead of div so we can use pointer-events.
 // The pointer-events CSS property was originally from SVG and is supported as an experimental
