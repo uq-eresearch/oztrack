@@ -360,7 +360,9 @@ The following are key properties that should be configured for all applications:
     org.oztrack.conf.closedAccessDisableDate=2013-01-18T17:00:00
     # Date from which project embargoes must be annually renewed.
     org.oztrack.conf.nonIncrementalEmbargoDisableDate=2013-05-28T09:00:00
-    # Number of `Rserve` instances run in the background (reduce if memory is limited).
+    # Rserve hosts to connect to for running R analyses
+    org.oztrack.conf.rserveHosts=localhost,127.0.0.1
+    # Number of Rserve processes to run on each host
     org.oztrack.conf.numRConnections=4
 
 OzTrack defines a default admin user with the username/password "admin"/"oztrack".

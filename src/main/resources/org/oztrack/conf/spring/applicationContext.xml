@@ -115,6 +115,7 @@
     </bean>
     
     <bean id="rserveConnectionPool" class="org.oztrack.util.RserveConnectionPoolFactoryBean">
+        <constructor-arg name="hosts" value="${org.oztrack.conf.rserveHosts}"/>
         <constructor-arg name="numConnections" value="${org.oztrack.conf.numRConnections}"/>
     </bean>
 

@@ -1,42 +1,48 @@
 package org.oztrack.util;
 
+import java.net.InetAddress;
+
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.pool.BasePoolableObjectFactory;
+import org.apache.commons.pool.BaseKeyedPoolableObjectFactory;
 import org.apache.log4j.Logger;
 import org.oztrack.error.RserveInterfaceException;
+import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.Rserve.RConnection;
 
-public class RserveConnectionFactory extends BasePoolableObjectFactory<RConnection> {
+public class RserveConnectionFactory extends BaseKeyedPoolableObjectFactory<String, RConnection> {
     private final Logger logger = Logger.getLogger(getClass());
 
     @Override
-    public RConnection makeObject() throws Exception {
-        logger.info("Creating Rserve connection");
-        if (!RserveUtils.checkLocalRserve()) {
-            throw new RserveInterfaceException("Error starting Rserve.");
+    public RConnection makeObject(String host) throws Exception {
+        logger.info("Creating Rserve connection to " + host);
+        if (InetAddress.getByName(host).isLoopbackAddress()) {
+            if (!RserveUtils.checkLocalRserve()) {
+                throw new RserveInterfaceException("Error starting Rserve on " + host);
+            }
         }
         RConnection rConnection = null;
         try {
-            rConnection = createConnection();
+            rConnection = createConnection(host);
             loadLibraries(rConnection);
             loadScripts(rConnection);
         }
         catch (Exception e) {
-            logger.error("Error setting up Rserve connection.");
+            logger.error("Error setting up Rserve connection to " + host, e);
             try {rConnection.close();} catch (Exception e2) {};
             throw e;
         }
+        logger.info("Successfully created Rserve connection to " + host);
         return rConnection;
     }
 
     @Override
-    public void destroyObject(RConnection rConnection) {
-        logger.info("Destroying Rserve connection");
+    public void destroyObject(String host, RConnection rConnection) {
+        logger.info("Destroying Rserve connection to " + host);
         rConnection.close();
     }
 
     @Override
-    public boolean validateObject(RConnection rConnection) {
+    public boolean validateObject(String host, RConnection rConnection) {
         // We can't use RConnection.isConnected() here because, from the doc:
         // "currently this state is not checked on-the-spot, that is if connection
         // went down by an outside event this is not reflected by the flag".
@@ -48,14 +54,14 @@ public class RserveConnectionFactory extends BasePoolableObjectFactory<RConnecti
         }
         catch (Exception e) {
             try {rConnection.close();} catch (Exception e2) {};
-            logger.error("Error validating R connection", e);
+            logger.error("Error validating R connection to " + host, e);
             return false;
         }
     }
 
-    private RConnection createConnection() throws RserveInterfaceException {
+    private RConnection createConnection(String host) throws RserveInterfaceException {
         try {
-            RConnection rConnection = new RConnection();
+            RConnection rConnection = new RConnection(host);
             rConnection.setSendBufferSize(10 * 1024 * 1024);
             return rConnection;
         }
@@ -86,7 +92,14 @@ public class RserveConnectionFactory extends BasePoolableObjectFactory<RConnecti
         };
         for (String library : libraries) {
             try {
-                rConnection.voidEval("library(" + library + ")");
+                String cmd = "library(" + library + ")";
+                REXP r = rConnection.parseAndEval("try(" + cmd + ",silent=TRUE)");
+                if (r.inherits("try-error")) {
+                    throw new RserveInterfaceException("Error loading '" + library + "' library: " + r.asString());
+                }
+            }
+            catch (RserveInterfaceException e) {
+                throw e;
             }
             catch (Exception e) {
                 throw new RserveInterfaceException("Error loading '" + library + "' library.", e);
