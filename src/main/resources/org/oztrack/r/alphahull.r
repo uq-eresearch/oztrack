@@ -202,14 +202,16 @@ fmyalphahullAM <- function(sinputfile,sinputssrs,ialpha,rnd=2)
     
 
 ## This code converts SPDF to kml
-oztrack_alphahull <- function(srs, alpha, kmlFile, is180=FALSE,rnd=2) {
+oztrack_alphahull <- function(srs, alpha, is180=FALSE,rnd=2) {
   if(is180==FALSE)
     myAhull <- fmyalphahull(sinputfile=positionFix, sinputssrs=paste('+init=', srs, sep=''), ialpha=alpha)
   if(is180==TRUE)
     myAhull <- fmyalphahullAM(sinputfile=positionFix, sinputssrs=paste('+init=', srs, sep=''), ialpha=alpha,rnd=rnd)
   
   if(class(myAhull)=='SpatialPolygonsDataFrame'){
+    kmlFile <- tempfile('alphahull', fileext='.kml')
     fOZkmlPolygons(OzSPDF=myAhull,kmlFileName=kmlFile)
+    return(kmlFile)
   }else{
     stop('Alpha hull unable to generate under these parameters. Try increasing the alpha value.')   
   }

@@ -90,7 +90,7 @@ fmykBBAM <- function(sinputfile,sinputssrs,isig1,isig2,imypercent,imygrid,imyext
 
 
 ## This code converts SPDF to kml
-oztrack_kernelbb <- function(srs, sig1, sig2, gridSize, extent, percent, kmlFile, is180=FALSE) {
+oztrack_kernelbb <- function(srs, sig1, sig2, gridSize, extent, percent, is180=FALSE) {
   if(is180==FALSE)
     myKerBB <- fmykBB(sinputfile=positionFix, 
                       sinputssrs=paste('+init=', srs, sep=''), 
@@ -102,7 +102,9 @@ oztrack_kernelbb <- function(srs, sig1, sig2, gridSize, extent, percent, kmlFile
                         imypercent=percent,isig1=sig1,isig2=sig2,
                         imygrid=gridSize,imyextent=extent)
   if(class(myKerBB)=='SpatialPolygonsDataFrame'){
+    kmlFile <- tempfile('kernelbb', fileext='.kml')
     fOZkmlPolygons(OzSPDF=myKerBB, kmlFileName=kmlFile)
+    return(kmlFile)
   }else{ stop('KBB unable to generate under these parameters. Try increasing the alpha value.')   
   }
 }

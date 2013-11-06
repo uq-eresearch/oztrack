@@ -290,18 +290,22 @@ kmlPolygonRD <- function (obj = NULL, kmlfile = NULL, name = "R Polygon",
   else list(style = kmlStyle, content = kml)
 }
 
-oztrack_heatmap_point <- function(srs, gridSize, colours, labsent, kmlFile) {
+oztrack_heatmap_point <- function(srs, gridSize, colours, labsent) {
   PPA <- try({fpdens2kml(sdata=positionFix.xy, igrid=gridSize, ssrs=paste('+init=', srs, sep=''), scol=colours, labsent=labsent)}, silent=TRUE)
   if (class(PPA) == 'try-error') {
     stop('Error running analysis. Try increasing grid size.')
   }
+  kmlFile <- tempfile('heatmap_point', fileext='.kml')
   polykml(sw=PPA, filename=kmlFile, namefield=unique(PPA$ID))
+  return(kmlFile)
 }
 
-oztrack_heatmap_line <- function(srs, gridSize, colours, labsent, kmlFile) {
+oztrack_heatmap_line <- function(srs, gridSize, colours, labsent) {
   LPA <- try({fldens2kml(sdata=positionFix.xy, igrid=gridSize, ssrs=paste('+init=', srs, sep=''), scol=colours, labsent=labsent)}, silent=TRUE)
   if (class(LPA) == 'try-error') {
     stop('Error running analysis. Try increasing grid size.')
   }
+  kmlFile <- tempfile('heatmap_line', fileext='.kml')
   polykml(sw=LPA, filename=kmlFile, namefield=unique(LPA$ID))
+  return(kmlFile)
 }

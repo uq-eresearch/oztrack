@@ -238,13 +238,13 @@ fkalmankmlPlacemark <- function(fit, datetime) {
 
 #  This function extends the fOZkmlPlacemark function to accept a SpatialPolygonsDataFrame object, 
 #  Labels are based on attributes in the dataframe of the SpatialPolygonsDataFrame object
-fkalmankml <- function(fit, datetime, kmlFileName) {
+fkalmankml <- function(fit, datetime, kmlFile) {
   
-  #fit=kfm;datetime=Datetime;kmlFileName="new_kftraj_628.kml"
+  #fit=kfm;datetime=Datetime;kmlFile="new_kftraj_628.kml"
   
   fkalmankmlPlacemarks <- fkalmankmlPlacemark(fit, datetime)
   
-  kmlFile <- file(kmlFileName, "w") 
+  kmlFile <- file(kmlFile, "w") 
   cat(fkalmankmlHeader(fit), file=kmlFile, sep="\n")
   cat(fkalmankmlPlacemarks, file=kmlFile, sep="\n")
   cat(fkalmankmlFooter, file=kmlFile, sep="\n")
@@ -275,8 +275,7 @@ oztrack_kalman <- function(
   a0.init=0.001,
   b0.init=0,
   vscale.init=1,
-  var.struct="solstice",
-  kmlFileName
+  var.struct="solstice"
 ) {
   mykal <- fozkalmankf(
     sinputfile=sinputfile, is.AM=is.AM,
@@ -305,7 +304,9 @@ oztrack_kalman <- function(
     var.struct=var.struct
   )
   if (class(mykal)=="kftrack") {
-    fkalmankml(fit=mykal, datetime=mykal$Datetime, kmlFileName=kmlFileName)
+    kmlFile <- tempfile('kalman', fileext='.kml')
+    fkalmankml(fit=mykal, datetime=mykal$Datetime, kmlFile=kmlFile)
+    return(kmlFile)
   }
   else if (is.character(mykal)) {
     stop(mykal)

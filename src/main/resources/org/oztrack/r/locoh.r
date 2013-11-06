@@ -79,7 +79,7 @@ fmyLoCoHAM<- function(sinputfile,sinputssrs,ik=NULL,ir=NULL,imypercent) {
 }
 
 ## This code converts SPDF to kml
-oztrack_locoh <- function(srs, r=NULL, k=NULL, percent, kmlFile, is180=FALSE) {
+oztrack_locoh <- function(srs, r=NULL, k=NULL, percent, is180=FALSE) {
   if(is180==FALSE)
     myLoCoH <- fmyLoCoH(sinputfile=positionFix, 
                         sinputssrs=paste('+init=', srs, sep=''), 
@@ -90,7 +90,9 @@ oztrack_locoh <- function(srs, r=NULL, k=NULL, percent, kmlFile, is180=FALSE) {
                         imypercent=percent,ik=k,ir=r)
 
   if(class(myLoCoH)=='SpatialPolygonsDataFrame'){
+    kmlFile <- tempfile('locoh', fileext='.kml')
     fOZkmlPolygons(OzSPDF=myLoCoH, kmlFileName=kmlFile)
+    return(kmlFile)
   }else{ 
     if(is.null(r) & !is.null(k)){
       print('LoCoH unable to generate under these parameters. Try a different r value.') 

@@ -108,7 +108,7 @@ fmykernelAM <- function(sinputfile,sinputssrs,imypercent,smyh,imygrid,imyextent)
 
 
 ## This code converts SPDF to kml
-oztrack_kernelud <- function(srs, h, gridSize, extent, percent, kmlFile, is180=FALSE) {
+oztrack_kernelud <- function(srs, h, gridSize, extent, percent, is180=FALSE) {
   if(is180==FALSE)
     myKer <- fmykernel(sinputfile=positionFix, 
                        sinputssrs=paste('+init=', srs, sep=''), 
@@ -120,5 +120,7 @@ oztrack_kernelud <- function(srs, h, gridSize, extent, percent, kmlFile, is180=F
                          imypercent=percent,smyh=h,
                          imygrid=gridSize,imyextent=extent)
   
+  kmlFile <- tempfile('kernelud', fileext='.kml')
   fOZkmlPolygons(OzSPDF=myKer, kmlFileName=kmlFile)
+  return(kmlFile)
 }

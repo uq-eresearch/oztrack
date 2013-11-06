@@ -61,11 +61,13 @@ fmymcpAM <- function(sinputfile,sinputssrs,imypercent){
 }
 
 ## This code converts SPDF to kml
-oztrack_mcp <- function(srs, percent, kmlFile, is180=FALSE) {
+oztrack_mcp <- function(srs, percent, is180=FALSE) {
   if(is180==FALSE)
     mcp.obj <- fmymcp(sinputfile=positionFix, sinputssrs=paste('+init=', srs, sep=''),imypercent=percent)
   if(is180==TRUE)
     mcp.obj <- fmymcpAM(sinputfile=positionFix, sinputssrs=paste('+init=', srs, sep=''),imypercent=percent)
   
+  kmlFile <- tempfile('mcp', fileext='.kml')
   fOZkmlPolygons(OzSPDF=mcp.obj, kmlFileName=kmlFile)
+  return(kmlFile)
 }

@@ -1,5 +1,7 @@
 package org.oztrack.util;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,6 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool.ObjectPool;
 import org.apache.log4j.Logger;
@@ -26,6 +29,7 @@ import org.rosuda.REngine.REXPString;
 import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.RList;
 import org.rosuda.REngine.Rserve.RConnection;
+import org.rosuda.REngine.Rserve.RFileInputStream;
 import org.rosuda.REngine.Rserve.RserveException;
 
 public class RserveInterface {
@@ -242,9 +246,9 @@ public class RserveInterface {
         }
         safeEval("srs <- '" + srs + "'");
         safeEval("percent <- " + percent);
-        safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
         safeEval("is180 <- " + (is180 ? "TRUE" : "FALSE"));
-        safeEval("oztrack_mcp(srs=srs, percent=percent, kmlFile=kmlFile, is180=is180)");
+        safeEval("kmlFile <- oztrack_mcp(srs=srs, percent=percent, is180=is180)");
+        moveFile("kmlFile", analysis.getAbsoluteResultFilePath());
     }
 
     private void runKernelUdAnalysis(Analysis analysis, List<PositionFix> positionFixList, String srs) throws RserveInterfaceException {
@@ -269,9 +273,9 @@ public class RserveInterface {
         safeEval("gridSize <- " + gridSize);
         safeEval("extent <- " + extent);
         safeEval("percent <- " + percent);
-        safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
         safeEval("is180 <- " + (is180 ? "TRUE" : "FALSE"));
-        safeEval("oztrack_kernelud(srs=srs, h=h, gridSize=gridSize, extent=extent, percent=percent, kmlFile=kmlFile, is180=is180)");
+        safeEval("kmlFile <- oztrack_kernelud(srs=srs, h=h, gridSize=gridSize, extent=extent, percent=percent, is180=is180)");
+        moveFile("kmlFile", analysis.getAbsoluteResultFilePath());
     }
 
     private void runKernelBbAnalysis(Analysis analysis, List<PositionFix> positionFixList, String srs) throws RserveInterfaceException {
@@ -297,9 +301,9 @@ public class RserveInterface {
         safeEval("gridSize <- " + gridSize);
         safeEval("extent <- " + extent);
         safeEval("percent <- " + percent);
-        safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
         safeEval("is180 <- " + (is180 ? "TRUE" : "FALSE"));
-        safeEval("oztrack_kernelbb(srs=srs, sig1=sig1, sig2=sig2, gridSize=gridSize, extent=extent, percent=percent, kmlFile=kmlFile, is180=is180)");
+        safeEval("kmlFile <- oztrack_kernelbb(srs=srs, sig1=sig1, sig2=sig2, gridSize=gridSize, extent=extent, percent=percent, is180=is180)");
+        moveFile("kmlFile", analysis.getAbsoluteResultFilePath());
     }
 
     private void runAlphahullAnalysis(Analysis analysis, List<PositionFix> positionFixList, String srs) throws RserveInterfaceException {
@@ -314,9 +318,9 @@ public class RserveInterface {
         }
         safeEval("srs <- '" + srs + "'");
         safeEval("alpha <- " + alpha);
-        safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
         safeEval("is180 <- " + (is180 ? "TRUE" : "FALSE"));
-        safeEval("oztrack_alphahull(srs=srs, alpha=alpha, kmlFile=kmlFile, is180=is180)");
+        safeEval("kmlFile <- oztrack_alphahull(srs=srs, alpha=alpha, is180=is180)");
+        moveFile("kmlFile", analysis.getAbsoluteResultFilePath());
     }
 
     private void runLocohAnalysis(Analysis analysis, List<PositionFix> positionFixList, String srs) throws RserveInterfaceException {
@@ -335,9 +339,9 @@ public class RserveInterface {
         safeEval("k <- " + ((k != null) ? k : "NULL"));
         safeEval("r <- " + ((r != null) ? r : "NULL"));
         safeEval("percent <- " + percent);
-        safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
         safeEval("is180 <- " + (is180 ? "TRUE" : "FALSE"));
-        safeEval("oztrack_locoh(srs=srs, k=k, r=r, percent=percent, kmlFile=kmlFile, is180=is180)");
+        safeEval("kmlFile <- oztrack_locoh(srs=srs, k=k, r=r, percent=percent, is180=is180)");
+        moveFile("kmlFile", analysis.getAbsoluteResultFilePath());
     }
 
     private void runPointHeatmapAnalysis(Analysis analysis, List<PositionFix> positionFixList, String srs) throws RserveInterfaceException {
@@ -353,8 +357,8 @@ public class RserveInterface {
         safeEval("gridSize <- " + gridSize);
         safeEval("colours <- '" + colours + "'");
         safeEval("labsent <- " + (showAbsence ? "TRUE" : "FALSE"));
-        safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
-        safeEval("oztrack_heatmap_point(srs=srs, gridSize=gridSize, colours=colours, labsent=labsent, kmlFile=kmlFile)");
+        safeEval("kmlFile <- oztrack_heatmap_point(srs=srs, gridSize=gridSize, colours=colours, labsent=labsent)");
+        moveFile("kmlFile", analysis.getAbsoluteResultFilePath());
     }
 
     private void runLineHeatmapAnalysis(Analysis analysis, List<PositionFix> positionFixList, String srs) throws RserveInterfaceException {
@@ -370,8 +374,8 @@ public class RserveInterface {
         safeEval("gridSize <- " + gridSize);
         safeEval("colours <- '" + colours + "'");
         safeEval("labsent <- " + (showAbsence ? "TRUE" : "FALSE"));
-        safeEval("kmlFile <- '" + analysis.getAbsoluteResultFilePath() + "'");
-        safeEval("oztrack_heatmap_line(srs=srs, gridSize=gridSize, colours=colours, labsent=labsent, kmlFile=kmlFile)");
+        safeEval("kmlFile <- oztrack_heatmap_line(srs=srs, gridSize=gridSize, colours=colours, labsent=labsent)");
+        moveFile("kmlFile", analysis.getAbsoluteResultFilePath());
     }
 
     private void runKalmanAnalysis(Analysis analysis, List<PositionFix> positionFixList) throws RserveInterfaceException {
@@ -380,7 +384,7 @@ public class RserveInterface {
         }
         assignRPositionFixDataFrame(positionFixList, false);
         safeEval(
-            "oztrack_kalman(\n" +
+            "kmlFile <- oztrack_kalman(\n" +
             "  sinputfile=" + "positionFix" + ",\n" +
             "  is.AM=" + toRValue(analysis.getProject().getCrosses180()) + ",\n" +
             "  startdate=" + toRValue(analysis.getParameterValue("startDate", false)) + ",\n" +
@@ -409,10 +413,10 @@ public class RserveInterface {
             "  a0.init=" + toRValue(analysis.getParameterValue("a0Init", true)) + ",\n" +
             "  b0.init=" + toRValue(analysis.getParameterValue("b0Init", true)) + ",\n" +
             "  vscale.init=" + toRValue(analysis.getParameterValue("vscaleInit", true)) + ",\n" +
-            "  var.struct=" + toRValue(analysis.getParameterValue("varStruct", true)) + ",\n" +
-            "  kmlFileName=" + toRValue(analysis.getAbsoluteResultFilePath()) + "\n" +
+            "  var.struct=" + toRValue(analysis.getParameterValue("varStruct", true)) + "\n" +
             ")"
         );
+        moveFile("kmlFile", analysis.getAbsoluteResultFilePath());
     }
 
     private void runKalmanSstAnalysis(Analysis analysis, List<PositionFix> positionFixList) throws RserveInterfaceException {
@@ -421,7 +425,7 @@ public class RserveInterface {
         }
         assignRPositionFixDataFrame(positionFixList, true);
         safeEval(
-            "oztrack_kfsst(\n" +
+            "kmlFile <- oztrack_kfsst(\n" +
             "  sinputfile=" + "positionFix" + ",\n" +
             "  is.AM=" + toRValue(analysis.getProject().getCrosses180()) + ",\n" +
             "  startdate=" + toRValue(analysis.getParameterValue("startDate", false)) + ",\n" +
@@ -453,10 +457,10 @@ public class RserveInterface {
             "  b0.init=" + toRValue(analysis.getParameterValue("b0Init", true)) + ",\n" +
             "  bsst.init=" + toRValue(analysis.getParameterValue("bsstInit", true)) + ",\n" +
             "  ssst.init=" + toRValue(analysis.getParameterValue("ssstInit", true)) + ",\n" +
-            "  r.init=" + toRValue(analysis.getParameterValue("rInit", true)) + ",\n" +
-            "  kmlFileName=" + toRValue(analysis.getAbsoluteResultFilePath()) + "\n" +
+            "  r.init=" + toRValue(analysis.getParameterValue("rInit", true)) + "\n" +
             ")"
         );
+        moveFile("kmlFile", analysis.getAbsoluteResultFilePath());
     }
 
     private String toRValue(Object object) {
@@ -509,5 +513,28 @@ public class RserveInterface {
             throw new RserveInterfaceException(errorMessage);
         }
         return rexp;
+    }
+
+    private void moveFile(String remoteFileNameExpr, String localFileName) throws RserveInterfaceException {
+        String remoteFileName = null;
+        try {
+            remoteFileName = safeEval(remoteFileNameExpr).asString();
+        }
+        catch (REXPMismatchException e) {
+            throw new RserveInterfaceException("Error reading remote file name", e);
+        }
+        try {
+            RFileInputStream remoteFileStream = rConnection.openFile(remoteFileName);
+            IOUtils.copy(remoteFileStream, new FileOutputStream(localFileName));
+        }
+        catch (IOException e) {
+            throw new RserveInterfaceException("Error reading remote file", e);
+        }
+        try {
+            rConnection.removeFile(remoteFileName);
+        }
+        catch (RserveException e) {
+            throw new RserveInterfaceException("Error removing remote file", e);
+        }
     }
 }
