@@ -119,6 +119,8 @@ If necessary, replace "ubuntu" on the `setuid` with the name of another non-root
 
     setuid ubuntu
 
+    respawn
+
     script
     R --no-save --slave > /dev/null 2>&1 <<EOF
     library(Rserve)
