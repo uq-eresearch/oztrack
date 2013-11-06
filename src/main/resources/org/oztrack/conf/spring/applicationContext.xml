@@ -114,7 +114,7 @@
         <constructor-arg name="databasePassword" value="${org.oztrack.conf.databasePassword}"/>
     </bean>
     
-    <bean id="rserveConnectionPool" class="org.oztrack.util.RserveConnectionPoolFactoryBean">
+    <bean id="rserveConnectionPool" class="org.oztrack.util.RserveConnectionPool">
         <constructor-arg name="hosts" value="${org.oztrack.conf.rserveHosts}"/>
         <constructor-arg name="numConnections" value="${org.oztrack.conf.numRConnections}"/>
     </bean>

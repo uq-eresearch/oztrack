@@ -14,7 +14,6 @@ import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.pool.ObjectPool;
 import org.apache.log4j.Logger;
 import org.oztrack.data.model.Analysis;
 import org.oztrack.data.model.Animal;
@@ -37,11 +36,11 @@ public class RserveInterface {
 
     private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    private ObjectPool<RConnection> rConnectionPool;
+    private RserveConnectionPool rConnectionPool;
     private RConnection rConnection;
 
-    public RserveInterface(ObjectPool<RConnection> rConnectionPool) {
-        this.rConnectionPool = rConnectionPool;
+    public RserveInterface(RserveConnectionPool rserveConnectionPool) {
+        this.rConnectionPool = rserveConnectionPool;
     }
 
     public void runAnalysis(Analysis analysis, List<PositionFix> positionFixList) throws RserveInterfaceException {

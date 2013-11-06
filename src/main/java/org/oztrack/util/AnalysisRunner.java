@@ -14,7 +14,6 @@ import javax.persistence.PersistenceUnit;
 import javax.sql.DataSource;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.pool.ObjectPool;
 import org.apache.log4j.Logger;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.oztrack.data.access.impl.AnalysisDaoImpl;
@@ -28,7 +27,6 @@ import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.types.AnalysisResultAttributeType;
 import org.oztrack.data.model.types.AnalysisResultType;
 import org.oztrack.data.model.types.AnalysisStatus;
-import org.rosuda.REngine.Rserve.RConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -65,7 +63,7 @@ public class AnalysisRunner {
     private DataSource dataSource;
 
     @Autowired
-    private ObjectPool<RConnection> rserveConnectionPool;
+    private RserveConnectionPool rserveConnectionPool;
 
     @Autowired
     private ProjectAnimalsMutexExecutor renumberPositionFixesExecutor;

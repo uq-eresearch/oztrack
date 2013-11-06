@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.pool.ObjectPool;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -30,8 +29,8 @@ import org.oztrack.data.model.SearchQuery;
 import org.oztrack.data.model.types.AnalysisType;
 import org.oztrack.data.model.types.ArgosClass;
 import org.oztrack.error.RserveInterfaceException;
+import org.oztrack.util.RserveConnectionPool;
 import org.oztrack.util.RserveInterface;
-import org.rosuda.REngine.Rserve.RConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -64,7 +63,7 @@ public class ProjectCleanseController {
     AnimalDao animalDao;
 
     @Autowired
-    private ObjectPool<RConnection> rserveConnectionPool;
+    private RserveConnectionPool rserveConnectionPool;
 
     @InitBinder("project")
     public void initProjectBinder(WebDataBinder binder) {

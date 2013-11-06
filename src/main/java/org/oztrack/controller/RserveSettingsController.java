@@ -1,9 +1,8 @@
 package org.oztrack.controller;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.pool.ObjectPool;
+import org.oztrack.util.RserveConnectionPool;
 import org.oztrack.util.RserveUtils;
-import org.rosuda.REngine.Rserve.RConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class RserveSettingsController {
     @Autowired
-    private ObjectPool<RConnection> rserveConnectionPool;
+    private RserveConnectionPool rserveConnectionPool;
 
     @RequestMapping(value="/settings/rserve", method=RequestMethod.GET)
     @PreAuthorize("hasRole('ROLE_ADMIN')")

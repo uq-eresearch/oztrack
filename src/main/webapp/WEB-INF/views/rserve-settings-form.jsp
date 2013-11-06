@@ -14,10 +14,7 @@
     <jsp:body>
         <h1>Rserve</h1>
         <p>Connection pool:</p>
-        <ul>
-            <li>${rserveConnectionPool.numActive} active connections</li>
-            <li>${rserveConnectionPool.numIdle} idle connections</li>
-        </ul>
+        <pre>${rserveConnectionPool.debugInfo}</pre>
         <c:if test="${not empty err}">
         <p>Error stream:</p>
         <pre>${err}</pre>
@@ -27,7 +24,7 @@
         <pre>${out}</pre>
         </c:if>
         <form:form cssClass="form-vertical form-bordered" method="POST">
-            <p>Stop Rserve process</p>
+            <p>Stop local Rserve process</p>
             <div class="form-actions">
                 <input class="btn btn-primary" type="submit" value="Stop Rserve" />
             </div>
