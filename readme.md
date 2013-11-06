@@ -54,6 +54,11 @@ Install the following packages:
 
 ### Installing R (including Rserve and other packages)
 
+RServe can be installed on the same machine as the Web application and/or on
+one or more other hosts. See the `org.oztrack.conf.rserveHosts` configuration
+property described below for how to identify these other hosts to the main server.
+The following instructions should only be applied to hosts that will run `Rserve`.
+
 Install R, including `r-base-dev` for compiling/installing auxiliary R packages.
 OzTrack has been tested with R versions 2.15.2, 3.0.1, and 3.0.2.
 
@@ -102,6 +107,23 @@ The `kftrack` and `ukfsst` packages need to be downloaded and installed from fil
     install.packages(c('date', 'ncdf'), repos='http://cran.csiro.au/')
     install.packages('/tmp/ukfsst_0.3-x64.tar.gz', repos=NULL)
     EOF
+
+If `Rserve` is running on the same host as the Web application, it will be started automatically.
+To run Rserve on other hosts, place this script in `/etc/init/rserve.conf`:
+
+    description "Rserve"
+
+    start on runlevel [2345]
+    stop on runlevel [!2345]
+
+    setuid ubuntu
+
+    script
+    R --no-save --slave > /dev/null 2>&1 <<EOF
+    library(Rserve)
+    run.Rserve(interactive='no', remote='enable')
+    EOF
+    end script
 
 ### Installing GeoServer
 
