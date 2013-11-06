@@ -109,7 +109,8 @@ The `kftrack` and `ukfsst` packages need to be downloaded and installed from fil
     EOF
 
 If `Rserve` is running on the same host as the Web application, it will be started automatically.
-To run Rserve on other hosts, place this script in `/etc/init/rserve.conf`:
+To run Rserve on other hosts, place the following script in `/etc/init/rserve.conf`.
+If necessary, replace "ubuntu" on the `setuid` with the name of another non-root user.
 
     description "Rserve"
 
@@ -124,6 +125,9 @@ To run Rserve on other hosts, place this script in `/etc/init/rserve.conf`:
     run.Rserve(interactive='no', remote='enable')
     EOF
     end script
+
+The service will start automatically at boot but can be started at other times
+using `sudo service rserve start`.
 
 ### Installing GeoServer
 
