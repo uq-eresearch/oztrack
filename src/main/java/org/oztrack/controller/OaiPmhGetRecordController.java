@@ -2,6 +2,8 @@ package org.oztrack.controller;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,6 +55,33 @@ public class OaiPmhGetRecordController extends OaiPmhController {
 
         // TODO: Query for record matching identifier
         // TODO: Check for idDoesNotExist error (identifier argument unknown or illegal in this repository)
+        String oaiPmhRecordIdentifierPrefix = configuration.getOaiPmhConfiguration().getOaiPmhRecordIdentifierPrefix();
+        String localIdentifier = identifier.substring(oaiPmhRecordIdentifierPrefix.length());
+        if (localIdentifier.equals("service")) {
+        }
+        else if (localIdentifier.equals("oai-pmh")) {
+        }
+        else if (localIdentifier.equals("collection")) {
+        }
+        else if (localIdentifier.equals("data-manager")) {
+        }
+        else {
+            Matcher matcher = Pattern.compile("^([a-z-]+)/([0-9]+)$").matcher(localIdentifier);
+            if (!matcher.matches()) {
+                throw new OaiPmhException("idDoesNotExist", "identifier argument unknown or illegal in this repository.");
+            }
+            String recordType = matcher.group(1);
+            Long recordId = Long.valueOf(matcher.group(2));
+            if (recordType.equals("projects")) {
+            }
+            else if (recordType.equals("people")) {
+            }
+            else if (recordType.equals("institutions")) {
+            }
+            else {
+                throw new OaiPmhException("idDoesNotExist", "identifier argument unknown or illegal in this repository.");
+            }
+        }
 
         return new OaiPmhGetRecordView();
     }
