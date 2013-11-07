@@ -341,6 +341,7 @@ public class ProjectController {
                 emailBuilder.subject("OzTrack project contributor change");
 
                 StringBuilder htmlMsgContent = new StringBuilder();
+
                 if (addedContributors.contains(notifiedContributor)) {
                     htmlMsgContent.append("<p>\n");
                     htmlMsgContent.append("    You have been listed as a contributor to OzTrack project\n");
@@ -368,6 +369,7 @@ public class ProjectController {
                     htmlMsgContent.append("<p>The current list of contributors is:</p>\n");
                     appendContributorsList(currentContributors, htmlMsgContent);
                 }
+
                 {
                     String projectLink = configuration.getBaseUrl() + "/projects/" + project.getId();
                     htmlMsgContent.append("<p>\n");
@@ -375,7 +377,20 @@ public class ProjectController {
                     htmlMsgContent.append("    <a href=\"" + projectLink + "\">" + projectLink + "</a>\n");
                     htmlMsgContent.append("</p>\n");
                 }
+
                 if (notifiedContributor.getUser() == null) {
+                    htmlMsgContent.append("<p style=\"color: #333333;\">\n");
+                    htmlMsgContent.append("    <b>What is OzTrack?</b>\n");
+                    htmlMsgContent.append("</p>\n");
+                    String websiteLink = configuration.getBaseUrl() + "/";
+                    htmlMsgContent.append("<p>\n");
+                    htmlMsgContent.append("    OzTrack is a free-to-use web-based platform for analysing and visualising\n");
+                    htmlMsgContent.append("    individual-based animal location data. It was primarily developed for the\n");
+                    htmlMsgContent.append("    Australian animal telemetry community but can be used to assess animal\n");
+                    htmlMsgContent.append("    movement and estimate space-use for individually-marked animals anywhere\n");
+                    htmlMsgContent.append("    in the world. To find out more, visit \n");
+                    htmlMsgContent.append("    <a href=\"" + websiteLink + "\">" + websiteLink + "</a>.");
+                    htmlMsgContent.append("</p>\n");
                     htmlMsgContent.append("<p style=\"color: #333333;\">\n");
                     htmlMsgContent.append("    <b>Register an OzTrack account</b>\n");
                     htmlMsgContent.append("</p>\n");
