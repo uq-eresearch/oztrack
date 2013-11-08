@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.oztrack.data.access.OaiPmhEntityMapper;
 import org.oztrack.data.model.types.OaiPmhRecord;
 
 public class OaiPmhMappingRecordProducerTest {
@@ -17,24 +18,24 @@ public class OaiPmhMappingRecordProducerTest {
     public void setUp() {
         Iterator<String> zeroStringsIterator = Arrays.<String>asList().iterator();
         OaiPmhMappingEntityProducer<String, OaiPmhRecord> zeroRecordsProducer =
-            new OaiPmhMappingEntityProducer<String, OaiPmhRecord>(zeroStringsIterator) {
+            new OaiPmhMappingEntityProducer<String, OaiPmhRecord>(zeroStringsIterator, new OaiPmhEntityMapper<String, OaiPmhRecord>() {
                 @Override
-                protected OaiPmhRecord map(String source) {
+                public OaiPmhRecord map(String source) {
                     throw new RuntimeException();
                 }
-            };
+            });
         this.zeroRecordsIterator = zeroRecordsProducer.iterator();
 
         Iterator<String> manyStringsIterator = Arrays.asList("foo", "bar", "baz").iterator();
         OaiPmhMappingEntityProducer<String, OaiPmhRecord> manyRecordsProducer =
-            new OaiPmhMappingEntityProducer<String, OaiPmhRecord>(manyStringsIterator) {
+            new OaiPmhMappingEntityProducer<String, OaiPmhRecord>(manyStringsIterator, new OaiPmhEntityMapper<String, OaiPmhRecord>() {
                 @Override
-                protected OaiPmhRecord map(String source) {
+                public OaiPmhRecord map(String source) {
                     OaiPmhRecord record = new OaiPmhRecord();
                     record.setObjectIdentifier(source);
                     return record;
                 }
-            };
+            });
         this.manyRecordsIterator = manyRecordsProducer.iterator();
     }
 

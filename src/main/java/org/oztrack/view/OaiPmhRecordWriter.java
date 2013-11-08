@@ -39,7 +39,7 @@ public class OaiPmhRecordWriter {
         }
     }
 
-    private void write(OaiPmhRecord record) throws XMLStreamException {
+    public void write(OaiPmhRecord record) throws XMLStreamException {
         if (StringUtils.isBlank(record.getOaiPmhRecordIdentifier())) {
             throw new IllegalArgumentException("Record must have OAI-PMH identifier");
         }

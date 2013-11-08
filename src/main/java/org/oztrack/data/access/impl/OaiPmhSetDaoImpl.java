@@ -8,6 +8,7 @@ import java.util.Locale;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.oztrack.data.access.OaiPmhEntityMapper;
 import org.oztrack.data.access.OaiPmhEntityProducer;
 import org.oztrack.data.access.OaiPmhSetDao;
 import org.oztrack.data.model.Country;
@@ -32,12 +33,12 @@ public class OaiPmhSetDaoImpl implements OaiPmhSetDao {
         @SuppressWarnings("unchecked")
         final List<Institution> institutions = em.createQuery("from org.oztrack.data.model.Institution order by title").getResultList();
         OaiPmhEntityProducer<OaiPmhSet> institutionSubsetProducer =
-            new OaiPmhMappingEntityProducer<Institution, OaiPmhSet>(institutions.iterator()) {
+            new OaiPmhMappingEntityProducer<Institution, OaiPmhSet>(institutions.iterator(), new OaiPmhEntityMapper<Institution, OaiPmhSet>() {
                 @Override
-                protected OaiPmhSet map(Institution institution) {
+                public OaiPmhSet map(Institution institution) {
                     return new OaiPmhSet("institution:" + institution.getId(), institution.getTitle());
                 }
-            };
+            });
 
         OaiPmhEntityProducer<OaiPmhSet> countrySetProducer = new OaiPmhEntityProducer<OaiPmhSet>() {
             @Override
@@ -49,12 +50,12 @@ public class OaiPmhSetDaoImpl implements OaiPmhSetDao {
         @SuppressWarnings("unchecked")
         final List<Country> countries = em.createQuery("from org.oztrack.data.model.Country order by title").getResultList();
         OaiPmhEntityProducer<OaiPmhSet> countrySubsetProducer =
-            new OaiPmhMappingEntityProducer<Country, OaiPmhSet>(countries.iterator()) {
+            new OaiPmhMappingEntityProducer<Country, OaiPmhSet>(countries.iterator(), new OaiPmhEntityMapper<Country, OaiPmhSet>() {
                 @Override
-                protected OaiPmhSet map(Country country) {
+                public OaiPmhSet map(Country country) {
                     return new OaiPmhSet("country:" + country.getCode().toLowerCase(Locale.ENGLISH), country.getTitle());
                 }
-            };
+            });
 
         @SuppressWarnings("unchecked")
         List<OaiPmhEntityProducer<OaiPmhSet>> producers = Arrays.asList(
