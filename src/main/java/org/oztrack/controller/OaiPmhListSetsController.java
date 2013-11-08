@@ -35,15 +35,15 @@ public class OaiPmhListSetsController extends OaiPmhController {
             throw new OaiPmhException("badArgument", "Request includes illegal arguments.");
         }
 
-        OaiPmhEntityProducer<OaiPmhSet> sets = setDao.getSets();
+        String resumptionToken = request.getParameter("resumptionToken");
+        if (resumptionToken != null) {
+            throw new OaiPmhException("badResumptionToken", "resumptionToken is invalid or expired.");
+        }
 
+        OaiPmhEntityProducer<OaiPmhSet> sets = setDao.getSets();
         if (!sets.iterator().hasNext()) {
             throw new OaiPmhException("noSetHierarchy", "This repository does not support sets.");
         }
-
-        @SuppressWarnings("unused")
-        String resumptionToken = request.getParameter("resumptionToken");
-        // TODO: Check for badResumptionToken (resumptionToken is invalid or expired)
 
         return new OaiPmhListSetsView(sets);
     }

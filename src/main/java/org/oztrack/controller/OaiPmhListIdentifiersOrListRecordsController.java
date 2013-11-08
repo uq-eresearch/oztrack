@@ -61,7 +61,9 @@ public class OaiPmhListIdentifiersOrListRecordsController extends OaiPmhControll
             throw new OaiPmhException("badArgument", "Request includes illegal arguments.");
         }
 
-        // TODO: Check for badResumptionToken (resumptionToken is invalid or expired)
+        if (resumptionToken != null) {
+            throw new OaiPmhException("badResumptionToken", "resumptionToken is invalid or expired.");
+        }
 
         // Dates and times are uniformly encoded using ISO8601 and are expressed in UTC throughout the protocol.
         // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#Dates
@@ -117,8 +119,10 @@ public class OaiPmhListIdentifiersOrListRecordsController extends OaiPmhControll
         }
 
         // TODO: Query for records matching from/until/set parameters
-        // TODO: Check for noRecordsMatch error (combination of from/until/set results no records)
         OaiPmhEntityProducer<OaiPmhRecord> recordProducer = recordDao.getRecords();
+        if (!recordProducer.iterator().hasNext()) {
+            throw new OaiPmhException("noRecordsMatch", "Combination of from, until, set, and metadataPrefix arguments results in an empty list.");
+        }
 
         return new OaiPmhListIdentifiersOrListRecordsView(verb, metadataFormat, recordProducer);
     }
