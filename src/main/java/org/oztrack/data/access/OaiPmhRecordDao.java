@@ -5,9 +5,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface OaiPmhRecordDao {
+    public OaiPmhRecord getRecordByOaiPmhRecordIdentifier(String identifier);
     public OaiPmhEntityProducer<OaiPmhRecord> getRecords();
-    public OaiPmhRecord getRepositoryServiceRecord();
-    public OaiPmhRecord getOaiPmhServiceRecord();
-    public OaiPmhRecord getRepositoryCollectionRecord();
-    public OaiPmhRecord getDataManagerPartyRecord();
 }

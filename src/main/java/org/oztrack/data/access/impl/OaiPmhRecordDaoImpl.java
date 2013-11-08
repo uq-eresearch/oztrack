@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 
@@ -56,23 +59,47 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
     }
 
     @Override
-    public OaiPmhRecord getRepositoryServiceRecord() {
-        return repositoryServiceRecord;
-    }
-
-    @Override
-    public OaiPmhRecord getOaiPmhServiceRecord() {
-        return oaiPmhServiceRecord;
-    }
-
-    @Override
-    public OaiPmhRecord getRepositoryCollectionRecord() {
-        return repositoryCollectionRecord;
-    }
-
-    @Override
-    public OaiPmhRecord getDataManagerPartyRecord() {
-        return dataManagerPartyRecord;
+    public OaiPmhRecord getRecordByOaiPmhRecordIdentifier(String identifier) {
+        String oaiPmhRecordIdentifierPrefix = configuration.getOaiPmhConfiguration().getOaiPmhRecordIdentifierPrefix();
+        String localIdentifier = identifier.substring(oaiPmhRecordIdentifierPrefix.length());
+        if (localIdentifier.equals("service")) {
+            return repositoryServiceRecord;
+        }
+        if (localIdentifier.equals("oai-pmh")) {
+            return oaiPmhServiceRecord;
+        }
+        if (localIdentifier.equals("collection")) {
+            return repositoryCollectionRecord;
+        }
+        if (localIdentifier.equals("data-manager")) {
+            return dataManagerPartyRecord;
+        }
+        Matcher matcher = Pattern.compile("^([a-z-]+)/([0-9]+)$").matcher(localIdentifier);
+        if (!matcher.matches()) {
+            return null;
+        }
+        String recordType = matcher.group(1);
+        Long recordId = Long.valueOf(matcher.group(2));
+        if (recordType.equals("projects")) {
+            Project project = projectDao.getProjectById(recordId);
+            final Map<Long, Range<Date>> projectDetectionDateRanges = new HashMap<Long, Range<Date>>();
+            projectDetectionDateRanges.put(project.getId(), projectDao.getDetectionDateRange(project, false));
+            final Map<Long, Polygon> projectBoundingBoxes = new HashMap<Long, Polygon>();
+            projectBoundingBoxes.put(project.getId(), projectDao.getBoundingBox(project, false));
+            OaiPmhProjectRecordMapper mapper = new OaiPmhProjectRecordMapper(configuration, projectDetectionDateRanges, projectBoundingBoxes);
+            return mapper.map(project);
+        }
+        if (recordType.equals("people")) {
+            Person person = personDao.getById(recordId);
+            OaiPmhPersonRecordMapper mapper = new OaiPmhPersonRecordMapper(configuration);
+            return mapper.map(person);
+        }
+        if (recordType.equals("institutions")) {
+            Institution institution = institutionDao.getById(recordId);
+            OaiPmhInstitutionRecordMapper mapper = new OaiPmhInstitutionRecordMapper(configuration);
+            return mapper.map(institution);
+        }
+        return null;
     }
 
     @Override
