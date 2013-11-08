@@ -103,18 +103,19 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
     }
 
     @Override
-    public OaiPmhEntityProducer<OaiPmhRecord> getRecords() {
+    public OaiPmhEntityProducer<OaiPmhRecord> getRecords(Date from, Date to, String setSpec) {
         @SuppressWarnings("unchecked")
         List<OaiPmhEntityProducer<OaiPmhRecord>> producers = Arrays.asList(
-            createRepositoryRecordProducer(),
-            createProjectRecordProducer(),
-            createPersonRecordProducer(),
-            createInstitutionRecordProducer()
+            createRepositoryRecordProducer(from, to, setSpec),
+            createProjectRecordProducer(from, to, setSpec),
+            createPersonRecordProducer(from, to, setSpec),
+            createInstitutionRecordProducer(from, to, setSpec)
         );
         return new OaiPmhChainingEntityProducer<OaiPmhRecord>(producers);
     }
 
-    private OaiPmhEntityProducer<OaiPmhRecord> createRepositoryRecordProducer() {
+    // TODO: Query for records matching from/until/set parameters
+    private OaiPmhEntityProducer<OaiPmhRecord> createRepositoryRecordProducer(Date from, Date to, String setSpec) {
         return new OaiPmhEntityProducer<OaiPmhRecord>() {
             @Override
             public Iterator<OaiPmhRecord> iterator() {
@@ -129,7 +130,8 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         };
     }
 
-    private OaiPmhEntityProducer<OaiPmhRecord> createProjectRecordProducer() {
+    // TODO: Query for records matching from/until/set parameters
+    private OaiPmhEntityProducer<OaiPmhRecord> createProjectRecordProducer(Date from, Date to, String setSpec) {
         final List<Project> projects = projectDao.getAll();
         final HashMap<Long, Range<Date>> projectDetectionDateRanges = projectDao.getProjectDetectionDateRanges(false);
         final HashMap<Long, Polygon> projectBoundingBoxes = projectDao.getProjectBoundingBoxes(false);
@@ -137,13 +139,15 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         return new OaiPmhMappingEntityProducer<Project, OaiPmhRecord>(projects.iterator(), mapper);
     }
 
-    private OaiPmhEntityProducer<OaiPmhRecord> createPersonRecordProducer() {
+    // TODO: Query for records matching from/until/set parameters
+    private OaiPmhEntityProducer<OaiPmhRecord> createPersonRecordProducer(Date from, Date to, String setSpec) {
         final List<Person> people = personDao.getAll();
         OaiPmhPersonRecordMapper mapper = new OaiPmhPersonRecordMapper(configuration);
         return new OaiPmhMappingEntityProducer<Person, OaiPmhRecord>(people.iterator(), mapper);
     }
 
-    private OaiPmhEntityProducer<OaiPmhRecord> createInstitutionRecordProducer() {
+    // TODO: Query for records matching from/until/set parameters
+    private OaiPmhEntityProducer<OaiPmhRecord> createInstitutionRecordProducer(Date from, Date to, String setSpec) {
         final List<Institution> institutions = institutionDao.getAll();
         OaiPmhInstitutionRecordMapper mapper = new OaiPmhInstitutionRecordMapper(configuration);
         return new OaiPmhMappingEntityProducer<Institution, OaiPmhRecord>(institutions.iterator(), mapper);

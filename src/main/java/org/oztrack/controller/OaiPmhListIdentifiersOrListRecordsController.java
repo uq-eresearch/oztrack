@@ -70,7 +70,6 @@ public class OaiPmhListIdentifiersOrListRecordsController extends OaiPmhControll
         // Return badArgument error code if values for arguments have an illegal syntax.
         // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#ErrorConditions
         SimpleDateFormat utcDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        @SuppressWarnings("unused")
         Date fromUtcDateTime = null;
         String fromUtcDateTimeString = request.getParameter("from");
         if (fromUtcDateTimeString != null) {
@@ -81,7 +80,6 @@ public class OaiPmhListIdentifiersOrListRecordsController extends OaiPmhControll
                 throw new OaiPmhException("badArgument", "from argument is invalid datetime.");
             }
         }
-        @SuppressWarnings("unused")
         Date toUtcDateTime = null;
         String toUtcDateTimeString = request.getParameter("to");
         if (toUtcDateTimeString != null) {
@@ -113,13 +111,12 @@ public class OaiPmhListIdentifiersOrListRecordsController extends OaiPmhControll
             throw new OaiPmhException("cannotDisseminateFormat", "metadataPrefix argument is not supported by the repository.");
         }
 
-        String set = request.getParameter("set");
-        if ((set != null) && !setDao.getSets().iterator().hasNext()) {
+        String setSpec = request.getParameter("set");
+        if ((setSpec != null) && !setDao.getSets().iterator().hasNext()) {
             throw new OaiPmhException("noSetHierarchy", "This repository does not support sets.");
         }
 
-        // TODO: Query for records matching from/until/set parameters
-        OaiPmhEntityProducer<OaiPmhRecord> recordProducer = recordDao.getRecords();
+        OaiPmhEntityProducer<OaiPmhRecord> recordProducer = recordDao.getRecords(fromUtcDateTime, toUtcDateTime, setSpec);
         if (!recordProducer.iterator().hasNext()) {
             throw new OaiPmhException("noRecordsMatch", "Combination of from, until, set, and metadataPrefix arguments results in an empty list.");
         }
