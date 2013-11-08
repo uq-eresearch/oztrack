@@ -209,6 +209,14 @@ public class OaiPmhRecord {
     public void setRecordUpdateDate(Date recordUpdateDate) {
         this.recordUpdateDate = recordUpdateDate;
     }
+    // Date of creation, modification or deletion of the record for the purpose of selective harvesting.
+    // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#Record
+    public Date getRecordDatestampDate() {
+        return
+            (getRecordUpdateDate() != null) ? getRecordUpdateDate() :
+            (getRecordCreateDate() != null) ? getRecordCreateDate() :
+            null;
+    }
     public Date getExistenceStartDate() {
         return existenceStartDate;
     }

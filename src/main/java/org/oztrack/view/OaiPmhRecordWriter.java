@@ -7,7 +7,6 @@ import static org.oztrack.util.OaiPmhConstants.XSI;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -57,15 +56,9 @@ public class OaiPmhRecordWriter {
         out.writeCharacters(record.getOaiPmhRecordIdentifier());
         out.writeEndElement(); // identifier
 
-        // Date of creation, modification or deletion of the record for the purpose of selective harvesting.
-        // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#Record
-        Date datestampDate =
-            (record.getRecordUpdateDate() != null) ? record.getRecordUpdateDate() :
-            (record.getRecordCreateDate() != null) ? record.getRecordCreateDate() :
-            null;
-        if (datestampDate != null) {
+        if (record.getRecordDatestampDate() != null) {
             out.writeStartElement("datestamp");
-            out.writeCharacters(utcDateTimeFormat.format(datestampDate));
+            out.writeCharacters(utcDateTimeFormat.format(record.getRecordDatestampDate()));
             out.writeEndElement(); // datestamp
         }
 

@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.lang3.Range;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.InstitutionDao;
@@ -42,20 +40,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
     @Autowired
     private InstitutionDao institutionDao;
 
-    private OaiPmhRecord repositoryServiceRecord;
-    private OaiPmhRecord oaiPmhServiceRecord;
-    private OaiPmhRecord repositoryCollectionRecord;
-    private OaiPmhRecord dataManagerPartyRecord;
-
     public OaiPmhRecordDaoImpl() {
-    }
-
-    @PostConstruct
-    private void init() {
-        this.repositoryServiceRecord = createRepositoryServiceRecord(configuration);
-        this.oaiPmhServiceRecord = createOaiPmhServiceRecord(configuration);
-        this.repositoryCollectionRecord = createRepositoryCollectionRecord(configuration);
-        this.dataManagerPartyRecord = createDataManagerPartyRecord(configuration);
     }
 
     @Override
@@ -63,16 +48,16 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         String oaiPmhRecordIdentifierPrefix = configuration.getOaiPmhConfiguration().getOaiPmhRecordIdentifierPrefix();
         String localIdentifier = identifier.substring(oaiPmhRecordIdentifierPrefix.length());
         if (localIdentifier.equals("service")) {
-            return repositoryServiceRecord;
+            return createRepositoryServiceRecord();
         }
         if (localIdentifier.equals("oai-pmh")) {
-            return oaiPmhServiceRecord;
+            return createOaiPmhServiceRecord();
         }
         if (localIdentifier.equals("collection")) {
-            return repositoryCollectionRecord;
+            return createRepositoryCollectionRecord();
         }
         if (localIdentifier.equals("data-manager")) {
-            return dataManagerPartyRecord;
+            return createDataManagerPartyRecord();
         }
         Matcher matcher = Pattern.compile("^([a-z-]+)/([0-9]+)$").matcher(localIdentifier);
         if (!matcher.matches()) {
@@ -116,15 +101,15 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
 
     // TODO: Query for records matching from/until/set parameters
     private OaiPmhEntityProducer<OaiPmhRecord> createRepositoryRecordProducer(Date from, Date to, String setSpec) {
+        final List<OaiPmhRecord> records = Arrays.asList(
+            createRepositoryServiceRecord(),
+            createOaiPmhServiceRecord(),
+            createRepositoryCollectionRecord(),
+            createDataManagerPartyRecord()
+        );
         return new OaiPmhEntityProducer<OaiPmhRecord>() {
             @Override
             public Iterator<OaiPmhRecord> iterator() {
-                List<OaiPmhRecord> records = Arrays.asList(
-                    repositoryServiceRecord,
-                    oaiPmhServiceRecord,
-                    repositoryCollectionRecord,
-                    dataManagerPartyRecord
-                );
                 return records.iterator();
             }
         };
@@ -153,7 +138,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         return new OaiPmhMappingEntityProducer<Institution, OaiPmhRecord>(institutions.iterator(), mapper);
     }
 
-    private static OaiPmhRecord createRepositoryServiceRecord(OzTrackConfiguration configuration) {
+    private OaiPmhRecord createRepositoryServiceRecord() {
         OaiPmhRecord record = new OaiPmhRecord();
         record.setOaiPmhRecordIdentifier(configuration.getOaiPmhConfiguration().getOaiPmhRecordIdentifierPrefix() + OaiPmhConstants.repositoryServiceLocalIdentifier);
         record.setRifCsRecordIdentifier(configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + OaiPmhConstants.repositoryServiceLocalIdentifier);
@@ -175,7 +160,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         return record;
     }
 
-    private static OaiPmhRecord createOaiPmhServiceRecord(OzTrackConfiguration configuration) {
+    private OaiPmhRecord createOaiPmhServiceRecord() {
         OaiPmhRecord record = new OaiPmhRecord();
         record.setOaiPmhRecordIdentifier(configuration.getOaiPmhConfiguration().getOaiPmhRecordIdentifierPrefix() + OaiPmhConstants.oaiPmhServiceLocalIdentifier);
         record.setRifCsRecordIdentifier(configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + OaiPmhConstants.oaiPmhServiceLocalIdentifier);
@@ -204,7 +189,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         return record;
     }
 
-    private static OaiPmhRecord createRepositoryCollectionRecord(OzTrackConfiguration configuration) {
+    private OaiPmhRecord createRepositoryCollectionRecord() {
         OaiPmhRecord record = new OaiPmhRecord();
         record.setOaiPmhRecordIdentifier(configuration.getOaiPmhConfiguration().getOaiPmhRecordIdentifierPrefix() + OaiPmhConstants.repositoryCollectionLocalIdentifier);
         record.setRifCsRecordIdentifier(configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + OaiPmhConstants.repositoryCollectionLocalIdentifier);
@@ -239,7 +224,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         return record;
     }
 
-    private static OaiPmhRecord createDataManagerPartyRecord(OzTrackConfiguration configuration) {
+    private OaiPmhRecord createDataManagerPartyRecord() {
         OaiPmhRecord record = new OaiPmhRecord();
         record.setOaiPmhRecordIdentifier(configuration.getOaiPmhConfiguration().getOaiPmhRecordIdentifierPrefix() + OaiPmhConstants.dataManagerPartyLocalIdentifier);
         record.setRifCsRecordIdentifier(configuration.getOaiPmhConfiguration().getRifCsRecordIdentifierPrefix() + OaiPmhConstants.dataManagerPartyLocalIdentifier);
