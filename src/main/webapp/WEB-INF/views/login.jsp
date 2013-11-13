@@ -6,6 +6,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <c:set var="aafEnabled"><%= OzTrackApplication.getApplicationContext().isAafEnabled() %></c:set>
+<c:set var="baseUrl"><%= OzTrackApplication.getApplicationContext().getBaseUrl() %></c:set>
 <tags:page title="Login">
     <jsp:attribute name="description">
         Log in to OzTrack. OzTrack is a free-to-use web-based platform for
@@ -51,10 +52,10 @@
                         </div>
                     </fieldset>
                     <div class="form-actions">
-                        <c:url var="shibbolethUrl" value="${pageContext.request.contextPath}/login/shibboleth">
+                        <c:url var="shibbolethUrl" value="${fn:replace(baseUrl, 'http://', 'https://')}/login/shibboleth">
                             <c:if test="${not empty redirectUrl}">
                             <c:param name="redirect">
-                                ${redirectUrl}
+                                ${fn:replace(redirectUrl, 'http://', 'https://')}
                             </c:param>
                             </c:if>
                         </c:url>
@@ -65,7 +66,7 @@
             </c:if>
             <div class="${aafEnabled ? 'span6' : 'span12'}">
                 <form id="nativeLoginForm" class="form-vertical form-bordered" style="height: 230px;"
-                    method="POST" action="${pageContext.request.contextPath}/login">
+                    method="POST" action="${fn:replace(baseUrl, 'http://', 'https://')}/login">
                     <fieldset>
                         <div class="legend">Login ${aafEnabled ? 'using' : 'to'} OzTrack</div>
                         <div class="control-group required">
@@ -81,7 +82,7 @@
                             </div>
                         </div>
                         <c:if test="${not empty redirectUrl}">
-                        <input type="hidden" name="redirect" value="${redirectUrl}" />
+                        <input type="hidden" name="redirect" value="${fn:replace(redirectUrl, 'http://', 'https://')}" />
                         </c:if>
                     </fieldset>
                     <div class="form-actions">
