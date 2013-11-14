@@ -8,9 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.SettingsDao;
-import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Settings;
-import org.oztrack.data.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,7 +29,7 @@ public class DefaultModelAttributesInterceptor extends HandlerInterceptorAdapter
     private OzTrackConfiguration configuration;
 
     @Autowired
-    private UserDao userDao;
+    private OzTrackPermissionEvaluator permissionEvaluator;
 
     @Autowired
     private SettingsDao settingsDao;
@@ -43,10 +41,7 @@ public class DefaultModelAttributesInterceptor extends HandlerInterceptorAdapter
         }
         Map<String, Object> model = modelAndView.getModel();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if ((authentication != null) && authentication.isAuthenticated()) {
-            User currentUser = userDao.getByUsername((String) authentication.getPrincipal());
-            model.put("currentUser", currentUser);
-        }
+        model.put("currentUser", permissionEvaluator.getAuthenticatedUser(authentication));
         Settings settings = settingsDao.getSettings();
         if (StringUtils.isNotBlank(settings.getCustomJs())) {
             model.put("customJs", settings.getCustomJs());
