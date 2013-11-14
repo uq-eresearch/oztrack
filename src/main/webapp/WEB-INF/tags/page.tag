@@ -13,6 +13,7 @@
 <%@ attribute name="navExtra" required="false" fragment="true" %>
 <%@ attribute name="sidebar" required="false" fragment="true" %>
 <%@ attribute name="fluid" required="false" type="java.lang.Boolean" %>
+<c:set var="baseUrl"><%= OzTrackApplication.getApplicationContext().getBaseUrl() %></c:set>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -75,8 +76,8 @@
                 </div>
                 </c:when>
                 <c:otherwise>
-                <a class="btn btn-inverse" href="${pageContext.request.contextPath}/users/new">Register</a>
-                <a class="btn btn-inverse" href="${pageContext.request.contextPath}/login">Login</a>
+                <a class="btn btn-inverse" href="${fn:replace(baseUrl, 'http://', 'https://')}/users/new">Register</a>
+                <a class="btn btn-inverse" href="${fn:replace(baseUrl, 'http://', 'https://')}/login">Login</a>
                 </c:otherwise>
                 </c:choose>
             </div>
