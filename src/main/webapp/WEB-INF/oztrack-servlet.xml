@@ -26,7 +26,14 @@
     <mvc:default-servlet-handler/>
 
     <mvc:interceptors>
-        <bean class="org.oztrack.controller.ForceHttpsInterceptor"/>
+        <bean class="org.oztrack.controller.ForceHttpsInterceptor">
+            <constructor-arg name="paths">
+                <list>
+                    <value>/login(/.*)?</value>
+                    <value>/users/new(/.*)?</value>
+                </list>
+            </constructor-arg>
+        </bean>
         <bean class="org.oztrack.controller.DefaultModelAttributesInterceptor"/>
         <bean class="org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor">
             <property name="entityManagerFactory" ref="entityManagerFactory"/>

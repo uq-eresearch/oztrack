@@ -1,5 +1,7 @@
 package org.oztrack.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,11 +17,27 @@ public class ForceHttpsInterceptor extends HandlerInterceptorAdapter {
     @Autowired
     private OzTrackPermissionEvaluator permissionEvaluator;
 
+    private List<String> paths;
+
+    public ForceHttpsInterceptor(List<String> paths) {
+        this.paths = paths;
+    }
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (request.getScheme().equals("http")) {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (permissionEvaluator.haveAuthenticatedUser(authentication)) {
+            boolean shouldForceHttps = false;
+            for (String path : paths) {
+                if (request.getRequestURI().matches("^" + request.getContextPath() + path + "$")) {
+                    shouldForceHttps = true;
+                    break;
+                }
+            }
+            if (!shouldForceHttps) {
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                shouldForceHttps = permissionEvaluator.haveAuthenticatedUser(authentication);
+            }
+            if (shouldForceHttps) {
                 StringBuffer originalUrlBuffer = request.getRequestURL();
                 if (request.getQueryString() != null) {
                     originalUrlBuffer.append(request.getQueryString());
