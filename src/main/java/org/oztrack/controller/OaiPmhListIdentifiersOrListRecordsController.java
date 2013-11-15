@@ -80,14 +80,14 @@ public class OaiPmhListIdentifiersOrListRecordsController extends OaiPmhControll
                 throw new OaiPmhException("badArgument", "from argument is invalid datetime.");
             }
         }
-        Date toUtcDateTime = null;
-        String toUtcDateTimeString = request.getParameter("to");
-        if (toUtcDateTimeString != null) {
+        Date untilUtcDateTime = null;
+        String untilUtcDateTimeString = request.getParameter("until");
+        if (untilUtcDateTimeString != null) {
             try {
-                toUtcDateTime = utcDateTimeFormat.parse(toUtcDateTimeString);
+                untilUtcDateTime = utcDateTimeFormat.parse(untilUtcDateTimeString);
             }
             catch (ParseException e) {
-                throw new OaiPmhException("badArgument", "to argument is invalid datetime.");
+                throw new OaiPmhException("badArgument", "until argument is invalid datetime.");
             }
         }
 
@@ -116,7 +116,7 @@ public class OaiPmhListIdentifiersOrListRecordsController extends OaiPmhControll
             throw new OaiPmhException("noSetHierarchy", "This repository does not support sets.");
         }
 
-        OaiPmhEntityProducer<OaiPmhRecord> recordProducer = recordDao.getRecords(fromUtcDateTime, toUtcDateTime, setSpec);
+        OaiPmhEntityProducer<OaiPmhRecord> recordProducer = recordDao.getRecords(fromUtcDateTime, untilUtcDateTime, setSpec);
         if (!recordProducer.iterator().hasNext()) {
             throw new OaiPmhException("noRecordsMatch", "Combination of from, until, set, and metadataPrefix arguments results in an empty list.");
         }

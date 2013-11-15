@@ -1,5 +1,6 @@
 package org.oztrack.data.access;
 
+import java.util.Date;
 import java.util.List;
 
 import org.oztrack.data.model.Institution;
@@ -14,4 +15,5 @@ public interface InstitutionDao {
     void save(Institution institution);
     Institution update(Institution institution);
     void delete(Institution institution);
+    List<Institution> getInstitutionsForOaiPmh(Date from, Date until, String setSpec);
 }

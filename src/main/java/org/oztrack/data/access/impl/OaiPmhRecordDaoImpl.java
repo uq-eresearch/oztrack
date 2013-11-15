@@ -1,5 +1,6 @@
 package org.oztrack.data.access.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -88,52 +89,56 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
     }
 
     @Override
-    public OaiPmhEntityProducer<OaiPmhRecord> getRecords(Date from, Date to, String setSpec) {
+    public OaiPmhEntityProducer<OaiPmhRecord> getRecords(Date from, Date until, String setSpec) {
         @SuppressWarnings("unchecked")
         List<OaiPmhEntityProducer<OaiPmhRecord>> producers = Arrays.asList(
-            createRepositoryRecordProducer(from, to, setSpec),
-            createProjectRecordProducer(from, to, setSpec),
-            createPersonRecordProducer(from, to, setSpec),
-            createInstitutionRecordProducer(from, to, setSpec)
+            createRepositoryRecordProducer(from, until, setSpec),
+            createProjectRecordProducer(from, until, setSpec),
+            createPersonRecordProducer(from, until, setSpec),
+            createInstitutionRecordProducer(from, until, setSpec)
         );
         return new OaiPmhChainingEntityProducer<OaiPmhRecord>(producers);
     }
 
-    // TODO: Query for records matching from/until/set parameters
-    private OaiPmhEntityProducer<OaiPmhRecord> createRepositoryRecordProducer(Date from, Date to, String setSpec) {
-        final List<OaiPmhRecord> records = Arrays.asList(
+    // TODO: Query for records matching setSpec
+    private OaiPmhEntityProducer<OaiPmhRecord> createRepositoryRecordProducer(Date from, Date until, String setSpec) {
+        final List<OaiPmhRecord> unfilteredRecords = Arrays.asList(
             createRepositoryServiceRecord(),
             createOaiPmhServiceRecord(),
             createRepositoryCollectionRecord(),
             createDataManagerPartyRecord()
         );
+        final List<OaiPmhRecord> filteredRecords = new ArrayList<OaiPmhRecord>();
+        for (OaiPmhRecord record : unfilteredRecords) {
+            Date datestamp = record.getRecordDatestampDate();
+            if (((from == null) || !datestamp.before(from)) && ((until == null) || !datestamp.after(until))) {
+                filteredRecords.add(record);
+            }
+        }
         return new OaiPmhEntityProducer<OaiPmhRecord>() {
             @Override
             public Iterator<OaiPmhRecord> iterator() {
-                return records.iterator();
+                return filteredRecords.iterator();
             }
         };
     }
 
-    // TODO: Query for records matching from/until/set parameters
-    private OaiPmhEntityProducer<OaiPmhRecord> createProjectRecordProducer(Date from, Date to, String setSpec) {
-        final List<Project> projects = projectDao.getAll();
+    private OaiPmhEntityProducer<OaiPmhRecord> createProjectRecordProducer(Date from, Date until, String setSpec) {
+        final List<Project> projects = projectDao.getProjectsForOaiPmh(from, until, setSpec);
         final HashMap<Long, Range<Date>> projectDetectionDateRanges = projectDao.getProjectDetectionDateRanges(false);
         final HashMap<Long, Polygon> projectBoundingBoxes = projectDao.getProjectBoundingBoxes(false);
         OaiPmhProjectRecordMapper mapper = new OaiPmhProjectRecordMapper(configuration, projectDetectionDateRanges, projectBoundingBoxes);
         return new OaiPmhMappingEntityProducer<Project, OaiPmhRecord>(projects.iterator(), mapper);
     }
 
-    // TODO: Query for records matching from/until/set parameters
-    private OaiPmhEntityProducer<OaiPmhRecord> createPersonRecordProducer(Date from, Date to, String setSpec) {
-        final List<Person> people = personDao.getAll();
+    private OaiPmhEntityProducer<OaiPmhRecord> createPersonRecordProducer(Date from, Date until, String setSpec) {
+        final List<Person> people = personDao.getPeopleForOaiPmh(from, until, setSpec);
         OaiPmhPersonRecordMapper mapper = new OaiPmhPersonRecordMapper(configuration);
         return new OaiPmhMappingEntityProducer<Person, OaiPmhRecord>(people.iterator(), mapper);
     }
 
-    // TODO: Query for records matching from/until/set parameters
-    private OaiPmhEntityProducer<OaiPmhRecord> createInstitutionRecordProducer(Date from, Date to, String setSpec) {
-        final List<Institution> institutions = institutionDao.getAll();
+    private OaiPmhEntityProducer<OaiPmhRecord> createInstitutionRecordProducer(Date from, Date until, String setSpec) {
+        final List<Institution> institutions = institutionDao.getInstitutionsForOaiPmh(from, until, setSpec);
         OaiPmhInstitutionRecordMapper mapper = new OaiPmhInstitutionRecordMapper(configuration);
         return new OaiPmhMappingEntityProducer<Institution, OaiPmhRecord>(institutions.iterator(), mapper);
     }

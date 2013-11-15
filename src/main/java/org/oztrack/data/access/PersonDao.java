@@ -1,5 +1,6 @@
 package org.oztrack.data.access;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,4 +16,5 @@ public interface PersonDao {
     void save(Person institution);
     Person update(Person institution);
     void delete(Person institution);
+    List<Person> getPeopleForOaiPmh(Date from, Date until, String setSpec);
 }

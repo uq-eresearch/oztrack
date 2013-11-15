@@ -1,9 +1,11 @@
 package org.oztrack.data.access.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.oztrack.data.access.InstitutionDao;
 import org.oztrack.data.model.Institution;
@@ -61,5 +63,33 @@ public class InstitutionDaoImpl implements InstitutionDao {
     @Transactional
     public void delete(Institution institution) {
         em.remove(institution);
+    }
+
+    // TODO: Query for records matching setSpec
+    @Override
+    public List<Institution> getInstitutionsForOaiPmh(Date from, Date until, String setSpec) {
+        String q = "from org.oztrack.data.model.Institution";
+        if ((from != null) || (until != null)) {
+            q += "\nwhere ";
+        }
+        if (from != null) {
+            q += "(((updateDate is not null) and (:from <= updateDate)) or ((updateDate is null) and (:from <= createDate)))";
+        }
+        if ((from != null) && (until != null)) {
+            q+= "\nand ";
+        }
+        if (until != null) {
+            q += "(((updateDate is not null) and (updateDate <= :until)) or ((updateDate is null) and (createDate <= :until)))";
+        }
+        Query query = em.createQuery(q);
+        if (from != null) {
+            query.setParameter("from", from);
+        }
+        if (until != null) {
+            query.setParameter("until", until);
+        }
+        @SuppressWarnings("unchecked")
+        List<Institution> resultList = query.getResultList();
+        return resultList;
     }
 }
