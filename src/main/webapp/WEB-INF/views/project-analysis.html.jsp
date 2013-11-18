@@ -423,7 +423,7 @@
             function getAnalysisContent(layerName, analysisUrl, analysisCreateDate, saved) {
                 var div = $('<div class="analysis-content">').hide();
                 $.ajax({
-                    url: analysisUrl,
+                    url: analysisUrl.replace(/^([a-zA-Z0-9+.-]+):/, ''),
                     type: 'GET',
                     error: function(xhr, textStatus, errorThrown) {
                     },
@@ -451,7 +451,7 @@
                                         emptytext: 'No description entered.',
                                         url: function(params) {
                                             jQuery.ajax({
-                                                url: analysisUrl + '/description',
+                                                url: analysisUrl.replace(/^([a-zA-Z0-9+.-]+):/, '') + '/description',
                                                 type: 'PUT',
                                                 contentType: "text/plain",
                                                 data: params.value,
@@ -529,7 +529,7 @@
                                             .text(saved ? 'Remove analysis' : 'Save analysis')
                                             .click(function(e) {
                                                 jQuery.ajax({
-                                                    url: analysisUrl + '/saved',
+                                                    url: analysisUrl.replace(/^([a-zA-Z0-9+.-]+):/, '') + '/saved',
                                                     type: 'PUT',
                                                     contentType: "application/json",
                                                     data: (saved ? 'false' : 'true'),

@@ -131,7 +131,7 @@
                 return;
             }
             $.ajax({
-                url: analysis.url + '/apply',
+                url: analysis.url.replace(/^([a-zA-Z0-9+.-]+):/, '') + '/apply',
                 type: 'POST',
                 beforeSend: function(jqXHR, settings) {
                     that.increaseLoadingCounter();
