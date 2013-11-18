@@ -531,7 +531,7 @@
                                 <select id="new-contributor" style="width: 284px;">
                                     <option value="">Select contributor</option>
                                     <c:forEach var="person" items="${people}">
-                                    <option value="${person.id}">${person.fullName}</option>
+                                    <option value="${person.id}">${person.fullName}<c:if test="${not empty person.email}"> (${person.email})</c:if></option>
                                     </c:forEach>
                                 </select>
                                 <button id="add-contributor-btn" class="btn">Add contributor</button>
