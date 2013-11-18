@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import org.oztrack.data.access.PersonDao;
 import org.oztrack.data.model.Person;
@@ -66,31 +65,8 @@ public class PersonDaoImpl implements PersonDao {
         em.remove(person);
     }
 
-    // TODO: Query for records matching setSpec
     @Override
     public List<Person> getPeopleForOaiPmh(Date from, Date until, String setSpec) {
-        String q = "from org.oztrack.data.model.Person";
-        if ((from != null) || (until != null)) {
-            q += "\nwhere ";
-        }
-        if (from != null) {
-            q += "(((updateDate is not null) and (:from <= updateDate)) or ((updateDate is null) and (:from <= createDate)))";
-        }
-        if ((from != null) && (until != null)) {
-            q+= "\nand ";
-        }
-        if (until != null) {
-            q += "(((updateDate is not null) and (updateDate <= :until)) or ((updateDate is null) and (createDate <= :until)))";
-        }
-        Query query = em.createQuery(q);
-        if (from != null) {
-            query.setParameter("from", from);
-        }
-        if (until != null) {
-            query.setParameter("until", until);
-        }
-        @SuppressWarnings("unchecked")
-        List<Person> resultList = query.getResultList();
-        return resultList;
+        return DaoHelper.getEntitiesForOaiPmh(em, Person.class, from, until, setSpec);
     }
 }

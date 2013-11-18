@@ -339,31 +339,8 @@ public class ProjectDaoImpl implements ProjectDao {
         return resultList;
     }
 
-    // TODO: Query for records matching setSpec
     @Override
     public List<Project> getProjectsForOaiPmh(Date from, Date until, String setSpec) {
-        String q = "from org.oztrack.data.model.Project";
-        if ((from != null) || (until != null)) {
-            q += "\nwhere ";
-        }
-        if (from != null) {
-            q += "(((updateDate is not null) and (:from <= updateDate)) or ((updateDate is null) and (:from <= createDate)))";
-        }
-        if ((from != null) && (until != null)) {
-            q+= "\nand ";
-        }
-        if (until != null) {
-            q += "(((updateDate is not null) and (updateDate <= :until)) or ((updateDate is null) and (createDate <= :until)))";
-        }
-        Query query = em.createQuery(q);
-        if (from != null) {
-            query.setParameter("from", from);
-        }
-        if (until != null) {
-            query.setParameter("until", until);
-        }
-        @SuppressWarnings("unchecked")
-        List<Project> resultList = query.getResultList();
-        return resultList;
+        return DaoHelper.getEntitiesForOaiPmh(em, Project.class, from, until, setSpec);
     }
 }
