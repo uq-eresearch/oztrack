@@ -12,10 +12,11 @@ alter table person add column institution_id bigint references institution (id) 
 
 insert into institution (createdate, title)
 select distinct now(), organisation
-from person;
+from person
+where organisation is not null;
 
 update person set institution_id = institution.id
 from institution
-where institution.title = person.organisation;
+where person.organisation is not null and institution.title = person.organisation;
 
 alter table person drop column organisation;
