@@ -123,11 +123,14 @@ public class UserListController {
     }
 
     @ModelAttribute("recaptchaHtml")
-    public String getRecaptcha() {
+    public String getRecaptcha(HttpServletRequest request) {
         String recaptchaPrivateKey = configuration.getRecaptchaPrivateKey();
         String recaptchaPublicKey = configuration.getRecaptchaPublicKey();
         if (StringUtils.isNotBlank(recaptchaPublicKey) && StringUtils.isNotBlank(recaptchaPrivateKey)) {
-            ReCaptcha c = ReCaptchaFactory.newReCaptcha(recaptchaPublicKey, recaptchaPrivateKey, false);
+            ReCaptcha c =
+                (request.isSecure() || request.getScheme().equals("https"))
+                ? ReCaptchaFactory.newSecureReCaptcha(recaptchaPublicKey, recaptchaPrivateKey, false)
+                : ReCaptchaFactory.newReCaptcha(recaptchaPublicKey, recaptchaPrivateKey, false);
             return c.createRecaptchaHtml(null, null);
         }
         return null;
