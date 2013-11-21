@@ -24,7 +24,7 @@ public class ProjectsWfsController {
     @Autowired
     private ProjectDao projectDao;
 
-    @RequestMapping(value="/projectsWFS", method=RequestMethod.POST)
+    @RequestMapping(value="/wfs/projects", method=RequestMethod.POST)
     @PreAuthorize("permitAll")
     public void handleProjectsWFS(HttpServletResponse response) {
         List<Project> projects = projectDao.getAll();

@@ -917,12 +917,11 @@
 
         that.createStartEndLayer = function(params, category) {
             params['projectId'] = that.project.id;
-            params['layerType'] = 'START_END';
             var startEndLayerId = that.projectMapLayerIdSeq++;
             var startEndLayer = new OpenLayers.Layer.Vector('Start and End Points', {
                 projection : that.projection4326,
                 protocol : new OpenLayers.Protocol.WFS.v1_1_0({
-                    url : '/mapQueryWFS',
+                    url : '/wfs/start-end',
                     params : params,
                     featureType : 'StartEnd',
                     featureNS : 'http://oztrack.org/xmlns#'

@@ -14,7 +14,6 @@ import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.SearchQuery;
-import org.oztrack.data.model.types.MapLayerType;
 import org.oztrack.view.AnimalDetectionsFeatureBuilder;
 import org.oztrack.view.AnimalStartEndFeatureBuilder;
 import org.oztrack.view.AnimalTrajectoryFeatureBuilder;
@@ -76,35 +75,28 @@ public class MapQueryWfsController {
         return searchQuery;
     }
 
-    @RequestMapping(value="/mapQueryWFS", method=RequestMethod.POST)
+    @RequestMapping(value="/wfs/detections", method=RequestMethod.POST)
     @PreAuthorize("hasPermission(#searchQuery.project, 'read')")
-    public void handleQueryWFS(
-        @ModelAttribute(value="searchQuery") SearchQuery searchQuery,
-        @RequestParam(value="layerType", required=true) MapLayerType mapLayerType,
-        HttpServletResponse response
-    ) {
-        SimpleFeatureCollection featureCollection = null;
-        switch (mapLayerType) {
-            case POINTS: {
-                List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-                Boolean includeDeleted = (searchQuery.getIncludeDeleted() != null) && searchQuery.getIncludeDeleted().booleanValue();
-                featureCollection = new AnimalDetectionsFeatureBuilder(positionFixList, includeDeleted).buildFeatureCollection();
-                break;
-            }
-            case LINES: {
-                List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-                featureCollection = new AnimalTrajectoryFeatureBuilder(positionFixList).buildFeatureCollection();
-                break;
-            }
-            case START_END: {
-                List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
-                featureCollection = new AnimalStartEndFeatureBuilder(positionFixList).buildFeatureCollection();
-                break;
-            }
-            default: {
-                throw new RuntimeException("Unsupported map layer type: " + mapLayerType);
-            }
-        }
+    public void getDetections(@ModelAttribute(value="searchQuery") SearchQuery searchQuery, HttpServletResponse response) {
+        List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
+        Boolean includeDeleted = (searchQuery.getIncludeDeleted() != null) && searchQuery.getIncludeDeleted().booleanValue();
+        SimpleFeatureCollection featureCollection = new AnimalDetectionsFeatureBuilder(positionFixList, includeDeleted).buildFeatureCollection();
+        WfsControllerUtils.writeWfsResponse(response, featureCollection);
+    }
+
+    @RequestMapping(value="/wfs/trajectory", method=RequestMethod.POST)
+    @PreAuthorize("hasPermission(#searchQuery.project, 'read')")
+    public void getTrajectory(@ModelAttribute(value="searchQuery") SearchQuery searchQuery, HttpServletResponse response) {
+        List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
+        SimpleFeatureCollection featureCollection = new AnimalTrajectoryFeatureBuilder(positionFixList).buildFeatureCollection();
+        WfsControllerUtils.writeWfsResponse(response, featureCollection);
+    }
+
+    @RequestMapping(value="/wfs/start-end", method=RequestMethod.POST)
+    @PreAuthorize("hasPermission(#searchQuery.project, 'read')")
+    public void getStartEnd(@ModelAttribute(value="searchQuery") SearchQuery searchQuery, HttpServletResponse response) {
+        List<PositionFix> positionFixList = positionFixDao.getProjectPositionFixList(searchQuery);
+        SimpleFeatureCollection featureCollection = new AnimalStartEndFeatureBuilder(positionFixList).buildFeatureCollection();
         WfsControllerUtils.writeWfsResponse(response, featureCollection);
     }
 }
