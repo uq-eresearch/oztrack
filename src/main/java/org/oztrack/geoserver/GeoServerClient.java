@@ -3,7 +3,6 @@ package org.oztrack.geoserver;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.net.ProxySelector;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,10 +28,10 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.ProxySelectorRoutePlanner;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.oztrack.util.HttpClientUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -157,15 +156,7 @@ public class GeoServerClient {
         this.geoWebCacheRestUri = URI.create(geoServerBaseUrl + "/gwc/rest/");
         this.templateBasePath = templateBasePath;
 
-        DefaultHttpClient httpClient = new DefaultHttpClient();
-
-        // Use HTTP proxy settings from JVM: see system properties
-        // http.proxyHost, http.proxyPort, and http.nonProxyHosts.
-        ProxySelectorRoutePlanner routePlanner = new ProxySelectorRoutePlanner(
-            httpClient.getConnectionManager().getSchemeRegistry(),
-            ProxySelector.getDefault()
-        );
-        httpClient.setRoutePlanner(routePlanner);
+        DefaultHttpClient httpClient = HttpClientUtils.createDefaultHttpClient();
 
         // Set username/password credentials for all GeoServer requests
         HttpHost httpHost = new HttpHost(geoServerRestUri.getHost(), geoServerRestUri.getPort(), geoServerRestUri.getScheme());

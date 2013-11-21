@@ -297,7 +297,7 @@
                 $('#searchSpeciesName').autocomplete({
                     source: function(request, response) {
                         $.ajax({
-                            url: 'http://bie.ala.org.au/search/auto.json',
+                            url: '${pageContext.request.contextPath}/proxy/bie.ala.org.au/search/auto.json',
                             data: {
                                 q: request.term,
                                 idxType: 'TAXON',

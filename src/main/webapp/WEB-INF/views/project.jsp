@@ -293,7 +293,7 @@
         <script type="text/javascript">
             function searchTern() {
                 $.ajax({
-                    url: 'http://portal.tern.org.au/ternapi/search',
+                    url: '${pageContext.request.contextPath}/proxy/portal.tern.org.au/ternapi/search',
                     data: $('#searchTernForm').serialize(),
                     dataType: "jsonp",
                     success: function(data, textStatus, jqXHR) {
@@ -329,7 +329,7 @@
             }
             function searchAla() {
                 $.ajax({
-                    url: 'http://bie.ala.org.au/search.json',
+                    url: '${pageContext.request.contextPath}/proxy/bie.ala.org.au/search',
                     data: $('#searchAlaForm').serialize(),
                     dataType: "jsonp",
                     success: function(data, textStatus, jqXHR) {
