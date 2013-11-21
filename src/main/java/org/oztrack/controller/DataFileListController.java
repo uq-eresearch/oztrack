@@ -59,7 +59,7 @@ public class DataFileListController {
     }
 
     @ModelAttribute("project")
-    public Project getProject(@PathVariable(value="project_id") Long projectId) {
+    public Project getProject(@PathVariable(value="projectId") Long projectId) {
         return projectDao.getProjectById(projectId);
     }
 
@@ -70,7 +70,7 @@ public class DataFileListController {
         return dataFile;
     }
 
-    @RequestMapping(value="/projects/{project_id}/datafiles", method=RequestMethod.GET)
+    @RequestMapping(value="/projects/{projectId}/datafiles", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#project, 'write')")
     public String handleDataFilesRequest(
         Model model,
@@ -81,7 +81,7 @@ public class DataFileListController {
         return "datafiles";
     }
 
-    @RequestMapping(value="/projects/{project_id}/datafiles/new", method=RequestMethod.GET)
+    @RequestMapping(value="/projects/{projectId}/datafiles/new", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#project, 'write')")
     public String getNewView(
         Model model,
@@ -101,7 +101,7 @@ public class DataFileListController {
         return "datafile-form";
     }
 
-    @RequestMapping(value="/projects/{project_id}/datafiles", method=RequestMethod.POST)
+    @RequestMapping(value="/projects/{projectId}/datafiles", method=RequestMethod.POST)
     @PreAuthorize("hasPermission(#project, 'write')")
     public String processCreate(
         Authentication authentication,
