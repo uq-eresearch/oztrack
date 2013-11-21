@@ -1286,7 +1286,7 @@
                         'identifier'
                     ],
                     summary: function(feature) {
-                        var date = (feature.attributes.identier === 'start') ? feature.attributes.fromDate : feature.attributes.toDate;
+                        var date = (feature.attributes.identifier === 'start') ? feature.attributes.fromDate : feature.attributes.toDate;
                         return $('<span>')
                             .append(getAnimal(feature.attributes.animalId).name)
                             .append(' ' + feature.attributes.identifier)
