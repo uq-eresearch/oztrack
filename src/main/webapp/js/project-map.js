@@ -871,7 +871,7 @@
             }
             $.ajax({
                 type: 'GET',
-                url: '/projects/' + that.project.id + '/trajectories',
+                url: '/projects/' + that.project.id + '/trajectory',
                 dataType: 'json',
                 data: {
                     fromDate: layer.getParams().fromDate,

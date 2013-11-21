@@ -103,7 +103,7 @@ public class ProjectTracksController {
         out.endObject();
     }
 
-    @RequestMapping(value="/projects/{projectId}/trajectories", method=RequestMethod.GET, produces="application/json")
+    @RequestMapping(value="/projects/{projectId}/trajectory", method=RequestMethod.GET, produces="application/json")
     @PreAuthorize("hasPermission(#project, 'read')")
     public void handleTrajectoriesJSON(
         HttpServletResponse response,
