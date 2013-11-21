@@ -666,8 +666,8 @@
                     cqlFilter += ' and deleted = false';
                 }
                 cqlFilter += ' and animal_id in (' + cqlFilterAnimalIds.join(',') + ')';
-                var fromDate = (params.fromDate && params.fromDate.getTime() > fromDate.getTime()) ? params.fromDate : that.fromDate;
-                var toDate = (params.toDate && params.toDate.getTime() < toDate.getTime()) ? params.toDate : that.toDate;
+                var fromDate = (params.fromDate && new Date(params.fromDate).getTime() > that.fromDate.getTime()) ? new Date(params.fromDate) : that.fromDate;
+                var toDate = (params.toDate && new Date(params.toDate).getTime() < that.toDate.getTime()) ? new Date(params.toDate) : that.toDate;
                 cqlFilter += ' and detectiontime >= \'' + moment(new Date(fromDate)).format('YYYY-MM-DD') + '\'';
                 cqlFilter += ' and detectiontime < \'' + moment(new Date(toDate)).add('days', 1).format('YYYY-MM-DD') + '\'';
                 return cqlFilter;
@@ -799,8 +799,8 @@
 
                 var cqlFilter = 'project_id = ' + that.project.id;
                 cqlFilter += ' and animal_id in (' + cqlFilterAnimalIds.join(',') + ')';
-                var fromDate = (params.fromDate && params.fromDate.getTime() > fromDate.getTime()) ? params.fromDate : that.fromDate;
-                var toDate = (params.toDate && params.toDate.getTime() < toDate.getTime()) ? params.toDate : that.toDate;
+                var fromDate = (params.fromDate && new Date(params.fromDate).getTime() > that.fromDate.getTime()) ? new Date(params.fromDate) : that.fromDate;
+                var toDate = (params.toDate && new Date(params.toDate).getTime() < that.toDate.getTime()) ? new Date(params.toDate) : that.toDate;
                 cqlFilter += ' and startdetectiontime >= \'' + moment(new Date(fromDate)).format('YYYY-MM-DD') + '\'';
                 cqlFilter += ' and enddetectiontime < \'' + moment(new Date(toDate)).add('days', 1).format('YYYY-MM-DD') + '\'';
                 return cqlFilter;
