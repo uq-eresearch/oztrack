@@ -462,7 +462,7 @@
                         </div>
                         <div style="clear: both;"></div>
                         <c:forEach items="${projectAnimalsList}" var="animal">
-                        <a style="display: inline-block; float: right;" href="javascript:cleanseMap.zoomToAnimal(${animal.id});"><i class="icon-zoom-in"></i></a>
+                        <a style="display: inline-block; float: right;" href="javascript:cleanseMap.zoomToAnimal('${animal.id}');"><i class="icon-zoom-in"></i></a>
                         <div class="animalCheckbox">
                             <input
                                 id="select-animal-${animal.id}"
