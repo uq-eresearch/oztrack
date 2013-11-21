@@ -63,7 +63,7 @@ public class OaiPmhPersonRecordMapper implements OaiPmhEntityMapper<Person, OaiP
             );
         }
         for (ProjectContribution contribution : person.getProjectContributions()) {
-            String projectLocalIdentifier = "project/" + contribution.getProject().getId();
+            String projectLocalIdentifier = "projects/" + contribution.getProject().getId();
             relations.add(
                 new OaiPmhRecord.Relation(
                     "isCollectorOf",
