@@ -121,9 +121,7 @@ public class DataFileListController {
         dataFile.setUserGivenFileName(uploadedFile.getOriginalFilename());
         dataFile.setContentType(uploadedFile.getContentType());
         dataFile.setCreateDate(new java.util.Date());
-        dataFile.setUpdateDate(new java.util.Date());
         dataFile.setCreateUser(currentUser);
-        dataFile.setUpdateUser(currentUser);
         dataFile.setProject(project);
         dataFileDao.save(dataFile);
 

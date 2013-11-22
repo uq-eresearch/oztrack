@@ -123,8 +123,6 @@ public class AnalysisListController {
         java.util.Date createDate = new java.util.Date();
         analysis.setCreateDate(createDate);
         analysis.setCreateUser(currentUser);
-        analysis.setUpdateDate(createDate);
-        analysis.setUpdateUser(currentUser);
         HttpSession session = request.getSession(false);
         analysis.setCreateSession((session != null) ? session.getId() : null);
         return analysis;
