@@ -6,7 +6,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <c:set var="aafEnabled"><%= OzTrackApplication.getApplicationContext().isAafEnabled() %></c:set>
-<c:set var="dataSpaceEnabled"><%= OzTrackApplication.getApplicationContext().isDataSpaceEnabled() %></c:set>
 <c:set var="title" value="${(user.id != null) ? 'User Profile' : 'Register'}"/>
 <tags:page title="${title}">
     <jsp:attribute name="description">
@@ -305,10 +304,6 @@
                         <div class="help-inline">
                             <div class="help-popover" title="Short Bio">
                                 <p>Briefly describe yourself and your research interests.</p>
-                                <c:if test="${dataSpaceEnabled}">
-                                <p>This field is used when project metadata are syndicated to UQ DataSpace and ANDS.
-                                See examples at <a target="_blank" href="http://dataspace.uq.edu.au/agents">http://dataspace.uq.edu.au/agents</a>.</p>
-                                </c:if>
                             </div>
                         </div>
                         <form:errors path="description" element="div" cssClass="help-block formErrors"/>

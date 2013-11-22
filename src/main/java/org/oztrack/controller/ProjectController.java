@@ -44,8 +44,6 @@ import org.oztrack.data.model.Publication;
 import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.ProjectAccess;
 import org.oztrack.data.model.types.Role;
-import org.oztrack.error.DataSpaceInterfaceException;
-import org.oztrack.util.DataSpaceInterface;
 import org.oztrack.util.EmailBuilder;
 import org.oztrack.util.EmailBuilderFactory;
 import org.oztrack.util.EmbargoUtils;
@@ -143,55 +141,6 @@ public class ProjectController {
     @PreAuthorize("hasPermission(#project, 'read')")
     public String getAnimalsView(Model model, @ModelAttribute(value="project") Project project) {
         return getView(model, project, "project-animals");
-    }
-
-    @RequestMapping(value="/projects/{id}/publish", method=RequestMethod.GET)
-    @PreAuthorize("hasPermission(#project, 'manage')")
-    public String getPublishView(
-        Model model,
-        @ModelAttribute(value="project") Project project,
-        HttpServletResponse response
-    ) {
-        if (!configuration.isDataSpaceEnabled()) {
-            response.setStatus(404);
-            return null;
-        }
-        model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project, false));
-        model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, false));
-        return getView(model, project, "project-publish");
-    }
-
-    @RequestMapping(value="/projects/{id}/publish", method=RequestMethod.POST)
-    @PreAuthorize("hasPermission(#project, 'manage')")
-    public String handleRequest(
-        Model model,
-        @ModelAttribute(value="project") Project project,
-        @RequestParam(value="action", required=false) String action,
-        HttpServletResponse response
-    ) throws Exception {
-        if (!configuration.isDataSpaceEnabled()) {
-            response.setStatus(404);
-            return null;
-        }
-        String errorMessage = "";
-        try {
-            DataSpaceInterface dsi = new DataSpaceInterface(projectDao, userDao);
-            if (action.equals("publish")) {
-                dsi.updateDataSpace(project);
-            }
-            else if (action.equals("delete")) {
-                dsi.deleteFromDataSpace(project);
-            }
-            project = projectDao.getProjectById(project.getId());
-
-        }
-        catch (DataSpaceInterfaceException e) {
-            errorMessage = e.getMessage();
-        }
-
-        model.addAttribute("project", project);
-        model.addAttribute("errorMessage", errorMessage);
-        return "java_DataSpaceInterface";
     }
 
     @RequestMapping(value="/projects/{id}/edit", method=RequestMethod.GET)
@@ -601,10 +550,6 @@ public class ProjectController {
     @RequestMapping(value="/projects/{id}", method=RequestMethod.DELETE)
     @PreAuthorize("hasPermission(#project, 'manage')")
     public void processDelete(@ModelAttribute(value="project") Project project, HttpServletResponse response) {
-        if ((project.getDataSpaceURI() != null) && !project.getDataSpaceURI().isEmpty()) {
-            response.setStatus(403);
-            return;
-        }
         ArrayList<Long> animalIds = new ArrayList<Long>();
         for (Animal animal : project.getAnimals()) {
             animalIds.add(animal.getId());
@@ -617,11 +562,9 @@ public class ProjectController {
     private String getView(Model model, Project project, String viewName) {
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
         List<DataFile> dataFileList = dataFileDao.getDataFilesByProject(project);
-        String dataSpaceUrl = configuration.getDataSpaceUrl();
         model.addAttribute("project", project);
         model.addAttribute("projectAnimalsList", projectAnimalsList);
         model.addAttribute("dataFileList", dataFileList);
-        model.addAttribute("dataSpaceUrl", dataSpaceUrl);
         return viewName;
     }
 

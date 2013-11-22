@@ -51,10 +51,6 @@
         <property name="baseUrl" value="${org.oztrack.conf.baseUrl}"/>
         <property name="testServer" value="${org.oztrack.conf.testServer}"/>
         <property name="geoServerLocalUrl" value="${org.oztrack.conf.geoServerLocalUrl}"/>
-        <property name="dataSpaceEnabled" value="${org.oztrack.conf.dataSpaceEnabled}"/>
-        <property name="dataSpaceUrl" value="${org.oztrack.conf.dataSpaceUrl}"/>
-        <property name="dataSpaceUsername" value="${org.oztrack.conf.dataSpaceUsername}"/>
-        <property name="dataSpacePassword" value="${org.oztrack.conf.dataSpacePassword}"/>
         <property name="dataDir" value="${org.oztrack.conf.dataDir}"/>
         <property name="mailFromName" value="${org.oztrack.conf.mailFromName}"/>
         <property name="mailFromEmail" value="${org.oztrack.conf.mailFromEmail}"/>

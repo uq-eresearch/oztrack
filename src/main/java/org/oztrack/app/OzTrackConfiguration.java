@@ -6,10 +6,6 @@ public interface OzTrackConfiguration {
     String getBaseUrl();
     Boolean getTestServer();
     String getGeoServerLocalUrl();
-    boolean isDataSpaceEnabled();
-    String getDataSpaceUrl();
-    String getDataSpaceUsername();
-    String getDataSpacePassword();
     String getDataDir();
     String getMailServerHostName();
     Integer getMailServerPort();

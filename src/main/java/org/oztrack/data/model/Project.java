@@ -54,8 +54,6 @@ public class Project extends OzTrackBaseEntity {
     private Date embargoNotificationDate;
 
     private String spatialCoverageDescr;
-    @ManyToOne
-    private User dataSpaceAgent;
 
     @Column(columnDefinition="TEXT")
     private String dataDirectoryPath;
@@ -90,9 +88,6 @@ public class Project extends OzTrackBaseEntity {
     @Column(name="crosses180", nullable=false)
     private Boolean crosses180;
 
-    @Column(columnDefinition="TEXT")
-    private String dataSpaceURI;
-    private Date dataSpaceUpdateDate;
     private String rightsStatement;
 
     @ManyToOne
@@ -210,13 +205,6 @@ public class Project extends OzTrackBaseEntity {
         this.spatialCoverageDescr = spatialCoverageDescr;
     }
 
-    public User getDataSpaceAgent() {
-        return dataSpaceAgent;
-    }
-    public void setDataSpaceAgent(User dataSpaceAgent) {
-        this.dataSpaceAgent = dataSpaceAgent;
-    }
-
     public String getSpeciesCommonName() {
         return speciesCommonName;
     }
@@ -259,22 +247,6 @@ public class Project extends OzTrackBaseEntity {
 
     public String getAbsoluteDataDirectoryPath() {
         return OzTrackApplication.getApplicationContext().getDataDir() + File.separator + getDataDirectoryPath();
-    }
-
-    public String getDataSpaceURI() {
-        return dataSpaceURI;
-    }
-
-    public void setDataSpaceURI(String dataSpaceURI) {
-        this.dataSpaceURI = dataSpaceURI;
-    }
-
-    public Date getDataSpaceUpdateDate() {
-        return dataSpaceUpdateDate;
-    }
-
-    public void setDataSpaceUpdateDate(Date dataSpaceUpdateDate) {
-        this.dataSpaceUpdateDate = dataSpaceUpdateDate;
     }
 
     public String getRightsStatement() {

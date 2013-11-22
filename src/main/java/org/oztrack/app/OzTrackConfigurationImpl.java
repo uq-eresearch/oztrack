@@ -10,10 +10,6 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
     private String baseUrl;
     private Boolean testServer;
     private String geoServerLocalUrl;
-    private boolean dataSpaceEnabled;
-    private String dataSpaceUrl;
-    private String dataSpaceUsername;
-    private String dataSpacePassword;
     private String dataDir;
     private String mailServerHostName;
     private Integer mailServerPort;
@@ -54,42 +50,6 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
 
     public void setGeoServerLocalUrl(String geoServerLocalUrl) {
         this.geoServerLocalUrl = geoServerLocalUrl;
-    }
-
-    @Override
-    public boolean isDataSpaceEnabled() {
-        return dataSpaceEnabled;
-    }
-
-    public void setDataSpaceEnabled(boolean dataSpaceEnabled) {
-        this.dataSpaceEnabled = dataSpaceEnabled;
-    }
-
-    @Override
-    public String getDataSpaceUrl() {
-        return dataSpaceUrl;
-    }
-
-    public void setDataSpaceUrl(String dataSpaceUrl) {
-        this.dataSpaceUrl = dataSpaceUrl;
-    }
-
-    @Override
-    public String getDataSpaceUsername() {
-        return dataSpaceUsername;
-    }
-
-    public void setDataSpaceUsername(String dataSpaceUsername) {
-        this.dataSpaceUsername = dataSpaceUsername;
-    }
-
-    @Override
-    public String getDataSpacePassword() {
-        return dataSpacePassword;
-    }
-
-    public void setDataSpacePassword(String dataSpacePassword) {
-        this.dataSpacePassword = dataSpacePassword;
     }
 
     @Override

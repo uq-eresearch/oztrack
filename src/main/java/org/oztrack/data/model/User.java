@@ -263,16 +263,6 @@ public class User extends OzTrackBaseEntity implements Personable {
     }
 
     @Override
-    public String getDataSpaceAgentURI() {
-        return person.getDataSpaceAgentURI();
-    }
-
-    @Override
-    public void setDataSpaceAgentURI(String dataSpaceAgentURI) {
-        person.setDataSpaceAgentURI(dataSpaceAgentURI);
-    }
-
-    @Override
     public String getDescription() {
         return person.getDescription();
     }
@@ -280,16 +270,6 @@ public class User extends OzTrackBaseEntity implements Personable {
     @Override
     public void setDescription(String description) {
         person.setDescription(description);
-    }
-
-    @Override
-    public Date getDataSpaceAgentUpdateDate() {
-        return person.getDataSpaceAgentUpdateDate();
-    }
-
-    @Override
-    public void setDataSpaceAgentUpdateDate(Date dataSpaceAgentUpdateDate) {
-        person.setDataSpaceAgentUpdateDate(dataSpaceAgentUpdateDate);
     }
 
     @Override

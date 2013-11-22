@@ -1,6 +1,5 @@
 package org.oztrack.data.model.types;
 
-import java.util.Date;
 import java.util.List;
 
 import org.oztrack.data.model.Country;
@@ -23,10 +22,6 @@ public interface Personable {
     public Country getCountry();
     public void setCountry(Country country);
     public String getFullName();
-    public String getDataSpaceAgentURI();
-    public void setDataSpaceAgentURI(String dataSpaceAgentURI);
     public String getDescription();
     public void setDescription(String description);
-    public Date getDataSpaceAgentUpdateDate();
-    public void setDataSpaceAgentUpdateDate(Date dataSpaceAgentUpdateDate);
 }

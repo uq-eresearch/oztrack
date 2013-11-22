@@ -6,7 +6,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
-<c:set var="dataSpaceEnabled"><%= OzTrackApplication.getApplicationContext().isDataSpaceEnabled() %></c:set>
 <c:set var="dateFormatPattern" value="yyyy-MM-dd"/>
 <c:set var="dateTimeFormatPattern" value="yyyy-MM-dd HH:mm:ss"/>
 <c:set var="canEditImages">
@@ -595,33 +594,15 @@
         <c:if test="${not empty project.rightsStatement}">
         <p><c:out value="${project.rightsStatement}"/></p>
         </c:if>
-        <sec:authorize access="hasPermission(#project, 'manage')">
-        <c:if test="${dataSpaceEnabled}">
-        <dt>Publication Status</dt>
-        <dd>
-            <p>
-            <c:choose>
-            <c:when test ="${empty project.dataSpaceUpdateDate}">
-                This project metadata has not yet been published externally.
-            </c:when>
-            <c:otherwise>
-                This project metadata has been published and was last updated on
-                <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${project.dataSpaceUpdateDate}"/>.
-            </c:otherwise>
-            </c:choose>
-            </p>
-        </dd>
-        </c:if>
-        </sec:authorize>
         </div> <!--  .span6 -->
         <div class="span3" style="width: 209px; margin: 7px 8px 0px 20px;">
         <dl>
             <dt>Contact</dt>
             <dd>
                 <ul class="unstyled">
-                    <li><c:out value="${project.dataSpaceAgent.firstName}"/>&nbsp;<c:out value="${project.dataSpaceAgent.lastName}"/></li>
+                    <li><c:out value="${project.createUser.fullName}"/></li>
                     <c:set var="institutions">
-                        <c:forEach var="institution" items="${project.dataSpaceAgent.institutions}" varStatus="status">
+                        <c:forEach var="institution" items="${project.createUser.institutions}" varStatus="status">
                         ${institution.title}
                         <c:if test="${not status.last}"> / </c:if>
                         </c:forEach>
@@ -629,7 +610,7 @@
                     <c:if test="${not empty institutions}">
                     <li><c:out value="${institutions}"/></li>
                     </c:if>
-                    <li><a href="mailto:<c:out value="${project.dataSpaceAgent.email}"/>"><c:out value="${project.dataSpaceAgent.email}"/></a></li>
+                    <li><a href="mailto:<c:out value="${project.createUser.email}"/>"><c:out value="${project.createUser.email}"/></a></li>
                 </ul>
             </dd>
         </dl>

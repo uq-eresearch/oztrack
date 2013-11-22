@@ -1,6 +1,5 @@
 package org.oztrack.data.model;
 
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -20,8 +19,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.SequenceGenerator;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Cascade;
 import org.oztrack.data.model.types.Personable;
@@ -69,13 +66,6 @@ public class Person extends OzTrackBaseEntity implements Personable {
 
     @Column(name="description")
     private String description;
-
-    @Column(name="dataspaceagenturi")
-    private String dataSpaceAgentURI;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="dataspaceagentupdatedate")
-    private Date dataSpaceAgentUpdateDate;
 
     @OneToOne(mappedBy="person", fetch=FetchType.EAGER)
     private User user;
@@ -156,6 +146,7 @@ public class Person extends OzTrackBaseEntity implements Personable {
         return country;
     }
 
+    @Override
     public void setCountry(Country country) {
         this.country = country;
     }
@@ -176,26 +167,6 @@ public class Person extends OzTrackBaseEntity implements Personable {
     @Override
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    @Override
-    public String getDataSpaceAgentURI() {
-        return dataSpaceAgentURI;
-    }
-
-    @Override
-    public void setDataSpaceAgentURI(String dataSpaceAgentURI) {
-        this.dataSpaceAgentURI = dataSpaceAgentURI;
-    }
-
-    @Override
-    public Date getDataSpaceAgentUpdateDate() {
-        return dataSpaceAgentUpdateDate;
-    }
-
-    @Override
-    public void setDataSpaceAgentUpdateDate(Date dataSpaceAgentUpdateDate) {
-        this.dataSpaceAgentUpdateDate = dataSpaceAgentUpdateDate;
     }
 
     public User getUser() {

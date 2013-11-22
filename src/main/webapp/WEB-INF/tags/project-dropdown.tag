@@ -4,7 +4,6 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <%@ attribute name="project" type="org.oztrack.data.model.Project" required="true" %>
-<c:set var="dataSpaceEnabled"><%= OzTrackApplication.getApplicationContext().isDataSpaceEnabled() %></c:set>
 <div class="btn-group">
     <a class="btn btn-inverse" href="/projects/${project.id}">Back to project</a>
     <a class="btn btn-inverse dropdown-toggle" data-toggle="dropdown" href="#">

@@ -5,7 +5,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
-<c:set var="dataSpaceEnabled"><%= OzTrackApplication.getApplicationContext().isDataSpaceEnabled() %></c:set>
 <c:set var="isoDateFormatPattern" value="yyyy-MM-dd"/>
 <tags:page>
     <jsp:attribute name="title">
@@ -365,12 +364,6 @@
             <h1>Create a New Project</h1>
         </c:otherwise>
         </c:choose>
-
-        <c:if test="${dataSpaceEnabled}">
-        <p>The information collected here will be syndicated to the University of Queensland's data collection registry, DataSpace,
-        subsequently to the Australian National Data Service, ANDS. A link will be made available to complete the syndication after
-        data has been uploaded to OzTrack, and you have the opportunity to edit this information before syndication.</p>
-        </c:if>
 
         <c:choose>
             <c:when test="${project.id != null}">
