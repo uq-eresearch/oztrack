@@ -55,7 +55,6 @@
             <li class="software"><a target="_blank" href="http://poi.apache.org/">Apache POI</a>: Java API for Microsoft Documents</li>
             <li class="software"><a target="_blank" href="http://opencsv.sourceforge.net/">opencsv</a>: CSV (Comma-Separated Values) parser library for Java</li>
             <li class="software"><a target="_blank" href="http://freemarker.sourceforge.net/">FreeMarker</a>: Java template engine</li>
-            <li class="software"><a target="_blank" href="https://github.com/samskivert/jmustache">JMustache</a>: Java implementation of the Mustache template language</li>
             <li class="software"><a target="_blank" href="http://www.json.org/java/index.html">JSON in Java</a>: Java implementaiton of the JSON data interchange format</li>
             <li class="software"><a target="_blank" href="http://www.google.com/recaptcha">reCAPCHA</a>: prevents website abuse from bots</li>
             <li class="software"><a target="_blank" href="http://flywaydb.org/">Flyway</a>: database migration framework for Java</li>
