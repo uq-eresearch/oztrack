@@ -7,6 +7,7 @@ import static org.oztrack.util.OaiPmhConstants.XSI;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.TimeZone;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -20,13 +21,15 @@ import org.oztrack.data.model.types.OaiPmhRecord.Name.NamePart;
 import org.oztrack.util.OaiPmhMetadataFormat;
 
 public class OaiPmhRecordWriter {
-    private SimpleDateFormat utcDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    private SimpleDateFormat utcDateTimeFormat;
 
     private final XMLStreamWriter out;
     private final OaiPmhMetadataFormat metadataFormat;
     private final boolean headerOnly;
 
     public OaiPmhRecordWriter(XMLStreamWriter out, OaiPmhMetadataFormat metadataFormat, boolean headerOnly) {
+        this.utcDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        utcDateTimeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         this.out = out;
         this.metadataFormat = metadataFormat;
         this.headerOnly = headerOnly;

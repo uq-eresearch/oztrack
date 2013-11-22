@@ -2,6 +2,7 @@ package org.oztrack.view;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -11,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 // Implements Identify verb response format
 // http://www.openarchives.org/OAI/2.0/openarchivesprotocol.htm#Identify
 public class OaiPmhIdentifyView extends OaiPmhView {
-    private SimpleDateFormat utcDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    private SimpleDateFormat utcDateTimeFormat;
 
     private final String baseUrl;
     private final String repositoryName;
@@ -19,6 +20,8 @@ public class OaiPmhIdentifyView extends OaiPmhView {
     private final Date earliestDate;
 
     public OaiPmhIdentifyView(String baseUrl, String repositoryName, String adminEmail, Date earliestDate) {
+        this.utcDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        utcDateTimeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         this.baseUrl = baseUrl;
         this.repositoryName = repositoryName;
         this.adminEmail = adminEmail;

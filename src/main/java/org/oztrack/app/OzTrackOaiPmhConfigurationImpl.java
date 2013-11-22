@@ -3,9 +3,10 @@ package org.oztrack.app;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class OzTrackOaiPmhConfigurationImpl implements OzTrackOaiPmhConfiguration {
-    private final SimpleDateFormat utcDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    private final SimpleDateFormat utcDateTimeFormat;
 
     private boolean oaiPmhEnabled;
 
@@ -37,6 +38,11 @@ public class OzTrackOaiPmhConfigurationImpl implements OzTrackOaiPmhConfiguratio
     private String dataManagerPartyEmail;
     private Date dataManagerPartyCreateDate;
     private Date dataManagerPartyUpdateDate;
+
+    public OzTrackOaiPmhConfigurationImpl() {
+        this.utcDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        utcDateTimeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
 
     @Override
     public boolean isOaiPmhEnabled() {

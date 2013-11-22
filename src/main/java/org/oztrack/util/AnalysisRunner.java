@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -54,7 +55,7 @@ public class AnalysisRunner {
 
     private final GeometryFactory jtsGeometryFactory = JTSFactoryFinder.getGeometryFactory(null);
 
-    private final SimpleDateFormat isoDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'");
+    private final SimpleDateFormat utcDateTimeFormat;
 
     @PersistenceUnit
     private EntityManagerFactory entityManagerFactory;
@@ -69,6 +70,8 @@ public class AnalysisRunner {
     private ProjectAnimalsMutexExecutor renumberPositionFixesExecutor;
 
     public AnalysisRunner() {
+        this.utcDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        utcDateTimeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
     @Async
@@ -252,7 +255,7 @@ public class AnalysisRunner {
                 resultFeature.setAnalysis(analysis);
                 resultFeature.setAnimal(analysis.getAnimals().iterator().next());
                 TimeStamp timeStamp = (TimeStamp) placemark.getTimePrimitive();
-                resultFeature.setDateTime(isoDateTimeFormat.parse(timeStamp.getWhen()));
+                resultFeature.setDateTime(utcDateTimeFormat.parse(timeStamp.getWhen()));
                 Point point = (Point) placemark.getGeometry();
                 double longitude = point.getCoordinates().get(0).getLongitude();
                 if (analysis.getProject().getCrosses180() && (longitude > 180d)) {
