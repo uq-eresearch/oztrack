@@ -1,11 +1,15 @@
 package org.oztrack.data.model;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
@@ -26,6 +30,9 @@ public class Institution extends OzTrackBaseEntity {
     @ManyToOne
     @JoinColumn(name="country_id")
     private Country country;
+
+    @ManyToMany(fetch=FetchType.LAZY, mappedBy="institutions")
+    private List<Person> people;
 
     public Long getId() {
         return id;
@@ -57,5 +64,13 @@ public class Institution extends OzTrackBaseEntity {
 
     public void setCountry(Country country) {
         this.country = country;
+    }
+
+    public List<Person> getPeople() {
+        return people;
+    }
+
+    public void setPeople(List<Person> people) {
+        this.people = people;
     }
 }
