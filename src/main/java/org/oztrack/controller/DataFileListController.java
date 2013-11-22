@@ -166,6 +166,6 @@ public class DataFileListController {
         // ready to go now; poller will pick the job up
         dataFile.setStatus(DataFileStatus.NEW);
         dataFileDao.update(dataFile);
-        return "redirect:/datafiles/" + dataFile.getId();
+        return "redirect:/projects/" + project.getId() + "/datafiles/" + dataFile.getId();
     }
 }

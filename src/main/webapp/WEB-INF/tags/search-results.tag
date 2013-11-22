@@ -164,7 +164,7 @@
             </c:if>
             <sec:authorize access="hasPermission(#project, 'write')">
             <td>
-                <a href="${pageContext.request.contextPath}/datafiles/${detection.dataFile.id}"
+                <a href="${pageContext.request.contextPath}/projects/${detection.project.id}/datafiles/${detection.dataFile.id}"
                 ><fmt:formatDate pattern="${dateFormatPattern}" value="${detection.dataFile.createDate}"/></a>
             </td>
             <c:if test="${includeDeleted}">

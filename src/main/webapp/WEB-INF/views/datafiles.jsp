@@ -60,7 +60,7 @@
                 <c:forEach items="${dataFileList}" var="dataFile">
                     <tr>
                         <td>
-                            <a href="${pageContext.request.contextPath}/datafiles/${dataFile.id}"
+                            <a href="${pageContext.request.contextPath}/projects/${dataFile.project.id}/datafiles/${dataFile.id}"
                                 ><c:out value="${not empty dataFile.userGivenFileName ? dataFile.userGivenFileName : dataFile.dataFilePath}"/></a>
                         </td>
                         <td>
@@ -70,7 +70,7 @@
                         <td><c:out value="${not empty dataFile.status ? dataFile.status : 'UNKNOWN'}"/></td>
                         <td>
                             <a href="javascript:void(0);" onclick="OzTrack.deleteEntity(
-                                '${pageContext.request.contextPath}/datafiles/${dataFile.id}',
+                                '${pageContext.request.contextPath}/projects/${dataFile.project.id}/datafiles/${dataFile.id}',
                                 '${pageContext.request.contextPath}/projects/${dataFile.project.id}/datafiles',
                                 'Are you sure you want to delete this data file?'
                                 );"><img src="${pageContext.request.contextPath}/img/page_white_delete.png" /></a>
