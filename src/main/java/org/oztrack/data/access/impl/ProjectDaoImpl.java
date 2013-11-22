@@ -66,14 +66,12 @@ public class ProjectDaoImpl implements ProjectDao {
     @Override
     @Transactional
     public void save(Project object) {
-        object.setUpdateDate(new java.util.Date());
         em.persist(object);
     }
 
     @Override
     @Transactional
     public Project update(Project object) {
-        object.setUpdateDate(new java.util.Date());
         return em.merge(object);
     }
 

@@ -73,14 +73,12 @@ public class AnimalDaoImpl implements AnimalDao {
     @Override
     @Transactional
     public void save(Animal object) {
-        object.setUpdateDate(new java.util.Date());
         em.persist(object);
     }
 
     @Override
     @Transactional
     public Animal update(Animal object) {
-        object.setUpdateDate(new java.util.Date());
         return em.merge(object);
     }
 

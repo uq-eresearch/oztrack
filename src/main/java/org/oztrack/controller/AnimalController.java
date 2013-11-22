@@ -1,6 +1,7 @@
 package org.oztrack.controller;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -11,9 +12,11 @@ import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.SearchQuery;
+import org.oztrack.data.model.User;
 import org.oztrack.validator.AnimalFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,6 +35,9 @@ public class AnimalController {
 
     @Autowired
     private PositionFixDao positionFixDao;
+
+    @Autowired
+    private OzTrackPermissionEvaluator permissionEvaluator;
 
     @InitBinder("animal")
     public void initAnimalBinder(WebDataBinder binder) {
@@ -72,16 +78,20 @@ public class AnimalController {
     @RequestMapping(value="/projects/{projectId}/animals/{id}", method=RequestMethod.PUT)
     @PreAuthorize("hasPermission(#animal.project, 'write')")
     public String processUpdate(
+        Authentication authentication,
         RedirectAttributes redirectAttributes,
         Model model,
         @ModelAttribute(value="animal") Animal animal,
         BindingResult bindingResult
     ) throws Exception {
+        User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
         new AnimalFormValidator().validate(animal, bindingResult);
         if (bindingResult.hasErrors()) {
             model.addAttribute("project", animal.getProject());
             return "animal-form";
         }
+        animal.setUpdateDate(new Date());
+        animal.setUpdateUser(currentUser);
         animalDao.update(animal);
         positionFixDao.renumberPositionFixes(animal.getProject(), Arrays.asList(animal.getId()));
         return "redirect:/projects/" + animal.getProject().getId() + "/animals/" + animal.getId();

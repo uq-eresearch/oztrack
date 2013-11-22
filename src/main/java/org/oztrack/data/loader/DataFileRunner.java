@@ -71,6 +71,8 @@ public class DataFileRunner {
         startTransaction.begin();
         try {
             nextDataFile.setStatus(DataFileStatus.PROCESSING);
+            nextDataFile.setUpdateDate(new Date());
+            nextDataFile.setUpdateUser(nextDataFile.getCreateUser());
             dataFileDao.update(nextDataFile);
             startTransaction.commit();
         }
@@ -99,6 +101,8 @@ public class DataFileRunner {
                     statusMessage += " Local time conversion is " + hoursStr + " hours.";
                 }
                 completeDataFile.setStatusMessage(statusMessage);
+                completeDataFile.setUpdateDate(new Date());
+                completeDataFile.setUpdateUser(completeDataFile.getCreateUser());
                 dataFileDao.update(completeDataFile);
                 finishTransaction.commit();
             }
@@ -123,6 +127,8 @@ public class DataFileRunner {
                 DataFile failureDataFile = dataFileDao.getDataFileById(dataFileId);
                 failureDataFile.setStatus(DataFileStatus.FAILED);
                 failureDataFile.setStatusMessage(e.getMessage());
+                failureDataFile.setUpdateDate(new Date());
+                failureDataFile.setUpdateUser(failureDataFile.getCreateUser());
                 dataFileDao.update(failureDataFile);
                 failureTransaction.commit();
             }

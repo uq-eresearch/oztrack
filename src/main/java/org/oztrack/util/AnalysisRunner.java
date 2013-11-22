@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.TimeZone;
@@ -87,7 +88,9 @@ public class AnalysisRunner {
             entityManager.getTransaction().begin();
             Analysis analysis = analysisDao.getAnalysisById(analysisId);
             analysis.setStatus(AnalysisStatus.PROCESSING);
-            analysisDao.save(analysis);
+            analysis.setUpdateDate(new Date());
+            analysis.setUpdateUser(analysis.getCreateUser());
+            analysisDao.update(analysis);
             entityManager.getTransaction().commit();
 
             entityManager.getTransaction().begin();
@@ -105,7 +108,9 @@ public class AnalysisRunner {
                 readFilterResult(analysis);
             }
             analysis.setStatus(AnalysisStatus.COMPLETE);
-            analysisDao.save(analysis);
+            analysis.setUpdateDate(new Date());
+            analysis.setUpdateUser(analysis.getCreateUser());
+            analysisDao.update(analysis);
             entityManager.getTransaction().commit();
         }
         catch (Exception e) {
@@ -120,7 +125,9 @@ public class AnalysisRunner {
             Analysis analysis = analysisDao.getAnalysisById(analysisId);
             analysis.setStatus(AnalysisStatus.FAILED);
             analysis.setMessage(e.getMessage());
-            analysisDao.save(analysis);
+            analysis.setUpdateDate(new Date());
+            analysis.setUpdateUser(analysis.getCreateUser());
+            analysisDao.update(analysis);
             entityManager.getTransaction().commit();
         }
     }

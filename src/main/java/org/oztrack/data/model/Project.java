@@ -102,6 +102,13 @@ public class Project extends OzTrackBaseEntity {
     @OrderBy("createDate")
     private List<ProjectImage> images;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="updatedateforoaipmh")
+    private Date updateDateForOaiPmh;
+
+    @Column(name="includeinoaipmh")
+    private boolean includeInOaiPmh;
+
     public Project() {
     }
 
@@ -279,6 +286,22 @@ public class Project extends OzTrackBaseEntity {
 
     public void setImages(List<ProjectImage> images) {
         this.images = images;
+    }
+
+    public Date getUpdateDateForOaiPmh() {
+        return updateDateForOaiPmh;
+    }
+
+    public void setUpdateDateForOaiPmh(Date updateDateForOaiPmh) {
+        this.updateDateForOaiPmh = updateDateForOaiPmh;
+    }
+
+    public boolean isIncludeInOaiPmh() {
+        return includeInOaiPmh;
+    }
+
+    public void setIncludeInOaiPmh(boolean includeInOaiPmh) {
+        this.includeInOaiPmh = includeInOaiPmh;
     }
 
     @Override

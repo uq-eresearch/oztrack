@@ -1,5 +1,6 @@
 package org.oztrack.controller;
 
+import java.util.Date;
 import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -9,7 +10,9 @@ import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Person;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.ProjectContribution;
+import org.oztrack.data.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,6 +28,9 @@ public class ProjectRejectionController {
 
     @Autowired
     private PersonDao personDao;
+
+    @Autowired
+    private OzTrackPermissionEvaluator permissionEvaluator;
 
     @ModelAttribute
     public void populateModel(
@@ -59,7 +65,8 @@ public class ProjectRejectionController {
     }
 
     @RequestMapping(value="/projects/{id}/reject", method=RequestMethod.POST)
-    public String handleRequest(Model model) {
+    public String handleRequest(Authentication authentication, Model model) {
+        User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
         Project project = (Project) model.asMap().get("project");
         Person person = (Person) model.asMap().get("person");
         ProjectContribution contribution = (ProjectContribution) model.asMap().get("contribution");
@@ -70,6 +77,8 @@ public class ProjectRejectionController {
         for (int i = 0; i < project.getProjectContributions().size(); i++) {
             project.getProjectContributions().get(i).setOrdinal(i);
         }
+        project.setUpdateDate(new Date());
+        project.setUpdateUser(currentUser);
         projectDao.update(project);
 
         // Remove person entity if no longer associated with a user or project.

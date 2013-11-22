@@ -7,6 +7,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -212,12 +213,15 @@ public class AnalysisController {
         @ModelAttribute(value="analysis") Analysis analysis,
         @RequestBody String savedString
     ) {
+        User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
         if (!hasPermission(authentication, request, analysis, "write")) {
             response.setStatus(403);
             return;
         }
         analysis.setSaved(Boolean.valueOf(savedString));
-        analysisDao.save(analysis);
+        analysis.setUpdateDate(new Date());
+        analysis.setUpdateUser(currentUser);
+        analysisDao.update(analysis);
         response.setStatus(204);
     }
 
@@ -230,12 +234,15 @@ public class AnalysisController {
         @ModelAttribute(value="analysis") Analysis analysis,
         @RequestBody String description
     ) {
+        User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
         if (!hasPermission(authentication, request, analysis, "write")) {
             response.setStatus(403);
             return;
         }
         analysis.setDescription(description);
-        analysisDao.save(analysis);
+        analysis.setUpdateDate(new Date());
+        analysis.setUpdateUser(currentUser);
+        analysisDao.update(analysis);
         response.setStatus(204);
     }
 

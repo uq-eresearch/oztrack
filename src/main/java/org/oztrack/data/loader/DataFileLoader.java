@@ -3,6 +3,7 @@ package org.oztrack.data.loader;
 import static org.oztrack.util.OzTrackUtils.removeDuplicateLinesFromFile;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -111,7 +112,8 @@ public abstract class DataFileLoader {
             Animal animal = new Animal();
             animal.setProject(dataFile.getProject());
             animal.setCreateDescription("Created from data file " + dataFile.getUserGivenFileName() + " on " + dataFile.getCreateDate());
-            animal.setCreateDate(new java.util.Date());
+            animal.setCreateDate(new Date());
+            animal.setCreateUser(dataFile.getCreateUser());
             animalDao.save(animal);
             animal.setProjectAnimalId(animal.getId().toString());
             animal.setAnimalName(animal.getId().toString());
@@ -132,7 +134,8 @@ public abstract class DataFileLoader {
                  newAnimal.setAnimalName(newAnimalId);
                  newAnimal.setAnimalDescription(null);
                  newAnimal.setProject(dataFile.getProject());
-                 newAnimal.setCreateDate(new java.util.Date());
+                 newAnimal.setCreateDate(new Date());
+                 newAnimal.setCreateUser(dataFile.getCreateUser());
                  animalDao.save(newAnimal);
                  newAnimal.setColour(colours[(int) (newAnimal.getId() % colours.length)]);
                  animalDao.update(newAnimal);
@@ -143,6 +146,8 @@ public abstract class DataFileLoader {
     private void createFinalObservations() throws FileProcessingException {
         try {
             jdbcAccess.loadObservations(dataFile);
+            dataFile.setUpdateDate(new Date());
+            dataFile.setUpdateUser(dataFile.getCreateUser());
             dataFileDao.update(dataFile);
             jdbcAccess.truncateRawObservations(dataFile);
             List<Animal> animals = dataFileDao.getAnimals(dataFile);

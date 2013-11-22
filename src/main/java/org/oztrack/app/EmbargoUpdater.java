@@ -63,6 +63,8 @@ public class EmbargoUpdater implements Runnable {
             transaction.begin();
             try {
                 project.setAccess(ProjectAccess.OPEN);
+                project.setUpdateDate(new Date());
+                project.setUpdateUser(project.getUpdateUser());
                 projectDao.update(project);
                 transaction.commit();
 

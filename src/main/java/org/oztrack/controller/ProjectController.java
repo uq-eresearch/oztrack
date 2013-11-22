@@ -101,6 +101,9 @@ public class ProjectController {
     @Autowired
     private EmailBuilderFactory emailBuilderFactory;
 
+    @Autowired
+    private OzTrackPermissionEvaluator permissionEvaluator;
+
     @InitBinder("project")
     public void initProjectBinder(WebDataBinder binder) {
         binder.setAllowedFields(
@@ -571,12 +574,14 @@ public class ProjectController {
     @RequestMapping(value="/projects/{id}/users", method=RequestMethod.POST, produces="application/xml")
     @PreAuthorize("hasPermission(#project, 'manage')")
     public void processAddUser(
+        Authentication authentication,
         Model model,
         @ModelAttribute(value="project") Project project,
         @RequestParam(value="user-id") Long userId,
         @RequestParam(value="role") String role,
         HttpServletResponse response
     ) throws IOException {
+        User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
         if (userId == null) {
             writeAddUserResponse(response.getWriter(), "No user selected");
             response.setStatus(400);
@@ -600,7 +605,9 @@ public class ProjectController {
         projectUser.setUser(user);
         projectUser.setRole(Role.fromIdentifier(role));
         project.getProjectUsers().add(projectUser);
-        projectDao.save(project);
+        project.setUpdateDate(new Date());
+        project.setUpdateUser(currentUser);
+        projectDao.update(project);
         writeAddUserResponse(response.getWriter(), null);
         response.setStatus(204);
     }
@@ -617,10 +624,12 @@ public class ProjectController {
     @RequestMapping(value="/projects/{id}/users/{userId}", method=RequestMethod.DELETE)
     @PreAuthorize("hasPermission(#project, 'manage')")
     public void processUserDelete(
+        Authentication authentication,
         @ModelAttribute(value="project") Project project,
         @PathVariable(value="userId") Long userId,
         HttpServletResponse response
     ) throws IOException {
+        User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
         if (userId == null) {
             writeDeleteUserResponse(response.getWriter(), "No user selected");
             response.setStatus(400);
@@ -653,7 +662,9 @@ public class ProjectController {
             return;
         }
         project.getProjectUsers().remove(foundProjectUser);
-        projectDao.save(project);
+        project.setUpdateDate(new Date());
+        project.setUpdateUser(currentUser);
+        projectDao.update(project);
         writeDeleteUserResponse(response.getWriter(), null);
         response.setStatus(204);
     }

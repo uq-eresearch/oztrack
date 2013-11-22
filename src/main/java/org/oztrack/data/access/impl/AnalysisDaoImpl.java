@@ -34,8 +34,13 @@ public class AnalysisDaoImpl implements AnalysisDao {
     @Override
     @Transactional
     public void save(Analysis analysis) {
-        analysis.setUpdateDate(new java.util.Date());
         em.persist(analysis);
+    }
+
+    @Override
+    @Transactional
+    public Analysis update(Analysis analysis) {
+        return em.merge(analysis);
     }
 
     @Override

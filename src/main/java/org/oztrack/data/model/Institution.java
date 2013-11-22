@@ -1,5 +1,6 @@
 package org.oztrack.data.model;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -12,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity(name="institution")
 public class Institution extends OzTrackBaseEntity {
@@ -33,6 +36,13 @@ public class Institution extends OzTrackBaseEntity {
 
     @ManyToMany(fetch=FetchType.LAZY, mappedBy="institutions")
     private List<Person> people;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="updatedateforoaipmh")
+    private Date updateDateForOaiPmh;
+
+    @Column(name="includeinoaipmh")
+    private boolean includeInOaiPmh;
 
     public Long getId() {
         return id;
@@ -72,5 +82,21 @@ public class Institution extends OzTrackBaseEntity {
 
     public void setPeople(List<Person> people) {
         this.people = people;
+    }
+
+    public Date getUpdateDateForOaiPmh() {
+        return updateDateForOaiPmh;
+    }
+
+    public void setUpdateDateForOaiPmh(Date updateDateForOaiPmh) {
+        this.updateDateForOaiPmh = updateDateForOaiPmh;
+    }
+
+    public boolean isIncludeInOaiPmh() {
+        return includeInOaiPmh;
+    }
+
+    public void setIncludeInOaiPmh(boolean includeInOaiPmh) {
+        this.includeInOaiPmh = includeInOaiPmh;
     }
 }

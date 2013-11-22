@@ -1,5 +1,6 @@
 package org.oztrack.data.model;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -19,6 +20,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Cascade;
 import org.oztrack.data.model.types.Personable;
@@ -69,6 +72,13 @@ public class Person extends OzTrackBaseEntity implements Personable {
 
     @OneToOne(mappedBy="person", fetch=FetchType.EAGER)
     private User user;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="updatedateforoaipmh")
+    private Date updateDateForOaiPmh;
+
+    @Column(name="includeinoaipmh")
+    private boolean includeInOaiPmh;
 
     public Long getId() {
         return id;
@@ -175,5 +185,21 @@ public class Person extends OzTrackBaseEntity implements Personable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Date getUpdateDateForOaiPmh() {
+        return updateDateForOaiPmh;
+    }
+
+    public void setUpdateDateForOaiPmh(Date updateDateForOaiPmh) {
+        this.updateDateForOaiPmh = updateDateForOaiPmh;
+    }
+
+    public boolean isIncludeInOaiPmh() {
+        return includeInOaiPmh;
+    }
+
+    public void setIncludeInOaiPmh(boolean includeInOaiPmh) {
+        this.includeInOaiPmh = includeInOaiPmh;
     }
 }

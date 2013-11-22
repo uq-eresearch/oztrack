@@ -148,6 +148,8 @@ public class PositionFixFileLoader extends DataFileLoader {
             if (!animalIdFieldFound) {
                 // if there's not an animalId field, assume that this file contains a single animal.
                 dataFile.setSingleAnimalInFile(true);
+                dataFile.setUpdateDate(new Date());
+                dataFile.setUpdateUser(dataFile.getCreateUser());
                 dataFileDao.update(dataFile);
             }
 

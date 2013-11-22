@@ -136,14 +136,12 @@ public class DataFileDaoImpl implements DataFileDao {
     @Override
     @Transactional
     public void save(DataFile object) {
-        object.setUpdateDate(new java.util.Date());
         em.persist(object);
     }
 
     @Override
     @Transactional
     public DataFile update(DataFile object) {
-        object.setUpdateDate(new java.util.Date());
         return em.merge(object);
     }
 
