@@ -48,7 +48,7 @@ public class AnimalController {
         return animalDao.getAnimalById(animalId);
     }
 
-    @RequestMapping(value="/animals/{id}", method=RequestMethod.GET)
+    @RequestMapping(value="/projects/{projectId}/animals/{id}", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#animal.project, 'read')")
     public String getView(Model model, @ModelAttribute("animal") Animal animal) {
         model.addAttribute("project", animal.getProject());
@@ -62,14 +62,14 @@ public class AnimalController {
         return "animal";
     }
 
-    @RequestMapping(value="/animals/{id}/edit", method=RequestMethod.GET)
+    @RequestMapping(value="/projects/{projectId}/animals/{id}/edit", method=RequestMethod.GET)
     @PreAuthorize("hasPermission(#animal.project, 'write')")
     public String getEditView(Model model, @ModelAttribute("animal") Animal animal) {
         model.addAttribute("project", animal.getProject());
         return "animal-form";
     }
 
-    @RequestMapping(value="/animals/{id}", method=RequestMethod.PUT)
+    @RequestMapping(value="/projects/{projectId}/animals/{id}", method=RequestMethod.PUT)
     @PreAuthorize("hasPermission(#animal.project, 'write')")
     public String processUpdate(
         RedirectAttributes redirectAttributes,
@@ -84,10 +84,10 @@ public class AnimalController {
         }
         animalDao.update(animal);
         positionFixDao.renumberPositionFixes(animal.getProject(), Arrays.asList(animal.getId()));
-        return "redirect:/projects/" + animal.getProject().getId() + "/animals";
+        return "redirect:/projects/" + animal.getProject().getId() + "/animals/" + animal.getId();
     }
 
-    @RequestMapping(value="/animals/{id}", method=RequestMethod.DELETE)
+    @RequestMapping(value="/projects/{projectId}/animals/{id}", method=RequestMethod.DELETE)
     @PreAuthorize("hasPermission(#animal.project, 'manage')")
     public void processDelete(@ModelAttribute(value="animal") Animal animal, HttpServletResponse response) {
         List<Long> animalIds = Arrays.asList(animal.getId());

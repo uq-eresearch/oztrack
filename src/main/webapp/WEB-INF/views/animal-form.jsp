@@ -26,7 +26,7 @@
         &rsaquo; <a href="${pageContext.request.contextPath}/projects">Projects</a>
         &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}">${project.title}</a>
         &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}/animals">Animals</a>
-        &rsaquo; <a href="${pageContext.request.contextPath}/animals/${animal.id}">${animal.animalName}</a>
+        &rsaquo; <a href="${pageContext.request.contextPath}/projects/${project.id}/animals/${animal.id}">${animal.animalName}</a>
         &rsaquo; <span class="active">Edit</span>
     </jsp:attribute>
     <jsp:attribute name="sidebar">
@@ -36,7 +36,7 @@
     </jsp:attribute>
     <jsp:body>
         <h1 id="projectTitle"><c:out value="${project.title}"/></h1>
-        <form:form cssClass="form-horizontal form-bordered" action="/animals/${animal.id}" commandName="animal" method="PUT">
+        <form:form cssClass="form-horizontal form-bordered" action="/projects/${project.id}/animals/${animal.id}" commandName="animal" method="PUT">
             <fieldset>
             <div class="legend">Animal details</div>
             <div class="control-group required">
@@ -83,7 +83,7 @@
             </fieldset>
             <div class="form-actions">
                 <input class="btn btn-primary" type="submit" value="Update"/>
-                <a class="btn" href="${pageContext.request.contextPath}/animals/${animal.id}">Cancel</a>
+                <a class="btn" href="${pageContext.request.contextPath}/projects/${project.id}/animals/${animal.id}">Cancel</a>
             </div>
         </form:form>
     </jsp:body>

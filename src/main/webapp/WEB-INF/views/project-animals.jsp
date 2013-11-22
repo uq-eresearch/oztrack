@@ -50,13 +50,13 @@
                     </td>
                     <td style="padding: 5px 5px 0 5px; vertical-align: top;">
                         <p>
-                            <a href="${pageContext.request.contextPath}/animals/${animal.id}" style="font-weight: bold;"><c:out value="${animal.animalName}"/></a>
+                            <a href="${pageContext.request.contextPath}/projects/${project.id}/animals/${animal.id}" style="font-weight: bold;"><c:out value="${animal.animalName}"/></a>
                             <sec:authorize access="hasPermission(#project, 'write')">
                             <span style="padding-left: 10px; font-style: italic;">
-                                <a href="${pageContext.request.contextPath}/animals/${animal.id}/edit"><img src="${pageContext.request.contextPath}/img/page_white_edit.png" /></a>
+                                <a href="${pageContext.request.contextPath}/projects/${project.id}/animals/${animal.id}/edit"><img src="${pageContext.request.contextPath}/img/page_white_edit.png" /></a>
                                 <c:if test="${empty animal.positionFixes}">
                                 <a href="javascript:void(0);" onclick="OzTrack.deleteEntity(
-                                    '${pageContext.request.contextPath}/animals/${animal.id}',
+                                    '${pageContext.request.contextPath}/projects/${project.id}/animals/${animal.id}',
                                     '${pageContext.request.contextPath}/projects/${project.id}/animals',
                                     'Are you sure you want to delete this animal?'
                                     );"><img src="${pageContext.request.contextPath}/img/page_white_delete.png" /></a>

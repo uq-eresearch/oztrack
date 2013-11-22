@@ -97,7 +97,7 @@
         <text>
           <![CDATA[
             <p style="font-weight: bold;">$[name]</p>
-            <p>Animal: <a href="${baseUrl}/animals/$[Feature/animalId]">$[Feature/animalName]</a></p>
+            <p>Animal: <a href="${baseUrl}/projects/${analysis.project.id}/animals/$[Feature/animalId]">$[Feature/animalName]</a></p>
             <#if (analysis.analysisType.featureResultAttributeTypes?size > 0)>
             <table style="border-collapse: collapse;">
               <tr>

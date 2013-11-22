@@ -149,7 +149,7 @@
             <td><fmt:formatDate pattern="${dateTimeFormatPattern}" value="${detection.detectionTime}"/></td>
             <c:if test="${not individualAnimal}">
             <td><c:out value="${detection.animal.projectAnimalId}"/></td>
-            <td><a href="${pageContext.request.contextPath}/animals/${detection.animal.id}"><c:out value="${detection.animal.animalName}"/></a></td>
+            <td><a href="${pageContext.request.contextPath}/projects/${detection.project.id}/animals/${detection.animal.id}"><c:out value="${detection.animal.animalName}"/></a></td>
             </c:if>
             <td><c:out value="${detection.locationGeometry.x}"/></td>
             <td><c:out value="${detection.locationGeometry.y}"/></td>
