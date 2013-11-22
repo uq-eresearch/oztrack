@@ -1884,7 +1884,7 @@
 
         that.addAnalysisLayer = function(analysisUrl, layerName, category) {
             $.ajax({
-                url: analysisUrl.replace(/^([a-zA-Z0-9+.-]+):/, ''),
+                url: analysisUrl,
                 type: 'GET',
                 error: function(xhr, textStatus, errorThrown) {
                     that.showMessage('Error', $(xhr.responseText).find('error').text() || 'Error getting analysis');
@@ -1906,7 +1906,7 @@
 
         function pollAnalysisLayer(analysisUrl, layerName, category) {
             $.ajax({
-                url: analysisUrl.replace(/^([a-zA-Z0-9+.-]+):/, ''),
+                url: analysisUrl,
                 type: 'GET',
                 error: function(xhr, textStatus, errorThrown) {
                     that.decreaseLoadingCounter();
@@ -1950,7 +1950,7 @@
             }
             var kmlResultFile = $.grep(analysis.result.files, function(r) {return r.format === 'kml';})[0];
             var protocol = new OpenLayers.Protocol.HTTP({
-                url : kmlResultFile.url.replace(/^([a-zA-Z0-9+.-]+):/, ''),
+                url : kmlResultFile.url,
                 format : new OpenLayers.Format.KML({
                     extractStyles: (analysis.result.type === 'HEAT_MAP') || (analysis.result.type === 'FILTER'),
                     extractAttributes: true,

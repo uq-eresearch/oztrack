@@ -87,7 +87,7 @@ if (analysis.result.type === 'HOME_RANGE') {
 }
 </c:if>
 exportHtml += $.map(analysis.result.files, function(r) {
-    return '<a class="icon ' + r.format + '" href="' + r.url.replace(/^([a-zA-Z0-9+.-]+):/, '') + '">' + r.title + '</a>';
+    return '<a class="icon ' + r.format + '" href="' + r.url + '">' + r.title + '</a>';
 }).join(', ');
 exportHtml += '</div>';
 $('#' + ${childIdJsExpr}).append(exportHtml);

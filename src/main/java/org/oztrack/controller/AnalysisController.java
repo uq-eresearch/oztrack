@@ -134,7 +134,7 @@ public class AnalysisController {
         JSONWriter out = new JSONWriter(response.getWriter());
         out.object();
         out.key("id").value(String.valueOf(analysis.getId()));
-        out.key("url").value(configuration.getBaseUrl() + "/projects/" + analysis.getProject().getId() + "/analyses/" + analysis.getId());
+        out.key("url").value(String.format("%s/projects/%d/analyses/%d", request.getContextPath(), analysis.getProject().getId(), analysis.getId()));
         out.key("createDate").value(isoDateTimeFormat.format(analysis.getCreateDate()));
         out.key("analysisType").value(analysis.getAnalysisType());
         out.key("params").object();
