@@ -13,10 +13,9 @@ import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Country;
 import org.oztrack.data.model.Institution;
 import org.oztrack.data.model.User;
-import org.oztrack.util.OzTrackUtils;
 import org.oztrack.validator.UserFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,6 +43,9 @@ public class UserController {
     @Autowired
     private CountryDao countryDao;
 
+    @Autowired
+    private OzTrackPermissionEvaluator permissionEvaluator;
+
     @InitBinder("user")
     public void initUserBinder(WebDataBinder binder) {
         binder.setAllowedFields(
@@ -67,12 +69,13 @@ public class UserController {
 
     @RequestMapping(value="/users/{id}/edit", method=RequestMethod.GET)
     public String getEditView(
+        Authentication authentication,
         Model model,
         @ModelAttribute(value="user") User user,
         @RequestHeader(value="eppn", required=false) String aafIdHeader,
         @RequestParam(value="aafId", required=false) String aafIdParam
     ) {
-        User currentUser = OzTrackUtils.getCurrentUser(SecurityContextHolder.getContext().getAuthentication(), userDao);
+        User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
         if (currentUser == null || !currentUser.equals(user)) {
             return "redirect:/login";
         }
@@ -87,6 +90,7 @@ public class UserController {
 
     @RequestMapping(value="/users/{id}", method=RequestMethod.PUT)
     public String processUpdate(
+        Authentication authentication,
         Model model,
         @ModelAttribute(value="user") User user,
         @RequestHeader(value="eppn", required=false) String aafIdHeader,
@@ -96,7 +100,7 @@ public class UserController {
         @RequestParam(value="institutions", required=false) List<String> institutionIds,
         BindingResult bindingResult
     ) throws Exception {
-        User currentUser = OzTrackUtils.getCurrentUser(SecurityContextHolder.getContext().getAuthentication(), userDao);
+        User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
         if (currentUser == null || !currentUser.equals(user)) {
             return "redirect:/login";
         }

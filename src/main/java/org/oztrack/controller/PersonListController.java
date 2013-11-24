@@ -5,8 +5,8 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.oztrack.data.access.PersonDao;
-import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Person;
+import org.oztrack.data.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -23,7 +23,7 @@ public class PersonListController {
     private PersonDao personDao;
 
     @Autowired
-    private UserDao userDao;
+    private OzTrackPermissionEvaluator permissionEvaluator;
 
     @InitBinder("person")
     public void initPersonBinder(WebDataBinder binder) {
@@ -45,14 +45,13 @@ public class PersonListController {
         @ModelAttribute(value="person") Person person,
         BindingResult bindingResult
     ) throws Exception {
+        User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
         if (StringUtils.isBlank(person.getFirstName()) || StringUtils.isBlank(person.getLastName()) || StringUtils.isBlank(person.getEmail())) {
             throw new RuntimeException("Please enter a first name, last name, and email address.");
         }
         person.setUuid(UUID.randomUUID());
         person.setCreateDate(new Date());
-        if (authentication != null) {
-            person.setCreateUser(userDao.getByUsername((String) authentication.getPrincipal()));
-        }
+        person.setCreateUser(currentUser);
         try {
             personDao.save(person);
         }

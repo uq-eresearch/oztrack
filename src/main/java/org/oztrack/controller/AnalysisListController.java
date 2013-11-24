@@ -17,7 +17,6 @@ import org.oztrack.data.access.AnalysisDao;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
-import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Analysis;
 import org.oztrack.data.model.AnalysisParameter;
 import org.oztrack.data.model.Animal;
@@ -55,9 +54,6 @@ public class AnalysisListController {
 
     @Autowired
     private AnimalDao animalDao;
-
-    @Autowired
-    private UserDao userDao;
 
     @Autowired
     private AnalysisRunner analysisRunner;
@@ -120,8 +116,7 @@ public class AnalysisListController {
         }
         analysis.setParameters(analysisParameters);
         User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
-        java.util.Date createDate = new java.util.Date();
-        analysis.setCreateDate(createDate);
+        analysis.setCreateDate(new java.util.Date());
         analysis.setCreateUser(currentUser);
         HttpSession session = request.getSession(false);
         analysis.setCreateSession((session != null) ? session.getId() : null);

@@ -47,13 +47,11 @@ import org.oztrack.data.model.types.Role;
 import org.oztrack.util.EmailBuilder;
 import org.oztrack.util.EmailBuilderFactory;
 import org.oztrack.util.EmbargoUtils;
-import org.oztrack.util.OzTrackUtils;
 import org.oztrack.validator.ProjectFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -209,7 +207,7 @@ public class ProjectController {
             return "project-form";
         }
 
-        User currentUser = OzTrackUtils.getCurrentUser(SecurityContextHolder.getContext().getAuthentication(), userDao);
+        User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
         project.setUpdateUser(currentUser);
         project.setUpdateDate(new Date());
         projectDao.update(project);

@@ -11,10 +11,10 @@ import org.apache.log4j.Logger;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.User;
-import org.oztrack.util.OzTrackUtils;
 import org.oztrack.util.UriUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,10 +33,14 @@ public class ShibbolethController {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private OzTrackPermissionEvaluator permissionEvaluator;
+
     @RequestMapping(value="/login/shibboleth", method=RequestMethod.GET)
     @PreAuthorize("permitAll")
     @Transactional
     public String handleLogin(
+        Authentication authentication,
         @RequestHeader(value="eppn", required=false) String aafId,
         @RequestParam(value="redirect", required=false) String redirectUrl,
         HttpServletRequest request,
@@ -75,16 +79,11 @@ public class ShibbolethController {
             SecurityContextHolder.getContext().setAuthentication(OzTrackAuthenticationProvider.buildAuthentication(existingUser));
             existingUser.getLoginDates().add(new Date());
             userDao.save(existingUser);
-            if (UriUtils.isWithinWebApp(request, redirectUrl)) {
-                return "redirect:" + redirectUrl;
-            }
-            else {
-                return "redirect:/";
-            }
+            return "redirect:" + (UriUtils.isWithinWebApp(request, redirectUrl) ? redirectUrl : "/");
         }
 
         // Existing user already logged in and providing a new AAF ID
-        User currentUser = OzTrackUtils.getCurrentUser(SecurityContextHolder.getContext().getAuthentication(), userDao);
+        User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
         if (currentUser != null) {
             String enc = (response.getCharacterEncoding() != null) ? response.getCharacterEncoding() : null;
             return "redirect:/users/" + currentUser.getId() + "/edit?aafId=" + URLEncoder.encode(aafId, enc);

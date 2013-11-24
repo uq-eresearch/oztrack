@@ -5,9 +5,9 @@ import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.oztrack.data.access.CountryDao;
 import org.oztrack.data.access.InstitutionDao;
-import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Country;
 import org.oztrack.data.model.Institution;
+import org.oztrack.data.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -24,10 +24,10 @@ public class InstitutionListController {
     private InstitutionDao institutionDao;
 
     @Autowired
-    private UserDao userDao;
+    private CountryDao countryDao;
 
     @Autowired
-    private CountryDao countryDao;
+    private OzTrackPermissionEvaluator permissionEvaluator;
 
     @InitBinder("institution")
     public void initInstitutionBinder(WebDataBinder binder) {
@@ -50,13 +50,12 @@ public class InstitutionListController {
         @ModelAttribute(value="institution") Institution institution,
         BindingResult bindingResult
     ) throws Exception {
+        User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
         if (StringUtils.isBlank(institution.getTitle())) {
             throw new RuntimeException("Please enter a title.");
         }
         institution.setCreateDate(new Date());
-        if (authentication != null) {
-            institution.setCreateUser(userDao.getByUsername((String) authentication.getPrincipal()));
-        }
+        institution.setCreateUser(currentUser);
         try {
             institutionDao.save(institution);
         }

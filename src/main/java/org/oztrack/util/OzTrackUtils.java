@@ -14,11 +14,7 @@ import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.oztrack.data.access.UserDao;
-import org.oztrack.data.model.User;
 import org.oztrack.error.FileProcessingException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
@@ -85,18 +81,6 @@ public class OzTrackUtils {
             IOUtils.closeQuietly(fileInputStream);
             IOUtils.closeQuietly(fileOutputStream);
         }
-    }
-
-    public static User getCurrentUser(Authentication authentication, UserDao userDao) {
-        User currentUser = null;
-        if (
-            (authentication != null) &&
-            authentication.isAuthenticated() &&
-            authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))
-        ) {
-            currentUser = userDao.getByUsername((String) authentication.getPrincipal());
-        }
-        return currentUser;
     }
 
     public static String getConfigProperty(String key) throws IOException, FileNotFoundException {

@@ -8,7 +8,6 @@ import java.util.Locale;
 
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.ProjectDao;
-import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.User;
@@ -41,7 +40,7 @@ public class DataFileListController {
     private DataFileDao dataFileDao;
 
     @Autowired
-    private UserDao userDao;
+    private OzTrackPermissionEvaluator permissionEvaluator;
 
     @InitBinder("project")
     public void initProjectBinder(WebDataBinder binder) {
@@ -110,7 +109,7 @@ public class DataFileListController {
         @ModelAttribute(value="dataFile") DataFile dataFile,
         BindingResult bindingResult
     ) throws Exception {
-        User currentUser = userDao.getByUsername((String) authentication.getPrincipal());
+        User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
         new DataFileFormValidator().validate(dataFile, bindingResult);
         if (bindingResult.hasErrors()) {
             return "datafile-form";
