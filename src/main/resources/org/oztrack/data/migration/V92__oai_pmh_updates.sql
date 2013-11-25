@@ -18,11 +18,11 @@ update project set includeinoaipmh = true
 where id in (select project_id from project_contribution);
 
 update person set includeinoaipmh = true
-where id in (select person_id from project_contribution);
+where id in (select contributor_id from project_contribution);
 
 update institution set includeinoaipmh = true
 where id in (
 	select institution_id
 	from person_institution
-	where person_id in (select person_id from project_contribution)
+	where person_id in (select contributor_id from project_contribution)
 );
