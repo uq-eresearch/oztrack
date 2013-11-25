@@ -20,6 +20,7 @@ public class DaoHelper {
         CriteriaQuery<T> cq = cb.createQuery(clazz);
         Root<T> entity = cq.from(clazz);
         List<Predicate> predicates = new ArrayList<Predicate>();
+        predicates.add(cb.isTrue(entity.<Boolean>get("includeInOaiPmh")));
         Path<Date> updateDateAttr = entity.<Date>get("updateDate");
         Path<Date> createDateAttr = entity.<Date>get("createDate");
         if (from != null) {
