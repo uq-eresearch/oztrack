@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.Page;
 import org.oztrack.data.access.PositionFixDao;
+import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.SearchQuery;
@@ -35,6 +36,9 @@ public class AnimalController {
 
     @Autowired
     private PositionFixDao positionFixDao;
+
+    @Autowired
+    private ProjectDao projectDao;
 
     @Autowired
     private OzTrackPermissionEvaluator permissionEvaluator;
@@ -103,6 +107,8 @@ public class AnimalController {
         List<Long> animalIds = Arrays.asList(animal.getId());
         animalDao.delete(animal);
         positionFixDao.renumberPositionFixes(animal.getProject(), animalIds);
+        animal.getProject().setUpdateDateForOaiPmh(new Date());
+        projectDao.update(animal.getProject());
         response.setStatus(204);
     }
 }

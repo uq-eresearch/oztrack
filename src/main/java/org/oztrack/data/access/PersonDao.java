@@ -17,4 +17,5 @@ public interface PersonDao {
     Person update(Person institution);
     void delete(Person institution);
     List<Person> getPeopleForOaiPmh(Date from, Date until, String setSpec);
+    void setInstitutionsIncludeInOaiPmh(Person person);
 }

@@ -14,6 +14,7 @@ import org.oztrack.data.access.impl.AnimalDaoImpl;
 import org.oztrack.data.access.impl.DataFileDaoImpl;
 import org.oztrack.data.access.impl.JdbcAccessImpl;
 import org.oztrack.data.access.impl.PositionFixDaoImpl;
+import org.oztrack.data.access.impl.ProjectDaoImpl;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.types.DataFileStatus;
 import org.oztrack.util.ProjectAnimalsMutexExecutor;
@@ -46,6 +47,9 @@ public class DataFileRunner {
         PositionFixDaoImpl positionFixDao = new PositionFixDaoImpl();
         positionFixDao.setEntityManger(entityManager);
         positionFixDao.setRenumberPositionFixesExecutor(renumberPositionFixesExecutor);
+
+        ProjectDaoImpl projectDao = new ProjectDaoImpl();
+        projectDao.setEntityManger(entityManager);
 
         JdbcAccessImpl jdbcAccess = new JdbcAccessImpl();
         jdbcAccess.setDataSource(dataSource);
@@ -87,7 +91,7 @@ public class DataFileRunner {
         }
 
         try {
-            PositionFixFileLoader positionFixFileLoader = new PositionFixFileLoader(nextDataFile, dataFileDao, animalDao, positionFixDao, entityManager, jdbcAccess);
+            PositionFixFileLoader positionFixFileLoader = new PositionFixFileLoader(nextDataFile, dataFileDao, animalDao, positionFixDao, projectDao, entityManager, jdbcAccess);
             positionFixFileLoader.process();
 
             EntityTransaction finishTransaction = entityManager.getTransaction();

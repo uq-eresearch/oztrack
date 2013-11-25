@@ -13,7 +13,10 @@ import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.time.DateUtils;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.model.Institution;
+import org.oztrack.data.model.Person;
 import org.oztrack.data.model.Project;
+import org.oztrack.data.model.ProjectContribution;
 import org.oztrack.data.model.ProjectUser;
 import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.ProjectAccess;
@@ -84,26 +87,24 @@ public class ProjectDaoImpl implements ProjectDao {
     @Override
     @Transactional
     public void create(Project project, User currentUser) throws Exception {
-        // create/update details
-        project.setCreateDate(new java.util.Date());
+        project.setCreateDate(new Date());
         project.setCreateUser(currentUser);
 
-        // set the current user to be an admin for this project
-        ProjectUser adminProjectUser = new ProjectUser();
-        adminProjectUser.setProject(project);
-        adminProjectUser.setUser(currentUser);
-        adminProjectUser.setRole(Role.MANAGER);
-
-        // add this user to the project's list of users
+        // make current user manager for this project
+        ProjectUser managerProjectUser = new ProjectUser();
+        managerProjectUser.setProject(project);
+        managerProjectUser.setUser(currentUser);
+        managerProjectUser.setRole(Role.MANAGER);
         List <ProjectUser> projectProjectUsers = project.getProjectUsers();
-        projectProjectUsers.add(adminProjectUser);
+        projectProjectUsers.add(managerProjectUser);
         project.setProjectUsers(projectProjectUsers);
 
-        // save it all - project first
         save(project);
 
         project.setDataDirectoryPath("project-" + project.getId().toString());
         update(project);
+
+        setIncludeInOaiPmh(project);
     }
 
     @Override
@@ -339,5 +340,52 @@ public class ProjectDaoImpl implements ProjectDao {
     @Override
     public List<Project> getProjectsForOaiPmh(Date from, Date until, String setSpec) {
         return DaoHelper.getEntitiesForOaiPmh(em, Project.class, from, until, setSpec);
+    }
+
+    // The OAI-PMH feed must include:
+    //
+    // - projects that have at least one listed contributor;
+    // - contributors to a project
+    // - institutions linked with those contributors
+    //
+    // Note that once a project/person/institution is included in the OAI-PMH feed,
+    // they must continue to appear there forever so that harvesters continue to get
+    // update/delete events for them: if they just disappeared from the feed, then
+    // there would be "stale" objects in those harvesting repositories. Therefore,
+    // we set includeInOaiPmh to true but never update it to false.
+    @Override
+    @Transactional
+    public void setIncludeInOaiPmh(Project project) {
+        PersonDaoImpl personDao = new PersonDaoImpl();
+        personDao.setEntityManager(em);
+
+        InstitutionDaoImpl institutionDao = new InstitutionDaoImpl();
+        institutionDao.setEntityManager(em);
+
+        Date currentDate = new Date();
+
+        if (!project.getProjectContributions().isEmpty()) {
+            if (!project.getIncludeInOaiPmh()) {
+                project.setIncludeInOaiPmh(true);
+                project.setUpdateDateForOaiPmh(currentDate);
+                this.update(project);
+            }
+
+            for (ProjectContribution projectContribution : project.getProjectContributions()) {
+                Person contributor = projectContribution.getContributor();
+                if (!contributor.getIncludeInOaiPmh()) {
+                    contributor.setIncludeInOaiPmh(true);
+                    contributor.setUpdateDateForOaiPmh(currentDate);
+                    personDao.update(contributor);
+                    for (Institution institution : contributor.getInstitutions()) {
+                        if (!institution.getIncludeInOaiPmh()) {
+                            institution.setIncludeInOaiPmh(true);
+                            institution.setUpdateDateForOaiPmh(currentDate);
+                            institutionDao.update(institution);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -195,6 +195,8 @@ public class ProjectCleanseController {
                 true
             );
             positionFixDao.renumberPositionFixes(project, animalIds);
+            project.setUpdateDateForOaiPmh(new Date());
+            projectDao.update(project);
             PrintWriter out = response.getWriter();
             out.append("<?xml version=\"1.0\"?>\n");
             out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");
@@ -216,6 +218,8 @@ public class ProjectCleanseController {
                 false
             );
             positionFixDao.renumberPositionFixes(project, animalIds);
+            project.setUpdateDateForOaiPmh(new Date());
+            projectDao.update(project);
             PrintWriter out = response.getWriter();
             out.append("<?xml version=\"1.0\"?>\n");
             out.append("<cleanse-response xmlns=\"http://oztrack.org/xmlns#\">\n");

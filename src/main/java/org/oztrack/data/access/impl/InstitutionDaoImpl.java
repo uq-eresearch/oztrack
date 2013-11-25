@@ -13,8 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class InstitutionDaoImpl implements InstitutionDao {
-    @PersistenceContext
     private EntityManager em;
+
+    @PersistenceContext
+    public void setEntityManager(EntityManager em) {
+        this.em = em;
+    }
 
     @Override
     public List<Institution> getAll() {

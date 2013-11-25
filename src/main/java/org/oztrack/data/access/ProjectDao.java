@@ -35,4 +35,5 @@ public interface ProjectDao {
     List<ProjectUser> getProjectUsersWithRole(Project project, Role role);
     List<Project> getProjectsWithExpiredEmbargo(Date expiryDate);
     List<Project> getProjectsForOaiPmh(Date from, Date until, String setSpec);
+    void setIncludeInOaiPmh(Project project);
 }

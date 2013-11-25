@@ -14,6 +14,7 @@ import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.JdbcAccess;
 import org.oztrack.data.access.PositionFixDao;
+import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.error.FileProcessingException;
@@ -27,6 +28,7 @@ public abstract class DataFileLoader {
 
     private AnimalDao animalDao;
     private PositionFixDao positionFixDao;
+    private ProjectDao projectDao;
     private JdbcAccess jdbcAccess;
 
     public DataFileLoader(
@@ -34,6 +36,7 @@ public abstract class DataFileLoader {
         DataFileDao dataFileDao,
         AnimalDao animalDao,
         PositionFixDao positionFixDao,
+        ProjectDao projectDao,
         EntityManager entityManager,
         JdbcAccess jdbcAccess
     ) {
@@ -41,6 +44,7 @@ public abstract class DataFileLoader {
         this.dataFileDao = dataFileDao;
         this.animalDao = animalDao;
         this.positionFixDao = positionFixDao;
+        this.projectDao = projectDao;
         this.entityManager = entityManager;
         this.jdbcAccess = jdbcAccess;
     }
@@ -156,6 +160,8 @@ public abstract class DataFileLoader {
                 animalIds.add(animal.getId());
             }
             positionFixDao.renumberPositionFixes(dataFile.getProject(), animalIds);
+            dataFile.getProject().setUpdateDateForOaiPmh(new Date());
+            projectDao.update(dataFile.getProject());
         }
         catch (Exception e) {
             jdbcAccess.truncateRawObservations(dataFile);

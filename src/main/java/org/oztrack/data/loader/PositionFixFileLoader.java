@@ -21,6 +21,7 @@ import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.JdbcAccess;
 import org.oztrack.data.access.PositionFixDao;
+import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.RawPositionFix;
 import org.oztrack.data.model.types.ArgosClass;
@@ -44,10 +45,11 @@ public class PositionFixFileLoader extends DataFileLoader {
         DataFileDao dataFileDao,
         AnimalDao animalDao,
         PositionFixDao positionFixDao,
+        ProjectDao projectDao,
         EntityManager entityManager,
         JdbcAccess jdbcAccess
     ) {
-        super(dataFile, dataFileDao, animalDao, positionFixDao, entityManager, jdbcAccess);
+        super(dataFile, dataFileDao, animalDao, positionFixDao, projectDao, entityManager, jdbcAccess);
     }
 
     @Override

@@ -195,7 +195,7 @@ public class Person extends OzTrackBaseEntity implements Personable {
         this.updateDateForOaiPmh = updateDateForOaiPmh;
     }
 
-    public boolean isIncludeInOaiPmh() {
+    public boolean getIncludeInOaiPmh() {
         return includeInOaiPmh;
     }
 

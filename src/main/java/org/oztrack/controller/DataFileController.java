@@ -1,6 +1,7 @@
 package org.oztrack.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONWriter;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.PositionFixDao;
+import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.DataFile;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ public class DataFileController {
 
     @Autowired
     private PositionFixDao positionFixDao;
+
+    @Autowired
+    private ProjectDao projectDao;
 
     @InitBinder("dataFile")
     public void initDataFileBinder(WebDataBinder binder) {
@@ -71,6 +76,8 @@ public class DataFileController {
         }
         dataFileDao.delete(dataFile);
         positionFixDao.renumberPositionFixes(dataFile.getProject(), animalIds);
+        dataFile.getProject().setUpdateDateForOaiPmh(new Date());
+        projectDao.update(dataFile.getProject());
         response.setStatus(204);
     }
 }

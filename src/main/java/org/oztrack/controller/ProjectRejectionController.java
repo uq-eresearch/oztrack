@@ -66,7 +66,9 @@ public class ProjectRejectionController {
 
     @RequestMapping(value="/projects/{id}/reject", method=RequestMethod.POST)
     public String handleRequest(Authentication authentication, Model model) {
+        Date currentDate = new Date();
         User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
+
         Project project = (Project) model.asMap().get("project");
         Person person = (Person) model.asMap().get("person");
         ProjectContribution contribution = (ProjectContribution) model.asMap().get("contribution");
@@ -77,7 +79,8 @@ public class ProjectRejectionController {
         for (int i = 0; i < project.getProjectContributions().size(); i++) {
             project.getProjectContributions().get(i).setOrdinal(i);
         }
-        project.setUpdateDate(new Date());
+        project.setUpdateDate(currentDate);
+        project.setUpdateDateForOaiPmh(currentDate);
         project.setUpdateUser(currentUser);
         projectDao.update(project);
 

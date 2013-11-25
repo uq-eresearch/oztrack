@@ -28,6 +28,7 @@ import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.DataLicenceDao;
+import org.oztrack.data.access.InstitutionDao;
 import org.oztrack.data.access.PersonDao;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
@@ -89,6 +90,9 @@ public class ProjectController {
 
     @Autowired
     private PersonDao personDao;
+
+    @Autowired
+    private InstitutionDao institutionDao;
 
     @Autowired
     private SrsDao srsDao;
@@ -208,9 +212,14 @@ public class ProjectController {
         }
 
         User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
+        Date currentDate = new Date();
         project.setUpdateUser(currentUser);
-        project.setUpdateDate(new Date());
+        project.setUpdateDate(currentDate);
+        project.setUpdateDateForOaiPmh(currentDate);
+
         projectDao.update(project);
+
+        projectDao.setIncludeInOaiPmh(project);
 
         if (shouldRenumberPositionFixes) {
             ArrayList<Long> animalIds = new ArrayList<Long>();

@@ -9,6 +9,7 @@ import org.oztrack.app.OzTrackApplication;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.CountryDao;
 import org.oztrack.data.access.InstitutionDao;
+import org.oztrack.data.access.PersonDao;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Country;
 import org.oztrack.data.model.Institution;
@@ -36,6 +37,9 @@ public class UserController {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private PersonDao personDao;
 
     @Autowired
     private InstitutionDao institutionDao;
@@ -139,6 +143,7 @@ public class UserController {
         user.setUpdateDate(new Date());
         user.setUpdateUser(currentUser);
         userDao.update(user);
+        personDao.setInstitutionsIncludeInOaiPmh(user.getPerson());
         return "redirect:/projects";
     }
 

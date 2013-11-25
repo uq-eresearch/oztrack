@@ -8,14 +8,19 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.oztrack.data.access.PersonDao;
+import org.oztrack.data.model.Institution;
 import org.oztrack.data.model.Person;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PersonDaoImpl implements PersonDao {
-    @PersistenceContext
     private EntityManager em;
+
+    @PersistenceContext
+    public void setEntityManager(EntityManager em) {
+        this.em = em;
+    }
 
     @Override
     public List<Person> getAll() {
@@ -68,5 +73,22 @@ public class PersonDaoImpl implements PersonDao {
     @Override
     public List<Person> getPeopleForOaiPmh(Date from, Date until, String setSpec) {
         return DaoHelper.getEntitiesForOaiPmh(em, Person.class, from, until, setSpec);
+    }
+
+    @Override
+    @Transactional
+    public void setInstitutionsIncludeInOaiPmh(Person person) {
+        InstitutionDaoImpl institutionDao = new InstitutionDaoImpl();
+        institutionDao.setEntityManager(em);
+
+        if (person.getIncludeInOaiPmh()) {
+            for (Institution institution : person.getInstitutions()) {
+                if (!institution.getIncludeInOaiPmh()) {
+                    institution.setIncludeInOaiPmh(true);
+                    institution.setUpdateDateForOaiPmh(new Date());
+                    institutionDao.update(institution);
+                }
+            }
+        }
     }
 }

@@ -296,7 +296,7 @@ public class Project extends OzTrackBaseEntity {
         this.updateDateForOaiPmh = updateDateForOaiPmh;
     }
 
-    public boolean isIncludeInOaiPmh() {
+    public boolean getIncludeInOaiPmh() {
         return includeInOaiPmh;
     }
 

@@ -113,6 +113,7 @@ public class User extends OzTrackBaseEntity implements Personable {
     public void setUpdateDate(Date updateDate) {
         super.setUpdateDate(updateDate);
         person.setUpdateDate(updateDate);
+        person.setUpdateDateForOaiPmh(updateDate);
     }
 
     @Override

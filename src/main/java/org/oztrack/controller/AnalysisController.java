@@ -30,6 +30,7 @@ import org.json.JSONWriter;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.AnalysisDao;
 import org.oztrack.data.access.PositionFixDao;
+import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Analysis;
 import org.oztrack.data.model.AnalysisParameter;
 import org.oztrack.data.model.Animal;
@@ -74,6 +75,9 @@ public class AnalysisController {
 
     @Autowired
     private PositionFixDao positionFixDao;
+
+    @Autowired
+    private ProjectDao projectDao;
 
     @Autowired
     private OzTrackPermissionEvaluator permissionEvaluator;
@@ -445,6 +449,8 @@ public class AnalysisController {
             animalIds.add(animal.getId());
         }
         positionFixDao.renumberPositionFixes(analysis.getProject(), animalIds);
+        analysis.getProject().setUpdateDateForOaiPmh(new Date());
+        projectDao.update(analysis.getProject());
     }
 
     private static void writeResultError(HttpServletResponse response, String error) {
