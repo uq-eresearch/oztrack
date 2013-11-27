@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.apache.commons.lang3.Range;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.InstitutionDao;
@@ -24,11 +27,19 @@ import org.oztrack.data.model.types.OaiPmhRecord;
 import org.oztrack.util.OaiPmhConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.vividsolutions.jts.geom.Polygon;
 
 @Service
 public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
+    private EntityManager em;
+
+    @PersistenceContext
+    public void setEntityManger(EntityManager em) {
+        this.em = em;
+    }
+
     @Autowired
     private OzTrackConfiguration configuration;
 
@@ -255,5 +266,72 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         record.setRifCsGroup(configuration.getOaiPmhConfiguration().getRifCsGroup());
         record.setOriginatingSource(configuration.getBaseUrl() + "/");
         return record;
+    }
+
+    @Override
+    @Transactional
+    public void updateOaiPmhSets() {
+        em.createNativeQuery(
+            "create temp table all_oaipmhset on commit drop as\n" +
+            "select\n" +
+            "    project.id as project_id,\n" +
+            "    person.id as person_id,\n" +
+            "    null as institution_id,\n" +
+            "    'country:' || lower(country.code) as oaipmhset\n" +
+            "from\n" +
+            "    project\n" +
+            "    inner join project_contribution on project.id = project_contribution.project_id\n" +
+            "    inner join person on person.id = project_contribution.contributor_id\n" +
+            "    inner join country on person.country_id = country.id\n" +
+            "union select\n" +
+            "    project.id as project_id,\n" +
+            "    person.id as person_id,\n" +
+            "    institution.id as institution_id,\n" +
+            "    'country:' || lower(country.code) as oaipmhset\n" +
+            "from\n" +
+            "    project\n" +
+            "    inner join project_contribution on project.id = project_contribution.project_id\n" +
+            "    inner join person on person.id = project_contribution.contributor_id\n" +
+            "    inner join person_institution on person.id = person_institution.person_id\n" +
+            "    inner join institution on institution.id = person_institution.institution_id\n" +
+            "    inner join country on institution.country_id = country.id\n" +
+            "union select\n" +
+            "    project.id as project_id,\n" +
+            "    person.id as person_id,\n" +
+            "    person_institution.institution_id as institution_id,\n" +
+            "    'institution:' || person_institution.institution_id as oaipmhset\n" +
+            "from\n" +
+            "    project\n" +
+            "    inner join project_contribution on project.id = project_contribution.project_id\n" +
+            "    inner join person on person.id = project_contribution.contributor_id\n" +
+            "    inner join person_institution on person.id = person_institution.person_id;\n" +
+            "\n" +
+            "create temp table new_project_oaipmhset on commit drop as\n" +
+            "select distinct project_id, oaipmhset from all_oaipmhset\n" +
+            "except select project_id, oaipmhset from project_oaipmhset;\n" +
+            "\n" +
+            "create temp table new_person_oaipmhset on commit drop as\n" +
+            "select distinct a.person_id, b.oaipmhset\n" +
+            "from all_oaipmhset a, all_oaipmhset b\n" +
+            "where a.project_id = b.project_id\n" +
+            "except select person_id, oaipmhset from person_oaipmhset;\n" +
+            "\n" +
+            "create temp table new_institution_oaipmhset on commit drop as\n" +
+            "select distinct a.institution_id, b.oaipmhset\n" +
+            "from all_oaipmhset a, all_oaipmhset b\n" +
+            "where a.project_id = b.project_id\n" +
+            "except select institution_id, oaipmhset from institution_oaipmhset;\n" +
+            "\n" +
+            "insert into project_oaipmhset select * from new_project_oaipmhset;\n" +
+            "insert into person_oaipmhset select * from new_person_oaipmhset;\n" +
+            "insert into institution_oaipmhset select * from new_institution_oaipmhset;\n" +
+            "\n" +
+            "update project set updatedateforoaipmh = now()\n" +
+            "where id in (select project_id from new_project_oaipmhset);\n" +
+            "update person set updatedateforoaipmh = now()\n" +
+            "where id in (select person_id from new_person_oaipmhset);\n" +
+            "update institution set updatedateforoaipmh = now()\n" +
+            "where id in (select institution_id from new_institution_oaipmhset);"
+        );
     }
 }

@@ -29,6 +29,7 @@ import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.DataFileDao;
 import org.oztrack.data.access.DataLicenceDao;
 import org.oztrack.data.access.InstitutionDao;
+import org.oztrack.data.access.OaiPmhRecordDao;
 import org.oztrack.data.access.PersonDao;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
@@ -99,6 +100,9 @@ public class ProjectController {
 
     @Autowired
     private DataLicenceDao dataLicenceDao;
+
+    @Autowired
+    private OaiPmhRecordDao oaiPmhRecordDao;
 
     @Autowired
     private EmailBuilderFactory emailBuilderFactory;
@@ -220,6 +224,8 @@ public class ProjectController {
         projectDao.update(project);
 
         projectDao.setIncludeInOaiPmh(project);
+
+        oaiPmhRecordDao.updateOaiPmhSets();
 
         if (shouldRenumberPositionFixes) {
             ArrayList<Long> animalIds = new ArrayList<Long>();

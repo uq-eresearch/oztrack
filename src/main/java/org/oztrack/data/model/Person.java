@@ -3,10 +3,13 @@ package org.oztrack.data.model;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.SortedSet;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -24,6 +27,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
 import org.oztrack.data.model.types.Personable;
 
 @Entity(name="person")
@@ -79,6 +84,12 @@ public class Person extends OzTrackBaseEntity implements Personable {
 
     @Column(name="includeinoaipmh")
     private boolean includeInOaiPmh;
+
+    @ElementCollection(fetch=FetchType.LAZY)
+    @CollectionTable(name="person_oaipmhset", joinColumns=@JoinColumn(name="person_id"))
+    @Column(name="oaipmhset")
+    @Sort(type=SortType.NATURAL)
+    private SortedSet<String> oaiPmhSets;
 
     public Long getId() {
         return id;
@@ -201,5 +212,13 @@ public class Person extends OzTrackBaseEntity implements Personable {
 
     public void setIncludeInOaiPmh(boolean includeInOaiPmh) {
         this.includeInOaiPmh = includeInOaiPmh;
+    }
+
+    public SortedSet<String> getOaiPmhSets() {
+        return oaiPmhSets;
+    }
+
+    public void setOaiPmhSets(SortedSet<String> oaiPmhSets) {
+        this.oaiPmhSets = oaiPmhSets;
     }
 }

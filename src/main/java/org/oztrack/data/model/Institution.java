@@ -2,8 +2,11 @@ package org.oztrack.data.model;
 
 import java.util.Date;
 import java.util.List;
+import java.util.SortedSet;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -15,6 +18,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
 
 @Entity(name="institution")
 public class Institution extends OzTrackBaseEntity {
@@ -43,6 +49,12 @@ public class Institution extends OzTrackBaseEntity {
 
     @Column(name="includeinoaipmh")
     private boolean includeInOaiPmh;
+
+    @ElementCollection(fetch=FetchType.LAZY)
+    @CollectionTable(name="institution_oaipmhset", joinColumns=@JoinColumn(name="institution_id"))
+    @Column(name="oaipmhset")
+    @Sort(type=SortType.NATURAL)
+    private SortedSet<String> oaiPmhSets;
 
     public Long getId() {
         return id;
@@ -98,5 +110,13 @@ public class Institution extends OzTrackBaseEntity {
 
     public void setIncludeInOaiPmh(boolean includeInOaiPmh) {
         this.includeInOaiPmh = includeInOaiPmh;
+    }
+
+    public SortedSet<String> getOaiPmhSets() {
+        return oaiPmhSets;
+    }
+
+    public void setOaiPmhSets(SortedSet<String> oaiPmhSets) {
+        this.oaiPmhSets = oaiPmhSets;
     }
 }
