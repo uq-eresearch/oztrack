@@ -229,9 +229,11 @@ public class PositionFixFileLoader extends DataFileLoader {
                                 rawPositionFix.setDeleted(Boolean.valueOf(dataRow[i].toLowerCase(Locale.ENGLISH)));
                                 break;
                             case ARGOSCLASS:
-                                ArgosClass argosClass = ArgosClass.fromCode(dataRow[i]);
+                                // Cope with numeric cell values from Excel (.e.g. 3.0 instead of just 3)
+                                String codeString = dataRow[i].replaceFirst("\\.0+$", "");
+                                ArgosClass argosClass = ArgosClass.fromCode(codeString);
                                 if (argosClass == null) {
-                                    throw new FileProcessingException("Invalid Argos class: " + dataRow[i]);
+                                    throw new FileProcessingException("Invalid Argos class: " + dataRow[i] + " on line " + lineNumber);
                                 }
                                 rawPositionFix.setArgosClass(argosClass);
                                 break;
@@ -241,7 +243,7 @@ public class PositionFixFileLoader extends DataFileLoader {
                                     rawPositionFix.setDop(dop);
                                 }
                                 catch (Exception e) {
-                                    throw new FileProcessingException("Invalid DOP value: " + dataRow[i]);
+                                    throw new FileProcessingException("Invalid DOP value: " + dataRow[i] + " on line " + lineNumber);
                                 }
                                 break;
                             case SST:
