@@ -157,9 +157,6 @@ public class PositionFixFileLoader extends DataFileLoader {
 
             logger.debug("File opened + header read.");
 
-            SimpleDateFormat dateFormat = null;
-            Boolean dateIncludesTime = null;
-
             try {
                 String[] dataRow = null;
                 while ((dataRow = csvReader.readNext()) != null) {
@@ -184,19 +181,15 @@ public class PositionFixFileLoader extends DataFileLoader {
                             case LOCDATE:
                             case DATE:
                                 try {
-                                    if (lineNumber == 2) {
-                                        FindDateFormatResult findDateFormatResult = findDateFormat(dataRow[i]);
-                                        dateFormat = findDateFormatResult.dateFormat;
-                                        dateIncludesTime = findDateFormatResult.includesTime;
-                                    }
+                                    FindDateFormatResult findDateFormatResult = findDateFormat(dataRow[i]);
                                     Calendar calendar = Calendar.getInstance();
                                     try {
-                                        calendar.setTime(dateFormat.parse(dataRow[i]));
+                                        calendar.setTime(findDateFormatResult.dateFormat.parse(dataRow[i]));
                                     }
                                     catch (ParseException e) {
                                         throw new FileProcessingException("Date Parsing error");
                                     }
-                                    if (dateIncludesTime && dataFile.getLocalTimeConversionRequired()) {
+                                    if (findDateFormatResult.includesTime && dataFile.getLocalTimeConversionRequired()) {
                                         Double h = dataFile.getLocalTimeConversionHours();
                                         calendar.add(Calendar.HOUR, (int) Math.floor(h));
                                         calendar.add(Calendar.MINUTE, (int) Math.floor((h % (1d)) * (1d) * 60d));
@@ -301,15 +294,19 @@ public class PositionFixFileLoader extends DataFileLoader {
     private FindDateFormatResult findDateFormat(String dateString) throws FileProcessingException {
         String[] dateRegexes = new String[] {
             "(0[1-9]|[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[012]|[1-9])\\.(19[0-9][0-9]|20[0-9][0-9])",
+            "(0[1-9]|[1-9]|[12][0-9]|3[01])\\-(0[1-9]|1[012]|[1-9])\\-(19[0-9][0-9]|20[0-9][0-9])",
             "(0[1-9]|[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012]|[1-9])/(19[0-9][0-9]|20[0-9][0-9])",
             "(19[0-9][0-9]|20[0-9][0-9])\\.(0[1-9]|[1-9]|[12][0-9]|3[01])\\.(0[1-9]|[1-9]|[12][0-9]|3[01])",
-            "(19[0-9][0-9]|20[0-9][0-9])\\-(0[1-9]|[1-9]|[12][0-9]|3[01])\\-(0[1-9]|[1-9]|[12][0-9]|3[01])"
+            "(19[0-9][0-9]|20[0-9][0-9])\\-(0[1-9]|[1-9]|[12][0-9]|3[01])\\-(0[1-9]|[1-9]|[12][0-9]|3[01])",
+            "(19[0-9][0-9]|20[0-9][0-9])/(0[1-9]|[1-9]|[12][0-9]|3[01])/(0[1-9]|[1-9]|[12][0-9]|3[01])"
         };
         String[] datePatterns = new String[] {
             "dd.MM.yyyy",
+            "dd-MM-yyyy",
             "dd/MM/yyyy",
             "yyyy.MM.dd",
-            "yyyy-MM-dd"
+            "yyyy-MM-dd",
+            "yyyy/MM/dd"
         };
         String[] timeRegexes = new String[] {
             ".(0[0-9]|[0-9]|[1][0-9]|2[0-3]).([0-9]|[0-5][0-9])",
