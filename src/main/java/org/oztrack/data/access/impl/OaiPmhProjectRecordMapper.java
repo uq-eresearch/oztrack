@@ -117,6 +117,7 @@ public class OaiPmhProjectRecordMapper implements OaiPmhEntityMapper<Project, Oa
             subjects.add(new OaiPmhRecord.Subject("local", project.getSpeciesScientificName()));
         }
         record.setSubjects(subjects);
+        record.setOaiPmhSetSpecs(project.getOaiPmhSetSpecs());
         record.setDcType("collection");
         record.setRifCsObjectElemName("collection");
         record.setRifCsObjectTypeAttr("dataset");

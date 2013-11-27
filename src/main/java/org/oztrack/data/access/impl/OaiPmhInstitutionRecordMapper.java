@@ -42,6 +42,7 @@ public class OaiPmhInstitutionRecordMapper implements OaiPmhEntityMapper<Institu
             )
         ));
         record.setSubjects(new ArrayList<Subject>(OaiPmhConstants.defaultRecordSubjects));
+        record.setOaiPmhSetSpecs(institution.getOaiPmhSetSpecs());
         record.setDcType("agent");
         record.setRifCsObjectElemName("party");
         record.setRifCsObjectTypeAttr("group");

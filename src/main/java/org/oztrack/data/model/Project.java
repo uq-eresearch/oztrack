@@ -118,7 +118,7 @@ public class Project extends OzTrackBaseEntity {
     @CollectionTable(name="project_oaipmhset", joinColumns=@JoinColumn(name="project_id"))
     @Column(name="oaipmhset")
     @Sort(type=SortType.NATURAL)
-    private SortedSet<String> oaiPmhSets;
+    private SortedSet<String> oaiPmhSetSpecs;
 
     public Project() {
     }
@@ -315,12 +315,12 @@ public class Project extends OzTrackBaseEntity {
         this.includeInOaiPmh = includeInOaiPmh;
     }
 
-    public SortedSet<String> getOaiPmhSets() {
-        return oaiPmhSets;
+    public SortedSet<String> getOaiPmhSetSpecs() {
+        return oaiPmhSetSpecs;
     }
 
-    public void setOaiPmhSets(SortedSet<String> oaiPmhSets) {
-        this.oaiPmhSets = oaiPmhSets;
+    public void setOaiPmhSetSpecs(SortedSet<String> oaiPmhSetSpecs) {
+        this.oaiPmhSetSpecs = oaiPmhSetSpecs;
     }
 
     @Override

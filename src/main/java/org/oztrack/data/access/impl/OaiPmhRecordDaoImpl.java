@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,12 +20,14 @@ import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.InstitutionDao;
 import org.oztrack.data.access.OaiPmhEntityProducer;
 import org.oztrack.data.access.OaiPmhRecordDao;
+import org.oztrack.data.access.OaiPmhSetDao;
 import org.oztrack.data.access.PersonDao;
 import org.oztrack.data.access.ProjectDao;
 import org.oztrack.data.model.Institution;
 import org.oztrack.data.model.Person;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.types.OaiPmhRecord;
+import org.oztrack.data.model.types.OaiPmhSet;
 import org.oztrack.util.OaiPmhConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,6 +55,9 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
 
     @Autowired
     private InstitutionDao institutionDao;
+
+    @Autowired
+    private OaiPmhSetDao oaiPmhSetDao;
 
     public OaiPmhRecordDaoImpl() {
     }
@@ -168,6 +175,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         record.setRecordUpdateDate(configuration.getOaiPmhConfiguration().getRepositoryServiceUpdateDate());
         record.setExistenceStartDate(configuration.getOaiPmhConfiguration().getRepositoryServiceCreateDate());
         record.setSubjects(OaiPmhConstants.defaultRecordSubjects);
+        record.setOaiPmhSetSpecs(getAllSetSpecs());
         record.setDcType("service");
         record.setRifCsObjectElemName("service");
         record.setRifCsObjectTypeAttr("report");
@@ -197,6 +205,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
             )
         ));
         record.setSubjects(OaiPmhConstants.defaultRecordSubjects);
+        record.setOaiPmhSetSpecs(getAllSetSpecs());
         record.setDcType("service");
         record.setRifCsObjectElemName("service");
         record.setRifCsObjectTypeAttr("harvest-oaipmh");
@@ -232,6 +241,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
             )
         ));
         record.setSubjects(OaiPmhConstants.defaultRecordSubjects);
+        record.setOaiPmhSetSpecs(getAllSetSpecs());
         record.setDcType("collection");
         record.setRifCsObjectElemName("collection");
         record.setRifCsObjectTypeAttr("repository");
@@ -260,12 +270,22 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
             )
         ));
         record.setSubjects(OaiPmhConstants.defaultRecordSubjects);
+        record.setOaiPmhSetSpecs(getAllSetSpecs());
         record.setDcType("agent");
         record.setRifCsObjectElemName("party");
         record.setRifCsObjectTypeAttr("administrativePosition");
         record.setRifCsGroup(configuration.getOaiPmhConfiguration().getRifCsGroup());
         record.setOriginatingSource(configuration.getBaseUrl() + "/");
         return record;
+    }
+
+    private SortedSet<String> getAllSetSpecs() {
+        SortedSet<String> setSpecs = new TreeSet<String>();
+        OaiPmhEntityProducer<OaiPmhSet> sets = oaiPmhSetDao.getSets();
+        for (OaiPmhSet set : sets) {
+            setSpecs.add(set.getSetSpec());
+        }
+        return setSpecs;
     }
 
     @Override

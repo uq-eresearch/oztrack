@@ -2,6 +2,7 @@ package org.oztrack.data.model.types;
 
 import java.util.Date;
 import java.util.List;
+import java.util.SortedSet;
 
 import org.apache.commons.lang3.Range;
 
@@ -136,6 +137,7 @@ public class OaiPmhRecord {
     private String accessRights;
     private List<Relation> relations;
     private List<Subject> subjects;
+    private SortedSet<String> oaiPmhSetSpecs;
     private String dcType;
     private String rifCsObjectElemName;
     private String rifCsObjectTypeAttr;
@@ -270,6 +272,12 @@ public class OaiPmhRecord {
     }
     public void setSubjects(List<Subject> subjects) {
         this.subjects = subjects;
+    }
+    public SortedSet<String> getOaiPmhSetSpecs() {
+        return oaiPmhSetSpecs;
+    }
+    public void setOaiPmhSetSpecs(SortedSet<String> oaiPmhSetSpecs) {
+        this.oaiPmhSetSpecs = oaiPmhSetSpecs;
     }
     public String getDcType() {
         return dcType;

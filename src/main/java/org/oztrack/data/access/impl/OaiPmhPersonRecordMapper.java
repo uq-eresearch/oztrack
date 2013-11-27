@@ -79,6 +79,7 @@ public class OaiPmhPersonRecordMapper implements OaiPmhEntityMapper<Person, OaiP
         ));
         record.setRelations(relations);
         record.setSubjects(new ArrayList<Subject>(OaiPmhConstants.defaultRecordSubjects));
+        record.setOaiPmhSetSpecs(person.getOaiPmhSetSpecs());
         record.setDcType("agent");
         record.setRifCsObjectElemName("party");
         record.setRifCsObjectTypeAttr("person");

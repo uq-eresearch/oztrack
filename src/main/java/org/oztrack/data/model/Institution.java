@@ -54,7 +54,7 @@ public class Institution extends OzTrackBaseEntity {
     @CollectionTable(name="institution_oaipmhset", joinColumns=@JoinColumn(name="institution_id"))
     @Column(name="oaipmhset")
     @Sort(type=SortType.NATURAL)
-    private SortedSet<String> oaiPmhSets;
+    private SortedSet<String> oaiPmhSetSpecs;
 
     public Long getId() {
         return id;
@@ -112,11 +112,11 @@ public class Institution extends OzTrackBaseEntity {
         this.includeInOaiPmh = includeInOaiPmh;
     }
 
-    public SortedSet<String> getOaiPmhSets() {
-        return oaiPmhSets;
+    public SortedSet<String> getOaiPmhSetSpecs() {
+        return oaiPmhSetSpecs;
     }
 
-    public void setOaiPmhSets(SortedSet<String> oaiPmhSets) {
-        this.oaiPmhSets = oaiPmhSets;
+    public void setOaiPmhSetSpecs(SortedSet<String> oaiPmhSetSpecs) {
+        this.oaiPmhSetSpecs = oaiPmhSetSpecs;
     }
 }

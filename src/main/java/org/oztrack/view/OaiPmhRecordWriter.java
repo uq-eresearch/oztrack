@@ -65,6 +65,14 @@ public class OaiPmhRecordWriter {
             out.writeEndElement(); // datestamp
         }
 
+        if (record.getOaiPmhSetSpecs() != null) {
+            for (String setSpec : record.getOaiPmhSetSpecs()) {
+                out.writeStartElement("setSpec");
+                out.writeCharacters(setSpec);
+                out.writeEndElement(); // setSpec
+            }
+        }
+
         out.writeEndElement(); // header
 
         if (!headerOnly) {

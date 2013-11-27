@@ -89,7 +89,7 @@ public class Person extends OzTrackBaseEntity implements Personable {
     @CollectionTable(name="person_oaipmhset", joinColumns=@JoinColumn(name="person_id"))
     @Column(name="oaipmhset")
     @Sort(type=SortType.NATURAL)
-    private SortedSet<String> oaiPmhSets;
+    private SortedSet<String> oaiPmhSetSpecs;
 
     public Long getId() {
         return id;
@@ -214,11 +214,11 @@ public class Person extends OzTrackBaseEntity implements Personable {
         this.includeInOaiPmh = includeInOaiPmh;
     }
 
-    public SortedSet<String> getOaiPmhSets() {
-        return oaiPmhSets;
+    public SortedSet<String> getOaiPmhSetSpecs() {
+        return oaiPmhSetSpecs;
     }
 
-    public void setOaiPmhSets(SortedSet<String> oaiPmhSets) {
-        this.oaiPmhSets = oaiPmhSets;
+    public void setOaiPmhSetSpecs(SortedSet<String> oaiPmhSetSpecs) {
+        this.oaiPmhSetSpecs = oaiPmhSetSpecs;
     }
 }
