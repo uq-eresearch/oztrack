@@ -30,6 +30,8 @@ Sort out PostgreSQL authentication:
      host    all             all             127.0.0.1/32            md5
      # IPv6 local connections:
 
+<pre>sudo service postgresql reload</pre>
+
 Setup the OzTrack database, including PostGIS and UUID module:
 
     sudo -u postgres psql -c "create user oztrack with password 'changeme';"
