@@ -162,11 +162,26 @@ HTTP server and configure reverse proxying from port 80 to GeoServer (port 8080)
     sudo a2enmod proxy_http
     sudo service apache2 restart
     sudo tee /etc/apache2/sites-available/oztrack.conf > /dev/null << EOF
-    ProxyPreserveHost on
-    ProxyPass /geoserver http://localhost:8080/geoserver nocanon retry=0
-    ProxyPassReverse /geoserver http://localhost:8080/geoserver
-    ProxyPass / http://localhost:8181/ nocanon retry=0
-    ProxyPassReverse / http://localhost:8181/
+    <VirtualHost _default_:80>
+      ServerName oztrack.org
+      ProxyPreserveHost on
+      ProxyPass /geoserver http://localhost:8080/geoserver nocanon retry=0
+      ProxyPassReverse /geoserver http://localhost:8080/geoserver
+      ProxyPass / http://localhost:8080/ nocanon retry=0
+      ProxyPassReverse / http://localhost:8080/
+    </VirtualHost>
+    
+    <VirtualHost _default_:443>
+      ServerName https://oztrack.org
+      SSLEngine on
+      SSLCertificateFile /etc/apache2/ssl/chain.crt
+      SSLCertificateKeyFile /etc/apache2/ssl/metadata_net.key
+      ProxyPreserveHost on
+      ProxyPass /geoserver http://localhost:8443/geoserver nocanon retry=0
+      ProxyPassReverse /geoserver http://localhost:8443/geoserver
+      ProxyPass / http://localhost:8443/ nocanon retry=0
+      ProxyPassReverse / http://localhost:8443/
+    </VirtualHost>
     EOF
     sudo a2ensite oztrack
     sudo service apache2 reload
