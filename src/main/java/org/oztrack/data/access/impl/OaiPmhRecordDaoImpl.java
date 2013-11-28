@@ -344,13 +344,13 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
             "create temp table new_person_oaipmhset on commit drop as\n" +
             "select distinct a.person_id, b.oaipmhset\n" +
             "from all_oaipmhset a, all_oaipmhset b\n" +
-            "where a.project_id = b.project_id\n" +
+            "where a.person_id is not null and a.project_id = b.project_id\n" +
             "except select person_id, oaipmhset from person_oaipmhset;\n" +
             "\n" +
             "create temp table new_institution_oaipmhset on commit drop as\n" +
             "select distinct a.institution_id, b.oaipmhset\n" +
             "from all_oaipmhset a, all_oaipmhset b\n" +
-            "where a.project_id = b.project_id\n" +
+            "where a.institution_id is not null and a.project_id = b.project_id\n" +
             "except select institution_id, oaipmhset from institution_oaipmhset;\n" +
             "\n" +
             "insert into project_oaipmhset select * from new_project_oaipmhset;\n" +
@@ -363,6 +363,6 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
             "where id in (select person_id from new_person_oaipmhset);\n" +
             "update institution set updatedateforoaipmh = now()\n" +
             "where id in (select institution_id from new_institution_oaipmhset);"
-        );
+        ).executeUpdate();
     }
 }
