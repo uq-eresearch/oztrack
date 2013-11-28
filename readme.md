@@ -10,6 +10,8 @@ This software is distributed under the GNU GENERAL PUBLIC LICENSE Version 2. See
 
 ## Installing on Ubuntu
 
+The following instructions have been tested on Ubuntu 13.04 and 13.10.
+
 ### Setting up the database
 
 Install PostgreSQL and PostGIS:
