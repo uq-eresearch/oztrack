@@ -339,9 +339,9 @@ Configure Apache by adding these lines to `/etc/apache2/sites-available/oztrack.
 
 Restart all the services.
 
-    service shibd restart
-    service tomcat7 restart
-    service apache2 restart
+    sudo service shibd restart
+    sudo service tomcat7 restart
+    sudo service apache2 restart
 
 ### Installing OzTrack
 
