@@ -154,9 +154,12 @@ using the default username/password, "admin"/"geoserver", and follow the instruc
 
 ### Installing Apache
 
-This step is optional - it's only needed to avoid blocking of cross-site requests if you intend to run
-GeoServer and the OzTrack web application on different ports. The following commands install the Apache
-HTTP server and configure reverse proxying from port 80 to GeoServer (port 8080) and OzTrack (port 8181).
+The following commands install the Apache HTTP server and configure reverse proxying from
+port 80 to port 8080.
+Configuring HTTPS is optional and requires that you create and install an SSL certificate.
+Note that you should modify the `ServerName` directive and port numbers to match your deployment.
+Depending on your installation of Apache, you may need to place site configuration in either
+`/etc/apache2/sites-available/oztrack.conf` or `/etc/apache2/sites-available/oztrack`.
 
     sudo apt-get install -y apache2
     sudo a2enmod proxy_http
@@ -174,8 +177,8 @@ HTTP server and configure reverse proxying from port 80 to GeoServer (port 8080)
     <VirtualHost _default_:443>
       ServerName https://oztrack.org
       SSLEngine on
-      SSLCertificateFile /etc/apache2/ssl/chain.crt
-      SSLCertificateKeyFile /etc/apache2/ssl/metadata_net.key
+      SSLCertificateFile /etc/apache2/ssl/oztrack.crt
+      SSLCertificateKeyFile /etc/apache2/ssl/oztrack.key
       ProxyPreserveHost on
       ProxyPass /geoserver http://localhost:8443/geoserver nocanon retry=0
       ProxyPassReverse /geoserver http://localhost:8443/geoserver
@@ -185,6 +188,119 @@ HTTP server and configure reverse proxying from port 80 to GeoServer (port 8080)
     EOF
     sudo a2ensite oztrack
     sudo service apache2 reload
+
+### Installing Shibboleth
+
+Install Apache with Shibboleth modules.
+
+    apt-get install apache2 libapache2-mod-shib2
+
+Enable SSL and Shibboleth modules.
+
+    sudo a2enmod ssl
+    sudo a2enmod shib2 
+    sudo service apache2 restart
+
+Download AAF metadata signing certificate (either AAF Test Federation or AAF Production Federation).
+
+    sudo wget https://ds.test.aaf.edu.au/distribution/metadata/aaf-metadata-cert.pem -O /etc/shibboleth/aaf-metadata-cert.pem
+    sudo wget https://ds.aaf.edu.au/distribution/metadata/aaf-metadata-cert.pem -O /etc/shibboleth/aaf-metadata-cert.pem
+
+Create service provider certificate
+
+    sudo /etc/shibboleth/keygen.sh -f -o /etc/shibboleth -h oztrack.org -e https://oztrack.org/shibboleth
+
+Configure Shibboleth with Entity ID, Discovery Service, and Metadata Provider values matching your
+application and the AAF by editing `/etc/shibboleth/shibboleth2.xml`.
+
+    --- /etc/shibboleth/shibboleth2.xml.1   2013-11-07 11:13:28.293980000 +1000
+    +++ /etc/shibboleth/shibboleth2.xml     2013-11-07 11:58:01.557980000 +1000
+    @@ -20,7 +20,7 @@
+         -->
+     
+         <!-- The ApplicationDefaults element is where most of Shibboleth's SAML bits are defined. -->
+    -    <ApplicationDefaults entityID="https://sp.example.org/shibboleth"
+    +    <ApplicationDefaults entityID="https://oztrack.org/shibboleth"
+                              REMOTE_USER="eppn persistent-id targeted-id">
+     
+             <!--
+    @@ -40,8 +40,7 @@
+                 (Set discoveryProtocol to "WAYF" for legacy Shibboleth WAYF support.)
+                 You can also override entityID on /Login query string, or in RequestMap/htaccess.
+                 -->
+    -            <SSO entityID="https://idp.example.org/shibboleth"
+    -                 discoveryProtocol="SAMLDS" discoveryURL="https://ds.example.org/DS/WAYF">
+    +            <SSO discoveryProtocol="SAMLDS" discoveryURL="https://ds.test.aaf.edu.au/discovery/DS">
+                   SAML2 SAML1
+                 </SSO>
+     
+    @@ -83,6 +82,12 @@
+             <MetadataProvider type="XML" file="partner-metadata.xml"/>
+             -->
+     
+    +        <MetadataProvider type="XML" uri="https://ds.test.aaf.edu.au/distribution/metadata/metadata.aaf.signed.complete.xml"
+    +             backingFilePath="metadata.aaf.xml" reloadInterval="7200">
+    +           <MetadataFilter type="RequireValidUntil" maxValidityInterval="2419200"/>
+    +           <MetadataFilter type="Signature" certificate="aaf-metadata-cert.pem"/>
+    +        </MetadataProvider>
+    +
+             <!-- Map to extract attributes from SAML assertions. -->
+             <AttributeExtractor type="XML" validate="true" path="attribute-map.xml"/>
+
+Uncomment attribute map elements by editing `/etc/shibboleth/attribute-map.xml`.
+
+    --- /etc/shibboleth/attribute-map.xml.1 2013-11-07 11:12:10.317980000 +1000
+    +++ /etc/shibboleth/attribute-map.xml   2013-11-07 11:12:40.877980000 +1000
+    @@ -52,7 +52,6 @@
+         </Attribute>
+     
+         <!-- Some more eduPerson attributes, uncomment these to use them... -->
+    -    <!--
+         <Attribute name="urn:mace:dir:attribute-def:eduPersonPrimaryAffiliation" id="primary-affiliation">
+             <AttributeDecoder xsi:type="StringAttributeDecoder" caseSensitive="false"/>
+         </Attribute>
+    @@ -75,10 +74,8 @@
+     
+         <Attribute name="urn:oid:1.3.6.1.4.1.5923.1.6.1.1" id="eduCourseOffering"/>
+         <Attribute name="urn:oid:1.3.6.1.4.1.5923.1.6.1.2" id="eduCourseMember"/>
+    -    -->
+     
+         <!--Examples of LDAP-based attributes, uncomment to use these... -->
+    -    <!--
+         <Attribute name="urn:mace:dir:attribute-def:cn" id="cn"/>
+         <Attribute name="urn:mace:dir:attribute-def:sn" id="sn"/>
+         <Attribute name="urn:mace:dir:attribute-def:givenName" id="givenName"/>
+    @@ -132,6 +129,5 @@
+         <Attribute name="urn:oid:2.5.4.11" id="ou"/>
+         <Attribute name="urn:oid:2.5.4.15" id="businessCategory"/>
+         <Attribute name="urn:oid:2.5.4.19" id="physicalDeliveryOfficeName"/>
+    -    -->
+     
+     </Attributes>
+
+Configure Apache by adding these lines to `/etc/apache2/sites-available/oztrack.conf`.
+
+    <Location />
+      ShibRequestSetting authType shibboleth
+      ShibRequestSetting requireSession false
+      require shibboleth
+      AuthType shibboleth
+      ShibUseHeaders on
+    </Location>
+     
+    <Location /login/shibboleth>
+      ShibRequestSetting authType shibboleth
+      ShibRequestSetting requireSession true
+      require shibboleth
+      AuthType shibboleth
+      ShibUseHeaders on
+    </Location>
+
+Restart all the services.
+
+    service shibd restart
+    service tomcat7 restart
+    service apache2 restart
 
 ### Completing installation
 
