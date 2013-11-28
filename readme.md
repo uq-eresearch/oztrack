@@ -133,6 +133,45 @@ If necessary, replace "ubuntu" on the `setuid` with the name of another non-root
 The service will start automatically at boot but can be started at other times
 using `sudo service rserve start`.
 
+### Installing Tomcat
+
+Install Tomcat.
+
+    sudo apt-get install -y tomcat7
+
+Configure ports for HTTP and HTTPS. The following assumes there's a reverse proxy
+that listens on ports 80/443 and terminates SSL. See Apache installation/config below.
+
+    --- /etc/tomcat7/server.xml.1   2013-11-06 16:17:00.813980000 +1000
+    +++ /etc/tomcat7/server.xml     2013-11-13 16:55:40.444228660 +1000
+    @@ -72,7 +72,8 @@
+         <Connector port="8080" protocol="HTTP/1.1"
+                    connectionTimeout="20000"
+                    URIEncoding="UTF-8"
+    -               redirectPort="8443" />
+    +               redirectPort="8443"
+    +               proxyPort="80" />
+         <!-- A "Connector" using the shared thread pool-->
+         <!--
+         <Connector executor="tomcatThreadPool"
+    @@ -90,6 +92,16 @@
+                    clientAuth="false" sslProtocol="TLS" />
+         -->
+     
+    +    <!-- Assmes there is a reverse proxy out front that handles SSL and
+    +         sends us traffic on ports 8080/8443 for HTTP/HTTPS respectively. -->
+    +    <Connector port="8443" protocol="HTTP/1.1"
+    +               connectionTimeout="20000"
+    +               URIEncoding="UTF-8"
+    +               SSLEnabled="false"
+    +               scheme="https"
+    +               secure="true"
+    +               proxyPort="443" />
+    +
+         <!-- Define an AJP 1.3 Connector on port 8009 -->
+         <!--
+         <Connector port="8009" protocol="AJP/1.3" redirectPort="8443" />
+
 ### Installing GeoServer
 
 [GeoServer](http://geoserver.org/) is an open-source GIS server used to render map layers in OzTrack.
@@ -141,8 +180,8 @@ For complete installation instructions, see the [GeoServer user manual](http://d
 
 The following commands install the GeoServer WAR distribution to Tomcat:
 
-    sudo apt-get install -y tomcat7 unzip
     wget 'http://downloads.sourceforge.net/geoserver/geoserver-2.3.1-war.zip' -P /tmp/
+    sudo apt-get install -y unzip
     unzip -d /tmp/geoserver /tmp/geoserver-2.3.1-war.zip
     sudo service tomcat7 stop
     sudo unzip -d /var/lib/tomcat7/webapps/geoserver/ /tmp/geoserver/geoserver.war
