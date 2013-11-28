@@ -15,6 +15,8 @@ import java.util.regex.Pattern;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang3.Range;
 import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.InstitutionDao;
@@ -118,8 +120,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         return new OaiPmhChainingEntityProducer<OaiPmhRecord>(producers);
     }
 
-    // TODO: Query for records matching setSpec
-    private OaiPmhEntityProducer<OaiPmhRecord> createRepositoryRecordProducer(Date from, Date until, String setSpec) {
+    private OaiPmhEntityProducer<OaiPmhRecord> createRepositoryRecordProducer(Date from, Date until, final String setSpec) {
         final List<OaiPmhRecord> unfilteredRecords = Arrays.asList(
             createRepositoryServiceRecord(),
             createOaiPmhServiceRecord(),
@@ -129,7 +130,17 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
         final List<OaiPmhRecord> filteredRecords = new ArrayList<OaiPmhRecord>();
         for (OaiPmhRecord record : unfilteredRecords) {
             Date datestamp = record.getRecordDatestampDate();
-            if (((from == null) || !datestamp.before(from)) && ((until == null) || !datestamp.after(until))) {
+            if (
+                ((from == null) || !datestamp.before(from)) &&
+                ((until == null) || !datestamp.after(until)) &&
+                ((setSpec == null) || CollectionUtils.exists(record.getOaiPmhSetSpecs(), new Predicate() {
+                    @Override
+                    public boolean evaluate(Object object) {
+                        String recordSetSpec = (String) object;
+                        return recordSetSpec.matches("^" + setSpec + "(:.*)?$");
+                    }
+                }))
+            ) {
                 filteredRecords.add(record);
             }
         }
