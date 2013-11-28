@@ -313,7 +313,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
             "    project\n" +
             "    inner join project_contribution on project.id = project_contribution.project_id\n" +
             "    inner join person on person.id = project_contribution.contributor_id\n" +
-            "    inner join country on person.country_id = country.id\n" +
+            "    left outer join country on person.country_id = country.id\n" +
             "union select\n" +
             "    project.id as project_id,\n" +
             "    person.id as person_id,\n" +
@@ -325,7 +325,7 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
             "    inner join person on person.id = project_contribution.contributor_id\n" +
             "    inner join person_institution on person.id = person_institution.person_id\n" +
             "    inner join institution on institution.id = person_institution.institution_id\n" +
-            "    inner join country on institution.country_id = country.id\n" +
+            "    left outer join country on institution.country_id = country.id\n" +
             "union select\n" +
             "    project.id as project_id,\n" +
             "    person.id as person_id,\n" +
@@ -335,22 +335,30 @@ public class OaiPmhRecordDaoImpl implements OaiPmhRecordDao {
             "    project\n" +
             "    inner join project_contribution on project.id = project_contribution.project_id\n" +
             "    inner join person on person.id = project_contribution.contributor_id\n" +
-            "    inner join person_institution on person.id = person_institution.person_id;\n" +
+            "    left outer join person_institution on person.id = person_institution.person_id;\n" +
             "\n" +
             "create temp table new_project_oaipmhset on commit drop as\n" +
-            "select distinct project_id, oaipmhset from all_oaipmhset\n" +
+            "select distinct project_id, oaipmhset\n" +
+            "from all_oaipmhset\n" +
+            "where all_oaipmhset.oaipmhset is not null\n" +
             "except select project_id, oaipmhset from project_oaipmhset;\n" +
             "\n" +
             "create temp table new_person_oaipmhset on commit drop as\n" +
             "select distinct a.person_id, b.oaipmhset\n" +
             "from all_oaipmhset a, all_oaipmhset b\n" +
-            "where a.person_id is not null and a.project_id = b.project_id\n" +
+            "where\n" +
+            "    a.person_id is not null and\n" +
+            "    a.project_id = b.project_id and\n" +
+            "    b.oaipmhset is not null\n" +
             "except select person_id, oaipmhset from person_oaipmhset;\n" +
             "\n" +
             "create temp table new_institution_oaipmhset on commit drop as\n" +
             "select distinct a.institution_id, b.oaipmhset\n" +
             "from all_oaipmhset a, all_oaipmhset b\n" +
-            "where a.institution_id is not null and a.project_id = b.project_id\n" +
+            "where\n" +
+            "    a.institution_id is not null and\n" +
+            "    a.project_id = b.project_id and\n" +
+            "    b.oaipmhset is not null\n" +
             "except select institution_id, oaipmhset from institution_oaipmhset;\n" +
             "\n" +
             "insert into project_oaipmhset select * from new_project_oaipmhset;\n" +
