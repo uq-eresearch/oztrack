@@ -232,7 +232,7 @@ Depending on your installation of Apache, you may need to place site configurati
 
 Install Apache with Shibboleth modules.
 
-    apt-get install apache2 libapache2-mod-shib2
+    sudo apt-get install apache2 libapache2-mod-shib2
 
 Enable SSL and Shibboleth modules.
 
