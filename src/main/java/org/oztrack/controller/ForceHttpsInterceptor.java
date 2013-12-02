@@ -40,6 +40,7 @@ public class ForceHttpsInterceptor extends HandlerInterceptorAdapter {
             if (shouldForceHttps) {
                 StringBuffer originalUrlBuffer = request.getRequestURL();
                 if (request.getQueryString() != null) {
+                    originalUrlBuffer.append("?");
                     originalUrlBuffer.append(request.getQueryString());
                 }
                 String originalUrl = originalUrlBuffer.toString();
