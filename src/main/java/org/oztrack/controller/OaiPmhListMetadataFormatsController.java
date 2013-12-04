@@ -36,9 +36,11 @@ public class OaiPmhListMetadataFormatsController extends OaiPmhController {
         }
 
         String identifier = request.getParameter("identifier");
-        OaiPmhRecord record = recordDao.getRecordByOaiPmhRecordIdentifier(identifier);
-        if (record == null) {
-            throw new OaiPmhException("idDoesNotExist", "identifier argument unknown or illegal in this repository.");
+        if (identifier != null) {
+            OaiPmhRecord record = recordDao.getRecordByOaiPmhRecordIdentifier(identifier);
+            if (record == null) {
+                throw new OaiPmhException("idDoesNotExist", "identifier argument unknown or illegal in this repository.");
+            }
         }
 
         return new OaiPmhListMetadataFormatsView(OaiPmhConstants.supportedMetadataFormats);
