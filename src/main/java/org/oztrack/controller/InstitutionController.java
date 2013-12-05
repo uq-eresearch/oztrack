@@ -9,8 +9,11 @@ import org.json.JSONException;
 import org.json.JSONWriter;
 import org.oztrack.data.access.CountryDao;
 import org.oztrack.data.access.InstitutionDao;
+import org.oztrack.data.access.OaiPmhRecordDao;
+import org.oztrack.data.access.PersonDao;
 import org.oztrack.data.model.Country;
 import org.oztrack.data.model.Institution;
+import org.oztrack.data.model.Person;
 import org.oztrack.data.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class InstitutionController {
@@ -30,6 +34,12 @@ public class InstitutionController {
 
     @Autowired
     private CountryDao countryDao;
+
+    @Autowired
+    private PersonDao personDao;
+
+    @Autowired
+    private OaiPmhRecordDao oaiPmhRecordDao;
 
     @Autowired
     private OzTrackPermissionEvaluator permissionEvaluator;
@@ -70,6 +80,7 @@ public class InstitutionController {
         institution.setUpdateUser(currentUser);
         institution.setUpdateDateForOaiPmh(currentDate);
         institutionDao.update(institution);
+        oaiPmhRecordDao.updateOaiPmhSets();
         return "redirect:/settings/institutions";
     }
 
@@ -78,5 +89,30 @@ public class InstitutionController {
     public void processDelete(@ModelAttribute(value="institution") Institution institution, HttpServletResponse response) {
         institutionDao.delete(institution);
         response.setStatus(204);
+    }
+
+    @RequestMapping(value="/institutions/{id}/replace", method=RequestMethod.POST)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String processReplace(
+        Authentication authentication,
+        @ModelAttribute(value="institution") Institution institution,
+        @RequestParam("other") Long otherInstitutionId
+    ) {
+        Institution otherInstitution = institutionDao.getById(otherInstitutionId);
+        User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
+        Date currentDate = new Date();
+        for (Person person : institution.getPeople()) {
+            int index = person.getInstitutions().indexOf(institution);
+            person.getInstitutions().remove(institution);
+            person.getInstitutions().add(index, otherInstitution);
+            person.setUpdateDate(currentDate);
+            person.setUpdateUser(currentUser);
+            person.setUpdateDateForOaiPmh(currentDate);
+            personDao.update(person);
+            personDao.setInstitutionsIncludeInOaiPmh(person);
+        }
+        institutionDao.delete(institution);
+        oaiPmhRecordDao.updateOaiPmhSets();
+        return "redirect:/settings/institutions";
     }
 }
