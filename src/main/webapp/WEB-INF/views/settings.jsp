@@ -16,6 +16,7 @@
         <h1>Settings</h1>
         <h2>Manage Settings</h2>
         <ul class="icons">
+            <li class="edit"><a href="${pageContext.request.contextPath}/settings/institutions">Institutions</a></li>
             <li class="edit"><a href="${pageContext.request.contextPath}/settings/geoserver">GeoServer</a></li>
             <li class="edit"><a href="${pageContext.request.contextPath}/settings/rserve">Rserve</a></li>
             <li class="edit"><a href="${pageContext.request.contextPath}/settings/embargo">Embargo</a></li>
