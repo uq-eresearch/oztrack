@@ -84,7 +84,7 @@ public class UserController {
         @RequestParam(value="aafId", required=false) String aafIdParam
     ) {
         User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
-        if (currentUser == null || !currentUser.equals(user)) {
+        if (currentUser == null || (!currentUser.equals(user) && (currentUser.getAdmin() != Boolean.TRUE))) {
             return "redirect:/login";
         }
         if (configuration.isAafEnabled()) {
@@ -109,7 +109,7 @@ public class UserController {
         BindingResult bindingResult
     ) throws Exception {
         User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
-        if (currentUser == null || !currentUser.equals(user)) {
+        if (currentUser == null || (!currentUser.equals(user) && (currentUser.getAdmin() != Boolean.TRUE))) {
             return "redirect:/login";
         }
         if (OzTrackApplication.getApplicationContext().isAafEnabled()) {
