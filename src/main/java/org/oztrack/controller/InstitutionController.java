@@ -104,7 +104,9 @@ public class InstitutionController {
         for (Person person : institution.getPeople()) {
             int index = person.getInstitutions().indexOf(institution);
             person.getInstitutions().remove(institution);
-            person.getInstitutions().add(index, otherInstitution);
+            if (!person.getInstitutions().contains(otherInstitution)) {
+                person.getInstitutions().add(index, otherInstitution);
+            }
             person.setUpdateDate(currentDate);
             person.setUpdateUser(currentUser);
             person.setUpdateDateForOaiPmh(currentDate);
