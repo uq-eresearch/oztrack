@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -69,6 +70,14 @@ public class InstitutionController {
         out.key("title").value(institution.getTitle());
         out.key("domainName").value(institution.getDomainName());
         out.endObject();
+    }
+
+    @RequestMapping(value="/institutions/{id}/edit", method=RequestMethod.GET)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String getEditView(Model model, @ModelAttribute(value="institution") Institution institution) {
+        model.addAttribute("institutions", institutionDao.getAllOrderedByTitle());
+        model.addAttribute("countries", countryDao.getAllOrderedByTitle());
+        return "institution-form";
     }
 
     @RequestMapping(value="/institutions/{id}", method=RequestMethod.PUT)

@@ -18,47 +18,17 @@
         <c:forEach items="${institutions}" var="institution">
         <h2>${institution.title} (ID ${institution.id})</h2>
         <ul>
+            <li><b>Domain</b>: ${institution.domainName}</li>
+            <li><b>Country</b>: ${institution.country.title}</li>
+        </ul>
+        <ul>
             <c:forEach items="${institution.people}" var="person">
             <li>${person.fullName}<c:if test="${not empty person.email}"> (${person.email})</c:if></li>
             </c:forEach>
         </ul>
-        <form method="POST" action="${pageContext.request.contextPath}/institutions/${institution.id}" class="form-inline well" style="padding: 10px; margin-bottom: 9px;">
-            <input type="hidden" name="_method" value="PUT" />
-            <label for="institution-${institution.id}-title">Update</label>
-            <input type="text" name="title"
-                id="institution-${institution.id}-title" class="input-large"
-                placeholder="e.g. The University of Queensland"
-                value="${institution.title}"
-                />
-            <input type="text" name="domainName"
-                id="institution-${institution.id}-domainName" class="input-large"
-                placeholder="e.g. uq.edu.au"
-                value="${institution.domainName}"
-                />
-            <select name="country" id="institution-${institution.id}-country" style="width: 224px;">
-                <option value="">Select country</option>
-                <c:forEach var="country" items="${countries}">
-                <option value="${country.id}"<c:if test="${country == institution.country}"> selected="selected"</c:if>>${country.title}</option>
-                </c:forEach>
-            </select>
-            <button type="submit" class="btn">Save</button>
-            <button class="btn" onclick="
-                void(OzTrack.deleteEntity(
-                    '${pageContext.request.contextPath}/institutions/${institution.id}',
-                    '${pageContext.request.contextPath}/settings/institutions',
-                    'Are you sure you want to delete this institution?'
-                )); return false;">Delete</button>
-        </form>
-        <form method="POST" action="${pageContext.request.contextPath}/institutions/${institution.id}/replace" class="form-inline well" style="padding: 10px;">
-            <label for="institution-${institution.id}-replace-other">Replace with</label>
-            <select name="other" id="institution-${institution.id}-replace-other">
-                <option value="">Select institution</option>
-                <c:forEach var="otherInstitution" items="${institutions}">
-                <option value="${otherInstitution.id}">${otherInstitution.title} (ID ${otherInstitution.id})</option>
-                </c:forEach>
-            </select>
-            <button type="submit" class="btn">Replace</button>
-        </form>
+        <div>
+            <a class="btn" href="${pageContext.request.contextPath}/institutions/${institution.id}/edit">Edit</a>
+        </div>
         </c:forEach>
     </jsp:body>
 </tags:page>
