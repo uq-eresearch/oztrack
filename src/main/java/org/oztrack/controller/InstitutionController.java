@@ -1,14 +1,20 @@
 package org.oztrack.controller;
 
 import java.io.IOException;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONException;
 import org.json.JSONWriter;
+import org.oztrack.data.access.CountryDao;
 import org.oztrack.data.access.InstitutionDao;
+import org.oztrack.data.model.Country;
 import org.oztrack.data.model.Institution;
+import org.oztrack.data.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -22,9 +28,20 @@ public class InstitutionController {
     @Autowired
     private InstitutionDao institutionDao;
 
+    @Autowired
+    private CountryDao countryDao;
+
+    @Autowired
+    private OzTrackPermissionEvaluator permissionEvaluator;
+
     @InitBinder("institution")
     public void initInstitutionBinder(WebDataBinder binder) {
-        binder.setAllowedFields();
+        binder.setAllowedFields(
+            "title",
+            "domainName",
+            "country"
+        );
+        binder.registerCustomEditor(Country.class, "country", new CountryPropertyEditor(countryDao));
     }
 
     @ModelAttribute("institution")
@@ -42,5 +59,24 @@ public class InstitutionController {
         out.key("title").value(institution.getTitle());
         out.key("domainName").value(institution.getDomainName());
         out.endObject();
+    }
+
+    @RequestMapping(value="/institutions/{id}", method=RequestMethod.PUT)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String processUpdate(Authentication authentication, @ModelAttribute(value="institution") Institution institution) {
+        User currentUser = permissionEvaluator.getAuthenticatedUser(authentication);
+        Date currentDate = new Date();
+        institution.setUpdateDate(currentDate);
+        institution.setUpdateUser(currentUser);
+        institution.setUpdateDateForOaiPmh(currentDate);
+        institutionDao.update(institution);
+        return "redirect:/settings/institutions";
+    }
+
+    @RequestMapping(value="/institutions/{id}", method=RequestMethod.DELETE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void processDelete(@ModelAttribute(value="institution") Institution institution, HttpServletResponse response) {
+        institutionDao.delete(institution);
+        response.setStatus(204);
     }
 }

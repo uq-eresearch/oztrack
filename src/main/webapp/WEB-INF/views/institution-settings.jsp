@@ -15,38 +15,40 @@
     </jsp:attribute>
     <jsp:body>
         <h1>Institutions</h1>
-        <table class="table table-bordered">
-            <col style="width: 30px;" />
-            <col style="width: 300px;" />
-            <col style="width: 150px;" />
-            <col style="width: 150px;" />
-            <col style="width: 300px;" />
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Domain</th>
-                    <th>Country</th>
-                    <th>People</th>
-                </tr>
-            </thead>
-            <tbody>
-                <c:forEach items="${institutions}" var="institution">
-                <tr>
-                    <td><c:out value="${institution.id}"/></td>
-                    <td><c:out value="${institution.title}"/></td>
-                    <td><c:out value="${institution.domainName}"/></td>
-                    <td><c:out value="${institution.country.title}"/></td>
-                    <td>
-                        <ul>
-                            <c:forEach items="${institution.people}" var="person">
-                            <li>${person.fullName}<c:if test="${not empty person.email}"> (${person.email})</c:if></li>
-                            </c:forEach>
-                        </ul>
-                    </td>
-                </tr>
+        <c:forEach items="${institutions}" var="institution">
+        <h2><c:out value="${institution.title}"/></h2>
+        <ul>
+            <c:forEach items="${institution.people}" var="person">
+            <li>${person.fullName}<c:if test="${not empty person.email}"> (${person.email})</c:if></li>
+            </c:forEach>
+        </ul>
+        <form method="POST" action="${pageContext.request.contextPath}/institutions/${institution.id}" class="form-inline well" style="padding: 10px;">
+            <input type="hidden" name="_method" value="PUT" />
+            <label for="institution-${institution.id}-title">Update</label>
+            <input type="text" name="title"
+                id="institution-${institution.id}-title" class="input-large"
+                placeholder="e.g. The University of Queensland"
+                value="${institution.title}"
+                />
+            <input type="text" name="domainName"
+                id="institution-${institution.id}-domainName" class="input-large"
+                placeholder="e.g. uq.edu.au"
+                value="${institution.domainName}"
+                />
+            <select name="country" id="institution-${institution.id}-country" style="width: 224px;">
+                <option value="">Select country</option>
+                <c:forEach var="country" items="${countries}">
+                <option value="${country.id}"<c:if test="${country == institution.country}"> selected="selected"</c:if>>${country.title}</option>
                 </c:forEach>
-            </tbody>
-        </table>
+            </select>
+            <button type="submit" class="btn">Save</button>
+            <button class="btn" onclick="
+                void(OzTrack.deleteEntity(
+                    '${pageContext.request.contextPath}/institutions/${institution.id}',
+                    '${pageContext.request.contextPath}/settings/institutions',
+                    'Are you sure you want to delete this institution?'
+                )); return false;">Delete</button>
+        </form>
+        </c:forEach>
     </jsp:body>
 </tags:page>
