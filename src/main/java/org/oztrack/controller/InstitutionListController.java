@@ -9,6 +9,7 @@ import org.oztrack.data.model.Country;
 import org.oztrack.data.model.Institution;
 import org.oztrack.data.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -36,6 +37,7 @@ public class InstitutionListController {
             "domainName",
             "country"
         );
+        binder.registerCustomEditor(String.class, "domainName", new StringTrimmerEditor(true));
         binder.registerCustomEditor(Country.class, "country", new CountryPropertyEditor(countryDao));
     }
 
