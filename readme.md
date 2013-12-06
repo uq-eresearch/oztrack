@@ -494,7 +494,7 @@ The resulting files should be placed in
 The CAPAD layers are distributed in Shapefile format.
 To simplify layer management in OzTrack, we merge the `capad10_external` and `capad10_external_restricted`
 Shapefiles into a single Shapefile using the open-source QGIS application.
-In QGIS, select ''Vector > Data Management Tools > Merge shapefiles'' and enter the paths for the two Shapefiles.
+In QGIS, select *Vector > Data Management Tools > Merge shapefiles* and enter the paths for the two Shapefiles.
 
 The resulting files should be placed under `$GEOSERVER_HOME/shapefiles/capad10_external_all/`.
 
@@ -508,7 +508,7 @@ The resulting files should be placed under `$GEOSERVER_HOME/shapefiles/capad10_e
 The CAPAD layers are distributed in Shapefile format.
 To simplify layer management in OzTrack, we merge the `capad10_m_external` and `capad10_m_external_restricted`
 Shapefiles into a single Shapefile using the open-source QGIS application.
-In QGIS, select ''Vector > Data Management Tools > Merge shapefiles'' and enter the paths for the two Shapefiles.
+In QGIS, select *Vector > Data Management Tools > Merge shapefiles* and enter the paths for the two Shapefiles.
 
 The resulting files should be placed under `$GEOSERVER_HOME/shapefiles/capad10_m_external_all/`.
 
@@ -545,8 +545,6 @@ Files contained in the distribution should be placed under
 `$GEOSERVER_HOME/shapefiles/IBRA7_regions/` and
 `$GEOSERVER_HOME/shapefiles/IBRA7_subregions/`.
 
-Files contained in the distribution should be placed under `$GEOSERVER_HOME/shapefiles/NRM_Regions_2010/`.
-
 #### Integrated Marine and Coastal Regionalisation of Australia (IMCRA)
 
 * [Integrated Marine and Coastal Regionalisation of Australia (IMCRA) v4.0 - Provincial Bioregions](http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B30DA5FD4-AE08-405B-9F55-7E1833C230A4%7D)
@@ -570,7 +568,7 @@ The CARS layers are distributed in NetCDF format, with longitudes between 0 and 
 For compatibility with GeoServer, we need to convert to GeoTIFF format and shift coordinates to be -180 to 180 degrees.
 
 The following script converts from NetCDF and creates two GeoTIFF files for each layer - one to the east and one to
-the west of the prime meridian - and merges them together so the resulting image spans -180..180 instead of 0..360.
+the west of the prime meridian - then merges them together so the resulting image spans -180 to 180.
 
     #!/bin/bash
 
@@ -618,6 +616,16 @@ the west of the prime meridian - and merges them together so the resulting image
     f salinity_cars2009a cars2009a_salinity
     f silicate_cars2009 cars2009_silicate
     f temperature_cars2009a cars2009a_temperature
+    f hgt2000_cars2009a cars2009a_hgt2000
+
+The resulting files should be placed in
+`$GEOSERVER_HOME/coverages/cars2009_nitrate/cars2009_nitrate.tif`,
+`$GEOSERVER_HOME/coverages/cars2009_oxygen/cars2009_oxygen.tif`,
+`$GEOSERVER_HOME/coverages/cars2009_phosphate/cars2009_phosphate.tif`,
+`$GEOSERVER_HOME/coverages/cars2009a_salinity/cars2009a_salinity.tif`,
+`$GEOSERVER_HOME/coverages/cars2009_silicate/cars2009_silicate.tif`,
+`$GEOSERVER_HOME/coverages/cars2009a_temperature/cars2009a_temperature.tif`,
+`$GEOSERVER_HOME/coverages/cars2009a_hgt2000/cars2009a_hgt2000.tif`.
 
 ### Configuring GeoServer layers
 
