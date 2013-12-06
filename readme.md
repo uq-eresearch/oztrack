@@ -411,8 +411,88 @@ admin password immediately by selecting 'Edit profile' from within the user menu
 The admin user, unlike ordinary users in OzTrack, also has a 'Settings' link under the user menu;
 the settings page allows various aspects of the OzTrack application to be configured.
 
-OzTrack automatically creates and updates layers in GeoServer.
-Log in to OzTrack as admin, go the Settings page, and click the 'Update GeoServer' button.
+### Installing external environmental layers
+
+The environmental data layers included in OzTrack come from external sources and are covered by
+specific licence agreements. Due to their large file size and licencing restrictions, layer files are
+not packaged with OzTrack and must be obtained under a new licence agreement by parties deploying their
+own instance of OzTrack. Note that OzTrack can be run without these layers but their associated menu
+items in the map interface won't do anything when clicked.
+
+#### GEBCO (bathymetry, elevation)
+
+* [The GEBCO_08 Grid, version 20100927](http://www.gebco.net/data_and_products/gridded_bathymetry_data/)
+* Provided by [The General Bathymetric Chart of the Oceans (GEBCO)](http://www.gebco.net/).
+* Available for purposes of scientific research, environmental conservation, and education according to its [terms of use](http://www.gebco.net/data_and_products/gridded_bathymetry_data/documents/gebco_08.pdf).
+
+#### National Dynamic Land Cover Dataset
+
+* [The National Dynamic Land Cover Dataset](http://www.ga.gov.au/earth-observation/landcover.html)
+* Provided by [Geoscience Australia](http://www.ga.gov.au/).
+* Available under the [Creative Commons Attribution 2.5 Australia](http://creativecommons.org/licenses/by/2.5/au/) licence.
+
+#### National Vegetation Information System
+
+* [Present Major Vegetation Groups - National Vegetation Information System Version 4.1](http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B116AACA6-9E11-43E6-AD68-75AE380504CD%7D)
+* [Present Major Vegetation Subgroups - National Vegetation Information System Version 4.1](http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B245434BF-95D1-4C3E-8104-EC4B2988782D%7D)
+* Provided by the [Department of Environment, Water, Population and Communities, Australian Government](http://www.environment.gov.au/).
+* Available under Agreement for the Supply of Data with the Department of Environment, Water, Population and Communities, Australian Government.
+
+#### Fire Frequency
+
+* [Fire Frequency - AVHRR, Charles Darwin University algorithm, Australia coverage](http://data.auscover.org.au/geonetwork/srv/en/main.home?uuid=3535a8c1-940e-4f60-b55b-24185730acba)
+* Provided by [Charles Darwin University (CDU)](http://www.cdu.edu.au/) via [AusCover](http://data.auscover.org.au/).
+* Available under the [Creative Commons Attribution 3.0 licence](http://creativecommons.org/licenses/by/3.0).
+
+#### Collaborative Australian Protected Areas Database (land)
+
+* [Collaborative Australian Protected Areas Database (CAPAD) 2010](http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId={C4B70940-75BC-4114-B935-D28EE8A52937})
+* [Collaborative Australian Protected Areas Database (CAPAD) 2010 - Restricted](http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId={0E24A4B5-BA44-48D5-AF2F-7F4749F4EA2D})
+* Provided by the [Department of Environment, Water, Population and Communities, Australian Government](http://www.environment.gov.au/).
+* Available under Agreement for the Supply of Data with the Department of Environment, Water, Population and Communities, Australian Government.
+
+#### Collaborative Australian Protected Areas Database (marine)
+
+* [Collaborative Australian Protected Areas Database (CAPAD) 2010 - Marine](http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B4970516C-6F4A-4B1E-AF33-AB6BDE6B008A%7D)
+* [Collaborative Australian Protected Areas Database (CAPAD) 2010 - Marine - Restricted](http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B905AD083-39A0-41C6-B2F9-CBF5E0B86A3C%7D)
+* Provided by the [Department of Environment, Water, Population and Communities, Australian Government](http://www.environment.gov.au/).
+* Available under Agreement for the Supply of Data with the Department of Environment, Water, Population and Communities, Australian Government.
+
+#### Commonwealth Marine Reserves Network
+
+* [Commonwealth Marine Reserves Network (2012)](http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId={052C61B4-3662-4842-8B4D-15DC57B355FE})
+* Provided by the [Department of Environment, Water, Population and Communities, Australian Government](http://www.environment.gov.au/).
+* Available under Agreement for the Supply of Data with the Department of Environment, Water, Population and Communities, Australian Government.
+
+#### Natural Resource Management (NRM) Regions
+
+* [Natural Resource Management (NRM) Regions (2010)](http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId={052C61B4-3662-4842-8B4D-15DC57B355FE})
+* Provided by the [Department of Environment, Water, Population and Communities, Australian Government](http://www.environment.gov.au/).
+* Available under the [Creative Commons Attribution 2.5 Australia](http://creativecommons.org/licenses/by/2.5/au/) licence.
+
+#### Interim Biogeographic Regionalisation for Australia (IBRA)
+
+* [Interim Biogeographic Regionalisation for Australia (IBRA), Version 7 (Regions)](http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B573FA186-1997-4F8B-BCF8-58B5876A156B%7D)
+* [Interim Biogeographic Regionalisation for Australia (IBRA), Version 7 (Subregions)](http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7BC88F4317-42B0-4D4B-AC5D-47F6ACF1A24F%7D)
+* Provided by the [Department of Environment, Water, Population and Communities, Australian Government](http://www.environment.gov.au/).
+* Available under the [Creative Commons Attribution 3.0 Australia](http://creativecommons.org/licenses/by/3.0/au/) licence.
+
+#### Integrated Marine and Coastal Regionalisation of Australia (IMCRA)
+
+* [Integrated Marine and Coastal Regionalisation of Australia (IMCRA) v4.0 - Provincial Bioregions](http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B30DA5FD4-AE08-405B-9F55-7E1833C230A4%7D)
+* [Integrated Marine and Coastal Regionalisation of Australia (IMCRA) v4.0 - Meso-scale Bioregions](http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7BA0D9F8EE-4261-438A-8ADE-EFF664EFF55C%7D)
+* Provided by the [Department of Environment, Water, Population and Communities, Australian Government](http://www.environment.gov.au/).
+* Available under Agreement for the Supply of Data with the Department of Environment, Water, Population and Communities, Australian Government.
+
+#### CSIRO Atlas of Regional Seas (CARS)
+
+* [CSIRO Atlas of Regional Seas (CARS)](http://www.marine.csiro.au/~dunn/cars2009/)
+* Provided by [CSIRO Marine and Atmospheric Research](http://www.cmar.csiro.au/).
+* Available under agreement with the [Access Conditions](http://www.marine.csiro.au/~dunn/cars2009/#access) prescribed by CSIRO Marine and Atmospheric Research.
+
+### Configuring GeoServer layers
+
+OzTrack automatically creates and updates layers in GeoServer. To configure layers in GeoServer, log in to OzTrack as admin, click the 'GeoServer' link on the Settings page, and click the 'Update GeoServer' button. Any errors encountered updating GeoServer will be listed on the response page; in particular, you will see errors if creation of external environmental layers fail due to missing layer files.
 
 ## Developer notes
 
