@@ -259,167 +259,39 @@ public class GeoServerUploader {
 
         @Override
         public Void call() throws Exception {
-            client
-                .coveragestore("workspaces/" + workspaceName + "/coveragestores/cars2009_nitrate")
-                .template("coveragestores/cars2009.xml.ftl")
-                .param("coverageName", "cars2009_nitrate")
-                .replace();
-            client
-                .coverage("workspaces/" + workspaceName + "/coveragestores/cars2009_nitrate/coverages/cars2009_nitrate")
-                .template("coverages/cars2009.xml.ftl")
-                .param("coverageName", "cars2009_nitrate")
-                .replace();
-            client
-                .style("styles/" + workspaceName + "_" + "cars2009_nitrate")
-                .template("styles/cars2009_nitrate.sld.ftl")
-                .replace();
-            client
-                .layer("layers/cars2009_nitrate")
-                .template("layers/coverage-layer.xml.ftl")
-                .param("layerName", "cars2009_nitrate")
-                .param("coverageName", "cars2009_nitrate")
-                .param("defaultStyle", "oztrack_cars2009_nitrate")
-                .param("styles", new String[] {"oztrack_cars2009_nitrate"})
-                .replace();
-
-            client
-                .coveragestore("workspaces/" + workspaceName + "/coveragestores/cars2009_oxygen")
-                .template("coveragestores/cars2009.xml.ftl")
-                .param("coverageName", "cars2009_oxygen")
-                .replace();
-            client
-                .coverage("workspaces/" + workspaceName + "/coveragestores/cars2009_oxygen/coverages/cars2009_oxygen")
-                .template("coverages/cars2009.xml.ftl")
-                .param("coverageName", "cars2009_oxygen")
-                .replace();
-            client
-                .style("styles/" + workspaceName + "_" + "cars2009_oxygen")
-                .template("styles/cars2009_oxygen.sld.ftl")
-                .replace();
-            client
-                .layer("layers/cars2009_oxygen")
-                .template("layers/coverage-layer.xml.ftl")
-                .param("layerName", "cars2009_oxygen")
-                .param("coverageName", "cars2009_oxygen")
-                .param("defaultStyle", "oztrack_cars2009_oxygen")
-                .param("styles", new String[] {"oztrack_cars2009_oxygen"})
-                .replace();
-
-            client
-                .coveragestore("workspaces/" + workspaceName + "/coveragestores/cars2009_phosphate")
-                .template("coveragestores/cars2009.xml.ftl")
-                .param("coverageName", "cars2009_phosphate")
-                .replace();
-            client
-                .coverage("workspaces/" + workspaceName + "/coveragestores/cars2009_phosphate/coverages/cars2009_phosphate")
-                .template("coverages/cars2009.xml.ftl")
-                .param("coverageName", "cars2009_phosphate")
-                .replace();
-            client
-                .style("styles/" + workspaceName + "_" + "cars2009_phosphate")
-                .template("styles/cars2009_phosphate.sld.ftl")
-                .replace();
-            client
-                .layer("layers/cars2009_phosphate")
-                .template("layers/coverage-layer.xml.ftl")
-                .param("layerName", "cars2009_phosphate")
-                .param("coverageName", "cars2009_phosphate")
-                .param("defaultStyle", "oztrack_cars2009_phosphate")
-                .param("styles", new String[] {"oztrack_cars2009_phosphate"})
-                .replace();
-
-            client
-                .coveragestore("workspaces/" + workspaceName + "/coveragestores/cars2009_silicate")
-                .template("coveragestores/cars2009.xml.ftl")
-                .param("coverageName", "cars2009_silicate")
-                .replace();
-            client
-                .coverage("workspaces/" + workspaceName + "/coveragestores/cars2009_silicate/coverages/cars2009_silicate")
-                .template("coverages/cars2009.xml.ftl")
-                .param("coverageName", "cars2009_silicate")
-                .replace();
-            client
-                .style("styles/" + workspaceName + "_" + "cars2009_silicate")
-                .template("styles/cars2009_silicate.sld.ftl")
-                .replace();
-            client
-                .layer("layers/cars2009_silicate")
-                .template("layers/coverage-layer.xml.ftl")
-                .param("layerName", "cars2009_silicate")
-                .param("coverageName", "cars2009_silicate")
-                .param("defaultStyle", "oztrack_cars2009_silicate")
-                .param("styles", new String[] {"oztrack_cars2009_silicate"})
-                .replace();
-
-            client
-                .coveragestore("workspaces/" + workspaceName + "/coveragestores/cars2009a_salinity")
-                .template("coveragestores/cars2009.xml.ftl")
-                .param("coverageName", "cars2009a_salinity")
-                .replace();
-            client
-                .coverage("workspaces/" + workspaceName + "/coveragestores/cars2009a_salinity/coverages/cars2009a_salinity")
-                .template("coverages/cars2009.xml.ftl")
-                .param("coverageName", "cars2009a_salinity")
-                .replace();
-            client
-                .style("styles/" + workspaceName + "_" + "cars2009a_salinity")
-                .template("styles/cars2009a_salinity.sld.ftl")
-                .replace();
-            client
-                .layer("layers/cars2009a_salinity")
-                .template("layers/coverage-layer.xml.ftl")
-                .param("layerName", "cars2009a_salinity")
-                .param("coverageName", "cars2009a_salinity")
-                .param("defaultStyle", "oztrack_cars2009a_salinity")
-                .param("styles", new String[] {"oztrack_cars2009a_salinity"})
-                .replace();
-
-            client
-                .coveragestore("workspaces/" + workspaceName + "/coveragestores/cars2009a_temperature")
-                .template("coveragestores/cars2009.xml.ftl")
-                .param("coverageName", "cars2009a_temperature")
-                .replace();
-            client
-                .coverage("workspaces/" + workspaceName + "/coveragestores/cars2009a_temperature/coverages/cars2009a_temperature")
-                .template("coverages/cars2009.xml.ftl")
-                .param("coverageName", "cars2009a_temperature")
-                .replace();
-            client
-                .style("styles/" + workspaceName + "_" + "cars2009a_temperature")
-                .template("styles/cars2009a_temperature.sld.ftl")
-                .replace();
-            client
-                .layer("layers/cars2009a_temperature")
-                .template("layers/coverage-layer.xml.ftl")
-                .param("layerName", "cars2009a_temperature")
-                .param("coverageName", "cars2009a_temperature")
-                .param("defaultStyle", "oztrack_cars2009a_temperature")
-                .param("styles", new String[] {"oztrack_cars2009a_temperature"})
-                .replace();
-
-            client
-                .coveragestore("workspaces/" + workspaceName + "/coveragestores/cars2009a_hgt2000")
-                .template("coveragestores/cars2009.xml.ftl")
-                .param("coverageName", "cars2009a_hgt2000")
-                .replace();
-            client
-                .coverage("workspaces/" + workspaceName + "/coveragestores/cars2009a_hgt2000/coverages/cars2009a_hgt2000")
-                .template("coverages/cars2009.xml.ftl")
-                .param("coverageName", "cars2009a_hgt2000")
-                .replace();
-            client
-                .style("styles/" + workspaceName + "_" + "cars2009a_hgt2000")
-                .template("styles/cars2009a_hgt2000.sld.ftl")
-                .replace();
-            client
-                .layer("layers/cars2009a_hgt2000")
-                .template("layers/coverage-layer.xml.ftl")
-                .param("layerName", "cars2009a_hgt2000")
-                .param("coverageName", "cars2009a_hgt2000")
-                .param("defaultStyle", "oztrack_cars2009a_hgt2000")
-                .param("styles", new String[] {"oztrack_cars2009a_hgt2000"})
-                .replace();
+            createLayer("cars2009_nitrate");
+            createLayer("cars2009_oxygen");
+            createLayer("cars2009_phosphate");
+            createLayer("cars2009_silicate");
+            createLayer("cars2009a_salinity");
+            createLayer("cars2009a_temperature");
+            createLayer("cars2009a_hgt2000");
             return null;
+        }
+
+        private void createLayer(String coverageName) throws Exception {
+            client
+                .coveragestore("workspaces/" + workspaceName + "/coveragestores/" + coverageName)
+                .template("coveragestores/geotiff-coveragestore.xml.ftl")
+                .param("coverageName", coverageName)
+                .replace();
+            client
+                .coverage("workspaces/" + workspaceName + "/coveragestores/" + coverageName + "/coverages/" + coverageName)
+                .template("coverages/cars2009.xml.ftl")
+                .param("coverageName", coverageName)
+                .replace();
+            client
+                .style("styles/" + workspaceName + "_" + coverageName)
+                .template("styles/" + coverageName + ".sld.ftl")
+                .replace();
+            client
+                .layer("layers/" + coverageName)
+                .template("layers/coverage-layer.xml.ftl")
+                .param("layerName", coverageName)
+                .param("coverageName", coverageName)
+                .param("defaultStyle", "oztrack_" + coverageName)
+                .param("styles", new String[] {"oztrack_" + coverageName})
+                .replace();
         }
     }
 
