@@ -402,6 +402,8 @@ The following are key properties that should be configured for all applications:
     # Number of Rserve processes to run on each host
     org.oztrack.conf.numRConnections=4
 
+### Administering OzTrack
+
 OzTrack defines a default admin user with the username/password "admin"/"oztrack".
 To log into OzTrack, click the 'Login' button at the top-right of screen. You should change the default
 admin password immediately by selecting 'Edit profile' from within the user menu at the top-right of screen.
