@@ -67,13 +67,13 @@
                 hosted under Agreement for the Supply of Data with the Department of Environment, Water, Population and Communities, Australian Government.
             </li>
             <li class="layer">
-                <a href="​http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B4970516C-6F4A-4B1E-AF33-AB6BDE6B008A%7D">Collaborative Australian Protected Areas Database (CAPAD) 2010 - Marine</a>,<br />
-                <a href="​http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B905AD083-39A0-41C6-B2F9-CBF5E0B86A3C%7D">Collaborative Australian Protected Areas Database (CAPAD) 2010 - Marine - Restricted</a>:<br />
+                <a href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B4970516C-6F4A-4B1E-AF33-AB6BDE6B008A%7D">Collaborative Australian Protected Areas Database (CAPAD) 2010 - Marine</a>,<br />
+                <a href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B905AD083-39A0-41C6-B2F9-CBF5E0B86A3C%7D">Collaborative Australian Protected Areas Database (CAPAD) 2010 - Marine - Restricted</a>:<br />
                 provided by the <a href="http://www.environment.gov.au/">Department of Environment, Water, Population and Communities, Australian Government</a>;<br />
                 hosted under Agreement for the Supply of Data with the Department of Environment, Water, Population and Communities, Australian Government.
             </li>
             <li class="layer">
-                <a href="​http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId={052C61B4-3662-4842-8B4D-15DC57B355FE}">Commonwealth Marine Reserves Network (2012)</a><br />
+                <a href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId={052C61B4-3662-4842-8B4D-15DC57B355FE}">Commonwealth Marine Reserves Network (2012)</a><br />
                 provided by the <a href="http://www.environment.gov.au/">Department of Environment, Water, Population and Communities, Australian Government</a>;<br />
                 hosted under Agreement for the Supply of Data with the Department of Environment, Water, Population and Communities, Australian Government.
             </li>
@@ -84,13 +84,13 @@
             </li>
             <li class="layer">
                 <a href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B573FA186-1997-4F8B-BCF8-58B5876A156B%7D">Interim Biogeographic Regionalisation for Australia (IBRA), Version 7 (Regions)</a>,<br />
-                <a href="​http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7BC88F4317-42B0-4D4B-AC5D-47F6ACF1A24F%7D">Interim Biogeographic Regionalisation for Australia (IBRA), Version 7 (Subregions)</a>:<br />
+                <a href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7BC88F4317-42B0-4D4B-AC5D-47F6ACF1A24F%7D">Interim Biogeographic Regionalisation for Australia (IBRA), Version 7 (Subregions)</a>:<br />
                 provided by the <a href="http://www.environment.gov.au/">Department of Environment, Water, Population and Communities, Australian Government</a>;<br />
                 hosted under the <a href="http://creativecommons.org/licenses/by/3.0/au/">Creative Commons Attribution 3.0 Australia</a> licence.
             </li>
             <li class="layer">
                 <a href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B30DA5FD4-AE08-405B-9F55-7E1833C230A4%7D">Integrated Marine and Coastal Regionalisation of Australia (IMCRA) v4.0 - Provincial Bioregions</a>,<br />
-                <a href="​http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7BA0D9F8EE-4261-438A-8ADE-EFF664EFF55C%7D">Integrated Marine and Coastal Regionalisation of Australia (IMCRA) v4.0 - Meso-scale Bioregions</a>:<br />
+                <a href="http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7BA0D9F8EE-4261-438A-8ADE-EFF664EFF55C%7D">Integrated Marine and Coastal Regionalisation of Australia (IMCRA) v4.0 - Meso-scale Bioregions</a>:<br />
                 provided by the <a href="http://www.environment.gov.au/">Department of Environment, Water, Population and Communities, Australian Government</a>;<br />
                 hosted under Agreement for the Supply of Data with the Department of Environment, Water, Population and Communities, Australian Government.
             </li>
