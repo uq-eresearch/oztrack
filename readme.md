@@ -425,11 +425,23 @@ items in the map interface won't do anything when clicked.
 * Provided by [The General Bathymetric Chart of the Oceans (GEBCO)](http://www.gebco.net/).
 * Available for purposes of scientific research, environmental conservation, and education according to its [terms of use](http://www.gebco.net/data_and_products/gridded_bathymetry_data/documents/gebco_08.pdf).
 
+The GEBCO_08 Grid (30 arc-second interval) is distributed in NetCDF format as `gebco_08.nc`.
+For compatibility with GeoServer, we convert this to GeoTIFF format using the following command:
+
+    gdal_translate -of GTiff gebco_08.nc gebco_08.tif
+
+The resulting file should be placed in `$GEOSERVER_HOME/coverages/gebco_08/gebco_08.tif`.
+
 #### National Dynamic Land Cover Dataset
 
 * [The National Dynamic Land Cover Dataset](http://www.ga.gov.au/earth-observation/landcover.html)
 * Provided by [Geoscience Australia](http://www.ga.gov.au/).
 * Available under the [Creative Commons Attribution 2.5 Australia](http://creativecommons.org/licenses/by/2.5/au/) licence.
+
+The Dynamic Land Cover Dataset is distributed in GeoTIFF format.
+
+Files contained in the distribution (`DLCDv1_Class.tif`, `DLCDv1_Class.tif.xml`, etc)
+should be placed under `$GEOSERVER_HOME/coverages/DLCDv1_Class/`.
 
 #### National Vegetation Information System
 
@@ -438,11 +450,39 @@ items in the map interface won't do anything when clicked.
 * Provided by the [Department of Environment, Water, Population and Communities, Australian Government](http://www.environment.gov.au/).
 * Available under Agreement for the Supply of Data with the Department of Environment, Water, Population and Communities, Australian Government.
 
+The NVIS layers are distributed in Arc/Info Binary Grid format.
+For compatibility with GeoServer, we convert them to GeoTIFF format using the following commands:
+
+    gdal_translate \
+    -a_srs EPSG:3577 \
+    -of GTiff \
+    GRID_NVIS4_1_AUST_MVG_EXT/aust4_1e_mvg/hdr.adf \
+    nvis_4_1_aust_mvg.tif
+
+    gdal_translate \
+    -a_srs EPSG:3577 \
+    -of GTiff \
+    GRID_NVIS4_1_AUST_MVG_EXT/aust4_1e_mvg/hdr.adf \
+    nvis_4_1_aust_mvs.tif
+
+The resulting file should be placed in
+`$GEOSERVER_HOME/coverages/nvis_4_1_aust_mvg/nvis_4_1_aust_mvg.tif` and
+`$GEOSERVER_HOME/coverages/nvis_4_1_aust_mvs/nvis_4_1_aust_mvs.tif`.
+
 #### Fire Frequency
 
 * [Fire Frequency - AVHRR, Charles Darwin University algorithm, Australia coverage](http://data.auscover.org.au/geonetwork/srv/en/main.home?uuid=3535a8c1-940e-4f60-b55b-24185730acba)
 * Provided by [Charles Darwin University (CDU)](http://www.cdu.edu.au/) via [AusCover](http://data.auscover.org.au/).
 * Available under the [Creative Commons Attribution 3.0 licence](http://creativecommons.org/licenses/by/3.0).
+
+The Fire Frequency layer is distributed in Arc/Info Binary Grid format.
+For compatibility with GeoServer, we convert it to GeoTIFF format using the following command:
+
+    gdal_translate -of GTiff fire-frequency-avhrr-1997-2009 fire-frequency-avhrr-1997-2009.tif
+
+The resulting files should be placed in
+`$GEOSERVER_HOME/coverages/fire-frequency-avhrr-1997-2009/fire-frequency-avhrr-1997-2009.tif` and
+`$GEOSERVER_HOME/coverages/fire-frequency-avhrr-1997-2009/fire-frequency-avhrr-1997-2009.tif.aux.xml`.
 
 #### Collaborative Australian Protected Areas Database (land)
 
@@ -451,6 +491,13 @@ items in the map interface won't do anything when clicked.
 * Provided by the [Department of Environment, Water, Population and Communities, Australian Government](http://www.environment.gov.au/).
 * Available under Agreement for the Supply of Data with the Department of Environment, Water, Population and Communities, Australian Government.
 
+The CAPAD layers are distributed in Shapefile format.
+To simplify layer management in OzTrack, we merge the `capad10_external` and `capad10_external_restricted`
+Shapefiles into a single Shapefile using the open-source QGIS application.
+In QGIS, select ''Vector > Data Management Tools > Merge shapefiles'' and enter the paths for the two Shapefiles.
+
+The resulting files should be placed under `$GEOSERVER_HOME/shapefiles/capad10_external_all/`.
+
 #### Collaborative Australian Protected Areas Database (marine)
 
 * [Collaborative Australian Protected Areas Database (CAPAD) 2010 - Marine](http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B4970516C-6F4A-4B1E-AF33-AB6BDE6B008A%7D)
@@ -458,17 +505,32 @@ items in the map interface won't do anything when clicked.
 * Provided by the [Department of Environment, Water, Population and Communities, Australian Government](http://www.environment.gov.au/).
 * Available under Agreement for the Supply of Data with the Department of Environment, Water, Population and Communities, Australian Government.
 
+The CAPAD layers are distributed in Shapefile format.
+To simplify layer management in OzTrack, we merge the `capad10_m_external` and `capad10_m_external_restricted`
+Shapefiles into a single Shapefile using the open-source QGIS application.
+In QGIS, select ''Vector > Data Management Tools > Merge shapefiles'' and enter the paths for the two Shapefiles.
+
+The resulting files should be placed under `$GEOSERVER_HOME/shapefiles/capad10_m_external_all/`.
+
 #### Commonwealth Marine Reserves Network
 
 * [Commonwealth Marine Reserves Network (2012)](http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId={052C61B4-3662-4842-8B4D-15DC57B355FE})
 * Provided by the [Department of Environment, Water, Population and Communities, Australian Government](http://www.environment.gov.au/).
 * Available under Agreement for the Supply of Data with the Department of Environment, Water, Population and Communities, Australian Government.
 
+The Commonwealth Marine Research Network layer is distributed in Shapefile format.
+
+Files contained in the distribution should be placed under `$GEOSERVER_HOME/shapefiles/commonwealth_marine_reserves_network_2012/`.
+
 #### Natural Resource Management (NRM) Regions
 
 * [Natural Resource Management (NRM) Regions (2010)](http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId={052C61B4-3662-4842-8B4D-15DC57B355FE})
 * Provided by the [Department of Environment, Water, Population and Communities, Australian Government](http://www.environment.gov.au/).
 * Available under the [Creative Commons Attribution 2.5 Australia](http://creativecommons.org/licenses/by/2.5/au/) licence.
+
+The NRM Regions layer is distributed in Shapefile format.
+
+Files contained in the distribution should be placed under `$GEOSERVER_HOME/shapefiles/NRM_Regions_2010/`.
 
 #### Interim Biogeographic Regionalisation for Australia (IBRA)
 
@@ -477,6 +539,14 @@ items in the map interface won't do anything when clicked.
 * Provided by the [Department of Environment, Water, Population and Communities, Australian Government](http://www.environment.gov.au/).
 * Available under the [Creative Commons Attribution 3.0 Australia](http://creativecommons.org/licenses/by/3.0/au/) licence.
 
+The IBRA layers are distributed in Shapefile format.
+
+Files contained in the distribution should be placed under
+`$GEOSERVER_HOME/shapefiles/IBRA7_regions/` and
+`$GEOSERVER_HOME/shapefiles/IBRA7_subregions/`.
+
+Files contained in the distribution should be placed under `$GEOSERVER_HOME/shapefiles/NRM_Regions_2010/`.
+
 #### Integrated Marine and Coastal Regionalisation of Australia (IMCRA)
 
 * [Integrated Marine and Coastal Regionalisation of Australia (IMCRA) v4.0 - Provincial Bioregions](http://www.environment.gov.au/metadataexplorer/full_metadata.jsp?docId=%7B30DA5FD4-AE08-405B-9F55-7E1833C230A4%7D)
@@ -484,11 +554,70 @@ items in the map interface won't do anything when clicked.
 * Provided by the [Department of Environment, Water, Population and Communities, Australian Government](http://www.environment.gov.au/).
 * Available under Agreement for the Supply of Data with the Department of Environment, Water, Population and Communities, Australian Government.
 
+The IMCRA layers are distributed in Shapefile format.
+
+Files contained in the distribution should be placed under
+`$GEOSERVER_HOME/shapefiles/imcra_mesoscale_bioregions/` and
+`$GEOSERVER_HOME/shapefiles/imcra_provincial_bioregions/`.
+
 #### CSIRO Atlas of Regional Seas (CARS)
 
 * [CSIRO Atlas of Regional Seas (CARS)](http://www.marine.csiro.au/~dunn/cars2009/)
 * Provided by [CSIRO Marine and Atmospheric Research](http://www.cmar.csiro.au/).
 * Available under agreement with the [Access Conditions](http://www.marine.csiro.au/~dunn/cars2009/#access) prescribed by CSIRO Marine and Atmospheric Research.
+
+The CARS layers are distributed in NetCDF format, with longitudes between 0 and 360 degrees.
+For compatibility with GeoServer, we need to convert to GeoTIFF format and shift coordinates to be -180 to 180 degrees.
+
+The following script converts from NetCDF and creates two GeoTIFF files for each layer - one to the east and one to
+the west of the prime meridian - and merges them together so the resulting image spans -180..180 instead of 0..360.
+
+    #!/bin/bash
+
+    function f() {
+        gdalinfo NETCDF:"${1}.nc":mean | grep -A5 'Corner Coordinates'
+        echo
+
+        gdalinfo NETCDF:"${1}.nc":mean | grep -A11 '^Band 1\>'
+        echo
+
+        gdal_translate \
+            -projwin -0.25 90.25 180.25 -75.25 \
+            -a_ullr  -0.25 90.25 180.25 -75.25 \
+            -a_srs 'EPSG:4326' \
+            -b 1 \
+            -of GTiff \
+            NETCDF:${1}.nc:mean \
+            /tmp/${2}_east.tif
+
+        gdal_translate \
+            -projwin  179.75 90.25 359.75 -75.25 \
+            -a_ullr  -180.25 90.25  -0.25 -75.25 \
+            -a_srs 'EPSG:4326' \
+            -b 1 \
+            -of GTiff \
+            NETCDF:${1}.nc:mean \
+            /tmp/${2}_west.tif
+
+        gdal_merge.py \
+            -o /tmp/${2}.tif \
+            /tmp/${2}_west.tif \
+            /tmp/${2}_east.tif
+
+        rm \
+            /tmp/${2}_west.tif \
+            /tmp/${2}_east.tif
+
+        echo
+    }
+
+
+    f nitrate_cars2009 cars2009_nitrate
+    f oxygen_cars2009 cars2009_oxygen
+    f phosphate_cars2009 cars2009_phosphate
+    f salinity_cars2009a cars2009a_salinity
+    f silicate_cars2009 cars2009_silicate
+    f temperature_cars2009a cars2009a_temperature
 
 ### Configuring GeoServer layers
 
