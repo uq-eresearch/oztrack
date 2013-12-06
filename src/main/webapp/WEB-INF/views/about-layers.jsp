@@ -94,6 +94,11 @@
                 provided by the <a href="http://www.environment.gov.au/">Department of Environment, Water, Population and Communities, Australian Government</a>;<br />
                 hosted under Agreement for the Supply of Data with the Department of Environment, Water, Population and Communities, Australian Government.
             </li>
+            <li class="layer">
+                <a href="http://www.marine.csiro.au/~dunn/cars2009/">CSIRO Atlas of Regional Seas (CARS)</a>:<br />
+                provided by <a href="http://www.cmar.csiro.au/">CSIRO Marine and Atmospheric Research</a>;<br />
+                hosted under agreement with the <a href="http://www.marine.csiro.au/~dunn/cars2009/#access">Access Conditions</a> prescribed by CSIRO Marine and Atmospheric Research.
+            </li>
         </ul>
     </jsp:body>
 </tags:page>
