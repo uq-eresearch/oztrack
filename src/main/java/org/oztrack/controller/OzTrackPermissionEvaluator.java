@@ -1,9 +1,13 @@
 package org.oztrack.controller;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.time.DateUtils;
+import org.oztrack.app.OzTrackConfiguration;
 import org.oztrack.data.access.UserDao;
+import org.oztrack.data.model.DataFile;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.ProjectUser;
 import org.oztrack.data.model.User;
@@ -18,6 +22,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class OzTrackPermissionEvaluator implements PermissionEvaluator {
     @Autowired
+    private OzTrackConfiguration configuration;
+
+    @Autowired
     private UserDao userDao;
 
     @Override
@@ -31,6 +38,9 @@ public class OzTrackPermissionEvaluator implements PermissionEvaluator {
         }
         if (targetDomainObject instanceof Project) {
             return hasProjectPermission(currentUser, (Project) targetDomainObject, permission);
+        }
+        if (targetDomainObject instanceof DataFile) {
+            return hasDataFilePermission(currentUser, (DataFile) targetDomainObject, permission);
         }
         return false;
     }
@@ -77,6 +87,37 @@ public class OzTrackPermissionEvaluator implements PermissionEvaluator {
             }
             else if (permission.equals("manage")) {
                 if (projectUser.getRole() == Role.MANAGER) {
+                    return true;
+                }
+            }
+            else if (permission.equals("delete")) {
+                if (projectUser.getRole() == Role.MANAGER) {
+                    if (project.getDataFiles().isEmpty()) {
+                        return true;
+                    }
+                    Integer deleteRestrictedAfterDays = configuration.getProjectDeleteRestrictedAfterDays();
+                    Date deleteRestrictedDate = DateUtils.addDays(project.getCreateDate(), deleteRestrictedAfterDays);
+                    Date currentDate = new Date();
+                    if (currentDate.before(deleteRestrictedDate)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean hasDataFilePermission(User currentUser, DataFile dataFile, Object permission) {
+        // Only users with at least write access to a project can "see" data files
+        if (hasProjectPermission(currentUser, dataFile.getProject(), "write")) {
+            if (permission.equals("read")) {
+                return true;
+            }
+            if (permission.equals("delete")) {
+                Integer deleteRestrictedAfterDays = configuration.getDataFileDeleteRestrictedAfterDays();
+                Date deleteRestrictedDate = DateUtils.addDays(dataFile.getCreateDate(), deleteRestrictedAfterDays);
+                Date currentDate = new Date();
+                if (currentDate.before(deleteRestrictedDate)) {
                     return true;
                 }
             }

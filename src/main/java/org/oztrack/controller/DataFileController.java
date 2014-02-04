@@ -45,14 +45,14 @@ public class DataFileController {
     }
 
     @RequestMapping(value="/projects/{projectId}/datafiles/{id}", method=RequestMethod.GET, produces="text/html")
-    @PreAuthorize("hasPermission(#dataFile.project, 'write')")
+    @PreAuthorize("hasPermission(#dataFile, 'read')")
     public String getHtmlView(Model model, @ModelAttribute(value="dataFile") DataFile dataFile) throws Exception {
         model.addAttribute("dataFileDetectionCount", dataFileDao.getDetectionCount(dataFile, false));
         return "datafile";
     }
 
     @RequestMapping(value="/projects/{projectId}/datafiles/{id}", method=RequestMethod.GET, produces="application/json")
-    @PreAuthorize("hasPermission(#dataFile.project, 'write')")
+    @PreAuthorize("hasPermission(#dataFile, 'read')")
     public void getJsonView(
         HttpServletResponse response,
         @ModelAttribute(value="dataFile") DataFile dataFile
@@ -67,7 +67,7 @@ public class DataFileController {
     }
 
     @RequestMapping(value="/projects/{projectId}/datafiles/{id}", method=RequestMethod.DELETE)
-    @PreAuthorize("hasPermission(#dataFile.project, 'write')")
+    @PreAuthorize("hasPermission(#dataFile, 'delete')")
     public void processDelete(@ModelAttribute(value="dataFile") DataFile dataFile, HttpServletResponse response) {
         List<Animal> animals = dataFileDao.getAnimals(dataFile);
         ArrayList<Long> animalIds = new ArrayList<Long>();

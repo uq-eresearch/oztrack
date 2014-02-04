@@ -21,6 +21,8 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
     private String recaptchaPrivateKey;
     private Date closedAccessDisableDate;
     private Date nonIncrementalEmbargoDisableDate;
+    private Integer projectDeleteRestrictedAfterDays;
+    private Integer dataFileDeleteRestrictedAfterDays;
     private String rserveLogFile;
     private Integer rserveOomAdj;
     private OzTrackOaiPmhConfiguration oaiPmhConfiguration;
@@ -157,6 +159,24 @@ public class OzTrackConfigurationImpl implements OzTrackConfiguration {
 
     public void setNonIncrementalEmbargoDisableDateString(String nonIncrementalEmbargoDisableDateString) throws ParseException {
         this.nonIncrementalEmbargoDisableDate = isoDateTimeFormat.parse(nonIncrementalEmbargoDisableDateString);
+    }
+
+    @Override
+    public Integer getProjectDeleteRestrictedAfterDays() {
+        return projectDeleteRestrictedAfterDays;
+    }
+
+    public void setProjectDeleteRestrictedAfterDays(Integer projectDeleteRestrictedAfterDays) {
+        this.projectDeleteRestrictedAfterDays = projectDeleteRestrictedAfterDays;
+    }
+
+    @Override
+    public Integer getDataFileDeleteRestrictedAfterDays() {
+        return dataFileDeleteRestrictedAfterDays;
+    }
+
+    public void setDataFileDeleteRestrictedAfterDays(Integer dataFileDeleteRestrictedAfterDays) {
+        this.dataFileDeleteRestrictedAfterDays = dataFileDeleteRestrictedAfterDays;
     }
 
     @Override

@@ -17,6 +17,8 @@ public interface OzTrackConfiguration {
     String getRecaptchaPrivateKey();
     Date getClosedAccessDisableDate();
     Date getNonIncrementalEmbargoDisableDate();
+    Integer getProjectDeleteRestrictedAfterDays();
+    Integer getDataFileDeleteRestrictedAfterDays();
     String getRserveLogFile();
     Integer getRserveOomAdj();
     OzTrackOaiPmhConfiguration getOaiPmhConfiguration();

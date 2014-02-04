@@ -16,8 +16,14 @@
         <li id="projectActionsCleanse" class="edit-track"><a href="${pageContext.request.contextPath}/projects/${project.id}/cleanse">Edit tracks</a></li>
         </c:if>
         <li class="edit-project"><a href="${pageContext.request.contextPath}/projects/${project.id}/edit">Edit project</a></li>
-        <sec:authorize access="hasPermission(#project, 'manage')">
-        <li class="delete-project"><a href="javascript:void(OzTrack.deleteEntity('${pageContext.request.contextPath}/projects/${project.id}', '${pageContext.request.contextPath}/projects', 'Are you sure you want to delete this project?'));">Delete project</a></li>
+        <sec:authorize access="hasPermission(#project, 'delete')">
+        <li class="delete-project">
+            <a href="javascript:void(OzTrack.deleteEntity(<%--
+                --%>'${pageContext.request.contextPath}/projects/${project.id}',<%--
+                --%>'${pageContext.request.contextPath}/projects',<%--
+                --%>'Are you sure you want to delete this project?'<%--
+            --%>));">Delete project</a>
+        </li>
         </sec:authorize>
 <c:if test="${itemsOnly == null || itemsOnly == false}">
     </ul>

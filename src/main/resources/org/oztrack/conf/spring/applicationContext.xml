@@ -62,6 +62,8 @@
         <property name="recaptchaPrivateKey" value="${org.oztrack.conf.recaptchaPrivateKey}"/>
         <property name="closedAccessDisableDateString" value="${org.oztrack.conf.closedAccessDisableDate}"/>
         <property name="nonIncrementalEmbargoDisableDateString" value="${org.oztrack.conf.nonIncrementalEmbargoDisableDate}"/>
+        <property name="projectDeleteRestrictedAfterDays" value="${org.oztrack.conf.projectDeleteRestrictedAfterDays}"/>
+        <property name="dataFileDeleteRestrictedAfterDays" value="${org.oztrack.conf.dataFileDeleteRestrictedAfterDays}"/>
         <property name="rserveLogFile" value="${org.oztrack.conf.rserveLogFile}"/>
         <property name="rserveOomAdj" value="${org.oztrack.conf.rserveOomAdj}"/>
         <property name="oaiPmhConfiguration">

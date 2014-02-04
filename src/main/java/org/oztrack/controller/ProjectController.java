@@ -564,7 +564,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value="/projects/{id}", method=RequestMethod.DELETE)
-    @PreAuthorize("hasPermission(#project, 'manage')")
+    @PreAuthorize("hasPermission(#project, 'delete')")
     public void processDelete(@ModelAttribute(value="project") Project project, HttpServletResponse response) {
         ArrayList<Long> animalIds = new ArrayList<Long>();
         for (Animal animal : project.getAnimals()) {
