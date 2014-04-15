@@ -36,18 +36,22 @@ public class InstitutionDaoImpl implements InstitutionDao {
 
     @Override
     public Institution getById(Long id) {
-        return (Institution) em
+        @SuppressWarnings("unchecked")
+        List<Institution> resultList = em
             .createQuery("from org.oztrack.data.model.Institution where id = :id")
             .setParameter("id", id)
-            .getSingleResult();
+            .getResultList();
+        return resultList.isEmpty() ? null : resultList.get(0);
     }
 
     @Override
     public Institution getByTitle(String title) {
-        return (Institution) em
+        @SuppressWarnings("unchecked")
+        List<Institution> resultList = em
             .createQuery("from org.oztrack.data.model.Institution where lower(title) = lower(:title)")
             .setParameter("title", title)
-            .getSingleResult();
+            .getResultList();
+        return resultList.isEmpty() ? null : resultList.get(0);
     }
 
     @Override
