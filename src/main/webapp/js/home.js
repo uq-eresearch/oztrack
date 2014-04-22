@@ -200,7 +200,7 @@ function buildProjectPopup(f) {
         }
     });
     var footer = $('<div class="home-popup-footer">');
-    footer.append('<a href="projects/' + f.attributes.projectId + '">View details</a>')
+    footer.append('<a href="projects/' + f.attributes.projectId + '">View summary</a>')
     if (f.attributes.access == 'OPEN') {
         footer.append(' | ');
         footer.append('<a href="projects/' + f.attributes.projectId + '/analysis">View tracks</a>');

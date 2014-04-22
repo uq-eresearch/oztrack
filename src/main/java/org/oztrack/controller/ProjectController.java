@@ -33,6 +33,7 @@ import org.oztrack.data.access.OaiPmhRecordDao;
 import org.oztrack.data.access.PersonDao;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.access.ProjectVisitDao;
 import org.oztrack.data.access.SrsDao;
 import org.oztrack.data.access.UserDao;
 import org.oztrack.data.model.Animal;
@@ -42,9 +43,11 @@ import org.oztrack.data.model.Person;
 import org.oztrack.data.model.Project;
 import org.oztrack.data.model.ProjectContribution;
 import org.oztrack.data.model.ProjectUser;
+import org.oztrack.data.model.ProjectVisit;
 import org.oztrack.data.model.Publication;
 import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.ProjectAccess;
+import org.oztrack.data.model.types.ProjectVisitType;
 import org.oztrack.data.model.types.Role;
 import org.oztrack.util.EmailBuilder;
 import org.oztrack.util.EmailBuilderFactory;
@@ -76,6 +79,9 @@ public class ProjectController {
 
     @Autowired
     private ProjectDao projectDao;
+
+    @Autowired
+    private ProjectVisitDao projectVisitDao;
 
     @Autowired
     private PositionFixDao positionFixDao;
@@ -132,7 +138,7 @@ public class ProjectController {
 
     @RequestMapping(value="/projects/{id}", method=RequestMethod.GET)
     @PreAuthorize("permitAll")
-    public String getDetailView(Model model, @ModelAttribute(value="project") Project project) {
+    public String getSummaryView(Model model, @ModelAttribute(value="project") Project project) {
         Role[] roles = Role.values();
         HashMap<Role, List<ProjectUser>> projectUsersByRole = new HashMap<Role, List<ProjectUser>>();
         for (Role role : roles) {
@@ -143,6 +149,7 @@ public class ProjectController {
         model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project, false));
         model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, false));
         model.addAttribute("projectDetectionCount", projectDao.getDetectionCount(project, false));
+        projectVisitDao.save(new ProjectVisit(project, ProjectVisitType.SUMMARY, new Date()));
         return getView(model, project, "project");
     }
 

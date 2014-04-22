@@ -1,6 +1,7 @@
 package org.oztrack.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,12 +11,15 @@ import org.oztrack.data.access.AnalysisDao;
 import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.access.ProjectVisitDao;
 import org.oztrack.data.access.SrsDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.Project;
+import org.oztrack.data.model.ProjectVisit;
 import org.oztrack.data.model.User;
 import org.oztrack.data.model.types.AnalysisType;
 import org.oztrack.data.model.types.MapLayerType;
+import org.oztrack.data.model.types.ProjectVisitType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -32,6 +36,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class ProjectAnalysisController {
     @Autowired
     private ProjectDao projectDao;
+
+    @Autowired
+    private ProjectVisitDao projectVisitDao;
 
     @Autowired
     private AnalysisDao analysisDao;
@@ -82,6 +89,7 @@ public class ProjectAnalysisController {
         String currentSessionId = (currentSession != null) ? currentSession.getId() : null;
         model.addAttribute("savedAnalyses", analysisDao.getSavedAnalyses(project));
         model.addAttribute("previousAnalyses", analysisDao.getPreviousAnalyses(project, currentUser, currentSessionId));
+        projectVisitDao.save(new ProjectVisit(project, ProjectVisitType.ANALYSIS, new Date()));
         return "project-analysis.html";
     }
 }

@@ -114,6 +114,12 @@
             <li>${species}</li>
             </c:forEach>
         </ul>
+        <h2 id="visits">Visits</h2>
+        <ul>
+            <c:forEach var="visitType" items="${projectVisitTypes}">
+            <li>${projectVisits[visitType]} project ${visitType.title} visits</li>
+            </c:forEach>
+        </ul>
         <h2 id="overall">Overall Statistics</h2>
         <ul>
             <li>${fn:length(users)} users</li>

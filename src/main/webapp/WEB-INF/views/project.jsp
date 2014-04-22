@@ -24,7 +24,7 @@
             ${project.description}
         </c:when>
         <c:otherwise>
-            View details for the ${project.title} project.
+            View summary for the ${project.title} project.
         </c:otherwise>
         </c:choose>
     </jsp:attribute>
@@ -245,7 +245,7 @@
             }
             jQuery(document).ready(function() {
                 jQuery('#navTrack').addClass('active');
-                jQuery('#projectMenuDetails').addClass('active');
+                jQuery('#projectMenuSummary').addClass('active');
                 initProjectImages();
                 coverageMap = new OzTrack.CoverageMap('coverageMap', {
                     wkt: '${projectBoundingBox}',

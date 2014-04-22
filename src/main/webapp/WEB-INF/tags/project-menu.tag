@@ -8,7 +8,7 @@
     <div class="sidebar-actions-title">Browse Project</div>
     <ul class="icons sidebar-actions-list">
 </c:if>
-        <li id="projectMenuDetails" class="view-project"><a href="${pageContext.request.contextPath}/projects/${project.id}">Project summary</a></li>
+        <li id="projectMenuSummary" class="view-project"><a href="${pageContext.request.contextPath}/projects/${project.id}">Project summary</a></li>
         <sec:authorize access="hasPermission(#project, 'read')">
         <c:if test="${not empty project.dataFiles}">
         <li id="projectMenuAnalysis" class="view-track"><a href="${pageContext.request.contextPath}/projects/${project.id}/analysis">Tracks and analysis</a></li>
