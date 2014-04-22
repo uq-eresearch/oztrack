@@ -25,6 +25,7 @@
             <li><a href="#users">Users</a></li>
             <li><a href="#projects">Projects</a></li>
             <li><a href="#species">Species</a></li>
+            <li><a href="#visits">Visits</a></li>
             <li><a href="#overall">Overall Statistics</a></li>
         </ul>
         <h2 id="users">Users</h2>
@@ -121,10 +122,10 @@
                 <c:choose>
                 <c:when test="${not empty projectVisitSummaries[visitType]}">
                 ${projectVisitSummaries[visitType].numVisits} project ${visitType.title}
-                (earliest <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${projectVisitSummaries[visitType].earliestDate}" />).
+                (earliest <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${projectVisitSummaries[visitType].earliestDate}" />)
                 </c:when>
                 <c:otherwise>
-                0 project ${visitType.title}.
+                0 project ${visitType.title}
                 </c:otherwise>
                 </c:choose>
             </li>
