@@ -50,7 +50,7 @@ public class UsageController {
         model.addAttribute("numPositionFixes", positionFixDao.getNumPositionFixes());
         model.addAttribute("speciesList", animalDao.getSpeciesList());
         model.addAttribute("projectVisitTypes", ProjectVisitType.values());
-        model.addAttribute("projectVisits", projectVisitDao.getVisitCounts());
+        model.addAttribute("projectVisitSummaries", projectVisitDao.getVisitSummaries());
         HashMap<Project, Integer> detectionCount = new HashMap<Project, Integer>();
         for (Project project : projects) {
             detectionCount.put(project, projectDao.getDetectionCount(project, false));

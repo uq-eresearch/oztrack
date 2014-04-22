@@ -117,7 +117,17 @@
         <h2 id="visits">Visits</h2>
         <ul>
             <c:forEach var="visitType" items="${projectVisitTypes}">
-            <li>${projectVisits[visitType]} project ${visitType.title} visits</li>
+            <li>
+                <c:choose>
+                <c:when test="${not empty projectVisitSummaries[visitType]}">
+                ${projectVisitSummaries[visitType].numVisits} project ${visitType.title} visits
+                (earliest <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${projectVisitSummaries[visitType].earliestDate}" />).
+                </c:when>
+                <c:otherwise>
+                0 project ${visitType.title} visits.
+                </c:otherwise>
+                </c:choose>
+            </li>
             </c:forEach>
         </ul>
         <h2 id="overall">Overall Statistics</h2>
