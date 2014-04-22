@@ -139,6 +139,7 @@ public class ProjectController {
     @RequestMapping(value="/projects/{id}", method=RequestMethod.GET)
     @PreAuthorize("permitAll")
     public String getSummaryView(Model model, @ModelAttribute(value="project") Project project) {
+        projectVisitDao.save(new ProjectVisit(project, ProjectVisitType.SUMMARY, new Date()));
         Role[] roles = Role.values();
         HashMap<Role, List<ProjectUser>> projectUsersByRole = new HashMap<Role, List<ProjectUser>>();
         for (Role role : roles) {
@@ -149,7 +150,6 @@ public class ProjectController {
         model.addAttribute("projectBoundingBox", projectDao.getBoundingBox(project, false));
         model.addAttribute("projectDetectionDateRange", projectDao.getDetectionDateRange(project, false));
         model.addAttribute("projectDetectionCount", projectDao.getDetectionCount(project, false));
-        projectVisitDao.save(new ProjectVisit(project, ProjectVisitType.SUMMARY, new Date()));
         return getView(model, project, "project");
     }
 

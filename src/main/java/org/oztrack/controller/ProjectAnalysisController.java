@@ -73,6 +73,7 @@ public class ProjectAnalysisController {
         Model model,
         @ModelAttribute(value="project") Project project
     ) {
+        projectVisitDao.save(new ProjectVisit(project, ProjectVisitType.ANALYSIS, new Date()));
         List<Animal> projectAnimalsList = animalDao.getAnimalsByProjectId(project.getId());
         model.addAttribute("mapLayerTypeList", MapLayerType.values());
         ArrayList<AnalysisType> analysisTypeList = new ArrayList<AnalysisType>();
@@ -89,7 +90,6 @@ public class ProjectAnalysisController {
         String currentSessionId = (currentSession != null) ? currentSession.getId() : null;
         model.addAttribute("savedAnalyses", analysisDao.getSavedAnalyses(project));
         model.addAttribute("previousAnalyses", analysisDao.getPreviousAnalyses(project, currentUser, currentSessionId));
-        projectVisitDao.save(new ProjectVisit(project, ProjectVisitType.ANALYSIS, new Date()));
         return "project-analysis.html";
     }
 }

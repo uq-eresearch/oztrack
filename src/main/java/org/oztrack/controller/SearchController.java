@@ -13,11 +13,14 @@ import org.oztrack.data.access.AnimalDao;
 import org.oztrack.data.access.Page;
 import org.oztrack.data.access.PositionFixDao;
 import org.oztrack.data.access.ProjectDao;
+import org.oztrack.data.access.ProjectVisitDao;
 import org.oztrack.data.model.Animal;
 import org.oztrack.data.model.PositionFix;
 import org.oztrack.data.model.Project;
+import org.oztrack.data.model.ProjectVisit;
 import org.oztrack.data.model.SearchQuery;
 import org.oztrack.data.model.types.PositionFixFileHeader;
+import org.oztrack.data.model.types.ProjectVisitType;
 import org.oztrack.view.SearchQueryXLSView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -42,6 +45,9 @@ public class SearchController {
 
     @Autowired
     private ProjectDao projectDao;
+
+    @Autowired
+    private ProjectVisitDao projectVisitDao;
 
     @Autowired
     private PositionFixDao positionFixDao;
@@ -95,6 +101,7 @@ public class SearchController {
         @ModelAttribute(value="searchQuery") SearchQuery searchQuery,
         @RequestParam(value="offset", defaultValue="0") int offset
     ) throws Exception {
+        projectVisitDao.save(new ProjectVisit(project, ProjectVisitType.DATA_PAGE, new Date()));
         return showFormInternal(model, project, searchQuery, offset);
     }
 
@@ -102,9 +109,11 @@ public class SearchController {
     @PreAuthorize("hasPermission(#searchQuery.project, 'read')")
     public View handleRequest(
         Model model,
+        @ModelAttribute(value="project") Project project,
         @ModelAttribute(value="searchQuery") final SearchQuery searchQuery,
         @RequestParam(value="format", defaultValue="xls") String format
     ) throws Exception {
+        projectVisitDao.save(new ProjectVisit(project, ProjectVisitType.DATA_DOWNLOAD, new Date()));
         final List<PositionFix> positionFixes = positionFixDao.getProjectPositionFixList(searchQuery);
         if (format.equals("xls")) {
             return new SearchQueryXLSView(searchQuery.getProject(), positionFixes, (searchQuery.getIncludeDeleted() != null) && searchQuery.getIncludeDeleted());

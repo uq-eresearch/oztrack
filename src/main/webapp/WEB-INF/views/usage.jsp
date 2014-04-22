@@ -120,11 +120,11 @@
             <li>
                 <c:choose>
                 <c:when test="${not empty projectVisitSummaries[visitType]}">
-                ${projectVisitSummaries[visitType].numVisits} project ${visitType.title} visits
+                ${projectVisitSummaries[visitType].numVisits} project ${visitType.title}
                 (earliest <fmt:formatDate pattern="${dateTimeFormatPattern}" value="${projectVisitSummaries[visitType].earliestDate}" />).
                 </c:when>
                 <c:otherwise>
-                0 project ${visitType.title} visits.
+                0 project ${visitType.title}.
                 </c:otherwise>
                 </c:choose>
             </li>
