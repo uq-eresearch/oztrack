@@ -472,5 +472,11 @@
             <id>JBoss Releases</id>
             <url>https://repository.jboss.org/nexus/content/repositories/releases</url>
         </repository>
+        <repository>
+            <!-- Needed for net.rforge.rserve:REngine:jar:1.7-0 -->
+            <id>eresearch</id>
+            <name>libs-releases</name>
+            <url>http://maven.metadata.net/artifactory/libs-releases</url>
+        </repository>
    </repositories>
 </project>
